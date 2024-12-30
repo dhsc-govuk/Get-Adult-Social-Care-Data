@@ -30,21 +30,25 @@ parameters:
     type: object
     default:
       - name: dev
+        environment_name: 'Webapp - dev' 
         arm_connection: "$(dev_arm_service_connections)"
         acr_connection: "$(dev_acr_connection)"
         acr_name: "$(dev_acr_name)"
         container_port: "$(dev_container_port)"
       - name: test
+        environment_name: 'Webapp - test' 
         arm_connection: "$(test_arm_service_connections)"
         acr_connection: "$(test_acr_connection)"
         acr_name: "$(test_acr_name)"
         container_port: "$(test_container_port)"
       - name: uat
+        environment_name: 'Webapp - UAT' 
         arm_connection: "$(uat_arm_service_connections)"
         acr_connection: "$(uat_acr_connection)"
         acr_name: "$(uat_acr_name)"
         container_port: "$(uat_container_port)"
       - name: prod
+        environment_name: 'Webapp - prod' 
         arm_connection: "$(prod_arm_service_connections)"
         acr_connection: "$(prod_acr_connection)"
         acr_name: "$(prod_acr_name)"
@@ -60,7 +64,7 @@ stages:
         jobs:
           - deployment: Build
             displayName: Build
-            environment: "${{environment.name}}"
+            environment: "${{environment.environment_name}}"
             pool:
               vmImage: $(vmImageName)
             strategy:
