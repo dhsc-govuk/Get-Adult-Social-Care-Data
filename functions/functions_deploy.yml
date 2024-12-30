@@ -13,15 +13,19 @@ parameters:
   type: object
   default:
   - name: dev
+    environment_name: 'Webapp - dev'
     arm_connection: '$(dev_arm_service_connections)'
     subscription_id: '$(dev_subscription_id)'
   - name: test
+    environment_name: 'Webapp - test'
     arm_connection: '$(test_arm_service_connections)'
     subscription_id: '$(test_subscription_id)'
   - name: uat
+    environment_name: 'Webapp - UAT'
     arm_connection: '$(uat_arm_service_connections)'
     subscription_id: '$(uat_subscription_id)'
   - name: prod
+    environment_name: 'Webapp - prod'
     arm_connection: '$(prod_arm_service_connections)'
     subscription_id: '$(prod_subscription_id)'
 
