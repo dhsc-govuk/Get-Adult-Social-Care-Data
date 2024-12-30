@@ -34,6 +34,16 @@ parameters:
         acr_connection: "$(dev_acr_connection)"
         acr_name: "$(dev_acr_name)"
         container_port: "$(dev_container_port)"
+      - name: test
+        arm_connection: "$(test_arm_service_connections)"
+        acr_connection: "$(test_acr_connection)"
+        acr_name: "$(test_acr_name)"
+        container_port: "$(test_container_port)"
+      - name: uat
+        arm_connection: "$(uat_arm_service_connections)"
+        acr_connection: "$(uat_acr_connection)"
+        acr_name: "$(uat_acr_name)"
+        container_port: "$(uat_container_port)"
       - name: prod
         arm_connection: "$(prod_arm_service_connections)"
         acr_connection: "$(prod_acr_connection)"
