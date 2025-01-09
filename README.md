@@ -78,13 +78,6 @@ This project uses Azure DevOps Pipelines for continuous integration and deployme
 
 ## Further documentation
 
-### High Level Architechture Diagram - Alpha 
-![Diagram of the DHSC DAP Platform Alpha Architecture](diagrams/dhsc_alpha_architecture.png)
-
-
-### Proposed High Level Architechture Diagram - Beta
-![Diagram of the Proposed DHSC DAP Platform Beta Architecture](diagrams/dhsc_dap_beta.png)
-### Related Repositories
 
 | Name                                                                               | Description                                                                                                                                 |
 | :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
