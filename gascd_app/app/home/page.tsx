@@ -10,7 +10,7 @@ import YourFavouriteMetricsSidePanel from "../../src/components/common/panels/yo
 import DataGuideSidePanel from "../../src/components/common/panels/data-guide-side-panel/DataGuideSidePanel";
 import ReportLinksSidePanel from "../../src/components/common/panels/report-links-side-panel/ReportLinksSidePanel";
 import KnowledgeCentreSidePanel from "../../src/components/common/panels/knowledge-centre-side-panel/KnowledgeCentreSidePanel";
-import { getCapacityTrackerData } from "../../src/api/api";
+import { getCapacityTrackerData } from "../api/api";
 import { LoaderData } from "@/data/types/LoaderData";
 import HomePageDataUpdatesPanel from "@/components/home-page-components/home-page-data-updates-panel/HomePageDataUpdatesPanel";
 import HomePageDataDefinitionsPanel from "@/components/home-page-components/home-page-data-definitions-panel/HomePageDataDefinitionsPanel";

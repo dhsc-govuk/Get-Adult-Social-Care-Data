@@ -17,7 +17,7 @@ import DataLimitationsContainer from "../../../src/components/common/data-limita
 import SmartInsights from "../../../src/components/common/smart-insights/SmartInsights";
 import MetricDescription from "../../../src/components/metric-components/metric-description/MetricDescription";
 import MetricTable from "../../../src/components/metric-components/metric-table/MetricTable";
-import { getCapacityTrackerData } from "@/api/api";
+import { getCapacityTrackerData } from "../../api/api";
 import ProtectedRoute from "@/components/util-components/protected-route/ProtectedRoute";
 
 const CapacityTrackerTotalHoursWorkedByAgencyPage: React.FC = () => {
