@@ -103,6 +103,7 @@ ENV/
 env.bak/
 venv.bak/
 app/src/environments
+cypress.env.json
 
 
 # Spyder project settings
