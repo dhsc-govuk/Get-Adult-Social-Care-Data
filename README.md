@@ -40,6 +40,7 @@ This project requires the following pre-requisites:
 1. [NodeJs](https://nodejs.org/en)
 2. [Docker](https://www.docker.com/)
 3. [Make](https://makefiletutorial.com/)
+4. [GitLeaks](https://github.com/gitleaks/gitleaks)
 
 #### Installing project dependencies
 
@@ -50,7 +51,7 @@ This project requires the following pre-requisites:
 #### Setting up husky pre-commit hooks
 
 1. Navigate to the root of the project
-2. Run the command 'make setup-husky' 
+2. Run the command 'make setup-husky' (NOTE: Some machines have had errors when initially trying this command, if you get a warning then run 'npx    husky' before running the Make command)
 3. Linting and Prettier should now run on any staged changes during pre-commit
 
 
