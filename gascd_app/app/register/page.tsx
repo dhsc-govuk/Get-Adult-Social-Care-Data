@@ -1,16 +1,17 @@
-'use client'
+'use client';
 
-import React from "react";
+import React from 'react';
 import Layout from '../../src/components/common/layout/Layout';
-import ButtonWithArrow from "../../src/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow";
-import "./registerPage.scss";
+import ButtonWithArrow from '../../src/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
+import './registerPage.scss';
 
 const RegisterPage: React.FC = () => {
   return (
-      <Layout showLoginInformation={false}>
+    <Layout showLoginInformation={false}>
+      <section aria-labelledby="main-content-heading" role="region">
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
-            <h1 className="govuk-heading-l">
+            <h1 id="main-content-heading" className="govuk-heading-l">
               Adult social care data access portal
             </h1>
             <p className="govuk-body">Use this service to:</p>
@@ -25,17 +26,17 @@ const RegisterPage: React.FC = () => {
             <ButtonWithArrow buttonString="Start" buttonUrl="/home" />
             <h2 className="govuk-heading-m">Before you start</h2>
             <p className="govuk-body">
-              You can also{" "}
+              You can also{' '}
               <a className="govuk-link" href="#">
                 register
-              </a>{" "}
+              </a>{' '}
               if...
             </p>
             <p className="govuk-body">
-              The online service is also available in{" "}
+              The online service is also available in{' '}
               <a className="govuk-link" href="#">
                 Welsh (Cymraeg)
-              </a>{" "}
+              </a>{' '}
             </p>
             <p className="govuk-body">
               You cannot register for this service if ..
@@ -64,7 +65,8 @@ const RegisterPage: React.FC = () => {
             </ul>
           </div>
         </div>
-      </Layout>
+      </section>
+    </Layout>
   );
 };
 

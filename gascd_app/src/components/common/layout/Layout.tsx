@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import React, { MouseEvent, ReactNode, useEffect, useRef } from "react";
+import React, { MouseEvent, ReactNode, useEffect, useRef } from 'react';
 import { initAll } from '../../../../public/govuk-frontend/js/govuk-frontend.min.js';
-import Header from "../header/Header";
-import Footer from "../footer/Footer";
-import { focusMainContent } from "../../../helpers/ManageFocus";
-import PhaseBanner from "../phase-banner/PhaseBanner";
-import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
-import { Breadcrumb } from "../../../data/interfaces/Breadcrumb";
-import LoginInformation from "../../util-components/login-information/LoginInformation";
+import Header from '../header/Header';
+import Footer from '../footer/Footer';
+import { focusMainContent } from '../../../helpers/ManageFocus';
+import PhaseBanner from '../phase-banner/PhaseBanner';
+import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
+import { Breadcrumb } from '../../../data/interfaces/Breadcrumb';
+import LoginInformation from '../../util-components/login-information/LoginInformation';
 
 type Props = {
   children: ReactNode;
@@ -33,7 +33,7 @@ const Layout: React.FC<Props> = ({
   return (
     <div ref={layoutRef} tabIndex={-1} id="layout">
       <a
-        href="#"
+        href="#main-content"
         className="govuk-skip-link"
         onClick={(e: MouseEvent<HTMLAnchorElement>) =>
           focusMainContent(e, mainRef)
@@ -52,12 +52,13 @@ const Layout: React.FC<Props> = ({
             {showLoginInformation && <LoginInformation />}
           </div>
         </div>
-
         <main
+          ref={mainRef}
+          id="main-content"
           className={
             autoSpaceMainContent
-              ? "govuk-main-wrapper govuk-main-wrapper--auto-spacing"
-              : ""
+              ? 'govuk-main-wrapper govuk-main-wrapper--auto-spacing'
+              : ''
           }
         >
           <div id="main-content">{children}</div>
