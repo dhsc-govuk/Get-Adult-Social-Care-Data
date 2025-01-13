@@ -29,4 +29,6 @@ setup-husky:
 	echo 'echo "Running linter and Prettier"' >> .husky/_/pre-commit
 	echo 'cd gascd_app' >> .husky/_/pre-commit
 	echo 'npx lint-staged' >> .husky/_/pre-commit
+	echo 'echo "Running GitLeaks for secret detection"' >> .husky/_/pre-commit
+	echo 'gitleaks detect --source . --verbose --no-git' >> .husky/_/pre-commit
 	chmod +x .husky/_/pre-commit
