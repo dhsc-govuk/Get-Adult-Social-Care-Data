@@ -1,6 +1,12 @@
 import React from 'react';
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  currentPage: string;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
+  const ActivePage = (page: string) => currentPage === page;
+
   return (
     <div
       className="govuk-service-navigation"
@@ -21,15 +27,15 @@ const Navbar: React.FC = () => {
               className="govuk-service-navigation__list govuk-service-navigation__item--active"
               id="navigation"
             >
-              <li className="govuk-service-navigation__item govuk-service-navigation__item--active">
+              <li
+                className={`govuk-service-navigation__item ${ActivePage(currentPage) ? 'govuk-service-navigation__item--active' : ''}`}
+              >
                 <a
                   className="govuk-service-navigation__link"
-                  href="/"
+                  href="/home"
                   aria-current="true"
                 >
-                  <strong className="govuk-service-navigation__active-fallback">
-                    Home
-                  </strong>
+                  Home
                 </a>
               </li>
             </ul>
