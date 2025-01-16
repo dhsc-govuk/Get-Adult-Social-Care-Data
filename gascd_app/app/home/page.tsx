@@ -16,29 +16,7 @@ import HomePageDataUpdatesPanel from '@/components/home-page-components/home-pag
 import HomePageDataDefinitionsPanel from '@/components/home-page-components/home-page-data-definitions-panel/HomePageDataDefinitionsPanel';
 import MetricCardsContainer from '@/components/metric-components/MetricCardsContainer';
 
-async function fetchData(): Promise<LoaderData> {
-  try {
-    const capacityTrackerTotalHoursAgencyWorkedByRegionData =
-      await getCapacityTrackerData('region');
-    const capacityTrackerTotalHoursAgencyWorkedByLaData =
-      await getCapacityTrackerData('la');
-
-    return {
-      capacityTrackerTotalHoursAgencyWorkedByRegionData,
-      capacityTrackerTotalHoursAgencyWorkedByLaData,
-    };
-  } catch (error) {
-    console.error('Unable to get Capacity Tracker information');
-    return {
-      capacityTrackerTotalHoursAgencyWorkedByRegionData: [],
-      capacityTrackerTotalHoursAgencyWorkedByLaData: [],
-    };
-  }
-}
-
 export default async function HomePage() {
-  const capacityTrackerData = await fetchData();
-
   const breadcrumbs: Array<Breadcrumb> = [
     {
       text: 'Homepage',
@@ -54,41 +32,10 @@ export default async function HomePage() {
       currentPage="home"
     >
       <div className="govuk-grid-row">
-        <div className="govuk-grid-column-one-third">
-          <div className="govuk-grid-row">
-            <div className="govuk-grid-column-full">
-              <h1 className="govuk-heading-l">Homepage</h1>
-              <DataCategoriesSidePanel />
-              <YourFavouriteMetricsSidePanel />
-              <DataGuideSidePanel />
-              <ReportLinksSidePanel />
-              <KnowledgeCentreSidePanel />
-            </div>
-          </div>
-        </div>
-        <div className="govuk-grid-column-two-thirds">
-          <MainCategoriesSearch />
-          <hr className="govuk-section-break govuk-section-break--s govuk-section-break--visible govuk-!-margin-bottom-3"></hr>
-
-          <OrganisationFilter />
-          <hr className="govuk-section-break govuk-section-break--s govuk-section-break--visible govuk-!-margin-bottom-7"></hr>
-
-          <div className="govuk-grid-row">
-            <div className="govuk-grid-column-full">
-              <h3 className="govuk-heading-s">Headline metrics</h3>
-            </div>
-          </div>
-          <MetricCardsContainer
-            capacityTrackerTotalHoursAgencyWorkedByRegionData={
-              capacityTrackerData.capacityTrackerTotalHoursAgencyWorkedByRegionData
-            }
-            capacityTrackerTotalHoursAgencyWorkedByLaData={
-              capacityTrackerData.capacityTrackerTotalHoursAgencyWorkedByLaData
-            }
-          />
-          <HomePageAddFavouriteMetricsPanel />
-          <HomePageDataUpdatesPanel />
-          <HomePageDataDefinitionsPanel />
+        <div className="govuk-grid-column-full">
+          <h1 className="govuk-heading-l">
+            Access data and insights for adult social care in England
+          </h1>
         </div>
       </div>
     </Layout>
