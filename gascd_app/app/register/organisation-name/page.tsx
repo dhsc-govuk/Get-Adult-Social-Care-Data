@@ -1,10 +1,22 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
-import StandardButton from '@/components/common/buttons/functionality/standard-button/StandardButton';
 
 const RegisterYourNamePage: React.FC = () => {
+  const [organisationName, setOrganisationName] = useState('');
+
+  useEffect(() => {
+    if (!window?.localStorage) return;
+
+    const storedOrganisationName = localStorage.getItem('organisationName');
+
+    storedOrganisationName && setOrganisationName(storedOrganisationName);
+  }, []);
+
+  const handleSubmit = () => {
+    localStorage.setItem('organisationName', organisationName);
+  };
   return (
     <Layout
       showLoginInformation={false}
@@ -19,7 +31,12 @@ const RegisterYourNamePage: React.FC = () => {
             Enter your organisation&apos;s name
           </h1>
 
-          <form className="form" action="check-answers" method="post">
+          <form
+            className="form"
+            action="check-answers"
+            method="post"
+            onSubmit={handleSubmit}
+          >
             <div className="govuk-form-group">
               <h1 className="govuk-label-wrapper">
                 <label
@@ -34,6 +51,8 @@ const RegisterYourNamePage: React.FC = () => {
                 id="register-organisation-name"
                 name="organisationName"
                 type="text"
+                value={organisationName}
+                onChange={(e) => setOrganisationName(e.target.value)}
               />
             </div>
 

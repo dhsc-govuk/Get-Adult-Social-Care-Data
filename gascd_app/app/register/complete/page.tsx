@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import StandardButton from '@/components/common/buttons/functionality/standard-button/StandardButton';
 
 const RegisterYourNamePage: React.FC = () => {
   return (

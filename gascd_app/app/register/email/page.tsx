@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import StandardButton from '@/components/common/buttons/functionality/standard-button/StandardButton';
 
 const RegisterEmailPage: React.FC = () => {
   return (
@@ -21,7 +20,7 @@ const RegisterEmailPage: React.FC = () => {
                 </label>
               </h1>
               <input
-                className="govuk-input"
+                className="govuk-input govuk-input--width-20"
                 id="register-email"
                 name="eventName"
                 type="text"
