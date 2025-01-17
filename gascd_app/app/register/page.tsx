@@ -5,7 +5,6 @@ import Layout from '../../src/components/common/layout/Layout';
 import ButtonWithArrow from '../../src/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
 import './registerPage.scss';
 import { Breadcrumb } from '@/data/interfaces/Breadcrumb';
-import StandardButton from '@/components/common/buttons/functionality/standard-button/StandardButton';
 
 const RegisterPage: React.FC = () => {
   const breadcrumbs: Breadcrumb[] = [
@@ -24,7 +23,7 @@ const RegisterPage: React.FC = () => {
     <Layout
       breadcrumbs={breadcrumbs}
       showLoginInformation={false}
-      currentPage=""
+      currentPage="register"
     >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
@@ -208,7 +207,10 @@ const RegisterPage: React.FC = () => {
             .
           </div>
 
-          <ButtonWithArrow buttonString="Sign in now" buttonUrl="" />
+          <ButtonWithArrow
+            buttonString="Sign in now"
+            buttonUrl="/register/email"
+          />
 
           <h2 id="help" className="govuk-heading-m">
             Get help with this service
