@@ -7,6 +7,9 @@ import StandardButton from '@/components/common/buttons/functionality/standard-b
 const RegisterConfirmCodePage: React.FC = () => {
   return (
     <Layout showLoginInformation={false} currentPage={'register-confirm-code'}>
+      <a href="/register/email" className="govuk-back-link">
+        Back
+      </a>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
           <h1 className="govuk-heading-l">
@@ -23,14 +26,14 @@ const RegisterConfirmCodePage: React.FC = () => {
           <form className="form" action="your-name" method="post">
             <div className="govuk-form-group">
               <h1 className="govuk-label-wrapper">
-                <label className="govuk-label" htmlFor="register-email">
-                  Enter your email address
+                <label className="govuk-label" htmlFor="enter-code">
+                  Enter the 6 digit code
                 </label>
               </h1>
               <input
-                className="govuk-input"
-                id="register-email"
-                name="eventName"
+                className="govuk-input govuk-input--width-10"
+                id="enter-code"
+                name="enterCode"
                 type="text"
               />
             </div>
