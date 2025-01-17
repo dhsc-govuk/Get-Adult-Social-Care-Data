@@ -28,7 +28,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
               id="navigation"
             >
               <li
-                className={`govuk-service-navigation__item ${ActivePage(currentPage) ? 'govuk-service-navigation__item--active' : ''}`}
+                className={`govuk-service-navigation__item ${ActivePage('home') ? 'govuk-service-navigation__item--active' : ''}`}
               >
                 <a
                   className="govuk-service-navigation__link"
