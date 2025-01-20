@@ -41,6 +41,7 @@ const RegisterJobTitlePage: React.FC = () => {
                 type="text"
                 value={jobTitle}
                 onChange={(e) => setjobTitle(e.target.value)}
+                aria-label="Enter job title"
               />
             </div>
 
