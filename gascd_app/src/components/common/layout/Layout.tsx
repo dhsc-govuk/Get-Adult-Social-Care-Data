@@ -9,12 +9,14 @@ import PhaseBanner from '../phase-banner/PhaseBanner';
 import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
 import { Breadcrumb } from '../../../data/interfaces/Breadcrumb';
 import LoginInformation from '../../util-components/login-information/LoginInformation';
+import Navbar from '../navbar/Navbar';
 
 type Props = {
   children: ReactNode;
   breadcrumbs?: Array<Breadcrumb>;
   autoSpaceMainContent?: boolean;
   showLoginInformation: boolean;
+  currentPage: string;
 };
 
 const Layout: React.FC<Props> = ({
@@ -22,6 +24,7 @@ const Layout: React.FC<Props> = ({
   breadcrumbs,
   showLoginInformation,
   autoSpaceMainContent = true,
+  currentPage,
 }) => {
   const layoutRef = useRef<HTMLDivElement | null>(null);
   const mainRef = useRef<HTMLDivElement | null>(null);
@@ -43,14 +46,20 @@ const Layout: React.FC<Props> = ({
       </a>
       <Header />
       <div className="govuk-width-container">
-        <PhaseBanner />
+        <div role="region" aria-label="Phasebar">
+          <PhaseBanner />
+        </div>
+      </div>
+      <Navbar currentPage={currentPage} />
+      <div className="govuk-width-container">
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-one-third">
             {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
           </div>
-          <div className="govuk-grid-column-two-thirds govuk-!-margin-top-3">
+          {/* <div className="govuk-grid-column-two-thirds govuk-!-margin-top-3">
             {showLoginInformation && <LoginInformation />}
-          </div>
+          </div> */}
+          {/* Temporarily commented out due to prototype design ^^ */}
         </div>
         <main
           ref={mainRef}

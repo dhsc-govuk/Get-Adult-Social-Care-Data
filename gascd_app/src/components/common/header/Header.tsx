@@ -1,8 +1,11 @@
-import React from "react";
+import React from 'react';
 
 const Header: React.FC = () => {
   return (
-    <header className="govuk-header" data-module="govuk-header">
+    <header
+      className="govuk-header govuk-header--full-width-border"
+      data-module="govuk-header"
+    >
       <div className="govuk-header__container govuk-width-container">
         <div className="govuk-header__logo">
           <a
@@ -26,8 +29,20 @@ const Header: React.FC = () => {
         </div>
         <div className="govuk-header__content">
           <a href="/" className="govuk-header__link govuk-header__service-name">
-            Adult social care data access portal
+            Get adult social care data
           </a>
+          <p style={{ float: 'right', margin: '0 0 10px' }}>
+            <a
+              href=""
+              style={{
+                color: 'white',
+                textDecoration: 'none',
+                fontSize: '19px',
+              }}
+            >
+              Manage account | Sign out
+            </a>
+          </p>
         </div>
       </div>
     </header>

@@ -1,38 +1,38 @@
-'use client'
+'use client';
 
-import React, { useEffect, useRef, useState } from "react";
-import Layout from "../../../src/components/common/layout/Layout";
-import { Breadcrumb } from "../../../src/data/interfaces/Breadcrumb";
-import DataCategoriesSidePanel from "../../../src/components/common/panels/data-categories-side-panel/DataCategoriesSidePanel";
-import MainCategoriesSearch from "../../../src/components/common/main-categories-search/MainCategoriesSearch";
-import OrganisationFilter from "../../../src/components/common/organisation-filter/OrganisationFilter";
-import CapacityTrackerTotalHoursAgencyWorkedService from "../../../src/services/capacity-tracker/CapacityTrackerTotalHoursAgencyWorkedByRegionService";
-import MetricDetailsFilterBar from "../../../src/components/metric-components/metric-details-filter-bar/MetricDetailsFilterBar";
-import MetricDetailsDownloadAndShareBar from "../../../src/components/metric-components/metric-details-download-and-share-bar/MetricDetailsDownloadAndShareBar";
-import YourFavouriteMetricsSidePanel from "../../../src/components/common/panels/your-favourite-metrics-side-panel/YourFavouriteMetricsSidePanel";
-import DataGuideSidePanel from "../../../src/components/common/panels/data-guide-side-panel/DataGuideSidePanel";
-import ReportLinksSidePanel from "../../../src/components/common/panels/report-links-side-panel/ReportLinksSidePanel";
-import KnowledgeCentreSidePanel from "../../../src/components/common/panels/knowledge-centre-side-panel/KnowledgeCentreSidePanel";
-import DataLimitationsContainer from "../../../src/components/common/data-limitations-container/DataLimitationsContainer";
-import SmartInsights from "../../../src/components/common/smart-insights/SmartInsights";
-import MetricDescription from "../../../src/components/metric-components/metric-description/MetricDescription";
-import MetricTable from "../../../src/components/metric-components/metric-table/MetricTable";
-import { getCapacityTrackerData } from "@/api/api";
-import ProtectedRoute from "@/components/util-components/protected-route/ProtectedRoute";
+import React, { useEffect, useRef, useState } from 'react';
+import Layout from '../../../src/components/common/layout/Layout';
+import { Breadcrumb } from '../../../src/data/interfaces/Breadcrumb';
+import DataCategoriesSidePanel from '../../../src/components/common/panels/data-categories-side-panel/DataCategoriesSidePanel';
+import MainCategoriesSearch from '../../../src/components/common/main-categories-search/MainCategoriesSearch';
+import OrganisationFilter from '../../../src/components/common/organisation-filter/OrganisationFilter';
+import CapacityTrackerTotalHoursAgencyWorkedService from '../../../src/services/capacity-tracker/CapacityTrackerTotalHoursAgencyWorkedByRegionService';
+import MetricDetailsFilterBar from '../../../src/components/metric-components/metric-details-filter-bar/MetricDetailsFilterBar';
+import MetricDetailsDownloadAndShareBar from '../../../src/components/metric-components/metric-details-download-and-share-bar/MetricDetailsDownloadAndShareBar';
+import YourFavouriteMetricsSidePanel from '../../../src/components/common/panels/your-favourite-metrics-side-panel/YourFavouriteMetricsSidePanel';
+import DataGuideSidePanel from '../../../src/components/common/panels/data-guide-side-panel/DataGuideSidePanel';
+import ReportLinksSidePanel from '../../../src/components/common/panels/report-links-side-panel/ReportLinksSidePanel';
+import KnowledgeCentreSidePanel from '../../../src/components/common/panels/knowledge-centre-side-panel/KnowledgeCentreSidePanel';
+import DataLimitationsContainer from '../../../src/components/common/data-limitations-container/DataLimitationsContainer';
+import SmartInsights from '../../../src/components/common/smart-insights/SmartInsights';
+import MetricDescription from '../../../src/components/metric-components/metric-description/MetricDescription';
+import MetricTable from '../../../src/components/metric-components/metric-table/MetricTable';
+import { getCapacityTrackerData } from '@/api/api';
+import ProtectedRoute from '@/components/util-components/protected-route/ProtectedRoute';
 
 const CapacityTrackerTotalHoursWorkedByAgencyPage: React.FC = () => {
   const [capacityTrackerService, setCapacityTrackerService] =
     useState<CapacityTrackerTotalHoursAgencyWorkedService | null>(null);
 
   const [selectMetricViewValue, setSelectMetricViewValue] =
-    useState("barchart");
+    useState('barchart');
 
-  const [metricView, setMetricView] = useState("barchart");
+  const [metricView, setMetricView] = useState('barchart');
 
   const [selectLocationLevelValue, setSelectLocationLevelValue] =
-    useState("region");
+    useState('region');
 
-  const [locationLevel, setLocationLevel] = useState("region");
+  const [locationLevel, setLocationLevel] = useState('region');
 
   const handleLocationLevelDropdownChange = (selectedValue: string) => {
     setSelectLocationLevelValue(selectedValue);
@@ -52,8 +52,8 @@ const CapacityTrackerTotalHoursWorkedByAgencyPage: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const regionData = await getCapacityTrackerData("region");
-      const laData = await getCapacityTrackerData("la");
+      const regionData = await getCapacityTrackerData('region');
+      const laData = await getCapacityTrackerData('la');
       setCapacityTrackerService(
         new CapacityTrackerTotalHoursAgencyWorkedService(regionData, laData)
       );
@@ -66,11 +66,11 @@ const CapacityTrackerTotalHoursWorkedByAgencyPage: React.FC = () => {
   useEffect(() => {
     if (svgContainerRef.current && capacityTrackerService) {
       const barchart =
-        locationLevel === "region"
+        locationLevel === 'region'
           ? capacityTrackerService.createByRegionBarchart()
           : capacityTrackerService.createByLaBarchart();
 
-      svgContainerRef.current.innerHTML = "";
+      svgContainerRef.current.innerHTML = '';
       if (barchart) {
         svgContainerRef.current.appendChild(barchart);
       }
@@ -79,19 +79,19 @@ const CapacityTrackerTotalHoursWorkedByAgencyPage: React.FC = () => {
 
   const getCurrentDataSet = () => {
     if (!capacityTrackerService) return [];
-    return locationLevel === "region"
+    return locationLevel === 'region'
       ? capacityTrackerService.getTotalHoursAgencyWorkedByRegionData()
       : capacityTrackerService.getTotalHoursAgencyWorkedByLaData();
   };
 
   const breadcrumbs: Array<Breadcrumb> = [
     {
-      text: "Homepage",
-      url: "/home",
+      text: 'Homepage',
+      url: '/home',
     },
     {
-      text: "Capacity tracker data",
-      url: "/home",
+      text: 'Capacity tracker data',
+      url: '/home',
     },
   ];
 
@@ -100,6 +100,7 @@ const CapacityTrackerTotalHoursWorkedByAgencyPage: React.FC = () => {
       autoSpaceMainContent={false}
       breadcrumbs={breadcrumbs}
       showLoginInformation={true}
+      currentPage="capacity-tracker-total-hours-by-agency"
     >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-one-third">
@@ -134,7 +135,7 @@ const CapacityTrackerTotalHoursWorkedByAgencyPage: React.FC = () => {
               </h1>
             </div>
           </div>
-          {metricView === "barchart" ? (
+          {metricView === 'barchart' ? (
             <div className="govuk-grid-row">
               <div className="govuk-grid-column-full govuk-!-text-align-center">
                 <div ref={svgContainerRef}></div>
@@ -142,7 +143,7 @@ const CapacityTrackerTotalHoursWorkedByAgencyPage: React.FC = () => {
             </div>
           ) : (
             <MetricTable
-              headers={[locationLevel, "Total hours worked that are agency %"]}
+              headers={[locationLevel, 'Total hours worked that are agency %']}
               tableData={getCurrentDataSet()}
             />
           )}
@@ -187,7 +188,9 @@ const CapacityTrackerTotalHoursWorkedByAgencyPage: React.FC = () => {
 };
 
 const ProtectedCapacityTrackerPage: React.FC = () => {
-  return <ProtectedRoute element={<CapacityTrackerTotalHoursWorkedByAgencyPage />} />;
+  return (
+    <ProtectedRoute element={<CapacityTrackerTotalHoursWorkedByAgencyPage />} />
+  );
 };
 
 export default ProtectedCapacityTrackerPage;

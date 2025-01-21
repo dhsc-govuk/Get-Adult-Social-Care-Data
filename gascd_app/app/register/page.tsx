@@ -7,7 +7,7 @@ import './registerPage.scss';
 
 const RegisterPage: React.FC = () => {
   return (
-    <Layout showLoginInformation={false}>
+    <Layout showLoginInformation={false} currentPage="/">
       <section aria-labelledby="main-content-heading" role="region">
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
