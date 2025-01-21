@@ -1,3 +1,4 @@
+import NextAuthSessionProvider from '@/providers/SessionProvider';
 import '../src/styles/globals.scss';
 import Axe from '../src/utils/axe';
 
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Axe />
-      <body className="govuk-frontend-supported">{children}</body>
+      <NextAuthSessionProvider>
+        <body className="govuk-frontend-supported">{children}</body>
+      </NextAuthSessionProvider>
     </html>
   );
 }
