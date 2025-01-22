@@ -28,13 +28,11 @@ const authOptions: NextAuthOptions = {
       primaryUserFlow: process.env.AZURE_AD_B2C_PRIMARY_USER_FLOW as string,
       authorization: { params: { scope: 'openid offline_access profile' } },
       wellKnown: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${process.env.AZURE_AD_B2C_PRIMARY_USER_FLOW}`,
-      // profile: (profile) => {
-      //   console.log('THE PROFILE', profile);
-
-      //   return {
-      //     id: profile.sub,
-      //   };
-      // },
+      profile: (profile) => {
+        return {
+          id: profile.sub,
+        };
+      },
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET as string,
