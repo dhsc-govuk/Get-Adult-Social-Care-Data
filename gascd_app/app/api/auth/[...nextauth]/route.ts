@@ -25,24 +25,16 @@ const authOptions: NextAuthOptions = {
       clientId: process.env.AZURE_AD_CLIENT_ID as string,
       clientSecret: process.env.AZURE_AD_CLIENT_SECRET as string,
       tenantId: process.env.AZURE_AD_TENANT_ID as string,
-      primaryUserFlow: process.env.AZURE_AD_B2C_USER_SIGN_UP as string,
-      authorization: (req: NextApiRequest) => {
-        const policy = Array.isArray(req.query.policy);
-        return {
-          url: `https://${process.env.AZURE_AD_B2C_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_B2C_TENANT_NAME}.onmicrosoft.com/${policy}/oauth2/v2.0/authorize`,
-          params: {
-            scope: 'openid profile email',
-          },
-        };
-      },
-      // wellKnown: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/{policy}/v2.0/.well-known/openid-configuration`,
-      profile: (profile) => {
-        console.log('THE PROFILE', profile);
+      primaryUserFlow: process.env.AZURE_AD_B2C_PRIMARY_USER_FLOW as string,
+      authorization: { params: { scope: 'openid offline_access profile' } },
+      wellKnown: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${process.env.AZURE_AD_B2C_PRIMARY_USER_FLOW}`,
+      // profile: (profile) => {
+      //   console.log('THE PROFILE', profile);
 
-        return {
-          id: profile.sub,
-        };
-      },
+      //   return {
+      //     id: profile.sub,
+      //   };
+      // },
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET as string,
