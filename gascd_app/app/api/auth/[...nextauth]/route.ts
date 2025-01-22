@@ -22,21 +22,33 @@ declare module 'next-auth/jwt' {
 const authOptions: NextAuthOptions = {
   providers: [
     AzureADB2CProvider({
+      id: 'azure-ad-b2c-signin',
+      name: 'Azure B2C Sign-in',
       clientId: process.env.AZURE_AD_CLIENT_ID as string,
       clientSecret: process.env.AZURE_AD_CLIENT_SECRET as string,
       tenantId: process.env.AZURE_AD_TENANT_ID as string,
-      primaryUserFlow: process.env.AZURE_AD_B2C_PRIMARY_USER_FLOW as string,
+      primaryUserFlow: process.env.AZURE_AD_B2C_USER_SIGN_IN as string,
       authorization: { params: { scope: 'openid offline_access profile' } },
-      wellKnown: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${process.env.AZURE_AD_B2C_PRIMARY_USER_FLOW}`,
-      // profile: (profile) => {
-      //   console.log('THE PROFILE', profile);
-
-      //   return {
-      //     id: profile.sub,
-      //   };
-      // },
+      wellKnown: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${process.env.AZURE_AD_B2C_USER_SIGN_IN}`,
+      profile: (profile) => {
+        return { id: profile.sub };
+      },
+    }),
+    AzureADB2CProvider({
+      id: 'azure-ad-b2c-signup',
+      name: 'Azure B2C Sign-up',
+      clientId: process.env.AZURE_AD_CLIENT_ID as string,
+      clientSecret: process.env.AZURE_AD_CLIENT_SECRET as string,
+      tenantId: process.env.AZURE_AD_TENANT_ID as string,
+      primaryUserFlow: process.env.AZURE_AD_B2C_USER_SIGN_UP as string,
+      authorization: { params: { scope: 'openid offline_access profile' } },
+      wellKnown: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${process.env.AZURE_AD_B2C_USER_SIGN_UP}`,
+      profile: (profile) => {
+        return { id: profile.sub };
+      },
     }),
   ],
+
   secret: process.env.NEXTAUTH_SECRET as string,
   callbacks: {
     async jwt({ token, account }) {
