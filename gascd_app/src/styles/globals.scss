@@ -2,3 +2,11 @@ $govuk-assets-path: "/govuk-frontend/";
 $govuk-fonts-path: "/govuk-frontend/fonts/";
 
 @import "govuk-frontend/dist/govuk/all";
+
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+  }

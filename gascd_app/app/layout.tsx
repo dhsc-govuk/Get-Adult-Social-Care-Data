@@ -19,6 +19,7 @@ export default function RootLayout({
       <NextAuthSessionProvider>
         <body className="govuk-frontend-supported">{children}</body>
       </NextAuthSessionProvider>
+      <body className="govuk-frontend-supported">{children}</body>
     </html>
   );
 }

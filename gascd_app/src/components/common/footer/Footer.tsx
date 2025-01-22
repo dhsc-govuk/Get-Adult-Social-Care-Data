@@ -1,5 +1,5 @@
-import React from "react";
-import "./footer.scss";
+import React from 'react';
+import './footer.scss';
 
 const Footer: React.FC = () => {
   return (
@@ -7,6 +7,17 @@ const Footer: React.FC = () => {
       <div className="govuk-width-container">
         <div className="govuk-footer__meta">
           <div className="govuk-footer__meta-item govuk-footer__meta-item--grow">
+            <ul className="govuk-footer__inline-list">
+              <li className="govuk-footer__inline-list-item">
+                <a
+                  className="govuk-footer__link"
+                  href="#"
+                  style={{ fontSize: '19px' }}
+                >
+                  Clear data
+                </a>
+              </li>
+            </ul>
             <svg
               aria-hidden="true"
               focusable="false"
@@ -22,7 +33,7 @@ const Footer: React.FC = () => {
               />
             </svg>
             <span className="govuk-footer__licence-description">
-              All content is available under the{" "}
+              All content is available under the{' '}
               <a
                 className="govuk-footer__link"
                 href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
