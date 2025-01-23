@@ -2,8 +2,14 @@
 
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
+import { signIn } from 'next-auth/react';
 
 const RegisterEmailPage: React.FC = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    signIn('azure-ad-b2c-signup', { callbackUrl: '/register/confirm-code' });
+  };
+
   return (
     <Layout showLoginInformation={false} currentPage={'register-email'}>
       <div className="govuk-grid-row">
@@ -12,7 +18,7 @@ const RegisterEmailPage: React.FC = () => {
             Sign in to Get adult social care data or request access
           </h1>
 
-          <form className="form" action="confirm-code" method="post">
+          <form className="form" onSubmit={handleSubmit} method="post">
             <div className="govuk-form-group">
               <h1 className="govuk-label-wrapper">
                 <label className="govuk-label" htmlFor="register-email">
