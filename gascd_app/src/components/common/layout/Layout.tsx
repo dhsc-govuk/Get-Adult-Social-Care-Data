@@ -50,7 +50,7 @@ const Layout: React.FC<Props> = ({
           <PhaseBanner />
         </div>
       </div>
-      <Navbar currentPage={currentPage} />
+      <Navbar />
       <div className="govuk-width-container">
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-one-third">
