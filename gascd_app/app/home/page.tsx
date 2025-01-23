@@ -2,19 +2,7 @@ import '../../src/styles/main.scss';
 import React from 'react';
 import Layout from '../../src/components/common/layout/Layout';
 import { Breadcrumb } from '../../src/data/interfaces/Breadcrumb';
-import HomePageAddFavouriteMetricsPanel from '../../src/components/home-page-components/home-page-add-favourite-metrics-panel/FavouriteMetricsPanel';
-import DataCategoriesSidePanel from '../../src/components/common/panels/data-categories-side-panel/DataCategoriesSidePanel';
-import MainCategoriesSearch from '../../src/components/common/main-categories-search/MainCategoriesSearch';
-import OrganisationFilter from '../../src/components/common/organisation-filter/OrganisationFilter';
-import YourFavouriteMetricsSidePanel from '../../src/components/common/panels/your-favourite-metrics-side-panel/YourFavouriteMetricsSidePanel';
-import DataGuideSidePanel from '../../src/components/common/panels/data-guide-side-panel/DataGuideSidePanel';
-import ReportLinksSidePanel from '../../src/components/common/panels/report-links-side-panel/ReportLinksSidePanel';
-import KnowledgeCentreSidePanel from '../../src/components/common/panels/knowledge-centre-side-panel/KnowledgeCentreSidePanel';
-import { getCapacityTrackerData } from '../../src/api/api';
-import { LoaderData } from '@/data/types/LoaderData';
-import HomePageDataUpdatesPanel from '@/components/home-page-components/home-page-data-updates-panel/HomePageDataUpdatesPanel';
-import HomePageDataDefinitionsPanel from '@/components/home-page-components/home-page-data-definitions-panel/HomePageDataDefinitionsPanel';
-import MetricCardsContainer from '@/components/metric-components/MetricCardsContainer';
+import ButtonWithArrow from '@/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
 
 export default async function HomePage() {
   const breadcrumbs: Array<Breadcrumb> = [
@@ -37,6 +25,12 @@ export default async function HomePage() {
             Access data and insights for adult social care in England
           </h1>
         </div>
+      </div>
+      <div className="govuk-grid-row">
+        <ButtonWithArrow buttonString="Register" buttonUrl="/register" />
+      </div>
+      <div className="govuk-grid-row">
+        <ButtonWithArrow buttonString="Log in" buttonUrl="/login" />
       </div>
     </Layout>
   );

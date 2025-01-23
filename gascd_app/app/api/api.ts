@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
-import RawCapacityTrackerAgencyByRegionData from "../data/mockResponses/capacity_tracker_agency_by_region.json";
-import RawCapacityTrackerAgencyByLaData from "../data/mockResponses/capacity_tracker_agency_by_la.json";
-import { CapacityTrackerTotalHoursAgencyWorked } from "../data/interfaces/CapacityTrackerTotalHoursAgencyWorked";
+import RawCapacityTrackerAgencyByRegionData from "../../src/data/mockResponses/capacity_tracker_agency_by_region.json";
+import RawCapacityTrackerAgencyByLaData from "../../src/data/mockResponses/capacity_tracker_agency_by_la.json";
+import { CapacityTrackerTotalHoursAgencyWorked } from "../../src/data/interfaces/CapacityTrackerTotalHoursAgencyWorked";
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
   const token: string = await fetch(

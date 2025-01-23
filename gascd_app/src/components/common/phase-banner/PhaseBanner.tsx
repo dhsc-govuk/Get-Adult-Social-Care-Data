@@ -7,7 +7,13 @@ const PhaseBanner: React.FC = () => {
         <strong className="govuk-tag govuk-phase-banner__content__tag">
           Beta
         </strong>
-        <span className="govuk-phase-banner__text">This is a new service.</span>
+        <span className="govuk-phase-banner__text">
+          This is a new service. Help us improve it and{' '}
+          <a className="govuk-link" href="#">
+            give your feedback (opens in new tab)
+          </a>
+          .
+        </span>
       </p>
     </div>
   );
