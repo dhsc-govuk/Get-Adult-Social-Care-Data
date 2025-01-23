@@ -15,7 +15,6 @@ declare module 'next-auth/jwt' {
     provider?: string;
     accessToken?: string;
     idToken?: string;
-    // role?: string; - TODO: can we have role here?
   }
 }
 

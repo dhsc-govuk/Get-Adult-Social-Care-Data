@@ -28,7 +28,7 @@ const RegisterEmailPage: React.FC = () => {
               <input
                 className="govuk-input govuk-input--width-20"
                 id="register-email"
-                name="eventName"
+                name="email"
                 type="text"
               />
             </div>
