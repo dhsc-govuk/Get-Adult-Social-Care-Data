@@ -1,6 +1,10 @@
 import React from 'react';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../../../app/api/auth/[...nextauth]/route';
 
 const Header: React.FC = () => {
+  const session = getServerSession(authOptions);
+
   return (
     <header
       className="govuk-header govuk-header--full-width-border"
@@ -31,18 +35,22 @@ const Header: React.FC = () => {
           <a href="/" className="govuk-header__link govuk-header__service-name">
             Get adult social care data
           </a>
-          <p style={{ float: 'right', margin: '0 0 10px' }}>
-            <a
-              href=""
-              style={{
-                color: 'white',
-                textDecoration: 'none',
-                fontSize: '19px',
-              }}
-            >
-              Manage account | Sign out
-            </a>
-          </p>
+          {!session ? (
+            <p>Hello world</p>
+          ) : (
+            <p style={{ float: 'right' }}>
+              <a
+                href=""
+                style={{
+                  color: 'white',
+                  textDecoration: 'none',
+                  fontSize: '19px',
+                }}
+              >
+                Manage account | Sign out
+              </a>
+            </p>
+          )}
         </div>
       </div>
     </header>
