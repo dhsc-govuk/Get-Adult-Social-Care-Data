@@ -2,16 +2,17 @@
 
 import React, { useEffect, useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
+import LabelledInput from '@/components/common/input/LabelledInput';
 
 const RegisterJobTitlePage: React.FC = () => {
-  const [jobTitle, setjobTitle] = useState('');
+  const [jobTitle, setJobTitle] = useState('');
 
   useEffect(() => {
     if (!window?.localStorage) return;
 
     const storedJobTitle = localStorage.getItem('jobTitle');
 
-    storedJobTitle && setjobTitle(storedJobTitle);
+    storedJobTitle && setJobTitle(storedJobTitle);
   }, []);
 
   const handleSubmit = () => {
@@ -40,9 +41,11 @@ const RegisterJobTitlePage: React.FC = () => {
                 name="jobTitle"
                 type="text"
                 value={jobTitle}
-                onChange={(e) => setjobTitle(e.target.value)}
+                onChange={(e) => setJobTitle(e.target.value)}
                 aria-label="Enter job title"
               />
+              <LabelledInput inputId='register-job-title' eventName='jobTitle' value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} ariaLabel="Enter job title">
+              </LabelledInput>
             </div>
 
             <button className="govuk-button" type="submit">

@@ -8,7 +8,7 @@ describe('Navbar component test', () => {
   });
 
   test('Displays Home link with active class when currentPage is "Home"', () => {
-    render(<Navbar currentPage="Home"></Navbar>);
+    render(<Navbar currentPage="home"></Navbar>);
     const homeLink = screen.getByText('Home');
     expect(homeLink).toBeInTheDocument();
     expect(homeLink).toHaveClass('govuk-service-navigation__link');
