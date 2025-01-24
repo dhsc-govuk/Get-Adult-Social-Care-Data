@@ -1,7 +1,5 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c';
-import { cookies } from 'next/headers';
-import { NextApiRequest } from 'next';
 
 declare module 'next-auth' {
   interface Session {
@@ -18,7 +16,7 @@ declare module 'next-auth/jwt' {
   }
 }
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     AzureADB2CProvider({
       id: 'azure-ad-b2c-signin',
