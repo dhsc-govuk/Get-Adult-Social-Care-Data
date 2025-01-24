@@ -22,6 +22,7 @@ export default async function HomePage() {
       breadcrumbs={breadcrumbs}
       showLoginInformation={true}
       currentPage="home"
+      session={session}
     >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">

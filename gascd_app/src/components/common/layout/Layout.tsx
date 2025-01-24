@@ -10,6 +10,7 @@ import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
 import { Breadcrumb } from '../../../data/interfaces/Breadcrumb';
 import LoginInformation from '../../util-components/login-information/LoginInformation';
 import Navbar from '../navbar/Navbar';
+import { Session } from 'next-auth';
 
 type Props = {
   children: ReactNode;
@@ -17,6 +18,7 @@ type Props = {
   autoSpaceMainContent?: boolean;
   showLoginInformation: boolean;
   currentPage: string;
+  session?: Session | null;
 };
 
 const Layout: React.FC<Props> = ({
@@ -25,6 +27,7 @@ const Layout: React.FC<Props> = ({
   showLoginInformation,
   autoSpaceMainContent = true,
   currentPage,
+  session,
 }) => {
   const layoutRef = useRef<HTMLDivElement | null>(null);
   const mainRef = useRef<HTMLDivElement | null>(null);
@@ -44,7 +47,7 @@ const Layout: React.FC<Props> = ({
       >
         Skip to main content
       </a>
-      <Header />
+      <Header session={session} />
       <div className="govuk-width-container">
         <div role="region" aria-label="Phasebar">
           <PhaseBanner />
