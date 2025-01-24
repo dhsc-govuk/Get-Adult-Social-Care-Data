@@ -1,10 +1,12 @@
 import React from 'react';
-import { getServerSession } from 'next-auth';
+import { getServerSession, Session } from 'next-auth';
 import { authOptions } from '../../../../app/api/auth/[...nextauth]/route';
 
-const Header: React.FC = () => {
-  const session = getServerSession(authOptions);
+type Props = {
+  session?: Session | null;
+};
 
+const Header: React.FC<Props> = ({ session }) => {
   return (
     <header
       className="govuk-header govuk-header--full-width-border"
@@ -36,7 +38,7 @@ const Header: React.FC = () => {
             Get adult social care data
           </a>
           {!session ? (
-            <p>Hello world</p>
+            <>&nbsp;</>
           ) : (
             <p style={{ float: 'right' }}>
               <a
