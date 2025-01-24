@@ -1,12 +1,12 @@
-'use client';
 import '../../src/styles/main.scss';
 import React from 'react';
 import Layout from '../../src/components/common/layout/Layout';
 import { Breadcrumb } from '../../src/data/interfaces/Breadcrumb';
 import ButtonWithArrow from '@/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
-import { getSession, useSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]/route';
 
-export default function HomePage() {
+export default async function HomePage() {
   const breadcrumbs: Array<Breadcrumb> = [
     {
       text: 'Homepage',
@@ -14,10 +14,7 @@ export default function HomePage() {
     },
   ];
 
-  const { data: session, status } = useSession();
-
-  console.log('session:', session);
-  console.log('status:', status);
+  const session = await getServerSession(authOptions);
 
   return (
     <Layout
