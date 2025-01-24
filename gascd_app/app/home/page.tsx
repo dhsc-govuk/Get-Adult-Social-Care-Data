@@ -1,16 +1,23 @@
+'use client';
 import '../../src/styles/main.scss';
 import React from 'react';
 import Layout from '../../src/components/common/layout/Layout';
 import { Breadcrumb } from '../../src/data/interfaces/Breadcrumb';
 import ButtonWithArrow from '@/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
+import { getSession, useSession } from 'next-auth/react';
 
-export default async function HomePage() {
+export default function HomePage() {
   const breadcrumbs: Array<Breadcrumb> = [
     {
       text: 'Homepage',
       url: '/home',
     },
   ];
+
+  const { data: session, status } = useSession();
+
+  console.log('session:', session);
+  console.log('status:', status);
 
   return (
     <Layout
@@ -26,12 +33,20 @@ export default async function HomePage() {
           </h1>
         </div>
       </div>
-      <div className="govuk-grid-row">
-        <ButtonWithArrow buttonString="Register" buttonUrl="/register" />
-      </div>
-      <div className="govuk-grid-row">
-        <ButtonWithArrow buttonString="Log in" buttonUrl="/login" />
-      </div>
+      {!session ? (
+        <>
+          <div className="govuk-grid-row">
+            <ButtonWithArrow buttonString="Register" buttonUrl="/register" />
+          </div>
+          <div className="govuk-grid-row">
+            <ButtonWithArrow buttonString="Log in" buttonUrl="/login" />
+          </div>
+        </>
+      ) : (
+        <div className="govuk-grid-row">
+          <p className="govuk-body"> Welcome back you are logged in!</p>
+        </div>
+      )}
     </Layout>
   );
 }
