@@ -35,17 +35,13 @@ const RegisterJobTitlePage: React.FC = () => {
             onSubmit={handleSubmit}
           >
             <div className="govuk-form-group">
-              <input
-                className="govuk-input govuk-input--width-20"
-                id="register-job-title"
-                name="jobTitle"
-                type="text"
+              <LabelledInput
+                inputId="register-job-title"
+                eventName="jobTitle"
                 value={jobTitle}
                 onChange={(e) => setJobTitle(e.target.value)}
-                aria-label="Enter job title"
-              />
-              <LabelledInput inputId='register-job-title' eventName='jobTitle' value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} ariaLabel="Enter job title">
-              </LabelledInput>
+                ariaLabel="Enter job title"
+              ></LabelledInput>
             </div>
 
             <button className="govuk-button" type="submit">
