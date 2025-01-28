@@ -10,7 +10,7 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>('');
 
   const handleSubmit = () => {
-    signIn('azure-ad-b2c', { callbackUrl: '/home' });
+    signIn('azure-ad-b2c-signin', { callbackUrl: '/home' });
   };
 
   return (
