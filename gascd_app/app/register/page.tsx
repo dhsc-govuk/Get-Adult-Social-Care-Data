@@ -5,8 +5,10 @@ import Layout from '../../src/components/common/layout/Layout';
 import ButtonWithArrow from '../../src/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
 import './registerPage.scss';
 import { Breadcrumb } from '@/data/interfaces/Breadcrumb';
+import { signIn } from 'next-auth/react';
 
 const RegisterPage: React.FC = () => {
+  const buttonUrl = `https://${process.env.REACT_APP_AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.REACT_APP_AZURE_AD_TENANT_NAME}.onmicrosoft.com/oauth2/v2.0/authorize?p=${process.env.REACT_APP_AZURE_AD_B2C_USER_SIGN_UP}&client_id=${process.env.REACT_APP_AZURE_AD_B2C_CLIENT_ID}&nonce=defaultNonce&redirect_uri=/home&scope=openid offline_access&response_type=code&response_mode=query`;
   const breadcrumbs: Breadcrumb[] = [
     { text: 'Home', url: 'https://www.gov.uk' },
     {
@@ -209,7 +211,10 @@ const RegisterPage: React.FC = () => {
 
           <ButtonWithArrow
             buttonString="Sign in now"
-            buttonUrl="/register/email"
+            buttonUrl="#"
+            onClick={() =>
+              signIn('azure-ad-b2c-signup', { callbackUrl: '/home' })
+            }
           />
 
           <h2 id="help" className="govuk-heading-m">
