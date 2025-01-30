@@ -1,6 +1,7 @@
 import React from 'react';
 import { getServerSession, Session } from 'next-auth';
 import { authOptions } from '../../../../app/api/auth/[...nextauth]/route';
+import SignOutButton from '../buttons/SignOutButton';
 
 type Props = {
   session?: Session | null;
@@ -42,15 +43,16 @@ const Header: React.FC<Props> = ({ session }) => {
           ) : (
             <p style={{ float: 'right' }}>
               <a
-                href=""
+                href="/manage-account"
                 style={{
                   color: 'white',
                   textDecoration: 'none',
                   fontSize: '19px',
                 }}
               >
-                Manage account | Sign out
+                Manage Account
               </a>
+              <SignOutButton />
             </p>
           )}
         </div>
