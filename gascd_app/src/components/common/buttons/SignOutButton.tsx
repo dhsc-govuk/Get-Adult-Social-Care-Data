@@ -9,9 +9,9 @@ const SignOutButton: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const tenant = 'DHSCGASCAuthDev';
-    const policy = 'B2C_1_GASCD_User_SignIn';
-    const postLogoutRedirectUri = 'http://localhost:3000';
+    const tenant = process.env.AZURETENANTNAME;
+    const policy = process.env.AZURESIGNIN;
+    const postLogoutRedirectUri = process.env.LOGOUTURL;
 
     if (tenant && policy && postLogoutRedirectUri) {
       setLogoutUrl(
