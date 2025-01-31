@@ -1,6 +1,13 @@
 import React from 'react';
+import { getServerSession, Session } from 'next-auth';
+import { authOptions } from '../../../../app/api/auth/[...nextauth]/route';
+import SignOutButton from '../buttons/SignOutButton';
 
-const Header: React.FC = () => {
+type Props = {
+  session?: Session | null;
+};
+
+const Header: React.FC<Props> = ({ session }) => {
   return (
     <header
       className="govuk-header govuk-header--full-width-border"
@@ -31,18 +38,23 @@ const Header: React.FC = () => {
           <a href="/" className="govuk-header__link govuk-header__service-name">
             Get adult social care data
           </a>
-          <p style={{ float: 'right', margin: '0 0 10px' }}>
-            <a
-              href=""
-              style={{
-                color: 'white',
-                textDecoration: 'none',
-                fontSize: '19px',
-              }}
-            >
-              Manage account | Sign out
-            </a>
-          </p>
+          {!session ? (
+            <>&nbsp;</>
+          ) : (
+            <p style={{ float: 'right' }}>
+              <a
+                href="/manage-account"
+                style={{
+                  color: 'white',
+                  textDecoration: 'none',
+                  fontSize: '19px',
+                }}
+              >
+                Manage Account
+              </a>
+              <SignOutButton />
+            </p>
+          )}
         </div>
       </div>
     </header>

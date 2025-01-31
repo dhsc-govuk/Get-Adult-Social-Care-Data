@@ -1,11 +1,17 @@
-import React from "react";
+'use client';
+import React from 'react';
 
 type Props = {
   buttonString: string;
   buttonUrl: string;
+  onClick?: () => void;
 };
 
-const ButtonWithArrow: React.FC<Props> = ({ buttonString, buttonUrl }) => {
+const ButtonWithArrow: React.FC<Props> = ({
+  buttonString,
+  buttonUrl,
+  onClick,
+}) => {
   return (
     <a
       href={buttonUrl}
@@ -13,6 +19,12 @@ const ButtonWithArrow: React.FC<Props> = ({ buttonString, buttonUrl }) => {
       draggable="false"
       className="govuk-button govuk-button--start"
       data-module="govuk-button"
+      onClick={(e) => {
+        if (onClick) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
     >
       {buttonString}
       <svg

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
+import LabelledInput from '@/components/common/input/LabelledInput';
 
 const RegisterYourNamePage: React.FC = () => {
   const [organisationName, setOrganisationName] = useState('');
@@ -38,22 +39,10 @@ const RegisterYourNamePage: React.FC = () => {
             onSubmit={handleSubmit}
           >
             <div className="govuk-form-group">
-              <h1 className="govuk-label-wrapper">
-                <label
-                  className="govuk-label"
-                  htmlFor="register-organisation-name"
-                >
-                  Start typing for suggestions
-                </label>
-              </h1>
-              <input
-                className="govuk-input govuk-input--width-20"
-                id="register-organisation-name"
-                name="organisationName"
-                type="text"
-                value={organisationName}
-                onChange={(e) => setOrganisationName(e.target.value)}
-              />
+              <LabelledInput inputId='register-organisation-name' eventName='organisationName' value={organisationName} onChange={(e) => setOrganisationName(e.target.value)} 
+                ariaLabel='Enter organisation name'>
+                Start typing for suggestions
+              </LabelledInput>
             </div>
 
             <p className="govuk-body">
