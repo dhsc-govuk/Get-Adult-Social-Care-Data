@@ -12,11 +12,11 @@ class IndicatorService {
     this.laData = this.transformToChartData(laData);
   }
 
-  public getTotalHoursAgencyWorkedByRegionData() {
+  public getRegionData() {
     return this.regionData;
   }
 
-  public getTotalHoursAgencyWorkedByLaData() {
+  public getLaData() {
     return this.laData;
   }
 
@@ -27,23 +27,22 @@ class IndicatorService {
   ): SVGSVGElement | null {
     return generateBarchartSvg({
       data:
-        location_name === 'region'
-          ? this.getTotalHoursAgencyWorkedByRegionData()
-          : this.getTotalHoursAgencyWorkedByLaData(),
+        location_name === 'region' ? this.getRegionData() : this.getLaData(),
       width: 675,
       height: 400,
       xLabel: xLabel,
       yLabel: yLabel,
       title: '',
-      showXValues: false,
-      showQuartileRanges: true,
+      showXValues: location_name === 'region' ? true : false,
+      showQuartileRanges: location_name === 'region' ? false : true,
       medianLineColor: '#000000',
       barColor: '#1d70b8',
-      showLegend: false,
+      showLegend: true,
       showToolTip: true,
       shortenLabels: false,
       yAxisAsPercentage: true,
       tickCount: 8,
+      showMedian: false,
     });
   }
 
