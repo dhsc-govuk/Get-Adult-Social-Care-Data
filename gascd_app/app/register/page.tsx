@@ -5,6 +5,7 @@ import Layout from '../../src/components/common/layout/Layout';
 import ButtonWithArrow from '../../src/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
 import './registerPage.scss';
 import { Breadcrumb } from '@/data/interfaces/Breadcrumb';
+import { signIn } from 'next-auth/react';
 
 const RegisterPage: React.FC = () => {
   const breadcrumbs: Breadcrumb[] = [
@@ -209,7 +210,10 @@ const RegisterPage: React.FC = () => {
 
           <ButtonWithArrow
             buttonString="Sign in now"
-            buttonUrl="/register/email"
+            buttonUrl="#"
+            onClick={() =>
+              signIn('azure-ad-b2c-signup', { callbackUrl: '/home' })
+            }
           />
 
           <h2 id="help" className="govuk-heading-m">

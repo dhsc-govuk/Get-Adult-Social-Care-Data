@@ -3,6 +3,7 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
 import { signIn } from 'next-auth/react';
+import LabelledInput from '@/components/common/input/LabelledInput';
 
 const RegisterEmailPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -20,17 +21,13 @@ const RegisterEmailPage: React.FC = () => {
 
           <form className="form" onSubmit={handleSubmit} method="post">
             <div className="govuk-form-group">
-              <h1 className="govuk-label-wrapper">
-                <label className="govuk-label" htmlFor="register-email">
-                  Enter your email address
-                </label>
-              </h1>
-              <input
-                className="govuk-input govuk-input--width-20"
-                id="register-email"
-                name="email"
-                type="text"
-              />
+              <LabelledInput
+                eventName={'email'}
+                inputId={'register-email'}
+                ariaLabel={'Enter email address'}
+              >
+                Enter your email address
+              </LabelledInput>
             </div>
 
             <button className="govuk-button" type="submit">
