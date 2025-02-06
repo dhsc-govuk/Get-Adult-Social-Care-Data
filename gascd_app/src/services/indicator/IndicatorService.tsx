@@ -8,7 +8,7 @@ class IndicatorService {
   private chartData: BarchartData[];
 
   constructor(data: Indicator[], displayData: IndicatorDisplay) {
-    this.chartData = this.transformToChartData(data, displayData);
+    this.chartData = this.transformToChartData(data);
   }
 
   public getChartData() {
