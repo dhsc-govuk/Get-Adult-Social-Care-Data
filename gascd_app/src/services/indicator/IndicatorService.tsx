@@ -2,22 +2,17 @@ import { generateBarchartSvg } from '../charts/BarchartService';
 import { BarchartData } from '../../data/interfaces/BarchartData';
 import { Indicator } from '../../data/interfaces/Indicator';
 import { MetricCardData } from '../../data/interfaces/MetricCardData';
+import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 
 class IndicatorService {
-  private regionData: BarchartData[];
-  private laData: BarchartData[];
+  private chartData: BarchartData[];
 
-  constructor(regionData: Indicator[], laData: Indicator[]) {
-    this.regionData = this.transformToChartData(regionData);
-    this.laData = this.transformToChartData(laData);
+  constructor(data: Indicator[], displayData: IndicatorDisplay) {
+    this.chartData = this.transformToChartData(data, displayData);
   }
 
-  public getRegionData() {
-    return this.regionData;
-  }
-
-  public getLaData() {
-    return this.laData;
+  public getChartData() {
+    return this.chartData;
   }
 
   public createBarchart(
@@ -26,13 +21,12 @@ class IndicatorService {
     yLabel: string
   ): SVGSVGElement | null {
     return generateBarchartSvg({
-      data:
-        location_name === 'region' ? this.getRegionData() : this.getLaData(),
+      data: this.getChartData(),
       width: 675,
       height: 400,
-      xLabel: xLabel,
-      yLabel: yLabel,
-      title: '',
+      xLabel: xLabel, // displayData.denominator
+      yLabel: yLabel, // displayData.numerator
+      title: '', // displayData.metric_name
       showXValues: location_name === 'region' ? true : false,
       showQuartileRanges: location_name === 'region' ? false : true,
       medianLineColor: '#000000',
@@ -48,12 +42,12 @@ class IndicatorService {
 
   public getMetricCardData(): MetricCardData {
     const barchart = generateBarchartSvg({
-      data: this.regionData,
+      data: this.getChartData(),
       width: 270,
       height: 200,
-      xLabel: '',
-      yLabel: '',
-      title: '',
+      xLabel: '', // displayData.denominator
+      yLabel: '', // displayData.numerator
+      title: '', // displayData.metric_name
       barColor: '#1d70b8',
       medianLineColor: '#000000',
       showLegend: false,
@@ -65,12 +59,12 @@ class IndicatorService {
 
     return {
       title:
-        'Percentage of Total Work Hours Covered by Agency Staff, by Region',
+        'Percentage of Total Work Hours Covered by Agency Staff, by Region', // displayData.metric_name
       svg: barchart,
       description:
-        'The percentage of total work hours in each region that are completed by agency staff',
+        'The percentage of total work hours in each region that are completed by agency staff', // displayData.description
       sourceUrl: '#',
-      metricDetailPageUrl: 'metric/capacity-tracker-total-hours-by-agency',
+      metricDetailPageUrl: 'metric/capacity-tracker-total-hours-by-agency', // displayData.metric_id
       sourceLinkString: 'CT',
       limitationDescription: 'lorem lorem lorem lorem lorem lorem',
     };
@@ -79,9 +73,9 @@ class IndicatorService {
   private transformToChartData(data: Indicator[]): BarchartData[] {
     return data
       .map((entry: Indicator) => ({
-        xAxisValue: entry.location_name,
-        metric: entry.metric,
-        value: entry.value,
+        xAxisValue: entry.denominator,
+        metric: entry.metric_id,
+        value: entry.numerator,
       }))
       .sort((a, b) => a.value - b.value);
   }
