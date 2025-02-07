@@ -3,24 +3,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
 import ContentSidePanel from '../../../src/components/common/panels/contents-side-panel/ContentsSidePanel';
-import CapacityTrackerTotalHoursAgencyWorkedService from '../../../src/services/capacity-tracker/CapacityTrackerTotalHoursAgencyWorkedByRegionService';
 import MetricDetailsDownloadAndShareBar from '../../../src/components/metric-components/metric-details-download-and-share-bar/MetricDetailsDownloadAndShareBar';
-import { getCapacityTrackerData } from '../../api/api';
-import ProtectedRoute from '@/components/util-components/protected-route/ProtectedRoute';
+import IndicatorService from '@/services/indicator/IndicatorService';
+import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
+import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
+import { Indicator } from '@/data/interfaces/Indicator';
 
 const BedsPer1000AdultPopulationPage: React.FC = () => {
-  const [capacityTrackerService, setCapacityTrackerService] =
-    useState<CapacityTrackerTotalHoursAgencyWorkedService | null>(null);
+  const [indicatorService, setIndicatorService] =
+    useState<IndicatorService| null>(null);
 
   const [metricView, setMetricView] = useState('barchart');
-  const [locationLevel, setLocationLevel] = useState('region');
 
   useEffect(() => {
     const fetchData = async () => {
-      const regionData = await getCapacityTrackerData('region');
-      const laData = await getCapacityTrackerData('la');
-      setCapacityTrackerService(
-        new CapacityTrackerTotalHoursAgencyWorkedService(regionData, laData)
+      const data: Indicator[] = await IndicatorFetchService.getData('')
+      const displayData: IndicatorDisplay = await IndicatorFetchService.getDisplayData('');
+      setIndicatorService(
+        new IndicatorService(data, displayData)
       );
     };
     fetchData();
@@ -29,24 +29,20 @@ const BedsPer1000AdultPopulationPage: React.FC = () => {
   const svgContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (svgContainerRef.current && capacityTrackerService) {
+    if (svgContainerRef.current && indicatorService) {
       const barchart =
-        locationLevel === 'region'
-          ? capacityTrackerService.createByRegionBarchart()
-          : capacityTrackerService.createByLaBarchart();
+        indicatorService.createBarchart()
 
       svgContainerRef.current.innerHTML = '';
       if (barchart) {
         svgContainerRef.current.appendChild(barchart);
       }
     }
-  }, [capacityTrackerService, locationLevel]);
+  }, [indicatorService]);
 
   const getCurrentDataSet = () => {
-    if (!capacityTrackerService) return [];
-    return locationLevel === 'region'
-      ? capacityTrackerService.getTotalHoursAgencyWorkedByRegionData()
-      : capacityTrackerService.getTotalHoursAgencyWorkedByLaData();
+    if (!indicatorService) return [];
+    return indicatorService.getChartData();
   };
 
   return (
@@ -104,7 +100,7 @@ const BedsPer1000AdultPopulationPage: React.FC = () => {
           <MetricDetailsDownloadAndShareBar
             data={getCurrentDataSet()}
             filename="PercentageOfTotalWorkHoursCoveredByAgencyStaff"
-            xLabel={locationLevel}
+            xLabel={'locationLevel'}
           />
         </div>
       </div>
@@ -112,10 +108,5 @@ const BedsPer1000AdultPopulationPage: React.FC = () => {
   );
 };
 
-const ProtectedCapacityTrackerPage: React.FC = () => {
-  return (
-    <ProtectedRoute element={<BedsPer1000AdultPopulationPage />} />
-  );
-};
 
-export default ProtectedCapacityTrackerPage;
+export default BedsPer1000AdultPopulationPage;
