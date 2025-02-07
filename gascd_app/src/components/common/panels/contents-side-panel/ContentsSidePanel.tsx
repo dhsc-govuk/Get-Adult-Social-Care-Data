@@ -22,10 +22,6 @@ const DataCategoriesSidePanel: React.FC = () => {
         ))}
       </ul>
     </div>
-
-
-
-
   );
 };
 
