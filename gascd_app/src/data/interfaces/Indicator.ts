@@ -5,7 +5,7 @@ export interface Indicator {
   location_type: string;
   location_id: string;
   numerator: number;
-  denominator: string;
+  denominator: number;
   data_point: number;
   load_date_time: Date;
 }

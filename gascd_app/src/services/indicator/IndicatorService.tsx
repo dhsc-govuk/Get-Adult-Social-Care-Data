@@ -6,29 +6,27 @@ import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 
 class IndicatorService {
   private chartData: BarchartData[];
+  private displayData: IndicatorDisplay;
 
   constructor(data: Indicator[], displayData: IndicatorDisplay) {
     this.chartData = this.transformToChartData(data);
+    this.displayData = displayData;
   }
 
   public getChartData() {
     return this.chartData;
   }
 
-  public createBarchart(
-    location_name: string,
-    xLabel: string,
-    yLabel: string
-  ): SVGSVGElement | null {
+  public createBarchart(): SVGSVGElement | null {
     return generateBarchartSvg({
       data: this.getChartData(),
       width: 675,
       height: 400,
-      xLabel: xLabel, // displayData.denominator
-      yLabel: yLabel, // displayData.numerator
-      title: '', // displayData.metric_name
-      showXValues: location_name === 'region' ? true : false,
-      showQuartileRanges: location_name === 'region' ? false : true,
+      xLabel: this.displayData.denominator,
+      yLabel: this.displayData.numerator,
+      title: this.displayData.metric_name,
+      showXValues: true,
+      showQuartileRanges: true,
       medianLineColor: '#000000',
       barColor: '#1d70b8',
       showLegend: true,
@@ -45,9 +43,9 @@ class IndicatorService {
       data: this.getChartData(),
       width: 270,
       height: 200,
-      xLabel: '', // displayData.denominator
-      yLabel: '', // displayData.numerator
-      title: '', // displayData.metric_name
+      xLabel: this.displayData.denominator,
+      yLabel: this.displayData.numerator,
+      title: this.displayData.metric_name,
       barColor: '#1d70b8',
       medianLineColor: '#000000',
       showLegend: false,
@@ -58,13 +56,11 @@ class IndicatorService {
     });
 
     return {
-      title:
-        'Percentage of Total Work Hours Covered by Agency Staff, by Region', // displayData.metric_name
+      title: this.displayData.metric_name,
       svg: barchart,
-      description:
-        'The percentage of total work hours in each region that are completed by agency staff', // displayData.description
+      description: this.displayData.description,
       sourceUrl: '#',
-      metricDetailPageUrl: 'metric/capacity-tracker-total-hours-by-agency', // displayData.metric_id
+      metricDetailPageUrl: `metric/${this.displayData.metric_id}`,
       sourceLinkString: 'CT',
       limitationDescription: 'lorem lorem lorem lorem lorem lorem',
     };
@@ -73,7 +69,7 @@ class IndicatorService {
   private transformToChartData(data: Indicator[]): BarchartData[] {
     return data
       .map((entry: Indicator) => ({
-        xAxisValue: entry.denominator,
+        xAxisValue: entry.location_id,
         metric: entry.metric_id,
         value: entry.numerator,
       }))
