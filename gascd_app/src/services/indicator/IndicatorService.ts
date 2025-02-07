@@ -32,7 +32,7 @@ class IndicatorService {
       showLegend: true,
       showToolTip: true,
       shortenLabels: false,
-      yAxisAsPercentage: true,
+      yAxisAsPercentage: false,
       tickCount: 8,
       showMedian: false,
     });
@@ -69,9 +69,9 @@ class IndicatorService {
   private transformToChartData(data: Indicator[]): BarchartData[] {
     return data
       .map((entry: Indicator) => ({
-        xAxisValue: entry.location_id,
+        xAxisValue: entry.metric_date.toString(),
         metric: entry.metric_id,
-        value: entry.numerator,
+        value: entry.data_point,
       }))
       .sort((a, b) => a.value - b.value);
   }
