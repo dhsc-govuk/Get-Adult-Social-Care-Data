@@ -1,5 +1,5 @@
-import * as d3 from "d3";
-import { BarchartData } from "@/data/interfaces/BarchartData"; 
+import * as d3 from 'd3';
+import { BarchartData } from '@/data/interfaces/BarchartData';
 
 export function initializeSvg(
   ref: React.RefObject<SVGSVGElement>,
@@ -8,23 +8,23 @@ export function initializeSvg(
 ): d3.Selection<SVGGElement, unknown, null, undefined> {
   const svg = d3
     .select(ref.current)
-    .attr("width", width)
-    .attr("height", height);
+    .attr('width', width)
+    .attr('height', height);
 
-  svg.selectAll("*").remove();
+  svg.selectAll('*').remove();
 
   svg
-    .append("rect")
-    .attr("width", width)
-    .attr("height", height)
-    .attr("fill", "white");
+    .append('rect')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('fill', 'white');
 
-  return svg.append("g");
+  return svg.append('g');
 }
 
 export function truncateLabels(label: string, maxLength: number): string {
   if (label.length > maxLength) {
-    return label.substring(0, maxLength) + "...";
+    return label.substring(0, maxLength) + '...';
   }
   return label;
 }
@@ -83,21 +83,21 @@ export function renderBars(
   margin: { top: number; right: number; bottom: number; left: number }
 ): void {
   const barRectElements = chartSvg
-    .selectAll<SVGRectElement, BarchartData>("rect")
+    .selectAll<SVGRectElement, BarchartData>('rect')
     .data(data, (dataItem: BarchartData) => dataItem.xAxisValue);
 
   barRectElements
     .enter()
-    .append("rect")
+    .append('rect')
     .merge(barRectElements)
-    .attr("x", (dataItem) => xAxisScale(dataItem.xAxisValue) ?? 0)
-    .attr("y", (dataItem) => yAxisScale(dataItem.value) ?? height)
-    .attr("width", xAxisScale.bandwidth())
-    .attr("height", (dataItem) => {
+    .attr('x', (dataItem) => xAxisScale(dataItem.xAxisValue) ?? 0)
+    .attr('y', (dataItem) => yAxisScale(dataItem.value) ?? height)
+    .attr('width', xAxisScale.bandwidth())
+    .attr('height', (dataItem) => {
       const yPos = yAxisScale(dataItem.value);
       return yPos !== undefined ? height - margin.bottom - yPos : 0;
     })
-    .attr("fill", (dataItem) => {
+    .attr('fill', (dataItem) => {
       if (showQuartileRanges) {
         if (dataItem.value <= quartiles.Q1) {
           return quartileColors[0];
@@ -123,17 +123,17 @@ export function renderXAxis(
   margin: { top: number; right: number; bottom: number; left: number }
 ): void {
   const xAxisGroup = chartSvg
-    .append("g")
-    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .append('g')
+    .attr('transform', `translate(0,${height - margin.bottom})`)
     .call(d3.axisBottom(xAxisScale).tickSize(0))
-    .attr("class", "x-axis");
+    .attr('class', 'x-axis');
 
   xAxisGroup
-    .selectAll("text")
-    .attr("transform", "rotate(-45)")
-    .attr("text-anchor", "end")
-    .attr("dx", "-0.8em")
-    .attr("dy", "0.15em");
+    .selectAll('text')
+    .attr('transform', 'rotate(-45)')
+    .attr('text-anchor', 'end')
+    .attr('dx', '-0.8em')
+    .attr('dy', '0.15em');
 }
 
 export function renderYAxis(
@@ -153,10 +153,10 @@ export function renderYAxis(
   }
 
   chartSvg
-    .append("g")
-    .attr("transform", `translate(${margin.left},0)`)
+    .append('g')
+    .attr('transform', `translate(${margin.left},0)`)
     .call(yAxis)
-    .selectAll("text");
+    .selectAll('text');
 }
 
 export function renderLabels(
@@ -169,69 +169,69 @@ export function renderLabels(
   title: string
 ): void {
   chartSvg
-    .append("text")
-    .attr("transform", `translate(${width / 2},${height - margin.bottom / 4})`)
-    .style("text-anchor", "middle")
+    .append('text')
+    .attr('transform', `translate(${width / 2},${height - margin.bottom / 4})`)
+    .style('text-anchor', 'middle')
     .text(xLabel)
-    .attr("class", "x-axis-label");
+    .attr('class', 'x-axis-label');
 
   chartSvg
-    .append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("x", -(height - margin.bottom) / 2)
-    .attr("y", margin.left / 4)
-    .style("text-anchor", "middle")
+    .append('text')
+    .attr('transform', 'rotate(-90)')
+    .attr('x', -(height - margin.bottom) / 2)
+    .attr('y', margin.left / 4)
+    .style('text-anchor', 'middle')
     .text(yLabel)
-    .attr("class", "y-axis-label");
+    .attr('class', 'y-axis-label');
 
   chartSvg
-    .append("text")
-    .attr("x", width / 2)
-    .attr("y", margin.top / 2)
-    .style("text-anchor", "middle")
-    .style("font-size", "16px")
-    .style("font-weight", "bold")
+    .append('text')
+    .attr('x', width / 2)
+    .attr('y', margin.top / 2)
+    .style('text-anchor', 'middle')
+    .style('font-size', '16px')
+    .style('font-weight', 'bold')
     .text(title)
-    .attr("class", "chart-title");
+    .attr('class', 'chart-title');
 }
 
 export function addTooltip(
   chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>,
-  tooltipColor = "#000",
-  tooltipBackgroundColor = "#fff"
+  tooltipColor = '#000',
+  tooltipBackgroundColor = '#fff'
 ): void {
   const tooltip = d3
-    .select("body")
-    .append("div")
-    .style("position", "absolute")
-    .style("visibility", "hidden")
-    .style("background-color", tooltipBackgroundColor)
-    .style("border", "1px solid #ddd")
-    .style("border-radius", "4px")
-    .style("padding", "8px")
-    .style("font-size", "12px")
-    .style("color", tooltipColor)
-    .style("pointer-events", "none")
-    .style("box-shadow", "0px 2px 10px rgba(0, 0, 0, 0.1)");
+    .select('body')
+    .append('div')
+    .style('position', 'absolute')
+    .style('visibility', 'hidden')
+    .style('background-color', tooltipBackgroundColor)
+    .style('border', '1px solid #ddd')
+    .style('border-radius', '4px')
+    .style('padding', '8px')
+    .style('font-size', '12px')
+    .style('color', tooltipColor)
+    .style('pointer-events', 'none')
+    .style('box-shadow', '0px 2px 10px rgba(0, 0, 0, 0.1)');
 
   chartSvg
-    .selectAll<SVGRectElement, BarchartData>("rect")
-    .on("mouseover", function (event, dataItem) {
+    .selectAll<SVGRectElement, BarchartData>('rect')
+    .on('mouseover', function (event, dataItem) {
       tooltip
-        .style("visibility", "visible")
+        .style('visibility', 'visible')
         .text(`${dataItem.xAxisValue}: ${(dataItem.value * 100).toFixed(2)}%`)
-        .style("left", `${event.pageX + 10}px`)
-        .style("top", `${event.pageY - 28}px`);
-      d3.select(this).style("fill-opacity", 0.7);
+        .style('left', `${event.pageX + 10}px`)
+        .style('top', `${event.pageY - 28}px`);
+      d3.select(this).style('fill-opacity', 0.7);
     })
-    .on("mousemove", function (event) {
+    .on('mousemove', function (event) {
       tooltip
-        .style("left", `${event.pageX + 10}px`)
-        .style("top", `${event.pageY - 28}px`);
+        .style('left', `${event.pageX + 10}px`)
+        .style('top', `${event.pageY - 28}px`);
     })
-    .on("mouseout", function () {
-      tooltip.style("visibility", "hidden");
-      d3.select(this).style("fill-opacity", 1);
+    .on('mouseout', function () {
+      tooltip.style('visibility', 'hidden');
+      d3.select(this).style('fill-opacity', 1);
     });
 }
 
@@ -245,15 +245,15 @@ export function renderMedianLine(
   medianLineDash: string
 ): void {
   chartSvg
-    .append("line")
-    .attr("x1", margin.left)
-    .attr("x2", width - margin.right)
-    .attr("y1", yAxisScale(median))
-    .attr("y2", yAxisScale(median))
-    .attr("stroke", medianLineColor)
-    .attr("stroke-width", 2)
-    .attr("stroke-dasharray", medianLineDash)
-    .attr("class", "median-line");
+    .append('line')
+    .attr('x1', margin.left)
+    .attr('x2', width - margin.right)
+    .attr('y1', yAxisScale(median))
+    .attr('y2', yAxisScale(median))
+    .attr('stroke', medianLineColor)
+    .attr('stroke-width', 2)
+    .attr('stroke-dasharray', medianLineDash)
+    .attr('class', 'median-line');
 }
 
 export function renderLegend(
@@ -264,34 +264,34 @@ export function renderLegend(
   medianLineDash: string
 ): void {
   const legendGroup = chartSvg
-    .append("g")
-    .attr("transform", `translate(${width - margin.right + 20},${margin.top})`);
+    .append('g')
+    .attr('transform', `translate(${width - margin.right + 20},${margin.top})`);
 
   legendGroup
-    .append("rect")
-    .attr("x", -10)
-    .attr("y", -10)
-    .attr("width", 120)
-    .attr("height", 30)
-    .attr("fill", "#f9f9f9")
-    .attr("stroke", "#000000")
-    .attr("stroke-width", 1);
+    .append('rect')
+    .attr('x', -10)
+    .attr('y', -10)
+    .attr('width', 120)
+    .attr('height', 30)
+    .attr('fill', '#f9f9f9')
+    .attr('stroke', '#000000')
+    .attr('stroke-width', 1);
 
   legendGroup
-    .append("line")
-    .attr("x1", 0)
-    .attr("x2", 40)
-    .attr("y1", 5)
-    .attr("y2", 5)
-    .attr("stroke", medianLineColor)
-    .attr("stroke-width", 2)
-    .attr("stroke-dasharray", medianLineDash);
+    .append('line')
+    .attr('x1', 0)
+    .attr('x2', 40)
+    .attr('y1', 5)
+    .attr('y2', 5)
+    .attr('stroke', medianLineColor)
+    .attr('stroke-width', 2)
+    .attr('stroke-dasharray', medianLineDash);
 
   legendGroup
-    .append("text")
-    .attr("x", 50)
-    .attr("y", 5)
-    .text("Median")
-    .style("font-size", "14px")
-    .attr("alignment-baseline", "middle");
+    .append('text')
+    .attr('x', 50)
+    .attr('y', 5)
+    .text('Median')
+    .style('font-size', '14px')
+    .attr('alignment-baseline', 'middle');
 }

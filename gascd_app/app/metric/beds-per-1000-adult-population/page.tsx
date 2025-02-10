@@ -18,6 +18,12 @@ const BedsPer1000AdultPopulationPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data: Indicator[] = await IndicatorFetchService.getData('');
+      var dataDupe = { ...data[0] };
+      dataDupe.metric_date = new Date(Date.UTC(2024, 5, 0));
+      dataDupe.data_point = 5;
+      data.push(dataDupe);
+
+      data.forEach((obj) => console.log(obj));
       const displayData: IndicatorDisplay =
         await IndicatorFetchService.getDisplayData('');
       setIndicatorService(new IndicatorService(data, displayData));
@@ -29,7 +35,7 @@ const BedsPer1000AdultPopulationPage: React.FC = () => {
 
   useEffect(() => {
     if (svgContainerRef.current && indicatorService) {
-      const barchart = indicatorService.createBarchart();
+      const barchart = indicatorService.createLinegraph();
 
       svgContainerRef.current.innerHTML = '';
       if (barchart) {

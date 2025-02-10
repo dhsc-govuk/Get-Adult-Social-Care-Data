@@ -1,4 +1,7 @@
-import { generateBarchartSvg } from '../charts/BarchartService';
+import {
+  generateBarchartSvg,
+  generateLineGraphSvg,
+} from '../charts/ChartService';
 import { BarchartData } from '../../data/interfaces/BarchartData';
 import { Indicator } from '../../data/interfaces/Indicator';
 import { MetricCardData } from '../../data/interfaces/MetricCardData';
@@ -19,6 +22,27 @@ class IndicatorService {
 
   public createBarchart(): SVGSVGElement | null {
     return generateBarchartSvg({
+      data: this.getChartData(),
+      width: 675,
+      height: 400,
+      xLabel: this.displayData.denominator,
+      yLabel: this.displayData.numerator,
+      title: this.displayData.metric_name,
+      showXValues: true,
+      showQuartileRanges: true,
+      medianLineColor: '#000000',
+      barColor: '#1d70b8',
+      showLegend: true,
+      showToolTip: true,
+      shortenLabels: false,
+      yAxisAsPercentage: false,
+      tickCount: 8,
+      showMedian: false,
+    });
+  }
+
+  public createLinegraph(): SVGSVGElement | null {
+    return generateLineGraphSvg({
       data: this.getChartData(),
       width: 675,
       height: 400,
