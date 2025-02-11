@@ -1,17 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDB } from '../../../src/data/dbModule';
 import { Indicator } from '@/data/interfaces/Indicator';
+import MockTotalBedsData from '@/data/mockResponses/total_beds_1000.json';
+import { mapRawJsonToIndicator } from '@/data/mockResponses/parseMockData';
 
 // Handler for HTTP GET request
 export async function GET(req: NextRequest) {
   try {
-    const pool = await connectToDB();
-    const resultSet = await pool
-      .request()
-      .query('SELECT * FROM metrics.all_metrics where location_id = \'E06000001\'');
-    const rows: Indicator[] = resultSet.recordset;
+    // const pool = await connectToDB();
+    // const resultSet = await pool
+    //   .request()
+    //   .query('SELECT * FROM metrics.all_metrics');
+    const rows: Indicator[] = mapRawJsonToIndicator(MockTotalBedsData); // resultSet.recordset;
 
-    await pool.close();
+    // await pool.close();
     return NextResponse.json(rows);
   } catch (err) {
     console.error('Error during database operations:', err);

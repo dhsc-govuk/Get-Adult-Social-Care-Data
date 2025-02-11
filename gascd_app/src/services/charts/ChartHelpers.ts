@@ -304,13 +304,10 @@ export function renderLine(
   lineColor: string,
   strokeWidth: number
 ): void {
-  // Define the line generator function
   const lineGenerator = d3
     .line<{ xAxisValue: string; value: number }>()
     .x((dataItem) => xAxisScale(dataItem.xAxisValue) ?? 0)
-    .y((dataItem) => yAxisScale(dataItem.value) ?? 0)
-    .curve(d3.curveMonotoneX); // Smooths the line
-  // Bind data and render the line
+    .y((dataItem) => yAxisScale(dataItem.value) ?? 0);
   const linePath = chartSvg
     .selectAll<SVGPathElement, unknown>('path.line')
     .data([data]);
@@ -323,6 +320,5 @@ export function renderLine(
     .attr('fill', 'none')
     .attr('stroke', lineColor)
     .attr('stroke-width', strokeWidth);
-  // Remove any excess lines
   linePath.exit().remove();
 }

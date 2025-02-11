@@ -46,7 +46,7 @@ class IndicatorService {
       data: this.getChartData(),
       width: 675,
       height: 400,
-      xLabel: this.displayData.denominator,
+      xLabel: 'Year',
       yLabel: this.displayData.numerator,
       title: this.displayData.metric_name,
       showXValues: true,
@@ -91,6 +91,16 @@ class IndicatorService {
   }
 
   private transformToChartData(data: Indicator[]): BarchartData[] {
+    return data
+      .map((entry: Indicator) => ({
+        xAxisValue: entry.metric_date.toString(),
+        metric: entry.metric_id,
+        value: entry.data_point,
+      }))
+      .sort((a, b) => a.value - b.value);
+  }
+
+  private transformToLineChartData(data: Indicator[]): BarchartData[] {
     return data
       .map((entry: Indicator) => ({
         xAxisValue: entry.metric_date.toString(),

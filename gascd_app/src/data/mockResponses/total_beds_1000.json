@@ -1,0 +1,74 @@
+[
+  {
+    "metric_id": "total_beds_1000_capita",
+    "metric_date_type": "monthly",
+    "metric_date": "2024-12-23T00:00:04.000+00:00",
+    "location_type": "LA",
+    "location_id": "E06000001",
+    "numerator": "2200",
+    "denominator": "95366",
+    "multiplier": "1000",
+    "data_point": "23.06901831",
+    "load_date_time": "2025-02-06T12:36:50.453Z"
+  },
+  {
+    "metric_id": "total_beds_1000_capita",
+    "metric_date_type": "monthly",
+    "metric_date": "2024-11-23T00:00:04.000+00:00",
+    "location_type": "LA",
+    "location_id": "E06000001",
+    "numerator": "2200",
+    "denominator": "95366",
+    "multiplier": "1000",
+    "data_point": "12.06901831",
+    "load_date_time": "2025-02-06T12:36:50.453Z"
+  },
+  {
+    "metric_id": "total_beds_1000_capita",
+    "metric_date_type": "monthly",
+    "metric_date": "2024-10-23T00:00:04.000+00:00",
+    "location_type": "LA",
+    "location_id": "E06000001",
+    "numerator": "2200",
+    "denominator": "95366",
+    "multiplier": "1000",
+    "data_point": "17.06901831",
+    "load_date_time": "2025-02-06T12:36:50.453Z"
+  },
+  {
+    "metric_id": "total_beds_1000_capita",
+    "metric_date_type": "monthly",
+    "metric_date": "2024-09-23T00:00:04.000+00:00",
+    "location_type": "LA",
+    "location_id": "E06000001",
+    "numerator": "2200",
+    "denominator": "95366",
+    "multiplier": "1000",
+    "data_point": "3.06901831",
+    "load_date_time": "2025-02-06T12:36:50.453Z"
+  },
+  {
+    "metric_id": "total_beds_1000_capita",
+    "metric_date_type": "monthly",
+    "metric_date": "2024-08-23T00:00:04.000+00:00",
+    "location_type": "LA",
+    "location_id": "E06000001",
+    "numerator": "2200",
+    "denominator": "95366",
+    "multiplier": "1000",
+    "data_point": "23.06901831",
+    "load_date_time": "2025-02-06T12:36:50.453Z"
+  },
+  {
+    "metric_id": "total_beds_1000_capita",
+    "metric_date_type": "monthly",
+    "metric_date": "2024-07-23T00:00:04.000+00:00",
+    "location_type": "LA",
+    "location_id": "E06000001",
+    "numerator": "2200",
+    "denominator": "95366",
+    "multiplier": "1000",
+    "data_point": "21.06901831",
+    "load_date_time": "2025-02-06T12:36:50.453Z"
+  }
+]
