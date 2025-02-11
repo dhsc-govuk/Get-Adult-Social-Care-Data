@@ -37,7 +37,7 @@
     "@types/govuk-frontend": "^5.7.0",
     "@types/jest": "^29.5.14",
     "@types/node": "22.10.1",
-    "@types/react": "^18.3.3",
+    "@types/react": "^19.0.3",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "cypress": "^13.17.0",
