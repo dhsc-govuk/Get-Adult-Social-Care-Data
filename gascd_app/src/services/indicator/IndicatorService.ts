@@ -6,7 +6,7 @@ import { BarchartData } from '../../data/interfaces/BarchartData';
 import { Indicator } from '../../data/interfaces/Indicator';
 import { MetricCardData } from '../../data/interfaces/MetricCardData';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
-
+9;
 class IndicatorService {
   private chartData: BarchartData[];
   private displayData: IndicatorDisplay;
