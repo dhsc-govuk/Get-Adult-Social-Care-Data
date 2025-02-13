@@ -4,7 +4,7 @@ import Layout from '../../src/components/common/layout/Layout';
 import { Breadcrumb } from '../../src/data/interfaces/Breadcrumb';
 import ButtonWithArrow from '@/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../api/auth/[...nextauth]/route';
+import { authOptions } from '../api/auth/authOptions';
 
 export default async function HomePage() {
   const breadcrumbs: Array<Breadcrumb> = [
