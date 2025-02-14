@@ -103,7 +103,7 @@ const BedsPer1000AdultPopulationPage: React.FC = () => {
           </div>
           <div className="govuk-grid-row">
             <div className="govuk-grid-column-full govuk-!-text-align-center">
-              <div ref={svgContainerRef}></div>
+              <div ref={svgContainerRef} id="chart-container"></div>
             </div>
           </div>
           <MetricDetailsDownloadAndShareBar

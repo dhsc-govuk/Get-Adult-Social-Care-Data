@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     const pool = await connectToDB();
     const resultSet = await pool
       .request()
-      .query('SELECT * FROM metrics.all_metrics where location_id = \'E06000001\'');
+      .query('SELECT * FROM metrics.all_metrics');
     const rows: Indicator[] = resultSet.recordset;
 
     await pool.close();
