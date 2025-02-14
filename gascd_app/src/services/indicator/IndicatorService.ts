@@ -6,18 +6,25 @@ import { BarchartData } from '../../data/interfaces/BarchartData';
 import { Indicator } from '../../data/interfaces/Indicator';
 import { MetricCardData } from '../../data/interfaces/MetricCardData';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
+import { LinegraphData } from '@/data/interfaces/LinegraphData';
 
 class IndicatorService {
   private chartData: BarchartData[];
+  private linegraphData: LinegraphData[];
   private displayData: IndicatorDisplay;
 
   constructor(data: Indicator[], displayData: IndicatorDisplay) {
     this.chartData = this.transformToChartData(data);
+    this.linegraphData = this.transformToLineChartData(data);
     this.displayData = displayData;
   }
 
   public getChartData() {
     return this.chartData;
+  }
+
+  public getLinegraphData() {
+    return this.linegraphData;
   }
 
   public createBarchart(): SVGSVGElement | null {
@@ -43,7 +50,7 @@ class IndicatorService {
 
   public createLinegraph(): SVGSVGElement | null {
     return generateLineGraphSvg({
-      data: this.getChartData(),
+      data: this.getLinegraphData(),
       width: 675,
       height: 400,
       xLabel: 'Year',
@@ -100,14 +107,15 @@ class IndicatorService {
       .sort((a, b) => a.value - b.value);
   }
 
-  private transformToLineChartData(data: Indicator[]): BarchartData[] {
+  private transformToLineChartData(data: Indicator[]): LinegraphData[] {
     return data
       .map((entry: Indicator) => ({
         xAxisValue: entry.metric_date.toString(),
         metric: entry.metric_id,
         value: entry.data_point,
+        date: new Date(entry.metric_date),
       }))
-      .sort((a, b) => a.value - b.value);
+      .sort((a, b) => a.date.getTime() - b.date.getTime());
   }
 }
 

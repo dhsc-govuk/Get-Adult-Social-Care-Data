@@ -1,3 +1,4 @@
+import { LinegraphProps } from '@/data/interfaces/LinegraphData';
 import { BarchartProps } from '../../data/interfaces/BarchartData';
 import {
   initializeSvg,
@@ -13,6 +14,7 @@ import {
   truncateLabels,
   calculateQuartiles,
   renderLine,
+  renderLineXAxis,
 } from './ChartHelpers';
 
 export function generateBarchartSvg({
@@ -134,7 +136,7 @@ export function generateLineGraphSvg({
   showToolTip = true,
   tickCount,
   yAxisAsPercentage = false,
-}: BarchartProps): SVGSVGElement | null {
+}: LinegraphProps): SVGSVGElement | null {
   if (!data.length) return null;
 
   const dynamicMargin = {
@@ -168,7 +170,7 @@ export function generateLineGraphSvg({
   renderLine(chartSvg, data, xAxisScale, yAxisScale, lineColor, strokeWidth);
 
   if (showXValues) {
-    renderXAxis(chartSvg, xAxisScale, height, dynamicMargin);
+    renderLineXAxis(chartSvg, xAxisScale, height, dynamicMargin);
   }
 
   renderYAxis(
@@ -179,10 +181,6 @@ export function generateLineGraphSvg({
     yAxisAsPercentage
   );
   renderLabels(chartSvg, width, height, dynamicMargin, xLabel, yLabel, title);
-
-  if (showToolTip) {
-    addTooltip(chartSvg);
-  }
 
   if (showMedian && median) {
     renderMedianLine(

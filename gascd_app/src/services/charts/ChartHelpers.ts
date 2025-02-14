@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import { BarchartData } from '../../data/interfaces/BarchartData';
+import { LinegraphData } from '@/data/interfaces/LinegraphData';
 
 export function initializeSvg(
   ref: React.RefObject<SVGSVGElement>,
@@ -134,6 +135,33 @@ export function renderXAxis(
     .attr('text-anchor', 'end')
     .attr('dx', '-0.8em')
     .attr('dy', '0.15em');
+}
+
+export function renderLineXAxis(
+  chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>,
+  xAxisScale: d3.ScaleBand<string>,
+  height: number,
+  margin: { top: number; right: number; bottom: number; left: number }
+): void {
+  const customTickFormat = (d: string): string => {
+    const currentDate = new Date(d);
+    const currentYear = currentDate.getFullYear();
+
+    const domain = xAxisScale.domain();
+    const index = domain.indexOf(d);
+
+    if (index === 0) return currentYear.toString();
+
+    const previousDate = new Date(domain[index - 1]);
+    const previousYear = previousDate.getFullYear();
+
+    return currentYear !== previousYear ? currentYear.toString() : '';
+  };
+
+  const xAxis = d3
+    .axisBottom(xAxisScale)
+    .tickSize(0)
+    .tickFormat(customTickFormat);
 }
 
 export function renderYAxis(
