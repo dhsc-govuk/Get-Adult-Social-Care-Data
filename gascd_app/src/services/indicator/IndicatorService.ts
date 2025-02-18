@@ -100,7 +100,7 @@ class IndicatorService {
   private transformToChartData(data: Indicator[]): BarchartData[] {
     return data
       .map((entry: Indicator) => ({
-        xAxisValue: entry.metric_date.toString(),
+        xAxisValue: entry.location_id,
         metric: entry.metric_id,
         value: entry.data_point,
       }))
