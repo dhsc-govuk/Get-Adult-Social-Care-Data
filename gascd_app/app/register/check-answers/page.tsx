@@ -1,11 +1,30 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
 
 const RegisterYourNamePage: React.FC = () => {
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [jobTitle, setJobTitle] = useState('');
+  const [organisationType, setOrganisationType] = useState('');
+  const [organisationName, setOrganisationName] = useState('');
+
   useEffect(() => {
     if (!window?.localStorage) return;
+
+    const storedFirstName = localStorage.getItem('firstName');
+    const storedLastName = localStorage.getItem('lastName');
+    const storedJobTitle = localStorage.getItem('jobTitle');
+    const storedOrganisationType = localStorage.getItem('organisationType');
+    const storedOrganisationName = localStorage.getItem('organisationName');
+
+    if (storedFirstName) setFirstName(storedFirstName);
+    if (storedLastName) setLastName(storedLastName);
+    if (storedJobTitle) setJobTitle(storedJobTitle);
+    if (storedOrganisationType) setOrganisationType(storedOrganisationType);
+    if (storedOrganisationName) setOrganisationName(storedOrganisationName);
   });
 
   const handleSubmit = () => {
@@ -36,8 +55,8 @@ const RegisterYourNamePage: React.FC = () => {
               <div className="govuk-summary-list__row">
                 <dt className="govuk-summary-list__key">Name</dt>
                 <dd className="govuk-summary-list__value">
-                  {localStorage.getItem('firstName') || ''}{' '}
-                  {localStorage.getItem('lastName') || ''}
+                  {firstName || ''}{' '}
+                  {lastName || ''}
                 </dd>
                 <dd className="govuk-summary-list__actions">
                   <a className="govuk-link" href="/register/your-name">
@@ -48,7 +67,7 @@ const RegisterYourNamePage: React.FC = () => {
               <div className="govuk-summary-list__row">
                 <dt className="govuk-summary-list__key">Job title</dt>
                 <dd className="govuk-summary-list__value">
-                  {localStorage.getItem('jobTitle') || ''}
+                  {jobTitle || ''}
                 </dd>
                 <dd className="govuk-summary-list__actions">
                   <a className="govuk-link" href="/register/job-title">
@@ -60,7 +79,7 @@ const RegisterYourNamePage: React.FC = () => {
               <div className="govuk-summary-list__row">
                 <dt className="govuk-summary-list__key">Organisation type</dt>
                 <dd className="govuk-summary-list__value">
-                  {localStorage.getItem('organisationType') || ''}
+                  {organisationType || ''}
                 </dd>
                 <dd className="govuk-summary-list__actions">
                   <a className="govuk-link" href="/register/organisation-type">
@@ -75,7 +94,7 @@ const RegisterYourNamePage: React.FC = () => {
               <div className="govuk-summary-list__row">
                 <dt className="govuk-summary-list__key">Organisation name</dt>
                 <dd className="govuk-summary-list__value">
-                  {localStorage.getItem('organisationName') || ''}
+                  {organisationName || ''}
                 </dd>
                 <dd className="govuk-summary-list__actions">
                   <a className="govuk-link" href="/register/organisation-name">
