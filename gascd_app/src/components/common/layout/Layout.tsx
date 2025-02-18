@@ -70,7 +70,7 @@ const Layout: React.FC<Props> = ({
           className={
             autoSpaceMainContent
               ? 'govuk-main-wrapper govuk-main-wrapper--auto-spacing'
-              : ''
+              : 'govuk-main-wrapper'
           }
         >
           <div id="main-content">{children}</div>

@@ -1,4 +1,4 @@
-import { generateBarchartSvg } from '../charts/BarchartService';
+import { generateBarchartSvg } from '../charts/ChartService';
 import { BarchartData } from '../../data/interfaces/BarchartData';
 import { CapacityTrackerTotalHoursAgencyWorked } from '../../data/interfaces/CapacityTrackerTotalHoursAgencyWorked';
 import { MetricCardData } from '../../data/interfaces/MetricCardData';
