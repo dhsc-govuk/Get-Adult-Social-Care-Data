@@ -3,7 +3,7 @@ import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 
 class IndicatorFetchService {
-  public static async getData(query: IndicatorQuery[]): Promise<Indicator[]> {
+  public static async getData(query: IndicatorQuery): Promise<Indicator[]> {
     const response = await fetch('/api/get_metric_data', {
       method: 'POST',
       headers: {
