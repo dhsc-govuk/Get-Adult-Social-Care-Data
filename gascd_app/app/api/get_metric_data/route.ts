@@ -9,22 +9,20 @@ export async function POST(req: NextRequest) {
     const pool = await connectToDB();
     const queryParams = await req.json();
 
-    if (!queryParams.metric_id || !queryParams.location_id) {
+    if (!queryParams.metric_ids || !queryParams.location_ids) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
     }
 
-    const { queryString, params } =
-      QueryBuilderService.createGetIndicatorQuery(queryParams);
-
     const request = pool.request();
-    params.forEach((param) => {
-      request.input(param.key, param.value);
-    });
+    const { queryString , request_with_param } =
+      QueryBuilderService.createGetIndicatorQuery(queryParams, request);
 
-    const resultSet = await request.query(queryString);
+    const resultSet = await request_with_param.query(queryString);
+
+    console.log(queryString);
 
     const rows: Indicator[] = resultSet.recordset;
     await pool.close();

@@ -1,5 +1,4 @@
 export interface IndicatorQuery {
-  additional_metric_id: string;
-  metric_id: string;
-  location_id: string;
+  metric_ids: string[];
+  location_ids: string[];
 }

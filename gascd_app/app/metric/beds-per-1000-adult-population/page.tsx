@@ -15,10 +15,11 @@ const BedsPer1000AdultPopulationPage: React.FC = () => {
     useState<IndicatorService | null>(null);
 
   const [indicatorQuery, setIndicatorQuery] = useState<IndicatorQuery>({
-    metric_id: 'bedcount_per_100000_adults_total',
-    additional_metric_id:
-      'bedcount_per_100000_adults_total_dementia_residential',
-    location_id: 'E10000029', // currently set to la
+    metric_ids: [
+      'bedcount_per_100000_adults_total',
+      'bedcount_per_100000_adults_total_dementia_residential'      
+    ],
+    location_ids: ['E10000029','E12000006'], // currently set to la
   });
 
   useEffect(() => {
