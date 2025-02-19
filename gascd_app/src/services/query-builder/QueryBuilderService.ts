@@ -1,30 +1,37 @@
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
+import sql from 'mssql';
 
 class QueryBuilderService {
-  static createGetIndicatorQuery(query: IndicatorQuery) {
+
+  static bindArrayParams(request: sql.Request, params: string[], paramName: string): { paramBind: string, request: sql.Request } {
+    let n = 0;
+    let paramBind = '';
+    for (const param of params) {
+        paramBind += `${n !== 0 ? ',' : ''} @${paramName}${n}`;
+        request = request.input(`${paramName}${n}`, sql.VarChar(255), param);
+        n += 1;
+    }
+    return { paramBind, request };
+  }
+
+  static createGetIndicatorQuery(query: IndicatorQuery, request: sql.Request) {
+
+    let request_with_param = request;
+    const { paramBind : metric_ids_bind} = this.bindArrayParams(request_with_param, query.metric_ids, 'metric_ids');
+
     const queryParts = [
-      'SELECT * FROM metrics.all_metrics WHERE metric_id = @metric_id',
+      `SELECT * FROM metrics.all_metrics WHERE metric_id IN (${metric_ids_bind})`,
     ];
-    const params = [{ key: 'metric_id', value: query.metric_id }];
 
-    if (query.location_id) {
-      queryParts.push('AND location_id = @location_id');
-      params.push({ key: 'location_id', value: query.location_id });
-    }
-
-    if (query.additional_metric_id) {
+    if (query.location_ids) {
+      const { paramBind : location_ids_bind} = this.bindArrayParams(request_with_param, query.location_ids, 'location_ids');
       queryParts.push(
-        'OR metric_id = @additional_metric_id AND location_id = @location_id'
+        `AND location_id IN(${location_ids_bind})`
       );
-      params.push({
-        key: 'additional_metric_id',
-        value: query.additional_metric_id,
-      });
     }
 
-    const queryString = queryParts.join(' ');
-
-    return { queryString, params };
+    let queryString = queryParts.join(' ');
+    return { queryString , request_with_param};
   }
 }
 
