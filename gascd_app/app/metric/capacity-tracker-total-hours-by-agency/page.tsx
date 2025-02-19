@@ -8,7 +8,7 @@ import MainCategoriesSearch from '../../../src/components/common/main-categories
 import OrganisationFilter from '../../../src/components/common/organisation-filter/OrganisationFilter';
 import CapacityTrackerTotalHoursAgencyWorkedService from '../../../src/services/capacity-tracker/CapacityTrackerTotalHoursAgencyWorkedByRegionService';
 import MetricDetailsFilterBar from '../../../src/components/metric-components/metric-details-filter-bar/MetricDetailsFilterBar';
-import MetricDetailsDownloadAndShareBar from '../../../src/components/metric-components/metric-details-download-and-share-bar/DownloadTableDataCSVLink';
+import MetricDetailsDownloadAndShareBar from '../../../src/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import YourFavouriteMetricsSidePanel from '../../../src/components/common/panels/your-favourite-metrics-side-panel/YourFavouriteMetricsSidePanel';
 import DataGuideSidePanel from '../../../src/components/common/panels/data-guide-side-panel/DataGuideSidePanel';
 import ReportLinksSidePanel from '../../../src/components/common/panels/report-links-side-panel/ReportLinksSidePanel';
