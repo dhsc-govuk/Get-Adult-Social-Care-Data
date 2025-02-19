@@ -8,16 +8,24 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { Indicator } from '@/data/interfaces/Indicator';
+import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 
 const BedsPer1000AdultPopulationPage: React.FC = () => {
   const [indicatorService, setIndicatorService] =
     useState<IndicatorService | null>(null);
 
-  const [metricView, setMetricView] = useState('barchart');
+  const [indicatorQuery, setIndicatorQuery] = useState<IndicatorQuery>({
+    metric_ids: [
+      'bedcount_per_100000_adults_total',
+      'bedcount_per_100000_adults_total_dementia_residential'      
+    ],
+    location_ids: ['E10000029','E12000006'], // currently set to la
+  });
 
   useEffect(() => {
     const fetchData = async () => {
-      const data: Indicator[] = await IndicatorFetchService.getData('');
+      const data: Indicator[] =
+        await IndicatorFetchService.getData(indicatorQuery);
       var dataDupe = { ...data[0] };
       dataDupe.metric_date = new Date(Date.UTC(2024, 5, 0));
       dataDupe.data_point = 5;
@@ -35,7 +43,7 @@ const BedsPer1000AdultPopulationPage: React.FC = () => {
 
   useEffect(() => {
     if (svgContainerRef.current && indicatorService) {
-      const barchart = indicatorService.createLinegraph();
+      const barchart = indicatorService.createBarchart();
 
       svgContainerRef.current.innerHTML = '';
       if (barchart) {
