@@ -1,6 +1,5 @@
 import React from 'react';
 import { getServerSession, Session } from 'next-auth';
-import { authOptions } from '../../../../app/api/auth/[...nextauth]/route';
 import SignOutButton from '../buttons/SignOutButton';
 
 type Props = {

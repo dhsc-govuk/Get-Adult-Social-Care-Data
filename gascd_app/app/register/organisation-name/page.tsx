@@ -39,8 +39,13 @@ const RegisterYourNamePage: React.FC = () => {
             onSubmit={handleSubmit}
           >
             <div className="govuk-form-group">
-              <LabelledInput inputId='register-organisation-name' eventName='organisationName' value={organisationName} onChange={(e) => setOrganisationName(e.target.value)} 
-                ariaLabel='Enter organisation name'>
+              <LabelledInput
+                inputId="register-organisation-name"
+                eventName="organisationName"
+                value={organisationName}
+                onChange={(e) => setOrganisationName(e.target.value)}
+                ariaLabel="Enter organisation name"
+              >
                 Start typing for suggestions
               </LabelledInput>
             </div>

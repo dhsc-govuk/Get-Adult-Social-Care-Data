@@ -40,13 +40,25 @@ const RegisterYourNamePage: React.FC = () => {
             onSubmit={handleSubmit}
           >
             <div className="govuk-form-group">
-              <LabelledInput inputId='register-first-name' eventName='firstName' value={firstName} onChange={(e) => setFirstName(e.target.value)} ariaLabel='Enter first name'>
+              <LabelledInput
+                inputId="register-first-name"
+                eventName="firstName"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                ariaLabel="Enter first name"
+              >
                 First Name
               </LabelledInput>
             </div>
 
             <div className="govuk-form-group">
-              <LabelledInput inputId='register-last-name' eventName='lastName' value={lastName} onChange={(e) => setLastName(e.target.value)} ariaLabel='Enter last name'>
+              <LabelledInput
+                inputId="register-last-name"
+                eventName="lastName"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                ariaLabel="Enter last name"
+              >
                 Last Name
               </LabelledInput>
             </div>

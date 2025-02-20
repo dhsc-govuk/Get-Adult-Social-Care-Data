@@ -21,7 +21,11 @@ const RegisterEmailPage: React.FC = () => {
 
           <form className="form" onSubmit={handleSubmit} method="post">
             <div className="govuk-form-group">
-              <LabelledInput eventName={'email'} inputId={'register-email'} ariaLabel={'Enter email address'}>
+              <LabelledInput
+                eventName={'email'}
+                inputId={'register-email'}
+                ariaLabel={'Enter email address'}
+              >
                 Enter your email address
               </LabelledInput>
             </div>

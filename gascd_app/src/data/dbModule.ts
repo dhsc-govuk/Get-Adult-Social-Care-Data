@@ -31,32 +31,32 @@ export async function getAccessToken(): Promise<string> {
 }
 
 export async function connectToDB(): Promise<ConnectionPool> {
-    const dbServer = process.env.DB_SERVER;
-    const dbPort = Number(process.env.DB_PORT);
-    const dbName = process.env.DB_DATABASE;
+  const dbServer = process.env.DB_SERVER;
+  const dbPort = Number(process.env.DB_PORT);
+  const dbName = process.env.DB_DATABASE;
 
-    if (!dbServer || !dbPort || !dbName) {
-        throw new Error("Missing database configuration environment variables.");
-    }
+  if (!dbServer || !dbPort || !dbName) {
+    throw new Error('Missing database configuration environment variables.');
+  }
 
-    const token = await getAccessToken();
+  const token = await getAccessToken();
 
-    const config: SQLConfig = {
-        server: dbServer,
-        port: dbPort,
-        database: dbName,
-        authentication: {
-            type: 'azure-active-directory-access-token',
-            options: {
-                token: token
-            }
-        },
-        options: {
-            encrypt: true,
-            trustServerCertificate: false,
-            enableArithAbort: true,
-        }
-    };
+  const config: SQLConfig = {
+    server: dbServer,
+    port: dbPort,
+    database: dbName,
+    authentication: {
+      type: 'azure-active-directory-access-token',
+      options: {
+        token: token,
+      },
+    },
+    options: {
+      encrypt: true,
+      trustServerCertificate: false,
+      enableArithAbort: true,
+    },
+  };
 
-    return sql.connect(config);
+  return sql.connect(config);
 }
