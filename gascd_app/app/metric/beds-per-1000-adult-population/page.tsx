@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
 import ContentSidePanel from '../../../src/components/common/panels/contents-side-panel/ContentsSidePanel';
-import MetricDetailsDownloadAndShareBar from '../../../src/components/metric-components/metric-details-download-and-share-bar/MetricDetailsDownloadAndShareBar';
+import DownloadTableDataCSVLink from '../../../src/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
@@ -114,11 +114,13 @@ const BedsPer1000AdultPopulationPage: React.FC = () => {
               <div ref={svgContainerRef} id="chart-container"></div>
             </div>
           </div>
-          <MetricDetailsDownloadAndShareBar
-            data={getCurrentDataSet()}
-            filename="PercentageOfTotalWorkHoursCoveredByAgencyStaff"
-            xLabel={'locationLevel'}
-          />
+          <p className='govuk-body'>
+            <DownloadTableDataCSVLink
+              data={getCurrentDataSet()}
+              filename="bedcount_per_100000_adults"
+              xLabel={'locationLevel'}
+            />
+          </p>
         </div>
       </div>
     </Layout>
