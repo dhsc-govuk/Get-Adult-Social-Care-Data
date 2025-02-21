@@ -11,7 +11,7 @@ type Props = {
   display: IndicatorDisplay;
   barchartSVG: RefObject<HTMLDivElement>;
   lineGraphSVG: RefObject<HTMLDivElement>;
-  selectedFilters: string[];
+  selectedFilters: TotalBedsFilters[];
 };
 
 const IndicatorTable: React.FC<Props> = ({
@@ -70,13 +70,11 @@ const IndicatorTable: React.FC<Props> = ({
                   Filter
                 </th>
                 <td className="govuk-table__cell">
-                  <td className="govuk-table__cell">
-                    <ul className="moj-side-navigation__list">
-                      {selectedFilters.map((filter, index) => (
-                        <li key={index}>{filter}</li>
-                      ))}
-                    </ul>
-                  </td>
+                  <ul className="moj-side-navigation__list">
+                    {selectedFilters.map((filter, index) => (
+                      <li key={index}>{filter.filter_bedtype}</li>
+                    ))}
+                  </ul>
                 </td>
                 <td className="govuk-table__cell">
                   <a href="/metric/total-beds/filters" className="govuk-link">
@@ -136,7 +134,7 @@ const IndicatorTable: React.FC<Props> = ({
                 <td className="govuk-table__cell">
                   <ul className="moj-side-navigation__list">
                     {selectedFilters.map((filter, index) => (
-                      <li key={index}>{filter}</li>
+                      <li key={index}>{filter.filter_bedtype}</li>
                     ))}
                   </ul>
                 </td>

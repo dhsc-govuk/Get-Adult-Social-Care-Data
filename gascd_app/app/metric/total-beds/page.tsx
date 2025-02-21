@@ -15,11 +15,10 @@ import { useSearchParams } from 'next/navigation';
 const TotalBedsPage: React.FC = () => {
   const [indicatorService, setIndicatorService] =
     useState<IndicatorService | null>(null);
-  const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
 
   const searchParams = useSearchParams();
   const selectedFilters = searchParams.get('filters');
-  const [parsedFilters, setParsedFilters] = useState<string[]>([]);
+  const [parsedFilters, setParsedFilters] = useState<TotalBedsFilters[]>([]);
 
   const [indicatorQuery, setIndicatorQuery] = useState<IndicatorQuery>({
     metric_ids: [
@@ -34,11 +33,16 @@ const TotalBedsPage: React.FC = () => {
       try {
         const decoded = decodeURIComponent(selectedFilters);
         const parsed = JSON.parse(decoded);
+        const metricIds = parsed.map(
+          (filter: { metric_id: string; filter_bedtype: string }) =>
+            filter.metric_id
+        );
         setParsedFilters(parsed);
         setIndicatorQuery((prev) => ({
           ...prev,
-          metric_ids: parsed,
+          metric_ids: metricIds,
         }));
+        console.log(indicatorQuery);
       } catch (error) {
         console.error('Error parsing selected filters:', error);
       }
@@ -54,8 +58,6 @@ const TotalBedsPage: React.FC = () => {
       const displayData: IndicatorDisplay =
         await IndicatorFetchService.getDisplayData('');
 
-      const filters = await IndicatorFetchService.getFilters('');
-      setFilters(filters);
       setIndicatorService(new IndicatorService(data, displayData));
     };
     fetchData();

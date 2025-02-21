@@ -1,5 +1,5 @@
 export interface TotalBedsFilters {
-  checked: boolean;
+  checked?: boolean;
   metric_id: string;
   filter_bedtype: string;
 }

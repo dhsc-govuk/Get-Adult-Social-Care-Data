@@ -26,7 +26,10 @@ const TotalBedsFiltersPage: React.FC = () => {
 
   const selectedFilters = filters
     .filter((filter) => filter.checked)
-    .map((filter) => filter.metric_id);
+    .map((filter) => ({
+      metric_id: filter.metric_id,
+      filter_bedtype: filter.filter_bedtype,
+    }));
 
   const encodedSelectedFilters = encodeURIComponent(
     JSON.stringify(selectedFilters)
