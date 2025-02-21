@@ -3,6 +3,10 @@ import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 
 class IndicatorFetchService {
+  public static async getFilters(metric_id: string) {
+    const response = await fetch('/api/get_all_total_beds_filters');
+    return response.json();
+  }
   public static async getData(query: IndicatorQuery): Promise<Indicator[]> {
     const response = await fetch('/api/get_metric_data', {
       method: 'POST',

@@ -1,17 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDB } from '../../../src/data/dbModule';
-import { Indicator } from '@/data/interfaces/Indicator';
-import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
+import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 
-// Handler for HTTP GET request
 export async function GET(req: NextRequest) {
   try {
     const pool = await connectToDB();
     const resultSet = await pool
       .request()
-      .query('SELECT * FROM metrics.metadata');
-    const rows: IndicatorDisplay[] = resultSet.recordset;
-
+      .query(
+        "SELECT metric_id, filter_bedtype FROM metrics.metadata WHERE group_id = 'bedcount_per_100000_adults'"
+      );
+    const rows: TotalBedsFilters[] = resultSet.recordset.map(
+      (row: TotalBedsFilters) => ({
+        ...row,
+        checked: false,
+      })
+    );
     await pool.close();
     return NextResponse.json(rows);
   } catch (err) {
