@@ -33,7 +33,7 @@ const TotalBedsPage: React.FC = () => {
       try {
         const decoded = decodeURIComponent(selectedFilters);
         const parsed = JSON.parse(decoded);
-        const metricIds = parsed.map(
+        const metricIds: string[] = parsed.map(
           (filter: { metric_id: string; filter_bedtype: string }) =>
             filter.metric_id
         );
