@@ -1,6 +1,6 @@
 import React from 'react';
 import { getServerSession, Session } from 'next-auth';
-import SignOutButton from '../buttons/SignOutButton';
+import LogoutButton from '../buttons/logOutButton';
 
 type Props = {
   session?: Session | null;
@@ -51,7 +51,7 @@ const Header: React.FC<Props> = ({ session }) => {
               >
                 Manage Account
               </a>
-              <SignOutButton />
+              <LogoutButton />
             </p>
           )}
         </div>

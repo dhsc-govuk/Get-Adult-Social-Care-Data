@@ -33,9 +33,10 @@ export default async function HomePage() {
       </div>
       {!session ? (
         <>
-          <div className="govuk-grid-row">
+        {/* TODO Add this Back when Needed */}
+          {/* <div className="govuk-grid-row">
             <ButtonWithArrow buttonString="Register" buttonUrl="/register" />
-          </div>
+          </div> */}
           <div className="govuk-grid-row">
             <ButtonWithArrow buttonString="Log in" buttonUrl="/login" />
           </div>

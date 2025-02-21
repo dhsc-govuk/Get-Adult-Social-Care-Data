@@ -11,6 +11,7 @@
     "format": "prettier --write",
     "lint-staged": "lint-staged",
     "test": "jest --config jest.config.ts",
+    "test:watch": "jest --watch",
     "cypress": "cypress open"
   },
   "lint-staged": {

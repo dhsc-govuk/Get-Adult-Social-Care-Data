@@ -4,7 +4,7 @@ import React, { useCallback, useState } from 'react';
 import Layout from '../../src/components/common/layout/Layout';
 import StandardButton from '../../src/components/common/buttons/functionality/standard-button/StandardButton';
 import Link from 'next/link';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -26,7 +26,7 @@ const LoginPage: React.FC = () => {
               <input
                 className="govuk-input govuk-input--width-20"
                 type="text"
-                id="email"
+                id="email"  
                 onChange={(e: any) => setEmail(e.target.value)}
                 value={email}
               />
