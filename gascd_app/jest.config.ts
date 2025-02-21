@@ -1,23 +1,18 @@
 import { Config } from 'jest';
 
 const config: Config = {
-  testEnvironment: 'jsdom',
-  testMatch: ['<rootDir>/tests/**/*.(test|spec).(ts|tsx)'],
+  testEnvironment: 'jest-fixed-jsdom',
+  testMatch: ['<rootDir>/__tests__/**/*.(test|spec).(ts|tsx)'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
+    '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@/test-utils/(.*)$': '<rootDir>/tests/utils/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  globals: {
-    'ts-jest': {
-      tsconfig: '<rootDir>/tsconfig.jest.json'
-    }
-  },
-  reporters: ['default'], 
+  reporters: ['default'],
 };
 
 export default config;

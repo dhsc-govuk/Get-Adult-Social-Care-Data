@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
 import ContentSidePanel from '../../../src/components/common/panels/contents-side-panel/ContentsSidePanel';
-import MetricDetailsDownloadAndShareBar from '../../../src/components/metric-components/metric-details-download-and-share-bar/MetricDetailsDownloadAndShareBar';
+import DownloadTableDataCSVLink from '../../../src/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
@@ -17,21 +17,20 @@ const BedsPer1000AdultPopulationPage: React.FC = () => {
   const [indicatorQuery, setIndicatorQuery] = useState<IndicatorQuery>({
     metric_ids: [
       'bedcount_per_100000_adults_total',
-      'bedcount_per_100000_adults_total_dementia_residential'      
+      'bedcount_per_100000_adults_total_dementia_residential',
     ],
-    location_ids: ['E10000029','E12000006'], // currently set to la
+    location_ids: ['E10000029', 'E12000006'], // TODO, REMOVE currently set to la - set these from SessionData
   });
 
   useEffect(() => {
     const fetchData = async () => {
       const data: Indicator[] =
         await IndicatorFetchService.getData(indicatorQuery);
-      var dataDupe = { ...data[0] };
+      let dataDupe = { ...data[0] };
       dataDupe.metric_date = new Date(Date.UTC(2024, 5, 0));
       dataDupe.data_point = 5;
       data.push(dataDupe);
 
-      data.forEach((obj) => console.log(obj));
       const displayData: IndicatorDisplay =
         await IndicatorFetchService.getDisplayData('');
       setIndicatorService(new IndicatorService(data, displayData));
@@ -114,11 +113,13 @@ const BedsPer1000AdultPopulationPage: React.FC = () => {
               <div ref={svgContainerRef} id="chart-container"></div>
             </div>
           </div>
-          <MetricDetailsDownloadAndShareBar
-            data={getCurrentDataSet()}
-            filename="PercentageOfTotalWorkHoursCoveredByAgencyStaff"
-            xLabel={'locationLevel'}
-          />
+          <p className="govuk-body">
+            <DownloadTableDataCSVLink
+              data={getCurrentDataSet()}
+              filename="bedcount_per_100000_adults"
+              xLabel={'locationLevel'}
+            />
+          </p>
         </div>
       </div>
     </Layout>

@@ -20,7 +20,6 @@ const RegisterJobTitlePage: React.FC = () => {
 
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOrganisationType(e.target.value);
-    console.log('Selected organisation type:', e.target.value); // Debugging
   };
 
   return (

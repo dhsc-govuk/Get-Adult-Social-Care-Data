@@ -3,16 +3,24 @@ import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c';
 
 declare module 'next-auth' {
   interface Session {
-    accessToken?: string;
     idToken?: string;
+    user: {
+      locationType?: string;
+      locationId?: string;
+    };
+  }
+  interface Profile {
+    extension_Location_Type?: string;
+    extension_Location_ID?: string;
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
     provider?: string;
-    accessToken?: string;
     idToken?: string;
+    locationType?: string;
+    locationId?: string;
   }
 }
 
@@ -48,16 +56,18 @@ export const authOptions: NextAuthOptions = {
 
   secret: process.env.NEXTAUTH_SECRET as string,
   callbacks: {
-    async jwt({ token, account }) {
-      if (account) {
+    async jwt({ token, account, profile }) {
+      if (account && profile) {
         token.idToken = account.id_token as string;
-        token.accessToken = account.access_token as string;
+        token.locationType = profile['extension_Location_Type'] as string;
+        token.locationId = profile['extension_Location_ID'];
       }
       return token;
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken as string;
       session.idToken = token.idToken as string;
+      session.user.locationType = token.locationType as string;
+      session.user.locationId = token.locationId as string;
       return session;
     },
   },

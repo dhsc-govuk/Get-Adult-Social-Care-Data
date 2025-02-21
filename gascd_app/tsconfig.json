@@ -16,7 +16,7 @@
     "incremental": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@/test-utils/*": ["./tests/utils/*"]
+      "@/test-utils/*": ["./__tests__/utils/*"]
     },
     "plugins": [
       {
@@ -29,7 +29,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "tests/**/*.ts",
+    "__tests__/**/*.ts",
     "jest.setup.ts"
   ],
   "exclude": ["./cypress.config.ts", "node_modules"]
