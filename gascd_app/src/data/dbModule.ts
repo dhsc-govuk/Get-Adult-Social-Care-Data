@@ -2,32 +2,32 @@ import { AzureCliCredential, ManagedIdentityCredential, TokenCredential } from '
 import sql, { config as SQLConfig, ConnectionPool } from 'mssql';
 
 export async function getAccessToken(): Promise<string> {
-    const isLocal = process.env.NEXT_PUBLIC_APP_ENV === 'local';
-    let credential: TokenCredential;
+  const isLocal = process.env.NEXT_PUBLIC_APP_ENV === 'local';
+  let credential: TokenCredential;
 
-    if (isLocal) {
-        credential = new AzureCliCredential();
+  if (isLocal) {
+    credential = new AzureCliCredential();
+  } else {
+    const clientId = process.env.SQL_MANAGED_IDENTITY_CLIENT_ID;
+    if (clientId) {
+      credential = new ManagedIdentityCredential(clientId);
     } else {
-        const clientId = process.env.MANAGED_IDENTITY_CLIENT_ID;
-        if (clientId) {
-            credential = new ManagedIdentityCredential(clientId);
-        } else {
-            console.warn("MANAGED_IDENTITY_CLIENT_ID environment variable is missing. Proceeding without client ID.");
-            credential = new ManagedIdentityCredential();
-        }
+      console.warn("MANAGED_IDENTITY_CLIENT_ID environment variable is missing. Proceeding without client ID.");
+      credential = new ManagedIdentityCredential();
     }
+  }
 
-    try {
-        const tokenResponse = await credential.getToken("https://database.windows.net/.default");
-        if (tokenResponse) {
-            return tokenResponse.token;
-        } else {
-            throw new Error("Failed to receive token.");
-        }
-    } catch (err) {
-        console.error("Failed to get access token:", err);
-        throw err;
+  try {
+    const tokenResponse = await credential.getToken("https://database.windows.net/.default");
+    if (tokenResponse) {
+      return tokenResponse.token;
+    } else {
+      throw new Error("Failed to receive token.");
     }
+  } catch (err) {
+    console.error("Failed to get access token:", err);
+    throw err;
+  }
 }
 
 export async function connectToDB(): Promise<ConnectionPool> {
