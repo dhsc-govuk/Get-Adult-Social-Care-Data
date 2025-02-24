@@ -1,4 +1,4 @@
-import { LinegraphProps } from '@/data/interfaces/LinegraphData';
+import { LinegraphData, LinegraphProps } from '@/data/interfaces/LinegraphData';
 import { BarchartProps } from '../../data/interfaces/BarchartData';
 import {
   initializeSvg,
@@ -119,7 +119,7 @@ export function generateLineGraphSvg({
   yLabel,
   medianLineColor = '#808000',
   medianLineDash = '5,5',
-  title = 'Barchart',
+  title = '',
   showXValues = true,
   showMedian = true,
   showLegend = true,
@@ -127,6 +127,8 @@ export function generateLineGraphSvg({
   showToolTip = true,
   tickCount,
   yAxisAsPercentage = false,
+  colourMap = new Map(),
+  groupedData = new Map<string, LinegraphData[]>,
 }: LinegraphProps): SVGSVGElement | null {
   if (!data.length) return null;
 
@@ -155,10 +157,13 @@ export function generateLineGraphSvg({
   const xAxisScale = createXAxisScale(data, width, dynamicMargin);
   const yAxisScale = createYAxisScale(data, height, dynamicMargin);
   const { median, quartiles } = calculateQuartiles(data);
-  const lineColor = '#800080';
-  const strokeWidth = 2;
+  const defaultLineColor = '#800080';
+  const strokeWidth = 3;
 
-  renderLine(chartSvg, data, xAxisScale, yAxisScale, lineColor, strokeWidth);
+  for (const key of groupedData.keys()) {
+    const value = groupedData.get(key);
+    renderLine(chartSvg, value ?? [], xAxisScale, yAxisScale, colourMap.get(key) ?? defaultLineColor, strokeWidth, key);
+  }
 
   if (showXValues) {
     renderLineXAxis(chartSvg, xAxisScale, height, dynamicMargin);

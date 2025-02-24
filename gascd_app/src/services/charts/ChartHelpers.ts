@@ -337,17 +337,7 @@ export function renderLegend(
 ): void {
   const legendGroup = chartSvg
     .append('g')
-    .attr('transform', `translate(${width - margin.right + 20},${margin.top})`);
-
-  legendGroup
-    .append('rect')
-    .attr('x', -10)
-    .attr('y', -10)
-    .attr('width', 120)
-    .attr('height', 30)
-    .attr('fill', '#f9f9f9')
-    .attr('stroke', '#000000')
-    .attr('stroke-width', 1);
+    .attr('transform', `translate(${margin.right + 20},${margin.top - 30})`);
 
   legendGroup
     .append('line')
@@ -355,15 +345,14 @@ export function renderLegend(
     .attr('x2', 40)
     .attr('y1', 5)
     .attr('y2', 5)
-    .attr('stroke', medianLineColor)
-    .attr('stroke-width', 2)
-    .attr('stroke-dasharray', medianLineDash);
+    .attr('stroke', 'purple')
+    .attr('stroke-width', 4);
 
   legendGroup
     .append('text')
     .attr('x', 50)
     .attr('y', 5)
-    .text('Median')
+    .text('All types')
     .style('font-size', '14px')
     .attr('alignment-baseline', 'middle');
 }
@@ -374,14 +363,15 @@ export function renderLine(
   xAxisScale: d3.ScalePoint<string>,
   yAxisScale: d3.ScaleLinear<number, number>,
   lineColor: string,
-  strokeWidth: number
+  strokeWidth: number,
+  className: string
 ): void {
   const lineGenerator = d3
     .line<{ valueTag: string; value: number }>()
     .x((dataItem) => xAxisScale(dataItem.valueTag) ?? 0)
     .y((dataItem) => yAxisScale(dataItem.value) ?? 0);
   const linePath = chartSvg
-    .selectAll<SVGPathElement, unknown>('path.line')
+    .selectAll<SVGPathElement, unknown>(className)
     .data([data]);
   linePath
     .enter()

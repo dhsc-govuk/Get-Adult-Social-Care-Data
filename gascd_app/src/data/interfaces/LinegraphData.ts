@@ -24,4 +24,6 @@ export interface LinegraphProps {
   showToolTip?: boolean;
   tickCount?: number;
   yAxisAsPercentage?: boolean;
+  colourMap?: Map<string,string>;
+  groupedData: Map<string, LinegraphData[]>
 }

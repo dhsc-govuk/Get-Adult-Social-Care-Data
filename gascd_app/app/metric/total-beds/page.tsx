@@ -25,8 +25,10 @@ const TotalBedsPage: React.FC = () => {
       'bedcount_per_100000_adults_total',
       'bedcount_per_100000_adults_total_dementia_residential',
     ],
-    location_ids: ['E10000029', 'E12000006', 'E12000005', 'E12000004'],
+    location_ids: ['E10000029'],
   });
+
+  // 'E12000006', 'E12000005', 'E12000004'
 
   useEffect(() => {
     if (selectedFilters) {
