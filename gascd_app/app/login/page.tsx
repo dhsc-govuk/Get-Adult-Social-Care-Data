@@ -26,7 +26,7 @@ const LoginPage: React.FC = () => {
               <input
                 className="govuk-input govuk-input--width-20"
                 type="text"
-                id="email"  
+                id="email"
                 onChange={(e: any) => setEmail(e.target.value)}
                 value={email}
               />

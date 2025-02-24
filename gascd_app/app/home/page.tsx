@@ -33,7 +33,7 @@ export default async function HomePage() {
       </div>
       {!session ? (
         <>
-        {/* TODO Add this Back when Needed */}
+          {/* TODO Add this Back when Needed */}
           {/* <div className="govuk-grid-row">
             <ButtonWithArrow buttonString="Register" buttonUrl="/register" />
           </div> */}

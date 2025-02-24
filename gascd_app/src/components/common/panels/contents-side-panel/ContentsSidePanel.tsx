@@ -1,27 +1,33 @@
-import React from "react";
+import React from 'react';
 
-const DataCategoriesSidePanel: React.FC = () => {
-  const dataCategories: Array<string> = [
-    "Indicator definition and supporting information",
-    "Chart",
-    "Table"
-  ];
+interface NavigationItem {
+  link: string;
+  heading: string;
+}
+
+interface DataCategoriesSidePanelProps {
+  items: NavigationItem[];
+}
+
+const DataCategoriesSidePanel: React.FC<DataCategoriesSidePanelProps> = ({
+  items,
+}) => {
   return (
-    <div className="dhsc-blue-panel-container">
-      <h4 className="govuk-heading-m govuk-!-margin-bottom-5 dhsc-!-text-white">Contents</h4>
-      <ul className="govuk-list govuk-!-margin-left-3">
-        {dataCategories.map((contents, index) => (
-          <li key={index} className="govuk-!-margin-bottom-3 dhsc-!-text-white">
+    <nav className="moj-side-navigation" aria-label="Side navigation">
+      <h3>Contents</h3>
+      <ul className="moj-side-navigation__list">
+        {items.map((item, index) => (
+          <li key={index} className="moj-side-navigation__item">
             <a
+              href={item.link}
               className="govuk-link govuk-link--no-visited-state govuk-link--no-underline"
-              href="#"
             >
-              {contents}
+              {item.heading}
             </a>
           </li>
         ))}
       </ul>
-    </div>
+    </nav>
   );
 };
 

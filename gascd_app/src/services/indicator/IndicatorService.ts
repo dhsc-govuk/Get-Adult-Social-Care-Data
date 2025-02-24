@@ -23,6 +23,10 @@ class IndicatorService {
     return this.chartData;
   }
 
+  public getDisplayData(): IndicatorDisplay {
+    return this.displayData;
+  }
+
   public getLinegraphData() {
     return this.linegraphData;
   }

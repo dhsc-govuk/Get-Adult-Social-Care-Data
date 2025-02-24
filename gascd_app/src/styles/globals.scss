@@ -2,6 +2,7 @@ $govuk-assets-path: "/govuk-frontend/";
 $govuk-fonts-path: "/govuk-frontend/fonts/";
 
 @import "govuk-frontend/dist/govuk/all";
+@import "@ministryofjustice/frontend/moj/all";
 
 html, body {
     margin: 0;
