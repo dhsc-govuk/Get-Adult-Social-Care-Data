@@ -1,6 +1,6 @@
 import React from 'react';
 import { getServerSession, Session } from 'next-auth';
-import LogoutButton from '../buttons/logOutButton';
+import LogoutButton from '../buttons/logoutButton';
 
 type Props = {
   session?: Session | null;
