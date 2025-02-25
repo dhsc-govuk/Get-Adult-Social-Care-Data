@@ -1,21 +1,59 @@
 import React from 'react';
+import { Indicator } from '@/data/interfaces/Indicator';
+import { da } from '@faker-js/faker';
 
 type DataTableProps = {
   columnHeaders: string[];
-  rowHeaders: string[];
-  data: Record<string, Record<string, string>>;
+  rowHeaders: Object;
+  data: Indicator[];
+  showCareProvider: boolean;
+  careProviderMedianMetrics?: Record<string, string>;
+};
+
+const getCareProviderKey = (
+  key: string,
+  careProviderMedianMetrics?: Record<string, string>
+): string => {
+  return careProviderMedianMetrics ? careProviderMedianMetrics[key] : ' ';
+};
+
+const getFormattedDataPoint = (
+  data: Indicator[],
+  metricId: string,
+  locationType: string
+): string => {
+  const foundMetric = data.find(
+    (metric) =>
+      metric.metric_id === metricId && metric.location_type === locationType
+  );
+
+  if (
+    foundMetric &&
+    foundMetric.data_point !== null &&
+    !isNaN(Number(foundMetric.data_point))
+  ) {
+    const dataPoint = Number(foundMetric.data_point);
+    const dataPointString = dataPoint.toString();
+    if (
+      dataPointString.includes('.') &&
+      dataPointString.split('.')[1].length > 2
+    ) {
+      return dataPoint.toFixed(2);
+    }
+    return dataPointString;
+  }
+  return 'Loading...';
 };
 
 const DataTable: React.FC<DataTableProps> = ({
   columnHeaders,
   rowHeaders,
   data,
+  showCareProvider,
+  careProviderMedianMetrics,
 }) => {
   return (
     <table className="govuk-table">
-      <caption className="govuk-table__caption govuk-table__caption--m">
-        Adult social care beds per 100,000 adult population at 24 December 2024
-      </caption>
       <thead className="govuk-table__head">
         <tr className="govuk-table__row">
           {columnHeaders.map((columnHeader, columnIndex) => (
@@ -26,16 +64,29 @@ const DataTable: React.FC<DataTableProps> = ({
         </tr>
       </thead>
       <tbody className="govuk-table__body">
-        {rowHeaders.map((rowHeader, rowIndex) => (
-          <tr key={rowIndex} className="govuk-table__row">
+        {Object.entries(rowHeaders).map(([key, value]) => (
+          <tr key={key}>
             <td className="govuk-table__cell govuk-table__cell--header">
-              {rowHeader}
+              {value}
             </td>
-            {columnHeaders.slice(1).map((colHeader, colIndex) => (
-              <td key={colIndex} className="govuk-table__cell">
-                {data[rowHeader]?.[colHeader] || 'N/A'}
+            {showCareProvider && (
+              <td className="govuk-table__cell">
+                {getFormattedDataPoint(
+                  data,
+                  getCareProviderKey(key, careProviderMedianMetrics),
+                  'Care provider location'
+                )}
               </td>
-            ))}
+            )}
+            <td className="govuk-table__cell">
+              {getFormattedDataPoint(data, key, 'LA')}
+            </td>
+            <td className="govuk-table__cell">
+              {getFormattedDataPoint(data, key, 'Regional')}
+            </td>
+            <td className="govuk-table__cell">
+              {getFormattedDataPoint(data, key, 'National')}
+            </td>
           </tr>
         ))}
       </tbody>
