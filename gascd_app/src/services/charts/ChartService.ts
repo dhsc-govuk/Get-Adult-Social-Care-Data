@@ -15,6 +15,10 @@ import {
   calculateQuartiles,
   renderLine,
   renderLineXAxis,
+  createBarYAxisScale,
+  createBarXAxisScale,
+  renderBarXAxis,
+  renderBarYAxis,
 } from './ChartHelpers';
 
 export function generateBarchartSvg({
@@ -56,13 +60,13 @@ export function generateBarchartSvg({
 
   data = data.map((entry) => ({
     ...entry,
-    xAxisValue: shortenLabels
-      ? truncateLabels(entry.xAxisValue, 16)
-      : entry.xAxisValue,
+    valueTag: shortenLabels
+      ? truncateLabels(entry.valueTag, 16)
+      : entry.valueTag,
   }));
 
-  const xAxisScale = createXAxisScale(data, width, dynamicMargin);
-  const yAxisScale = createYAxisScale(data, height, dynamicMargin);
+  const xAxisScale = createBarXAxisScale(data, width, dynamicMargin);
+  const yAxisScale = createBarYAxisScale(data, height, dynamicMargin);
   const { median, quartiles } = calculateQuartiles(data);
 
   renderBars(
@@ -74,15 +78,14 @@ export function generateBarchartSvg({
     highlightQuartileColors,
     showQuartileRanges,
     barColor,
-    height,
     dynamicMargin
   );
 
   if (showXValues) {
-    renderXAxis(chartSvg, xAxisScale, height, dynamicMargin);
+    renderBarXAxis(chartSvg, xAxisScale, height, dynamicMargin);
   }
 
-  renderYAxis(
+  renderBarYAxis(
     chartSvg,
     yAxisScale,
     dynamicMargin,
@@ -93,18 +96,6 @@ export function generateBarchartSvg({
 
   if (showToolTip) {
     addTooltip(chartSvg);
-  }
-
-  if (showMedian && median) {
-    renderMedianLine(
-      chartSvg,
-      median,
-      yAxisScale,
-      width,
-      dynamicMargin,
-      medianLineColor,
-      medianLineDash
-    );
   }
 
   if (showLegend) {
@@ -156,9 +147,9 @@ export function generateLineGraphSvg({
 
   data = data.map((entry) => ({
     ...entry,
-    xAxisValue: shortenLabels
-      ? truncateLabels(entry.xAxisValue, 16)
-      : entry.xAxisValue,
+    valueTag: shortenLabels
+      ? truncateLabels(entry.valueTag, 16)
+      : entry.valueTag,
   }));
 
   const xAxisScale = createXAxisScale(data, width, dynamicMargin);
