@@ -68,7 +68,6 @@ export const authOptions: NextAuthOptions = {
       session.idToken = token.idToken as string;
       session.user.locationType = token.locationType as string;
       session.user.locationId = token.locationId as string;
-      console.log(session);
       return session;
     },
   },
