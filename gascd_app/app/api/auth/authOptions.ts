@@ -60,7 +60,7 @@ export const authOptions: NextAuthOptions = {
       if (account && profile) {
         token.idToken = account.id_token as string;
         token.locationType = profile['extension_Location_Type'] as string;
-        token.locationId = profile['extension_Location_ID'];
+        token.locationId = profile['extension_Location_ID'] as string;
       }
       return token;
     },
@@ -68,6 +68,7 @@ export const authOptions: NextAuthOptions = {
       session.idToken = token.idToken as string;
       session.user.locationType = token.locationType as string;
       session.user.locationId = token.locationId as string;
+      console.log(session);
       return session;
     },
   },

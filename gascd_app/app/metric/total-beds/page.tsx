@@ -11,24 +11,32 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import { useState, useEffect, useRef } from 'react';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import { useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 const TotalBedsPage: React.FC = () => {
   const [indicatorService, setIndicatorService] =
     useState<IndicatorService | null>(null);
 
+  const { data: session, status} = useSession();
+
+  const [locationId, setlocationId] = useState<string>();
+  const [locationType, setlocationType] = useState<string>();
+
   const searchParams = useSearchParams();
   const selectedFilters = searchParams.get('filters');
   const [parsedFilters, setParsedFilters] = useState<TotalBedsFilters[]>([]);
 
+  const metric_ids = [
+    'bedcount_per_100000_adults_total',
+    'bedcount_per_100000_adults_total_dementia_residential',
+  ];
+
   const [indicatorQuery, setIndicatorQuery] = useState<IndicatorQuery>({
-    metric_ids: [
-      'bedcount_per_100000_adults_total',
-      'bedcount_per_100000_adults_total_dementia_residential',
-    ],
-    location_ids: ['E10000029'],
+    metric_ids: metric_ids,
+    location_ids: [],
   });
 
-  // 'E12000006', 'E12000005', 'E12000004'
+  // 'E10000029', 'E12000006', 'E12000005', 'E12000004'
 
   useEffect(() => {
     if (selectedFilters) {
@@ -44,26 +52,41 @@ const TotalBedsPage: React.FC = () => {
           ...prev,
           metric_ids: metricIds,
         }));
-        console.log(indicatorQuery);
       } catch (error) {
         console.error('Error parsing selected filters:', error);
       }
     }
   }, [selectedFilters]);
 
+  useEffect(() => {    
+    if(indicatorQuery && indicatorQuery.location_ids.length > 0){
+      const fetchData = async () => {
+        const data: Indicator[] =
+          await IndicatorFetchService.getData(indicatorQuery);
+        data.forEach((obj) => console.log(obj));
+        const displayData: IndicatorDisplay =
+          await IndicatorFetchService.getDisplayData('');
+        setIndicatorService(new IndicatorService(data, displayData));
+      };
+      fetchData();
+    }
+  }, [indicatorQuery]);
+
   useEffect(() => {
-    const fetchData = async () => {
-      const data: Indicator[] =
-        await IndicatorFetchService.getData(indicatorQuery);
+    if(session){
+      setlocationId(session.user.locationId);
+      setlocationType(session.user.locationType);
+    }
+  }, [session]);
 
-      data.forEach((obj) => console.log(obj));
-      const displayData: IndicatorDisplay =
-        await IndicatorFetchService.getDisplayData('');
-
-      setIndicatorService(new IndicatorService(data, displayData));
-    };
-    fetchData();
-  }, []);
+  useEffect(() => {
+    if(locationId && locationType){
+      setIndicatorQuery({
+        metric_ids: metric_ids,
+        location_ids: [locationId]
+      });
+    }
+  }, [locationId,locationType]);
 
   const barchartSVGContainerRef = useRef<HTMLDivElement>(null);
   const lineGraphSVGContainerRef = useRef<HTMLDivElement>(null);
