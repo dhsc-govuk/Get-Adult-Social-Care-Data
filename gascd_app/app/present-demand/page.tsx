@@ -7,13 +7,16 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { Indicator } from '@/data/interfaces/Indicator';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import TableService from '@/services/Table/TableService';
-import DataTable from '@/components/tables/table';
+import DataTable from '@/components/tables/Table';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
+import { useSession } from 'next-auth/react';
+import PresentDemandService from '@/services/present-demand/presentDemandService';
 
 const PresentDemandPage: React.FC = () => {
   const [filteredDemographicData, setFilteredDemographicData] = useState<
     Indicator[]
   >([]);
+  const { data: session, status } = useSession();
   const [filteredBedData, setFilteredBedData] = useState<Indicator[]>([]);
   const [demograpicData, setDemographicData] = useState<Indicator[]>([]);
   const [cpData, setCpData] = useState<Indicator[]>([]);
@@ -21,6 +24,9 @@ const PresentDemandPage: React.FC = () => {
   const [combinedData, setCombinedData] = useState<Indicator[]>([]);
   const [finalCpData, setFinalCpData] = useState<Indicator[]>([]);
   const [bedData, setBedData] = useState<Indicator[]>([]);
+  const [columnHeaders, setColumnHeaders] = useState<string[]>([]);
+  const [CPLocationId, setCPLocationId] = useState<string>();
+  const [locationNames, setLocationNames] = useState<string[]>();
   const [demographicQuery, setDemographicQuery] = useState<IndicatorQuery>({
     metric_ids: [
       'total_population',
@@ -29,7 +35,7 @@ const PresentDemandPage: React.FC = () => {
       'perc_population_disability_disabled_total',
       'dementia_register_65over_per100k',
     ],
-    location_ids: ['E10000029', 'E12000006', 'E92000001'],
+    location_ids: [],
   });
 
   const [bedsQuery, setBedsQuery] = useState<IndicatorQuery>({
@@ -111,19 +117,45 @@ const PresentDemandPage: React.FC = () => {
   ];
 
   useEffect(() => {
+    if (session) {
+      // console.log(session.user.locationId);
+      setCPLocationId(session.user.locationId);
+      // console.log(locationId, "location id!!!!!!!")
+    }
+  }, [session]);
+
+  useEffect(() => {
+    const fetchLocationNames = async () => {
+      if (CPLocationId) {
+        try {
+          const locationNames = await PresentDemandService.getLocationNames(
+            CPLocationId,
+            false
+          );
+          setColumnHeaders(locationNames);
+        } catch (error) {
+          console.error('Error fetching location names:', error);
+        }
+      }
+    };
+    fetchLocationNames();
+  }, [CPLocationId]);
+
+  useEffect(() => {
     const fetchAllData = async () => {
+      if (!CPLocationId) return;
       try {
         const demographicData: Indicator[] =
           await IndicatorFetchService.getData(demographicQuery);
         const filteredDemographicData =
           TableService.filterDate(demographicData);
-        setDemographicData(filteredDemographicData);
+        // setDemographicData(filteredDemographicData);
         setFilteredDemographicData(filteredDemographicData);
 
         const bedData: Indicator[] =
           await IndicatorFetchService.getData(bedsQuery);
         const filteredBedData = TableService.filterDate(bedData);
-        setBedData(filteredBedData);
+        // setBedData(filteredBedData);
         setFilteredBedData(filteredBedData);
 
         const CPData: Indicator[] = await IndicatorFetchService.getData(
@@ -136,14 +168,16 @@ const PresentDemandPage: React.FC = () => {
 
         const comboData: Indicator[] = [...CPData, ...CPData2];
         const filteredCPData = TableService.filterDate(comboData);
-        setCombinedData(filteredCPData);
+        // setCombinedData(filteredCPData);
         setFinalCpData(filteredCPData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchAllData();
-  }, []);
+  }, [CPLocationId]);
+
+  // needs to be dependant on session as well!
 
   return (
     <Layout
@@ -259,7 +293,7 @@ const PresentDemandPage: React.FC = () => {
             </p>
             <ConditionalText
               data={filteredDemographicData}
-              ColumnHeaders={demographicColumnHeaders}
+              ColumnHeaders={columnHeaders}
               section="Drivers"
               locations={selectedLocations}
               metric_Id="perc_65over"
@@ -269,7 +303,7 @@ const PresentDemandPage: React.FC = () => {
             Explore the data: demographic factors
           </h3>
           <DataTable
-            columnHeaders={demographicColumnHeaders}
+            columnHeaders={columnHeaders}
             rowHeaders={demographicRowHeaders}
             data={filteredDemographicData}
             showCareProvider={false}
@@ -328,7 +362,7 @@ const PresentDemandPage: React.FC = () => {
               {' '}
               You can filter this data by type of beds
             </p>
-            <form action="#">
+            <form action="/metric/total-beds">
               <button
                 type="submit"
                 className="govuk-button govuk-button--secondary"
@@ -338,9 +372,9 @@ const PresentDemandPage: React.FC = () => {
               </button>
             </form>
             <DataTable
-              columnHeaders={demographicColumnHeaders}
+              columnHeaders={columnHeaders}
               rowHeaders={bedRowHeaders}
-              data={bedData}
+              data={filteredBedData}
               showCareProvider={false}
             ></DataTable>
             <p className="govuk-body">
