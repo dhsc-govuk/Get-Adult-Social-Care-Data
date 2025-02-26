@@ -17,7 +17,7 @@ const TotalBedsPage: React.FC = () => {
   const [indicatorService, setIndicatorService] =
     useState<IndicatorService | null>(null);
 
-  const { data: session, status} = useSession();
+  const { data: session, status } = useSession();
 
   const [locationId, setlocationId] = useState<string>();
   const [locationType, setlocationType] = useState<string>();
@@ -58,8 +58,8 @@ const TotalBedsPage: React.FC = () => {
     }
   }, [selectedFilters]);
 
-  useEffect(() => {    
-    if(indicatorQuery && indicatorQuery.location_ids.length > 0){
+  useEffect(() => {
+    if (indicatorQuery && indicatorQuery.location_ids.length > 0) {
       const fetchData = async () => {
         const data: Indicator[] =
           await IndicatorFetchService.getData(indicatorQuery);
@@ -73,27 +73,33 @@ const TotalBedsPage: React.FC = () => {
   }, [indicatorQuery]);
 
   useEffect(() => {
-    if(session){
+    if (session) {
       setlocationId(session.user.locationId);
       setlocationType(session.user.locationType);
     }
   }, [session]);
 
   useEffect(() => {
-    if(locationId && locationType){
+    if (locationId && locationType) {
       setIndicatorQuery({
         metric_ids: metric_ids,
-        location_ids: [locationId]
+        location_ids: [locationId],
       });
     }
-  }, [locationId,locationType]);
+  }, [locationId, locationType]);
 
   const barchartSVGContainerRef = useRef<HTMLDivElement>(null);
   const lineGraphSVGContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (barchartSVGContainerRef.current && indicatorService) {
-      const barchart = indicatorService.createBarchart();
+      const containerWidth = barchartSVGContainerRef.current.clientWidth;
+      const containerHeight = barchartSVGContainerRef.current.clientHeight;
+
+      const barchart = indicatorService.createBarchart(
+        containerWidth,
+        containerHeight
+      );
 
       barchartSVGContainerRef.current.innerHTML = '';
       if (barchart) {
@@ -109,7 +115,7 @@ const TotalBedsPage: React.FC = () => {
         lineGraphSVGContainerRef.current.appendChild(lineGraph);
       }
     }
-  }, [indicatorService]);
+  }, [indicatorService, barchartSVGContainerRef, lineGraphSVGContainerRef]);
 
   const getCurrentDataSet = () => {
     if (!indicatorService) return [];
@@ -117,7 +123,7 @@ const TotalBedsPage: React.FC = () => {
   };
 
   const getCurrentDisplayData = () => {
-    if (!indicatorService) return [];
+    if (!indicatorService) return null;
     return indicatorService.getDisplayData();
   };
   const contentItems = [
@@ -131,7 +137,11 @@ const TotalBedsPage: React.FC = () => {
   ];
 
   return (
-    <Layout showLoginInformation={false} currentPage="total-beds">
+    <Layout
+      showLoginInformation={false}
+      currentPage="total-beds"
+      showNavBar={false}
+    >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-one-third">
           <ContentSidePanel items={contentItems} />

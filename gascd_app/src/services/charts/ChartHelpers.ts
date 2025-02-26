@@ -357,6 +357,45 @@ export function renderLegend(
     .attr('alignment-baseline', 'middle');
 }
 
+export function renderBarLegend(
+  chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>,
+  data: string[],
+  size: number,
+  margin: { top: number; right: number; bottom: number; left: number }
+): void {
+  const color = d3
+    .scaleOrdinal<string, string>()
+    .domain(data)
+    .range(d3.schemeSet1);
+
+  const legendGroup = chartSvg
+    .append('g')
+    .attr('transform', `translate(${margin.left}, ${margin.top - 30})`);
+
+  legendGroup
+    .selectAll('rect')
+    .data(data)
+    .enter()
+    .append('rect')
+    .attr('x', 100)
+    .attr('y', (d, i) => 100 + i * (size + 5))
+    .attr('width', size)
+    .attr('height', size)
+    .style('fill', (d) => color(d) ?? '#000');
+
+  legendGroup
+    .selectAll('text')
+    .data(data)
+    .enter()
+    .append('text')
+    .attr('x', 100 + size * 1.2)
+    .attr('y', (d, i) => 100 + i * (size + 5) + size / 2)
+    .style('fill', (d) => color(d) ?? '#000')
+    .text((d) => d)
+    .attr('text-anchor', 'left')
+    .style('alignment-baseline', 'middle');
+}
+
 export function renderLine(
   chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>,
   data: { valueTag: string; value: number }[],

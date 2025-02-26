@@ -19,6 +19,7 @@ import {
   createBarXAxisScale,
   renderBarXAxis,
   renderBarYAxis,
+  renderBarLegend,
 } from './ChartHelpers';
 
 export function generateBarchartSvg({
@@ -65,6 +66,10 @@ export function generateBarchartSvg({
       : entry.valueTag,
   }));
 
+  const metric_data: string[] = Array.from(
+    new Set(data.map((entry) => entry.metric))
+  );
+
   const xAxisScale = createBarXAxisScale(data, width, dynamicMargin);
   const yAxisScale = createBarYAxisScale(data, height, dynamicMargin);
   const { median, quartiles } = calculateQuartiles(data);
@@ -99,13 +104,7 @@ export function generateBarchartSvg({
   }
 
   if (showLegend) {
-    renderLegend(
-      chartSvg,
-      width,
-      dynamicMargin,
-      medianLineColor,
-      medianLineDash
-    );
+    renderBarLegend(chartSvg, metric_data, 10, dynamicMargin);
   }
 
   return svgElement;
@@ -128,7 +127,7 @@ export function generateLineGraphSvg({
   tickCount,
   yAxisAsPercentage = false,
   colourMap = new Map(),
-  groupedData = new Map<string, LinegraphData[]>,
+  groupedData = new Map<string, LinegraphData[]>(),
 }: LinegraphProps): SVGSVGElement | null {
   if (!data.length) return null;
 
@@ -162,7 +161,15 @@ export function generateLineGraphSvg({
 
   for (const key of groupedData.keys()) {
     const value = groupedData.get(key);
-    renderLine(chartSvg, value ?? [], xAxisScale, yAxisScale, colourMap.get(key) ?? defaultLineColor, strokeWidth, key);
+    renderLine(
+      chartSvg,
+      value ?? [],
+      xAxisScale,
+      yAxisScale,
+      colourMap.get(key) ?? defaultLineColor,
+      strokeWidth,
+      key
+    );
   }
 
   if (showXValues) {
