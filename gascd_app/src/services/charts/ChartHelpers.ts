@@ -143,25 +143,37 @@ export function renderLineXAxis(
   height: number,
   margin: { top: number; right: number; bottom: number; left: number }
 ): void {
-  const customTickFormat = (d: string): string => {
-    const currentDate = new Date(d);
-    const currentYear = currentDate.getFullYear();
+  const parseDate = d3.timeParse('%d/%m/%Y');
+  let previousTick: string = '';
+  const xAxisGroup = chartSvg
+    .append('g')
+    .attr('transform', `translate(0,${height - margin.bottom})`)
+    .call(
+      d3
+        .axisBottom(xAxisScale)
+        .tickFormat((dateString: string, i : number) => {
+          if (i == 0)
+            return '';
+          const date = parseDate(dateString);
+          if (date) {
+            const currentTick = d3.timeFormat('%Y')(date).toString();
+            if(currentTick == previousTick){
+              return '';
+            }
+            previousTick = currentTick;
+            return currentTick;
+          }          
+          return '';
+        })
+        .tickSize(0)
+    )
+    .attr('class', 'x-axis');
 
-    const domain = xAxisScale.domain();
-    const index = domain.indexOf(d);
-
-    if (index === 0) return currentYear.toString();
-
-    const previousDate = new Date(domain[index - 1]);
-    const previousYear = previousDate.getFullYear();
-
-    return currentYear !== previousYear ? currentYear.toString() : '';
-  };
-
-  const xAxis = d3
-    .axisBottom(xAxisScale)
-    .tickSize(0)
-    .tickFormat(customTickFormat);
+  xAxisGroup
+    .selectAll('text')
+    .attr('text-anchor', 'end')
+    .attr('dx', '0.2em')
+    .attr('dy', '1.8em');
 }
 
 export function renderYAxis(

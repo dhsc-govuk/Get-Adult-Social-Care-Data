@@ -57,7 +57,7 @@ class IndicatorService {
       data: this.getLinegraphData(),
       width: 675,
       height: 400,
-      xLabel: 'Year',
+      xLabel: '',
       yLabel: this.displayData.numerator,
       title: this.displayData.metric_name,
       showXValues: true,
