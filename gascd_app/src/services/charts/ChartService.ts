@@ -74,17 +74,7 @@ export function generateBarchartSvg({
   const yAxisScale = createBarYAxisScale(data, height, dynamicMargin);
   const { median, quartiles } = calculateQuartiles(data);
 
-  renderBars(
-    chartSvg,
-    data,
-    xAxisScale,
-    yAxisScale,
-    quartiles,
-    highlightQuartileColors,
-    showQuartileRanges,
-    barColor,
-    dynamicMargin
-  );
+  renderBars(chartSvg, data, xAxisScale, yAxisScale, dynamicMargin);
 
   if (showXValues) {
     renderBarXAxis(chartSvg, xAxisScale, height, dynamicMargin);

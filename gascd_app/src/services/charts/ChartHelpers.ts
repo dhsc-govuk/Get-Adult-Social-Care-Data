@@ -30,6 +30,12 @@ export function truncateLabels(label: string, maxLength: number): string {
   return label;
 }
 
+function getMetricColorScale(
+  metrics: string[]
+): d3.ScaleOrdinal<string, string> {
+  return d3.scaleOrdinal<string, string>().domain(metrics).range(d3.schemeSet1);
+}
+
 export function createXAxisScale(
   data: BarchartData[],
   width: number,
@@ -100,33 +106,40 @@ export function renderBars(
   data: BarchartData[],
   xAxisScale: d3.ScaleLinear<number, number>,
   yAxisScale: d3.ScaleBand<string>,
-  quartiles: { Q1: number; Q2: number; Q3: number },
-  quartileColors: string[],
-  showQuartileRanges: boolean,
-  barColor: string,
   margin: { top: number; right: number; bottom: number; left: number }
 ): void {
-  const barRectElements = chartSvg
-    .selectAll<SVGRectElement, BarchartData>('rect')
-    .data(data, (dataItem: BarchartData) => dataItem.valueTag);
+  const uniqueMetrics = [...new Set(data.map((d) => d.metric))];
 
-  barRectElements
-    .enter()
+  const colorScale = getMetricColorScale(uniqueMetrics);
+
+  const metricScale = d3
+    .scaleBand()
+    .domain(uniqueMetrics)
+    .range([0, yAxisScale.bandwidth()])
+    .padding(0.1);
+
+  const barGroups = chartSvg
+    .selectAll<SVGGElement, BarchartData>('.bar-group')
+    .data(data, (d: BarchartData) => `${d.valueTag}-${d.metric}`);
+
+  const barEnter = barGroups.enter().append('g').attr('class', 'bar-group');
+
+  barEnter
     .append('rect')
-    .merge(barRectElements)
-    .attr('y', (dataItem) => yAxisScale(dataItem.valueTag) ?? 0)
+    .attr(
+      'y',
+      (d) => (yAxisScale(d.valueTag) ?? 0) + (metricScale(d.metric) ?? 0)
+    )
     .attr('x', margin.left)
-    .attr('height', yAxisScale.bandwidth())
-    .attr('width', (dataItem) => {
-      const xVal = xAxisScale(dataItem.value);
+    .attr('height', metricScale.bandwidth())
+    .attr('width', (d) => {
+      const xVal = xAxisScale(d.value);
       const xZero = xAxisScale(0);
       return xVal !== undefined && xZero !== undefined ? xVal - xZero : 0;
     })
-    .attr('fill', (dataItem) => {
-      return barColor;
-    });
+    .attr('fill', (d) => colorScale(d.metric));
 
-  barRectElements.exit().remove();
+  barGroups.exit().remove();
 }
 
 export function renderXAxis(
@@ -363,10 +376,7 @@ export function renderBarLegend(
   size: number,
   margin: { top: number; right: number; bottom: number; left: number }
 ): void {
-  const color = d3
-    .scaleOrdinal<string, string>()
-    .domain(data)
-    .range(d3.schemeSet1);
+  const colorScale = getMetricColorScale(data);
 
   const legendGroup = chartSvg
     .append('g')
@@ -381,7 +391,7 @@ export function renderBarLegend(
     .attr('y', (d, i) => 100 + i * (size + 5))
     .attr('width', size)
     .attr('height', size)
-    .style('fill', (d) => color(d) ?? '#000');
+    .style('fill', (d) => colorScale(d) ?? '#000');
 
   legendGroup
     .selectAll('text')
@@ -390,7 +400,7 @@ export function renderBarLegend(
     .append('text')
     .attr('x', 100 + size * 1.2)
     .attr('y', (d, i) => 100 + i * (size + 5) + size / 2)
-    .style('fill', (d) => color(d) ?? '#000')
+    .style('fill', (d) => colorScale(d) ?? '#000')
     .text((d) => d)
     .attr('text-anchor', 'left')
     .style('alignment-baseline', 'middle');
