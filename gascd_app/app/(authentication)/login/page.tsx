@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useCallback, useState } from 'react';
-import Layout from '../../src/components/common/layout/Layout';
-import StandardButton from '../../src/components/common/buttons/functionality/standard-button/StandardButton';
+import Layout from '../../../src/components/common/layout/Layout';
+import StandardButton from '../../../src/components/common/buttons/functionality/standard-button/StandardButton';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 
@@ -14,7 +14,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <Layout showLoginInformation={false} currentPage="login">
+      <Layout showLoginInformation={false} currentPage="login">
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
           <h1 className="govuk-heading-l">Sign In</h1>
@@ -50,7 +50,7 @@ const LoginPage: React.FC = () => {
           </Link>
         </div>
       </div>
-    </Layout>
+      </Layout>
   );
 };
 

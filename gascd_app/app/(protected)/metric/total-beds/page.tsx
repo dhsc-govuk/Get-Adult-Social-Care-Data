@@ -1,7 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
-import ContentSidePanel from '../../../src/components/common/panels/contents-side-panel/ContentsSidePanel';
+import ContentSidePanel from '../../../../src/components/common/panels/contents-side-panel/ContentsSidePanel';
 import IndicatorTable from '@/components/indicator-components/IndicatorTable';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
