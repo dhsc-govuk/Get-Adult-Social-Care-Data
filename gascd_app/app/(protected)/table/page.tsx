@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import DataTable from '@/components/tables/table';
+import DataTable from '@/components/tables/Table';
 
 const TablePage: React.FC = () => {
   const mockColumnHeaders = [
@@ -33,7 +33,7 @@ const TablePage: React.FC = () => {
   };
 
   return (
-    <Layout showLoginInformation={false} currentPage="table">
+    <Layout showLoginInformation={false} currentPage="table" showNavBar={false}>
       <DataTable
         columnHeaders={mockColumnHeaders}
         rowHeaders={mockRowHeaders}

@@ -14,7 +14,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-      <Layout showLoginInformation={false} currentPage="login">
+    <Layout showLoginInformation={false} currentPage="login" showNavBar={false}>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
           <h1 className="govuk-heading-l">Sign In</h1>
