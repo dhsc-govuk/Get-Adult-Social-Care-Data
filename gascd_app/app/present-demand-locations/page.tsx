@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 const PresentDemandLocations: React.FC = () => {
   const [availableLocations, setAvailableLocations] = useState<any[]>([]);
@@ -38,13 +39,11 @@ const PresentDemandLocations: React.FC = () => {
     setSelectedCPLocation(value);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     if (selectedCPLocation) {
       localStorage.setItem('selectedValue', selectedCPLocation);
-      alert('Value saved: ' + selectedCPLocation);
     } else {
-      alert('Select a Care Provider location');
+      alert('Please select an option!');
     }
   };
 
@@ -62,6 +61,37 @@ const PresentDemandLocations: React.FC = () => {
         <div className="govuk-grid-column-two-thirds">
           <h1 className="govuk-heading-l">Edit locations </h1>
           <h2 className="govuk-heading-m"> Your locations</h2>
+          <div className="govuk-form-group">
+            <form>
+              <fieldset className="govuk-fieldset govuk-!-margin-bottom-6">
+                <div className="govuk-radios" data-module="govuk-radios">
+                  {availableLocations.map((item, index) => (
+                    <div className="govuk-radios__item" key={item.id}>
+                      <input
+                        className="govuk-radios__input"
+                        id={`radio-${index}`}
+                        name="options"
+                        type="radio"
+                        value={item.metric_location_id}
+                        onChange={() => handleChange(item.metric_location_id)}
+                      />
+                      <label
+                        className="govuk-label govuk-radios__label"
+                        htmlFor={`radio-${index}`}
+                      >
+                        {item.metric_location_name}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </fieldset>
+              <Link href="/present-demand" onClick={handleSubmit}>
+                <button type="button" className="govuk-button">
+                  Submit
+                </button>
+              </Link>
+            </form>
+          </div>
         </div>
       </div>
     </Layout>

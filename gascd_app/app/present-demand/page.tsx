@@ -77,7 +77,10 @@ const PresentDemandPage: React.FC = () => {
   ]);
 
   useEffect(() => {
-    if (session) {
+    const storedLocationId = localStorage.getItem('selectedValue');
+    if (storedLocationId) {
+      setCPLocationId(storedLocationId);
+    } else if (session) {
       setCPLocationId(session.user.locationId);
     }
   }, [session]);
@@ -302,7 +305,7 @@ const PresentDemandPage: React.FC = () => {
                   <p>{selectedLocations.join(', ')}</p>
                 </dd>
                 <dd className="govuk-summary-list__actions">
-                  <a className="govuk-link" href="#">
+                  <a className="govuk-link" href="/present-demand-locations">
                     Change<span className="govuk-visually-hidden"> name</span>
                   </a>
                 </dd>
