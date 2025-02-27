@@ -24,7 +24,7 @@ class PresentDemandService {
     const data = await this.getLocations(query);
     console.log(data, 'Data');
     let locationNames = [
-      'filter',
+      'Filter',
       data.la_name,
       data.region_name,
       data.country_name,
@@ -42,7 +42,7 @@ class PresentDemandService {
   ): Promise<string[]> {
     const data = await this.getLocations(query);
     const locationIds = [
-      'filter',
+      'Filter',
       data.la_code,
       data.region_code,
       data.country_code,
