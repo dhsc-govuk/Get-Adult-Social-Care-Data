@@ -73,7 +73,6 @@ const TotalBedsPage: React.FC = () => {
         const insights: string[] =
           await SmartInsightsFetchService.getData(indicatorQuery);
         setSmartInsights(insights);
-        console.log('Updated Smart Insights:', smartInsights);
       };
       fetchData();
     }
