@@ -165,7 +165,10 @@ const PresentDemandPage: React.FC = () => {
     const fetchAllData = async () => {
       if (!CPLocationId) return;
       try {
-        console.log(locationNames, '=====================================');
+        const testTest =
+          await PresentDemandService.getAvailableLocations(CPLocationId);
+        console.log(testTest, ' ================');
+        console.log(locationNames);
         const demographicData: Indicator[] =
           await IndicatorFetchService.getData(demographicQuery);
         const filteredDemographicData =
@@ -338,7 +341,7 @@ const PresentDemandPage: React.FC = () => {
             showCareProvider={false}
           ></DataTable>
           <DownloadTableDataCSVLink
-            data={filteredDemographicData}
+            data={TableService.removeLoadDateTime(filteredDemographicData)}
             filename="Demographic factors"
             xLabel=""
           ></DownloadTableDataCSVLink>
@@ -406,8 +409,8 @@ const PresentDemandPage: React.FC = () => {
               showCareProvider={false}
             ></DataTable>
             <DownloadTableDataCSVLink
-              data={filteredBedData}
-              filename="Demographic factors"
+              data={TableService.removeLoadDateTime(filteredBedData)}
+              filename="Current Capacity"
               xLabel=""
             ></DownloadTableDataCSVLink>
             <p className="govuk-body">
@@ -458,8 +461,8 @@ const PresentDemandPage: React.FC = () => {
                 careProviderMedianMetrics={careProviderMedianMetrics}
               ></DataTable>
               <DownloadTableDataCSVLink
-                data={finalCpData}
-                filename="Demographic factors"
+                data={TableService.removeLoadDateTime(finalCpData)}
+                filename="Care providers data"
                 xLabel=""
               ></DownloadTableDataCSVLink>
             </div>

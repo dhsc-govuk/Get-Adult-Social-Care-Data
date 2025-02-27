@@ -13,7 +13,7 @@ import Navbar from '../navbar/Navbar';
 import { Session } from 'next-auth';
 
 type Props = {
-  children: ReactNode;
+  children?: ReactNode;
   breadcrumbs?: Array<Breadcrumb>;
   autoSpaceMainContent?: boolean;
   showLoginInformation: boolean;

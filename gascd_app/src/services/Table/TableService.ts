@@ -16,6 +16,12 @@ class TableService {
     });
     return Object.values(latestEntries);
   }
+
+  public static removeLoadDateTime(
+    data: Indicator[]
+  ): Omit<Indicator, 'load_date_time'>[] {
+    return data.map(({ load_date_time, ...rest }) => rest);
+  }
 }
 
 export default TableService;

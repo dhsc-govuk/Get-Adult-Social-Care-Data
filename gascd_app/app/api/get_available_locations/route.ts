@@ -9,25 +9,13 @@ export async function GET(req: NextRequest) {
     const resultSet = await pool
       .request()
       .input('provider_location_id', provider_location_id).query(`
-        SELECT 
-           provider_location_id,
-           provider_location_name,
-           provider_id,
-           provider_name,
-           la_code,
-           la_name,
-           region_code,
-           region_name,
-           country_code,
-           country_name,
-           load_date_time
-        FROM ref.provider_location_full_lookup
-        WHERE provider_location_id = @provider_location_id
+        SELECT *
+        FROM access.metric_location_user_access
+        WHERE user_access_location_id = @provider_location_id AND user_access_location_type = 'Care provider location' AND metric_type = 'Capacity Tracker'
       `);
 
     await pool.close();
-    console.log(resultSet);
-    return NextResponse.json(resultSet.recordset[0], { status: 200 });
+    return NextResponse.json(resultSet.recordset, { status: 200 });
   } catch (err) {
     console.error('Error during database operations:', err);
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';

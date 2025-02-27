@@ -17,19 +17,33 @@ class PresentDemandService {
     }
   }
 
+  public static async getAvailableLocations(query: string): Promise<any> {
+    try {
+      const response = await fetch(
+        `api/get_available_locations?provider_location_id=${query}`
+      );
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('error', error);
+      throw new Error('Failed to retrieve available location data');
+    }
+  }
+
   public static async getLocationNames(
     query: string,
     CareProvider: boolean
   ): Promise<string[]> {
     const data = await this.getLocations(query);
-    console.log(data, 'Data');
+
     let locationNames = [
       'Filter',
       data.la_name,
       data.region_name,
       data.country_name,
     ];
-    console.log(locationNames, 'Location names!!!!!!!!');
     if (CareProvider) {
       locationNames.splice(1, 0, data.provider_location_name);
     }

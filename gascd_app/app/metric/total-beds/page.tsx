@@ -44,7 +44,6 @@ const TotalBedsPage: React.FC = () => {
           ...prev,
           metric_ids: metricIds,
         }));
-        console.log(indicatorQuery);
       } catch (error) {
         console.error('Error parsing selected filters:', error);
       }
@@ -56,7 +55,7 @@ const TotalBedsPage: React.FC = () => {
       const data: Indicator[] =
         await IndicatorFetchService.getData(indicatorQuery);
 
-      data.forEach((obj) => console.log(obj));
+      // data.forEach((obj) => console.log(obj));
       const displayData: IndicatorDisplay =
         await IndicatorFetchService.getDisplayData('');
 
