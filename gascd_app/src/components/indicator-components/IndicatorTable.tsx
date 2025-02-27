@@ -8,9 +8,9 @@ import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 
 type Props = {
   data: BarchartData[];
-  display: IndicatorDisplay;
-  barchartSVG: RefObject<HTMLDivElement>;
-  lineGraphSVG: RefObject<HTMLDivElement>;
+  display: IndicatorDisplay | null;
+  barchartSVG: RefObject<HTMLDivElement | null>;
+  lineGraphSVG: RefObject<HTMLDivElement | null>;
   selectedFilters: TotalBedsFilters[];
 };
 
@@ -22,7 +22,11 @@ const IndicatorTable: React.FC<Props> = ({
   selectedFilters,
 }) => {
   const handleCSVDownloadClick = () => {
-    downloadCSV(data, display.metric_name, display.numerator);
+    downloadCSV(
+      data,
+      display ? display.metric_name : 'Error',
+      display ? display.numerator : 'Error'
+    );
   };
 
   const handlePNGDownloadClick = () => {

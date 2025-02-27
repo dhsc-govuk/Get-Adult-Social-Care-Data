@@ -31,11 +31,14 @@ class IndicatorService {
     return this.linegraphData;
   }
 
-  public createBarchart(): SVGSVGElement | null {
+  public createBarchart(
+    containerWidth: number,
+    containerHeight: number
+  ): SVGSVGElement | null {
     return generateBarchartSvg({
       data: this.getChartData(),
-      width: 675,
-      height: 400,
+      width: containerWidth,
+      height: containerHeight < 400 ? 400 : containerHeight,
       xLabel: this.displayData.denominator,
       yLabel: this.displayData.numerator,
       title: this.displayData.metric_name,
@@ -70,8 +73,11 @@ class IndicatorService {
       yAxisAsPercentage: false,
       tickCount: 8,
       showMedian: false,
-      colourMap: new Map([["bedcount_per_100000_adults_total", "purple"], ["bedcount_per_100000_adults_total_dementia_residential", "orange"]]),
-      groupedData: this.groupByMetricId(this.getLinegraphData())
+      colourMap: new Map([
+        ['bedcount_per_100000_adults_total', 'purple'],
+        ['bedcount_per_100000_adults_total_dementia_residential', 'orange'],
+      ]),
+      groupedData: this.groupByMetricId(this.getLinegraphData()),
     });
   }
 
@@ -106,7 +112,7 @@ class IndicatorService {
   private transformToChartData(data: Indicator[]): BarchartData[] {
     return data
       .map((entry: Indicator) => ({
-        xAxisValue: entry.location_id,
+        valueTag: entry.location_id,
         metric: entry.metric_id,
         value: entry.data_point,
       }))
@@ -127,7 +133,7 @@ class IndicatorService {
   private transformToLineChartData(data: Indicator[]): LinegraphData[] {
     return data
       .map((entry: Indicator) => ({
-        xAxisValue: entry.metric_date.toString(),
+        valueTag: entry.metric_date.toString(),
         metric: entry.metric_id,
         value: entry.data_point,
         date: this.parseDate(entry.metric_date),
@@ -135,7 +141,7 @@ class IndicatorService {
       .sort((a, b) => a.date.getTime() - b.date.getTime());
   }
 
-  private parseDate(date : Date) {
+  private parseDate(date: Date) {
     const parts = date.toString().split('/');
     const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
     return new Date(formattedDate);

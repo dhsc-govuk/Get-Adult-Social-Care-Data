@@ -1,5 +1,5 @@
 export interface BarchartData {
-  xAxisValue: string;
+  valueTag: string;
   value: number;
   metric: string;
 }
