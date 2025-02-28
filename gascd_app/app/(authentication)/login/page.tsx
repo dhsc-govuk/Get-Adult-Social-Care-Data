@@ -50,7 +50,7 @@ const LoginPage: React.FC = () => {
           </Link>
         </div>
       </div>
-      </Layout>
+    </Layout>
   );
 };
 

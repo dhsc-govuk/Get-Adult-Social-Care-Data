@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { MouseEvent, ReactNode, useEffect, useRef } from 'react';
 import { initAll } from '../../../../public/govuk-frontend/js/govuk-frontend.min.js';
 import Header from '../header/Header';
@@ -11,9 +11,8 @@ import { Breadcrumb } from '../../../data/interfaces/Breadcrumb';
 import Navbar from '../navbar/Navbar';
 import { Session } from 'next-auth';
 
-
 type Props = {
-  children: ReactNode;
+  children?: ReactNode;
   breadcrumbs?: Array<Breadcrumb>;
   autoSpaceMainContent?: boolean;
   showLoginInformation: boolean;

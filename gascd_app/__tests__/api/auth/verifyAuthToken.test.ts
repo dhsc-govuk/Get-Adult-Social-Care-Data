@@ -51,5 +51,4 @@ describe('Verify Auth Token', () => {
     expect(jwt.verify).toHaveBeenCalled();
     expect(verifiedToken.oid).toBe('user-1');
   });
-
 });

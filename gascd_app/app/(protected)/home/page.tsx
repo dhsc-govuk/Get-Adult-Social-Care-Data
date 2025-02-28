@@ -1,4 +1,4 @@
-import '../../../src/styles/main.scss'
+import '../../../src/styles/main.scss';
 
 import React from 'react';
 import Layout from '../../../src/components/common/layout/Layout';

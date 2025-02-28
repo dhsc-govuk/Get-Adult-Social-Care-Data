@@ -13,15 +13,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   return (
     <html lang="en">
-      <Axe />     
+      <Axe />
       <NextAuthSessionProvider>
-        <body className="govuk-frontend-supported">
-          {children}
-          </body>
-          </NextAuthSessionProvider> 
+        <body className="govuk-frontend-supported">{children}</body>
+      </NextAuthSessionProvider>
     </html>
   );
 }

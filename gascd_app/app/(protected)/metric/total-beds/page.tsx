@@ -144,83 +144,83 @@ const TotalBedsPage: React.FC = () => {
 
   return (
     <Suspense>
-    <Layout
-      showLoginInformation={false}
-      currentPage="total-beds"
-      showNavBar={false}
-    >
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-one-third">
-          <ContentSidePanel items={contentItems} />
-        </div>
-        <div className="govuk-grid-column-two-thirds">
-          <h1 className="govuk-heading-l">
-            Adult social care beds per 100,000 adult population
-          </h1>
-          <h2 id="definition" className="govuk-heading-m">
-            Indicator definition and supporting information
-          </h2>
-          <p className="govuk-body">
-            The total number of beds recorded by care providers across health
-            and adult social care, adjusted to a rate of 100,000 adults in the
-            local authority population.
-          </p>
-          <p className="govuk-body">
-            For detailed information about this indicator, including data
-            definitions, data source, update schedule and limitations to be
-            aware of before using this data, go to &nbsp;
-            <a
-              href="../current/help/beds-per-100000-adult-population.html"
-              className="govuk-link"
-            >
-              supporting information for this data
-            </a>
-            .
-          </p>
-          <h2 id="locations" className="govuk-heading-m">
-            Your selected locations
-          </h2>
-          <p className="govuk-body">
-            Select locations to view and compare data.
-          </p>
-          <table className="govuk-table">
-            <tbody className="govuk-table__body">
-              <tr className="govuk-table__row">
-                <th scope="row" className="govuk-table__header">
-                  Locations
-                </th>
-                <td className="govuk-table__cell">
-                  <ul className="govuk-list" style={{ textAlign: 'left' }}>
-                    <li>Suffolk</li>
-                    <li>East of England</li>
-                  </ul>
-                </td>
-                <td className="govuk-table__cell">
-                  <a href="present-demand-locations" className="govuk-link">
-                    Change
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <IndicatorTable
-            data={getCurrentDataSet()}
-            display={getCurrentDisplayData()}
-            barchartSVG={barchartSVGContainerRef}
-            lineGraphSVG={lineGraphSVGContainerRef}
-            selectedFilters={parsedFilters}
-          />
+      <Layout
+        showLoginInformation={false}
+        currentPage="total-beds"
+        showNavBar={false}
+      >
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-one-third">
+            <ContentSidePanel items={contentItems} />
+          </div>
+          <div className="govuk-grid-column-two-thirds">
+            <h1 className="govuk-heading-l">
+              Adult social care beds per 100,000 adult population
+            </h1>
+            <h2 id="definition" className="govuk-heading-m">
+              Indicator definition and supporting information
+            </h2>
+            <p className="govuk-body">
+              The total number of beds recorded by care providers across health
+              and adult social care, adjusted to a rate of 100,000 adults in the
+              local authority population.
+            </p>
+            <p className="govuk-body">
+              For detailed information about this indicator, including data
+              definitions, data source, update schedule and limitations to be
+              aware of before using this data, go to &nbsp;
+              <a
+                href="../current/help/beds-per-100000-adult-population.html"
+                className="govuk-link"
+              >
+                supporting information for this data
+              </a>
+              .
+            </p>
+            <h2 id="locations" className="govuk-heading-m">
+              Your selected locations
+            </h2>
+            <p className="govuk-body">
+              Select locations to view and compare data.
+            </p>
+            <table className="govuk-table">
+              <tbody className="govuk-table__body">
+                <tr className="govuk-table__row">
+                  <th scope="row" className="govuk-table__header">
+                    Locations
+                  </th>
+                  <td className="govuk-table__cell">
+                    <ul className="govuk-list" style={{ textAlign: 'left' }}>
+                      <li>Suffolk</li>
+                      <li>East of England</li>
+                    </ul>
+                  </td>
+                  <td className="govuk-table__cell">
+                    <a href="present-demand-locations" className="govuk-link">
+                      Change
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <IndicatorTable
+              data={getCurrentDataSet()}
+              display={getCurrentDisplayData()}
+              barchartSVG={barchartSVGContainerRef}
+              lineGraphSVG={lineGraphSVGContainerRef}
+              selectedFilters={parsedFilters}
+            />
 
-          <div>{parseMarkdownBlocks(smartInsights)}</div>
+            <div>{parseMarkdownBlocks(smartInsights)}</div>
 
-          <p className="govuk-body">
-            <a href="javascript:history.back()" className="govuk-link">
-              Back
-            </a>
-          </p>
+            <p className="govuk-body">
+              <a href="javascript:history.back()" className="govuk-link">
+                Back
+              </a>
+            </p>
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
     </Suspense>
   );
 };
