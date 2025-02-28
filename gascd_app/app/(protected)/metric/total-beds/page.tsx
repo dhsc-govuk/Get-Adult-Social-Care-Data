@@ -8,7 +8,7 @@ import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import IndicatorService from '@/services/indicator/IndicatorService';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -143,6 +143,7 @@ const TotalBedsPage: React.FC = () => {
   ];
 
   return (
+    <Suspense>
     <Layout
       showLoginInformation={false}
       currentPage="total-beds"
@@ -220,6 +221,7 @@ const TotalBedsPage: React.FC = () => {
         </div>
       </div>
     </Layout>
+    </Suspense>
   );
 };
 
