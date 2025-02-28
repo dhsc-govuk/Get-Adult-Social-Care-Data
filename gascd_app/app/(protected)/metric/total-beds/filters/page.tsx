@@ -37,7 +37,7 @@ const TotalBedsFiltersPage: React.FC = () => {
 
   return (
     <Layout
-      showLoginInformation={false}
+      showLoginInformation={true}
       currentPage={'/metric/total-beds/filters'}
     >
       <div className="govuk-grid-row">

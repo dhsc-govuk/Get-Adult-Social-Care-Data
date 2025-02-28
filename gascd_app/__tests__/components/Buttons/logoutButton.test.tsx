@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import LogoutButton from '../../../src/components/common/buttons/logOutButton';
+import LogoutButton from '../../../src/components/common/buttons/logoutButton';
 import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
 

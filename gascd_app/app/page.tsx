@@ -1,5 +1,10 @@
-import HomePage from './home/page';
+import HomePage from './(protected)/home/page';
+import AuthLayout from './(protected)/layout';
 
 export default function Home() {
-  return <HomePage />;
+  return (
+    <AuthLayout>
+      <HomePage />
+    </AuthLayout>
+  );
 }

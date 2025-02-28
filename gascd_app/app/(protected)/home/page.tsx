@@ -1,10 +1,11 @@
-import '../../src/styles/main.scss';
+import '../../../src/styles/main.scss';
+
 import React from 'react';
-import Layout from '../../src/components/common/layout/Layout';
-import { Breadcrumb } from '../../src/data/interfaces/Breadcrumb';
+import Layout from '../../../src/components/common/layout/Layout';
+import { Breadcrumb } from '../../../src/data/interfaces/Breadcrumb';
 import ButtonWithArrow from '@/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../api/auth/authOptions';
+import { authOptions } from '../../api/auth/authOptions';
 
 export default async function HomePage() {
   const breadcrumbs: Array<Breadcrumb> = [

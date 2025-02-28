@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
 
 const RegisterYourNamePage: React.FC = () => {
-
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [jobTitle, setJobTitle] = useState('');
@@ -55,8 +54,7 @@ const RegisterYourNamePage: React.FC = () => {
               <div className="govuk-summary-list__row">
                 <dt className="govuk-summary-list__key">Name</dt>
                 <dd className="govuk-summary-list__value">
-                  {firstName || ''}{' '}
-                  {lastName || ''}
+                  {firstName || ''} {lastName || ''}
                 </dd>
                 <dd className="govuk-summary-list__actions">
                   <a className="govuk-link" href="/register/your-name">
@@ -66,9 +64,7 @@ const RegisterYourNamePage: React.FC = () => {
               </div>
               <div className="govuk-summary-list__row">
                 <dt className="govuk-summary-list__key">Job title</dt>
-                <dd className="govuk-summary-list__value">
-                  {jobTitle || ''}
-                </dd>
+                <dd className="govuk-summary-list__value">{jobTitle || ''}</dd>
                 <dd className="govuk-summary-list__actions">
                   <a className="govuk-link" href="/register/job-title">
                     Change
