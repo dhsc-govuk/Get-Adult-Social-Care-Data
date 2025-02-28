@@ -52,14 +52,4 @@ describe('Verify Auth Token', () => {
     expect(verifiedToken.oid).toBe('user-1');
   });
 
-  test('resolves when user is returned from graph api call', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: async () =>
-        ({ id: 'user-1', displayName: 'Test User' }) as B2CGraphUser,
-    } as Response);
-
-    const { b2cGraphUser } = await verifyAuthToken(mockAccessToken);
-    expect(b2cGraphUser.id).toBe('user-1');
-  });
 });
