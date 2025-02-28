@@ -33,7 +33,7 @@ const TablePage: React.FC = () => {
   };
 
   return (
-    <Layout showLoginInformation={false} currentPage="table" showNavBar={false}>
+    <Layout showLoginInformation={true} currentPage="table" showNavBar={false}>
       <DataTable
         columnHeaders={mockColumnHeaders}
         rowHeaders={mockRowHeaders}

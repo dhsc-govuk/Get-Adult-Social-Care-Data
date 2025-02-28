@@ -1,5 +1,5 @@
 
-export default async function AuthLayout({
+export default async function NoAuthLayout({
   children,
 }: {
   children: React.ReactNode;

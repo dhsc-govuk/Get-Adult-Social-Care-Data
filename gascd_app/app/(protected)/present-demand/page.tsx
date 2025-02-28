@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
-import ContentSidePanel from '../../src/components/common/panels/contents-side-panel/ContentsSidePanel';
+import ContentSidePanel from '../../../src/components/common/panels/contents-side-panel/ContentsSidePanel';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { Indicator } from '@/data/interfaces/Indicator';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';

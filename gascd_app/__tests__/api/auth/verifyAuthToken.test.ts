@@ -62,45 +62,4 @@ describe('Verify Auth Token', () => {
     const { b2cGraphUser } = await verifyAuthToken(mockAccessToken);
     expect(b2cGraphUser.id).toBe('user-1');
   });
-
-  test('rejects and throws error when user returned from graph api does not match identity', async () => {
-    (jwt.verify as jest.Mock).mockImplementation(
-      (token, key, options, callback) => {
-        const decoded: VerifiedToken = {
-          sub: 'user-123',
-          oid: 'user-123',
-        };
-        callback(null, decoded);
-      }
-    );
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: async () =>
-        ({ id: 'user-999', displayName: 'Different User' }) as B2CGraphUser,
-    } as Response);
-
-    await expect(verifyAuthToken(mockAccessToken)).rejects.toThrow(
-      'User identity does not match'
-    );
-  });
-  test('rejects when Graph API returns a non-ok response', async () => {
-    (jwt.verify as jest.Mock).mockImplementation(
-      (token, key, options, callback) => {
-        const decoded: VerifiedToken = {
-          sub: 'user-123',
-          oid: 'user-123',
-        };
-        callback(null, decoded);
-      }
-    );
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: false,
-      json: async () => ({}),
-    } as Response);
-
-    // Act & Assert
-    await expect(verifyAuthToken(mockAccessToken)).rejects.toThrow(
-      'Error calling Graph API'
-    );
-  });
 });

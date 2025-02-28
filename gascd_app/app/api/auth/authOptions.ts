@@ -5,6 +5,7 @@ declare module 'next-auth' {
   interface Session {
     idToken?: string;
     accessToken?: string;
+    refreshToken?: string;
     user: {
       locationType?: string;
       locationId?: string;
@@ -23,6 +24,7 @@ declare module 'next-auth/jwt' {
     locationType?: string;
     locationId?: string;
     accessToken?: string;
+    refreshToken?: string;
   }
 }
 
@@ -37,14 +39,11 @@ export const authOptions: NextAuthOptions = {
       primaryUserFlow: process.env.AZURE_AD_B2C_USER_SIGN_IN as string,
       authorization: {
         params: {
-          scope:
-            'openid offline_access profile https://graph.microsoft.com/.default',
+          scope: 'openid offline_access profile',
         },
       },
       wellKnown: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${process.env.AZURE_AD_B2C_USER_SIGN_IN}`,
       profile: (profile) => {
-        console.log('Azure B2C profile:', profile);
-
         return { id: profile.sub };
       },
     }),
@@ -67,14 +66,11 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, account, profile }) {
       if (account && profile) {
-        console.log(
-          '******************* AccessToken: ***************************',
-          account.access_token
-        );
         token.idToken = account.id_token as string;
         token.locationType = profile['extension_Location_Type'] as string;
         token.locationId = profile['extension_Location_ID'] as string;
         token.accessToken = account.access_token as string;
+        token.refreshToken = account.refresh_token;
       }
       return token;
     },
@@ -83,11 +79,7 @@ export const authOptions: NextAuthOptions = {
       session.user.locationType = token.locationType as string;
       session.user.locationId = token.locationId as string;
       session.accessToken = token.accessToken as string;
-
-      console.log(
-        '****************** Access_Token *********',
-        session.accessToken
-      );
+      session.refreshToken = token.refreshToken;
 
       return session;
     },

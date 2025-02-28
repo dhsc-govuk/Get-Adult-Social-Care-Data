@@ -1,14 +1,9 @@
 import { withAuth } from 'next-auth/middleware';
-export default withAuth(
-  async function middleware(req) {
-    console.log('Middleware TOKENNNN', req.nextauth.token);
+export default withAuth(async function middleware(req) {}, {
+  pages: {
+    signIn: '/login',
   },
-  {
-    pages: {
-      signIn: '/login',
-    },
-    callbacks: {
-      authorized: ({ token }) => !!token,
-    },
-  }
-);
+  callbacks: {
+    authorized: ({ token }) => !!token,
+  },
+});

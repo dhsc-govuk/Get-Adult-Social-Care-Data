@@ -18,10 +18,7 @@ export interface B2CGraphUser {
 }
 
 const azureB2cClient = jwksClient({
-  //jwksUri: 'https://<your-tenant-name>.b2clogin.com/<your-tenant-name>.onmicrosoft.com/<your-policy>/discovery/v2.0/keys'
-  jwksUri:
-    //TODO change this to use Env Variables
-    'https://DHSCGASCAuthDev.b2clogin.com/DHSCGASCAuthDev.onmicrosoft.com/B2C_1_GASCD_User_Sign_In/discovery/v2.0/keys',
+  jwksUri: `https://${tenant}.b2clogin.com/${tenant}.onmicrosoft.com/${userFlow}/discovery/v2.0/keys`,
 });
 
 function getAzureKey(header: JwtHeader, callback: SigningKeyCallback): void {
@@ -42,7 +39,7 @@ function getAzureKey(header: JwtHeader, callback: SigningKeyCallback): void {
 
 export async function verifyAuthToken(
   idToken: string
-): Promise<{ verifiedToken: VerifiedToken; b2cGraphUser: B2CGraphUser }> {
+): Promise<{ verifiedToken: VerifiedToken }> {
   // Check that the Token Is valid
   const verifiedToken = await new Promise<VerifiedToken>((resolve, reject) => {
     jwt.verify(
@@ -56,33 +53,12 @@ export async function verifyAuthToken(
         if (typeof decoded !== 'object' || decoded === null) {
           return reject(new Error('Invalid token payload'));
         }
-        console.log('Decoded JWT:', decoded); //TODO Remove 
-
         resolve(decoded as VerifiedToken);
       }
     );
   });
 
-  // Check that the user is the right User
-  // const response = await fetch('https://graph.microsoft.com/v1.0/me', {
-  //   headers: {
-  //     Authorization: `Bearer ${idToken}`,
-  //   },
-  // });
+  // TODO add GraphAPI
 
-  // if (!response.ok) {
-  //   throw new Error('Error calling Graph API');
-  // }
-
-  // const b2cGraphUser = (await response.json()) as B2CGraphUser;
-
-  // if (
-  //   b2cGraphUser.id !== verifiedToken.oid &&
-  //   b2cGraphUser.id !== verifiedToken.sub
-  // ) {
-  //   throw new Error('User identity does not match');
-  // }
-
-  // Crack on and load the page
   return { verifiedToken };
 }

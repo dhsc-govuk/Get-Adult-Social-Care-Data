@@ -131,7 +131,7 @@ const TotalBedsPage: React.FC = () => {
   ];
 
   return (
-    <Layout showLoginInformation={false} currentPage="total-beds">
+    <Layout showLoginInformation={true} currentPage="total-beds">
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-one-third">
           <ContentSidePanel items={contentItems} />
