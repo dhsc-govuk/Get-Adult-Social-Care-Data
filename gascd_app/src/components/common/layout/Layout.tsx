@@ -1,5 +1,4 @@
-'use client';
-
+'use client'
 import React, { MouseEvent, ReactNode, useEffect, useRef } from 'react';
 import { initAll } from '../../../../public/govuk-frontend/js/govuk-frontend.min.js';
 import Header from '../header/Header';
@@ -8,9 +7,10 @@ import { focusMainContent } from '../../../helpers/ManageFocus';
 import PhaseBanner from '../phase-banner/PhaseBanner';
 import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
 import { Breadcrumb } from '../../../data/interfaces/Breadcrumb';
-import LoginInformation from '../../util-components/login-information/LoginInformation';
+// import LoginInformation from '../../util-components/login-information/LoginInformation';
 import Navbar from '../navbar/Navbar';
 import { Session } from 'next-auth';
+
 
 type Props = {
   children: ReactNode;

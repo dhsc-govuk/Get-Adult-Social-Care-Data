@@ -1,6 +1,6 @@
 import React from 'react';
-import { getServerSession, Session } from 'next-auth';
-import LogoutButton from '../buttons/logoutButton';
+import { Session } from 'next-auth';
+import LogoutButton from '../buttons/logoutButton'
 
 type Props = {
   session?: Session | null;
@@ -40,17 +40,7 @@ const Header: React.FC<Props> = ({ session }) => {
           {!session ? (
             <>&nbsp;</>
           ) : (
-            <p style={{ float: 'right' }}>
-              <a
-                href="/manage-account"
-                style={{
-                  color: 'white',
-                  textDecoration: 'none',
-                  fontSize: '19px',
-                }}
-              >
-                Manage Account
-              </a>
+            <p style={{ float: 'right' }}>                      
               <LogoutButton />
             </p>
           )}

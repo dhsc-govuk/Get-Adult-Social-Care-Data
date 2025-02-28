@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import Layout from '../../src/components/common/layout/Layout';
-import ButtonWithArrow from '../../src/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
+import Layout from '../../../src/components/common/layout/Layout';
+import ButtonWithArrow from '../../../src/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
 import './registerPage.scss';
 import { Breadcrumb } from '@/data/interfaces/Breadcrumb';
 import { signIn } from 'next-auth/react';
