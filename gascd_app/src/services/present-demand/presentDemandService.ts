@@ -18,7 +18,9 @@ class PresentDemandService {
     }
   }
 
-  public static async getAvailableLocations(query: string): Promise<any> {
+  public static async getAvailableLocations(
+    query: string
+  ): Promise<Indicator[]> {
     try {
       const response = await fetch(
         `api/get_available_locations?provider_location_id=${query}`
@@ -27,6 +29,27 @@ class PresentDemandService {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
       return await response.json();
+    } catch (error) {
+      console.error('error', error);
+      throw new Error('Failed to retrieve available location data');
+    }
+  }
+
+  public static async getDefaultCPLocation(
+    providerLocationId: string,
+    locationType: string
+  ): Promise<string> {
+    try {
+      const response = await fetch(
+        `api/get_available_locations?provider_location_id=${encodeURIComponent(providerLocationId)}&location_type=${encodeURIComponent(locationType)}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data[0].locationId;
     } catch (error) {
       console.error('error', error);
       throw new Error('Failed to retrieve available location data');
