@@ -1,4 +1,4 @@
-import { LinegraphProps } from '@/data/interfaces/LinegraphData';
+import { LinegraphData, LinegraphProps } from '@/data/interfaces/LinegraphData';
 import { BarchartProps } from '../../data/interfaces/BarchartData';
 import {
   initializeSvg,
@@ -15,6 +15,11 @@ import {
   calculateQuartiles,
   renderLine,
   renderLineXAxis,
+  createBarYAxisScale,
+  createBarXAxisScale,
+  renderBarXAxis,
+  renderBarYAxis,
+  renderBarLegend,
 } from './ChartHelpers';
 
 export function generateBarchartSvg({
@@ -56,33 +61,26 @@ export function generateBarchartSvg({
 
   data = data.map((entry) => ({
     ...entry,
-    xAxisValue: shortenLabels
-      ? truncateLabels(entry.xAxisValue, 16)
-      : entry.xAxisValue,
+    valueTag: shortenLabels
+      ? truncateLabels(entry.valueTag, 16)
+      : entry.valueTag,
   }));
 
-  const xAxisScale = createXAxisScale(data, width, dynamicMargin);
-  const yAxisScale = createYAxisScale(data, height, dynamicMargin);
-  const { median, quartiles } = calculateQuartiles(data);
-
-  renderBars(
-    chartSvg,
-    data,
-    xAxisScale,
-    yAxisScale,
-    quartiles,
-    highlightQuartileColors,
-    showQuartileRanges,
-    barColor,
-    height,
-    dynamicMargin
+  const metric_data: string[] = Array.from(
+    new Set(data.map((entry) => entry.metric))
   );
 
+  const xAxisScale = createBarXAxisScale(data, width, dynamicMargin);
+  const yAxisScale = createBarYAxisScale(data, height, dynamicMargin);
+  const { median, quartiles } = calculateQuartiles(data);
+
+  renderBars(chartSvg, data, xAxisScale, yAxisScale, dynamicMargin);
+
   if (showXValues) {
-    renderXAxis(chartSvg, xAxisScale, height, dynamicMargin);
+    renderBarXAxis(chartSvg, xAxisScale, height, dynamicMargin);
   }
 
-  renderYAxis(
+  renderBarYAxis(
     chartSvg,
     yAxisScale,
     dynamicMargin,
@@ -95,26 +93,8 @@ export function generateBarchartSvg({
     addTooltip(chartSvg);
   }
 
-  if (showMedian && median) {
-    renderMedianLine(
-      chartSvg,
-      median,
-      yAxisScale,
-      width,
-      dynamicMargin,
-      medianLineColor,
-      medianLineDash
-    );
-  }
-
   if (showLegend) {
-    renderLegend(
-      chartSvg,
-      width,
-      dynamicMargin,
-      medianLineColor,
-      medianLineDash
-    );
+    renderBarLegend(chartSvg, metric_data, 10, dynamicMargin);
   }
 
   return svgElement;
@@ -128,7 +108,7 @@ export function generateLineGraphSvg({
   yLabel,
   medianLineColor = '#808000',
   medianLineDash = '5,5',
-  title = 'Barchart',
+  title = '',
   showXValues = true,
   showMedian = true,
   showLegend = true,
@@ -136,6 +116,8 @@ export function generateLineGraphSvg({
   showToolTip = true,
   tickCount,
   yAxisAsPercentage = false,
+  colourMap = new Map(),
+  groupedData = new Map<string, LinegraphData[]>(),
 }: LinegraphProps): SVGSVGElement | null {
   if (!data.length) return null;
 
@@ -156,18 +138,29 @@ export function generateLineGraphSvg({
 
   data = data.map((entry) => ({
     ...entry,
-    xAxisValue: shortenLabels
-      ? truncateLabels(entry.xAxisValue, 16)
-      : entry.xAxisValue,
+    valueTag: shortenLabels
+      ? truncateLabels(entry.valueTag, 16)
+      : entry.valueTag,
   }));
 
   const xAxisScale = createXAxisScale(data, width, dynamicMargin);
   const yAxisScale = createYAxisScale(data, height, dynamicMargin);
   const { median, quartiles } = calculateQuartiles(data);
-  const lineColor = '#800080';
-  const strokeWidth = 2;
+  const defaultLineColor = '#800080';
+  const strokeWidth = 3;
 
-  renderLine(chartSvg, data, xAxisScale, yAxisScale, lineColor, strokeWidth);
+  for (const key of groupedData.keys()) {
+    const value = groupedData.get(key);
+    renderLine(
+      chartSvg,
+      value ?? [],
+      xAxisScale,
+      yAxisScale,
+      colourMap.get(key) ?? defaultLineColor,
+      strokeWidth,
+      key
+    );
+  }
 
   if (showXValues) {
     renderLineXAxis(chartSvg, xAxisScale, height, dynamicMargin);

@@ -1,5 +1,5 @@
 export interface LinegraphData {
-  xAxisValue: string;
+  valueTag: string;
   value: number;
   metric: string;
   date: Date;
@@ -24,4 +24,6 @@ export interface LinegraphProps {
   showToolTip?: boolean;
   tickCount?: number;
   yAxisAsPercentage?: boolean;
+  colourMap?: Map<string,string>;
+  groupedData: Map<string, LinegraphData[]>
 }

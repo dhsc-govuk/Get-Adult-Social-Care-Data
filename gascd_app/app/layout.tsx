@@ -8,17 +8,20 @@ export const metadata = {
     'Department of Health and Social Care: Get Adult Social Care Data Platform',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
   return (
     <html lang="en">
-      <Axe />
+      <Axe />     
       <NextAuthSessionProvider>
-        <body className="govuk-frontend-supported">{children}</body>
-      </NextAuthSessionProvider>
+        <body className="govuk-frontend-supported">
+          {children}
+          </body>
+          </NextAuthSessionProvider> 
     </html>
   );
 }

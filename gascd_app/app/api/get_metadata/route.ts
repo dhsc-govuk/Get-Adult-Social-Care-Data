@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     const rows: IndicatorDisplay[] = resultSet.recordset;
 
     await pool.close();
-    return NextResponse.json(rows[0]);
+    return NextResponse.json(rows);
   } catch (err) {
     console.error('Error during database operations:', err);
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
