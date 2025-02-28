@@ -7,7 +7,7 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { Indicator } from '@/data/interfaces/Indicator';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import TableService from '@/services/Table/TableService';
-import DataTable from '@/components/tables/Table';
+import DataTable from '@/components/tables/table';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import { useSession } from 'next-auth/react';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
