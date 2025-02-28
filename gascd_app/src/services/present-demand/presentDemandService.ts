@@ -1,3 +1,4 @@
+import { Indicator } from '@/data/interfaces/Indicator';
 import { Locations } from '@/data/interfaces/Locations';
 
 class PresentDemandService {
@@ -67,6 +68,42 @@ class PresentDemandService {
     }
     return locationIds;
   }
-}
 
+  public static formatDate(dateStr: string): string {
+    const [day, month, year] = dateStr.split('/').map(Number);
+    const date = new Date(year, month - 1, day);
+
+    return new Intl.DateTimeFormat('en-GB', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    }).format(date);
+  }
+
+  public static createDate(data: string): Date {
+    const [day, month, year] = data.split('/').map(Number);
+    const date = new Date(year, month - 1, day);
+    return date;
+  }
+
+  public static getMostRecentIndicator(indicators: Indicator[]): string {
+    if (indicators.length === 0) {
+      return '';
+    }
+
+    return indicators
+      .reduce((latest, current) => {
+        return this.createDate(current.metric_date.toString()) >
+          this.createDate(latest.metric_date.toString())
+          ? current
+          : latest;
+      }, indicators[0])
+      .metric_date.toString();
+  }
+
+  public static getMostRecentDate(data: Indicator[]): string {
+    const recentData = this.getMostRecentIndicator(data);
+    return this.formatDate(recentData);
+  }
+}
 export default PresentDemandService;

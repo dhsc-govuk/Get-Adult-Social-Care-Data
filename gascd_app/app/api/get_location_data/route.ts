@@ -26,7 +26,6 @@ export async function GET(req: NextRequest) {
       `);
 
     await pool.close();
-    console.log(resultSet);
     return NextResponse.json(resultSet.recordset[0], { status: 200 });
   } catch (err) {
     console.error('Error during database operations:', err);

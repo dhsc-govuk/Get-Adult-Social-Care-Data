@@ -55,7 +55,6 @@ const TotalBedsPage: React.FC = () => {
       const data: Indicator[] =
         await IndicatorFetchService.getData(indicatorQuery);
 
-      // data.forEach((obj) => console.log(obj));
       const displayData: IndicatorDisplay =
         await IndicatorFetchService.getDisplayData('');
 

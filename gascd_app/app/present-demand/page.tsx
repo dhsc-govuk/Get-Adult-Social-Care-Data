@@ -25,6 +25,11 @@ const PresentDemandPage: React.FC = () => {
   const [locationNamesCP, setLocationNamesCP] = useState<string[]>([]);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [locationIdsCP, setLocationIdsCP] = useState<string[]>([]);
+  const [demographicLatestDate, setDemographicLatestDate] = useState<
+    string | null
+  >();
+  const [bedDataLatestDate, setBedDataLatestDate] = useState<string | null>();
+  const [CPLatestDate, setCPLatestDate] = useState<string | null>();
   const [demographicQuery, setDemographicQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
@@ -69,12 +74,6 @@ const PresentDemandPage: React.FC = () => {
     median_bed_count_total: 'bedcount_total',
     median_occupancy_total: 'occupancy_rate_total',
   };
-
-  const [selectedLocations, setSelectedLocations] = useState<string[]>([
-    'Care provider A',
-    'Suffolk',
-    'East of England',
-  ]);
 
   useEffect(() => {
     const storedLocationId = localStorage.getItem('selectedValue');
@@ -165,23 +164,36 @@ const PresentDemandPage: React.FC = () => {
   }, [locationIds]);
 
   useEffect(() => {
+    if (filteredDemographicData.length > 0) {
+      setDemographicLatestDate(
+        PresentDemandService.getMostRecentDate(filteredDemographicData)
+      );
+    }
+    if (filteredBedData.length > 0) {
+      setBedDataLatestDate(
+        PresentDemandService.getMostRecentDate(filteredBedData)
+      );
+    }
+    if (finalCpData.length > 0) {
+      setCPLatestDate(PresentDemandService.getMostRecentDate(finalCpData));
+    }
+  }, [filteredDemographicData, filteredBedData, finalCpData]); // Dependencies updated
+
+  useEffect(() => {
     const fetchAllData = async () => {
       if (!CPLocationId) return;
       try {
-        const testTest =
-          await PresentDemandService.getAvailableLocations(CPLocationId);
-        console.log(testTest, ' ================');
-        console.log(locationNames);
         const demographicData: Indicator[] =
           await IndicatorFetchService.getData(demographicQuery);
         const filteredDemographicData =
           TableService.filterDate(demographicData);
         setFilteredDemographicData(filteredDemographicData);
-
         const bedData: Indicator[] =
           await IndicatorFetchService.getData(bedsQuery);
         const filteredBedData = TableService.filterDate(bedData);
         setFilteredBedData(filteredBedData);
+        const test =
+          PresentDemandService.getMostRecentIndicator(filteredBedData);
         const CPData: Indicator[] = await IndicatorFetchService.getData(
           careProviderDataQuery1
         );
@@ -302,7 +314,7 @@ const PresentDemandPage: React.FC = () => {
               <div className="govuk-summary-list__row govuk-!-margin-bottom-9">
                 <dt className="govuk-summary-list__key">Selected locations</dt>
                 <dd className="govuk-summary-list__value">
-                  <p>{selectedLocations.join(', ')}</p>
+                  <p>{locationNamesCP.slice(1).join(', ')}</p>
                 </dd>
                 <dd className="govuk-summary-list__actions">
                   <a className="govuk-link" href="/present-demand-locations">
@@ -351,7 +363,7 @@ const PresentDemandPage: React.FC = () => {
           <p className="govuk-body">
             Source: Office for National Statistics, NHS England
             <br />
-            Data correct as of X
+            Data correct as of {demographicLatestDate}
           </p>
 
           <div className="govuk-grid-row govuk-!-margin-bottom-9">
@@ -419,7 +431,7 @@ const PresentDemandPage: React.FC = () => {
             <p className="govuk-body">
               Source: Office for National Statistics, NHS England
               <br />
-              Data correct as of X
+              Data correct as of {bedDataLatestDate}
             </p>
             <div className="govuk-grid-row govuk-!-margin-bottom-9">
               <h1 className="govuk-heading-l" id="capacity-cp">
@@ -453,6 +465,12 @@ const PresentDemandPage: React.FC = () => {
                 locations={locationNamesCP}
                 metric_Id="median_occupancy_total"
               ></ConditionalText>
+              <p className="govuk-body">
+                <strong>Note: </strong>If fewer than 5 beds are occupied, the
+                percentage of beds occupied is shown as 0. For details on
+                rounding and suppression of data, see indicator definition and
+                supporting information.
+              </p>
               <h3 className="govuk-heading-m">
                 Explore the data: care providers in {locationNames[1]}
               </h3>
@@ -468,6 +486,11 @@ const PresentDemandPage: React.FC = () => {
                 filename="Care providers data"
                 xLabel=""
               ></DownloadTableDataCSVLink>
+              <p className="govuk-body">
+                Source: Office for National Statistics, NHS England
+                <br />
+                Data correct as of {CPLatestDate}
+              </p>
             </div>
           </div>
         </div>
