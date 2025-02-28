@@ -1,5 +1,5 @@
 export interface LinegraphData {
-  xAxisValue: string;
+  valueTag: string;
   value: number;
   metric: string;
   date: Date;

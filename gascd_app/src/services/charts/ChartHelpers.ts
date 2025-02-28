@@ -30,6 +30,12 @@ export function truncateLabels(label: string, maxLength: number): string {
   return label;
 }
 
+function getMetricColorScale(
+  metrics: string[]
+): d3.ScaleOrdinal<string, string> {
+  return d3.scaleOrdinal<string, string>().domain(metrics).range(d3.schemeSet1);
+}
+
 export function createXAxisScale(
   data: BarchartData[],
   width: number,
@@ -37,7 +43,7 @@ export function createXAxisScale(
 ): d3.ScaleBand<string> {
   return d3
     .scaleBand()
-    .domain(data.map((dataItem) => dataItem.xAxisValue))
+    .domain(data.map((dataItem) => dataItem.valueTag))
     .range([margin.left, width - margin.right])
     .padding(0.1);
 }
@@ -52,6 +58,30 @@ export function createYAxisScale(
     .domain([0, d3.max(data, (dataItem) => dataItem.value) ?? 0])
     .nice()
     .range([height - margin.bottom, margin.top]);
+}
+
+export function createBarXAxisScale(
+  data: BarchartData[],
+  width: number,
+  margin: { top: number; right: number; bottom: number; left: number }
+): d3.ScaleLinear<number, number> {
+  return d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (dataItem) => dataItem.value) ?? 0])
+    .nice()
+    .range([margin.left, width - margin.right]);
+}
+
+export function createBarYAxisScale(
+  data: BarchartData[],
+  height: number,
+  margin: { top: number; right: number; bottom: number; left: number }
+): d3.ScaleBand<string> {
+  return d3
+    .scaleBand()
+    .domain(data.map((dataItem) => dataItem.valueTag))
+    .range([height - margin.bottom, margin.top])
+    .padding(0.1);
 }
 
 export function calculateQuartiles(data: BarchartData[]) {
@@ -74,47 +104,42 @@ export function calculateQuartiles(data: BarchartData[]) {
 export function renderBars(
   chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>,
   data: BarchartData[],
-  xAxisScale: d3.ScaleBand<string>,
-  yAxisScale: d3.ScaleLinear<number, number>,
-  quartiles: { Q1: number; Q2: number; Q3: number },
-  quartileColors: string[],
-  showQuartileRanges: boolean,
-  barColor: string,
-  height: number,
+  xAxisScale: d3.ScaleLinear<number, number>,
+  yAxisScale: d3.ScaleBand<string>,
   margin: { top: number; right: number; bottom: number; left: number }
 ): void {
-  const barRectElements = chartSvg
-    .selectAll<SVGRectElement, BarchartData>('rect')
-    .data(data, (dataItem: BarchartData) => dataItem.xAxisValue);
+  const uniqueMetrics = [...new Set(data.map((d) => d.metric))];
 
-  barRectElements
-    .enter()
+  const colorScale = getMetricColorScale(uniqueMetrics);
+
+  const metricScale = d3
+    .scaleBand()
+    .domain(uniqueMetrics)
+    .range([0, yAxisScale.bandwidth()])
+    .padding(0.1);
+
+  const barGroups = chartSvg
+    .selectAll<SVGGElement, BarchartData>('.bar-group')
+    .data(data, (d: BarchartData) => `${d.valueTag}-${d.metric}`);
+
+  const barEnter = barGroups.enter().append('g').attr('class', 'bar-group');
+
+  barEnter
     .append('rect')
-    .merge(barRectElements)
-    .attr('x', (dataItem) => xAxisScale(dataItem.xAxisValue) ?? 0)
-    .attr('y', (dataItem) => yAxisScale(dataItem.value) ?? height)
-    .attr('width', xAxisScale.bandwidth())
-    .attr('height', (dataItem) => {
-      const yPos = yAxisScale(dataItem.value);
-      return yPos !== undefined ? height - margin.bottom - yPos : 0;
+    .attr(
+      'y',
+      (d) => (yAxisScale(d.valueTag) ?? 0) + (metricScale(d.metric) ?? 0)
+    )
+    .attr('x', margin.left)
+    .attr('height', metricScale.bandwidth())
+    .attr('width', (d) => {
+      const xVal = xAxisScale(d.value);
+      const xZero = xAxisScale(0);
+      return xVal !== undefined && xZero !== undefined ? xVal - xZero : 0;
     })
-    .attr('fill', (dataItem) => {
-      if (showQuartileRanges) {
-        if (dataItem.value <= quartiles.Q1) {
-          return quartileColors[0];
-        } else if (dataItem.value <= quartiles.Q2) {
-          return quartileColors[1];
-        } else if (dataItem.value <= quartiles.Q3) {
-          return quartileColors[2];
-        } else {
-          return quartileColors[3];
-        }
-      } else {
-        return barColor;
-      }
-    });
+    .attr('fill', (d) => colorScale(d.metric));
 
-  barRectElements.exit().remove();
+  barGroups.exit().remove();
 }
 
 export function renderXAxis(
@@ -126,7 +151,7 @@ export function renderXAxis(
   const xAxisGroup = chartSvg
     .append('g')
     .attr('transform', `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(xAxisScale).tickSize(0))
+    .call(d3.axisTop(xAxisScale).tickSize(0))
     .attr('class', 'x-axis');
 
   xAxisGroup
@@ -151,18 +176,17 @@ export function renderLineXAxis(
     .call(
       d3
         .axisBottom(xAxisScale)
-        .tickFormat((dateString: string, i : number) => {
-          if (i == 0)
-            return '';
+        .tickFormat((dateString: string, i: number) => {
+          if (i == 0) return '';
           const date = parseDate(dateString);
           if (date) {
             const currentTick = d3.timeFormat('%Y')(date).toString();
-            if(currentTick == previousTick){
+            if (currentTick == previousTick) {
               return '';
             }
             previousTick = currentTick;
             return currentTick;
-          }          
+          }
           return '';
         })
         .tickSize(0)
@@ -174,6 +198,38 @@ export function renderLineXAxis(
     .attr('text-anchor', 'end')
     .attr('dx', '0.2em')
     .attr('dy', '1.8em');
+}
+
+export function renderBarXAxis(
+  chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>,
+  xAxisScale: d3.ScaleLinear<number, number>,
+  height: number,
+  margin: { top: number; right: number; bottom: number; left: number }
+): void {
+  chartSvg
+    .append('g')
+    .attr('transform', `translate(0,${margin.top})`)
+    .call(d3.axisTop(xAxisScale).tickSize(0))
+    .attr('class', 'x-axis');
+}
+
+export function renderBarYAxis(
+  chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>,
+  yAxisScale: d3.ScaleBand<string>,
+  margin: { top: number; right: number; bottom: number; left: number },
+  tickCount?: number,
+  yAxisAsPercentage: boolean = false
+): void {
+  const yAxis = d3
+    .axisLeft(yAxisScale)
+    .ticks(tickCount ? tickCount : null)
+    .tickSizeOuter(0);
+
+  chartSvg
+    .append('g')
+    .attr('transform', `translate(${margin.left},0)`)
+    .call(yAxis)
+    .selectAll('text');
 }
 
 export function renderYAxis(
@@ -259,7 +315,7 @@ export function addTooltip(
     .on('mouseover', function (event, dataItem) {
       tooltip
         .style('visibility', 'visible')
-        .text(`${dataItem.xAxisValue}: ${dataItem.value}`)
+        .text(`${dataItem.valueTag}: ${dataItem.value}`)
         .style('left', `${event.pageX + 10}px`)
         .style('top', `${event.pageY - 28}px`);
       d3.select(this).style('fill-opacity', 0.7);
@@ -325,9 +381,45 @@ export function renderLegend(
     .attr('alignment-baseline', 'middle');
 }
 
+export function renderBarLegend(
+  chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>,
+  data: string[],
+  size: number,
+  margin: { top: number; right: number; bottom: number; left: number }
+): void {
+  const colorScale = getMetricColorScale(data);
+
+  const legendGroup = chartSvg
+    .append('g')
+    .attr('transform', `translate(${margin.left}, ${margin.top - 30})`);
+
+  legendGroup
+    .selectAll('rect')
+    .data(data)
+    .enter()
+    .append('rect')
+    .attr('x', 100)
+    .attr('y', (d, i) => 100 + i * (size + 5))
+    .attr('width', size)
+    .attr('height', size)
+    .style('fill', (d) => colorScale(d) ?? '#000');
+
+  legendGroup
+    .selectAll('text')
+    .data(data)
+    .enter()
+    .append('text')
+    .attr('x', 100 + size * 1.2)
+    .attr('y', (d, i) => 100 + i * (size + 5) + size / 2)
+    .style('fill', (d) => colorScale(d) ?? '#000')
+    .text((d) => d)
+    .attr('text-anchor', 'left')
+    .style('alignment-baseline', 'middle');
+}
+
 export function renderLine(
   chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>,
-  data: { xAxisValue: string; value: number }[],
+  data: { valueTag: string; value: number }[],
   xAxisScale: d3.ScalePoint<string>,
   yAxisScale: d3.ScaleLinear<number, number>,
   lineColor: string,
@@ -335,8 +427,8 @@ export function renderLine(
   className: string
 ): void {
   const lineGenerator = d3
-    .line<{ xAxisValue: string; value: number }>()
-    .x((dataItem) => xAxisScale(dataItem.xAxisValue) ?? 0)
+    .line<{ valueTag: string; value: number }>()
+    .x((dataItem) => xAxisScale(dataItem.valueTag) ?? 0)
     .y((dataItem) => yAxisScale(dataItem.value) ?? 0);
   const linePath = chartSvg
     .selectAll<SVGPathElement, unknown>(className)
