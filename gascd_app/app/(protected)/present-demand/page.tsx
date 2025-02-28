@@ -76,12 +76,25 @@ const PresentDemandPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const storedLocationId = localStorage.getItem('selectedValue');
-    if (storedLocationId) {
-      setCPLocationId(storedLocationId);
-    } else if (session) {
-      setCPLocationId(session.user.locationId);
-    }
+    const fetchCareProviderLocationName = async () => {
+      if (session) {
+        if (session.user.locationType == 'Care provider') {
+          const locationId = await PresentDemandService.getDefaultCPLocation(
+            session.user.locationId ?? ' ',
+            session.user.locationType
+          );
+          console.log(locationId);
+          setCPLocationId(locationId);
+        }
+        const storedLocationId = localStorage.getItem('selectedValue');
+        if (storedLocationId) {
+          setCPLocationId(storedLocationId);
+        } else if (session) {
+          setCPLocationId(session.user.locationId);
+        }
+      }
+    };
+    fetchCareProviderLocationName();
   }, [session]);
 
   useEffect(() => {
