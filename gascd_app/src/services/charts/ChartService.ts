@@ -41,6 +41,7 @@ export function generateBarchartSvg({
   showToolTip = true,
   tickCount,
   yAxisAsPercentage = false,
+  labels = []
 }: BarchartProps): SVGSVGElement | null {
   if (!data.length) return null;
 
@@ -84,8 +85,9 @@ export function generateBarchartSvg({
     chartSvg,
     yAxisScale,
     dynamicMargin,
+    labels,
     tickCount,
-    yAxisAsPercentage
+    yAxisAsPercentage,
   );
   renderLabels(chartSvg, width, height, dynamicMargin, xLabel, yLabel, title);
 
@@ -118,6 +120,7 @@ export function generateLineGraphSvg({
   yAxisAsPercentage = false,
   colourMap = new Map(),
   groupedData = new Map<string, LinegraphData[]>(),
+  labels = [],
 }: LinegraphProps): SVGSVGElement | null {
   if (!data.length) return null;
 

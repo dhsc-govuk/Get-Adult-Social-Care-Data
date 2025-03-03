@@ -1,3 +1,5 @@
+import { Locations } from "./Locations";
+
 export interface BarchartData {
   valueTag: string;
   value: number;
@@ -23,4 +25,5 @@ export interface BarchartProps {
   showToolTip?: boolean;
   tickCount?: number;
   yAxisAsPercentage?: boolean;
+  labels?: Array<Locations>
 }

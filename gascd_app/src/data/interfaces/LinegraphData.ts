@@ -1,3 +1,5 @@
+import { Locations } from "./Locations";
+
 export interface LinegraphData {
   valueTag: string;
   value: number;
@@ -26,4 +28,5 @@ export interface LinegraphProps {
   yAxisAsPercentage?: boolean;
   colourMap?: Map<string, string>;
   groupedData: Map<string, LinegraphData[]>;
+  labels?: Array<Locations>
 }

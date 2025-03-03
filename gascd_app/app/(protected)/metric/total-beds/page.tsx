@@ -26,6 +26,8 @@ const TotalBedsPage: React.FC = () => {
   const [locationId, setlocationId] = useState<string>();
   const [locationType, setlocationType] = useState<string>();
 
+  const [locationNames, setLocationNames] = useState<[]>();
+
   const [locationName, setlocationName] = useState<string>();
   const [locationRegion, setlocationRegion] = useState<string>();
 
@@ -60,6 +62,7 @@ const TotalBedsPage: React.FC = () => {
           await IndicatorFetchService.getData(LineGraphIndicatorQuery);
         const displayData: IndicatorDisplay =
           await IndicatorFetchService.getDisplayData('');
+          
         setIndicatorService(new IndicatorService(chartData, lineGraphData, displayData));
         const insights: string[] =
           await SmartInsightsFetchService.getData(chartIndicatorQuery);
@@ -96,15 +99,15 @@ const TotalBedsPage: React.FC = () => {
             if (!response.ok) {
               throw new Error(`Error fetching data: ${response.statusText}`);
             }
-            const locIds = await response.json();
-            locationids = locIds.map((item: { la_code: any; }) => item.la_code)
+            const locations = await response.json();
+            locationids = locations.map((item: { la_code: any; }) => item.la_code)
+            setLocationNames(locations);
           } catch (error) {
             console.error('Error fetching data', error);
           }
 
           const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
           const chartMetrics = localStorage.getItem('chart-metrics');
-          const locationNames = await PresentDemandService.getLocationNames(locationId, false);
 
           let cMetrics : string[];
           let cMetricsNames : string[];
@@ -136,7 +139,7 @@ const TotalBedsPage: React.FC = () => {
           
           setLineGraphIndicatorQuery({
             metric_ids: lMetrics,
-            location_ids: locationids,
+            location_ids: [locationId],
           });
 
         } catch (error) {
@@ -156,6 +159,7 @@ const TotalBedsPage: React.FC = () => {
       // const containerHeight = barchartSVGContainerRef.current.clientHeight;
 
       const barchart = indicatorService.createBarchart(
+        locationNames
         // containerWidth,
         // containerHeight
       );
@@ -168,7 +172,7 @@ const TotalBedsPage: React.FC = () => {
 
     if (lineGraphSVGContainerRef.current && indicatorService) {
       
-      const lineGraph = indicatorService.createLinegraph();
+      const lineGraph = indicatorService.createLinegraph(locationNames);
 
       lineGraphSVGContainerRef.current.innerHTML = '';
       if (lineGraph) {
