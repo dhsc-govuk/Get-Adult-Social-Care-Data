@@ -283,32 +283,41 @@ const PresentDemandPage: React.FC = () => {
             </p>
             <ul className="govuk-list govuk-list--bullet">
               <li>
-                <a href="#" className="govuk-link">
+                <a href="/help/population-age" className="govuk-link">
                   Population age
                 </a>
               </li>
               <li>
-                <a href="#" className="govuk-link">
+                <a href="/help/disability-prevalence" className="govuk-link">
                   Population disability
                 </a>
               </li>
               <li>
-                <a href="#" className="govuk-link">
+                <a
+                  href="/help/beds-per-100000-population"
+                  className="govuk-link"
+                >
                   Adult social care beds per 100,000 adult population
                 </a>
               </li>
               <li>
-                <a href="#" className="govuk-link">
+                <a href="/help/percentage-beds-occupied" className="govuk-link">
                   Percentage of adult social care beds occupied
                 </a>
               </li>
               <li>
-                <a href="#" className="govuk-link">
+                <a
+                  href="/help/beds-care-provider-location"
+                  className="govuk-link"
+                >
                   Number of adult social care beds in care provider location
                 </a>
               </li>
               <li>
-                <a href="#" className="govuk-link">
+                <a
+                  href="/help/percentage-beds-occupied-care-provider-location"
+                  className="govuk-link"
+                >
                   Percentage of adult social care beds occupied in care provider
                   location
                 </a>
