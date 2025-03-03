@@ -2,6 +2,21 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import sql from 'mssql';
 
 class QueryBuilderService {
+  static createGetLocationNamesQuery(
+    query: IndicatorQuery,
+    request: sql.Request
+  ) {
+    let request_with_param = request;
+    const { paramBind: location_ids_bind } = this.bindArrayParams(
+      request_with_param,
+      query.location_ids,
+      'location_ids'
+    );
+
+    const queryString = `SELECT la_code,la_name FROM ref.la_lookup WHERE la_code IN (${location_ids_bind})`;
+
+    return { queryString, request_with_param };
+  }
   static createGetSmartInsightsQuery(
     query: IndicatorQuery,
     request: sql.Request
@@ -45,7 +60,12 @@ class QueryBuilderService {
     return { paramBind, request };
   }
 
-  static createGetIndicatorQuery(query: IndicatorQuery, request: sql.Request, userLocationType: string , userLocationId: string) {
+  static createGetIndicatorQuery(
+    query: IndicatorQuery,
+    request: sql.Request,
+    userLocationType: string,
+    userLocationId: string
+  ) {
     let request_with_param = request;
     const { paramBind: metric_ids_bind } = this.bindArrayParams(
       request_with_param,
@@ -59,7 +79,8 @@ class QueryBuilderService {
       'location_ids'
     );
 
-    const queryParts = [`
+    const queryParts = [
+      `
       WITH UserAccess AS (
           SELECT 
               user_access_restricted_flag,
@@ -122,11 +143,12 @@ class QueryBuilderService {
             ,[multiplier]
             ,[data_point]
             ,[load_date_time]
-      FROM CombinedMetrics`];
+      FROM CombinedMetrics`,
+    ];
 
-    request.input('user_location_type',userLocationType);
-    request.input('user_location_id',userLocationId);
-    
+    request.input('user_location_type', userLocationType);
+    request.input('user_location_id', userLocationId);
+
     let queryString = queryParts.join(' ');
     return { queryString, request_with_param };
   }
