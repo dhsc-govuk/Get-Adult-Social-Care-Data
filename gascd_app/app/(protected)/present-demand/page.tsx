@@ -77,18 +77,17 @@ const PresentDemandPage: React.FC = () => {
 
   useEffect(() => {
     const fetchCareProviderLocationName = async () => {
-      if (session) {
+      const storedLocationId = localStorage.getItem('selectedValue');
+      if (storedLocationId) {
+        setCPLocationId(storedLocationId);
+      } else if (session) {
         if (session.user.locationType == 'Care provider') {
           const locationId = await PresentDemandService.getDefaultCPLocation(
             session.user.locationId ?? ' ',
             session.user.locationType
           );
           setCPLocationId(locationId);
-        }
-        const storedLocationId = localStorage.getItem('selectedValue');
-        if (storedLocationId) {
-          setCPLocationId(storedLocationId);
-        } else if (session) {
+        } else {
           setCPLocationId(session.user.locationId);
         }
       }
@@ -212,8 +211,11 @@ const PresentDemandPage: React.FC = () => {
         const CPData2: Indicator[] = await IndicatorFetchService.getData(
           careProviderDataQuery2
         );
+        const data1: Indicator[] = TableService.filterDate(CPData);
+        const data2: Indicator[] = TableService.filterDate(CPData2);
         const comboData: Indicator[] = [...CPData, ...CPData2];
         const filteredCPData = TableService.filterDate(comboData);
+
         setFinalCpData(filteredCPData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -283,32 +285,41 @@ const PresentDemandPage: React.FC = () => {
             </p>
             <ul className="govuk-list govuk-list--bullet">
               <li>
-                <a href="#" className="govuk-link">
+                <a href="/help/population-age" className="govuk-link">
                   Population age
                 </a>
               </li>
               <li>
-                <a href="#" className="govuk-link">
+                <a href="/help/disability-prevalence" className="govuk-link">
                   Population disability
                 </a>
               </li>
               <li>
-                <a href="#" className="govuk-link">
+                <a
+                  href="/help/beds-per-100000-population"
+                  className="govuk-link"
+                >
                   Adult social care beds per 100,000 adult population
                 </a>
               </li>
               <li>
-                <a href="#" className="govuk-link">
+                <a href="/help/percentage-beds-occupied" className="govuk-link">
                   Percentage of adult social care beds occupied
                 </a>
               </li>
               <li>
-                <a href="#" className="govuk-link">
+                <a
+                  href="/help/beds-care-provider-location"
+                  className="govuk-link"
+                >
                   Number of adult social care beds in care provider location
                 </a>
               </li>
               <li>
-                <a href="#" className="govuk-link">
+                <a
+                  href="/help/percentage-beds-occupied-care-provider-location"
+                  className="govuk-link"
+                >
                   Percentage of adult social care beds occupied in care provider
                   location
                 </a>
