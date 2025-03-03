@@ -4,7 +4,6 @@ import Layout from '@/components/common/layout/Layout';
 import ContentSidePanel from '../../../../src/components/common/panels/contents-side-panel/ContentsSidePanel';
 import IndicatorTable from '@/components/indicator-components/IndicatorTable';
 import { Indicator } from '@/data/interfaces/Indicator';
-import { Location } from '@/data/interfaces/Location';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
