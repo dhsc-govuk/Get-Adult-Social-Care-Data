@@ -38,7 +38,7 @@ class PresentDemandService {
   public static async getDefaultCPLocation(
     providerLocationId: string,
     locationType: string
-  ): Promise<string> {
+  ): Promise<any> {
     try {
       const response = await fetch(
         `api/get_available_locations?provider_location_id=${encodeURIComponent(providerLocationId)}&location_type=${encodeURIComponent(locationType)}`
@@ -49,7 +49,7 @@ class PresentDemandService {
       }
 
       const data = await response.json();
-      return data[0].locationId;
+      return data[0].metric_location_id;
     } catch (error) {
       console.error('error', error);
       throw new Error('Failed to retrieve available location data');

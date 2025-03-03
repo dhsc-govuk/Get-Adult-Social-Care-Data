@@ -80,7 +80,6 @@ export const authOptions: NextAuthOptions = {
       session.user.locationId = token.locationId as string;
       session.accessToken = token.accessToken as string;
       session.refreshToken = token.refreshToken;
-
       return session;
     },
   },
