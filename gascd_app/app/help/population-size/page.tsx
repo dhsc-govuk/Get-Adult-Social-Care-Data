@@ -114,3 +114,5 @@ const PopulationSize: React.FC = () => {
     </Layout>
   );
 };
+
+export default PopulationSize;
