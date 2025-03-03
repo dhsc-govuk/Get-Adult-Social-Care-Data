@@ -15,9 +15,23 @@ const PresentDemandLocations: React.FC = () => {
   const [cpLocation, setCpLocation] = useState<string>();
 
   useEffect(() => {
-    if (session) {
-      setCpLocation(session.user.locationId);
-    }
+    const fetchCareProviderLocationName = async () => {
+      const storedLocationId = localStorage.getItem('selectedValue');
+      if (storedLocationId) {
+        setCpLocation(storedLocationId);
+      } else if (session) {
+        if (session.user.locationType == 'Care provider') {
+          const locationId = await PresentDemandService.getDefaultCPLocation(
+            session.user.locationId ?? ' ',
+            session.user.locationType
+          );
+          setCpLocation(locationId);
+        } else {
+          setCpLocation(session.user.locationId);
+        }
+      }
+    };
+    fetchCareProviderLocationName();
   }, [session]);
 
   useEffect(() => {
@@ -64,26 +78,30 @@ const PresentDemandLocations: React.FC = () => {
           <div className="govuk-form-group">
             <form>
               <fieldset className="govuk-fieldset govuk-!-margin-bottom-6">
-                <div className="govuk-radios" data-module="govuk-radios">
-                  {availableLocations.map((item, index) => (
-                    <div className="govuk-radios__item" key={item.id}>
-                      <input
-                        className="govuk-radios__input"
-                        id={`radio-${index}`}
-                        name="options"
-                        type="radio"
-                        value={item.metric_location_id}
-                        onChange={() => handleChange(item.metric_location_id)}
-                      />
-                      <label
-                        className="govuk-label govuk-radios__label"
-                        htmlFor={`radio-${index}`}
-                      >
-                        {item.metric_location_name}
-                      </label>
-                    </div>
-                  ))}
-                </div>
+                {availableLocations ? (
+                  <div className="govuk-radios" data-module="govuk-radios">
+                    {availableLocations.map((item, index) => (
+                      <div className="govuk-radios__item" key={item.id}>
+                        <input
+                          className="govuk-radios__input"
+                          id={`radio-${index}`}
+                          name="options"
+                          type="radio"
+                          value={item.metric_location_id}
+                          onChange={() => handleChange(item.metric_location_id)}
+                        />
+                        <label
+                          className="govuk-label govuk-radios__label"
+                          htmlFor={`radio-${index}`}
+                        >
+                          {item.metric_location_name}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p> No other locations available </p>
+                )}
               </fieldset>
               <Link href="/present-demand" onClick={handleSubmit}>
                 <button type="button" className="govuk-button">
