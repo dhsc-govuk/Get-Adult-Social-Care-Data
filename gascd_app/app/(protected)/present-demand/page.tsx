@@ -211,17 +211,11 @@ const PresentDemandPage: React.FC = () => {
         const CPData2: Indicator[] = await IndicatorFetchService.getData(
           careProviderDataQuery2
         );
-        // console.log(CPData, 'Data 1')
-        // console.log(CPData2,' Data 2')
         const data1: Indicator[] = TableService.filterDate(CPData);
         const data2: Indicator[] = TableService.filterDate(CPData2);
-        // console.log(data1, "111111111")
-        // console.log(data2, "222222222222222")
-
         const comboData: Indicator[] = [...CPData, ...CPData2];
         const filteredCPData = TableService.filterDate(comboData);
 
-        console.log(filteredCPData, 'filter filter');
         setFinalCpData(filteredCPData);
       } catch (error) {
         console.error('Error fetching data:', error);
