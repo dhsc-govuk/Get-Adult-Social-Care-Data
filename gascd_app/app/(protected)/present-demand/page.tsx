@@ -2,67 +2,54 @@
 
 import React, { useEffect, useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
-import ContentSidePanel from '../../src/components/common/panels/contents-side-panel/ContentsSidePanel';
+import ContentSidePanel from '../../../src/components/common/panels/contents-side-panel/ContentsSidePanel';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { Indicator } from '@/data/interfaces/Indicator';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import TableService from '@/services/Table/TableService';
 import DataTable from '@/components/tables/table';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
+import { useSession } from 'next-auth/react';
+import PresentDemandService from '@/services/present-demand/presentDemandService';
+import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 const PresentDemandPage: React.FC = () => {
   const [filteredDemographicData, setFilteredDemographicData] = useState<
     Indicator[]
   >([]);
+  const { data: session, status } = useSession();
   const [filteredBedData, setFilteredBedData] = useState<Indicator[]>([]);
-  const [demograpicData, setDemographicData] = useState<Indicator[]>([]);
-  const [cpData, setCpData] = useState<Indicator[]>([]);
-  const [cpData2, setCpData2] = useState<Indicator[]>([]);
-  const [combinedData, setCombinedData] = useState<Indicator[]>([]);
   const [finalCpData, setFinalCpData] = useState<Indicator[]>([]);
-  const [bedData, setBedData] = useState<Indicator[]>([]);
+  const [CPLocationId, setCPLocationId] = useState<string>();
+  const [locationNames, setLocationNames] = useState<string[]>([]);
+  const [locationNamesCP, setLocationNamesCP] = useState<string[]>([]);
+  const [locationIds, setLocationIds] = useState<string[]>([]);
+  const [locationIdsCP, setLocationIdsCP] = useState<string[]>([]);
+  const [demographicLatestDate, setDemographicLatestDate] = useState<
+    string | null
+  >();
+  const [bedDataLatestDate, setBedDataLatestDate] = useState<string | null>();
+  const [CPLatestDate, setCPLatestDate] = useState<string | null>();
   const [demographicQuery, setDemographicQuery] = useState<IndicatorQuery>({
-    metric_ids: [
-      'total_population',
-      'perc_18_64',
-      'perc_65over',
-      'perc_population_disability_disabled_total',
-      'dementia_register_65over_per100k',
-    ],
-    location_ids: ['E10000029', 'E12000006', 'E92000001'],
+    metric_ids: [],
+    location_ids: [],
   });
-
   const [bedsQuery, setBedsQuery] = useState<IndicatorQuery>({
-    metric_ids: ['bedcount_per_100000_adults_total', 'median_occupancy_total'],
-    location_ids: ['E10000029', 'E12000006', 'E92000001'],
+    metric_ids: [],
+    location_ids: [],
   });
 
   const [careProviderDataQuery1, setCareProviderData1Query] =
     useState<IndicatorQuery>({
-      metric_ids: ['bedcount_total', 'occupancy_rate_total'],
-      location_ids: ['1-10553191017'],
+      metric_ids: [],
+      location_ids: [],
     });
 
   const [careProviderDataQuery2, setCareProviderData2Query] =
     useState<IndicatorQuery>({
-      metric_ids: ['median_bed_count_total', 'median_occupancy_total'],
-      location_ids: ['E10000029', 'E12000006', 'E92000001'],
+      metric_ids: [],
+      location_ids: [],
     });
-
-  const demographicColumnHeaders = [
-    'Filter',
-    'Suffolk',
-    'East of England region',
-    'All England',
-  ];
-
-  const careProvidersColumnHeaders = [
-    'Filter',
-    'Care Provider A',
-    'Suffolk (Median)',
-    'East of England region',
-    'All England',
-  ];
 
   const demographicRowHeaders = {
     total_population: 'Population',
@@ -88,11 +75,152 @@ const PresentDemandPage: React.FC = () => {
     median_occupancy_total: 'occupancy_rate_total',
   };
 
-  const [selectedLocations, setSelectedLocations] = useState<string[]>([
-    'Care provider A',
-    'Suffolk',
-    'East of England',
-  ]);
+  useEffect(() => {
+    const fetchCareProviderLocationName = async () => {
+      if (session) {
+        if (session.user.locationType == 'Care provider') {
+          const locationId = await PresentDemandService.getDefaultCPLocation(
+            session.user.locationId ?? ' ',
+            session.user.locationType
+          );
+          setCPLocationId(locationId);
+        }
+        const storedLocationId = localStorage.getItem('selectedValue');
+        if (storedLocationId) {
+          setCPLocationId(storedLocationId);
+        } else if (session) {
+          setCPLocationId(session.user.locationId);
+        }
+      }
+    };
+    fetchCareProviderLocationName();
+  }, [session]);
+
+  useEffect(() => {
+    const fetchLocationNames = async () => {
+      if (CPLocationId) {
+        try {
+          const locationNames = await PresentDemandService.getLocationNames(
+            CPLocationId,
+            false
+          );
+          const locationNamesCP = await PresentDemandService.getLocationNames(
+            CPLocationId,
+            true
+          );
+          setLocationNames(locationNames);
+          setLocationNamesCP(locationNamesCP);
+        } catch (error) {
+          console.error('Error fetching location names:', error);
+        }
+      }
+    };
+    fetchLocationNames();
+  }, [CPLocationId]);
+
+  useEffect(() => {
+    const fetchLocationIds = async () => {
+      if (CPLocationId) {
+        try {
+          const locationids = await PresentDemandService.getLocationIds(
+            CPLocationId,
+            false
+          );
+          const locationIdsCP = await PresentDemandService.getLocationIds(
+            CPLocationId,
+            true
+          );
+          setLocationIds(locationids);
+          setLocationIdsCP(locationIdsCP);
+        } catch (error) {
+          console.error('Error fetching location ids:', error);
+        }
+      }
+    };
+    fetchLocationIds();
+  }, [CPLocationId]);
+
+  useEffect(() => {
+    setDemographicQuery(() => ({
+      metric_ids: [
+        'total_population',
+        'perc_18_64',
+        'perc_65over',
+        'perc_population_disability_disabled_total',
+        'dementia_register_65over_per100k',
+      ],
+      location_ids: locationIds,
+    }));
+  }, [locationIds]);
+
+  useEffect(() => {
+    setBedsQuery(() => ({
+      metric_ids: [
+        'bedcount_per_100000_adults_total',
+        'median_occupancy_total',
+      ],
+      location_ids: locationIds,
+    }));
+  }, [locationIds]);
+
+  useEffect(() => {
+    if (CPLocationId)
+      setCareProviderData1Query(() => ({
+        metric_ids: ['bedcount_total', 'occupancy_rate_total'],
+        location_ids: [CPLocationId],
+      }));
+    setCareProviderData2Query(() => ({
+      metric_ids: ['median_bed_count_total', 'median_occupancy_total'],
+      location_ids: locationIds,
+    }));
+  }, [locationIds]);
+
+  useEffect(() => {
+    if (filteredDemographicData.length > 0) {
+      setDemographicLatestDate(
+        PresentDemandService.getMostRecentDate(filteredDemographicData)
+      );
+    }
+    if (filteredBedData.length > 0) {
+      setBedDataLatestDate(
+        PresentDemandService.getMostRecentDate(filteredBedData)
+      );
+    }
+    if (finalCpData.length > 0) {
+      setCPLatestDate(PresentDemandService.getMostRecentDate(finalCpData));
+    }
+  }, [filteredDemographicData, filteredBedData, finalCpData]); // Dependencies updated
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      if (!CPLocationId) return;
+      try {
+        const demographicData: Indicator[] =
+          await IndicatorFetchService.getData(demographicQuery);
+        const filteredDemographicData =
+          TableService.filterDate(demographicData);
+        setFilteredDemographicData(filteredDemographicData);
+        const bedData: Indicator[] =
+          await IndicatorFetchService.getData(bedsQuery);
+        const filteredBedData = TableService.filterDate(bedData);
+        setFilteredBedData(filteredBedData);
+        const test =
+          PresentDemandService.getMostRecentIndicator(filteredBedData);
+        const CPData: Indicator[] = await IndicatorFetchService.getData(
+          careProviderDataQuery1
+        );
+        const CPData2: Indicator[] = await IndicatorFetchService.getData(
+          careProviderDataQuery2
+        );
+        const comboData: Indicator[] = [...CPData, ...CPData2];
+        const filteredCPData = TableService.filterDate(comboData);
+        setFinalCpData(filteredCPData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchAllData();
+  }, [demographicQuery]);
 
   const contentItems = [
     { link: '#summary', heading: 'Introduction' },
@@ -109,41 +237,6 @@ const PresentDemandPage: React.FC = () => {
       heading: 'Current capacity - care homes: care provider-level insights',
     },
   ];
-
-  useEffect(() => {
-    const fetchAllData = async () => {
-      try {
-        const demographicData: Indicator[] =
-          await IndicatorFetchService.getData(demographicQuery);
-        const filteredDemographicData =
-          TableService.filterDate(demographicData);
-        setDemographicData(filteredDemographicData);
-        setFilteredDemographicData(filteredDemographicData);
-
-        const bedData: Indicator[] =
-          await IndicatorFetchService.getData(bedsQuery);
-        const filteredBedData = TableService.filterDate(bedData);
-        setBedData(filteredBedData);
-        setFilteredBedData(filteredBedData);
-
-        const CPData: Indicator[] = await IndicatorFetchService.getData(
-          careProviderDataQuery1
-        );
-
-        const CPData2: Indicator[] = await IndicatorFetchService.getData(
-          careProviderDataQuery2
-        );
-
-        const comboData: Indicator[] = [...CPData, ...CPData2];
-        const filteredCPData = TableService.filterDate(comboData);
-        setCombinedData(filteredCPData);
-        setFinalCpData(filteredCPData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchAllData();
-  }, []);
 
   return (
     <Layout
@@ -233,10 +326,10 @@ const PresentDemandPage: React.FC = () => {
               <div className="govuk-summary-list__row govuk-!-margin-bottom-9">
                 <dt className="govuk-summary-list__key">Selected locations</dt>
                 <dd className="govuk-summary-list__value">
-                  <p>{selectedLocations.join(', ')}</p>
+                  <p>{locationNamesCP.slice(1).join(', ')}</p>
                 </dd>
                 <dd className="govuk-summary-list__actions">
-                  <a className="govuk-link" href="#">
+                  <a className="govuk-link" href="/present-demand-locations">
                     Change<span className="govuk-visually-hidden"> name</span>
                   </a>
                 </dd>
@@ -259,9 +352,9 @@ const PresentDemandPage: React.FC = () => {
             </p>
             <ConditionalText
               data={filteredDemographicData}
-              ColumnHeaders={demographicColumnHeaders}
+              ColumnHeaders={locationNames}
               section="Drivers"
-              locations={selectedLocations}
+              locations={locationNames}
               metric_Id="perc_65over"
             ></ConditionalText>
           </div>
@@ -269,20 +362,20 @@ const PresentDemandPage: React.FC = () => {
             Explore the data: demographic factors
           </h3>
           <DataTable
-            columnHeaders={demographicColumnHeaders}
+            columnHeaders={locationNames}
             rowHeaders={demographicRowHeaders}
             data={filteredDemographicData}
             showCareProvider={false}
           ></DataTable>
-          <p className="govuk-body">
-            <a href="" className="govuk-link">
-              Download table data (CSV)
-            </a>
-          </p>
+          <DownloadTableDataCSVLink
+            data={TableService.removeLoadDateTime(filteredDemographicData)}
+            filename="Demographic factors"
+            xLabel=""
+          ></DownloadTableDataCSVLink>
           <p className="govuk-body">
             Source: Office for National Statistics, NHS England
             <br />
-            Data correct as of X
+            Data correct as of {demographicLatestDate}
           </p>
 
           <div className="govuk-grid-row govuk-!-margin-bottom-9">
@@ -295,9 +388,8 @@ const PresentDemandPage: React.FC = () => {
               suggests more sufficient capacity.
             </p>
             <p className="govuk-body">
-              Care homes in {demographicColumnHeaders[1]} have{' '}
+              Care homes in {locationNames[1]} have{' '}
               <strong>
-                {selectedLocations[1]} has a{' '}
                 {filteredBedData.find(
                   (metric) =>
                     metric.metric_id === 'bedcount_per_100000_adults_total' &&
@@ -305,7 +397,7 @@ const PresentDemandPage: React.FC = () => {
                 )?.data_point ?? 'Loading...'}{' '}
                 beds per 100,000 adult population
               </strong>
-              , compared to the {selectedLocations[2]} average of{' '}
+              , compared to the {locationNames[1]} average of{' '}
               {filteredBedData.find(
                 (metric) =>
                   metric.metric_id === 'bedcount_per_100000_adults_total' &&
@@ -315,9 +407,9 @@ const PresentDemandPage: React.FC = () => {
             </p>
             <ConditionalText
               data={filteredBedData}
-              ColumnHeaders={demographicColumnHeaders}
+              ColumnHeaders={locationNames}
               section="CapacityLA"
-              locations={selectedLocations}
+              locations={locationNames}
               metric_Id="median_occupancy_total"
             ></ConditionalText>
             <h3 className="govuk-heading-m">
@@ -328,7 +420,7 @@ const PresentDemandPage: React.FC = () => {
               {' '}
               You can filter this data by type of beds
             </p>
-            <form action="#">
+            <form action="/metric/total-beds">
               <button
                 type="submit"
                 className="govuk-button govuk-button--secondary"
@@ -338,20 +430,20 @@ const PresentDemandPage: React.FC = () => {
               </button>
             </form>
             <DataTable
-              columnHeaders={demographicColumnHeaders}
+              columnHeaders={locationNames}
               rowHeaders={bedRowHeaders}
-              data={bedData}
+              data={filteredBedData}
               showCareProvider={false}
             ></DataTable>
-            <p className="govuk-body">
-              <a href="" className="govuk-link">
-                Download table data (CSV)
-              </a>
-            </p>
+            <DownloadTableDataCSVLink
+              data={TableService.removeLoadDateTime(filteredBedData)}
+              filename="Current Capacity"
+              xLabel=""
+            ></DownloadTableDataCSVLink>
             <p className="govuk-body">
               Source: Office for National Statistics, NHS England
               <br />
-              Data correct as of X
+              Data correct as of {bedDataLatestDate}
             </p>
             <div className="govuk-grid-row govuk-!-margin-bottom-9">
               <h1 className="govuk-heading-l" id="capacity-cp">
@@ -363,39 +455,54 @@ const PresentDemandPage: React.FC = () => {
                 authority, regional and national level.
               </p>
               <p className="govuk-body">
-                {selectedLocations[0]} is a small provider with (
+                {locationNamesCP[1]} is a provider with (
                 {finalCpData.find(
                   (metric) =>
                     metric.metric_id === 'bedcount_total' &&
                     metric.location_type === 'Care provider location'
                 )?.data_point ?? 'Loading...'}{' '}
-                beds) in {selectedLocations[1]} total beds, compared to the
-                median (
+                beds) in {locationNamesCP[2]} total beds, compared to the median
+                (
                 {finalCpData.find(
                   (metric) =>
                     metric.metric_id === 'median_bed_count_total' &&
                     metric.location_type === 'Regional'
                 )?.data_point ?? 'Loading...'}{' '}
-                beds) in {selectedLocations[1]}.
+                beds) in {locationNamesCP[2]}.
               </p>
               <ConditionalText
                 data={finalCpData}
-                ColumnHeaders={careProvidersColumnHeaders}
+                ColumnHeaders={locationNamesCP}
                 section="CapacityCareProvider"
-                locations={selectedLocations}
+                locations={locationNamesCP}
                 metric_Id="median_occupancy_total"
               ></ConditionalText>
+              <p className="govuk-body">
+                <strong>Note: </strong>If fewer than 5 beds are occupied, the
+                percentage of beds occupied is shown as 0. For details on
+                rounding and suppression of data, see indicator definition and
+                supporting information.
+              </p>
               <h3 className="govuk-heading-m">
-                Explore the data: care providers in
-                {demographicColumnHeaders[1]}
+                Explore the data: care providers in {locationNames[1]}
               </h3>
               <DataTable
-                columnHeaders={careProvidersColumnHeaders}
+                columnHeaders={locationNamesCP}
                 rowHeaders={careProviderRowHeaders}
                 data={finalCpData}
                 showCareProvider={true}
                 careProviderMedianMetrics={careProviderMedianMetrics}
               ></DataTable>
+              <DownloadTableDataCSVLink
+                data={TableService.removeLoadDateTime(finalCpData)}
+                filename="Care providers data"
+                xLabel=""
+              ></DownloadTableDataCSVLink>
+              <p className="govuk-body">
+                Source: Office for National Statistics, NHS England
+                <br />
+                Data correct as of {CPLatestDate}
+              </p>
             </div>
           </div>
         </div>

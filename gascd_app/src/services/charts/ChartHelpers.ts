@@ -55,7 +55,7 @@ export function createYAxisScale(
 ): d3.ScaleLinear<number, number> {
   return d3
     .scaleLinear()
-    .domain([0, d3.max(data, (dataItem) => dataItem.value) ?? 0])
+    .domain([0, d3.max(data, (dataItem) => Number(dataItem.value)) ?? 0])
     .nice()
     .range([height - margin.bottom, margin.top]);
 }
@@ -67,7 +67,7 @@ export function createBarXAxisScale(
 ): d3.ScaleLinear<number, number> {
   return d3
     .scaleLinear()
-    .domain([0, d3.max(data, (dataItem) => dataItem.value) ?? 0])
+    .domain([0, d3.max(data, (dataItem) => Number(dataItem.value)) ?? 0])
     .nice()
     .range([margin.left, width - margin.right]);
 }
@@ -223,6 +223,7 @@ export function renderBarYAxis(
   const yAxis = d3
     .axisLeft(yAxisScale)
     .ticks(tickCount ? tickCount : null)
+    // .tickFormat((d: any) => ``)
     .tickSizeOuter(0);
 
   chartSvg
@@ -247,7 +248,6 @@ export function renderYAxis(
   if (yAxisAsPercentage) {
     yAxis.tickFormat((d: any) => `${(d * 100).toFixed(2)}%`);
   }
-
   chartSvg
     .append('g')
     .attr('transform', `translate(${margin.left},0)`)
@@ -398,8 +398,8 @@ export function renderBarLegend(
     .data(data)
     .enter()
     .append('rect')
-    .attr('x', 100)
-    .attr('y', (d, i) => 100 + i * (size + 5))
+    .attr('x', 0)
+    .attr('y', -3)
     .attr('width', size)
     .attr('height', size)
     .style('fill', (d) => colorScale(d) ?? '#000');
@@ -409,8 +409,8 @@ export function renderBarLegend(
     .data(data)
     .enter()
     .append('text')
-    .attr('x', 100 + size * 1.2)
-    .attr('y', (d, i) => 100 + i * (size + 5) + size / 2)
+    .attr('x', 15)
+    .attr('y', 0)
     .style('fill', (d) => colorScale(d) ?? '#000')
     .text((d) => d)
     .attr('text-anchor', 'left')

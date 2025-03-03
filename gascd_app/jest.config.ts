@@ -10,6 +10,7 @@ const config: Config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@/test-utils/(.*)$': '<rootDir>/tests/utils/$1',
+    '^.+\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   reporters: ['default'],

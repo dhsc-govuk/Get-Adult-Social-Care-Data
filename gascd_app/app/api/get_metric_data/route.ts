@@ -3,9 +3,12 @@ import { connectToDB } from '../../../src/data/dbModule';
 import { Indicator } from '@/data/interfaces/Indicator';
 import QueryBuilderService from '@/services/query-builder/QueryBuilderService';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '../auth/authOptions';
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
     const pool = await connectToDB();
     const queryParams = await req.json();
 
@@ -18,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     const request = pool.request();
     const { queryString, request_with_param } =
-      QueryBuilderService.createGetIndicatorQuery(queryParams, request);
+      QueryBuilderService.createGetIndicatorQuery(queryParams, request, session?.user.locationType ?? '', session?.user.locationId ?? '');
 
     const resultSet = await request_with_param.query(queryString);
 

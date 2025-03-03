@@ -5,13 +5,16 @@ import { line } from 'd3';
 import React, { RefObject } from 'react';
 import MetricTable from '../metric-components/metric-table/MetricTable';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
+import DownloadTableDataCSVLink from '../metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 type Props = {
   data: BarchartData[];
   display: IndicatorDisplay | null;
   barchartSVG: RefObject<HTMLDivElement | null>;
   lineGraphSVG: RefObject<HTMLDivElement | null>;
-  selectedFilters: TotalBedsFilters[];
+  selectedChartFilters: string[];
+  selectedLineFilters: string[];
+  locationName: string;
 };
 
 const IndicatorTable: React.FC<Props> = ({
@@ -19,18 +22,13 @@ const IndicatorTable: React.FC<Props> = ({
   display,
   barchartSVG,
   lineGraphSVG,
-  selectedFilters,
+  selectedChartFilters,
+  selectedLineFilters,
+  locationName,
 }) => {
-  const handleCSVDownloadClick = () => {
-    downloadCSV(
-      data,
-      display ? display.metric_name : 'Error',
-      display ? display.numerator : 'Error'
-    );
-  };
 
   const handlePNGDownloadClick = () => {
-    console.log('to add');
+    //todo
   };
 
   return (
@@ -65,7 +63,7 @@ const IndicatorTable: React.FC<Props> = ({
         <div className="govuk-tabs__panel" id="chart">
           <h2 className="govuk-heading-m">Bar chart</h2>
           <p className="govuk-body">
-            This chart shows data for all local authorities in Suffolk.
+            This chart shows data for all local authorities in {locationName}.
           </p>
           <table className="govuk-table">
             <tbody className="govuk-table__body">
@@ -75,8 +73,8 @@ const IndicatorTable: React.FC<Props> = ({
                 </th>
                 <td className="govuk-table__cell">
                   <ul className="moj-side-navigation__list">
-                    {selectedFilters.map((filter, index) => (
-                      <li key={index}>{filter.filter_bedtype}</li>
+                    {selectedChartFilters.map((filter, index) => (
+                      <li key={index}>{filter}</li>
                     ))}
                   </ul>
                 </td>
@@ -88,14 +86,15 @@ const IndicatorTable: React.FC<Props> = ({
               </tr>
             </tbody>
           </table>
+          <h3>
+            Adult social care beds per 100,000 adult population by local authority
+          </h3>
           <div ref={barchartSVG} id="chart-container"></div>
-          <a href="" className="govuk-link" onClick={handlePNGDownloadClick}>
-            Download chart image (PNG)
-          </a>
           <br />
-          <a href="" className="govuk-link" onClick={handleCSVDownloadClick}>
-            Download table data (CSV)
-          </a>
+          <DownloadTableDataCSVLink
+            data={data}
+            filename= {display ? display.metric_name : 'Error'}
+            xLabel={display ? display.numerator : 'Error'}/>
           <p className="govuk-body">
             Source: Capacity Tracker
             <br />
@@ -114,7 +113,38 @@ const IndicatorTable: React.FC<Props> = ({
           id="time-series"
         >
           <h2 className="govuk-heading-m">Time series</h2>
+
+          <table className="govuk-table">
+            <tbody className="govuk-table__body">
+              <tr className="govuk-table__row">
+                <th scope="row" className="govuk-table__header">
+                  Filter
+                </th>
+                <td className="govuk-table__cell">
+                  <ul className="moj-side-navigation__list">
+                    {selectedLineFilters.map((filter, index) => (
+                      <li key={index}>{filter}</li>
+                    ))}
+                  </ul>
+                </td>
+                <td className="govuk-table__cell">
+                  <a href="/metric/total-beds/time-series-filter" className="govuk-link">
+                    Change
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
           <div ref={lineGraphSVG} id="line-graph-container"></div>
+          <DownloadTableDataCSVLink
+              data={data}
+              filename= {display ? display.metric_name : 'Error'}
+              xLabel={display ? display.numerator : 'Error'}/>
+            <p className="govuk-body">
+              Source: Capacity Tracker
+              <br />
+              Data correct as of 24 December 2024
+            </p>
         </div>
 
         <div className="govuk-tabs__panel govuk-tabs__panel--hidden" id="map">
@@ -137,8 +167,8 @@ const IndicatorTable: React.FC<Props> = ({
                 </th>
                 <td className="govuk-table__cell">
                   <ul className="moj-side-navigation__list">
-                    {selectedFilters.map((filter, index) => (
-                      <li key={index}>{filter.filter_bedtype}</li>
+                    {selectedLineFilters.map((filter, index) => (
+                      <li key={index}>{filter}</li>
                     ))}
                   </ul>
                 </td>
@@ -149,19 +179,23 @@ const IndicatorTable: React.FC<Props> = ({
             </tbody>
           </table>
           <MetricTable
-            headers={['', 'Total hours worked that are agency %']}
+            headers={['', 'Adult social care beds per 100,000 adult population']}
             tableData={data}
           />
           <p className="govuk-body" />
-          <a href="#" className="govuk-link">
-            Download table data (CSV)
-          </a>
+
+            <DownloadTableDataCSVLink
+              data={data}
+              filename= {display ? display.metric_name : 'Error'}
+              xLabel={display ? display.numerator : 'Error'}/>
+
           <p className="govuk-body">Source: Capacity Tracker</p>
           <br />
           Data correct as of 24 December 2024
           <br />
           <a
-            href="../0-3/help/beds-per-100000-people.html"
+            // href="../0-3/help/beds-per-100000-people.html"
+            href="#" //todo
             className="govuk-link"
           >
             View supporting information for this data

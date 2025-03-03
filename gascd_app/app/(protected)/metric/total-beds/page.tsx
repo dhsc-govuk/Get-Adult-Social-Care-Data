@@ -1,19 +1,20 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
-import ContentSidePanel from '../../../src/components/common/panels/contents-side-panel/ContentsSidePanel';
+import ContentSidePanel from '../../../../src/components/common/panels/contents-side-panel/ContentsSidePanel';
 import IndicatorTable from '@/components/indicator-components/IndicatorTable';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import IndicatorService from '@/services/indicator/IndicatorService';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import SmartInsightsFetchService from '@/services/smart-insights/SmartInsightsFetchService';
 import { parseMarkdownBlocks } from '@/utils/parseMarkdown';
+import PresentDemandService from '@/services/present-demand/presentDemandService';
 
 const TotalBedsPage: React.FC = () => {
   const [indicatorService, setIndicatorService] =
@@ -25,73 +26,116 @@ const TotalBedsPage: React.FC = () => {
   const [locationId, setlocationId] = useState<string>();
   const [locationType, setlocationType] = useState<string>();
 
-  const searchParams = useSearchParams();
-  const selectedFilters = searchParams.get('filters');
-  const [parsedFilters, setParsedFilters] = useState<TotalBedsFilters[]>([]);
+  const [locationName, setlocationName] = useState<string>();
+  const [locationRegion, setlocationRegion] = useState<string>();
 
-  const metric_ids = [
+  const [selectedChartFilters, setSelectedChartFilters] = useState<string[]>();
+  const [selectedLineGraphFilters, setSelectedLineGraphFilters] = useState<string[]>();
+
+  const default_chart_metric_ids = [
+    'bedcount_per_100000_adults_total'
+  ];
+
+  const default_line_graph_metric_ids = [
     'bedcount_per_100000_adults_total',
     'bedcount_per_100000_adults_total_dementia_residential',
   ];
 
-  const [indicatorQuery, setIndicatorQuery] = useState<IndicatorQuery>({
-    metric_ids: metric_ids,
+  const [chartIndicatorQuery, setChartIndicatorQuery] = useState<IndicatorQuery>({
+    metric_ids: default_chart_metric_ids,
     location_ids: [],
   });
 
-  // 'E10000029', 'E12000006', 'E12000005', 'E12000004'
+  const [LineGraphIndicatorQuery, setLineGraphIndicatorQuery] = useState<IndicatorQuery>({
+    metric_ids: default_line_graph_metric_ids,
+    location_ids: [],
+  });
 
   useEffect(() => {
-    if (selectedFilters) {
-      try {
-        const decoded = decodeURIComponent(selectedFilters);
-        const parsed = JSON.parse(decoded);
-        const metricIds: string[] = parsed.map(
-          (filter: { metric_id: string; filter_bedtype: string }) =>
-            filter.metric_id
-        );
-        setParsedFilters(parsed);
-        setIndicatorQuery((prev) => ({
-          ...prev,
-          metric_ids: metricIds,
-        }));
-      } catch (error) {
-        console.error('Error parsing selected filters:', error);
-      }
-    }
-  }, [selectedFilters]);
-
-  useEffect(() => {
-    if (indicatorQuery && indicatorQuery.location_ids.length > 0) {
+    if (chartIndicatorQuery && chartIndicatorQuery.location_ids.length > 0 && LineGraphIndicatorQuery) {
       const fetchData = async () => {
-        const data: Indicator[] =
-          await IndicatorFetchService.getData(indicatorQuery);
-        data.forEach((obj) => console.log(obj));
+        const chartData: Indicator[] =
+          await IndicatorFetchService.getData(chartIndicatorQuery);
+        const lineGraphData: Indicator[] =
+          await IndicatorFetchService.getData(LineGraphIndicatorQuery);
         const displayData: IndicatorDisplay =
           await IndicatorFetchService.getDisplayData('');
-        setIndicatorService(new IndicatorService(data, displayData));
+        setIndicatorService(new IndicatorService(chartData, lineGraphData, displayData));
         const insights: string[] =
-          await SmartInsightsFetchService.getData(indicatorQuery);
+          await SmartInsightsFetchService.getData(chartIndicatorQuery);
         setSmartInsights(insights);
       };
       fetchData();
     }
-  }, [indicatorQuery]);
+  }, [chartIndicatorQuery, LineGraphIndicatorQuery]);
 
   useEffect(() => {
     if (session) {
+      
+      const selectedCode = localStorage.getItem('IndicatorLocationSelectedCode');
+      const selectedName = localStorage.getItem('IndicatorLocationSelectedName');
+      const selectedRegion = localStorage.getItem('IndicatorLocationSelectedRegion');
+
+      setlocationName(selectedName!);
+      setlocationRegion(selectedRegion!);
+
       setlocationId(session.user.locationId);
       setlocationType(session.user.locationType);
     }
   }, [session]);
 
   useEffect(() => {
-    if (locationId && locationType) {
-      setIndicatorQuery({
-        metric_ids: metric_ids,
-        location_ids: [locationId],
-      });
-    }
+    const fetchLocationIds = async () => {
+      if (locationId && locationType) {
+        try {
+          const locationids = await PresentDemandService.getLocationIds(
+            locationId,
+            false
+          );
+
+          const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
+          const chartMetrics = localStorage.getItem('chart-metrics');
+          const locationNames = await PresentDemandService.getLocationNames(locationId, false);
+
+          let cMetrics : string[];
+          let cMetricsNames : string[];
+          // 
+          if(chartMetrics){
+            let cm : [] = JSON.parse(chartMetrics);
+            cMetrics = cm.map(obj => obj['metric_id']);
+            cMetricsNames = cm.map(obj => obj['filter_bedtype']);
+            setSelectedChartFilters(cMetricsNames);
+          }else{
+            cMetrics = default_chart_metric_ids
+          }
+
+          let lMetrics : string[];
+          let lMetricsNames : string[];
+          if(timeSeriesMetrics){
+             let tm : [] = JSON.parse(timeSeriesMetrics);
+             lMetrics = tm.map(obj => obj['metric_id']);
+             lMetricsNames = tm.map(obj => obj['filter_bedtype']);
+             setSelectedLineGraphFilters(lMetricsNames);
+          }else{
+            lMetrics = default_line_graph_metric_ids
+          }
+
+          setChartIndicatorQuery({
+            metric_ids: cMetrics,
+            location_ids: locationids,
+          });
+          
+          setLineGraphIndicatorQuery({
+            metric_ids: lMetrics,
+            location_ids: locationids,
+          });
+
+        } catch (error) {
+          console.error('Error fetching location ids:', error);
+        }
+      }
+    };
+    fetchLocationIds();
   }, [locationId, locationType]);
 
   const barchartSVGContainerRef = useRef<HTMLDivElement>(null);
@@ -99,12 +143,12 @@ const TotalBedsPage: React.FC = () => {
 
   useEffect(() => {
     if (barchartSVGContainerRef.current && indicatorService) {
-      const containerWidth = barchartSVGContainerRef.current.clientWidth;
-      const containerHeight = barchartSVGContainerRef.current.clientHeight;
+      // const containerWidth = barchartSVGContainerRef.current.clientWidth;
+      // const containerHeight = barchartSVGContainerRef.current.clientHeight;
 
       const barchart = indicatorService.createBarchart(
-        containerWidth,
-        containerHeight
+        // containerWidth,
+        // containerHeight
       );
 
       barchartSVGContainerRef.current.innerHTML = '';
@@ -114,6 +158,7 @@ const TotalBedsPage: React.FC = () => {
     }
 
     if (lineGraphSVGContainerRef.current && indicatorService) {
+      
       const lineGraph = indicatorService.createLinegraph();
 
       lineGraphSVGContainerRef.current.innerHTML = '';
@@ -143,6 +188,7 @@ const TotalBedsPage: React.FC = () => {
   ];
 
   return (
+    <Suspense>
     <Layout
       showLoginInformation={false}
       currentPage="total-beds"
@@ -190,12 +236,12 @@ const TotalBedsPage: React.FC = () => {
                 </th>
                 <td className="govuk-table__cell">
                   <ul className="govuk-list" style={{ textAlign: 'left' }}>
-                    <li>Suffolk</li>
-                    <li>East of England</li>
+                  <li>{locationName}</li>
+                  <li>{locationRegion}</li>
                   </ul>
                 </td>
                 <td className="govuk-table__cell">
-                  <a href="present-demand-locations" className="govuk-link">
+                  <a href="total-beds/filter-location" className="govuk-link">
                     Change
                   </a>
                 </td>
@@ -207,19 +253,21 @@ const TotalBedsPage: React.FC = () => {
             display={getCurrentDisplayData()}
             barchartSVG={barchartSVGContainerRef}
             lineGraphSVG={lineGraphSVGContainerRef}
-            selectedFilters={parsedFilters}
+            selectedChartFilters = {selectedChartFilters ?? ['All bed types']}
+            selectedLineFilters = {selectedLineGraphFilters ?? ['All bed types','Residential - dementia']}
+            locationName={locationName ?? ''}
           />
+            <div>{parseMarkdownBlocks(smartInsights)}</div>
 
-          <div>{parseMarkdownBlocks(smartInsights)}</div>
-
-          <p className="govuk-body">
-            <a href="javascript:history.back()" className="govuk-link">
-              Back
-            </a>
-          </p>
+            <p className="govuk-body">
+              <a href="javascript:history.back()" className="govuk-link">
+                Back
+              </a>
+            </p>
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </Suspense>
   );
 };
 

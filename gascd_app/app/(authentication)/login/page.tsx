@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useCallback, useState } from 'react';
-import Layout from '../../src/components/common/layout/Layout';
-import StandardButton from '../../src/components/common/buttons/functionality/standard-button/StandardButton';
+import Layout from '../../../src/components/common/layout/Layout';
+import StandardButton from '../../../src/components/common/buttons/functionality/standard-button/StandardButton';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 

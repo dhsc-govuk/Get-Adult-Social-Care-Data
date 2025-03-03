@@ -1,6 +1,5 @@
 import React from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
-import { da } from '@faker-js/faker';
 
 type DataTableProps = {
   columnHeaders: string[];

@@ -31,21 +31,23 @@ const TotalBedsFiltersPage: React.FC = () => {
       filter_bedtype: filter.filter_bedtype,
     }));
 
-  const encodedSelectedFilters = encodeURIComponent(
-    JSON.stringify(selectedFilters)
-  );
+  const handleSubmit = () => {
+    if (selectedFilters) {
+      localStorage.setItem('time-series-metrics', JSON.stringify(selectedFilters));
+    }
+  };
 
   return (
     <Layout
-      showLoginInformation={false}
-      currentPage={'/metric/total-beds/filters'}
+      showLoginInformation={true}
+      currentPage={'/metric/total-beds/time-series-filter'}
     >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
           <span className="govuk-caption-m">
             Total beds per 100,000 population
           </span>
-          <h1 className="govuk-heading-l">Edit chart filter</h1>
+          <h1 className="govuk-heading-l">Edit time series filters</h1>
           <p className="govuk-body">
             Select filters to refine the data displayed.
           </p>
@@ -79,15 +81,11 @@ const TotalBedsFiltersPage: React.FC = () => {
               </div>
             </fieldset>
           </div>
-          <Link
-            href={{
-              pathname: '/metric/total-beds',
-              query: { filters: encodedSelectedFilters },
-            }}
-            className="govuk-button"
-          >
-            Next
-          </Link>
+              <Link href="/metric/total-beds#time-series" onClick={handleSubmit}>
+                <button type="button" className="govuk-button">
+                  Submit
+                </button>
+              </Link>
         </div>
       </div>
     </Layout>
