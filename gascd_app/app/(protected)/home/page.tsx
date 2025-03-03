@@ -6,6 +6,7 @@ import { Breadcrumb } from '../../../src/data/interfaces/Breadcrumb';
 import ButtonWithArrow from '@/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/authOptions';
+import { redirect } from 'next/navigation';
 
 export default async function HomePage() {
   const breadcrumbs: Array<Breadcrumb> = [
@@ -16,6 +17,10 @@ export default async function HomePage() {
   ];
 
   const session = await getServerSession(authOptions);
+
+  if (session) {
+    redirect('/present-demand');
+  }
 
   return (
     <Layout
