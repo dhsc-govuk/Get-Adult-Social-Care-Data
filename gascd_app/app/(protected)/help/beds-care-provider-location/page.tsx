@@ -1,4 +1,5 @@
 import Layout from '@/components/common/layout/Layout';
+import Link from 'next/link';
 
 const BedsCareProviderLocations: React.FC = () => {
   return (
@@ -35,13 +36,13 @@ const BedsCareProviderLocations: React.FC = () => {
                   Source
                 </th>
                 <td className="govuk-table__cell">
-                  <a
+                  <Link
                     href="https://www.necsu.nhs.uk/digital-applications/capacity-tracker/"
                     className="govuk-link"
-                    rel="noopener"
+                    target="_blank"
                   >
                     Capacity Tracker (opens in new tab)
-                  </a>
+                  </Link>
                 </td>
               </tr>
               <tr className="govuk-table__row">
@@ -72,12 +73,12 @@ const BedsCareProviderLocations: React.FC = () => {
                   Methodology
                 </th>
                 <td className="govuk-table__cell">
-                  <p className="govuk-body">
-                    The data reflects the number of beds recorded by care
-                    providers. &apos;Beds&apos; refers to adult social care beds
-                    in care providers registered with the Care Quality
-                    Commission (CQC) and includes the following categories:
-                  </p>
+                  The data reflects the number of beds recorded by care
+                  providers. &apos;Beds&apos; refers to adult social care beds
+                  in care providers registered with the Care Quality Commission
+                  (CQC) and includes the following categories:
+                  <br></br>
+                  <br></br>
                   <ul className="govuk-list govuk-list--bullet">
                     <li>dementia nursing</li>
                     <li>general residential</li>
@@ -90,17 +91,15 @@ const BedsCareProviderLocations: React.FC = () => {
                     <li>mental health residential</li>
                     <li>general nursing</li>
                   </ul>
-                  <p className="govuk-body">
-                    The data covers both self-funded and local authority-funded
-                    beds.
-                  </p>
-                  <p className="govuk-body">
-                    Care providers registered with the CQC must update this
-                    information at least monthly using the Capacity Tracker
-                    tool. The mandated reporting period is between the 8th and
-                    14th every month, or the next working day if the 14th falls
-                    on a weekend or holiday.
-                  </p>
+                  The data covers both self-funded and local authority-funded
+                  beds.
+                  <br></br>
+                  <br></br>
+                  Care providers registered with the CQC must update this
+                  information at least monthly using the Capacity Tracker tool.
+                  The mandated reporting period is between the 8th and 14th
+                  every month, or the next working day if the 14th falls on a
+                  weekend or holiday.
                 </td>
               </tr>
 
@@ -109,30 +108,27 @@ const BedsCareProviderLocations: React.FC = () => {
                   Limitations
                 </th>
                 <td className="govuk-table__cell">
-                  <p className="govuk-body">
-                    Care providers may update their Capacity Tracker data at
-                    different times outside the reporting period.
-                  </p>
-                  <p className="govuk-body">
-                    As a result, the data does not provide a snapshot of all
-                    providers at the same time. It reflects the most recent
-                    information available when the data was retrieved.{' '}
-                  </p>
-                  <p className="govuk-body">
-                    The data is self-reported and not independently verified.
-                  </p>
-                  <p className="govuk-body">
-                    When adult social care beds are vacant, they can be used
-                    flexibly across a range of bed types. We are exploring ways
-                    to reflect this in the data.
-                  </p>
-                  <p className="govuk-body">
-                    The current bed types are not clearly defined and may be
-                    interpreted differently by care providers submitting data.
-                    To improve consistency, we are working with Capacity Tracker
-                    to explore whether more detailed bed descriptions can be
-                    provided.
-                  </p>
+                  Care providers may update their Capacity Tracker data at
+                  different times outside the reporting period.
+                  <br></br>
+                  <br></br>
+                  As a result, the data does not provide a snapshot of all
+                  providers at the same time. It reflects the most recent
+                  information available when the data was retrieved. <br></br>
+                  <br></br>
+                  The data is self-reported and not independently verified.
+                  <br></br>
+                  <br></br>
+                  When adult social care beds are vacant, they can be used
+                  flexibly across a range of bed types. We are exploring ways to
+                  reflect this in the data.
+                  <br></br>
+                  <br></br>
+                  The current bed types are not clearly defined and may be
+                  interpreted differently by care providers submitting data. To
+                  improve consistency, we are working with Capacity Tracker to
+                  explore whether more detailed bed descriptions can be
+                  provided.
                 </td>
               </tr>
 

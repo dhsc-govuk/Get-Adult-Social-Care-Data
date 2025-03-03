@@ -1,4 +1,5 @@
 import Layout from '@/components/common/layout/Layout';
+import Link from 'next/link';
 
 const PercentageBedsOccupied: React.FC = () => {
   return (
@@ -36,11 +37,11 @@ const PercentageBedsOccupied: React.FC = () => {
                   Source
                 </th>
                 <td className="govuk-table__cell">
-                  <a
+                  <Link
                     href="https://www.necsu.nhs.uk/digital-applications/capacity-tracker/"
                     className="govuk-link"
-                    rel="noopener"
-                  ></a>
+                    target="_blank"
+                  ></Link>
                   Capacity Tracker (opens in new tab)
                 </td>
               </tr>
@@ -72,12 +73,12 @@ const PercentageBedsOccupied: React.FC = () => {
                   Methodology
                 </th>
                 <td className="govuk-table__cell">
-                  <p className="govuk-body">
-                    The occupancy rate is calculated by dividing the number of
-                    occupied beds by the total number of beds. &apos;Beds&apos;
-                    refers to adult social care beds in care providers and
-                    includes the following categories:
-                  </p>
+                  The occupancy rate is calculated by dividing the number of
+                  occupied beds by the total number of beds. &apos;Beds&apos;
+                  refers to adult social care beds in care providers and
+                  includes the following categories:
+                  <br></br>
+                  <br></br>
                   <ul className="govuk-list govuk-list--bullet">
                     <li>dementia nursing</li>
                     <li>general residential</li>
@@ -90,22 +91,20 @@ const PercentageBedsOccupied: React.FC = () => {
                     <li>mental health residential</li>
                     <li>general nursing</li>
                   </ul>
-                  <p className="govuk-body">
-                    &apos;Occupied beds&apos; refers to beds reported as being
-                    in use at the time of data collection.
-                  </p>
-                  <p className="govuk-body">
-                    Care providers registered with the Care Quality Commission
-                    (CQC) must update this information at least monthly using
-                    the Capacity Tracker tool. The mandated reporting period is
-                    between the 8th and 14th every month, or the next working
-                    day if the 14th falls on a weekend or holiday.
-                  </p>
-                  <p className="govuk-body">
-                    Small number suppression is applied. Occupied bed counts
-                    less than 5 and their corresponding percentages have been
-                    suppressed.
-                  </p>
+                  &apos;Occupied beds&apos; refers to beds reported as being in
+                  use at the time of data collection.
+                  <br></br>
+                  <br></br>
+                  Care providers registered with the Care Quality Commission
+                  (CQC) must update this information at least monthly using the
+                  Capacity Tracker tool. The mandated reporting period is
+                  between the 8th and 14th every month, or the next working day
+                  if the 14th falls on a weekend or holiday.
+                  <br></br>
+                  <br></br>
+                  Small number suppression is applied. Occupied bed counts less
+                  than 5 and their corresponding percentages have been
+                  suppressed.
                 </td>
               </tr>
 
@@ -114,28 +113,26 @@ const PercentageBedsOccupied: React.FC = () => {
                   Limitations
                 </th>
                 <td className="govuk-table__cell">
-                  <p className="govuk-body">
-                    Care providers may update their Capacity Tracker data at
-                    different times outside the reporting period.
-                  </p>
-                  <p className="govuk-body">
-                    As a result, the data does not provide a snapshot of all
-                    providers at the same time. It reflects the most recent
-                    information available when the data was retrieved.The data
-                    is self-reported and not independently verified.
-                  </p>
-                  <p className="govuk-body">
-                    When adult social care beds are vacant, they can be used
-                    flexibly across a range of bed types. We are exploring ways
-                    to reflect this in the data.
-                  </p>
-                  <p className="govuk-body">
-                    The current bed types are not clearly defined and may be
-                    interpreted differently by care providers submitting data.
-                    To improve consistency, we are working with Capacity Tracker
-                    to explore whether more detailed bed descriptions can be
-                    provided.
-                  </p>
+                  Care providers may update their Capacity Tracker data at
+                  different times outside the reporting period.
+                  <br></br>
+                  <br></br>
+                  As a result, the data does not provide a snapshot of all
+                  providers at the same time. It reflects the most recent
+                  information available when the data was retrieved.The data is
+                  self-reported and not independently verified.
+                  <br></br>
+                  <br></br>
+                  When adult social care beds are vacant, they can be used
+                  flexibly across a range of bed types. We are exploring ways to
+                  reflect this in the data.
+                  <br></br>
+                  <br></br>
+                  The current bed types are not clearly defined and may be
+                  interpreted differently by care providers submitting data. To
+                  improve consistency, we are working with Capacity Tracker to
+                  explore whether more detailed bed descriptions can be
+                  provided.
                 </td>
               </tr>
 
@@ -144,10 +141,8 @@ const PercentageBedsOccupied: React.FC = () => {
                   Data definitions
                 </th>
                 <td className="govuk-table__cell">
-                  <p className="govuk-body">
-                    Refer to the Limitations section for details about work
-                    relating to bed type descriptions.
-                  </p>
+                  Refer to the Limitations section for details about work
+                  relating to bed type descriptions.
                 </td>
               </tr>
             </tbody>

@@ -1,4 +1,5 @@
 import Layout from '@/components/common/layout/Layout';
+import Link from 'next/link';
 
 const PopulationSize: React.FC = () => {
   return (
@@ -34,14 +35,14 @@ const PopulationSize: React.FC = () => {
                   Source
                 </th>
                 <td className="govuk-table__cell">
-                  <a
+                  <Link
                     href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/populationestimatesforenglandandwales/mid2023"
                     className="govuk-link"
-                    rel="noopener"
+                    target="_blank"
                   >
                     Office for National Statistics population estimates for
                     England and Wales (opens in new tab)
-                  </a>
+                  </Link>
                 </td>
               </tr>
               <tr className="govuk-table__row">
@@ -82,20 +83,18 @@ const PopulationSize: React.FC = () => {
                   Limitations
                 </th>
                 <td className="govuk-table__cell">
-                  <p className="govuk-body">
-                    The data are not counts, but estimates produced by combining
-                    data from multiple sources. The accuracy of the estimates is
-                    subject to the coverage and errors associated with those
-                    sources.
-                  </p>
-                  <p className="govuk-body">
-                    These estimates reflect the mid-2023 population, not the
-                    current population.
-                  </p>
-                  <p className="govuk-body">
-                    Changes to methods and data sources may lead to regular
-                    revisions of these estimates.
-                  </p>
+                  The data are not counts, but estimates produced by combining
+                  data from multiple sources. The accuracy of the estimates is
+                  subject to the coverage and errors associated with those
+                  sources.
+                  <br></br>
+                  <br></br>
+                  These estimates reflect the mid-2023 population, not the
+                  current population.
+                  <br></br>
+                  <br></br>
+                  Changes to methods and data sources may lead to regular
+                  revisions of these estimates.
                 </td>
               </tr>
 

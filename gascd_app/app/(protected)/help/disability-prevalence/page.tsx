@@ -1,4 +1,5 @@
 import Layout from '@/components/common/layout/Layout';
+import Link from 'next/link';
 
 const DisabilyPrevalence: React.FC = () => {
   return (
@@ -34,14 +35,14 @@ const DisabilyPrevalence: React.FC = () => {
                   Source
                 </th>
                 <td className="govuk-table__cell">
-                  <a
+                  <Link
                     href="https://www.ons.gov.uk/datasets/TS038/editions/2021/versions/3"
                     className="govuk-link"
-                    rel="noopener"
+                    target="_blank"
                   >
                     Office for National Statistics Census 2021 Disability
                     dataset (opens in new tab)
-                  </a>
+                  </Link>
                 </td>
               </tr>
               <tr className="govuk-table__row">
@@ -82,14 +83,12 @@ const DisabilyPrevalence: React.FC = () => {
                   Limitations
                 </th>
                 <td className="govuk-table__cell">
-                  <p className="govuk-body">
-                    The data is based on survey responses, which may be subject
-                    to response bias.
-                  </p>
-                  <p className="govuk-body">
-                    These are disability prevalence estimates for Census Day (21
-                    March 2021), not the present day.
-                  </p>
+                  The data is based on survey responses, which may be subject to
+                  response bias.
+                  <br></br>
+                  <br></br>
+                  These are disability prevalence estimates for Census Day (21
+                  March 2021), not the present day.
                 </td>
               </tr>
 
