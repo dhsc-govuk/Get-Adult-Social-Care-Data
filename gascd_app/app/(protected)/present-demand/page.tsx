@@ -83,7 +83,6 @@ const PresentDemandPage: React.FC = () => {
             session.user.locationId ?? ' ',
             session.user.locationType
           );
-          console.log(locationId);
           setCPLocationId(locationId);
         }
         const storedLocationId = localStorage.getItem('selectedValue');

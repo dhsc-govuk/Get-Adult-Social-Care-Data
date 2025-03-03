@@ -31,7 +31,7 @@ export function generateBarchartSvg({
   barColor = '#5f0f40',
   medianLineColor = '#808000',
   medianLineDash = '5,5',
-  title = 'Barchart',
+  title = '',
   showXValues = true,
   showQuartileRanges = false,
   highlightQuartileColors = ['#00703c', '#1d70b8', '#d4351c', '#f47738'],
