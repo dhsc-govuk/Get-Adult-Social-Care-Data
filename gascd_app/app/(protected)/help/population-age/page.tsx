@@ -1,9 +1,15 @@
+'use client';
 import Layout from '@/components/common/layout/Layout';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const PopulationAge: React.FC = () => {
+  const router = useRouter();
   return (
-    <Layout showLoginInformation={false} currentPage={''}>
+    <Layout showLoginInformation={false} currentPage={'population age'}>
+      <Link onClick={() => router.back()} className="govuk-back-link" href="">
+        Back
+      </Link>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
           <h1 className="govuk-heading-l">

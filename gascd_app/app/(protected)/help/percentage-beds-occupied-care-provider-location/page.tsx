@@ -6,14 +6,12 @@ import Layout from '@/components/common/layout/Layout';
 const PercentageBedsOccupiedCareProviders: React.FC = () => {
   const router = useRouter();
 
-  const contentItems = [
-    { link: '#walkthrough', heading: 'Step-by-step walkthrough' },
-    { link: '#quick-guide', heading: 'Quick guide' },
-    { link: '#about', heading: 'About this service' },
-  ];
-
   return (
-    <Layout showLoginInformation={false} currentPage={''} showNavBar={false}>
+    <Layout
+      showLoginInformation={false}
+      currentPage={'beds care provider location'}
+      showNavBar={false}
+    >
       <Link href="#" onClick={() => router.back()} className="govuk-back-link">
         Back
       </Link>
@@ -28,10 +26,6 @@ const PercentageBedsOccupiedCareProviders: React.FC = () => {
           <p className="govuk-body-l">
             Find detailed information about this indicator.
           </p>
-
-          <Link href="" className="govuk-link">
-            View data for this indicator
-          </Link>
 
           <table className="govuk-table">
             <thead className="govuk-table__head">
