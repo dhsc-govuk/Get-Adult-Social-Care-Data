@@ -88,10 +88,19 @@ const TotalBedsPage: React.FC = () => {
     const fetchLocationIds = async () => {
       if (locationId && locationType) {
         try {
-          const locationids = await PresentDemandService.getLocationIds(
-            locationId,
-            false
-          );
+          let locationids : string[] = [];
+          try {
+            const response = await fetch(
+              `/api/get_locations`
+            );
+            if (!response.ok) {
+              throw new Error(`Error fetching data: ${response.statusText}`);
+            }
+            const locIds = await response.json();
+            locationids = locIds.map((item: { la_code: any; }) => item.la_code)
+          } catch (error) {
+            console.error('Error fetching data', error);
+          }
 
           const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
           const chartMetrics = localStorage.getItem('chart-metrics');
@@ -99,7 +108,7 @@ const TotalBedsPage: React.FC = () => {
 
           let cMetrics : string[];
           let cMetricsNames : string[];
-          // 
+          
           if(chartMetrics){
             let cm : [] = JSON.parse(chartMetrics);
             cMetrics = cm.map(obj => obj['metric_id']);
@@ -255,7 +264,7 @@ const TotalBedsPage: React.FC = () => {
             lineGraphSVG={lineGraphSVGContainerRef}
             selectedChartFilters = {selectedChartFilters ?? ['All bed types']}
             selectedLineFilters = {selectedLineGraphFilters ?? ['All bed types','Residential - dementia']}
-            locationName={locationName ?? ''}
+            locationName={locationRegion ?? ''}
           />
             <div>{parseMarkdownBlocks(smartInsights)}</div>
 
