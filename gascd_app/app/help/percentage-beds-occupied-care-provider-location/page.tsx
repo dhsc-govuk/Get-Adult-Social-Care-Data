@@ -127,6 +127,52 @@ const PercentageBedsOccupiedCareProviders: React.FC = () => {
                   </p>
                 </td>
               </tr>
+
+              <tr className="govuk-table__row">
+                <th scope="row" className="govuk-table__header">
+                  Limitations
+                </th>
+                <td className="govuk-table__cell">
+                  <p className="govuk-body">
+                    Care providers may update their Capacity Tracker data at
+                    different times outside the reporting period.
+                  </p>
+
+                  <p className="govuk-body">
+                    As a result, the data does not provide a snapshot of all
+                    providers at the same time. It reflects the most recent
+                    information available when the data was retrieved.
+                  </p>
+
+                  <p className="govuk-body">
+                    The data is self-reported and not independently verified.
+                  </p>
+
+                  <p className="govuk-body">
+                    When adult social care beds are vacant, they can be used
+                    flexibly across a range of bed types. We are exploring ways
+                    to reflect this in the data.
+                  </p>
+
+                  <p className="govuk-body">
+                    The current bed types are not clearly defined and may be
+                    interpreted differently by care providers submitting data.
+                    To improve consistency, we are working with Capacity Tracker
+                    to explore whether more detailed bed descriptions can be
+                    provided.
+                  </p>
+                </td>
+              </tr>
+
+              <tr className="govuk-table__row">
+                <th scope="row" className="govuk-table__header">
+                  Data definitions
+                </th>
+                <td className="govuk-table__cell">
+                  Refer to the Limitations section for details about work
+                  relating to bed type descriptions.
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
