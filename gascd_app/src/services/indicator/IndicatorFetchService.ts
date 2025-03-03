@@ -1,8 +1,24 @@
 import { Indicator } from '@/data/interfaces/Indicator';
+import { Location } from '@/data/interfaces/Location';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 
 class IndicatorFetchService {
+  public static async getLocations(query: IndicatorQuery): Promise<Location[]> {
+    const response = await fetch('/api/get_location_names', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(query),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
   public static async getFilters(metric_id: string) {
     const response = await fetch('/api/get_all_total_beds_filters');
     return response.json();
@@ -19,7 +35,6 @@ class IndicatorFetchService {
     if (!response.ok) {
       throw new Error(`Failed to fetch data: ${response.statusText}`);
     }
-
     return response.json();
   }
 
