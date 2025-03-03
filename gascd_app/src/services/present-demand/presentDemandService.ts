@@ -5,7 +5,7 @@ class PresentDemandService {
   public static async getLocations(query: string): Promise<Locations> {
     try {
       const response = await fetch(
-        `api/get_location_data?provider_location_id=${query}`
+        `/api/get_location_data?provider_location_id=${query}`
       );
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);

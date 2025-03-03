@@ -14,6 +14,7 @@ import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import SmartInsightsFetchService from '@/services/smart-insights/SmartInsightsFetchService';
 import { parseMarkdownBlocks } from '@/utils/parseMarkdown';
+import PresentDemandService from '@/services/present-demand/presentDemandService';
 
 const TotalBedsPage: React.FC = () => {
   const [indicatorService, setIndicatorService] =
@@ -25,73 +26,116 @@ const TotalBedsPage: React.FC = () => {
   const [locationId, setlocationId] = useState<string>();
   const [locationType, setlocationType] = useState<string>();
 
-  const searchParams = useSearchParams();
-  const selectedFilters = searchParams.get('filters');
-  const [parsedFilters, setParsedFilters] = useState<TotalBedsFilters[]>([]);
+  const [locationName, setlocationName] = useState<string>();
+  const [locationRegion, setlocationRegion] = useState<string>();
 
-  const metric_ids = [
+  const [selectedChartFilters, setSelectedChartFilters] = useState<string[]>();
+  const [selectedLineGraphFilters, setSelectedLineGraphFilters] = useState<string[]>();
+
+  const default_chart_metric_ids = [
+    'bedcount_per_100000_adults_total'
+  ];
+
+  const default_line_graph_metric_ids = [
     'bedcount_per_100000_adults_total',
     'bedcount_per_100000_adults_total_dementia_residential',
   ];
 
-  const [indicatorQuery, setIndicatorQuery] = useState<IndicatorQuery>({
-    metric_ids: metric_ids,
+  const [chartIndicatorQuery, setChartIndicatorQuery] = useState<IndicatorQuery>({
+    metric_ids: default_chart_metric_ids,
     location_ids: [],
   });
 
-  // 'E10000029', 'E12000006', 'E12000005', 'E12000004'
+  const [LineGraphIndicatorQuery, setLineGraphIndicatorQuery] = useState<IndicatorQuery>({
+    metric_ids: default_line_graph_metric_ids,
+    location_ids: [],
+  });
 
   useEffect(() => {
-    if (selectedFilters) {
-      try {
-        const decoded = decodeURIComponent(selectedFilters);
-        const parsed = JSON.parse(decoded);
-        const metricIds: string[] = parsed.map(
-          (filter: { metric_id: string; filter_bedtype: string }) =>
-            filter.metric_id
-        );
-        setParsedFilters(parsed);
-        setIndicatorQuery((prev) => ({
-          ...prev,
-          metric_ids: metricIds,
-        }));
-      } catch (error) {
-        console.error('Error parsing selected filters:', error);
-      }
-    }
-  }, [selectedFilters]);
-
-  useEffect(() => {
-    if (indicatorQuery && indicatorQuery.location_ids.length > 0) {
+    if (chartIndicatorQuery && chartIndicatorQuery.location_ids.length > 0 && LineGraphIndicatorQuery) {
       const fetchData = async () => {
-        const data: Indicator[] =
-          await IndicatorFetchService.getData(indicatorQuery);
-        data.forEach((obj) => console.log(obj));
+        const chartData: Indicator[] =
+          await IndicatorFetchService.getData(chartIndicatorQuery);
+        const lineGraphData: Indicator[] =
+          await IndicatorFetchService.getData(LineGraphIndicatorQuery);
         const displayData: IndicatorDisplay =
           await IndicatorFetchService.getDisplayData('');
-        setIndicatorService(new IndicatorService(data, displayData));
+        setIndicatorService(new IndicatorService(chartData, lineGraphData, displayData));
         const insights: string[] =
-          await SmartInsightsFetchService.getData(indicatorQuery);
+          await SmartInsightsFetchService.getData(chartIndicatorQuery);
         setSmartInsights(insights);
       };
       fetchData();
     }
-  }, [indicatorQuery]);
+  }, [chartIndicatorQuery, LineGraphIndicatorQuery]);
 
   useEffect(() => {
     if (session) {
+      
+      const selectedCode = localStorage.getItem('IndicatorLocationSelectedCode');
+      const selectedName = localStorage.getItem('IndicatorLocationSelectedName');
+      const selectedRegion = localStorage.getItem('IndicatorLocationSelectedRegion');
+
+      setlocationName(selectedName!);
+      setlocationRegion(selectedRegion!);
+
       setlocationId(session.user.locationId);
       setlocationType(session.user.locationType);
     }
   }, [session]);
 
   useEffect(() => {
-    if (locationId && locationType) {
-      setIndicatorQuery({
-        metric_ids: metric_ids,
-        location_ids: [locationId],
-      });
-    }
+    const fetchLocationIds = async () => {
+      if (locationId && locationType) {
+        try {
+          const locationids = await PresentDemandService.getLocationIds(
+            locationId,
+            false
+          );
+
+          const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
+          const chartMetrics = localStorage.getItem('chart-metrics');
+          const locationNames = await PresentDemandService.getLocationNames(locationId, false);
+
+          let cMetrics : string[];
+          let cMetricsNames : string[];
+          // 
+          if(chartMetrics){
+            let cm : [] = JSON.parse(chartMetrics);
+            cMetrics = cm.map(obj => obj['metric_id']);
+            cMetricsNames = cm.map(obj => obj['filter_bedtype']);
+            setSelectedChartFilters(cMetricsNames);
+          }else{
+            cMetrics = default_chart_metric_ids
+          }
+
+          let lMetrics : string[];
+          let lMetricsNames : string[];
+          if(timeSeriesMetrics){
+             let tm : [] = JSON.parse(timeSeriesMetrics);
+             lMetrics = tm.map(obj => obj['metric_id']);
+             lMetricsNames = tm.map(obj => obj['filter_bedtype']);
+             setSelectedLineGraphFilters(lMetricsNames);
+          }else{
+            lMetrics = default_line_graph_metric_ids
+          }
+
+          setChartIndicatorQuery({
+            metric_ids: cMetrics,
+            location_ids: locationids,
+          });
+          
+          setLineGraphIndicatorQuery({
+            metric_ids: lMetrics,
+            location_ids: locationids,
+          });
+
+        } catch (error) {
+          console.error('Error fetching location ids:', error);
+        }
+      }
+    };
+    fetchLocationIds();
   }, [locationId, locationType]);
 
   const barchartSVGContainerRef = useRef<HTMLDivElement>(null);
@@ -99,12 +143,12 @@ const TotalBedsPage: React.FC = () => {
 
   useEffect(() => {
     if (barchartSVGContainerRef.current && indicatorService) {
-      const containerWidth = barchartSVGContainerRef.current.clientWidth;
-      const containerHeight = barchartSVGContainerRef.current.clientHeight;
+      // const containerWidth = barchartSVGContainerRef.current.clientWidth;
+      // const containerHeight = barchartSVGContainerRef.current.clientHeight;
 
       const barchart = indicatorService.createBarchart(
-        containerWidth,
-        containerHeight
+        // containerWidth,
+        // containerHeight
       );
 
       barchartSVGContainerRef.current.innerHTML = '';
@@ -114,6 +158,7 @@ const TotalBedsPage: React.FC = () => {
     }
 
     if (lineGraphSVGContainerRef.current && indicatorService) {
+      
       const lineGraph = indicatorService.createLinegraph();
 
       lineGraphSVGContainerRef.current.innerHTML = '';
@@ -144,73 +189,74 @@ const TotalBedsPage: React.FC = () => {
 
   return (
     <Suspense>
-      <Layout
-        showLoginInformation={false}
-        currentPage="total-beds"
-        showNavBar={false}
-      >
-        <div className="govuk-grid-row">
-          <div className="govuk-grid-column-one-third">
-            <ContentSidePanel items={contentItems} />
-          </div>
-          <div className="govuk-grid-column-two-thirds">
-            <h1 className="govuk-heading-l">
-              Adult social care beds per 100,000 adult population
-            </h1>
-            <h2 id="definition" className="govuk-heading-m">
-              Indicator definition and supporting information
-            </h2>
-            <p className="govuk-body">
-              The total number of beds recorded by care providers across health
-              and adult social care, adjusted to a rate of 100,000 adults in the
-              local authority population.
-            </p>
-            <p className="govuk-body">
-              For detailed information about this indicator, including data
-              definitions, data source, update schedule and limitations to be
-              aware of before using this data, go to &nbsp;
-              <a
-                href="../current/help/beds-per-100000-adult-population.html"
-                className="govuk-link"
-              >
-                supporting information for this data
-              </a>
-              .
-            </p>
-            <h2 id="locations" className="govuk-heading-m">
-              Your selected locations
-            </h2>
-            <p className="govuk-body">
-              Select locations to view and compare data.
-            </p>
-            <table className="govuk-table">
-              <tbody className="govuk-table__body">
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
-                    Locations
-                  </th>
-                  <td className="govuk-table__cell">
-                    <ul className="govuk-list" style={{ textAlign: 'left' }}>
-                      <li>Suffolk</li>
-                      <li>East of England</li>
-                    </ul>
-                  </td>
-                  <td className="govuk-table__cell">
-                    <a href="present-demand-locations" className="govuk-link">
-                      Change
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <IndicatorTable
-              data={getCurrentDataSet()}
-              display={getCurrentDisplayData()}
-              barchartSVG={barchartSVGContainerRef}
-              lineGraphSVG={lineGraphSVGContainerRef}
-              selectedFilters={parsedFilters}
-            />
-
+    <Layout
+      showLoginInformation={false}
+      currentPage="total-beds"
+      showNavBar={false}
+    >
+      <div className="govuk-grid-row">
+        <div className="govuk-grid-column-one-third">
+          <ContentSidePanel items={contentItems} />
+        </div>
+        <div className="govuk-grid-column-two-thirds">
+          <h1 className="govuk-heading-l">
+            Adult social care beds per 100,000 adult population
+          </h1>
+          <h2 id="definition" className="govuk-heading-m">
+            Indicator definition and supporting information
+          </h2>
+          <p className="govuk-body">
+            The total number of beds recorded by care providers across health
+            and adult social care, adjusted to a rate of 100,000 adults in the
+            local authority population.
+          </p>
+          <p className="govuk-body">
+            For detailed information about this indicator, including data
+            definitions, data source, update schedule and limitations to be
+            aware of before using this data, go to &nbsp;
+            <a
+              href="../current/help/beds-per-100000-adult-population.html"
+              className="govuk-link"
+            >
+              supporting information for this data
+            </a>
+            .
+          </p>
+          <h2 id="locations" className="govuk-heading-m">
+            Your selected locations
+          </h2>
+          <p className="govuk-body">
+            Select locations to view and compare data.
+          </p>
+          <table className="govuk-table">
+            <tbody className="govuk-table__body">
+              <tr className="govuk-table__row">
+                <th scope="row" className="govuk-table__header">
+                  Locations
+                </th>
+                <td className="govuk-table__cell">
+                  <ul className="govuk-list" style={{ textAlign: 'left' }}>
+                  <li>{locationName}</li>
+                  <li>{locationRegion}</li>
+                  </ul>
+                </td>
+                <td className="govuk-table__cell">
+                  <a href="total-beds/filter-location" className="govuk-link">
+                    Change
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <IndicatorTable
+            data={getCurrentDataSet()}
+            display={getCurrentDisplayData()}
+            barchartSVG={barchartSVGContainerRef}
+            lineGraphSVG={lineGraphSVGContainerRef}
+            selectedChartFilters = {selectedChartFilters ?? ['All bed types']}
+            selectedLineFilters = {selectedLineGraphFilters ?? ['All bed types','Residential - dementia']}
+            locationName={locationName ?? ''}
+          />
             <div>{parseMarkdownBlocks(smartInsights)}</div>
 
             <p className="govuk-body">
