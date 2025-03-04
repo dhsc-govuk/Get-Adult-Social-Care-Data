@@ -5,33 +5,34 @@ import Link from 'next/link';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import Layout from '@/components/common/layout/Layout';
+import { useRouter } from 'next/navigation';
 
 const TotalBedsFiltersPage: React.FC = () => {
+  const router = useRouter();
   const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
 
   useEffect(() => {
     const getFilters = async () => {
-      const filters: TotalBedsFilters[] =
-        await IndicatorFetchService.getFilters('');
+      try {
+        const fetchedFilters: TotalBedsFilters[] =
+          await IndicatorFetchService.getFilters('');
 
-      const storedMetric = localStorage.getItem('bar-chart-metric');
+        const storedMetric = localStorage.getItem('bar-chart-metric');
 
-      if (storedMetric) {
-        try {
-          const parsedMetric: { metric_id: string; filter_bedtype: string } =
-            JSON.parse(storedMetric);
+        if (storedMetric) {
+          const parsedMetric = JSON.parse(storedMetric);
 
-          const updatedFilters = filters.map((filter) => ({
+          const updatedFilters = fetchedFilters.map((filter) => ({
             ...filter,
             checked: filter.metric_id === parsedMetric.metric_id,
           }));
 
           setFilters(updatedFilters);
-        } catch (error) {
-          setFilters(filters);
+        } else {
+          setFilters(fetchedFilters);
         }
-      } else {
-        setFilters(filters);
+      } catch (error) {
+        console.error('Error loading filters:', error);
       }
     };
 
@@ -45,11 +46,6 @@ const TotalBedsFiltersPage: React.FC = () => {
     }));
 
     setFilters(updatedFilters);
-
-    const selectedFilter = updatedFilters.find((filter) => filter.checked);
-    if (selectedFilter) {
-      localStorage.setItem('bar-chart-metric', JSON.stringify(selectedFilter));
-    }
   };
 
   const handleSubmit = () => {
@@ -64,6 +60,9 @@ const TotalBedsFiltersPage: React.FC = () => {
       showLoginInformation={true}
       currentPage={'/metric/total-beds/filters'}
     >
+      <Link onClick={() => router.back()} className="govuk-back-link" href="">
+        Back
+      </Link>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
           <span className="govuk-caption-m">
@@ -78,34 +77,43 @@ const TotalBedsFiltersPage: React.FC = () => {
               <legend className="govuk-fieldset__legend govuk-fieldset__legend--m">
                 <h1 className="govuk-fieldset__heading">Filters</h1>
               </legend>
-              <div className="govuk-radios" data-module="govuk-radios">
-                {filters.map((filter, index) => (
-                  <div key={index} className="govuk-radios__item">
-                    <input
-                      className="govuk-radios__input"
-                      id={`metric-${index}`}
-                      name="metric"
-                      type="radio"
-                      value={filter.metric_id}
-                      checked={filter.checked}
-                      onChange={() => handleRadioChange(index)}
-                    />
-                    <label
-                      className="govuk-label govuk-radios__label"
-                      htmlFor={`metric-${index}`}
-                    >
-                      {filter.filter_bedtype}
-                    </label>
-                  </div>
-                ))}
-              </div>
+              {filters.length > 0 ? (
+                <div className="govuk-radios" data-module="govuk-radios">
+                  {filters.map((filter, index) => (
+                    <div key={index} className="govuk-radios__item">
+                      <input
+                        className="govuk-radios__input"
+                        id={`filter-${index}`}
+                        name="chart-metric"
+                        type="radio"
+                        value={filter.metric_id}
+                        checked={filter.checked}
+                        onChange={() => handleRadioChange(index)}
+                      />
+                      <label
+                        className="govuk-label govuk-radios__label"
+                        htmlFor={`filter-${index}`}
+                      >
+                        {filter.filter_bedtype}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="govuk-body">Loading filters...</p>
+              )}
             </fieldset>
           </div>
           <Link href="/metric/total-beds#chart" onClick={handleSubmit}>
             <button type="button" className="govuk-button">
-              Submit
+              Apply changes
             </button>
           </Link>
+          <p className="govuk-body">
+            <Link onClick={() => router.back()} className="govuk-link" href="">
+              Cancel and go back
+            </Link>
+          </p>
         </div>
       </div>
     </Layout>

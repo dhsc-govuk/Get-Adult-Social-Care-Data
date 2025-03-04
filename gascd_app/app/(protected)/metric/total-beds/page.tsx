@@ -15,8 +15,12 @@ import { useSession } from 'next-auth/react';
 import SmartInsightsFetchService from '@/services/smart-insights/SmartInsightsFetchService';
 import { parseMarkdownBlocks } from '@/utils/parseMarkdown';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const TotalBedsPage: React.FC = () => {
+  const router = useRouter();
+
   const [indicatorService, setIndicatorService] =
     useState<IndicatorService | null>(null);
 
@@ -127,10 +131,6 @@ const TotalBedsPage: React.FC = () => {
           const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
           const barChartMetrics = localStorage.getItem('bar-chart-metric');
 
-          // const locationNames = await PresentDemandService.getLocationNames(
-          //   locationId,
-          //   false
-          // );
           const localAuthorityId =
             await PresentDemandService.getLocations(locationId);
 
@@ -228,6 +228,9 @@ const TotalBedsPage: React.FC = () => {
         currentPage="total-beds"
         showNavBar={false}
       >
+        <Link onClick={() => router.back()} className="govuk-back-link" href="">
+          Back
+        </Link>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-one-third">
             <ContentSidePanel items={contentItems} />
@@ -298,11 +301,9 @@ const TotalBedsPage: React.FC = () => {
             />
             <div>{parseMarkdownBlocks(smartInsights)}</div>
 
-            <p className="govuk-body">
-              <a href="javascript:history.back()" className="govuk-link">
-                Back
-              </a>
-            </p>
+            <Link onClick={() => router.back()} className="govuk-link" href="">
+              Back
+            </Link>
           </div>
         </div>
       </Layout>
