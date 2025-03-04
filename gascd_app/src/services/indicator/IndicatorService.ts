@@ -31,14 +31,14 @@ class IndicatorService {
     return this.linegraphData;
   }
 
-  public createBarchart(
+  public createBarchart(locationNames: [] | undefined
     // containerWidth: number,
     // containerHeight: number
   ): SVGSVGElement | null {
     return generateBarchartSvg({
       data: this.getChartData(),
       width: 600,
-      height: 400,
+      height: 600,
       xLabel: this.displayData.denominator,
       yLabel: this.displayData.numerator,
       title: this.displayData.metric_name,
@@ -52,10 +52,11 @@ class IndicatorService {
       yAxisAsPercentage: false,
       tickCount: 8,
       showMedian: false,
+      labels: locationNames
     });
   }
 
-  public createLinegraph(): SVGSVGElement | null {
+  public createLinegraph(locationNames: [] | undefined): SVGSVGElement | null {
     return generateLineGraphSvg({
       data: this.getLinegraphData(),
       width: 600,
@@ -73,6 +74,7 @@ class IndicatorService {
       yAxisAsPercentage: false,
       tickCount: 8,
       showMedian: false,
+      labels: locationNames,
       colourMap: new Map([
         ['bedcount_per_100000_adults_total', 'purple'],
         ['bedcount_per_100000_adults_total_dementia_residential', 'orange'],

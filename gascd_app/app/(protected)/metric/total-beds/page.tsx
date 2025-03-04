@@ -26,6 +26,8 @@ const TotalBedsPage: React.FC = () => {
   const [locationId, setlocationId] = useState<string>();
   const [locationType, setlocationType] = useState<string>();
 
+  const [locationNames, setLocationNames] = useState<[]>();
+
   const [locationName, setlocationName] = useState<string>();
   const [locationRegion, setlocationRegion] = useState<string>();
 
@@ -89,10 +91,16 @@ const TotalBedsPage: React.FC = () => {
         'IndicatorLocationSelectedRegion'
       );
 
+      let locationId = session.user.locationId;
+
+      if(locationType == 'Care provider'){
+        locationId = localStorage.getItem('selectedValue')!;
+      }
+
       setlocationName(selectedName!);
       setlocationRegion(selectedRegion!);
 
-      setlocationId(session.user.locationId);
+      setlocationId(locationId);
       setlocationType(session.user.locationType);
     }
   }, [session]);
@@ -101,21 +109,35 @@ const TotalBedsPage: React.FC = () => {
     const fetchLocationIds = async () => {
       if (locationId && locationType) {
         try {
-          const locationids = await PresentDemandService.getLocationIds(
-            locationId,
-            false
-          );
-
+          let locationids : string[] = [];
+          try {
+            const response = await fetch(
+              `/api/get_locations`
+            );
+            if (!response.ok) {
+              throw new Error(`Error fetching data: ${response.statusText}`);
+            }
+            const locations = await response.json();
+            locationids = locations.map((item: { la_code: any; }) => item.la_code)
+            setLocationNames(locations);
+          } catch (error) {
+            console.error('Error fetching data', error);
+          }
+          
           const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
           const chartMetrics = localStorage.getItem('chart-metrics');
+
           const locationNames = await PresentDemandService.getLocationNames(
             locationId,
             false
           );
+          const localAuthorityId = await PresentDemandService.getLocations(
+            locationId
+          );
 
           let cMetrics: string[];
           let cMetricsNames: string[];
-          //
+          
           if (chartMetrics) {
             let cm: [] = JSON.parse(chartMetrics);
             cMetrics = cm.map((obj) => obj['metric_id']);
@@ -143,7 +165,7 @@ const TotalBedsPage: React.FC = () => {
 
           setLineGraphIndicatorQuery({
             metric_ids: lMetrics,
-            location_ids: locationids,
+            location_ids: [localAuthorityId.la_code],
           });
         } catch (error) {
           console.error('Error fetching location ids:', error);
@@ -161,11 +183,9 @@ const TotalBedsPage: React.FC = () => {
       // const containerWidth = barchartSVGContainerRef.current.clientWidth;
       // const containerHeight = barchartSVGContainerRef.current.clientHeight;
 
-      const barchart = indicatorService
-        .createBarchart
+      const barchart = indicatorService.createBarchart(locationNames);
         // containerWidth,
-        // containerHeight
-        ();
+        // containerHeight        
 
       barchartSVGContainerRef.current.innerHTML = '';
       if (barchart) {
@@ -174,7 +194,8 @@ const TotalBedsPage: React.FC = () => {
     }
 
     if (lineGraphSVGContainerRef.current && indicatorService) {
-      const lineGraph = indicatorService.createLinegraph();
+      
+      const lineGraph = indicatorService.createLinegraph(locationNames);
 
       lineGraphSVGContainerRef.current.innerHTML = '';
       if (lineGraph) {
@@ -275,7 +296,7 @@ const TotalBedsPage: React.FC = () => {
                   'Residential - dementia',
                 ]
               }
-              locationName={locationName ?? ''}
+              locationName={locationRegion ?? ''}
             />
             <div>{parseMarkdownBlocks(smartInsights)}</div>
 

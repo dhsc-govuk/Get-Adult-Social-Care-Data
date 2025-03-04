@@ -41,14 +41,15 @@ export function generateBarchartSvg({
   showToolTip = true,
   tickCount,
   yAxisAsPercentage = false,
+  labels = []
 }: BarchartProps): SVGSVGElement | null {
   if (!data.length) return null;
 
   const dynamicMargin = {
     top: height * 0.1,
     right: width * 0.1,
-    bottom: showXValues ? height * 0.4 : height * 0.2,
-    left: width * 0.15,
+    bottom: showXValues ? height * 0.05 : height * 0.05,
+    left: width * 0.2,
   };
 
   const svgElement = document.createElementNS(
@@ -80,12 +81,15 @@ export function generateBarchartSvg({
     renderBarXAxis(chartSvg, xAxisScale, height, dynamicMargin);
   }
 
+  const labelsMap = labels.reduce((map, la) => map.set(la.la_code, la.la_name), new Map<string, string>());
+
   renderBarYAxis(
     chartSvg,
     yAxisScale,
     dynamicMargin,
+    labelsMap,
     tickCount,
-    yAxisAsPercentage
+    yAxisAsPercentage,
   );
   renderLabels(chartSvg, width, height, dynamicMargin, xLabel, yLabel, title);
 
@@ -118,14 +122,15 @@ export function generateLineGraphSvg({
   yAxisAsPercentage = false,
   colourMap = new Map(),
   groupedData = new Map<string, LinegraphData[]>(),
+  labels = [],
 }: LinegraphProps): SVGSVGElement | null {
   if (!data.length) return null;
 
   const dynamicMargin = {
     top: height * 0.1,
     right: width * 0.1,
-    bottom: showXValues ? height * 0.4 : height * 0.2,
-    left: width * 0.15,
+    bottom: showXValues ? height * 0.2 : height * 0.1,
+    left: width * 0.2,
   };
 
   const svgElement = document.createElementNS(

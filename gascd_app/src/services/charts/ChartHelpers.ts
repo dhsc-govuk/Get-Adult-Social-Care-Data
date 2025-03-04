@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 import { BarchartData } from '../../data/interfaces/BarchartData';
 import { LinegraphData } from '@/data/interfaces/LinegraphData';
+import { Locations } from '@/data/interfaces/Locations';
 
 export function initializeSvg(
   ref: React.RefObject<SVGSVGElement>,
@@ -214,16 +215,14 @@ export function renderBarXAxis(
 }
 
 export function renderBarYAxis(
-  chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>,
-  yAxisScale: d3.ScaleBand<string>,
-  margin: { top: number; right: number; bottom: number; left: number },
-  tickCount?: number,
-  yAxisAsPercentage: boolean = false
-): void {
+chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>, yAxisScale: d3.ScaleBand<string>, margin: { top: number; right: number; bottom: number; left: number; }, labels: Map<string, string>, tickCount?: number, yAxisAsPercentage: boolean = false): void {
+
   const yAxis = d3
     .axisLeft(yAxisScale)
     .ticks(tickCount ? tickCount : null)
-    // .tickFormat((d: any) => ``)
+    .tickFormat((d: any) => {
+      const lookupValue = labels.get(d.toString())
+      return `${lookupValue}`})
     .tickSizeOuter(0);
 
   chartSvg
