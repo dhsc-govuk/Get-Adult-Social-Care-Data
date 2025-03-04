@@ -300,10 +300,15 @@ const TotalBedsPage: React.FC = () => {
               locationName={locationRegion ?? ''}
             />
             <div>{parseMarkdownBlocks(smartInsights)}</div>
-
-            <Link onClick={() => router.back()} className="govuk-link" href="">
-              Back
-            </Link>
+            <p className="govuk-body">
+              <Link
+                onClick={() => router.back()}
+                className="govuk-link"
+                href=""
+              >
+                Back
+              </Link>
+            </p>
           </div>
         </div>
       </Layout>
