@@ -46,15 +46,17 @@ const IndicatorTable: React.FC<Props> = ({
   const handlePNGDownloadClick = () => {
     //todo
   };
-  const [dataQuery, setDataQuery] = useState<IndicatorQuery>({
-    metric_ids: [],
-    location_ids: [],
-  });
 
   const default_table_metric_ids = [
     'bedcount_per_100000_adults_total',
+    'bedcount_per_100000_adults_total_dementia_nursing',
     'bedcount_per_100000_adults_total_dementia_residential',
   ];
+
+  const [dataQuery, setDataQuery] = useState<IndicatorQuery>({
+    metric_ids: default_table_metric_ids,
+    location_ids: [],
+  });
 
   useEffect(() => {
     const storedData = localStorage.getItem('table-metrics');
