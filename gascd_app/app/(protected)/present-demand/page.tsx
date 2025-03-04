@@ -203,8 +203,6 @@ const PresentDemandPage: React.FC = () => {
           await IndicatorFetchService.getData(bedsQuery);
         const filteredBedData = TableService.filterDate(bedData);
         setFilteredBedData(filteredBedData);
-        const test =
-          PresentDemandService.getMostRecentIndicator(filteredBedData);
         const CPData: Indicator[] = await IndicatorFetchService.getData(
           careProviderDataQuery1
         );
