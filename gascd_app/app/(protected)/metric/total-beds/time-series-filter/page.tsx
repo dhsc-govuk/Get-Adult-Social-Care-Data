@@ -33,7 +33,10 @@ const TotalBedsFiltersPage: React.FC = () => {
 
   const handleSubmit = () => {
     if (selectedFilters) {
-      localStorage.setItem('time-series-metrics', JSON.stringify(selectedFilters));
+      localStorage.setItem(
+        'time-series-metrics',
+        JSON.stringify(selectedFilters)
+      );
     }
   };
 
@@ -81,11 +84,11 @@ const TotalBedsFiltersPage: React.FC = () => {
               </div>
             </fieldset>
           </div>
-              <Link href="/metric/total-beds#time-series" onClick={handleSubmit}>
-                <button type="button" className="govuk-button">
-                  Submit
-                </button>
-              </Link>
+          <Link href="/metric/total-beds#time-series" onClick={handleSubmit}>
+            <button type="button" className="govuk-button">
+              Submit
+            </button>
+          </Link>
         </div>
       </div>
     </Layout>
