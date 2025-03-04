@@ -13,8 +13,28 @@ const TotalBedsFiltersPage: React.FC = () => {
     const getFilters = async () => {
       const filters: TotalBedsFilters[] =
         await IndicatorFetchService.getFilters('');
-      setFilters(filters);
+
+      const storedMetric = localStorage.getItem('bar-chart-metric');
+
+      if (storedMetric) {
+        try {
+          const parsedMetric: { metric_id: string; filter_bedtype: string } =
+            JSON.parse(storedMetric);
+
+          const updatedFilters = filters.map((filter) => ({
+            ...filter,
+            checked: filter.metric_id === parsedMetric.metric_id,
+          }));
+
+          setFilters(updatedFilters);
+        } catch (error) {
+          setFilters(filters);
+        }
+      } else {
+        setFilters(filters);
+      }
     };
+
     getFilters();
   }, []);
 
@@ -54,7 +74,7 @@ const TotalBedsFiltersPage: React.FC = () => {
             Select filters to refine the data displayed.
           </p>
           <div className="govuk-form-group">
-            <fieldset className="govuk-fieldset" aria-describedby="waste-hint">
+            <fieldset className="govuk-fieldset" aria-describedby="metric-hint">
               <legend className="govuk-fieldset__legend govuk-fieldset__legend--m">
                 <h1 className="govuk-fieldset__heading">Filters</h1>
               </legend>
@@ -63,8 +83,8 @@ const TotalBedsFiltersPage: React.FC = () => {
                   <div key={index} className="govuk-radios__item">
                     <input
                       className="govuk-radios__input"
-                      id={`waste-${index}`}
-                      name="waste"
+                      id={`metric-${index}`}
+                      name="metric"
                       type="radio"
                       value={filter.metric_id}
                       checked={filter.checked}
@@ -72,7 +92,7 @@ const TotalBedsFiltersPage: React.FC = () => {
                     />
                     <label
                       className="govuk-label govuk-radios__label"
-                      htmlFor={`waste-${index}`}
+                      htmlFor={`metric-${index}`}
                     >
                       {filter.filter_bedtype}
                     </label>

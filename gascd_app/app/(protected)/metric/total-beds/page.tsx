@@ -125,12 +125,12 @@ const TotalBedsPage: React.FC = () => {
           }
 
           const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
-          const barChartMetrics = localStorage.getItem('bar-chart-metrics');
+          const barChartMetrics = localStorage.getItem('bar-chart-metric');
 
-          const locationNames = await PresentDemandService.getLocationNames(
-            locationId,
-            false
-          );
+          // const locationNames = await PresentDemandService.getLocationNames(
+          //   locationId,
+          //   false
+          // );
           const localAuthorityId =
             await PresentDemandService.getLocations(locationId);
 
@@ -138,9 +138,9 @@ const TotalBedsPage: React.FC = () => {
           let bCMetricsNames: string[];
 
           if (barChartMetrics) {
-            let cm: [] = JSON.parse(barChartMetrics);
-            bCMetrics = cm.map((obj) => obj['metric_id']);
-            bCMetricsNames = cm.map((obj) => obj['filter_bedtype']);
+            let cm: TotalBedsFilters = JSON.parse(barChartMetrics);
+            bCMetrics = [cm.metric_id];
+            bCMetricsNames = [cm.filter_bedtype];
             setSelectedChartFilters(bCMetricsNames);
           } else {
             bCMetrics = default_chart_metric_ids;
