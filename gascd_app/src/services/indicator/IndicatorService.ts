@@ -38,7 +38,7 @@ class IndicatorService {
     return generateBarchartSvg({
       data: this.getChartData(),
       width: 600,
-      height: 800,
+      height: 600,
       xLabel: this.displayData.denominator,
       yLabel: this.displayData.numerator,
       title: this.displayData.metric_name,

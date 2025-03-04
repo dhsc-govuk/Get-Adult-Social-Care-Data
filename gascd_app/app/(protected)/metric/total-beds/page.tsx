@@ -91,10 +91,16 @@ const TotalBedsPage: React.FC = () => {
         'IndicatorLocationSelectedRegion'
       );
 
+      let locationId = session.user.locationId;
+
+      if(locationType == 'Care provider'){
+        locationId = localStorage.getItem('selectedValue')!;
+      }
+
       setlocationName(selectedName!);
       setlocationRegion(selectedRegion!);
 
-      setlocationId(session.user.locationId);
+      setlocationId(locationId);
       setlocationType(session.user.locationType);
     }
   }, [session]);
@@ -117,17 +123,21 @@ const TotalBedsPage: React.FC = () => {
           } catch (error) {
             console.error('Error fetching data', error);
           }
-
+          
           const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
           const chartMetrics = localStorage.getItem('chart-metrics');
+
           const locationNames = await PresentDemandService.getLocationNames(
             locationId,
             false
           );
+          const localAuthorityId = await PresentDemandService.getLocations(
+            locationId
+          );
 
           let cMetrics: string[];
           let cMetricsNames: string[];
-          //
+          
           if (chartMetrics) {
             let cm: [] = JSON.parse(chartMetrics);
             cMetrics = cm.map((obj) => obj['metric_id']);
@@ -155,7 +165,7 @@ const TotalBedsPage: React.FC = () => {
 
           setLineGraphIndicatorQuery({
             metric_ids: lMetrics,
-            location_ids: [locationId],
+            location_ids: [localAuthorityId.la_code],
           });
         } catch (error) {
           console.error('Error fetching location ids:', error);

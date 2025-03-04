@@ -215,12 +215,14 @@ export function renderBarXAxis(
 }
 
 export function renderBarYAxis(
-chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>, yAxisScale: d3.ScaleBand<string>, margin: { top: number; right: number; bottom: number; left: number; }, labels: Locations[], tickCount?: number, yAxisAsPercentage: boolean = false): void {
-  
+chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>, yAxisScale: d3.ScaleBand<string>, margin: { top: number; right: number; bottom: number; left: number; }, labels: Map<string, string>, tickCount?: number, yAxisAsPercentage: boolean = false): void {
+
   const yAxis = d3
     .axisLeft(yAxisScale)
     .ticks(tickCount ? tickCount : null)
-    .tickFormat((d: any) => `${d}test label`)
+    .tickFormat((d: any) => {
+      const lookupValue = labels.get(d.toString())
+      return `${lookupValue}`})
     .tickSizeOuter(0);
 
   chartSvg
