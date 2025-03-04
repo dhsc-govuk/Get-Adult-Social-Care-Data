@@ -85,24 +85,11 @@ const TotalBedsPage: React.FC = () => {
 
   useEffect(() => {
     if (session) {
-      const selectedCode = localStorage.getItem(
-        'IndicatorLocationSelectedCode'
-      );
-      const selectedName = localStorage.getItem(
-        'IndicatorLocationSelectedName'
-      );
-      const selectedRegion = localStorage.getItem(
-        'IndicatorLocationSelectedRegion'
-      );
-
       let locationId = session.user.locationId;
 
       if (locationType == 'Care provider') {
         locationId = localStorage.getItem('selectedValue')!;
       }
-
-      setlocationName(selectedName!);
-      setlocationRegion(selectedRegion!);
 
       setlocationId(locationId);
       setlocationType(session.user.locationType);
@@ -131,8 +118,29 @@ const TotalBedsPage: React.FC = () => {
           const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
           const barChartMetrics = localStorage.getItem('bar-chart-metric');
 
-          const localAuthorityId =
-            await PresentDemandService.getLocations(locationId);
+          const selectedCode = localStorage.getItem(
+            'IndicatorLocationSelectedCode'
+          );
+          const selectedName = localStorage.getItem(
+            'IndicatorLocationSelectedName'
+          );
+          const selectedRegion = localStorage.getItem(
+            'IndicatorLocationSelectedRegion'
+          );
+
+          let lineLocationId = locationId;
+          if(selectedCode){
+            lineLocationId = selectedCode;
+            setlocationName(selectedName!);
+            setlocationRegion(selectedRegion!);
+          }else{
+            const localAuthority = await PresentDemandService.getLocations(
+              locationId
+            );
+            lineLocationId = localAuthority.la_code;
+            setlocationName(localAuthority.la_name);
+            setlocationRegion(localAuthority.region_name);
+          }
 
           let bCMetrics: string[];
           let bCMetricsNames: string[];
@@ -164,7 +172,7 @@ const TotalBedsPage: React.FC = () => {
 
           setLineGraphIndicatorQuery({
             metric_ids: lMetrics,
-            location_ids: [localAuthorityId.la_code],
+            location_ids: [lineLocationId],
           });
         } catch (error) {
           console.error('Error fetching location ids:', error);
@@ -227,6 +235,7 @@ const TotalBedsPage: React.FC = () => {
         showLoginInformation={false}
         currentPage="total-beds"
         showNavBar={false}
+        session={session}
       >
         <Link onClick={() => router.back()} className="govuk-back-link" href="">
           Back
@@ -300,15 +309,6 @@ const TotalBedsPage: React.FC = () => {
               locationName={locationRegion ?? ''}
             />
             <div>{parseMarkdownBlocks(smartInsights)}</div>
-            <p className="govuk-body">
-              <Link
-                onClick={() => router.back()}
-                className="govuk-link"
-                href=""
-              >
-                Back
-              </Link>
-            </p>
           </div>
         </div>
       </Layout>
