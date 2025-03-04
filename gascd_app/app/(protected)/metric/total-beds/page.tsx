@@ -93,7 +93,7 @@ const TotalBedsPage: React.FC = () => {
 
       let locationId = session.user.locationId;
 
-      if(locationType == 'Care provider'){
+      if (locationType == 'Care provider') {
         locationId = localStorage.getItem('selectedValue')!;
       }
 
@@ -109,42 +109,41 @@ const TotalBedsPage: React.FC = () => {
     const fetchLocationIds = async () => {
       if (locationId && locationType) {
         try {
-          let locationids : string[] = [];
+          let locationids: string[] = [];
           try {
-            const response = await fetch(
-              `/api/get_locations`
-            );
+            const response = await fetch(`/api/get_locations`);
             if (!response.ok) {
               throw new Error(`Error fetching data: ${response.statusText}`);
             }
             const locations = await response.json();
-            locationids = locations.map((item: { la_code: any; }) => item.la_code)
+            locationids = locations.map(
+              (item: { la_code: any }) => item.la_code
+            );
             setLocationNames(locations);
           } catch (error) {
             console.error('Error fetching data', error);
           }
-          
+
           const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
-          const chartMetrics = localStorage.getItem('chart-metrics');
+          const barChartMetrics = localStorage.getItem('bar-chart-metrics');
 
           const locationNames = await PresentDemandService.getLocationNames(
             locationId,
             false
           );
-          const localAuthorityId = await PresentDemandService.getLocations(
-            locationId
-          );
+          const localAuthorityId =
+            await PresentDemandService.getLocations(locationId);
 
-          let cMetrics: string[];
-          let cMetricsNames: string[];
-          
-          if (chartMetrics) {
-            let cm: [] = JSON.parse(chartMetrics);
-            cMetrics = cm.map((obj) => obj['metric_id']);
-            cMetricsNames = cm.map((obj) => obj['filter_bedtype']);
-            setSelectedChartFilters(cMetricsNames);
+          let bCMetrics: string[];
+          let bCMetricsNames: string[];
+
+          if (barChartMetrics) {
+            let cm: [] = JSON.parse(barChartMetrics);
+            bCMetrics = cm.map((obj) => obj['metric_id']);
+            bCMetricsNames = cm.map((obj) => obj['filter_bedtype']);
+            setSelectedChartFilters(bCMetricsNames);
           } else {
-            cMetrics = default_chart_metric_ids;
+            bCMetrics = default_chart_metric_ids;
           }
 
           let lMetrics: string[];
@@ -159,7 +158,7 @@ const TotalBedsPage: React.FC = () => {
           }
 
           setChartIndicatorQuery({
-            metric_ids: cMetrics,
+            metric_ids: bCMetrics,
             location_ids: locationids,
           });
 
@@ -184,8 +183,8 @@ const TotalBedsPage: React.FC = () => {
       // const containerHeight = barchartSVGContainerRef.current.clientHeight;
 
       const barchart = indicatorService.createBarchart(locationNames);
-        // containerWidth,
-        // containerHeight        
+      // containerWidth,
+      // containerHeight
 
       barchartSVGContainerRef.current.innerHTML = '';
       if (barchart) {
@@ -194,7 +193,6 @@ const TotalBedsPage: React.FC = () => {
     }
 
     if (lineGraphSVGContainerRef.current && indicatorService) {
-      
       const lineGraph = indicatorService.createLinegraph(locationNames);
 
       lineGraphSVGContainerRef.current.innerHTML = '';

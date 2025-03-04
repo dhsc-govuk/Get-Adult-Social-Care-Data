@@ -26,7 +26,6 @@ const IndicatorTable: React.FC<Props> = ({
   selectedLineFilters,
   locationName,
 }) => {
-
   const handlePNGDownloadClick = () => {
     //todo
   };
@@ -79,7 +78,10 @@ const IndicatorTable: React.FC<Props> = ({
                   </ul>
                 </td>
                 <td className="govuk-table__cell">
-                  <a href="/metric/total-beds/filters" className="govuk-link">
+                  <a
+                    href="/metric/total-beds/filters-bar-chart"
+                    className="govuk-link"
+                  >
                     Change
                   </a>
                 </td>
@@ -87,14 +89,16 @@ const IndicatorTable: React.FC<Props> = ({
             </tbody>
           </table>
           <h3>
-            Adult social care beds per 100,000 adult population by local authority
+            Adult social care beds per 100,000 adult population by local
+            authority
           </h3>
           <div ref={barchartSVG} id="chart-container"></div>
           <br />
           <DownloadTableDataCSVLink
             data={data}
-            filename= {display ? display.metric_name : 'Error'}
-            xLabel={display ? display.numerator : 'Error'}/>
+            filename={display ? display.metric_name : 'Error'}
+            xLabel={display ? display.numerator : 'Error'}
+          />
           <p className="govuk-body">
             Source: Capacity Tracker
             <br />
@@ -128,7 +132,10 @@ const IndicatorTable: React.FC<Props> = ({
                   </ul>
                 </td>
                 <td className="govuk-table__cell">
-                  <a href="/metric/total-beds/time-series-filter" className="govuk-link">
+                  <a
+                    href="/metric/total-beds/time-series-filter"
+                    className="govuk-link"
+                  >
                     Change
                   </a>
                 </td>
@@ -137,14 +144,15 @@ const IndicatorTable: React.FC<Props> = ({
           </table>
           <div ref={lineGraphSVG} id="line-graph-container"></div>
           <DownloadTableDataCSVLink
-              data={data}
-              filename= {display ? display.metric_name : 'Error'}
-              xLabel={display ? display.numerator : 'Error'}/>
-            <p className="govuk-body">
-              Source: Capacity Tracker
-              <br />
-              Data correct as of 24 December 2024
-            </p>
+            data={data}
+            filename={display ? display.metric_name : 'Error'}
+            xLabel={display ? display.numerator : 'Error'}
+          />
+          <p className="govuk-body">
+            Source: Capacity Tracker
+            <br />
+            Data correct as of 24 December 2024
+          </p>
         </div>
 
         <div className="govuk-tabs__panel govuk-tabs__panel--hidden" id="map">
@@ -179,16 +187,18 @@ const IndicatorTable: React.FC<Props> = ({
             </tbody>
           </table>
           <MetricTable
-            headers={['', 'Adult social care beds per 100,000 adult population']}
+            headers={[
+              '',
+              'Adult social care beds per 100,000 adult population',
+            ]}
             tableData={data}
           />
           <p className="govuk-body" />
-
-            <DownloadTableDataCSVLink
-              data={data}
-              filename= {display ? display.metric_name : 'Error'}
-              xLabel={display ? display.numerator : 'Error'}/>
-
+          <DownloadTableDataCSVLink
+            data={data}
+            filename={display ? display.metric_name : 'Error'}
+            xLabel={display ? display.numerator : 'Error'}
+          />
           <p className="govuk-body">Source: Capacity Tracker</p>
           <br />
           Data correct as of 24 December 2024

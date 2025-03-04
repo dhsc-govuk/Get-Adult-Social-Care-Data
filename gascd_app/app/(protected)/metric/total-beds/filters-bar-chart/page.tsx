@@ -18,22 +18,24 @@ const TotalBedsFiltersPage: React.FC = () => {
     getFilters();
   }, []);
 
-  const handleCheckboxChange = (index: number, checked: boolean) => {
-    const newFilters = [...filters];
-    newFilters[index].checked = checked;
-    setFilters(newFilters);
-  };
-
-  const selectedFilters = filters
-    .filter((filter) => filter.checked)
-    .map((filter) => ({
-      metric_id: filter.metric_id,
-      filter_bedtype: filter.filter_bedtype,
+  const handleRadioChange = (selectedIndex: number) => {
+    const updatedFilters = filters.map((filter, index) => ({
+      ...filter,
+      checked: index === selectedIndex,
     }));
 
+    setFilters(updatedFilters);
+
+    const selectedFilter = updatedFilters.find((filter) => filter.checked);
+    if (selectedFilter) {
+      localStorage.setItem('bar-chart-metric', JSON.stringify(selectedFilter));
+    }
+  };
+
   const handleSubmit = () => {
-    if (selectedFilters) {
-      localStorage.setItem('chart-metrics', JSON.stringify(selectedFilters));
+    const selectedFilter = filters.find((filter) => filter.checked);
+    if (selectedFilter) {
+      localStorage.setItem('bar-chart-metric', JSON.stringify(selectedFilter));
     }
   };
 
@@ -56,22 +58,20 @@ const TotalBedsFiltersPage: React.FC = () => {
               <legend className="govuk-fieldset__legend govuk-fieldset__legend--m">
                 <h1 className="govuk-fieldset__heading">Filters</h1>
               </legend>
-              <div className="govuk-checkboxes" data-module="govuk-checkboxes">
+              <div className="govuk-radios" data-module="govuk-radios">
                 {filters.map((filter, index) => (
-                  <div key={index} className="govuk-checkboxes__item">
+                  <div key={index} className="govuk-radios__item">
                     <input
-                      className="govuk-checkboxes__input"
+                      className="govuk-radios__input"
                       id={`waste-${index}`}
                       name="waste"
-                      type="checkbox"
+                      type="radio"
                       value={filter.metric_id}
                       checked={filter.checked}
-                      onChange={(e) =>
-                        handleCheckboxChange(index, e.target.checked)
-                      }
+                      onChange={() => handleRadioChange(index)}
                     />
                     <label
-                      className="govuk-label govuk-checkboxes__label"
+                      className="govuk-label govuk-radios__label"
                       htmlFor={`waste-${index}`}
                     >
                       {filter.filter_bedtype}
@@ -81,11 +81,11 @@ const TotalBedsFiltersPage: React.FC = () => {
               </div>
             </fieldset>
           </div>
-              <Link href="/metric/total-beds#chart" onClick={handleSubmit}>
-                <button type="button" className="govuk-button">
-                  Submit
-                </button>
-              </Link>
+          <Link href="/metric/total-beds#chart" onClick={handleSubmit}>
+            <button type="button" className="govuk-button">
+              Submit
+            </button>
+          </Link>
         </div>
       </div>
     </Layout>
