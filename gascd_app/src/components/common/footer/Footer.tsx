@@ -7,17 +7,6 @@ const Footer: React.FC = () => {
       <div className="govuk-width-container">
         <div className="govuk-footer__meta">
           <div className="govuk-footer__meta-item govuk-footer__meta-item--grow">
-            <ul className="govuk-footer__inline-list">
-              <li className="govuk-footer__inline-list-item">
-                <a
-                  className="govuk-footer__link"
-                  href="#"
-                  style={{ fontSize: '19px' }}
-                >
-                  Clear data
-                </a>
-              </li>
-            </ul>
             <svg
               aria-hidden="true"
               focusable="false"

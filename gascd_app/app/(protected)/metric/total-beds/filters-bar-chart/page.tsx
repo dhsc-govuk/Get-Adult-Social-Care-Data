@@ -60,17 +60,17 @@ const TotalBedsFiltersPage: React.FC = () => {
       showLoginInformation={true}
       currentPage={'/metric/total-beds/filters'}
     >
-      <Link onClick={() => router.back()} className="govuk-back-link" href="">
+      <Link href="../metrics/total-beds" className="govuk-back-link">
         Back
       </Link>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
           <span className="govuk-caption-m">
-            Total beds per 100,000 population
+            Adult social care beds per 100,000 adult population
           </span>
           <h1 className="govuk-heading-l">Edit chart filter</h1>
           <p className="govuk-body">
-            Select filters to refine the data displayed.
+            Select the filter to refine the data displayed.
           </p>
           <div className="govuk-form-group">
             <fieldset className="govuk-fieldset" aria-describedby="metric-hint">
@@ -110,7 +110,7 @@ const TotalBedsFiltersPage: React.FC = () => {
             </button>
           </Link>
           <p className="govuk-body">
-            <Link onClick={() => router.back()} className="govuk-link" href="">
+            <Link href="/metric/total-beds#chart" className="govuk-link">
               Cancel and go back
             </Link>
           </p>

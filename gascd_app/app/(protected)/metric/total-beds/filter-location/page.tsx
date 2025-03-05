@@ -64,8 +64,14 @@ const PresentDemandLocations: React.FC = () => {
       </a>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
-          <h1 className="govuk-heading-l">Edit locations </h1>
-          <h2 className="govuk-heading-m"> Your locations</h2>
+        <span className="govuk-caption-m">
+            Adult social care beds per 100,000 adult population
+          </span>
+          <h1 className="govuk-heading-l">Edit location</h1>
+          <p className="govuk-body">
+            Select the filter to refine the data displayed.
+          </p>
+          <h2 className="govuk-heading-m">Local authority</h2>
           <div className="govuk-form-group">
             <form>
               <fieldset className="govuk-fieldset govuk-!-margin-bottom-6">
@@ -92,9 +98,14 @@ const PresentDemandLocations: React.FC = () => {
               </fieldset>
               <Link href="/metric/total-beds" onClick={handleSubmit}>
                 <button type="button" className="govuk-button">
-                  Submit
+                  Apply changes
                 </button>
               </Link>
+              <p className="govuk-body">
+                <Link href="/metric/total-beds" className="govuk-link">
+                  Cancel and go back
+                </Link>
+              </p>
             </form>
           </div>
         </div>

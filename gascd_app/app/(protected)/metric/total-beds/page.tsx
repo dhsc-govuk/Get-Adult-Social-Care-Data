@@ -250,7 +250,7 @@ const TotalBedsPage: React.FC = () => {
         showNavBar={false}
         session={session}
       >
-        <Link onClick={() => router.back()} className="govuk-back-link" href="">
+        <Link href="/present-demand" className="govuk-back-link">
           Back
         </Link>
         <div className="govuk-grid-row">

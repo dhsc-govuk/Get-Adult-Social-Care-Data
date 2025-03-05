@@ -45,6 +45,9 @@ const TotalBedsFiltersPage: React.FC = () => {
       showLoginInformation={true}
       currentPage={'/metric/total-beds/time-series-filter'}
     >
+      <a href="../metrics/total-beds" className="govuk-back-link">
+        Back
+      </a>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
           <span className="govuk-caption-m">
@@ -86,9 +89,14 @@ const TotalBedsFiltersPage: React.FC = () => {
           </div>
           <Link href="/metric/total-beds#time-series" onClick={handleSubmit}>
             <button type="button" className="govuk-button">
-              Submit
+              Apply changes
             </button>
           </Link>
+          <p className="govuk-body">
+            <Link href="/metric/total-beds#time-series" className="govuk-link">
+              Cancel and go back
+            </Link>
+          </p>
         </div>
       </div>
     </Layout>
