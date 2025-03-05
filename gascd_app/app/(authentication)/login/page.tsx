@@ -18,30 +18,6 @@ const LoginPage: React.FC = () => {
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
           <h1 className="govuk-heading-l">Sign In</h1>
-          <fieldset className="govuk-fieldset">
-            <div className="govuk-form-group">
-              <label className="govuk-label" htmlFor="email">
-                Enter your email address
-              </label>
-              <input
-                className="govuk-input govuk-input--width-20"
-                type="text"
-                id="email"
-                onChange={(e: any) => setEmail(e.target.value)}
-                value={email}
-              />
-            </div>
-            <div className="govuk-form-group">
-              <label className="govuk-label" htmlFor="password">
-                Enter your password
-              </label>
-              <input
-                className="govuk-input govuk-input--width-20"
-                type="password"
-                id="password"
-              />
-            </div>
-          </fieldset>
           <Link href="/home" passHref>
             <StandardButton
               buttonString="Login"

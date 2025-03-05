@@ -244,6 +244,7 @@ const PresentDemandPage: React.FC = () => {
       showLoginInformation={true}
       currentPage="present-demand"
       showNavBar={false}
+      session={session}
     >
       <a href="#" className="govuk-back-link">
         Back
@@ -294,7 +295,7 @@ const PresentDemandPage: React.FC = () => {
               </li>
               <li>
                 <a
-                  href="/help/beds-per-100000-population"
+                  href="/help/beds-per-100000-adult-population"
                   className="govuk-link"
                 >
                   Adult social care beds per 100,000 adult population

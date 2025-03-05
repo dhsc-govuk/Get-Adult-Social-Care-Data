@@ -13,7 +13,11 @@ class IndicatorService {
   private linegraphData: LinegraphData[];
   private displayData: IndicatorDisplay;
 
-  constructor(chartData: Indicator[], lineData: Indicator[], displayData: IndicatorDisplay) {
+  constructor(
+    chartData: Indicator[],
+    lineData: Indicator[],
+    displayData: IndicatorDisplay
+  ) {
     this.chartData = this.transformToChartData(chartData);
     this.linegraphData = this.transformToLineChartData(lineData);
     this.displayData = displayData;
@@ -31,14 +35,15 @@ class IndicatorService {
     return this.linegraphData;
   }
 
-  public createBarchart(locationNames: [] | undefined
+  public createBarchart(
+    locationNames: [] | undefined
     // containerWidth: number,
     // containerHeight: number
   ): SVGSVGElement | null {
     return generateBarchartSvg({
       data: this.getChartData(),
       width: 600,
-      height: 800,
+      height: 600,
       xLabel: this.displayData.denominator,
       yLabel: this.displayData.numerator,
       title: this.displayData.metric_name,
@@ -52,7 +57,7 @@ class IndicatorService {
       yAxisAsPercentage: false,
       tickCount: 8,
       showMedian: false,
-      labels: locationNames
+      labels: locationNames,
     });
   }
 
@@ -113,7 +118,7 @@ class IndicatorService {
 
   private transformToChartData(data: Indicator[]): BarchartData[] {
     return data
-      .filter(d => d.data_point !== null)    
+      .filter((d) => d.data_point !== null)
       .map((entry: Indicator) => ({
         valueTag: entry.location_id,
         metric: entry.metric_id,
@@ -135,7 +140,7 @@ class IndicatorService {
 
   private transformToLineChartData(data: Indicator[]): LinegraphData[] {
     return data
-      .filter(d => d.data_point !== null)
+      .filter((d) => d.data_point !== null)
       .map((entry: Indicator) => ({
         valueTag: entry.metric_date.toString(),
         metric: entry.metric_id,

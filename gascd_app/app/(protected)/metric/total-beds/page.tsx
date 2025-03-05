@@ -15,8 +15,12 @@ import { useSession } from 'next-auth/react';
 import SmartInsightsFetchService from '@/services/smart-insights/SmartInsightsFetchService';
 import { parseMarkdownBlocks } from '@/utils/parseMarkdown';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const TotalBedsPage: React.FC = () => {
+  const router = useRouter();
+
   const [indicatorService, setIndicatorService] =
     useState<IndicatorService | null>(null);
 
@@ -81,20 +85,13 @@ const TotalBedsPage: React.FC = () => {
 
   useEffect(() => {
     if (session) {
-      const selectedCode = localStorage.getItem(
-        'IndicatorLocationSelectedCode'
-      );
-      const selectedName = localStorage.getItem(
-        'IndicatorLocationSelectedName'
-      );
-      const selectedRegion = localStorage.getItem(
-        'IndicatorLocationSelectedRegion'
-      );
+      let locationId = session.user.locationId;
 
-      setlocationName(selectedName!);
-      setlocationRegion(selectedRegion!);
+      if (locationType == 'Care provider') {
+        locationId = localStorage.getItem('selectedValue')!;
+      }
 
-      setlocationId(session.user.locationId);
+      setlocationId(locationId);
       setlocationType(session.user.locationType);
     }
   }, [session]);
@@ -103,38 +100,57 @@ const TotalBedsPage: React.FC = () => {
     const fetchLocationIds = async () => {
       if (locationId && locationType) {
         try {
-          let locationids : string[] = [];
+          let locationids: string[] = [];
           try {
-            const response = await fetch(
-              `/api/get_locations`
-            );
+            const response = await fetch(`/api/get_locations`);
             if (!response.ok) {
               throw new Error(`Error fetching data: ${response.statusText}`);
             }
             const locations = await response.json();
-            locationids = locations.map((item: { la_code: any; }) => item.la_code)
+            locationids = locations.map(
+              (item: { la_code: any }) => item.la_code
+            );
             setLocationNames(locations);
           } catch (error) {
             console.error('Error fetching data', error);
           }
 
           const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
-          const chartMetrics = localStorage.getItem('chart-metrics');
-          const locationNames = await PresentDemandService.getLocationNames(
-            locationId,
-            false
+          const barChartMetrics = localStorage.getItem('bar-chart-metric');
+
+          const selectedCode = localStorage.getItem(
+            'IndicatorLocationSelectedCode'
+          );
+          const selectedName = localStorage.getItem(
+            'IndicatorLocationSelectedName'
+          );
+          const selectedRegion = localStorage.getItem(
+            'IndicatorLocationSelectedRegion'
           );
 
-          let cMetrics: string[];
-          let cMetricsNames: string[];
-          //
-          if (chartMetrics) {
-            let cm: [] = JSON.parse(chartMetrics);
-            cMetrics = cm.map((obj) => obj['metric_id']);
-            cMetricsNames = cm.map((obj) => obj['filter_bedtype']);
-            setSelectedChartFilters(cMetricsNames);
+          let lineLocationId = locationId;
+          if (selectedCode) {
+            lineLocationId = selectedCode;
+            setlocationName(selectedName!);
+            setlocationRegion(selectedRegion!);
           } else {
-            cMetrics = default_chart_metric_ids;
+            const localAuthority =
+              await PresentDemandService.getLocations(locationId);
+            lineLocationId = localAuthority.la_code;
+            setlocationName(localAuthority.la_name);
+            setlocationRegion(localAuthority.region_name);
+          }
+
+          let bCMetrics: string[];
+          let bCMetricsNames: string[];
+
+          if (barChartMetrics) {
+            let cm: TotalBedsFilters = JSON.parse(barChartMetrics);
+            bCMetrics = [cm.metric_id];
+            bCMetricsNames = [cm.filter_bedtype];
+            setSelectedChartFilters(bCMetricsNames);
+          } else {
+            bCMetrics = default_chart_metric_ids;
           }
 
           let lMetrics: string[];
@@ -149,13 +165,13 @@ const TotalBedsPage: React.FC = () => {
           }
 
           setChartIndicatorQuery({
-            metric_ids: cMetrics,
+            metric_ids: bCMetrics,
             location_ids: locationids,
           });
 
           setLineGraphIndicatorQuery({
             metric_ids: lMetrics,
-            location_ids: [locationId],
+            location_ids: [lineLocationId],
           });
         } catch (error) {
           console.error('Error fetching location ids:', error);
@@ -174,8 +190,8 @@ const TotalBedsPage: React.FC = () => {
       // const containerHeight = barchartSVGContainerRef.current.clientHeight;
 
       const barchart = indicatorService.createBarchart(locationNames);
-        // containerWidth,
-        // containerHeight        
+      // containerWidth,
+      // containerHeight
 
       barchartSVGContainerRef.current.innerHTML = '';
       if (barchart) {
@@ -184,7 +200,6 @@ const TotalBedsPage: React.FC = () => {
     }
 
     if (lineGraphSVGContainerRef.current && indicatorService) {
-      
       const lineGraph = indicatorService.createLinegraph(locationNames);
 
       lineGraphSVGContainerRef.current.innerHTML = '';
@@ -219,7 +234,11 @@ const TotalBedsPage: React.FC = () => {
         showLoginInformation={false}
         currentPage="total-beds"
         showNavBar={false}
+        session={session}
       >
+        <Link onClick={() => router.back()} className="govuk-back-link" href="">
+          Back
+        </Link>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-one-third">
             <ContentSidePanel items={contentItems} />
@@ -289,12 +308,6 @@ const TotalBedsPage: React.FC = () => {
               locationName={locationRegion ?? ''}
             />
             <div>{parseMarkdownBlocks(smartInsights)}</div>
-
-            <p className="govuk-body">
-              <a href="javascript:history.back()" className="govuk-link">
-                Back
-              </a>
-            </p>
           </div>
         </div>
       </Layout>
