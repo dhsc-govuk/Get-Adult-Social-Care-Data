@@ -18,9 +18,10 @@ const TableFiltersPage: React.FC = () => {
     getFilters();
   }, []);
 
-  const handleCheckboxChange = (index: number, checked: boolean) => {
+  const handleCheckboxChange = (metric_id: string, checked: boolean) => {
     const newFilters = [...filters];
-    newFilters[index].checked = checked;
+    let newItem = newFilters.findIndex((item) => item.metric_id === metric_id);
+    newFilters[newItem].checked = checked;
     setFilters(newFilters);
   };
 
@@ -60,6 +61,9 @@ const TableFiltersPage: React.FC = () => {
                 name="Table filter"
                 type="checkbox"
                 value="bedcount_per_100000_adults_total"
+                onChange={(e) =>
+                  handleCheckboxChange(e.target.value, e.target.checked)
+                }
               />
               <label
                 className="govuk-label govuk-checkboxes__label"
@@ -80,7 +84,11 @@ const TableFiltersPage: React.FC = () => {
                     name="Table filter"
                     type="checkbox"
                     value="bedcount_per_100000_adults_total_transitional"
+                    onChange={(e) =>
+                      handleCheckboxChange(e.target.value, e.target.checked)
+                    }
                   />
+
                   <label
                     className="govuk-label govuk-checkboxes__label"
                     htmlFor="Table-Filter-2"
@@ -102,6 +110,9 @@ const TableFiltersPage: React.FC = () => {
                     name="Table filter"
                     type="checkbox"
                     value="bedcount_per_100000_adults_total_ypd_young_physically_disabled"
+                    onChange={(e) =>
+                      handleCheckboxChange(e.target.value, e.target.checked)
+                    }
                   />
                   <label
                     className="govuk-label govuk-checkboxes__label"
@@ -120,6 +131,9 @@ const TableFiltersPage: React.FC = () => {
                     name="Table filter"
                     type="checkbox"
                     value="bedcount_per_100000_adults_total_general_nursing"
+                    onChange={(e) =>
+                      handleCheckboxChange(e.target.value, e.target.checked)
+                    }
                   />
                   <label
                     className="govuk-label govuk-checkboxes__label"
@@ -135,6 +149,9 @@ const TableFiltersPage: React.FC = () => {
                     name="Table filter"
                     type="checkbox"
                     value="bedcount_per_100000_adults_total_dementia_nursing"
+                    onChange={(e) =>
+                      handleCheckboxChange(e.target.value, e.target.checked)
+                    }
                   />
                   <label
                     className="govuk-label govuk-checkboxes__label"
@@ -150,6 +167,9 @@ const TableFiltersPage: React.FC = () => {
                     name="Table filter"
                     type="checkbox"
                     value="bedcount_per_100000_adults_total_learning_disability_nursing"
+                    onChange={(e) =>
+                      handleCheckboxChange(e.target.value, e.target.checked)
+                    }
                   />
                   <label
                     className="govuk-label govuk-checkboxes__label"
@@ -165,6 +185,9 @@ const TableFiltersPage: React.FC = () => {
                     name="Table filter"
                     type="checkbox"
                     value="bedcount_per_100000_adults_total_mental_health_nursing"
+                    onChange={(e) =>
+                      handleCheckboxChange(e.target.value, e.target.checked)
+                    }
                   />
                   <label
                     className="govuk-label govuk-checkboxes__label"
@@ -183,6 +206,9 @@ const TableFiltersPage: React.FC = () => {
                     name="Table filter"
                     type="checkbox"
                     value="bedcount_per_100000_adults_total_general_residential"
+                    onChange={(e) =>
+                      handleCheckboxChange(e.target.value, e.target.checked)
+                    }
                   />
                   <label
                     className="govuk-label govuk-checkboxes__label"
@@ -198,6 +224,9 @@ const TableFiltersPage: React.FC = () => {
                     name="Table filter"
                     type="checkbox"
                     value="bedcount_per_100000_adults_total_dementia_residential"
+                    onChange={(e) =>
+                      handleCheckboxChange(e.target.value, e.target.checked)
+                    }
                   />
                   <label
                     className="govuk-label govuk-checkboxes__label"
@@ -213,6 +242,9 @@ const TableFiltersPage: React.FC = () => {
                     name="Table filter"
                     type="checkbox"
                     value="bedcount_per_100000_adults_total_learning_disability_residential"
+                    onChange={(e) =>
+                      handleCheckboxChange(e.target.value, e.target.checked)
+                    }
                   />
                   <label
                     className="govuk-label govuk-checkboxes__label"
@@ -228,6 +260,9 @@ const TableFiltersPage: React.FC = () => {
                     name="Table filter"
                     type="checkbox"
                     value="bedcount_per_100000_adults_total_mental_health_residential"
+                    onChange={(e) =>
+                      handleCheckboxChange(e.target.value, e.target.checked)
+                    }
                   />
                   <label
                     className="govuk-label govuk-checkboxes__label"
