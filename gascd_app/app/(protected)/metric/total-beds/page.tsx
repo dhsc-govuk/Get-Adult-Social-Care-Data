@@ -58,11 +58,18 @@ const TotalBedsPage: React.FC = () => {
       location_ids: [],
     });
 
+  const [smartInsightsIndicatorQuery, setSmartInsightsIndicatorQuery] =
+  useState<IndicatorQuery>({
+    metric_ids: default_chart_metric_ids,
+    location_ids: [],
+    });
+
   useEffect(() => {
     if (
       chartIndicatorQuery &&
       chartIndicatorQuery.location_ids.length > 0 &&
-      LineGraphIndicatorQuery
+      LineGraphIndicatorQuery &&
+      smartInsightsIndicatorQuery
     ) {
       const fetchData = async () => {
         const chartData: Indicator[] =
@@ -76,12 +83,12 @@ const TotalBedsPage: React.FC = () => {
           new IndicatorService(chartData, lineGraphData, displayData)
         );
         const insights: string[] =
-          await SmartInsightsFetchService.getData(chartIndicatorQuery);
+          await SmartInsightsFetchService.getData(smartInsightsIndicatorQuery);
         setSmartInsights(insights);
       };
       fetchData();
     }
-  }, [chartIndicatorQuery, LineGraphIndicatorQuery]);
+  }, [chartIndicatorQuery, LineGraphIndicatorQuery, smartInsightsIndicatorQuery]);
 
   useEffect(() => {
     if (session) {
@@ -174,6 +181,12 @@ const TotalBedsPage: React.FC = () => {
             metric_ids: lMetrics,
             location_ids: [lineLocationId],
           });
+
+          setSmartInsightsIndicatorQuery({
+            metric_ids: default_chart_metric_ids,
+            location_ids: [lineLocationId],
+          });
+
         } catch (error) {
           console.error('Error fetching location ids:', error);
         }
