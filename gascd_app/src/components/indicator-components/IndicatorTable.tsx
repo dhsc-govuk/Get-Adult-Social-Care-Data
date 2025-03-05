@@ -53,6 +53,18 @@ const IndicatorTable: React.FC<Props> = ({
     'bedcount_per_100000_adults_total_dementia_residential',
   ];
 
+  const default_filters = [
+    'Total Beds',
+    'Dementia Nursing',
+    'Dementia Residential',
+  ];
+  const default_rowHeaders = {
+    bedcount_per_100000_adults_total: 'Total Beds',
+    bedcount_per_100000_adults_total_dementia_nursing: 'Dementia Nursing',
+    bedcount_per_100000_adults_total_dementia_residential:
+      'Dementia Residential',
+  };
+
   const [dataQuery, setDataQuery] = useState<IndicatorQuery>({
     metric_ids: default_table_metric_ids,
     location_ids: [],
@@ -65,8 +77,7 @@ const IndicatorTable: React.FC<Props> = ({
         const parsedData = JSON.parse(storedData);
         if (Array.isArray(parsedData)) {
           const ids = parsedData.map((item) => item.metric_id);
-          setDataQuery((prev) => ({
-            ...prev,
+          setDataQuery(() => ({
             metric_ids: ids,
             location_ids: locationIds,
           }));
@@ -83,6 +94,13 @@ const IndicatorTable: React.FC<Props> = ({
       } catch (error) {
         console.error(error);
       }
+    } else {
+      setRowHeaders(default_rowHeaders);
+      setSelectedTableFilters(default_filters);
+      setDataQuery({
+        metric_ids: default_table_metric_ids,
+        location_ids: locationIds,
+      });
     }
   }, [locationIds]);
 
