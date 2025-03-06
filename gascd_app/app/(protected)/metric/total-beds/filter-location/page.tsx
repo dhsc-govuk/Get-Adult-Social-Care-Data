@@ -59,7 +59,7 @@ const PresentDemandLocations: React.FC = () => {
       currentPage="present-demand-locations"
       showNavBar={false}
     >
-      <a href="../metrics/total-beds" className="govuk-back-link">
+      <a href="/metric/total-beds" className="govuk-back-link">
         Back
       </a>
       <div className="govuk-grid-row">
