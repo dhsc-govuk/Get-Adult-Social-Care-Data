@@ -22,6 +22,7 @@ type Props = {
   selectedChartFilters: string[];
   selectedLineFilters: string[];
   locationName: string;
+  locationLAId: string;
 };
 
 const IndicatorTable: React.FC<Props> = ({
@@ -32,17 +33,15 @@ const IndicatorTable: React.FC<Props> = ({
   selectedChartFilters,
   selectedLineFilters,
   locationName,
+  locationLAId,
 }) => {
-  const { data: session, status } = useSession();
-  const [CPLocationId, setCPLocationId] = useState<string>();
   const [locationIds, setLocationIds] = useState<string[]>([]);
-  const [locationIdsCP, setLocationIdsCP] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState<Indicator[]>([]);
   const [locationNames, setLocationNames] = useState<string[]>([]);
-  const [locationNamesCP, setLocationNamesCP] = useState<string[]>([]);
   const [rowHeaders, setRowHeaders] = useState<object>();
   const [dataLatestDate, setDataLatestDate] = useState<string | null>();
   const [selectedTableFilters, setSelectedTableFilters] = useState<string[]>();
+  const [localAuthority, setLocalAuthority] = useState<string>();
   const handlePNGDownloadClick = () => {
     //todo
   };
@@ -69,6 +68,36 @@ const IndicatorTable: React.FC<Props> = ({
     metric_ids: default_table_metric_ids,
     location_ids: [],
   });
+
+  useEffect(() => {
+    if (locationLAId) {
+      setLocalAuthority(locationLAId);
+    }
+  });
+
+  useEffect(() => {
+    const fetchLocationNames = async () => {
+      if (localAuthority) {
+        try {
+          const locationNames = await PresentDemandService.getLocationNames(
+            localAuthority,
+            false,
+            false
+          );
+          const locationIds = await PresentDemandService.getLocationIds(
+            localAuthority,
+            false,
+            false
+          );
+          setLocationIds(locationIds);
+          setLocationNames(locationNames);
+        } catch (error) {
+          console.error('Error fetching location names:', error);
+        }
+      }
+    };
+    fetchLocationNames();
+  }, [localAuthority]);
 
   useEffect(() => {
     const storedData = localStorage.getItem('table-metrics');
@@ -105,78 +134,9 @@ const IndicatorTable: React.FC<Props> = ({
   }, [locationIds]);
 
   useEffect(() => {
-    const fetchCareProviderLocationName = async () => {
-      const storedLocationId = localStorage.getItem('selectedValue');
-      if (storedLocationId) {
-        setCPLocationId(storedLocationId);
-      } else if (session) {
-        if (session.user.locationType == 'Care provider') {
-          const locationId = await PresentDemandService.getDefaultCPLocation(
-            session.user.locationId ?? ' ',
-            session.user.locationType
-          );
-          setCPLocationId(locationId);
-        } else {
-          setCPLocationId(session.user.locationId);
-        }
-      }
-    };
-    fetchCareProviderLocationName();
-  }, [session]);
-
-  useEffect(() => {
-    const fetchLocationNames = async () => {
-      if (CPLocationId) {
-        try {
-          const locationNames = await PresentDemandService.getLocationNames(
-            CPLocationId,
-            false
-          );
-          const locationNamesCP = await PresentDemandService.getLocationNames(
-            CPLocationId,
-            true
-          );
-          setLocationNames(locationNames);
-          setLocationNamesCP(locationNamesCP);
-        } catch (error) {
-          console.error('Error fetching location names:', error);
-        }
-      }
-    };
-    fetchLocationNames();
-  }, [CPLocationId]);
-
-  useEffect(() => {
-    const fetchLocationIds = async () => {
-      if (CPLocationId) {
-        try {
-          const locationids = await PresentDemandService.getLocationIds(
-            CPLocationId,
-            false
-          );
-          const locationIdsCP = await PresentDemandService.getLocationIds(
-            CPLocationId,
-            true
-          );
-          setLocationIds(locationids);
-          setLocationIdsCP(locationIdsCP);
-        } catch (error) {
-          console.error('Error fetching location ids:', error);
-        }
-      }
-    };
-    fetchLocationIds();
-  }, [CPLocationId]);
-
-  useEffect(() => {
-    if (filteredData.length > 0) {
-      setDataLatestDate(PresentDemandService.getMostRecentDate(filteredData));
-    }
-  }, [filteredData]);
-
-  useEffect(() => {
     const fetchAllData = async () => {
-      if (!CPLocationId) return;
+      if (!dataQuery.location_ids || dataQuery.location_ids.length === 0)
+        return;
       try {
         const data: Indicator[] =
           await IndicatorFetchService.getData(dataQuery);
@@ -187,7 +147,13 @@ const IndicatorTable: React.FC<Props> = ({
       }
     };
     fetchAllData();
-  }, [dataQuery]);
+  }, [dataQuery, locationIds]);
+
+  useEffect(() => {
+    if (filteredData.length > 0) {
+      setDataLatestDate(PresentDemandService.getMostRecentDate(filteredData));
+    }
+  }, [filteredData]);
 
   return (
     <>

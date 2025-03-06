@@ -39,10 +39,7 @@ const TableFiltersPage: React.FC = () => {
   };
 
   return (
-    <Layout
-      showLoginInformation={true}
-      currentPage={'/metric/total-beds/filters'}
-    >
+    <Layout showLoginInformation={true} currentPage={'/total-beds/filters'}>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
           <span className="govuk-caption-m">

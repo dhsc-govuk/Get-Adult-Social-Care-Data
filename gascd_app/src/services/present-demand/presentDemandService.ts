@@ -18,6 +18,22 @@ class PresentDemandService {
     }
   }
 
+  public static async getLaLocations(query: string): Promise<Locations> {
+    try {
+      const response = await fetch(
+        `/api/get_la_location_data?la_code=${query}`
+      );
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('error', error);
+      throw new Error('Failed to retrieve location data');
+    }
+  }
+
   public static async getAvailableLocations(
     query: string
   ): Promise<Indicator[]> {
@@ -58,36 +74,45 @@ class PresentDemandService {
 
   public static async getLocationNames(
     query: string,
-    CareProvider: boolean
+    careProvider: boolean,
+    presentDemand: boolean = true
   ): Promise<string[]> {
-    const data = await this.getLocations(query);
+    const data = presentDemand
+      ? await this.getLocations(query)
+      : await this.getLaLocations(query);
 
     let locationNames = [
-      'Filter',
+      presentDemand ? 'Filter' : 'Location',
       data.la_name,
       data.region_name,
       data.country_name,
     ];
-    if (CareProvider) {
+
+    if (careProvider) {
       locationNames.splice(1, 0, data.provider_location_name);
     }
+
     return locationNames;
   }
 
   public static async getLocationIds(
     query: string,
-    CareProvider: boolean
+    CareProvider: boolean,
+    presentDemand: boolean = true
   ): Promise<string[]> {
-    const data = await this.getLocations(query);
+    const data = presentDemand
+      ? await this.getLocations(query)
+      : await this.getLaLocations(query);
+
     const locationIds = [
-      'Filter',
+      presentDemand ? 'Filter' : 'Location',
       data.la_code,
       data.region_code,
       data.country_code,
     ];
 
     if (CareProvider) {
-      locationIds.splice(2, 0, data.provider_location_id);
+      locationIds.splice(1, 0, data.provider_location_id);
     }
     return locationIds;
   }

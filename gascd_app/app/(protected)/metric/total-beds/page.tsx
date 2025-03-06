@@ -31,6 +31,7 @@ const TotalBedsPage: React.FC = () => {
   const [locationType, setlocationType] = useState<string>();
 
   const [locationNames, setLocationNames] = useState<[]>();
+  const [LaLocationId, setLaLocationId] = useState<string>();
 
   const [locationName, setlocationName] = useState<string>();
   const [locationRegion, setlocationRegion] = useState<string>();
@@ -140,7 +141,7 @@ const TotalBedsPage: React.FC = () => {
             setlocationName(localAuthority.la_name);
             setlocationRegion(localAuthority.region_name);
           }
-
+          setLaLocationId(lineLocationId);
           let bCMetrics: string[];
           let bCMetricsNames: string[];
 
@@ -305,6 +306,7 @@ const TotalBedsPage: React.FC = () => {
                   'Residential - dementia',
                 ]
               }
+              locationLAId={LaLocationId ?? ''}
               locationName={locationRegion ?? ''}
             />
             <div>{parseMarkdownBlocks(smartInsights)}</div>
