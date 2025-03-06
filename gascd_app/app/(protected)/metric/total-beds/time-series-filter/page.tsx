@@ -45,7 +45,7 @@ const TotalBedsFiltersPage: React.FC = () => {
       showLoginInformation={true}
       currentPage={'/metric/total-beds/time-series-filter'}
     >
-      <a href="../metrics/total-beds" className="govuk-back-link">
+      <a href="/metric/total-beds#time-series" className="govuk-back-link">
         Back
       </a>
       <div className="govuk-grid-row">
