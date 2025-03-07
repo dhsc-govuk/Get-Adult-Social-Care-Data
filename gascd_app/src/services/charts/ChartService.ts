@@ -41,7 +41,7 @@ export function generateBarchartSvg({
   showToolTip = true,
   tickCount,
   yAxisAsPercentage = false,
-  labels = []
+  labels = [],
 }: BarchartProps): SVGSVGElement | null {
   if (!data.length) return null;
 
@@ -81,7 +81,10 @@ export function generateBarchartSvg({
     renderBarXAxis(chartSvg, xAxisScale, height, dynamicMargin);
   }
 
-  const labelsMap = labels.reduce((map, la) => map.set(la.la_code, la.la_name), new Map<string, string>());
+  const labelsMap = labels.reduce(
+    (map, la) => map.set(la.la_code, la.la_name),
+    new Map<string, string>()
+  );
 
   renderBarYAxis(
     chartSvg,
@@ -89,7 +92,7 @@ export function generateBarchartSvg({
     dynamicMargin,
     labelsMap,
     tickCount,
-    yAxisAsPercentage,
+    yAxisAsPercentage
   );
   renderLabels(chartSvg, width, height, dynamicMargin, xLabel, yLabel, title);
 

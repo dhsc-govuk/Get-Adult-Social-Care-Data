@@ -19,6 +19,7 @@ class IndicatorFetchService {
 
     return response.json();
   }
+
   public static async getFilters(metric_id: string) {
     const response = await fetch('/api/get_all_total_beds_filters');
     return response.json();

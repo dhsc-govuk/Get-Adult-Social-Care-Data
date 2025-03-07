@@ -2,10 +2,17 @@ import { BarchartData } from '@/data/interfaces/BarchartData';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { downloadCSV } from '@/helpers/downloadToCsvHelpers';
 import { line } from 'd3';
-import React, { RefObject } from 'react';
+import React, { RefObject, useEffect, useState } from 'react';
 import MetricTable from '../metric-components/metric-table/MetricTable';
+import DataTable from '../tables/table';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import DownloadTableDataCSVLink from '../metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
+import { Indicator } from '@/data/interfaces/Indicator';
+import { useSession } from 'next-auth/react';
+import PresentDemandService from '@/services/present-demand/presentDemandService';
+import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
+import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
+import TableService from '@/services/Table/TableService';
 
 type Props = {
   data: BarchartData[];
@@ -15,6 +22,7 @@ type Props = {
   selectedChartFilters: string[];
   selectedLineFilters: string[];
   locationName: string;
+  locationLAId: string;
 };
 
 const IndicatorTable: React.FC<Props> = ({
@@ -25,10 +33,127 @@ const IndicatorTable: React.FC<Props> = ({
   selectedChartFilters,
   selectedLineFilters,
   locationName,
+  locationLAId,
 }) => {
+  const [locationIds, setLocationIds] = useState<string[]>([]);
+  const [filteredData, setFilteredData] = useState<Indicator[]>([]);
+  const [locationNames, setLocationNames] = useState<string[]>([]);
+  const [rowHeaders, setRowHeaders] = useState<object>();
+  const [dataLatestDate, setDataLatestDate] = useState<string | null>();
+  const [selectedTableFilters, setSelectedTableFilters] = useState<string[]>();
+  const [localAuthority, setLocalAuthority] = useState<string>();
   const handlePNGDownloadClick = () => {
     //todo
   };
+
+  const default_table_metric_ids = [
+    'bedcount_per_100000_adults_total',
+    'bedcount_per_100000_adults_total_dementia_nursing',
+    'bedcount_per_100000_adults_total_dementia_residential',
+  ];
+
+  const default_filters = [
+    'Total Beds',
+    'Dementia Nursing',
+    'Dementia Residential',
+  ];
+  const default_rowHeaders = {
+    bedcount_per_100000_adults_total: 'Total Beds',
+    bedcount_per_100000_adults_total_dementia_nursing: 'Dementia Nursing',
+    bedcount_per_100000_adults_total_dementia_residential:
+      'Dementia Residential',
+  };
+
+  const [dataQuery, setDataQuery] = useState<IndicatorQuery>({
+    metric_ids: default_table_metric_ids,
+    location_ids: [],
+  });
+
+  useEffect(() => {
+    if (locationLAId) {
+      setLocalAuthority(locationLAId);
+    }
+  });
+
+  useEffect(() => {
+    const fetchLocationNames = async () => {
+      if (localAuthority) {
+        try {
+          const locationNames = await PresentDemandService.getLocationNames(
+            localAuthority,
+            false,
+            false
+          );
+          const locationIds = await PresentDemandService.getLocationIds(
+            localAuthority,
+            false,
+            false
+          );
+          setLocationIds(locationIds);
+          setLocationNames(locationNames);
+        } catch (error) {
+          console.error('Error fetching location names:', error);
+        }
+      }
+    };
+    fetchLocationNames();
+  }, [localAuthority]);
+
+  useEffect(() => {
+    const storedData = localStorage.getItem('table-metrics');
+    if (storedData) {
+      try {
+        const parsedData = JSON.parse(storedData);
+        if (Array.isArray(parsedData)) {
+          const ids = parsedData.map((item) => item.metric_id);
+          setDataQuery(() => ({
+            metric_ids: ids,
+            location_ids: locationIds,
+          }));
+          const map: any = {};
+          parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
+          setRowHeaders(map);
+          if (parsedData) {
+            const tMetricNames = parsedData.map((obj) => obj['filter_bedtype']);
+            setSelectedTableFilters(tMetricNames);
+          } else {
+            setSelectedTableFilters(default_table_metric_ids);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      setRowHeaders(default_rowHeaders);
+      setSelectedTableFilters(default_filters);
+      setDataQuery({
+        metric_ids: default_table_metric_ids,
+        location_ids: locationIds,
+      });
+    }
+  }, [locationIds]);
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      if (!dataQuery.location_ids || dataQuery.location_ids.length === 0)
+        return;
+      try {
+        const data: Indicator[] =
+          await IndicatorFetchService.getData(dataQuery);
+        const filteredData = TableService.filterDate(data);
+        setFilteredData(filteredData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchAllData();
+  }, [dataQuery, locationIds]);
+
+  useEffect(() => {
+    if (filteredData.length > 0) {
+      setDataLatestDate(PresentDemandService.getMostRecentDate(filteredData));
+    }
+  }, [filteredData]);
 
   return (
     <>
@@ -175,33 +300,32 @@ const IndicatorTable: React.FC<Props> = ({
                 </th>
                 <td className="govuk-table__cell">
                   <ul className="moj-side-navigation__list">
-                    {selectedLineFilters.map((filter, index) => (
+                    {selectedTableFilters?.map((filter, index) => (
                       <li key={index}>{filter}</li>
                     ))}
                   </ul>
                 </td>
                 <td className="govuk-table__cell">
-                  <a href="/metric/total-beds/filters">Change</a>
+                  <a href="/metric/total-beds/table-filters">Change</a>
                 </td>
               </tr>
             </tbody>
           </table>
-          <MetricTable
-            headers={[
-              '',
-              'Adult social care beds per 100,000 adult population',
-            ]}
-            tableData={data}
+          <DataTable
+            columnHeaders={locationNames}
+            rowHeaders={rowHeaders ?? {}}
+            data={filteredData}
+            showCareProvider={false}
           />
           <p className="govuk-body" />
           <DownloadTableDataCSVLink
-            data={data}
+            data={TableService.removeLoadDateTime(filteredData)}
             filename={display ? display.metric_name : 'Error'}
             xLabel={display ? display.numerator : 'Error'}
           />
           <p className="govuk-body">Source: Capacity Tracker</p>
           <br />
-          Data correct as of 24 December 2024
+          Data correct as of {dataLatestDate}
           <br />
           <a
             // href="../0-3/help/beds-per-100000-people.html"
