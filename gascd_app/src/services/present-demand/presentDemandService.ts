@@ -1,5 +1,8 @@
 import { Indicator } from '@/data/interfaces/Indicator';
+import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
+import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { Locations } from '@/data/interfaces/Locations';
+import IndicatorFetchService from '../indicator/IndicatorFetchService';
 
 class PresentDemandService {
   public static async getLocations(query: string): Promise<Locations> {
@@ -152,6 +155,38 @@ class PresentDemandService {
   public static getMostRecentDate(data: Indicator[]): string {
     const recentData = this.getMostRecentIndicator(data);
     return this.formatDate(recentData);
+  }
+
+  public static async getDataSource(
+    dataQuery1: IndicatorQuery,
+    dataQuery2?: IndicatorQuery
+  ): Promise<string> {
+    const combinedQuery: IndicatorQuery = {
+      metric_ids: [
+        ...new Set([
+          ...dataQuery1.metric_ids,
+          ...(dataQuery2?.metric_ids || []),
+        ]),
+      ],
+      location_ids: [
+        ...new Set([
+          ...dataQuery1.location_ids,
+          ...(dataQuery2?.location_ids || []),
+        ]),
+      ],
+    };
+
+    const metaData = await IndicatorFetchService.getDisplayData(combinedQuery);
+
+    return Array.from(
+      new Set(
+        metaData.map((item) =>
+          item.data_source === 'ONS'
+            ? 'Office for National Statistics'
+            : item.data_source
+        )
+      )
+    ).join(', ');
   }
 }
 export default PresentDemandService;

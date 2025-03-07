@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   const reqBody = await req.json();
   const provider_location_id = reqBody['provider_location_id'];
   const session = await getServerSession(authOptions);
-  
+
   try {
     const query = `
       SELECT 
@@ -36,12 +36,12 @@ export async function POST(req: NextRequest) {
     const pool = await connectToDB();
     const request = pool.request();
 
-    if(provider_location_id){
-      request.input('location_id',provider_location_id);
-    }else{
-      request.input('location_id',session?.user.locationId);
+    if (provider_location_id) {
+      request.input('location_id', provider_location_id);
+    } else {
+      request.input('location_id', session?.user.locationId);
     }
-      
+
     const resultSet = await request.query(query);
     const rows: string[] = resultSet.recordset;
 

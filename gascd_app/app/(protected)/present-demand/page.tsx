@@ -12,6 +12,7 @@ import ConditionalText from '@/components/common/conditional-text/ConditionalTex
 import { useSession } from 'next-auth/react';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
+import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 
 const PresentDemandPage: React.FC = () => {
   const [filteredDemographicData, setFilteredDemographicData] = useState<
@@ -25,6 +26,9 @@ const PresentDemandPage: React.FC = () => {
   const [locationNamesCP, setLocationNamesCP] = useState<string[]>([]);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [locationIdsCP, setLocationIdsCP] = useState<string[]>([]);
+  const [demographicDataSource, setDemographicDataSource] = useState<string>();
+  const [bedsDataSource, setBedsDataSource] = useState<string>();
+  const [CPDataSource, setCPDataSource] = useState<string>();
   const [demographicLatestDate, setDemographicLatestDate] = useState<
     string | null
   >();
@@ -50,6 +54,25 @@ const PresentDemandPage: React.FC = () => {
       metric_ids: [],
       location_ids: [],
     });
+
+  const demographicMetricIds = [
+    'total_population',
+    'perc_18_64',
+    'perc_65over',
+    'perc_population_disability_disabled_total',
+    'dementia_register_65over_per100k',
+  ];
+
+  const bedsMetricIds = [
+    'bedcount_per_100000_adults_total',
+    'median_occupancy_total',
+  ];
+
+  const careProviderMetricIds1 = ['bedcount_total', 'occupancy_rate_total'];
+  const careProviderMetricIds2 = [
+    'median_bed_count_total',
+    'median_occupancy_total',
+  ];
 
   const demographicRowHeaders = {
     total_population: 'Population',
@@ -141,23 +164,14 @@ const PresentDemandPage: React.FC = () => {
 
   useEffect(() => {
     setDemographicQuery(() => ({
-      metric_ids: [
-        'total_population',
-        'perc_18_64',
-        'perc_65over',
-        'perc_population_disability_disabled_total',
-        'dementia_register_65over_per100k',
-      ],
+      metric_ids: demographicMetricIds,
       location_ids: locationIds,
     }));
   }, [locationIds]);
 
   useEffect(() => {
     setBedsQuery(() => ({
-      metric_ids: [
-        'bedcount_per_100000_adults_total',
-        'median_occupancy_total',
-      ],
+      metric_ids: bedsMetricIds,
       location_ids: locationIds,
     }));
   }, [locationIds]);
@@ -165,11 +179,11 @@ const PresentDemandPage: React.FC = () => {
   useEffect(() => {
     if (CPLocationId)
       setCareProviderData1Query(() => ({
-        metric_ids: ['bedcount_total', 'occupancy_rate_total'],
+        metric_ids: careProviderMetricIds1,
         location_ids: [CPLocationId],
       }));
     setCareProviderData2Query(() => ({
-      metric_ids: ['median_bed_count_total', 'median_occupancy_total'],
+      metric_ids: careProviderMetricIds2,
       location_ids: locationIds,
     }));
   }, [locationIds]);
@@ -188,7 +202,7 @@ const PresentDemandPage: React.FC = () => {
     if (finalCpData.length > 0) {
       setCPLatestDate(PresentDemandService.getMostRecentDate(finalCpData));
     }
-  }, [filteredDemographicData, filteredBedData, finalCpData]); // Dependencies updated
+  }, [filteredDemographicData, filteredBedData, finalCpData]);
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -199,10 +213,14 @@ const PresentDemandPage: React.FC = () => {
         const filteredDemographicData =
           TableService.filterDate(demographicData);
         setFilteredDemographicData(filteredDemographicData);
+        setDemographicDataSource(
+          await PresentDemandService.getDataSource(demographicQuery)
+        );
         const bedData: Indicator[] =
           await IndicatorFetchService.getData(bedsQuery);
         const filteredBedData = TableService.filterDate(bedData);
         setFilteredBedData(filteredBedData);
+        setBedsDataSource(await PresentDemandService.getDataSource(bedsQuery));
         const CPData: Indicator[] = await IndicatorFetchService.getData(
           careProviderDataQuery1
         );
@@ -213,7 +231,12 @@ const PresentDemandPage: React.FC = () => {
         const data2: Indicator[] = TableService.filterDate(CPData2);
         const comboData: Indicator[] = [...CPData, ...CPData2];
         const filteredCPData = TableService.filterDate(comboData);
-
+        setCPDataSource(
+          await PresentDemandService.getDataSource(
+            careProviderDataQuery1,
+            careProviderDataQuery2
+          )
+        );
         setFinalCpData(filteredCPData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -383,7 +406,7 @@ const PresentDemandPage: React.FC = () => {
             xLabel=""
           ></DownloadTableDataCSVLink>
           <p className="govuk-body">
-            Source: Office for National Statistics, NHS England
+            Source: {demographicDataSource}
             <br />
             Data correct as of {demographicLatestDate}
           </p>
@@ -451,7 +474,7 @@ const PresentDemandPage: React.FC = () => {
               xLabel=""
             ></DownloadTableDataCSVLink>
             <p className="govuk-body">
-              Source: Office for National Statistics, NHS England
+              Source: {bedsDataSource}
               <br />
               Data correct as of {bedDataLatestDate}
             </p>
@@ -509,7 +532,7 @@ const PresentDemandPage: React.FC = () => {
                 xLabel=""
               ></DownloadTableDataCSVLink>
               <p className="govuk-body">
-                Source: Office for National Statistics, NHS England
+                Source: {CPDataSource}
                 <br />
                 Data correct as of {CPLatestDate}
               </p>

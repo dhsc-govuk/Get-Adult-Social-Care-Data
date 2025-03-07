@@ -29,7 +29,10 @@ const PresentDemandLocations: React.FC = () => {
     const getData = async () => {
       if (cpLocation) {
         try {
-          const locations = await IndicatorFetchService.getLocalAuthoritiesInProviderLocationRegion(cpLocation);
+          const locations =
+            await IndicatorFetchService.getLocalAuthoritiesInProviderLocationRegion(
+              cpLocation
+            );
           setAvailableLocations(locations);
         } catch (error) {
           console.error('Error fetching data', error);
@@ -45,11 +48,16 @@ const PresentDemandLocations: React.FC = () => {
 
   const handleSubmit = () => {
     if (selectedCPLocation) {
-      let selected = availableLocations.find(l => l.la_code === selectedCPLocation);
+      let selected = availableLocations.find(
+        (l) => l.la_code === selectedCPLocation
+      );
 
       localStorage.setItem('IndicatorLocationSelectedCode', selected.la_code);
       localStorage.setItem('IndicatorLocationSelectedName', selected.la_name);
-      localStorage.setItem('IndicatorLocationSelectedRegion', selected.region_name);
+      localStorage.setItem(
+        'IndicatorLocationSelectedRegion',
+        selected.region_name
+      );
     }
   };
 
@@ -65,7 +73,7 @@ const PresentDemandLocations: React.FC = () => {
       </a>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
-        <span className="govuk-caption-m">
+          <span className="govuk-caption-m">
             Adult social care beds per 100,000 adult population
           </span>
           <h1 className="govuk-heading-l">Edit location</h1>
