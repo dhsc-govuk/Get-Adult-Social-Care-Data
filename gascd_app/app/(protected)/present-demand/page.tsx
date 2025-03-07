@@ -26,7 +26,6 @@ const PresentDemandPage: React.FC = () => {
   const [locationNamesCP, setLocationNamesCP] = useState<string[]>([]);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [locationIdsCP, setLocationIdsCP] = useState<string[]>([]);
-  const [metaData, setMetaData] = useState<IndicatorDisplay[]>([]);
   const [demographicDataSource, setDemographicDataSource] = useState<string>();
   const [bedsDataSource, setBedsDataSource] = useState<string>();
   const [CPDataSource, setCPDataSource] = useState<string>();
