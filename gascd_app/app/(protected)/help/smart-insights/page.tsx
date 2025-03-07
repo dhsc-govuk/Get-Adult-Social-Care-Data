@@ -29,7 +29,7 @@ const SmartInsightsPage: React.FC = () => {
             This is designed to support - but not replace - your own analysis of the data.            
           </p>
           <p className="govuk-body">
-            As it's experimental, there are some limitations to keep in mind.
+            As it&apos;s experimental, there are some limitations to keep in mind.
           </p>
 
           <h3 className="govuk-heading-m">How it works</h3>
