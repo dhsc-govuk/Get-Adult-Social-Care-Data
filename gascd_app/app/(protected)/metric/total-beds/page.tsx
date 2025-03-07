@@ -78,10 +78,17 @@ const TotalBedsPage: React.FC = () => {
         const lineGraphData: Indicator[] = await IndicatorFetchService.getData(
           LineGraphIndicatorQuery
         );
-        const displayData: IndicatorDisplay[] =
-          await IndicatorFetchService.getDisplayData('');
+        const chartDisplayData: IndicatorDisplay[] =
+          await IndicatorFetchService.getDisplayData(chartIndicatorQuery);
+        const lineGraphDisplayData: IndicatorDisplay[] =
+          await IndicatorFetchService.getDisplayData(LineGraphIndicatorQuery);
         setIndicatorService(
-          new IndicatorService(chartData, lineGraphData, displayData)
+          new IndicatorService(
+            chartData,
+            lineGraphData,
+            chartDisplayData,
+            lineGraphDisplayData
+          )
         );
         const insights: string[] = await SmartInsightsFetchService.getData(
           smartInsightsIndicatorQuery
@@ -99,11 +106,10 @@ const TotalBedsPage: React.FC = () => {
   useEffect(() => {
     if (session) {
       let locationId = session.user.locationId;
-
+      let locationType = session.user.locationType;
       if (locationType == 'Care provider') {
         locationId = localStorage.getItem('selectedValue')!;
       }
-
       setlocationId(locationId);
       setlocationType(session.user.locationType);
     }
@@ -114,19 +120,12 @@ const TotalBedsPage: React.FC = () => {
       if (locationId && locationType) {
         try {
           let locationids: string[] = [];
-          try {
-            const response = await fetch(`/api/get_locations`);
-            if (!response.ok) {
-              throw new Error(`Error fetching data: ${response.statusText}`);
-            }
-            const locations = await response.json();
-            locationids = locations.map(
-              (item: { la_code: any }) => item.la_code
+          const locations =
+            await IndicatorFetchService.getLocalAuthoritiesInProviderLocationRegion(
+              locationId
             );
-            setLocationNames(locations);
-          } catch (error) {
-            console.error('Error fetching data', error);
-          }
+          locationids = locations.map((item: { la_code: any }) => item.la_code);
+          setLocationNames(locations);
 
           const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
           const barChartMetrics = localStorage.getItem('bar-chart-metric');
@@ -232,9 +231,14 @@ const TotalBedsPage: React.FC = () => {
     return indicatorService.getChartData();
   };
 
-  const getCurrentDisplayData = () => {
+  const getCurrentChartDisplayData = () => {
     if (!indicatorService) return null;
-    return indicatorService.getDisplayData();
+    return indicatorService.getChartDisplayData();
+  };
+
+  const getCurrentLienGraphDisplayData = () => {
+    if (!indicatorService) return null;
+    return indicatorService.getLineGraphDisplayData();
   };
   const contentItems = [
     {
@@ -278,7 +282,7 @@ const TotalBedsPage: React.FC = () => {
               definitions, data source, update schedule and limitations to be
               aware of before using this data, go to &nbsp;
               <a
-                href="../current/help/beds-per-100000-adult-population.html"
+                href="/help/beds-per-100000-adult-population"
                 className="govuk-link"
               >
                 supporting information for this data
@@ -313,7 +317,8 @@ const TotalBedsPage: React.FC = () => {
             </table>
             <IndicatorTable
               data={getCurrentDataSet()}
-              display={getCurrentDisplayData()}
+              chartDisplay={getCurrentChartDisplayData()}
+              lineGraphDisplay={getCurrentChartDisplayData()}
               barchartSVG={barchartSVGContainerRef}
               lineGraphSVG={lineGraphSVGContainerRef}
               selectedChartFilters={selectedChartFilters ?? ['All bed types']}
@@ -326,6 +331,18 @@ const TotalBedsPage: React.FC = () => {
               locationLAId={LaLocationId ?? ''}
               locationName={locationRegion ?? ''}
             />
+            <h2 id="smart-insights" className="govuk-heading-m">
+              Smart insights (experimental)
+            </h2>
+            <div className="govuk-inset-text">
+              Smart insights use artificial intelligence (AI) to analyse this
+              data, highlighting trends and patterns to support your own
+              analysis. As this is experimental, verify the insights to check
+              they are appropriate and meet your needs.&nbsp;
+              <a href="/help/smart-insights" className="govuk-link">
+                Learn more about smart insights
+              </a>
+            </div>
             <div>{parseMarkdownBlocks(smartInsights)}</div>
           </div>
         </div>

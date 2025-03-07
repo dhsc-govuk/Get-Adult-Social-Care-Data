@@ -11,24 +11,31 @@ import { LinegraphData } from '@/data/interfaces/LinegraphData';
 class IndicatorService {
   private chartData: BarchartData[];
   private linegraphData: LinegraphData[];
-  private displayData: IndicatorDisplay;
+  private chartDisplayData: IndicatorDisplay[];
+  private lineGraphDisplayData: IndicatorDisplay[];
 
   constructor(
     chartData: Indicator[],
     lineData: Indicator[],
-    displayData: IndicatorDisplay
+    chartDisplayData: IndicatorDisplay[],
+    lineGraphDisplayData: IndicatorDisplay[]
   ) {
     this.chartData = this.transformToChartData(chartData);
     this.linegraphData = this.transformToLineChartData(lineData);
-    this.displayData = displayData;
+    this.chartDisplayData = chartDisplayData;
+    this.lineGraphDisplayData = lineGraphDisplayData;
   }
 
   public getChartData() {
     return this.chartData;
   }
 
-  public getDisplayData(): IndicatorDisplay {
-    return this.displayData;
+  public getChartDisplayData(): IndicatorDisplay[] {
+    return this.chartDisplayData;
+  }
+
+  public getLineGraphDisplayData(): IndicatorDisplay[] {
+    return this.lineGraphDisplayData;
   }
 
   public getLinegraphData() {
@@ -44,9 +51,9 @@ class IndicatorService {
       data: this.getChartData(),
       width: 600,
       height: 600,
-      xLabel: this.displayData.denominator,
-      yLabel: this.displayData.numerator,
-      title: this.displayData.metric_name,
+      xLabel: this.chartDisplayData[0].denominator,
+      yLabel: this.chartDisplayData[0].numerator,
+      title: this.chartDisplayData[0].metric_name,
       showXValues: true,
       showQuartileRanges: true,
       medianLineColor: '#000000',
@@ -65,10 +72,10 @@ class IndicatorService {
     return generateLineGraphSvg({
       data: this.getLinegraphData(),
       width: 600,
-      height: 400,
+      height: 800,
       xLabel: '',
-      yLabel: this.displayData.numerator,
-      title: this.displayData.metric_name,
+      yLabel: '',
+      title: '',
       showXValues: true,
       showQuartileRanges: true,
       medianLineColor: '#000000',
@@ -84,7 +91,10 @@ class IndicatorService {
         ['bedcount_per_100000_adults_total', 'purple'],
         ['bedcount_per_100000_adults_total_dementia_residential', 'orange'],
       ]),
-      groupedData: this.groupByMetricId(this.getLinegraphData()),
+      groupedData: this.groupByMetricId(
+        this.getLinegraphData(),
+        this.getLineGraphDisplayData()
+      ),
     });
   }
 
@@ -93,9 +103,9 @@ class IndicatorService {
       data: this.getChartData(),
       width: 270,
       height: 200,
-      xLabel: this.displayData.denominator,
-      yLabel: this.displayData.numerator,
-      title: this.displayData.metric_name,
+      xLabel: this.chartDisplayData[0].denominator,
+      yLabel: this.chartDisplayData[0].numerator,
+      title: this.chartDisplayData[0].metric_name,
       barColor: '#1d70b8',
       medianLineColor: '#000000',
       showLegend: false,
@@ -106,11 +116,11 @@ class IndicatorService {
     });
 
     return {
-      title: this.displayData.metric_name,
+      title: this.chartDisplayData[0].metric_name,
       svg: barchart,
-      description: this.displayData.description,
+      description: this.chartDisplayData[0].description,
       sourceUrl: '#',
-      metricDetailPageUrl: `metric/${this.displayData.metric_id}`,
+      metricDetailPageUrl: `metric/${this.chartDisplayData[0].metric_id}`,
       sourceLinkString: 'CT',
       limitationDescription: 'lorem lorem lorem lorem lorem lorem',
     };
@@ -127,15 +137,29 @@ class IndicatorService {
       .sort((a, b) => a.value - b.value);
   }
 
-  private groupByMetricId(data: LinegraphData[]): Map<string, LinegraphData[]> {
-    const map = data.reduce((map, entry) => {
-      if (!map.has(entry.metric)) {
-        map.set(entry.metric, []);
+  private groupByMetricId(
+    data: LinegraphData[],
+    lineGraphDisplayData: IndicatorDisplay[]
+  ): Map<string, { metric_name: string; data: LinegraphData[] }> {
+    const metricLookup = new Map(
+      lineGraphDisplayData.map((entry) => [
+        entry.metric_id,
+        entry.filter_bedtype,
+      ])
+    );
+
+    const groupedData = data.reduce((map, entry) => {
+      const metricName = metricLookup.get(entry.metric) || 'Unknown Metric';
+
+      if (!map.has(metricName)) {
+        map.set(metricName, { metric_name: metricName, data: [] });
       }
-      map.get(entry.metric)?.push(entry);
+
+      map.get(metricName)?.data.push(entry);
       return map;
-    }, new Map<string, LinegraphData[]>());
-    return map;
+    }, new Map<string, { metric_name: string; data: LinegraphData[] }>());
+
+    return groupedData;
   }
 
   private transformToLineChartData(data: Indicator[]): LinegraphData[] {

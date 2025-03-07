@@ -20,6 +20,26 @@ class IndicatorFetchService {
     return response.json();
   }
 
+  public static async getLocalAuthoritiesInProviderLocationRegion(
+    providerLocationId?: string
+  ): Promise<[]> {
+    const requestBody = providerLocationId
+      ? { provider_location_id: providerLocationId }
+      : {};
+    const response = await fetch('/api/get_locations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.statusText}`);
+    }
+    return response.json();
+  }
+
   public static async getFilters(metric_id: string) {
     const response = await fetch('/api/get_all_total_beds_filters');
     return response.json();
@@ -40,11 +60,20 @@ class IndicatorFetchService {
   }
 
   public static async getDisplayData(
-    metric_id: string
-  ): Promise<IndicatorDisplay> {
-    const response = await fetch('/api/get_metadata');
-    const displayData: IndicatorDisplay = await response.json();
-    return displayData;
+    query: IndicatorQuery
+  ): Promise<IndicatorDisplay[]> {
+    const response = await fetch('/api/get_metadata', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(query),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.statusText}`);
+    }
+    return response.json();
   }
 }
 

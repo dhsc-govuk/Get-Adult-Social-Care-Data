@@ -2,16 +2,27 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectToDB } from '../../../src/data/dbModule';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
+import QueryBuilderService from '@/services/query-builder/QueryBuilderService';
 
-// Handler for HTTP GET request
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
     const pool = await connectToDB();
-    const resultSet = await pool
-      .request()
-      .query('SELECT * FROM metrics.metadata');
-    const rows: IndicatorDisplay[] = resultSet.recordset;
+    const queryParams = await req.json();
 
+    if (!queryParams.metric_ids) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    const request = pool.request();
+    const { queryString, request_with_param } =
+      QueryBuilderService.createGetIndicatorDisplayQuery(queryParams, request);
+
+    const resultSet = await request_with_param.query(queryString);
+
+    const rows: IndicatorDisplay[] = resultSet.recordset;
     await pool.close();
     return NextResponse.json(rows);
   } catch (err) {

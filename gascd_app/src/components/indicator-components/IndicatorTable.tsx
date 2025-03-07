@@ -16,7 +16,8 @@ import TableService from '@/services/Table/TableService';
 
 type Props = {
   data: BarchartData[];
-  display: IndicatorDisplay | null;
+  chartDisplay: IndicatorDisplay[] | null;
+  lineGraphDisplay: IndicatorDisplay[] | null;
   barchartSVG: RefObject<HTMLDivElement | null>;
   lineGraphSVG: RefObject<HTMLDivElement | null>;
   selectedChartFilters: string[];
@@ -27,7 +28,8 @@ type Props = {
 
 const IndicatorTable: React.FC<Props> = ({
   data,
-  display,
+  chartDisplay,
+  lineGraphDisplay,
   barchartSVG,
   lineGraphSVG,
   selectedChartFilters,
@@ -221,8 +223,8 @@ const IndicatorTable: React.FC<Props> = ({
           <br />
           <DownloadTableDataCSVLink
             data={data}
-            filename={display ? display.metric_name : 'Error'}
-            xLabel={display ? display.numerator : 'Error'}
+            filename={chartDisplay ? chartDisplay[0].metric_name : 'Error'}
+            xLabel={chartDisplay ? chartDisplay[0].numerator : 'Error'}
           />
           <p className="govuk-body">
             Source: Capacity Tracker
@@ -270,8 +272,10 @@ const IndicatorTable: React.FC<Props> = ({
           <div ref={lineGraphSVG} id="line-graph-container"></div>
           <DownloadTableDataCSVLink
             data={data}
-            filename={display ? display.metric_name : 'Error'}
-            xLabel={display ? display.numerator : 'Error'}
+            filename={
+              lineGraphDisplay ? lineGraphDisplay[0].metric_name : 'Error'
+            }
+            xLabel={lineGraphDisplay ? lineGraphDisplay[0].numerator : 'Error'}
           />
           <p className="govuk-body">
             Source: Capacity Tracker
@@ -319,9 +323,9 @@ const IndicatorTable: React.FC<Props> = ({
           />
           <p className="govuk-body" />
           <DownloadTableDataCSVLink
-            data={TableService.removeLoadDateTime(filteredData)}
-            filename={display ? display.metric_name : 'Error'}
-            xLabel={display ? display.numerator : 'Error'}
+            data={data}
+            filename={chartDisplay ? chartDisplay[0].metric_name : 'Error'}
+            xLabel={chartDisplay ? chartDisplay[0].numerator : 'Error'}
           />
           <p className="govuk-body">Source: Capacity Tracker</p>
           <br />

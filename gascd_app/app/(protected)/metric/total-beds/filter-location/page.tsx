@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 
 const PresentDemandLocations: React.FC = () => {
   const [availableLocations, setAvailableLocations] = useState<any[]>([]);
@@ -15,7 +16,12 @@ const PresentDemandLocations: React.FC = () => {
 
   useEffect(() => {
     if (session) {
-      setCpLocation(session.user.locationId);
+      let locationId = session.user.locationId;
+      let locationType = session.user.locationType;
+      if (locationType == 'Care provider') {
+        locationId = localStorage.getItem('selectedValue')!;
+      }
+      setCpLocation(locationId);
     }
   }, [session]);
 
@@ -23,13 +29,11 @@ const PresentDemandLocations: React.FC = () => {
     const getData = async () => {
       if (cpLocation) {
         try {
-          const response = await fetch(
-            `/api/get_locations`
-          );
-          if (!response.ok) {
-            throw new Error(`Error fetching data: ${response.statusText}`);
-          }
-          setAvailableLocations(await response.json());
+          const locations =
+            await IndicatorFetchService.getLocalAuthoritiesInProviderLocationRegion(
+              cpLocation
+            );
+          setAvailableLocations(locations);
         } catch (error) {
           console.error('Error fetching data', error);
         }
@@ -44,11 +48,16 @@ const PresentDemandLocations: React.FC = () => {
 
   const handleSubmit = () => {
     if (selectedCPLocation) {
-      let selected = availableLocations.find(l => l.la_code === selectedCPLocation);
+      let selected = availableLocations.find(
+        (l) => l.la_code === selectedCPLocation
+      );
 
       localStorage.setItem('IndicatorLocationSelectedCode', selected.la_code);
       localStorage.setItem('IndicatorLocationSelectedName', selected.la_name);
-      localStorage.setItem('IndicatorLocationSelectedRegion', selected.region_name);
+      localStorage.setItem(
+        'IndicatorLocationSelectedRegion',
+        selected.region_name
+      );
     }
   };
 
@@ -64,7 +73,7 @@ const PresentDemandLocations: React.FC = () => {
       </a>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
-        <span className="govuk-caption-m">
+          <span className="govuk-caption-m">
             Adult social care beds per 100,000 adult population
           </span>
           <h1 className="govuk-heading-l">Edit location</h1>

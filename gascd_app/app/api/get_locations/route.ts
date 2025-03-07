@@ -6,10 +6,11 @@ import { authOptions } from '../auth/authOptions';
 import { getServerSession } from 'next-auth';
 
 // Handler for HTTP GET request
-export async function GET(req: NextRequest) {
-
+export async function POST(req: NextRequest) {
+  const reqBody = await req.json();
+  const provider_location_id = reqBody['provider_location_id'];
   const session = await getServerSession(authOptions);
-  
+
   try {
     const query = `
       SELECT 
@@ -34,8 +35,13 @@ export async function GET(req: NextRequest) {
 
     const pool = await connectToDB();
     const request = pool.request();
-    request.input('location_id',session?.user.locationId);
-      
+
+    if (provider_location_id) {
+      request.input('location_id', provider_location_id);
+    } else {
+      request.input('location_id', session?.user.locationId);
+    }
+
     const resultSet = await request.query(query);
     const rows: string[] = resultSet.recordset;
 
