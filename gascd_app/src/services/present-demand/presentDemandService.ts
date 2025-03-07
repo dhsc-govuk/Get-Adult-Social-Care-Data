@@ -1,4 +1,5 @@
 import { Indicator } from '@/data/interfaces/Indicator';
+import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { Locations } from '@/data/interfaces/Locations';
 
 class PresentDemandService {
@@ -152,6 +153,29 @@ class PresentDemandService {
   public static getMostRecentDate(data: Indicator[]): string {
     const recentData = this.getMostRecentIndicator(data);
     return this.formatDate(recentData);
+  }
+
+  public static getDataSource(
+    data: IndicatorDisplay[],
+    metricIds: string[],
+    additionalMetricIds: string[] = []
+  ): string {
+    const allMetricIds = [...metricIds, ...additionalMetricIds];
+    console.log(data, 'olorvkeirmgoeinrug');
+    return Array.from(
+      new Set(
+        data
+          .filter((item) => {
+            console.log('item:', item);
+            return allMetricIds.includes(item.metric_id);
+          })
+          .map((item) =>
+            item.data_source === 'ONS'
+              ? 'Office for National Statistics'
+              : item.data_source
+          )
+      )
+    ).join(', ');
   }
 }
 export default PresentDemandService;
