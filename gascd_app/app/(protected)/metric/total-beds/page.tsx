@@ -94,11 +94,10 @@ const TotalBedsPage: React.FC = () => {
   useEffect(() => {
     if (session) {
       let locationId = session.user.locationId;
-
+      let locationType = session.user.locationType;
       if (locationType == 'Care provider') {
         locationId = localStorage.getItem('selectedValue')!;
       }
-
       setlocationId(locationId);
       setlocationType(session.user.locationType);
     }
@@ -109,19 +108,11 @@ const TotalBedsPage: React.FC = () => {
       if (locationId && locationType) {
         try {
           let locationids: string[] = [];
-          try {
-            const response = await fetch(`/api/get_locations`);
-            if (!response.ok) {
-              throw new Error(`Error fetching data: ${response.statusText}`);
-            }
-            const locations = await response.json();
-            locationids = locations.map(
-              (item: { la_code: any }) => item.la_code
-            );
-            setLocationNames(locations);
-          } catch (error) {
-            console.error('Error fetching data', error);
-          }
+          const locations = await IndicatorFetchService.getLocalAuthoritiesInProviderLocationRegion(locationId);
+          locationids = locations.map(
+                (item: { la_code: any }) => item.la_code
+              );
+          setLocationNames(locations);
 
           const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
           const barChartMetrics = localStorage.getItem('bar-chart-metric');

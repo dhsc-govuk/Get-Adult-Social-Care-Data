@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 
 const PresentDemandLocations: React.FC = () => {
   const [availableLocations, setAvailableLocations] = useState<any[]>([]);
@@ -15,7 +16,12 @@ const PresentDemandLocations: React.FC = () => {
 
   useEffect(() => {
     if (session) {
-      setCpLocation(session.user.locationId);
+      let locationId = session.user.locationId;
+      let locationType = session.user.locationType;
+      if (locationType == 'Care provider') {
+        locationId = localStorage.getItem('selectedValue')!;
+      }
+      setCpLocation(locationId);
     }
   }, [session]);
 
@@ -23,13 +29,8 @@ const PresentDemandLocations: React.FC = () => {
     const getData = async () => {
       if (cpLocation) {
         try {
-          const response = await fetch(
-            `/api/get_locations`
-          );
-          if (!response.ok) {
-            throw new Error(`Error fetching data: ${response.statusText}`);
-          }
-          setAvailableLocations(await response.json());
+          const locations = await IndicatorFetchService.getLocalAuthoritiesInProviderLocationRegion(cpLocation);
+          setAvailableLocations(locations);
         } catch (error) {
           console.error('Error fetching data', error);
         }
