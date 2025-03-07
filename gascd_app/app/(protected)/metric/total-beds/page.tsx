@@ -60,9 +60,9 @@ const TotalBedsPage: React.FC = () => {
     });
 
   const [smartInsightsIndicatorQuery, setSmartInsightsIndicatorQuery] =
-  useState<IndicatorQuery>({
-    metric_ids: default_chart_metric_ids,
-    location_ids: [],
+    useState<IndicatorQuery>({
+      metric_ids: default_chart_metric_ids,
+      location_ids: [],
     });
 
   useEffect(() => {
@@ -78,18 +78,30 @@ const TotalBedsPage: React.FC = () => {
         const lineGraphData: Indicator[] = await IndicatorFetchService.getData(
           LineGraphIndicatorQuery
         );
-        const displayData: IndicatorDisplay =
-          await IndicatorFetchService.getDisplayData('');
+        const chartDisplayData: IndicatorDisplay[] =
+          await IndicatorFetchService.getDisplayData(chartIndicatorQuery);
+        const lineGraphDisplayData: IndicatorDisplay[] =
+          await IndicatorFetchService.getDisplayData(LineGraphIndicatorQuery);
         setIndicatorService(
-          new IndicatorService(chartData, lineGraphData, displayData)
+          new IndicatorService(
+            chartData,
+            lineGraphData,
+            chartDisplayData,
+            lineGraphDisplayData
+          )
         );
-        const insights: string[] =
-          await SmartInsightsFetchService.getData(smartInsightsIndicatorQuery);
+        const insights: string[] = await SmartInsightsFetchService.getData(
+          smartInsightsIndicatorQuery
+        );
         setSmartInsights(insights);
       };
       fetchData();
     }
-  }, [chartIndicatorQuery, LineGraphIndicatorQuery, smartInsightsIndicatorQuery]);
+  }, [
+    chartIndicatorQuery,
+    LineGraphIndicatorQuery,
+    smartInsightsIndicatorQuery,
+  ]);
 
   useEffect(() => {
     if (session) {
@@ -108,10 +120,11 @@ const TotalBedsPage: React.FC = () => {
       if (locationId && locationType) {
         try {
           let locationids: string[] = [];
-          const locations = await IndicatorFetchService.getLocalAuthoritiesInProviderLocationRegion(locationId);
-          locationids = locations.map(
-                (item: { la_code: any }) => item.la_code
-              );
+          const locations =
+            await IndicatorFetchService.getLocalAuthoritiesInProviderLocationRegion(
+              locationId
+            );
+          locationids = locations.map((item: { la_code: any }) => item.la_code);
           setLocationNames(locations);
 
           const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
@@ -177,7 +190,6 @@ const TotalBedsPage: React.FC = () => {
             metric_ids: default_chart_metric_ids,
             location_ids: [lineLocationId],
           });
-
         } catch (error) {
           console.error('Error fetching location ids:', error);
         }
@@ -219,9 +231,14 @@ const TotalBedsPage: React.FC = () => {
     return indicatorService.getChartData();
   };
 
-  const getCurrentDisplayData = () => {
+  const getCurrentChartDisplayData = () => {
     if (!indicatorService) return null;
-    return indicatorService.getDisplayData();
+    return indicatorService.getChartDisplayData();
+  };
+
+  const getCurrentLienGraphDisplayData = () => {
+    if (!indicatorService) return null;
+    return indicatorService.getLineGraphDisplayData();
   };
   const contentItems = [
     {
@@ -300,7 +317,8 @@ const TotalBedsPage: React.FC = () => {
             </table>
             <IndicatorTable
               data={getCurrentDataSet()}
-              display={getCurrentDisplayData()}
+              chartDisplay={getCurrentChartDisplayData()}
+              lineGraphDisplay={getCurrentChartDisplayData()}
               barchartSVG={barchartSVGContainerRef}
               lineGraphSVG={lineGraphSVGContainerRef}
               selectedChartFilters={selectedChartFilters ?? ['All bed types']}
@@ -313,14 +331,15 @@ const TotalBedsPage: React.FC = () => {
               locationLAId={LaLocationId ?? ''}
               locationName={locationRegion ?? ''}
             />
-            <h2 id="smart-insights" className="govuk-heading-m">Smart insights (experimental)</h2>
+            <h2 id="smart-insights" className="govuk-heading-m">
+              Smart insights (experimental)
+            </h2>
             <div className="govuk-inset-text">
-            Smart insights use artificial intelligence (AI) to analyse this data, highlighting trends and patterns to support your own analysis. 
-            As this is experimental, verify the insights to check they are appropriate and meet your needs.&nbsp; 
-              <a
-                  href="/help/smart-insights"
-                  className="govuk-link"
-                >
+              Smart insights use artificial intelligence (AI) to analyse this
+              data, highlighting trends and patterns to support your own
+              analysis. As this is experimental, verify the insights to check
+              they are appropriate and meet your needs.&nbsp;
+              <a href="/help/smart-insights" className="govuk-link">
                 Learn more about smart insights
               </a>
             </div>

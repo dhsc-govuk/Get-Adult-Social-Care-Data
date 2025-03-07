@@ -19,7 +19,7 @@ import {
   createBarXAxisScale,
   renderBarXAxis,
   renderBarYAxis,
-  renderBarLegend,
+  renderLineLegend,
 } from './ChartHelpers';
 
 export function generateBarchartSvg({
@@ -100,10 +100,6 @@ export function generateBarchartSvg({
     addTooltip(chartSvg);
   }
 
-  if (showLegend) {
-    renderBarLegend(chartSvg, metric_data, 10, dynamicMargin);
-  }
-
   return svgElement;
 }
 
@@ -124,17 +120,13 @@ export function generateLineGraphSvg({
   tickCount,
   yAxisAsPercentage = false,
   colourMap = new Map(),
-  groupedData = new Map<string, LinegraphData[]>(),
+  groupedData = new Map<
+    string,
+    { metric_name: string; data: LinegraphData[] }
+  >(),
   labels = [],
 }: LinegraphProps): SVGSVGElement | null {
   if (!data.length) return null;
-
-  const dynamicMargin = {
-    top: height * 0.1,
-    right: width * 0.1,
-    bottom: showXValues ? height * 0.2 : height * 0.1,
-    left: width * 0.2,
-  };
 
   const svgElement = document.createElementNS(
     'http://www.w3.org/2000/svg',
@@ -142,7 +134,38 @@ export function generateLineGraphSvg({
   );
   const ref = { current: svgElement };
 
+  let legendHeight = 0;
+  let legendEntries: { label: string; colour: string }[] = [];
+
+  if (showLegend) {
+    legendEntries = Array.from(groupedData.values()).map(({ metric_name }) => ({
+      label: shortenLabels ? truncateLabels(metric_name, 16) : metric_name,
+      colour: colourMap.get(metric_name) ?? '#800080',
+    }));
+
+    const maxItemsPerRow = Math.floor((width - 40) / 150);
+    const legendRowCount = Math.ceil(legendEntries.length / maxItemsPerRow);
+    legendHeight = legendRowCount * 25 + 40;
+  }
+
+  const dynamicMargin = {
+    top: height * 0.1 + legendHeight,
+    right: width * 0.1,
+    bottom: showXValues ? height * 0.2 : height * 0.1,
+    left: width * 0.2,
+  };
+
+  const adjustedChartHeight = height - legendHeight;
   const chartSvg = initializeSvg(ref, width, height);
+
+  if (showLegend) {
+    renderLineLegend(chartSvg, legendEntries, 2, width, {
+      top: height * 0.1,
+      right: width * 0.1,
+      bottom: showXValues ? height * 0.2 : height * 0.1,
+      left: width * 0.2,
+    });
+  }
 
   data = data.map((entry) => ({
     ...entry,
@@ -152,26 +175,25 @@ export function generateLineGraphSvg({
   }));
 
   const xAxisScale = createXAxisScale(data, width, dynamicMargin);
-  const yAxisScale = createYAxisScale(data, height, dynamicMargin);
+  const yAxisScale = createYAxisScale(data, adjustedChartHeight, dynamicMargin);
   const { median, quartiles } = calculateQuartiles(data);
   const defaultLineColor = '#800080';
   const strokeWidth = 3;
 
-  for (const key of groupedData.keys()) {
-    const value = groupedData.get(key);
+  for (const { metric_name, data } of groupedData.values()) {
     renderLine(
       chartSvg,
-      value ?? [],
+      data,
       xAxisScale,
       yAxisScale,
-      colourMap.get(key) ?? defaultLineColor,
+      colourMap.get(metric_name) ?? defaultLineColor,
       strokeWidth,
-      key
+      metric_name
     );
   }
 
   if (showXValues) {
-    renderLineXAxis(chartSvg, xAxisScale, height, dynamicMargin);
+    renderLineXAxis(chartSvg, xAxisScale, adjustedChartHeight, dynamicMargin);
   }
 
   renderYAxis(
@@ -188,16 +210,6 @@ export function generateLineGraphSvg({
       chartSvg,
       median,
       yAxisScale,
-      width,
-      dynamicMargin,
-      medianLineColor,
-      medianLineDash
-    );
-  }
-
-  if (showLegend) {
-    renderLegend(
-      chartSvg,
       width,
       dynamicMargin,
       medianLineColor,
