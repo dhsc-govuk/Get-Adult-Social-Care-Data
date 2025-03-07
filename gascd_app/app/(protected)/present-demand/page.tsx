@@ -100,15 +100,6 @@ const PresentDemandPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const fetchMetaData = async () => {
-      const metaData = await IndicatorFetchService.getDisplayData('');
-      console.log(metaData, 'ergergergergerg');
-      setMetaData(metaData);
-    };
-    fetchMetaData();
-  }, []);
-
-  useEffect(() => {
     const fetchCareProviderLocationName = async () => {
       const storedLocationId = localStorage.getItem('selectedValue');
       if (storedLocationId) {
@@ -224,15 +215,13 @@ const PresentDemandPage: React.FC = () => {
           TableService.filterDate(demographicData);
         setFilteredDemographicData(filteredDemographicData);
         setDemographicDataSource(
-          PresentDemandService.getDataSource(metaData, demographicMetricIds)
+          await PresentDemandService.getDataSource(demographicQuery)
         );
         const bedData: Indicator[] =
           await IndicatorFetchService.getData(bedsQuery);
         const filteredBedData = TableService.filterDate(bedData);
         setFilteredBedData(filteredBedData);
-        setBedsDataSource(
-          PresentDemandService.getDataSource(metaData, bedsMetricIds)
-        );
+        setBedsDataSource(await PresentDemandService.getDataSource(bedsQuery));
         const CPData: Indicator[] = await IndicatorFetchService.getData(
           careProviderDataQuery1
         );
@@ -244,19 +233,10 @@ const PresentDemandPage: React.FC = () => {
         const comboData: Indicator[] = [...CPData, ...CPData2];
         const filteredCPData = TableService.filterDate(comboData);
         setCPDataSource(
-          PresentDemandService.getDataSource(
-            metaData,
-            careProviderMetricIds1,
-            careProviderMetricIds2
+          await PresentDemandService.getDataSource(
+            careProviderDataQuery1,
+            careProviderDataQuery2
           )
-        );
-        console.log(
-          PresentDemandService.getDataSource(
-            metaData,
-            careProviderMetricIds1,
-            careProviderMetricIds2
-          ),
-          'datdatadat'
         );
         setFinalCpData(filteredCPData);
       } catch (error) {
