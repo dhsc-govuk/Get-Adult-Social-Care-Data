@@ -386,40 +386,46 @@ export function renderLegend(
     .attr('alignment-baseline', 'middle');
 }
 
-export function renderBarLegend(
+export function renderLineLegend(
   chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>,
-  data: string[],
+  legendEntries: { label: string; colour: string }[],
   size: number,
+  width: number,
   margin: { top: number; right: number; bottom: number; left: number }
 ): void {
-  const colorScale = getMetricColorScale(data);
-
   const legendGroup = chartSvg
     .append('g')
-    .attr('transform', `translate(${margin.left}, ${margin.top - 30})`);
+    .attr('transform', `translate(${margin.left - 40}, ${margin.top - 60})`);
 
-  legendGroup
-    .selectAll('rect')
-    .data(data)
+  const spacing = 20;
+  const maxItemsPerRow = 1;
+  const rowHeight = 25;
+
+  const legendItems = legendGroup
+    .selectAll('.legend-item')
+    .data(legendEntries)
     .enter()
+    .append('g')
+    .attr('class', 'legend-item')
+    .attr('transform', (_, i) => {
+      const x = (i % maxItemsPerRow) * 150;
+      const y = Math.floor(i / maxItemsPerRow) * rowHeight;
+      return `translate(${x}, ${y})`;
+    });
+
+  legendItems
     .append('rect')
-    .attr('x', 0)
-    .attr('y', -3)
-    .attr('width', size)
+    .attr('width', size * 5)
     .attr('height', size)
-    .style('fill', (d) => colorScale(d) ?? '#000');
+    .attr('fill', (d) => d.colour);
 
-  legendGroup
-    .selectAll('text')
-    .data(data)
-    .enter()
+  legendItems
     .append('text')
-    .attr('x', 15)
-    .attr('y', 0)
-    .style('fill', (d) => colorScale(d) ?? '#000')
-    .text((d) => d)
-    .attr('text-anchor', 'left')
-    .style('alignment-baseline', 'middle');
+    .attr('x', size + 20)
+    .attr('y', size / 2)
+    .attr('dy', '0.35em')
+    .style('font-size', '14px')
+    .text((d) => d.label);
 }
 
 export function renderLine(

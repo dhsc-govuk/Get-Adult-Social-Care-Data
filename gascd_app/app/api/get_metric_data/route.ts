@@ -21,10 +21,14 @@ export async function POST(req: NextRequest) {
 
     const request = pool.request();
     const { queryString, request_with_param } =
-      QueryBuilderService.createGetIndicatorQuery(queryParams, request, session?.user.locationType ?? '', session?.user.locationId ?? '');
+      QueryBuilderService.createGetIndicatorQuery(
+        queryParams,
+        request,
+        session?.user.locationType ?? '',
+        session?.user.locationId ?? ''
+      );
 
     const resultSet = await request_with_param.query(queryString);
-
     const rows: Indicator[] = resultSet.recordset;
     await pool.close();
 

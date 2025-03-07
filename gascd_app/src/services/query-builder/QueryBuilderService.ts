@@ -2,6 +2,20 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import sql from 'mssql';
 
 class QueryBuilderService {
+  static createGetIndicatorDisplayQuery(
+    query: IndicatorQuery,
+    request: sql.Request
+  ) {
+    let request_with_param = request;
+    const { paramBind: metric_ids_bind } = this.bindArrayParams(
+      request_with_param,
+      query.metric_ids,
+      'metric_ids'
+    );
+
+    const queryString = `SELECT * FROM metrics.metadata WHERE metric_id IN (${metric_ids_bind})`;
+    return { queryString, request_with_param };
+  }
   static createGetLocationNamesQuery(
     query: IndicatorQuery,
     request: sql.Request

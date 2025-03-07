@@ -15,6 +15,7 @@ export interface IndicatorDisplay {
   filter_support_setting: string;
   filter_disabilty_status: string;
   filter_care_provider_type: string;
+  filter_bedtype: string;
   metric_type: string;
   aggreation: string;
   graph: string;
