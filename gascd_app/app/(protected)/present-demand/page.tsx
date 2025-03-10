@@ -98,6 +98,14 @@ const PresentDemandPage: React.FC = () => {
     median_occupancy_total: 'occupancy_rate_total',
   };
 
+  const metrics_require_percentage = [
+    'perc_18_64',
+    'perc_65over',
+    'perc_population_disability_disabled_total',
+    'median_occupancy_total',
+    'median_occupancy_total',
+  ];
+
   useEffect(() => {
     const fetchCareProviderLocationName = async () => {
       const storedLocationId = localStorage.getItem('selectedValue');
@@ -399,13 +407,14 @@ const PresentDemandPage: React.FC = () => {
             rowHeaders={demographicRowHeaders}
             data={filteredDemographicData}
             showCareProvider={false}
+            percentageRows={metrics_require_percentage}
           ></DataTable>
           <DownloadTableDataCSVLink
             data={TableService.removeLoadDateTime(filteredDemographicData)}
             filename="Demographic factors"
             xLabel=""
           ></DownloadTableDataCSVLink>
-          <p className="govuk-body">
+          <p className="govuk-body govuk-!-margin-bottom-9">
             Source: {demographicDataSource}
             <br />
             Data correct as of {demographicLatestDate}
@@ -467,13 +476,14 @@ const PresentDemandPage: React.FC = () => {
               rowHeaders={bedRowHeaders}
               data={filteredBedData}
               showCareProvider={false}
+              percentageRows={metrics_require_percentage}
             ></DataTable>
             <DownloadTableDataCSVLink
               data={TableService.removeLoadDateTime(filteredBedData)}
               filename="Current Capacity"
               xLabel=""
             ></DownloadTableDataCSVLink>
-            <p className="govuk-body">
+            <p className="govuk-body govuk-!-margin-bottom-9">
               Source: {bedsDataSource}
               <br />
               Data correct as of {bedDataLatestDate}
@@ -525,6 +535,7 @@ const PresentDemandPage: React.FC = () => {
                 data={finalCpData}
                 showCareProvider={true}
                 careProviderMedianMetrics={careProviderMedianMetrics}
+                percentageRows={metrics_require_percentage}
               ></DataTable>
               <DownloadTableDataCSVLink
                 data={TableService.removeLoadDateTime(finalCpData)}

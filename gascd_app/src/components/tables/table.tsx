@@ -7,6 +7,7 @@ type DataTableProps = {
   data: Indicator[];
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
+  percentageRows?: string[];
 };
 
 const getCareProviderKey = (
@@ -19,7 +20,8 @@ const getCareProviderKey = (
 const getFormattedDataPoint = (
   data: Indicator[],
   metricId: string,
-  locationType: string
+  locationType: string,
+  isPercentage: boolean = false
 ): string => {
   const foundMetric = data.find(
     (metric) =>
@@ -32,14 +34,14 @@ const getFormattedDataPoint = (
     !isNaN(Number(foundMetric.data_point))
   ) {
     const dataPoint = Number(foundMetric.data_point);
-    const dataPointString = dataPoint.toString();
+    let formattedDataPoint = dataPoint.toString();
     if (
-      dataPointString.includes('.') &&
-      dataPointString.split('.')[1].length > 2
+      formattedDataPoint.includes('.') &&
+      formattedDataPoint.split('.')[1].length > 2
     ) {
-      return dataPoint.toFixed(2);
+      formattedDataPoint = dataPoint.toFixed(2);
     }
-    return dataPointString;
+    return isPercentage ? `${formattedDataPoint}%` : formattedDataPoint;
   }
   return 'Loading...';
 };
@@ -50,6 +52,7 @@ const DataTable: React.FC<DataTableProps> = ({
   data,
   showCareProvider,
   careProviderMedianMetrics,
+  percentageRows,
 }) => {
   return (
     <table className="govuk-table">
@@ -73,18 +76,34 @@ const DataTable: React.FC<DataTableProps> = ({
                 {getFormattedDataPoint(
                   data,
                   getCareProviderKey(key, careProviderMedianMetrics),
-                  'Care provider location'
+                  'Care provider location',
+                  percentageRows?.includes(key) ?? false
                 )}
               </td>
             )}
             <td className="govuk-table__cell">
-              {getFormattedDataPoint(data, key, 'LA')}
+              {getFormattedDataPoint(
+                data,
+                key,
+                'LA',
+                percentageRows?.includes(key) ?? false
+              )}
             </td>
             <td className="govuk-table__cell">
-              {getFormattedDataPoint(data, key, 'Regional')}
+              {getFormattedDataPoint(
+                data,
+                key,
+                'Regional',
+                percentageRows?.includes(key) ?? false
+              )}
             </td>
             <td className="govuk-table__cell">
-              {getFormattedDataPoint(data, key, 'National')}
+              {getFormattedDataPoint(
+                data,
+                key,
+                'National',
+                percentageRows?.includes(key) ?? false
+              )}
             </td>
           </tr>
         ))}
