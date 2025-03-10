@@ -246,7 +246,7 @@ const TotalBedsPage: React.FC = () => {
     return indicatorService.getChartDisplayData();
   };
 
-  const getCurrentLienGraphDisplayData = () => {
+  const getCurrentLineGraphDisplayData = () => {
     if (!indicatorService) return null;
     return indicatorService.getLineGraphDisplayData();
   };
@@ -328,7 +328,7 @@ const TotalBedsPage: React.FC = () => {
             <IndicatorTable
               data={getCurrentDataSet()}
               chartDisplay={getCurrentChartDisplayData()}
-              lineGraphDisplay={getCurrentChartDisplayData()}
+              lineGraphDisplay={getCurrentLineGraphDisplayData()}
               barchartSVG={barchartSVGContainerRef}
               lineGraphSVG={lineGraphSVGContainerRef}
               selectedChartFilters={selectedChartFilters ?? ['All bed types']}

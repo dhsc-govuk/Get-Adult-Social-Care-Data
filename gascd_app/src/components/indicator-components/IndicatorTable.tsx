@@ -13,6 +13,7 @@ import PresentDemandService from '@/services/present-demand/presentDemandService
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import TableService from '@/services/Table/TableService';
+import IndicatorDisplayService from '@/services/indicator/IndicatorDisplayService';
 
 type Props = {
   data: BarchartData[];
@@ -52,6 +53,7 @@ const IndicatorTable: React.FC<Props> = ({
   const [lineDataLatestDate, setLineDataLatestDate] = useState<string | null>();
   const [selectedTableFilters, setSelectedTableFilters] = useState<string[]>();
   const [localAuthority, setLocalAuthority] = useState<string>();
+  const [tableDataSource, setTableDataSource] = useState<string>();
   const handlePNGDownloadClick = () => {
     //todo
   };
@@ -150,6 +152,9 @@ const IndicatorTable: React.FC<Props> = ({
       try {
         const data: Indicator[] =
           await IndicatorFetchService.getData(dataQuery);
+        const tableDataSource =
+          await PresentDemandService.getDataSource(dataQuery);
+        setTableDataSource(tableDataSource);
         const tableFilteredData = TableService.filterDate(data);
         setTableFilteredData(tableFilteredData);
       } catch (error) {
@@ -247,7 +252,7 @@ const IndicatorTable: React.FC<Props> = ({
             xLabel={chartDisplay ? chartDisplay[0].numerator : 'Error'}
           />
           <p className="govuk-body">
-            Source: Capacity Tracker
+            Source: {IndicatorDisplayService.getSource(chartDisplay)}
             <br />
             Data correct as of {barDataLatestDate}
             <br />
@@ -298,7 +303,7 @@ const IndicatorTable: React.FC<Props> = ({
             xLabel={lineGraphDisplay ? lineGraphDisplay[0].numerator : 'Error'}
           />
           <p className="govuk-body">
-            Source: Capacity Tracker
+            Source: {IndicatorDisplayService.getSource(lineGraphDisplay)}
             <br />
             Data correct as of {lineDataLatestDate}
           </p>
@@ -347,7 +352,7 @@ const IndicatorTable: React.FC<Props> = ({
             filename={chartDisplay ? chartDisplay[0].metric_name : 'Error'}
             xLabel={chartDisplay ? chartDisplay[0].numerator : 'Error'}
           />
-          <p className="govuk-body">Source: Capacity Tracker</p>
+          <p className="govuk-body">Source: {tableDataSource}</p>
           <br />
           Data correct as of {tableDataLatestDate}
           <br />

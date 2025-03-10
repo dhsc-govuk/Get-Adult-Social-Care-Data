@@ -3,6 +3,9 @@ import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { Locations } from '@/data/interfaces/Locations';
 import IndicatorFetchService from '../indicator/IndicatorFetchService';
+import IndicatorDisplayrService from '../indicator/IndicatorDisplayService';
+import IndicatorDisplayService from '../indicator/IndicatorDisplayService';
+import { metadata } from '../../../app/layout';
 
 class PresentDemandService {
   public static async getLocations(query: string): Promise<Locations> {
@@ -178,15 +181,7 @@ class PresentDemandService {
 
     const metaData = await IndicatorFetchService.getDisplayData(combinedQuery);
 
-    return Array.from(
-      new Set(
-        metaData.map((item) =>
-          item.data_source === 'ONS'
-            ? 'Office for National Statistics'
-            : item.data_source
-        )
-      )
-    ).join(', ');
+    return IndicatorDisplayService.getSource(metaData);
   }
 }
 export default PresentDemandService;
