@@ -17,6 +17,7 @@ import { parseMarkdownBlocks } from '@/utils/parseMarkdown';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import TableService from '@/services/Table/TableService';
 
 const TotalBedsPage: React.FC = () => {
   const router = useRouter();
@@ -39,6 +40,13 @@ const TotalBedsPage: React.FC = () => {
   const [selectedChartFilters, setSelectedChartFilters] = useState<string[]>();
   const [selectedLineGraphFilters, setSelectedLineGraphFilters] =
     useState<string[]>();
+
+  const [filteredBarChartData, setFilteredBarChartData] = useState<Indicator[]>(
+    []
+  );
+  const [filteredLineGraphData, setFilteredLineGraphData] = useState<
+    Indicator[]
+  >([]);
 
   const default_chart_metric_ids = ['bedcount_per_100000_adults_total'];
 
@@ -78,6 +86,8 @@ const TotalBedsPage: React.FC = () => {
         const lineGraphData: Indicator[] = await IndicatorFetchService.getData(
           LineGraphIndicatorQuery
         );
+        setFilteredBarChartData(TableService.filterDate(chartData));
+        setFilteredLineGraphData(TableService.filterDate(lineGraphData));
         const chartDisplayData: IndicatorDisplay[] =
           await IndicatorFetchService.getDisplayData(chartIndicatorQuery);
         const lineGraphDisplayData: IndicatorDisplay[] =
@@ -236,7 +246,7 @@ const TotalBedsPage: React.FC = () => {
     return indicatorService.getChartDisplayData();
   };
 
-  const getCurrentLienGraphDisplayData = () => {
+  const getCurrentLineGraphDisplayData = () => {
     if (!indicatorService) return null;
     return indicatorService.getLineGraphDisplayData();
   };
@@ -318,7 +328,7 @@ const TotalBedsPage: React.FC = () => {
             <IndicatorTable
               data={getCurrentDataSet()}
               chartDisplay={getCurrentChartDisplayData()}
-              lineGraphDisplay={getCurrentChartDisplayData()}
+              lineGraphDisplay={getCurrentLineGraphDisplayData()}
               barchartSVG={barchartSVGContainerRef}
               lineGraphSVG={lineGraphSVGContainerRef}
               selectedChartFilters={selectedChartFilters ?? ['All bed types']}
@@ -330,6 +340,8 @@ const TotalBedsPage: React.FC = () => {
               }
               locationLAId={LaLocationId ?? ''}
               locationName={locationRegion ?? ''}
+              filteredBarChartData={filteredBarChartData}
+              filteredLineGraphData={filteredLineGraphData}
             />
             <h2 id="smart-insights" className="govuk-heading-m">
               Smart insights (experimental)

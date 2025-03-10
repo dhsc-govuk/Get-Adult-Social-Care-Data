@@ -13,6 +13,7 @@ import PresentDemandService from '@/services/present-demand/presentDemandService
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import TableService from '@/services/Table/TableService';
+import IndicatorDisplayService from '@/services/indicator/IndicatorDisplayService';
 
 type Props = {
   data: BarchartData[];
@@ -24,6 +25,8 @@ type Props = {
   selectedLineFilters: string[];
   locationName: string;
   locationLAId: string;
+  filteredBarChartData: Indicator[];
+  filteredLineGraphData: Indicator[];
 };
 
 const IndicatorTable: React.FC<Props> = ({
@@ -36,14 +39,21 @@ const IndicatorTable: React.FC<Props> = ({
   selectedLineFilters,
   locationName,
   locationLAId,
+  filteredBarChartData,
+  filteredLineGraphData,
 }) => {
   const [locationIds, setLocationIds] = useState<string[]>([]);
-  const [filteredData, setFilteredData] = useState<Indicator[]>([]);
+  const [tableFilteredData, setTableFilteredData] = useState<Indicator[]>([]);
   const [locationNames, setLocationNames] = useState<string[]>([]);
   const [rowHeaders, setRowHeaders] = useState<object>();
-  const [dataLatestDate, setDataLatestDate] = useState<string | null>();
+  const [tableDataLatestDate, setTableDataLatestDate] = useState<
+    string | null
+  >();
+  const [barDataLatestDate, setBarDataLatestDate] = useState<string | null>();
+  const [lineDataLatestDate, setLineDataLatestDate] = useState<string | null>();
   const [selectedTableFilters, setSelectedTableFilters] = useState<string[]>();
   const [localAuthority, setLocalAuthority] = useState<string>();
+  const [tableDataSource, setTableDataSource] = useState<string>();
   const handlePNGDownloadClick = () => {
     //todo
   };
@@ -142,8 +152,11 @@ const IndicatorTable: React.FC<Props> = ({
       try {
         const data: Indicator[] =
           await IndicatorFetchService.getData(dataQuery);
-        const filteredData = TableService.filterDate(data);
-        setFilteredData(filteredData);
+        const tableDataSource =
+          await PresentDemandService.getDataSource(dataQuery);
+        setTableDataSource(tableDataSource);
+        const tableFilteredData = TableService.filterDate(data);
+        setTableFilteredData(tableFilteredData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -152,10 +165,22 @@ const IndicatorTable: React.FC<Props> = ({
   }, [dataQuery, locationIds]);
 
   useEffect(() => {
-    if (filteredData.length > 0) {
-      setDataLatestDate(PresentDemandService.getMostRecentDate(filteredData));
+    if (tableFilteredData.length > 0) {
+      setTableDataLatestDate(
+        PresentDemandService.getMostRecentDate(tableFilteredData)
+      );
     }
-  }, [filteredData]);
+    if (filteredBarChartData.length > 0) {
+      setBarDataLatestDate(
+        PresentDemandService.getMostRecentDate(filteredBarChartData)
+      );
+    }
+    if (filteredLineGraphData.length > 0) {
+      setLineDataLatestDate(
+        PresentDemandService.getMostRecentDate(filteredLineGraphData)
+      );
+    }
+  }, [tableFilteredData, filteredBarChartData, filteredLineGraphData]);
 
   return (
     <>
@@ -227,9 +252,9 @@ const IndicatorTable: React.FC<Props> = ({
             xLabel={chartDisplay ? chartDisplay[0].numerator : 'Error'}
           />
           <p className="govuk-body">
-            Source: Capacity Tracker
+            Source: {IndicatorDisplayService.getSource(chartDisplay)}
             <br />
-            Data correct as of 24 December 2024
+            Data correct as of {barDataLatestDate}
             <br />
             <a
               href="../0-3/help/beds-per-100000-people.html"
@@ -278,9 +303,9 @@ const IndicatorTable: React.FC<Props> = ({
             xLabel={lineGraphDisplay ? lineGraphDisplay[0].numerator : 'Error'}
           />
           <p className="govuk-body">
-            Source: Capacity Tracker
+            Source: {IndicatorDisplayService.getSource(lineGraphDisplay)}
             <br />
-            Data correct as of 24 December 2024
+            Data correct as of {lineDataLatestDate}
           </p>
         </div>
 
@@ -318,7 +343,7 @@ const IndicatorTable: React.FC<Props> = ({
           <DataTable
             columnHeaders={locationNames}
             rowHeaders={rowHeaders ?? {}}
-            data={filteredData}
+            data={tableFilteredData}
             showCareProvider={false}
           />
           <p className="govuk-body" />
@@ -327,9 +352,9 @@ const IndicatorTable: React.FC<Props> = ({
             filename={chartDisplay ? chartDisplay[0].metric_name : 'Error'}
             xLabel={chartDisplay ? chartDisplay[0].numerator : 'Error'}
           />
-          <p className="govuk-body">Source: Capacity Tracker</p>
+          <p className="govuk-body">Source: {tableDataSource}</p>
           <br />
-          Data correct as of {dataLatestDate}
+          Data correct as of {tableDataLatestDate}
           <br />
           <a
             // href="../0-3/help/beds-per-100000-people.html"
