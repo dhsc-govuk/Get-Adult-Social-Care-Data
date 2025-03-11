@@ -59,6 +59,18 @@ class IndicatorFetchService {
     return response.json();
   }
 
+  public static async getMetadateByType(
+    query: string
+  ): Promise<IndicatorDisplay[]> {
+    const response = await fetch(
+      `api/get_metadata_by_data_types?metric_data_type=${query}`
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.statusText}`);
+    }
+    return await response.json();
+  }
+
   public static async getDisplayData(
     query: IndicatorQuery
   ): Promise<IndicatorDisplay[]> {

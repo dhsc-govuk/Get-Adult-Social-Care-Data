@@ -29,6 +29,7 @@ const PresentDemandPage: React.FC = () => {
   const [demographicDataSource, setDemographicDataSource] = useState<string>();
   const [bedsDataSource, setBedsDataSource] = useState<string>();
   const [CPDataSource, setCPDataSource] = useState<string>();
+  const [metricDateType, setMetricDataType] = useState<IndicatorDisplay[]>([]);
   const [demographicLatestDate, setDemographicLatestDate] = useState<
     string | null
   >();
@@ -98,6 +99,14 @@ const PresentDemandPage: React.FC = () => {
     median_occupancy_total: 'occupancy_rate_total',
   };
 
+  const metrics_require_percentage = [
+    'perc_18_64',
+    'perc_65over',
+    'perc_population_disability_disabled_total',
+    'median_occupancy_total',
+    'median_occupancy_total',
+  ];
+
   useEffect(() => {
     const fetchCareProviderLocationName = async () => {
       const storedLocationId = localStorage.getItem('selectedValue');
@@ -117,6 +126,19 @@ const PresentDemandPage: React.FC = () => {
     };
     fetchCareProviderLocationName();
   }, [session]);
+
+  useEffect(() => {
+    const fetchMetadataByType = async () => {
+      try {
+        setMetricDataType(
+          await IndicatorFetchService.getMetadateByType('Percentage')
+        );
+      } catch (error) {
+        console.error('Error fetching metadata types:', error);
+      }
+    };
+    fetchMetadataByType();
+  }, []);
 
   useEffect(() => {
     const fetchLocationNames = async () => {
@@ -400,13 +422,14 @@ const PresentDemandPage: React.FC = () => {
             rowHeaders={demographicRowHeaders}
             data={filteredDemographicData}
             showCareProvider={false}
+            percentageRows={metricDateType}
           ></DataTable>
           <DownloadTableDataCSVLink
             data={TableService.removeLoadDateTime(filteredDemographicData)}
             filename="Demographic factors"
             xLabel=""
           ></DownloadTableDataCSVLink>
-          <p className="govuk-body">
+          <p className="govuk-body govuk-!-margin-bottom-9">
             Source: {demographicDataSource}
             <br />
             Data correct as of {demographicLatestDate}
@@ -468,13 +491,14 @@ const PresentDemandPage: React.FC = () => {
               rowHeaders={bedRowHeaders}
               data={filteredBedData}
               showCareProvider={false}
+              percentageRows={metricDateType}
             ></DataTable>
             <DownloadTableDataCSVLink
               data={TableService.removeLoadDateTime(filteredBedData)}
               filename="Current Capacity"
               xLabel=""
             ></DownloadTableDataCSVLink>
-            <p className="govuk-body">
+            <p className="govuk-body govuk-!-margin-bottom-9">
               Source: {bedsDataSource}
               <br />
               Data correct as of {bedDataLatestDate}
@@ -526,6 +550,7 @@ const PresentDemandPage: React.FC = () => {
                 data={finalCpData}
                 showCareProvider={true}
                 careProviderMedianMetrics={careProviderMedianMetrics}
+                percentageRows={metricDateType}
               ></DataTable>
               <DownloadTableDataCSVLink
                 data={TableService.removeLoadDateTime(finalCpData)}

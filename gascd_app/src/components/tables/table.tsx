@@ -1,5 +1,6 @@
 import React from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
+import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 
 type DataTableProps = {
   columnHeaders: string[];
@@ -7,6 +8,7 @@ type DataTableProps = {
   data: Indicator[];
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
+  percentageRows?: IndicatorDisplay[];
 };
 
 const getCareProviderKey = (
@@ -19,7 +21,8 @@ const getCareProviderKey = (
 const getFormattedDataPoint = (
   data: Indicator[],
   metricId: string,
-  locationType: string
+  locationType: string,
+  isPercentage: boolean = false
 ): string => {
   const foundMetric = data.find(
     (metric) =>
@@ -31,15 +34,8 @@ const getFormattedDataPoint = (
     foundMetric.data_point !== null &&
     !isNaN(Number(foundMetric.data_point))
   ) {
-    const dataPoint = Number(foundMetric.data_point);
-    const dataPointString = dataPoint.toString();
-    if (
-      dataPointString.includes('.') &&
-      dataPointString.split('.')[1].length > 2
-    ) {
-      return dataPoint.toFixed(2);
-    }
-    return dataPointString;
+    let formattedDataPoint = Number(foundMetric.data_point).toLocaleString();
+    return isPercentage ? `${formattedDataPoint}%` : formattedDataPoint;
   }
   return 'Loading...';
 };
@@ -50,6 +46,7 @@ const DataTable: React.FC<DataTableProps> = ({
   data,
   showCareProvider,
   careProviderMedianMetrics,
+  percentageRows,
 }) => {
   return (
     <table className="govuk-table">
@@ -73,18 +70,35 @@ const DataTable: React.FC<DataTableProps> = ({
                 {getFormattedDataPoint(
                   data,
                   getCareProviderKey(key, careProviderMedianMetrics),
-                  'Care provider location'
+                  'Care provider location',
+                  percentageRows?.some((item) => item.metric_id === key) ??
+                    false
                 )}
               </td>
             )}
             <td className="govuk-table__cell">
-              {getFormattedDataPoint(data, key, 'LA')}
+              {getFormattedDataPoint(
+                data,
+                key,
+                'LA',
+                percentageRows?.some((item) => item.metric_id === key) ?? false
+              )}
             </td>
             <td className="govuk-table__cell">
-              {getFormattedDataPoint(data, key, 'Regional')}
+              {getFormattedDataPoint(
+                data,
+                key,
+                'Regional',
+                percentageRows?.some((item) => item.metric_id === key) ?? false
+              )}
             </td>
             <td className="govuk-table__cell">
-              {getFormattedDataPoint(data, key, 'National')}
+              {getFormattedDataPoint(
+                data,
+                key,
+                'National',
+                percentageRows?.some((item) => item.metric_id === key) ?? false
+              )}
             </td>
           </tr>
         ))}
