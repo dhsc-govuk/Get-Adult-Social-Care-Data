@@ -29,6 +29,7 @@ const PresentDemandPage: React.FC = () => {
   const [demographicDataSource, setDemographicDataSource] = useState<string>();
   const [bedsDataSource, setBedsDataSource] = useState<string>();
   const [CPDataSource, setCPDataSource] = useState<string>();
+  const [metricDateType, setMetricDataType] = useState<IndicatorDisplay[]>([]);
   const [demographicLatestDate, setDemographicLatestDate] = useState<
     string | null
   >();
@@ -125,6 +126,19 @@ const PresentDemandPage: React.FC = () => {
     };
     fetchCareProviderLocationName();
   }, [session]);
+
+  useEffect(() => {
+    const fetchMetadataByType = async () => {
+      try {
+        setMetricDataType(
+          await IndicatorFetchService.getMetadateByType('Percentage')
+        );
+      } catch (error) {
+        console.error('Error fetching metadata types:', error);
+      }
+    };
+    fetchMetadataByType();
+  }, []);
 
   useEffect(() => {
     const fetchLocationNames = async () => {
@@ -407,7 +421,7 @@ const PresentDemandPage: React.FC = () => {
             rowHeaders={demographicRowHeaders}
             data={filteredDemographicData}
             showCareProvider={false}
-            percentageRows={metrics_require_percentage}
+            percentageRows={metricDateType}
           ></DataTable>
           <DownloadTableDataCSVLink
             data={TableService.removeLoadDateTime(filteredDemographicData)}
@@ -476,7 +490,7 @@ const PresentDemandPage: React.FC = () => {
               rowHeaders={bedRowHeaders}
               data={filteredBedData}
               showCareProvider={false}
-              percentageRows={metrics_require_percentage}
+              percentageRows={metricDateType}
             ></DataTable>
             <DownloadTableDataCSVLink
               data={TableService.removeLoadDateTime(filteredBedData)}
@@ -535,7 +549,7 @@ const PresentDemandPage: React.FC = () => {
                 data={finalCpData}
                 showCareProvider={true}
                 careProviderMedianMetrics={careProviderMedianMetrics}
-                percentageRows={metrics_require_percentage}
+                percentageRows={metricDateType}
               ></DataTable>
               <DownloadTableDataCSVLink
                 data={TableService.removeLoadDateTime(finalCpData)}

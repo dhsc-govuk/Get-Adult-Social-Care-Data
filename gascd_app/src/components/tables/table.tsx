@@ -1,5 +1,6 @@
 import React from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
+import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 
 type DataTableProps = {
   columnHeaders: string[];
@@ -7,7 +8,7 @@ type DataTableProps = {
   data: Indicator[];
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
-  percentageRows?: string[];
+  percentageRows?: IndicatorDisplay[];
 };
 
 const getCareProviderKey = (
@@ -77,7 +78,8 @@ const DataTable: React.FC<DataTableProps> = ({
                   data,
                   getCareProviderKey(key, careProviderMedianMetrics),
                   'Care provider location',
-                  percentageRows?.includes(key) ?? false
+                  percentageRows?.some((item) => item.metric_id === key) ??
+                    false
                 )}
               </td>
             )}
@@ -86,7 +88,7 @@ const DataTable: React.FC<DataTableProps> = ({
                 data,
                 key,
                 'LA',
-                percentageRows?.includes(key) ?? false
+                percentageRows?.some((item) => item.metric_id === key) ?? false
               )}
             </td>
             <td className="govuk-table__cell">
@@ -94,7 +96,7 @@ const DataTable: React.FC<DataTableProps> = ({
                 data,
                 key,
                 'Regional',
-                percentageRows?.includes(key) ?? false
+                percentageRows?.some((item) => item.metric_id === key) ?? false
               )}
             </td>
             <td className="govuk-table__cell">
@@ -102,7 +104,7 @@ const DataTable: React.FC<DataTableProps> = ({
                 data,
                 key,
                 'National',
-                percentageRows?.includes(key) ?? false
+                percentageRows?.some((item) => item.metric_id === key) ?? false
               )}
             </td>
           </tr>
