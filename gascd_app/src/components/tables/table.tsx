@@ -34,14 +34,7 @@ const getFormattedDataPoint = (
     foundMetric.data_point !== null &&
     !isNaN(Number(foundMetric.data_point))
   ) {
-    const dataPoint = Number(foundMetric.data_point);
-    let formattedDataPoint = dataPoint.toString();
-    if (
-      formattedDataPoint.includes('.') &&
-      formattedDataPoint.split('.')[1].length > 2
-    ) {
-      formattedDataPoint = dataPoint.toFixed(2);
-    }
+    let formattedDataPoint = Number(foundMetric.data_point).toLocaleString();
     return isPercentage ? `${formattedDataPoint}%` : formattedDataPoint;
   }
   return 'Loading...';
