@@ -9,6 +9,7 @@ declare module 'next-auth' {
     user: {
       locationType?: string;
       locationId?: string;
+      smartInsights?: boolean;
     };
   }
   interface Profile {
@@ -78,6 +79,7 @@ export const authOptions: NextAuthOptions = {
       session.idToken = token.idToken as string;
       session.user.locationType = token.locationType as string;
       session.user.locationId = token.locationId as string;
+      session.user.smartInsights = true;
       session.accessToken = token.accessToken as string;
       session.refreshToken = token.refreshToken;
       return session;
