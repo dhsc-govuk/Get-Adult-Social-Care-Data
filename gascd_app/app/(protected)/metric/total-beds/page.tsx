@@ -78,6 +78,7 @@ const TotalBedsPage: React.FC = () => {
       chartIndicatorQuery &&
       chartIndicatorQuery.location_ids.length > 0 &&
       LineGraphIndicatorQuery &&
+      LineGraphIndicatorQuery.location_ids.length > 0 &&
       smartInsightsIndicatorQuery
     ) {
       const fetchData = async () => {
@@ -97,7 +98,8 @@ const TotalBedsPage: React.FC = () => {
             chartData,
             lineGraphData,
             chartDisplayData,
-            lineGraphDisplayData
+            lineGraphDisplayData,
+            LineGraphIndicatorQuery.location_ids[0]
           )
         );
         const insights: string[] = await SmartInsightsFetchService.getData(

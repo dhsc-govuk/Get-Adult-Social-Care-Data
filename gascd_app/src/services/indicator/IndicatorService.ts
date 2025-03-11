@@ -18,9 +18,10 @@ class IndicatorService {
     chartData: Indicator[],
     lineData: Indicator[],
     chartDisplayData: IndicatorDisplay[],
-    lineGraphDisplayData: IndicatorDisplay[]
+    lineGraphDisplayData: IndicatorDisplay[],
+    selected_location_id: string
   ) {
-    this.chartData = this.transformToChartData(chartData);
+    this.chartData = this.transformToChartData(chartData, selected_location_id);
     this.linegraphData = this.transformToLineChartData(lineData);
     this.chartDisplayData = chartDisplayData;
     this.lineGraphDisplayData = lineGraphDisplayData;
@@ -126,13 +127,14 @@ class IndicatorService {
     };
   }
 
-  private transformToChartData(data: Indicator[]): BarchartData[] {
+  private transformToChartData(data: Indicator[], selected_location_id : string): BarchartData[] {
     return data
       .filter((d) => d.data_point !== null)
       .map((entry: Indicator) => ({
         valueTag: entry.location_id,
         metric: entry.metric_id,
         value: entry.data_point,
+        selected: entry.location_id == selected_location_id ? true : false
       }))
       .sort((a, b) => a.value - b.value);
   }
