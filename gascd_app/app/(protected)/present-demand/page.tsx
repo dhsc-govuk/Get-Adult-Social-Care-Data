@@ -78,7 +78,7 @@ const PresentDemandPage: React.FC = () => {
     total_population: 'Population',
     perc_18_64: 'Aged 18-65',
     perc_65over: 'Aged 65 and over',
-    perc_population_disability_disabled_total: 'Disability rates',
+    perc_population_disability_disabled_total: 'Disability prevalence',
     dementia_register_65over_per100k:
       'Registered dementia patients per 100,000',
   };
@@ -251,6 +251,7 @@ const PresentDemandPage: React.FC = () => {
       link: '#definition',
       heading: 'Indicator definition and supporting information',
     },
+    { link: '#selected-locations', heading: 'Your selected locations' },
     {
       link: '#capacity-la',
       heading: 'Current capacity - care homes: local authority-level insights',
@@ -282,7 +283,7 @@ const PresentDemandPage: React.FC = () => {
         </div>
         <div className="govuk-grid-column-two-thirds">
           <div className="govuk-grid-row govuk-!-margin-bottom-9">
-            <h1 className="govuk-heading-l">Current needs and capacity</h1>
+            <h1 className="govuk-heading-l">Current population needs and capacity</h1>
             <h2 className="govuk-heading-m" id="summary">
               Introduction
             </h2>
@@ -349,7 +350,7 @@ const PresentDemandPage: React.FC = () => {
             </ul>
           </div>
           <div className="govuk-grid-row govuk-!-margin-bottom-9">
-            <h2 className="govuk-heading-m" id="settings">
+            <h2 className="govuk-heading-m" id="selected-locations">
               Your selected locations
             </h2>
             <p className="govuk-body">

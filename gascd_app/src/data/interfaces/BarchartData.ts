@@ -4,6 +4,7 @@ export interface BarchartData {
   valueTag: string;
   value: number;
   metric: string;
+  selected?: boolean;
 }
 
 export interface BarchartProps {

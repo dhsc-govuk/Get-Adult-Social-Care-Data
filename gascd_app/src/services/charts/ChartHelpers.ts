@@ -111,8 +111,6 @@ export function renderBars(
 ): void {
   const uniqueMetrics = [...new Set(data.map((d) => d.metric))];
 
-  const colorScale = getMetricColorScale(uniqueMetrics);
-
   const metricScale = d3
     .scaleBand()
     .domain(uniqueMetrics)
@@ -138,7 +136,7 @@ export function renderBars(
       const xZero = xAxisScale(0);
       return xVal !== undefined && xZero !== undefined ? xVal - xZero : 0;
     })
-    .attr('fill', (d) => colorScale(d.metric));
+    .attr('fill', (d) => d.selected ? 'red' : 'purple');
 
   barGroups.exit().remove();
 }
