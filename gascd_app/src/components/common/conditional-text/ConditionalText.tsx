@@ -95,7 +95,7 @@ const compareDriversConditionals = (
         <>
           Care homes in {locations[1]} are
           <strong> operating at {localAuthority.data_point}% occupancy,</strong>
-          which is higher than the regional overage of ({region.data_point}%).
+          which is higher than the regional average of ({region.data_point}%).
           This suggets a more limited capacity to meet population needs as the
           regional average.
         </>
@@ -106,7 +106,7 @@ const compareDriversConditionals = (
         <>
           Care homes in {locations[1]} are
           <strong> operating at {localAuthority.data_point}% occupancy,</strong>
-          which is lower than the regional overage of ({region.data_point}%).
+          which is lower than the regional average of ({region.data_point}%).
           This suggets greater capacity to meet population needs as the regional
           average.
         </>
@@ -116,7 +116,7 @@ const compareDriversConditionals = (
       <>
         Care homes in {locations[1]} are
         <strong> operating at {localAuthority.data_point}% occupancy,</strong>
-        which is in line with the regional overage of ({region.data_point}%).
+        which is in line with the regional average of ({region.data_point}%).
         This suggets a similar capacity to meet population needs as the regional
         average.
       </>
