@@ -20,7 +20,9 @@ const SmartInsights: React.FC<Props> = ({ smartInsights }) => {
 					Learn more about smart insights
 				</a>
 			</div>
-			<div>{parseMarkdownBlocks(smartInsights)}</div>
+			<div>
+				{parseMarkdownBlocks(smartInsights)}
+			</div>
 		</div>
 	);
 };
