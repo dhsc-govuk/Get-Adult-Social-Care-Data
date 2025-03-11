@@ -18,6 +18,7 @@ import PresentDemandService from '@/services/present-demand/presentDemandService
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import TableService from '@/services/Table/TableService';
+import SmartInsights from '@/components/indicator-components/SmartInsights';
 
 const TotalBedsPage: React.FC = () => {
   const router = useRouter();
@@ -254,13 +255,16 @@ const TotalBedsPage: React.FC = () => {
   };
   const contentItems = [
     {
-      link: '#definition',
-      heading: 'Indicator definition and supporting information',
+      link: "#definition",
+      heading: "Indicator definition and supporting information",
     },
-    { link: '#locations', heading: 'Your selected locations' },
-    { link: '#data', heading: 'Data' },
-    { link: '#smart-insights', heading: 'Smart insights (experimental)' },
+    { link: "#locations", heading: "Your selected locations" },
+    { link: "#data", heading: "Data" },
+    ...(session?.user.smartInsights
+      ? [{ link: "#smart-insights", heading: "Smart insights (experimental)" }]
+      : []),
   ];
+  
 
   return (
     <Suspense>
@@ -345,19 +349,10 @@ const TotalBedsPage: React.FC = () => {
               filteredBarChartData={filteredBarChartData}
               filteredLineGraphData={filteredLineGraphData}
             />
-            <h2 id="smart-insights" className="govuk-heading-m">
-              Smart insights (experimental)
-            </h2>
-            <div className="govuk-inset-text">
-              Smart insights use artificial intelligence (AI) to analyse this
-              data, highlighting trends and patterns to support your own
-              analysis. As this is experimental, verify the insights to check
-              they are appropriate and meet your needs.&nbsp;
-              <a href="/help/smart-insights" className="govuk-link">
-                Learn more about smart insights
-              </a>
-            </div>
-            <div>{parseMarkdownBlocks(smartInsights)}</div>
+            {session?.user.smartInsights? 
+              <SmartInsights smartInsights={smartInsights}/>
+              : <></>
+            }
           </div>
         </div>
       </Layout>
