@@ -1,3 +1,5 @@
+'use client';
+
 import { parseMarkdownBlocks } from "@/utils/parseMarkdown"
 
 type Props = {
