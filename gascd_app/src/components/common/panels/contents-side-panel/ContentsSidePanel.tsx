@@ -15,7 +15,7 @@ const DataCategoriesSidePanel: React.FC<DataCategoriesSidePanelProps> = ({
   return (
     <nav className="govuk-body" aria-label="Side navigation">
       <h3 className="govuk-heading-s">Contents</h3>
-      <ul className="govuk-list govuk-list--bullet">
+      <ul className="govuk-list govuk-list--bullet govuk-!-margin-3">
         {items.map((item, index) => (
           <li key={index}>
             <a
