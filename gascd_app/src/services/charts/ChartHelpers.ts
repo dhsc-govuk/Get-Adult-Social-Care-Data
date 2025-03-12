@@ -127,16 +127,34 @@ export function renderBars(
     .append('rect')
     .attr(
       'y',
-      (d) => (yAxisScale(d.valueTag) ?? 0) + (metricScale(d.metric) ?? 0)
+      (d) => (yAxisScale(d.valueTag) ?? 0) + (metricScale(d.metric) ?? 0) + 5
     )
     .attr('x', margin.left)
-    .attr('height', metricScale.bandwidth())
+    .attr('height', metricScale.bandwidth() - 10)
     .attr('width', (d) => {
       const xVal = xAxisScale(d.value);
       const xZero = xAxisScale(0);
       return xVal !== undefined && xZero !== undefined ? xVal - xZero : 0;
     })
     .attr('fill', (d) => d.selected ? 'red' : 'purple');
+
+    barEnter
+    .filter((d) => (d.selected ?? false))
+      .append('rect')
+      .attr(
+        'y',
+        (d) => (yAxisScale(d.valueTag) ?? 0) + (metricScale(d.metric) ?? 0) - 5
+      )
+      .attr('x', 1)
+      .attr('height', metricScale.bandwidth() + 10)
+      .attr('width', (d) => {
+        const xVal = xAxisScale(xAxisScale.domain()[1]);
+        const xZero = xAxisScale(0);
+        return xVal !== undefined && xZero !== undefined ? (xVal - xZero) + margin.left : 0
+      })
+      .style('fill', 'none')
+      .style('stroke', 'black')
+      .style('stroke-dasharray', '3, 3');
 
   barGroups.exit().remove();
 }
@@ -229,11 +247,13 @@ export function renderBarYAxis(
     })
     .tickSizeOuter(0);
 
-  chartSvg
-    .append('g')
-    .attr('transform', `translate(${margin.left},0)`)
-    .call(yAxis)
-    .selectAll('text');
+    chartSvg
+      .append('g')
+      .attr('transform', `translate(${margin.left},0)`)
+      .call(yAxis)
+      .selectAll('text')
+      .attr('class', 'govuk-body-s')
+      .style('text-anchor', 'end');
 }
 
 export function renderYAxis(
@@ -270,7 +290,7 @@ export function renderLabels(
   chartSvg
     .append('text')
     .attr('transform', `translate(${width / 2},${height - margin.bottom / 4})`)
-    .style('text-anchor', 'middle')
+    .style('text-anchor', 'start')
     .text(xLabel)
     .attr('class', 'x-axis-label');
 
@@ -279,7 +299,7 @@ export function renderLabels(
     .attr('transform', 'rotate(-90)')
     .attr('x', -(height - margin.bottom) / 2)
     .attr('y', margin.left / 4)
-    .style('text-anchor', 'middle')
+    .style('text-anchor', 'start')
     .text(yLabel)
     .attr('class', 'y-axis-label');
 
@@ -287,7 +307,7 @@ export function renderLabels(
     .append('text')
     .attr('x', width / 2)
     .attr('y', margin.top / 2)
-    .style('text-anchor', 'middle')
+    .style('text-anchor', 'start')
     .style('font-size', '16px')
     .style('font-weight', 'bold')
     .text(title)
@@ -393,9 +413,9 @@ export function renderLineLegend(
 ): void {
   const legendGroup = chartSvg
     .append('g')
-    .attr('transform', `translate(${margin.left - 40}, ${margin.top - 60})`);
+    .attr('transform', `translate(${margin.left - 100}, ${margin.top - 60})`);
 
-  const spacing = 20;
+  const spacing = 50;
   const maxItemsPerRow = 1;
   const rowHeight = 25;
 
@@ -413,13 +433,13 @@ export function renderLineLegend(
 
   legendItems
     .append('rect')
-    .attr('width', size * 5)
+    .attr('width', width)
     .attr('height', size)
     .attr('fill', (d) => d.colour);
 
   legendItems
     .append('text')
-    .attr('x', size + 20)
+    .attr('x', size + spacing)
     .attr('y', size / 2)
     .attr('dy', '0.35em')
     .style('font-size', '14px')
