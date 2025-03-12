@@ -38,12 +38,10 @@ const compareDriversConditionals = (
       : null;
 
   if (!localAuthority || !region || !country) {
-    console.warn('Missing data');
     return 'Loading...';
   }
 
   if (section === 'CapacityCareProvider' && !careProvider) {
-    console.warn('Missing careProvider data');
     return 'Loading...';
   }
 

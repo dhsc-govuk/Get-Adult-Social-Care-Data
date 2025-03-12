@@ -305,7 +305,9 @@ const PresentDemandPage: React.FC = () => {
         </div>
         <div className="govuk-grid-column-two-thirds">
           <div className="govuk-grid-row govuk-!-margin-bottom-9">
-            <h1 className="govuk-heading-l">Current population needs and capacity</h1>
+            <h1 className="govuk-heading-l">
+              Current population needs and capacity
+            </h1>
             <h2 className="govuk-heading-m" id="summary">
               Introduction
             </h2>
@@ -414,9 +416,9 @@ const PresentDemandPage: React.FC = () => {
               metric_Id="perc_65over"
             ></ConditionalText>
           </div>
-          <h3 className="govuk-heading-m govuk-!-margin-bottom-9">
+          <h2 className="govuk-heading-m govuk-!-margin-bottom-9">
             Explore the data: demographic factors
-          </h3>
+          </h2>
           <DataTable
             columnHeaders={locationNames}
             rowHeaders={demographicRowHeaders}
@@ -436,9 +438,9 @@ const PresentDemandPage: React.FC = () => {
           </p>
 
           <div className="govuk-grid-row govuk-!-margin-bottom-9">
-            <h2 className="govuk-heading-l" id="capacity-la">
+            <h1 className="govuk-heading-l" id="capacity-la">
               Current capacity - care homes: local authority-level insights
-            </h2>
+            </h1>
             <p className="govuk-body">
               The number of adult social care beds per 100,000 adult population
               provides an indicator of current care capacity. A higher number
@@ -469,10 +471,10 @@ const PresentDemandPage: React.FC = () => {
               locations={locationNames}
               metric_Id="median_occupancy_total"
             ></ConditionalText>
-            <h3 className="govuk-heading-m">
+            <h2 className="govuk-heading-m">
               Explore the data: adult social care beds per 100,000 adult
               population and occupancy
-            </h3>
+            </h2>
             <p className="govuk-body">
               {' '}
               You can filter this data by type of beds
@@ -541,9 +543,9 @@ const PresentDemandPage: React.FC = () => {
                 rounding and suppression of data, see indicator definition and
                 supporting information.
               </p>
-              <h3 className="govuk-heading-m">
+              <h2 className="govuk-heading-m">
                 Explore the data: care providers in {locationNames[1]}
-              </h3>
+              </h2>
               <DataTable
                 columnHeaders={locationNamesCP}
                 rowHeaders={careProviderRowHeaders}
