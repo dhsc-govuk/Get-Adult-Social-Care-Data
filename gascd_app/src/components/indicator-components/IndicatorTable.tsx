@@ -335,7 +335,12 @@ const IndicatorTable: React.FC<Props> = ({
                   </ul>
                 </td>
                 <td className="govuk-table__cell">
-                  <a href="/metric/total-beds/table-filters">Change</a>
+                  <a
+                    href="/metric/total-beds/table-filters"
+                    className="govuk-link"
+                  >
+                    Change
+                  </a>
                 </td>
               </tr>
             </tbody>
