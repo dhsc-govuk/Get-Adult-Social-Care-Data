@@ -2,6 +2,7 @@ import { Indicator } from '@/data/interfaces/Indicator';
 import { Location } from '@/data/interfaces/Location';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
+import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 
 class IndicatorFetchService {
   public static async getLocations(query: IndicatorQuery): Promise<Location[]> {
@@ -42,8 +43,13 @@ class IndicatorFetchService {
 
   public static async getFilters(metric_id: string) {
     const response = await fetch('/api/get_all_total_beds_filters');
-    return response.json();
+    const data = await response.json();
+
+    return data.sort((a: TotalBedsFilters, b: TotalBedsFilters) =>
+      a.filter_bedtype.localeCompare(b.filter_bedtype)
+    );
   }
+
   public static async getData(query: IndicatorQuery): Promise<Indicator[]> {
     const response = await fetch('/api/get_metric_data', {
       method: 'POST',
