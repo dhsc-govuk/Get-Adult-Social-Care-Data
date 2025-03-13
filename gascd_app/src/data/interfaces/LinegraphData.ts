@@ -27,6 +27,6 @@ export interface LinegraphProps {
   tickCount?: number;
   yAxisAsPercentage?: boolean;
   colourMap?: Map<string, string>;
-  groupedData: Map<string, { metric_name: string; data: LinegraphData[] }>;
+  groupedData: Map<string, { metric_id: string, metric_name: string; data: LinegraphData[] }>;
   labels?: Array<Locations>;
 }
