@@ -152,6 +152,7 @@ const PresentDemandPage: React.FC = () => {
             CPLocationId,
             true
           );
+          console.log(locationNames);
           setLocationNames(locationNames);
           setLocationNamesCP(locationNamesCP);
         } catch (error) {
@@ -234,6 +235,7 @@ const PresentDemandPage: React.FC = () => {
           await IndicatorFetchService.getData(demographicQuery);
         const filteredDemographicData =
           TableService.filterDate(demographicData);
+        console.log(filteredDemographicData);
         setFilteredDemographicData(filteredDemographicData);
         setDemographicDataSource(
           await PresentDemandService.getDataSource(demographicQuery)

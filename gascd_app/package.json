@@ -25,6 +25,7 @@
     "axios": "^1.7.5",
     "d3": "^7.9.0",
     "govuk-frontend": "^5.7.1",
+    "jest-fixed-jsdom": "^0.0.9",
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.1.0",
     "mssql": "^11.0.1",
