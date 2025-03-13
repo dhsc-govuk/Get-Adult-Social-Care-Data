@@ -47,9 +47,9 @@ export function generateBarchartSvg({
 
   const dynamicMargin = {
     top: height * 0.05,
-    right: width * 0.1,
+    right: width * 0.05,
     bottom: showXValues ? height * 0.05 : height * 0.03,
-    left: width * 0.3,
+    left: width * 0.35,
   };
 
   const svgElement = document.createElementNS(
