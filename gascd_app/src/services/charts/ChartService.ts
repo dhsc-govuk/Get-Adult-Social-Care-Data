@@ -46,10 +46,10 @@ export function generateBarchartSvg({
   if (!data.length) return null;
 
   const dynamicMargin = {
-    top: height * 0.1,
-    right: width * 0.1,
-    bottom: showXValues ? height * 0.05 : height * 0.05,
-    left: width * 0.2,
+    top: height * 0.05,
+    right: width * 0.05,
+    bottom: showXValues ? height * 0.05 : height * 0.03,
+    left: width * 0.35,
   };
 
   const svgElement = document.createElementNS(
@@ -159,7 +159,7 @@ export function generateLineGraphSvg({
   const chartSvg = initializeSvg(ref, width, height);
 
   if (showLegend) {
-    renderLineLegend(chartSvg, legendEntries, 2, width, {
+    renderLineLegend(chartSvg, legendEntries, 5, 45, {
       top: height * 0.1,
       right: width * 0.1,
       bottom: showXValues ? height * 0.2 : height * 0.1,
