@@ -151,8 +151,8 @@ export function generateLineGraphSvg({
   const dynamicMargin = {
     top: height * 0.1 + legendHeight,
     right: width * 0.1,
-    bottom: height * 0.1,
-    left: width * 0.2,
+    bottom: height * 0.05,
+    left: width * 0.1,
   };
 
   const adjustedChartHeight = height - legendHeight;
