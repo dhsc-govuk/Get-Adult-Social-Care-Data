@@ -192,6 +192,7 @@ const TotalBedsPage: React.FC = () => {
           setChartIndicatorQuery({
             metric_ids: bCMetrics,
             location_ids: locationids,
+            most_recent: true
           });
 
           setLineGraphIndicatorQuery({
