@@ -73,7 +73,11 @@ const TotalBedsFiltersPage: React.FC = () => {
           <p className="govuk-body">
             Select the filter to refine the data displayed.
           </p>
-          <FiltersList filters={filters} onChange={handleRadioChange} />
+          <FiltersList
+            filters={filters}
+            onChange={handleRadioChange}
+            useCheckboxes={false}
+          />
           <Link href="/metric/total-beds#chart" onClick={handleSubmit}>
             <button type="button" className="govuk-button">
               Apply changes

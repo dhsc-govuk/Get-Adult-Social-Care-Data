@@ -3,16 +3,47 @@ import React from 'react';
 
 type Props = {
   filters: TotalBedsFilters[];
-  onChange: (index: number) => void;
+  onChange: (index: number, checked?: boolean) => void;
+  useCheckboxes: boolean;
 };
 
-const FiltersList: React.FC<Props> = ({ filters, onChange }) => {
-  return (
+const FiltersList: React.FC<Props> = ({ filters, onChange, useCheckboxes }) => {
+  return useCheckboxes ? (
     <div className="govuk-form-group">
       <fieldset className="govuk-fieldset" aria-describedby="metric-hint">
         <legend className="govuk-fieldset__legend govuk-fieldset__legend--m">
           <h1 className="govuk-fieldset__heading">Filters</h1>
         </legend>
+        <div className="govuk-checkboxes" data-module="govuk-checkboxes">
+          {filters.map((filter, index) => (
+            <div key={index} className="govuk-checkboxes__item">
+              <input
+                className="govuk-checkboxes__input"
+                id={`filter-${index}`}
+                name="time-series-metric"
+                type="checkbox"
+                value={filter.metric_id}
+                checked={filter.checked}
+                onChange={(e) => onChange(index, e.target.checked)}
+              />
+              <label
+                className="govuk-label govuk-checkboxes__label"
+                htmlFor={`filter-${index}`}
+              >
+                {filter.filter_bedtype}
+              </label>
+            </div>
+          ))}
+        </div>
+      </fieldset>
+    </div>
+  ) : (
+    <div className="govuk-form-group">
+      <fieldset className="govuk-fieldset" aria-describedby="metric-hint">
+        <legend className="govuk-fieldset__legend govuk-fieldset__legend--m">
+          <h1 className="govuk-fieldset__heading">Filters</h1>
+        </legend>
+
         {filters.length > 0 ? (
           <div className="govuk-radios" data-module="govuk-radios">
             {filters.map((filter, index) => (
