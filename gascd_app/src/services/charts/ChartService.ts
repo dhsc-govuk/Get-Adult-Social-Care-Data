@@ -122,7 +122,7 @@ export function generateLineGraphSvg({
   colourMap = new Map(),
   groupedData = new Map<
     string,
-    { metric_name: string; data: LinegraphData[] }
+    { metric_id: string, metric_name: string; data: LinegraphData[] }
   >(),
   labels = [],
 }: LinegraphProps): SVGSVGElement | null {
@@ -138,21 +138,21 @@ export function generateLineGraphSvg({
   let legendEntries: { label: string; colour: string }[] = [];
 
   if (showLegend) {
-    legendEntries = Array.from(groupedData.values()).map(({ metric_name }) => ({
+    legendEntries = Array.from(groupedData.values()).map(({ metric_id, metric_name }) => ({
       label: shortenLabels ? truncateLabels(metric_name, 16) : metric_name,
-      colour: colourMap.get(metric_name) ?? '#800080',
+      colour: colourMap.get(metric_id) ?? '#800080',
     }));
 
     const maxItemsPerRow = Math.floor((width - 40) / 150);
     const legendRowCount = Math.ceil(legendEntries.length / maxItemsPerRow);
-    legendHeight = legendRowCount * 25 + 40;
+    legendHeight = legendRowCount * 40;
   }
 
   const dynamicMargin = {
     top: height * 0.1 + legendHeight,
     right: width * 0.1,
-    bottom: showXValues ? height * 0.2 : height * 0.1,
-    left: width * 0.2,
+    bottom: height * 0.05,
+    left: width * 0.1,
   };
 
   const adjustedChartHeight = height - legendHeight;
@@ -160,7 +160,7 @@ export function generateLineGraphSvg({
 
   if (showLegend) {
     renderLineLegend(chartSvg, legendEntries, 5, 45, {
-      top: height * 0.1,
+      top: height * 0.1 + 10,
       right: width * 0.1,
       bottom: showXValues ? height * 0.2 : height * 0.1,
       left: width * 0.2,
@@ -180,13 +180,13 @@ export function generateLineGraphSvg({
   const defaultLineColor = '#800080';
   const strokeWidth = 3;
 
-  for (const { metric_name, data } of groupedData.values()) {
+  for (const { metric_id, metric_name, data } of groupedData.values()) {
     renderLine(
       chartSvg,
       data,
       xAxisScale,
       yAxisScale,
-      colourMap.get(metric_name) ?? defaultLineColor,
+      colourMap.get(metric_id) ?? defaultLineColor,
       strokeWidth,
       metric_name
     );

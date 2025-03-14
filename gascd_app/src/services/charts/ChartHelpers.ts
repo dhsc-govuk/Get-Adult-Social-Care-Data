@@ -208,7 +208,8 @@ export function renderLineXAxis(
         })
         .tickSize(0)
     )
-    .attr('class', 'x-axis');
+    .attr('class', 'x-axis')
+    .attr('class', 'govuk-body-s');
 
   xAxisGroup
     .selectAll('text')
@@ -275,7 +276,8 @@ export function renderYAxis(
     .append('g')
     .attr('transform', `translate(${margin.left},0)`)
     .call(yAxis)
-    .selectAll('text');
+    .selectAll('text')
+    .attr('class', 'govuk-body-s');
 }
 
 export function renderLabels(
@@ -442,7 +444,6 @@ export function renderLineLegend(
     .attr('x', size + spacing)
     .attr('y', size / 2)
     .attr('dy', '0.35em')
-    .style('font-size', '14px')
     .text((d) => d.label);
 }
 
