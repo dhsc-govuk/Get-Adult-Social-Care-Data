@@ -58,7 +58,7 @@ const TotalBedsFiltersPage: React.FC = () => {
             Select filters to refine the data displayed.
           </p>
           <div className="govuk-form-group">
-            <fieldset className="govuk-fieldset" aria-describedby="waste-hint">
+            <fieldset className="govuk-fieldset" aria-describedby="metric-hint">
               <legend className="govuk-fieldset__legend govuk-fieldset__legend--m">
                 <h1 className="govuk-fieldset__heading">Filters</h1>
               </legend>
@@ -67,8 +67,8 @@ const TotalBedsFiltersPage: React.FC = () => {
                   <div key={index} className="govuk-checkboxes__item">
                     <input
                       className="govuk-checkboxes__input"
-                      id={`waste-${index}`}
-                      name="waste"
+                      id={`filter-${index}`}
+                      name="time-series-metric"
                       type="checkbox"
                       value={filter.metric_id}
                       checked={filter.checked}
