@@ -6,6 +6,7 @@ import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import Layout from '@/components/common/layout/Layout';
 import { useRouter } from 'next/navigation';
+import FiltersList from '@/components/indicator-components/Filters';
 
 const TotalBedsFiltersPage: React.FC = () => {
   const router = useRouter();
@@ -72,38 +73,11 @@ const TotalBedsFiltersPage: React.FC = () => {
           <p className="govuk-body">
             Select the filter to refine the data displayed.
           </p>
-          <div className="govuk-form-group">
-            <fieldset className="govuk-fieldset" aria-describedby="metric-hint">
-              <legend className="govuk-fieldset__legend govuk-fieldset__legend--m">
-                <h1 className="govuk-fieldset__heading">Filters</h1>
-              </legend>
-              {filters.length > 0 ? (
-                <div className="govuk-radios" data-module="govuk-radios">
-                  {filters.map((filter, index) => (
-                    <div key={index} className="govuk-radios__item">
-                      <input
-                        className="govuk-radios__input"
-                        id={`filter-${index}`}
-                        name="chart-metric"
-                        type="radio"
-                        value={filter.metric_id}
-                        checked={filter.checked}
-                        onChange={() => handleRadioChange(index)}
-                      />
-                      <label
-                        className="govuk-label govuk-radios__label"
-                        htmlFor={`filter-${index}`}
-                      >
-                        {filter.filter_bedtype}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="govuk-body">Loading filters...</p>
-              )}
-            </fieldset>
-          </div>
+          <FiltersList
+            filters={filters}
+            onChange={handleRadioChange}
+            useCheckboxes={false}
+          />
           <Link href="/metric/total-beds#chart" onClick={handleSubmit}>
             <button type="button" className="govuk-button">
               Apply changes

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import Layout from '@/components/common/layout/Layout';
+import Filters from '@/components/indicator-components/Filters';
 
 const TotalBedsFiltersPage: React.FC = () => {
   const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
@@ -18,7 +19,7 @@ const TotalBedsFiltersPage: React.FC = () => {
     getFilters();
   }, []);
 
-  const handleCheckboxChange = (index: number, checked: boolean) => {
+  const handleCheckboxChange = (index: number, checked?: boolean) => {
     const newFilters = [...filters];
     newFilters[index].checked = checked;
     setFilters(newFilters);
@@ -57,36 +58,11 @@ const TotalBedsFiltersPage: React.FC = () => {
           <p className="govuk-body">
             Select filters to refine the data displayed.
           </p>
-          <div className="govuk-form-group">
-            <fieldset className="govuk-fieldset" aria-describedby="waste-hint">
-              <legend className="govuk-fieldset__legend govuk-fieldset__legend--m">
-                <h1 className="govuk-fieldset__heading">Filters</h1>
-              </legend>
-              <div className="govuk-checkboxes" data-module="govuk-checkboxes">
-                {filters.map((filter, index) => (
-                  <div key={index} className="govuk-checkboxes__item">
-                    <input
-                      className="govuk-checkboxes__input"
-                      id={`waste-${index}`}
-                      name="waste"
-                      type="checkbox"
-                      value={filter.metric_id}
-                      checked={filter.checked}
-                      onChange={(e) =>
-                        handleCheckboxChange(index, e.target.checked)
-                      }
-                    />
-                    <label
-                      className="govuk-label govuk-checkboxes__label"
-                      htmlFor={`waste-${index}`}
-                    >
-                      {filter.filter_bedtype}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </fieldset>
-          </div>
+          <Filters
+            filters={filters}
+            onChange={handleCheckboxChange}
+            useCheckboxes={true}
+          />
           <Link href="/metric/total-beds#time-series" onClick={handleSubmit}>
             <button type="button" className="govuk-button">
               Apply changes
