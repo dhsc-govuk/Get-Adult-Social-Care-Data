@@ -14,27 +14,31 @@ const FiltersList: React.FC<Props> = ({ filters, onChange, useCheckboxes }) => {
         <legend className="govuk-fieldset__legend govuk-fieldset__legend--m">
           <h1 className="govuk-fieldset__heading">Filters</h1>
         </legend>
-        <div className="govuk-checkboxes" data-module="govuk-checkboxes">
-          {filters.map((filter, index) => (
-            <div key={index} className="govuk-checkboxes__item">
-              <input
-                className="govuk-checkboxes__input"
-                id={`filter-${index}`}
-                name="time-series-metric"
-                type="checkbox"
-                value={filter.metric_id}
-                checked={filter.checked}
-                onChange={(e) => onChange(index, e.target.checked)}
-              />
-              <label
-                className="govuk-label govuk-checkboxes__label"
-                htmlFor={`filter-${index}`}
-              >
-                {filter.filter_bedtype}
-              </label>
-            </div>
-          ))}
-        </div>
+        {filters.length > 0 ? (
+          <div className="govuk-checkboxes" data-module="govuk-checkboxes">
+            {filters.map((filter, index) => (
+              <div key={index} className="govuk-checkboxes__item">
+                <input
+                  className="govuk-checkboxes__input"
+                  id={`filter-${index}`}
+                  name="time-series-metric"
+                  type="checkbox"
+                  value={filter.metric_id}
+                  checked={filter.checked}
+                  onChange={(e) => onChange(index, e.target.checked)}
+                />
+                <label
+                  className="govuk-label govuk-checkboxes__label"
+                  htmlFor={`filter-${index}`}
+                >
+                  {filter.filter_bedtype}
+                </label>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="govuk-body">Loading filters...</p>
+        )}
       </fieldset>
     </div>
   ) : (

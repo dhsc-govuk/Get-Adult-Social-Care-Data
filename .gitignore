@@ -148,3 +148,6 @@ next-env.d.ts
 
 #Test files
 junit.xml
+
+#Test coverage reports
+coverage
