@@ -1,7 +1,7 @@
 import { Config } from 'jest';
 
 const config: Config = {
-  testEnvironment: 'jsdom',
+  testEnvironment: 'jest-fixed-jsdom',
   testMatch: ['<rootDir>/__tests__/**/*.(test|spec).(ts|tsx)'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   transform: {
