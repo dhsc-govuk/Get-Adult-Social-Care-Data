@@ -146,8 +146,9 @@ class QueryBuilderService {
           SELECT * FROM RestrictedMetricsAccess
           UNION ALL
           SELECT * FROM PublicMetrics
-      )
-      SELECT [metric_id]
+      ),
+      AllMetrics AS (
+          SELECT [metric_id]
             ,[metric_date_type]
             ,[metric_date]
             ,[location_type]
@@ -157,8 +158,22 @@ class QueryBuilderService {
             ,[multiplier]
             ,[data_point]
             ,[load_date_time]
-      FROM CombinedMetrics`,
+      FROM CombinedMetrics)`,
     ];
+
+    if(query.most_recent){
+      queryParts.push(`,
+        MostRecent AS (SELECT *
+          ,ROW_NUMBER() OVER (PARTITION BY location_id ORDER BY CONVERT(DATE, metric_date, 103) DESC) AS date_order
+          FROM AllMetrics
+        )
+        SELECT * FROM MostRecent WHERE date_order = 1`
+      );
+    }else{
+      queryParts.push(`
+        SELECT * FROM AllMetrics`
+      );
+    }
 
     request.input('user_location_type', userLocationType);
     request.input('user_location_id', userLocationId);
