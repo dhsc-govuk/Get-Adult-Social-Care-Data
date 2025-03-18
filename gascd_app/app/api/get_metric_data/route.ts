@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectToDB } from '../../../src/data/dbModule';
 import { Indicator } from '@/data/interfaces/Indicator';
 import QueryBuilderService from '@/services/query-builder/QueryBuilderService';
-import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/authOptions';
 
