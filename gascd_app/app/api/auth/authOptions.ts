@@ -15,6 +15,7 @@ declare module 'next-auth' {
   interface Profile {
     extension_Location_Type?: string;
     extension_Location_ID?: string;
+    extension_Smart_Insights?: boolean
   }
 }
 
@@ -26,6 +27,7 @@ declare module 'next-auth/jwt' {
     locationId?: string;
     accessToken?: string;
     refreshToken?: string;
+    smartInsight?: boolean;
   }
 }
 
@@ -70,6 +72,7 @@ export const authOptions: NextAuthOptions = {
         token.idToken = account.id_token as string;
         token.locationType = profile['extension_Location_Type'] as string;
         token.locationId = profile['extension_Location_ID'] as string;
+        token.smartInsight = profile['extension_Smart_Insights'] as boolean || false;
         token.accessToken = account.access_token as string;
         token.refreshToken = account.refresh_token;
       }
@@ -79,7 +82,7 @@ export const authOptions: NextAuthOptions = {
       session.idToken = token.idToken as string;
       session.user.locationType = token.locationType as string;
       session.user.locationId = token.locationId as string;
-      session.user.smartInsights = token.smartInsights ? false : true;
+      session.user.smartInsights = token.smartInsight;
       session.accessToken = token.accessToken as string;
       session.refreshToken = token.refreshToken;
       return session;

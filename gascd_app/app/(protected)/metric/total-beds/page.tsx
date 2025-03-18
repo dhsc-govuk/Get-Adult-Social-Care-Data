@@ -103,10 +103,14 @@ const TotalBedsPage: React.FC = () => {
             LineGraphIndicatorQuery.location_ids[0]
           )
         );
-        const insights: string[] = await SmartInsightsFetchService.getData(
-          smartInsightsIndicatorQuery
-        );
-        setSmartInsights(insights);
+
+        if(session?.user.smartInsights){
+          const insights: string[] = await SmartInsightsFetchService.getData(
+            smartInsightsIndicatorQuery
+          );
+          setSmartInsights(insights);
+        }
+
       };
       fetchData();
     }
