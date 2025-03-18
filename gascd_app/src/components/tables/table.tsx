@@ -1,6 +1,6 @@
 import React from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
-import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
+import { MetaData } from '@/data/interfaces/MetaData';
 
 type DataTableProps = {
   columnHeaders: string[];
@@ -8,7 +8,7 @@ type DataTableProps = {
   data: Indicator[];
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
-  percentageRows?: IndicatorDisplay[];
+  percentageRows?: MetaData[];
 };
 
 const getCareProviderKey = (

@@ -1,6 +1,7 @@
 import { Indicator } from '@/data/interfaces/Indicator';
 import { Location } from '@/data/interfaces/Location';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
+import { MetaData } from '@/data/interfaces/MetaData';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 
 class IndicatorFetchService {
@@ -59,9 +60,7 @@ class IndicatorFetchService {
     return response.json();
   }
 
-  public static async getMetadateByType(
-    query: string
-  ): Promise<IndicatorDisplay[]> {
+  public static async getMetadateByType(query: string): Promise<MetaData[]> {
     const response = await fetch(
       `api/get_metadata_by_data_types?metric_data_type=${query}`
     );

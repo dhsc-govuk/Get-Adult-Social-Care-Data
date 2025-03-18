@@ -181,6 +181,105 @@ export const mockTableData = [
   },
 ];
 
+export const mockTableDataWithCareProvider = [
+  {
+    metric_id: 'occupancy_rate_total',
+    metric_date_type: 'Test',
+    metric_date: new Date('01/01/2025') as Date,
+    location_type: 'National',
+    location_id: 'test',
+    numerator: 50,
+    denominator: 50,
+    multiplier: 100,
+    data_point: 1000001,
+    load_date_time: new Date('2025-03-02T20:12:22.550Z') as Date,
+  },
+  {
+    metric_id: 'bedcount_total',
+    metric_date_type: 'Test',
+    metric_date: new Date('01/01/2025') as Date,
+    location_type: 'National',
+    location_id: 'test',
+    numerator: 50,
+    denominator: 50,
+    multiplier: 100,
+    data_point: 1000002,
+    load_date_time: new Date('2025-03-02T20:12:22.550Z') as Date,
+  },
+  {
+    metric_id: 'median_occupancy_total',
+    metric_date_type: 'Test',
+    metric_date: new Date('01/01/2025') as Date,
+    location_type: 'National',
+    location_id: 'test',
+    numerator: 50,
+    denominator: 50,
+    multiplier: 100,
+    data_point: 1000003,
+    load_date_time: new Date('2025-03-02T20:12:22.550Z') as Date,
+  },
+  {
+    metric_id: 'median_bed_count_total',
+    metric_date_type: 'Test',
+    metric_date: new Date('01/01/2025') as Date,
+    location_type: 'National',
+    location_id: 'test',
+    numerator: 50,
+    denominator: 50,
+    multiplier: 100,
+    data_point: 1000004,
+    load_date_time: new Date('2025-03-02T20:12:22.550Z') as Date,
+  },
+  {
+    metric_id: 'median_bed_count_total',
+    metric_date_type: 'Percentage',
+    metric_date: new Date('01/01/2025') as Date,
+    location_type: 'National',
+    location_id: 'test',
+    numerator: 50,
+    denominator: 50,
+    multiplier: 100,
+    data_point: 1000005,
+    load_date_time: new Date('2025-03-02T20:12:22.550Z') as Date,
+  },
+  {
+    metric_id: 'median_occupancy_total',
+    metric_date_type: 'Percentage',
+    metric_date: new Date('01/01/2025') as Date,
+    location_type: 'National',
+    location_id: 'test',
+    numerator: 50,
+    denominator: 50,
+    multiplier: 100,
+    data_point: 1000006,
+    load_date_time: new Date('2025-03-02T20:12:22.550Z') as Date,
+  },
+  {
+    metric_id: 'median_occupancy_total',
+    metric_date_type: 'Test',
+    metric_date: new Date('01/01/2025') as Date,
+    location_type: 'National',
+    location_id: 'test',
+    numerator: 50,
+    denominator: 50,
+    multiplier: 100,
+    data_point: 1000007,
+    load_date_time: new Date('2025-03-02T20:12:22.550Z') as Date,
+  },
+  {
+    metric_id: 'median_bed_count_total',
+    metric_date_type: 'Test',
+    metric_date: new Date('01/01/2025') as Date,
+    location_type: 'National',
+    location_id: 'test',
+    numerator: 50,
+    denominator: 50,
+    multiplier: 100,
+    data_point: 1000008,
+    load_date_time: new Date('2025-03-02T20:12:22.550Z') as Date,
+  },
+];
+
 export const mockTableRowHeaders = {
   total_population: 'Population',
   perc_18_64: 'Aged 18-65',
@@ -194,4 +293,42 @@ export const mockTableColumnHeaders = [
   'Northumberland',
   'North East',
   'England',
+];
+
+export const mockTableColumnHeadersCareProvider = [
+  'Filter',
+  'Birkinshaw Manor',
+  'Northumberland',
+  'North East',
+  'England',
+];
+
+export const mockTableRowHeadersCareProvider = {
+  median_bed_count_total: 'Beds in care provider location',
+  median_occupancy_total: 'Percentage of beds occupied',
+};
+
+export const mockCareProviderMedianMetrics: Record<string, string> = {
+  median_bed_count_total: 'bedcount_total',
+  median_occupancy_total: 'occupancy_rate_total',
+};
+export const percentageMetricMock = [
+  {
+    group_id: 'perc_65over',
+    metric_id: 'perc_65over',
+    group_name: 'Test',
+    description: 'Test',
+    numerator_description: 'Test',
+    denominator_description: 'Test',
+    data_source: 'Test',
+    filter_bedtype: 'Test',
+    metric_data_type: 'Percentage',
+    methodology: 'Test',
+    limitations: 'Test',
+    access_category: 'Test',
+    metric_type: 'Metric',
+    is_live: '1',
+    deep_dive: '0',
+    load_date_time: new Date('2025-03-02T20:12:22.550Z') as Date,
+  },
 ];
