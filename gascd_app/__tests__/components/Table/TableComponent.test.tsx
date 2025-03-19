@@ -39,7 +39,7 @@ describe('Table component tests', () => {
       });
     });
   });
-  test('Displays the row headers correctly in the DataTable component', async () => {
+  test('Displays the row and column headers correctly in the DataTable component', async () => {
     jest
       .spyOn(IndicatorFetchService, 'getData')
       .mockResolvedValue(mockTableData);
@@ -54,8 +54,14 @@ describe('Table component tests', () => {
     );
 
     await waitFor(() => {
-      mockTableData.forEach((item) => {
-        expect(screen.getByText(item.data_point)).toBeInTheDocument();
+      mockTableColumnHeaders.forEach((item) => {
+        expect(screen.getByText(item)).toBeInTheDocument();
+      });
+
+      Object.values(mockTableRowHeaders).forEach((value) => {
+        if (typeof value === 'string') {
+          expect(screen.getByText(value)).toBeInTheDocument();
+        }
       });
     });
   });
