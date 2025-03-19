@@ -102,6 +102,7 @@ describe('Table component tests', () => {
         data={mockTableDataWithCareProvider}
         careProviderMedianMetrics={mockCareProviderMedianMetrics}
         showCareProvider={true}
+        percentageRows={percentageMetricMock}
       ></DataTable>
     );
     await waitFor(() => {
