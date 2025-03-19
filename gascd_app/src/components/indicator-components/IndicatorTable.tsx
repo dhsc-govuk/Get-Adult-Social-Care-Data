@@ -1,14 +1,9 @@
 import { BarchartData } from '@/data/interfaces/BarchartData';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
-import { downloadCSV } from '@/helpers/downloadToCsvHelpers';
-import { line } from 'd3';
 import React, { RefObject, useEffect, useState } from 'react';
-import MetricTable from '../metric-components/metric-table/MetricTable';
 import DataTable from '../tables/table';
-import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import DownloadTableDataCSVLink from '../metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { Indicator } from '@/data/interfaces/Indicator';
-import { useSession } from 'next-auth/react';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
