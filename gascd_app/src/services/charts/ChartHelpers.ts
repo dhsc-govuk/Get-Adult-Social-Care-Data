@@ -136,25 +136,27 @@ export function renderBars(
       const xZero = xAxisScale(0);
       return xVal !== undefined && xZero !== undefined ? xVal - xZero : 0;
     })
-    .attr('fill', (d) => d.selected ? 'red' : 'purple');
+    .attr('fill', (d) => (d.selected ? 'red' : 'purple'));
 
-    barEnter
-    .filter((d) => (d.selected ?? false))
-      .append('rect')
-      .attr(
-        'y',
-        (d) => (yAxisScale(d.valueTag) ?? 0) + (metricScale(d.metric) ?? 0) - 5
-      )
-      .attr('x', 1)
-      .attr('height', metricScale.bandwidth() + 10)
-      .attr('width', (d) => {
-        const xVal = xAxisScale(xAxisScale.domain()[1]);
-        const xZero = xAxisScale(0);
-        return xVal !== undefined && xZero !== undefined ? (xVal - xZero) + margin.left : 0
-      })
-      .style('fill', 'none')
-      .style('stroke', 'black')
-      .style('stroke-dasharray', '3, 3');
+  barEnter
+    .filter((d) => d.selected ?? false)
+    .append('rect')
+    .attr(
+      'y',
+      (d) => (yAxisScale(d.valueTag) ?? 0) + (metricScale(d.metric) ?? 0) - 5
+    )
+    .attr('x', 1)
+    .attr('height', metricScale.bandwidth() + 10)
+    .attr('width', (d) => {
+      const xVal = xAxisScale(xAxisScale.domain()[1]);
+      const xZero = xAxisScale(0);
+      return xVal !== undefined && xZero !== undefined
+        ? xVal - xZero + margin.left
+        : 0;
+    })
+    .style('fill', 'none')
+    .style('stroke', 'black')
+    .style('stroke-dasharray', '3, 3');
 
   barGroups.exit().remove();
 }
@@ -248,13 +250,13 @@ export function renderBarYAxis(
     })
     .tickSizeOuter(0);
 
-    chartSvg
-      .append('g')
-      .attr('transform', `translate(${margin.left},0)`)
-      .call(yAxis)
-      .selectAll('text')
-      .attr('class', 'govuk-body-s')
-      .style('text-anchor', 'end');
+  chartSvg
+    .append('g')
+    .attr('transform', `translate(${margin.left},0)`)
+    .call(yAxis)
+    .selectAll('text')
+    .attr('class', 'govuk-body-s')
+    .style('text-anchor', 'end');
 }
 
 export function renderYAxis(

@@ -128,14 +128,17 @@ class IndicatorService {
     };
   }
 
-  private transformToChartData(data: Indicator[], selected_location_id : string): BarchartData[] {
+  private transformToChartData(
+    data: Indicator[],
+    selected_location_id: string
+  ): BarchartData[] {
     return data
       .filter((d) => d.data_point !== null)
       .map((entry: Indicator) => ({
         valueTag: entry.location_id,
         metric: entry.metric_id,
         value: entry.data_point,
-        selected: entry.location_id == selected_location_id ? true : false
+        selected: entry.location_id == selected_location_id ? true : false,
       }))
       .sort((a, b) => a.value - b.value);
   }
@@ -143,7 +146,10 @@ class IndicatorService {
   private groupByMetricId(
     data: LinegraphData[],
     lineGraphDisplayData: IndicatorDisplay[]
-  ): Map<string, { metric_id: string, metric_name: string; data: LinegraphData[] }> {
+  ): Map<
+    string,
+    { metric_id: string; metric_name: string; data: LinegraphData[] }
+  > {
     const metricLookup = new Map(
       lineGraphDisplayData.map((entry) => [
         entry.metric_id,
@@ -155,12 +161,16 @@ class IndicatorService {
       const metricName = metricLookup.get(entry.metric) || 'Unknown Metric';
 
       if (!map.has(entry.metric)) {
-        map.set(entry.metric, { metric_id: entry.metric, metric_name: metricName, data: [] });
+        map.set(entry.metric, {
+          metric_id: entry.metric,
+          metric_name: metricName,
+          data: [],
+        });
       }
 
       map.get(entry.metric)?.data.push(entry);
       return map;
-    }, new Map<string, { metric_id: string, metric_name: string; data: LinegraphData[] }>());
+    }, new Map<string, { metric_id: string; metric_name: string; data: LinegraphData[] }>());
 
     return groupedData;
   }

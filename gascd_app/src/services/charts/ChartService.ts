@@ -122,7 +122,7 @@ export function generateLineGraphSvg({
   colourMap = new Map(),
   groupedData = new Map<
     string,
-    { metric_id: string, metric_name: string; data: LinegraphData[] }
+    { metric_id: string; metric_name: string; data: LinegraphData[] }
   >(),
   labels = [],
 }: LinegraphProps): SVGSVGElement | null {
@@ -138,10 +138,12 @@ export function generateLineGraphSvg({
   let legendEntries: { label: string; colour: string }[] = [];
 
   if (showLegend) {
-    legendEntries = Array.from(groupedData.values()).map(({ metric_id, metric_name }) => ({
-      label: shortenLabels ? truncateLabels(metric_name, 16) : metric_name,
-      colour: colourMap.get(metric_id) ?? '#800080',
-    }));
+    legendEntries = Array.from(groupedData.values()).map(
+      ({ metric_id, metric_name }) => ({
+        label: shortenLabels ? truncateLabels(metric_name, 16) : metric_name,
+        colour: colourMap.get(metric_id) ?? '#800080',
+      })
+    );
 
     const maxItemsPerRow = Math.floor((width - 40) / 150);
     const legendRowCount = Math.ceil(legendEntries.length / maxItemsPerRow);

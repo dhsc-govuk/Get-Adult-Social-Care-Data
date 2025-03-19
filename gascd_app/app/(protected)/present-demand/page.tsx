@@ -13,6 +13,7 @@ import { useSession } from 'next-auth/react';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
+import { MetaData } from '@/data/interfaces/MetaData';
 
 const PresentDemandPage: React.FC = () => {
   const [filteredDemographicData, setFilteredDemographicData] = useState<
@@ -29,7 +30,7 @@ const PresentDemandPage: React.FC = () => {
   const [demographicDataSource, setDemographicDataSource] = useState<string>();
   const [bedsDataSource, setBedsDataSource] = useState<string>();
   const [CPDataSource, setCPDataSource] = useState<string>();
-  const [metricDateType, setMetricDataType] = useState<IndicatorDisplay[]>([]);
+  const [metricDateType, setMetricDataType] = useState<MetaData[]>([]);
   const [demographicLatestDate, setDemographicLatestDate] = useState<
     string | null
   >();

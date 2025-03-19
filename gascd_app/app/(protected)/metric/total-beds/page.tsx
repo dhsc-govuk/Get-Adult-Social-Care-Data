@@ -104,13 +104,12 @@ const TotalBedsPage: React.FC = () => {
           )
         );
 
-        if(session?.user.smartInsights){
+        if (session?.user.smartInsights) {
           const insights: string[] = await SmartInsightsFetchService.getData(
             smartInsightsIndicatorQuery
           );
           setSmartInsights(insights);
         }
-
       };
       fetchData();
     }
@@ -196,7 +195,7 @@ const TotalBedsPage: React.FC = () => {
           setChartIndicatorQuery({
             metric_ids: bCMetrics,
             location_ids: locationids,
-            most_recent: true
+            most_recent: true,
           });
 
           setLineGraphIndicatorQuery({
@@ -260,16 +259,15 @@ const TotalBedsPage: React.FC = () => {
   };
   const contentItems = [
     {
-      link: "#definition",
-      heading: "Indicator definition and supporting information",
+      link: '#definition',
+      heading: 'Indicator definition and supporting information',
     },
-    { link: "#locations", heading: "Your selected locations" },
-    { link: "#data", heading: "Data" },
+    { link: '#locations', heading: 'Your selected locations' },
+    { link: '#data', heading: 'Data' },
     ...(session?.user.smartInsights
-      ? [{ link: "#smart-insights", heading: "Smart insights (experimental)" }]
+      ? [{ link: '#smart-insights', heading: 'Smart insights (experimental)' }]
       : []),
   ];
-  
 
   return (
     <Suspense>
@@ -354,10 +352,11 @@ const TotalBedsPage: React.FC = () => {
               filteredBarChartData={filteredBarChartData}
               filteredLineGraphData={filteredLineGraphData}
             />
-            {session?.user.smartInsights? 
-              <SmartInsights smartInsights={smartInsights}/>
-              : <></>
-            }
+            {session?.user.smartInsights ? (
+              <SmartInsights smartInsights={smartInsights} />
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </Layout>

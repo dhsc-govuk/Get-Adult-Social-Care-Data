@@ -161,18 +161,16 @@ class QueryBuilderService {
       FROM CombinedMetrics)`,
     ];
 
-    if(query.most_recent){
+    if (query.most_recent) {
       queryParts.push(`,
         MostRecent AS (SELECT *
           ,ROW_NUMBER() OVER (PARTITION BY location_id ORDER BY CONVERT(DATE, metric_date, 103) DESC) AS date_order
           FROM AllMetrics
         )
-        SELECT * FROM MostRecent WHERE date_order = 1`
-      );
-    }else{
+        SELECT * FROM MostRecent WHERE date_order = 1`);
+    } else {
       queryParts.push(`
-        SELECT * FROM AllMetrics`
-      );
+        SELECT * FROM AllMetrics`);
     }
 
     request.input('user_location_type', userLocationType);

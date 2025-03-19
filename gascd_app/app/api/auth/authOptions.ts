@@ -15,7 +15,7 @@ declare module 'next-auth' {
   interface Profile {
     extension_Location_Type?: string;
     extension_Location_ID?: string;
-    extension_Smart_Insights?: boolean
+    extension_Smart_Insights?: boolean;
   }
 }
 
@@ -72,7 +72,9 @@ export const authOptions: NextAuthOptions = {
         token.idToken = account.id_token as string;
         token.locationType = profile['extension_Location_Type'] as string;
         token.locationId = profile['extension_Location_ID'] as string;
-        token.smartInsight = profile['extension_Smart_Insights'] ? true : false as boolean;
+        token.smartInsight = profile['extension_Smart_Insights']
+          ? true
+          : (false as boolean);
         token.accessToken = account.access_token as string;
         token.refreshToken = account.refresh_token;
       }
