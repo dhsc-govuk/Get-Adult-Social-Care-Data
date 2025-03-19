@@ -109,7 +109,7 @@ stages:
               - checkout: self
               - task: NodeTool@0
                 inputs:
-                  versionSpec: "16.x"
+                  versionSpec: "18.x"
               - script: npm install
                 displayName: install dependencies
                 workingDirectory: gascd_app
