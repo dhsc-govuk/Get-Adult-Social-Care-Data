@@ -106,7 +106,7 @@ describe('Table component tests', () => {
       ></DataTable>
     );
     await waitFor(() => {
-      mockTableData.forEach((item) => {
+      mockTableDataWithCareProvider.forEach((item) => {
         const shouldBePercentage = percentageMetricMock.some(
           (percentageRow) => percentageRow.metric_id === item.metric_id
         );
@@ -116,6 +116,14 @@ describe('Table component tests', () => {
           : item.data_point;
 
         expect(screen.getByText(expectedDataPoint)).toBeInTheDocument();
+      });
+      mockTableColumnHeadersCareProvider.forEach((item) => {
+        expect(screen.getByText(item)).toBeInTheDocument();
+      });
+      Object.values(mockTableRowHeadersCareProvider).forEach((value) => {
+        if (typeof value === 'string') {
+          expect(screen.getByText(value)).toBeInTheDocument();
+        }
       });
     });
   });

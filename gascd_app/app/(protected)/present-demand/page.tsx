@@ -153,7 +153,6 @@ const PresentDemandPage: React.FC = () => {
             CPLocationId,
             true
           );
-          console.log(metricDateType, 'here');
           setLocationNames(locationNames);
           setLocationNamesCP(locationNamesCP);
         } catch (error) {
@@ -261,7 +260,6 @@ const PresentDemandPage: React.FC = () => {
             careProviderDataQuery2
           )
         );
-        console.log(filteredCPData, 'data');
         setFinalCpData(filteredCPData);
       } catch (error) {
         console.error('Error fetching data:', error);

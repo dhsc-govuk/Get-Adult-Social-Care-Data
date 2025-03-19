@@ -67,7 +67,6 @@ class IndicatorFetchService {
     if (!response.ok) {
       throw new Error(`Failed to fetch data: ${response.statusText}`);
     }
-    console.log(await response.json());
     return await response.json();
   }
 
