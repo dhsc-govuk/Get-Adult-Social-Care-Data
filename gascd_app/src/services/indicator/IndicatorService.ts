@@ -73,7 +73,7 @@ class IndicatorService {
     return generateLineGraphSvg({
       data: this.getLinegraphData(),
       width: 600,
-      height: 800,
+      height: 600,
       xLabel: '',
       yLabel: '',
       title: '',
@@ -91,6 +91,7 @@ class IndicatorService {
       colourMap: new Map([
         ['bedcount_per_100000_adults_total', 'purple'],
         ['bedcount_per_100000_adults_total_dementia_residential', 'orange'],
+        ['bedcount_per_100000_adults_total_dementia_nursing', 'gold'],
       ]),
       groupedData: this.groupByMetricId(
         this.getLinegraphData(),
@@ -127,14 +128,17 @@ class IndicatorService {
     };
   }
 
-  private transformToChartData(data: Indicator[], selected_location_id : string): BarchartData[] {
+  private transformToChartData(
+    data: Indicator[],
+    selected_location_id: string
+  ): BarchartData[] {
     return data
       .filter((d) => d.data_point !== null)
       .map((entry: Indicator) => ({
         valueTag: entry.location_id,
         metric: entry.metric_id,
         value: entry.data_point,
-        selected: entry.location_id == selected_location_id ? true : false
+        selected: entry.location_id == selected_location_id ? true : false,
       }))
       .sort((a, b) => a.value - b.value);
   }
@@ -142,7 +146,10 @@ class IndicatorService {
   private groupByMetricId(
     data: LinegraphData[],
     lineGraphDisplayData: IndicatorDisplay[]
-  ): Map<string, { metric_name: string; data: LinegraphData[] }> {
+  ): Map<
+    string,
+    { metric_id: string; metric_name: string; data: LinegraphData[] }
+  > {
     const metricLookup = new Map(
       lineGraphDisplayData.map((entry) => [
         entry.metric_id,
@@ -153,13 +160,17 @@ class IndicatorService {
     const groupedData = data.reduce((map, entry) => {
       const metricName = metricLookup.get(entry.metric) || 'Unknown Metric';
 
-      if (!map.has(metricName)) {
-        map.set(metricName, { metric_name: metricName, data: [] });
+      if (!map.has(entry.metric)) {
+        map.set(entry.metric, {
+          metric_id: entry.metric,
+          metric_name: metricName,
+          data: [],
+        });
       }
 
-      map.get(metricName)?.data.push(entry);
+      map.get(entry.metric)?.data.push(entry);
       return map;
-    }, new Map<string, { metric_name: string; data: LinegraphData[] }>());
+    }, new Map<string, { metric_id: string; metric_name: string; data: LinegraphData[] }>());
 
     return groupedData;
   }
