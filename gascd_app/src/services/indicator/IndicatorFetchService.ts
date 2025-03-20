@@ -44,6 +44,9 @@ class IndicatorFetchService {
 
   public static async getFilters(metric_id: string) {
     const response = await fetch('/api/get_all_total_beds_filters');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.statusText}`);
+    }
     const data = await response.json();
 
     return data.sort((a: TotalBedsFilters, b: TotalBedsFilters) =>

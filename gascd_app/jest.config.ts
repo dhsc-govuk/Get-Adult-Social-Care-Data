@@ -11,18 +11,17 @@ const config: Config = {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@/test-utils/(.*)$': '<rootDir>/tests/utils/$1',
     '^.+\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    d3: '<rootDir>/node_modules/d3/dist/d3.min.js',
+    '^d3-(.*)$': '<rootDir>/node_modules/d3-$1/dist/d3-$1.min.js',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   reporters: ['default'],
   collectCoverage: true,
-  collectCoverageFrom: [
-    "app/**/*.{js,ts,tsx}",
-    "src/**/*.{js,ts,tsx}"
-  ],
+  collectCoverageFrom: ['app/**/*.{js,ts,tsx}', 'src/**/*.{js,ts,tsx}'],
   coveragePathIgnorePatterns: [
-    "/app/\\(authentication\\)/registration/",
-    "/app/\\(protected\\)/help/",
-    "/src/data/types/govuk-frontend.d.ts"
+    '/app/\\(authentication\\)/registration/',
+    '/app/\\(protected\\)/help/',
+    '/src/data/types/govuk-frontend.d.ts',
   ],
   // todo enable
   // coverageThreshold: {
