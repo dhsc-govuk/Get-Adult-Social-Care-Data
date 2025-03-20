@@ -7,6 +7,7 @@ import { Indicator } from '../../data/interfaces/Indicator';
 import { MetricCardData } from '../../data/interfaces/MetricCardData';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { LinegraphData } from '@/data/interfaces/LinegraphData';
+import { Locations } from '@/data/interfaces/Locations';
 
 class IndicatorService {
   private chartData: BarchartData[];
@@ -44,7 +45,7 @@ class IndicatorService {
   }
 
   public createBarchart(
-    locationNames: [] | undefined
+    locations: Locations[] | undefined
     // containerWidth: number,
     // containerHeight: number
   ): SVGSVGElement | null {
@@ -65,11 +66,13 @@ class IndicatorService {
       yAxisAsPercentage: false,
       tickCount: 8,
       showMedian: false,
-      labels: locationNames,
+      labels: locations,
     });
   }
 
-  public createLinegraph(locationNames: [] | undefined): SVGSVGElement | null {
+  public createLinegraph(
+    locations: Locations[] | undefined
+  ): SVGSVGElement | null {
     return generateLineGraphSvg({
       data: this.getLinegraphData(),
       width: 600,
@@ -87,7 +90,7 @@ class IndicatorService {
       yAxisAsPercentage: false,
       tickCount: 8,
       showMedian: false,
-      labels: locationNames,
+      labels: locations,
       colourMap: new Map([
         ['bedcount_per_100000_adults_total', 'purple'],
         ['bedcount_per_100000_adults_total_dementia_residential', 'orange'],
@@ -98,34 +101,6 @@ class IndicatorService {
         this.getLineGraphDisplayData()
       ),
     });
-  }
-
-  public getMetricCardData(): MetricCardData {
-    const barchart = generateBarchartSvg({
-      data: this.getChartData(),
-      width: 270,
-      height: 200,
-      xLabel: this.chartDisplayData[0].denominator,
-      yLabel: this.chartDisplayData[0].numerator,
-      title: this.chartDisplayData[0].metric_name,
-      barColor: '#1d70b8',
-      medianLineColor: '#000000',
-      showLegend: false,
-      showToolTip: false,
-      shortenLabels: true,
-      tickCount: 5,
-      yAxisAsPercentage: true,
-    });
-
-    return {
-      title: this.chartDisplayData[0].metric_name,
-      svg: barchart,
-      description: this.chartDisplayData[0].description,
-      sourceUrl: '#',
-      metricDetailPageUrl: `metric/${this.chartDisplayData[0].metric_id}`,
-      sourceLinkString: 'CT',
-      limitationDescription: 'lorem lorem lorem lorem lorem lorem',
-    };
   }
 
   private transformToChartData(

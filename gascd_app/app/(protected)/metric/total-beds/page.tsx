@@ -19,6 +19,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import TableService from '@/services/Table/TableService';
 import SmartInsights from '@/components/indicator-components/SmartInsights';
+import { Locations } from '@/data/interfaces/Locations';
 
 const TotalBedsPage: React.FC = () => {
   const router = useRouter();
@@ -32,7 +33,7 @@ const TotalBedsPage: React.FC = () => {
   const [locationId, setlocationId] = useState<string>();
   const [locationType, setlocationType] = useState<string>();
 
-  const [locationNames, setLocationNames] = useState<[]>();
+  const [locations, setLocations] = useState<Locations[]>();
   const [LaLocationId, setLaLocationId] = useState<string>();
 
   const [locationName, setlocationName] = useState<string>();
@@ -136,12 +137,12 @@ const TotalBedsPage: React.FC = () => {
       if (locationId && locationType) {
         try {
           let locationids: string[] = [];
-          const locations =
+          const locations: Locations[] =
             await IndicatorFetchService.getLocalAuthoritiesInProviderLocationRegion(
               locationId
             );
           locationids = locations.map((item: { la_code: any }) => item.la_code);
-          setLocationNames(locations);
+          setLocations(locations);
 
           const timeSeriesMetrics = localStorage.getItem('time-series-metrics');
           const barChartMetrics = localStorage.getItem('bar-chart-metric');
@@ -223,7 +224,7 @@ const TotalBedsPage: React.FC = () => {
       // const containerWidth = barchartSVGContainerRef.current.clientWidth;
       // const containerHeight = barchartSVGContainerRef.current.clientHeight;
 
-      const barchart = indicatorService.createBarchart(locationNames);
+      const barchart = indicatorService.createBarchart(locations);
       // containerWidth,
       // containerHeight
 
@@ -234,7 +235,7 @@ const TotalBedsPage: React.FC = () => {
     }
 
     if (lineGraphSVGContainerRef.current && indicatorService) {
-      const lineGraph = indicatorService.createLinegraph(locationNames);
+      const lineGraph = indicatorService.createLinegraph(locations);
 
       lineGraphSVGContainerRef.current.innerHTML = '';
       if (lineGraph) {

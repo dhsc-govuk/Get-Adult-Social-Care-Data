@@ -4,6 +4,7 @@ import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { authOptions } from '../auth/authOptions';
 import { getServerSession } from 'next-auth';
+import { Locations } from '@/data/interfaces/Locations';
 
 // Handler for HTTP GET request
 export async function POST(req: NextRequest) {
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest) {
     }
 
     const resultSet = await request.query(query);
-    const rows: string[] = resultSet.recordset;
+    const rows: Locations[] = resultSet.recordset;
 
     await pool.close();
     return NextResponse.json(rows);
