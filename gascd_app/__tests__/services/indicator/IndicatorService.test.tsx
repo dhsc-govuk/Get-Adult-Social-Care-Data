@@ -13,7 +13,7 @@ const chartData: Indicator[] = barchartIndicators;
 const lineData: Indicator[] = linegraphIndicators;
 const chartDisplayData: IndicatorDisplay[] = barchartDisplayData;
 const lineDisplayData: IndicatorDisplay[] = liengraphDisplayData;
-const selectedLocationId: string = '';
+const selectedLocationId: string = '1';
 const locationNames: Locations[] = [
   {
     la_code: '1',
@@ -48,5 +48,25 @@ describe('IndicatorService', () => {
   });
   it('Returns the display data when the getChartDisplayData is called', () => {
     expect(indicatorService.getChartDisplayData()).toBe(chartDisplayData);
+  });
+  it('Correctly transforms the bar chart data', () => {
+    const chartData = indicatorService.getChartData();
+    expect(chartData[0].value).toBe(100);
+    expect(chartData[0].metric).toBe('1');
+    expect(chartData[0].valueTag).toBe('1');
+    expect(chartData[0].selected).toBeTruthy;
+    expect(chartData[2].value).toBe(200);
+    expect(chartData[2].metric).toBe('1');
+    expect(chartData[2].valueTag).toBe('3');
+    expect(chartData[2].selected).toBeFalsy;
+  });
+  it('Correctly transforms the line graph data', () => {
+    const graphData = indicatorService.getLinegraphData();
+    expect(graphData[0].value).toBe(200);
+    expect(graphData[0].metric).toBe('1');
+    expect(graphData[0].valueTag).toBe(new Date(2024, 1, 1).toString());
+    expect(graphData[2].value).toBe(100);
+    expect(graphData[2].metric).toBe('1');
+    expect(graphData[2].valueTag).toBe(new Date(2024, 3, 1).toString());
   });
 });

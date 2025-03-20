@@ -63,6 +63,24 @@ describe('IndicatorFetchService', () => {
       expect(result).toEqual(mockData);
     });
 
+    it('sends an empty request body when providerLocationId is undefined', async () => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue([{ id: '1', name: 'Location A' }]),
+      });
+
+      await IndicatorFetchService.getLocalAuthoritiesInProviderLocationRegion(
+        undefined
+      );
+
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(fetch).toHaveBeenCalledWith('/api/get_locations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      });
+    });
+
     it(' throws error on failed fetch', async () => {
       (fetch as jest.Mock).mockResolvedValue({
         ok: false,
