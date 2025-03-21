@@ -378,24 +378,28 @@ describe('initializeSvg', () => {
   });
 
   describe('labels truncate', () => {
-    const label = 'This is a very long label';
-    const maxLength = 10;
-    const truncatedLabel = truncateLabels(label, maxLength);
-    expect(truncatedLabel).toBe('This is a ...');
-  });
-
-  it('should not truncate labels shorter than maxLength', () => {
-    const label = 'Short label';
-    const maxLength = 20;
-    const truncatedLabel = truncateLabels(label, maxLength);
-    expect(truncatedLabel).toBe(label);
-  });
   
-  it('should not truncate labels equal to maxLength', () => {
-    const label = 'EqualLength';
-    const maxLength = 11;
-    const truncatedLabel = truncateLabels(label, maxLength);
-    expect(truncatedLabel).toBe(label);
+    it('should truncate labels longer than maxLength', () => {
+      const label = 'This is a very long label';
+      const maxLength = 10;
+      const truncatedLabel = truncateLabels(label, maxLength);
+      expect(truncatedLabel).toBe('This is a ...');
+    });
+
+    it('should not truncate labels shorter than maxLength', () => {
+      const label = 'Short label';
+      const maxLength = 20;
+      const truncatedLabel = truncateLabels(label, maxLength);
+      expect(truncatedLabel).toBe(label);
+    });
+    
+    it('should not truncate labels equal to maxLength', () => {
+      const label = 'EqualLength';
+      const maxLength = 11;
+      const truncatedLabel = truncateLabels(label, maxLength);
+      expect(truncatedLabel).toBe(label);
+    });
+
   });
   
 });
