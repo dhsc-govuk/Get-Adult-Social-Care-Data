@@ -5,8 +5,6 @@ import {
   createXAxisScale,
   createYAxisScale,
   renderBars,
-  renderXAxis,
-  renderYAxis,
   renderLabels,
   addTooltip,
   renderMedianLine,
@@ -14,6 +12,7 @@ import {
   truncateLabels,
   calculateQuartiles,
   renderLine,
+  renderLineYAxis,
   renderLineXAxis,
   createBarYAxisScale,
   createBarXAxisScale,
@@ -91,8 +90,7 @@ export function generateBarchartSvg({
     yAxisScale,
     dynamicMargin,
     labelsMap,
-    tickCount,
-    yAxisAsPercentage
+    tickCount
   );
   renderLabels(chartSvg, width, height, dynamicMargin, xLabel, yLabel, title);
 
@@ -198,7 +196,7 @@ export function generateLineGraphSvg({
     renderLineXAxis(chartSvg, xAxisScale, adjustedChartHeight, dynamicMargin);
   }
 
-  renderYAxis(
+  renderLineYAxis(
     chartSvg,
     yAxisScale,
     dynamicMargin,

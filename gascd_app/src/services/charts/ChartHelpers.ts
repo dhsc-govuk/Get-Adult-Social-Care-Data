@@ -31,12 +31,6 @@ export function truncateLabels(label: string, maxLength: number): string {
   return label;
 }
 
-function getMetricColorScale(
-  metrics: string[]
-): d3.ScaleOrdinal<string, string> {
-  return d3.scaleOrdinal<string, string>().domain(metrics).range(d3.schemeSet1);
-}
-
 export function createXAxisScale(
   data: BarchartData[],
   width: number,
@@ -127,7 +121,7 @@ export function renderBars(
     .append('rect')
     .attr(
       'y',
-      (d) => (yAxisScale(d.valueTag) ?? 0) + (metricScale(d.metric) ?? 0) + 5
+      (d) => (yAxisScale(d.valueTag)!) + (metricScale(d.metric)!) + 5
     )
     .attr('x', margin.left)
     .attr('height', metricScale.bandwidth() - 10)
@@ -143,7 +137,7 @@ export function renderBars(
     .append('rect')
     .attr(
       'y',
-      (d) => (yAxisScale(d.valueTag) ?? 0) + (metricScale(d.metric) ?? 0) - 5
+      (d) => (yAxisScale(d.valueTag)!) + (metricScale(d.metric)!) - 5
     )
     .attr('x', 1)
     .attr('height', metricScale.bandwidth() + 10)
@@ -159,26 +153,6 @@ export function renderBars(
     .style('stroke-dasharray', '3, 3');
 
   barGroups.exit().remove();
-}
-
-export function renderXAxis(
-  chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>,
-  xAxisScale: d3.ScaleBand<string>,
-  height: number,
-  margin: { top: number; right: number; bottom: number; left: number }
-): void {
-  const xAxisGroup = chartSvg
-    .append('g')
-    .attr('transform', `translate(0,${height - margin.bottom})`)
-    .call(d3.axisTop(xAxisScale).tickSize(0))
-    .attr('class', 'x-axis');
-
-  xAxisGroup
-    .selectAll('text')
-    .attr('transform', 'rotate(-45)')
-    .attr('text-anchor', 'end')
-    .attr('dx', '-0.8em')
-    .attr('dy', '0.15em');
 }
 
 export function renderLineXAxis(
@@ -238,12 +212,11 @@ export function renderBarYAxis(
   yAxisScale: d3.ScaleBand<string>,
   margin: { top: number; right: number; bottom: number; left: number },
   labels: Map<string, string>,
-  tickCount?: number,
-  yAxisAsPercentage: boolean = false
+  tickCount?: number
 ): void {
   const yAxis = d3
     .axisLeft(yAxisScale)
-    .ticks(tickCount ? tickCount : null)
+    .ticks(tickCount)
     .tickFormat((d: any) => {
       const lookupValue = labels.get(d.toString());
       return `${lookupValue}`;
@@ -259,7 +232,7 @@ export function renderBarYAxis(
     .style('text-anchor', 'end');
 }
 
-export function renderYAxis(
+export function renderLineYAxis(
   chartSvg: d3.Selection<SVGGElement, unknown, null, undefined>,
   yAxisScale: d3.ScaleLinear<number, number>,
   margin: { top: number; right: number; bottom: number; left: number },
@@ -268,7 +241,7 @@ export function renderYAxis(
 ): void {
   const yAxis = d3
     .axisLeft(yAxisScale)
-    .ticks(tickCount ? tickCount : null)
+    .ticks(tickCount)
     .tickSizeOuter(0);
 
   if (yAxisAsPercentage) {
@@ -460,8 +433,8 @@ export function renderLine(
 ): void {
   const lineGenerator = d3
     .line<{ valueTag: string; value: number }>()
-    .x((dataItem) => xAxisScale(dataItem.valueTag) ?? 0)
-    .y((dataItem) => yAxisScale(dataItem.value) ?? 0);
+    .x((dataItem) => xAxisScale(dataItem.valueTag)!)
+    .y((dataItem) => yAxisScale(dataItem.value)!);
   const linePath = chartSvg
     .selectAll<SVGPathElement, unknown>(className)
     .data([data]);
