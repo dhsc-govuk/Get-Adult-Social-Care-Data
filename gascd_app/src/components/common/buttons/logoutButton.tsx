@@ -27,6 +27,7 @@ const LogoutButton: React.FC = () => {
   }, []);
 
   const handleSignOut = async () => {
+    localStorage.clear();
     await signOut({ redirect: false });
     if (logoutUrl) {
       window.location.href = logoutUrl;
