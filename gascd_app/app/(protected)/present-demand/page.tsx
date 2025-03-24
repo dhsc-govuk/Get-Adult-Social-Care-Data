@@ -119,9 +119,12 @@ const PresentDemandPage: React.FC = () => {
             session.user.locationId ?? ' ',
             session.user.locationType
           );
+          localStorage.setItem('selectedValue',locationId);
           setCPLocationId(locationId);
         } else {
-          setCPLocationId(session.user.locationId);
+          const locationId = session.user?.locationId;
+          localStorage.setItem('selectedValue',locationId!);
+          setCPLocationId(locationId);
         }
       }
     };
