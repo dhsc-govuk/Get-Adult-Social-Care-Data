@@ -1,13 +1,8 @@
 {
-    "extends": "./tsconfig.json",
-    "compilerOptions": {
-      "jsx": "react-jsx",
-      "noEmit": false
-    },
-    "include": [
-      "tests/**/*.ts",
-      "tests/**/*.tsx",
-      "jest.setup.ts"
-    ]
-  }
-  
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "noEmit": false
+  },
+  "include": ["tests/**/*.ts", "tests/**/*.tsx", "jest.setup.ts"]
+}
