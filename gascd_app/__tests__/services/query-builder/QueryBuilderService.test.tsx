@@ -99,13 +99,15 @@ describe('Query Builder Service', () => {
       'metric_id IN ( @metric_ids0, @metric_ids1, @metric_ids2)'
     );
     expect(result.queryString).toContain(
-      'location_id IN( @location_ids0, @location_ids1'
+      'location_id IN ( @location_ids0, @location_ids1)'
     );
-    expect(result.queryString).toContain('(user_access_location_id = 1');
+    expect(result.queryString).toContain(
+      '(user_access_location_id = @user_location_id '
+    );
     expect(result.queryString).toContain(
       '[user_access_location_type] = @user_location_type'
     );
     expect(result.request_with_param).toBe(mockRequest);
-    expect(mockRequest.input).toHaveBeenCalledTimes(5);
+    expect(mockRequest.input).toHaveBeenCalledTimes(7);
   });
 });
