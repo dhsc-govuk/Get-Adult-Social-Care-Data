@@ -41,6 +41,7 @@ const PresentDemandLocations: React.FC = () => {
           const locations =
             await PresentDemandService.getAvailableLocations(cpLocation);
           setAvailableLocations(locations);
+          console.log(locations, 'locations ');
         } catch (error) {
           console.error('Error fetching data', error);
         }
@@ -73,7 +74,7 @@ const PresentDemandLocations: React.FC = () => {
       </a>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
-          <h1 className="govuk-heading-l">Edit locations </h1>
+          <h2 className="govuk-heading-l">Edit locations </h2>
           <h2 className="govuk-heading-m"> Your locations</h2>
           <div className="govuk-form-group">
             <form>
@@ -81,7 +82,10 @@ const PresentDemandLocations: React.FC = () => {
                 {availableLocations ? (
                   <div className="govuk-radios" data-module="govuk-radios">
                     {availableLocations.map((item, index) => (
-                      <div className="govuk-radios__item" key={item.id}>
+                      <div
+                        className="govuk-radios__item"
+                        key={item.metric_location_name}
+                      >
                         <input
                           className="govuk-radios__input"
                           id={`radio-${index}`}

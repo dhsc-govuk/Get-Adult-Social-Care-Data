@@ -306,9 +306,9 @@ const PresentDemandPage: React.FC = () => {
         </div>
         <div className="govuk-grid-column-two-thirds">
           <div className="govuk-grid-row govuk-!-margin-bottom-9">
-            <h1 className="govuk-heading-l">
+            <h2 className="govuk-heading-l">
               Current population needs and capacity
-            </h1>
+            </h2>
             <h2 className="govuk-heading-m" id="summary">
               Introduction
             </h2>
