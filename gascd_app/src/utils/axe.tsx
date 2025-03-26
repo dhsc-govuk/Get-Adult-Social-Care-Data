@@ -11,7 +11,8 @@ const Axe: React.FC = () => {
             {
               id: 'region',
               enabled: true,
-              selector: '*:not(.govuk-phase-banner)',
+              selector:
+                '*:not(.govuk-phase-banner):not(.govuk-phase-banner__text)',
             },
           ],
         });
