@@ -19,8 +19,10 @@
     "**/*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"
   },
   "dependencies": {
+    "@axe-core/playwright": "^4.10.1",
     "@ministryofjustice/frontend": "^3.3.1",
     "@next/eslint-plugin-next": "^15.1.0",
+    "@playwright/test": "^1.51.1",
     "@types/d3": "^7.4.3",
     "axios": "^1.7.5",
     "d3": "^7.9.0",
@@ -32,6 +34,7 @@
     "msw": "^2.7.3",
     "next": "^15.2.4",
     "next-auth": "^4.24.11",
+    "playwright": "^1.51.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -49,6 +52,7 @@
     "@types/react-dom": "^19.0.3",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
+    "axe-html-reporter": "^2.2.11",
     "cypress": "^13.17.0",
     "dotenv": "^16.4.7",
     "eslint": "^9.16.0",

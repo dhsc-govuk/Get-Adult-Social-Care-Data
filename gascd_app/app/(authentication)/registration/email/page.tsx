@@ -12,31 +12,34 @@ const RegisterEmailPage: React.FC = () => {
   };
 
   return (
-    <Layout showLoginInformation={false} currentPage={'register-email'}>
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
-          <h1 className="govuk-heading-l">
-            Sign in to Get adult social care data or request access
-          </h1>
+    <>
+      <title>Sign in to Get adult social care data or request access</title>
+      <Layout showLoginInformation={false} currentPage={'register-email'}>
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <h1 className="govuk-heading-l">
+              Sign in to Get adult social care data or request access
+            </h1>
 
-          <form className="form" onSubmit={handleSubmit} method="post">
-            <div className="govuk-form-group">
-              <LabelledInput
-                eventName={'email'}
-                inputId={'register-email'}
-                ariaLabel={'Enter email address'}
-              >
-                Enter your email address
-              </LabelledInput>
-            </div>
+            <form className="form" onSubmit={handleSubmit} method="post">
+              <div className="govuk-form-group">
+                <LabelledInput
+                  eventName={'email'}
+                  inputId={'register-email'}
+                  ariaLabel={'Enter email address'}
+                >
+                  Enter your email address
+                </LabelledInput>
+              </div>
 
-            <button className="govuk-button" type="submit">
-              Continue
-            </button>
-          </form>
+              <button className="govuk-button" type="submit">
+                Continue
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 

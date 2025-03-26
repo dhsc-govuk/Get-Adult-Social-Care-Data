@@ -272,6 +272,7 @@ const TotalBedsPage: React.FC = () => {
 
   return (
     <Suspense>
+      <title>Adult social care beds per 100,000 adult population</title>
       <Layout
         showLoginInformation={false}
         currentPage="total-beds"
