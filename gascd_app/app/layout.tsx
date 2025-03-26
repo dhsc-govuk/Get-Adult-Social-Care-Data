@@ -2,11 +2,11 @@ import NextAuthSessionProvider from '@/providers/SessionProvider';
 import '../src/styles/globals.scss';
 import Axe from '../src/utils/axe';
 
-export const metadata = {
-  title: 'DHSC: Get Adult Social Care Data',
-  description:
-    'Department of Health and Social Care: Get Adult Social Care Data Platform',
-};
+// export const metadata = {
+//   title: 'DHSC: Get Adult Social Care Data',
+//   description:
+//     'Department of Health and Social Care: Get Adult Social Care Data Platform',
+// };
 
 export default async function RootLayout({
   children,

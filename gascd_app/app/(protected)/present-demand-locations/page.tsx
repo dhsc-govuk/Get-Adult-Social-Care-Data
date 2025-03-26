@@ -63,60 +63,65 @@ const PresentDemandLocations: React.FC = () => {
   };
 
   return (
-    <Layout
-      autoSpaceMainContent={false}
-      showLoginInformation={true}
-      currentPage="present-demand-locations"
-      showNavBar={false}
-    >
-      <a href="../present-demand" className="govuk-back-link">
-        Back
-      </a>
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
-          <h2 className="govuk-heading-l">Edit locations </h2>
-          <h2 className="govuk-heading-m"> Your locations</h2>
-          <div className="govuk-form-group">
-            <form>
-              <fieldset className="govuk-fieldset govuk-!-margin-bottom-6">
-                {availableLocations ? (
-                  <div className="govuk-radios" data-module="govuk-radios">
-                    {availableLocations.map((item, index) => (
-                      <div
-                        className="govuk-radios__item"
-                        key={item.metric_location_name}
-                      >
-                        <input
-                          className="govuk-radios__input"
-                          id={`radio-${index}`}
-                          name="options"
-                          type="radio"
-                          value={item.metric_location_id}
-                          onChange={() => handleChange(item.metric_location_id)}
-                        />
-                        <label
-                          className="govuk-label govuk-radios__label"
-                          htmlFor={`radio-${index}`}
+    <>
+      <title>Present Demand Locations</title>
+      <Layout
+        autoSpaceMainContent={false}
+        showLoginInformation={true}
+        currentPage="present-demand-locations"
+        showNavBar={false}
+      >
+        <a href="../present-demand" className="govuk-back-link">
+          Back
+        </a>
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <h2 className="govuk-heading-l">Edit locations </h2>
+            <h2 className="govuk-heading-m"> Your locations</h2>
+            <div className="govuk-form-group">
+              <form>
+                <fieldset className="govuk-fieldset govuk-!-margin-bottom-6">
+                  {availableLocations ? (
+                    <div className="govuk-radios" data-module="govuk-radios">
+                      {availableLocations.map((item, index) => (
+                        <div
+                          className="govuk-radios__item"
+                          key={item.metric_location_name}
                         >
-                          {item.metric_location_name}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p> No other locations available </p>
-                )}
-              </fieldset>
-              <Link href="/present-demand" onClick={handleSubmit}>
-                <button type="button" className="govuk-button">
-                  Submit
-                </button>
-              </Link>
-            </form>
+                          <input
+                            className="govuk-radios__input"
+                            id={`radio-${index}`}
+                            name="options"
+                            type="radio"
+                            value={item.metric_location_id}
+                            onChange={() =>
+                              handleChange(item.metric_location_id)
+                            }
+                          />
+                          <label
+                            className="govuk-label govuk-radios__label"
+                            htmlFor={`radio-${index}`}
+                          >
+                            {item.metric_location_name}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p> No other locations available </p>
+                  )}
+                </fieldset>
+                <Link href="/present-demand" onClick={handleSubmit}>
+                  <button type="button" className="govuk-button">
+                    Submit
+                  </button>
+                </Link>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 

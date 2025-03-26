@@ -12,7 +12,6 @@ import ConditionalText from '@/components/common/conditional-text/ConditionalTex
 import { useSession } from 'next-auth/react';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
-import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { MetaData } from '@/data/interfaces/MetaData';
 
 const PresentDemandPage: React.FC = () => {
@@ -286,290 +285,298 @@ const PresentDemandPage: React.FC = () => {
   ];
 
   return (
-    <Layout
-      autoSpaceMainContent={false}
-      showLoginInformation={true}
-      currentPage="present-demand"
-      showNavBar={false}
-      session={session}
-    >
-      <a href="#" className="govuk-back-link">
-        Back
-      </a>
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-one-third">
-          <div className="govuk-grid-row">
-            <div className="govuk-grid-column-full">
-              <ContentSidePanel items={contentItems} />
+    <>
+      <title>Present demands</title>
+      <Layout
+        autoSpaceMainContent={false}
+        showLoginInformation={true}
+        currentPage="present-demand"
+        showNavBar={false}
+        session={session}
+      >
+        <a href="#" className="govuk-back-link">
+          Back
+        </a>
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-one-third">
+            <div className="govuk-grid-row">
+              <div className="govuk-grid-column-full">
+                <ContentSidePanel items={contentItems} />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="govuk-grid-column-two-thirds">
-          <div className="govuk-grid-row govuk-!-margin-bottom-9">
-            <h2 className="govuk-heading-l">
-              Current population needs and capacity
-            </h2>
-            <h2 className="govuk-heading-m" id="summary">
-              Introduction
-            </h2>
-            <p className="govuk-body">
-              Understanding current population needs and capacity for adult
-              social care services helps identify where needs are being met and
-              where gaps may exist.
-            </p>
-            <p className="govuk-body">
-              Here you can explore factors driving local population needs and
-              find insights into current capacity to meet those needs.
-            </p>
-          </div>
-          <div className="govuk-grid-row govuk-!-margin-bottom-9">
-            <h2 className="govuk-heading-m" id="definition">
-              Indicator definition and supporting information
-            </h2>
-            <p className="govuk-body">
-              Find detailed information about each indicator, including data
-              definitions, data source, update schedule, and any limitations to
-              be aware of before using the data.
-            </p>
-            <ul className="govuk-list govuk-list--bullet">
-              <li>
-                <a href="/help/population-age" className="govuk-link">
-                  Population age
-                </a>
-              </li>
-              <li>
-                <a href="/help/disability-prevalence" className="govuk-link">
-                  Population disability
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/help/beds-per-100000-adult-population"
-                  className="govuk-link"
-                >
-                  Adult social care beds per 100,000 adult population
-                </a>
-              </li>
-              <li>
-                <a href="/help/percentage-beds-occupied" className="govuk-link">
-                  Percentage of adult social care beds occupied
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/help/beds-care-provider-location"
-                  className="govuk-link"
-                >
-                  Number of adult social care beds in care provider location
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/help/percentage-beds-occupied-care-provider-location"
-                  className="govuk-link"
-                >
-                  Percentage of adult social care beds occupied in care provider
-                  location
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div className="govuk-grid-row govuk-!-margin-bottom-9">
-            <h2 className="govuk-heading-m" id="selected-locations">
-              Your selected locations
-            </h2>
-            <p className="govuk-body">
-              Select locations to view and compare data.
-            </p>
-            <dl className="govuk-summary-list">
-              <div className="govuk-summary-list__row govuk-!-margin-bottom-9">
-                <dt className="govuk-summary-list__key">Selected locations</dt>
-                <dd className="govuk-summary-list__value">
-                  <p>{locationNamesCP.slice(1).join(', ')}</p>
-                </dd>
-                <dd className="govuk-summary-list__actions">
-                  <a className="govuk-link" href="/present-demand-locations">
-                    Change<span className="govuk-visually-hidden"> name</span>
+          <div className="govuk-grid-column-two-thirds">
+            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+              <h2 className="govuk-heading-l">
+                Current population needs and capacity
+              </h2>
+              <h2 className="govuk-heading-m" id="summary">
+                Introduction
+              </h2>
+              <p className="govuk-body">
+                Understanding current population needs and capacity for adult
+                social care services helps identify where needs are being met
+                and where gaps may exist.
+              </p>
+              <p className="govuk-body">
+                Here you can explore factors driving local population needs and
+                find insights into current capacity to meet those needs.
+              </p>
+            </div>
+            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+              <h2 className="govuk-heading-m" id="definition">
+                Indicator definition and supporting information
+              </h2>
+              <p className="govuk-body">
+                Find detailed information about each indicator, including data
+                definitions, data source, update schedule, and any limitations
+                to be aware of before using the data.
+              </p>
+              <ul className="govuk-list govuk-list--bullet">
+                <li>
+                  <a href="/help/population-age" className="govuk-link">
+                    Population age
                   </a>
-                </dd>
-              </div>
-            </dl>
-          </div>
-          <div className="govuk-grid-row govuk-!-margin-bottom-9">
-            <h1 className="govuk-heading-l" id="drivers">
-              Drivers of population needs
-            </h1>
-            <p className="govuk-body">
-              Population needs for adult social care are influenced by a range
-              of factors, including the population&apos;s age structure,
-              disability profile and rate of dementia diagnosis.
-            </p>
-            <p className="govuk-body">
-              Areas with a higher proportion of older adults, people with
-              disabilities or rates of dementia diagnosis typically experience
-              greater pressure on services.
-            </p>
-            <ConditionalText
-              data={filteredDemographicData}
-              ColumnHeaders={locationNames}
-              section="Drivers"
-              locations={locationNames}
-              metric_Id="perc_65over"
-            ></ConditionalText>
-          </div>
-          <h2 className="govuk-heading-m govuk-!-margin-bottom-9">
-            Explore the data: demographic factors
-          </h2>
-          <DataTable
-            columnHeaders={locationNames}
-            rowHeaders={demographicRowHeaders}
-            data={filteredDemographicData}
-            showCareProvider={false}
-            percentageRows={metricDateType}
-          ></DataTable>
-          <DownloadTableDataCSVLink
-            data={TableService.removeLoadDateTime(filteredDemographicData)}
-            filename="Demographic factors"
-            xLabel=""
-          ></DownloadTableDataCSVLink>
-          <p className="govuk-body govuk-!-margin-bottom-9">
-            Source: {demographicDataSource}
-            <br />
-            Data correct as of {demographicLatestDate}
-          </p>
-
-          <div className="govuk-grid-row govuk-!-margin-bottom-9">
-            <h1 className="govuk-heading-l" id="capacity-la">
-              Current capacity - care homes: local authority-level insights
-            </h1>
-            <p className="govuk-body">
-              The number of adult social care beds per 100,000 adult population
-              provides an indicator of current care capacity. A higher number
-              suggests more sufficient capacity.
-            </p>
-            <p className="govuk-body">
-              Care homes in {locationNames[1]} have{' '}
-              <strong>
-                {filteredBedData.find(
-                  (metric) =>
-                    metric.metric_id === 'bedcount_per_100000_adults_total' &&
-                    metric.location_type === 'LA'
-                )?.data_point ?? 'Loading...'}{' '}
-                beds per 100,000 adult population
-              </strong>
-              , compared to the {locationNames[2]} average of{' '}
-              {filteredBedData.find(
-                (metric) =>
-                  metric.metric_id === 'bedcount_per_100000_adults_total' &&
-                  metric.location_type === 'Regional'
-              )?.data_point ?? 'Loading...'}{' '}
-              per 100,000.
-            </p>
-            <ConditionalText
-              data={filteredBedData}
-              ColumnHeaders={locationNames}
-              section="CapacityLA"
-              locations={locationNames}
-              metric_Id="median_occupancy_total"
-            ></ConditionalText>
-            <h2 className="govuk-heading-m">
-              Explore the data: adult social care beds per 100,000 adult
-              population and occupancy
+                </li>
+                <li>
+                  <a href="/help/disability-prevalence" className="govuk-link">
+                    Population disability
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/help/beds-per-100000-adult-population"
+                    className="govuk-link"
+                  >
+                    Adult social care beds per 100,000 adult population
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/help/percentage-beds-occupied"
+                    className="govuk-link"
+                  >
+                    Percentage of adult social care beds occupied
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/help/beds-care-provider-location"
+                    className="govuk-link"
+                  >
+                    Number of adult social care beds in care provider location
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/help/percentage-beds-occupied-care-provider-location"
+                    className="govuk-link"
+                  >
+                    Percentage of adult social care beds occupied in care
+                    provider location
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+              <h2 className="govuk-heading-m" id="selected-locations">
+                Your selected locations
+              </h2>
+              <p className="govuk-body">
+                Select locations to view and compare data.
+              </p>
+              <dl className="govuk-summary-list">
+                <div className="govuk-summary-list__row govuk-!-margin-bottom-9">
+                  <dt className="govuk-summary-list__key">
+                    Selected locations
+                  </dt>
+                  <dd className="govuk-summary-list__value">
+                    <p>{locationNamesCP.slice(1).join(', ')}</p>
+                  </dd>
+                  <dd className="govuk-summary-list__actions">
+                    <a className="govuk-link" href="/present-demand-locations">
+                      Change<span className="govuk-visually-hidden"> name</span>
+                    </a>
+                  </dd>
+                </div>
+              </dl>
+            </div>
+            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+              <h1 className="govuk-heading-l" id="drivers">
+                Drivers of population needs
+              </h1>
+              <p className="govuk-body">
+                Population needs for adult social care are influenced by a range
+                of factors, including the population&apos;s age structure,
+                disability profile and rate of dementia diagnosis.
+              </p>
+              <p className="govuk-body">
+                Areas with a higher proportion of older adults, people with
+                disabilities or rates of dementia diagnosis typically experience
+                greater pressure on services.
+              </p>
+              <ConditionalText
+                data={filteredDemographicData}
+                ColumnHeaders={locationNames}
+                section="Drivers"
+                locations={locationNames}
+                metric_Id="perc_65over"
+              ></ConditionalText>
+            </div>
+            <h2 className="govuk-heading-m govuk-!-margin-bottom-9">
+              Explore the data: demographic factors
             </h2>
-            <p className="govuk-body">
-              {' '}
-              You can filter this data by type of beds
-            </p>
-            <form action="/metric/total-beds">
-              <button
-                type="submit"
-                className="govuk-button govuk-button--secondary"
-                data-module="govuk-button"
-              >
-                Explore data
-              </button>
-            </form>
             <DataTable
               columnHeaders={locationNames}
-              rowHeaders={bedRowHeaders}
-              data={filteredBedData}
+              rowHeaders={demographicRowHeaders}
+              data={filteredDemographicData}
               showCareProvider={false}
               percentageRows={metricDateType}
             ></DataTable>
             <DownloadTableDataCSVLink
-              data={TableService.removeLoadDateTime(filteredBedData)}
-              filename="Current Capacity"
+              data={TableService.removeLoadDateTime(filteredDemographicData)}
+              filename="Demographic factors"
               xLabel=""
             ></DownloadTableDataCSVLink>
             <p className="govuk-body govuk-!-margin-bottom-9">
-              Source: {bedsDataSource}
+              Source: {demographicDataSource}
               <br />
-              Data correct as of {bedDataLatestDate}
+              Data correct as of {demographicLatestDate}
             </p>
+
             <div className="govuk-grid-row govuk-!-margin-bottom-9">
-              <h1 className="govuk-heading-l" id="capacity-cp">
-                Current capacity - care homes: care provider-level insights
+              <h1 className="govuk-heading-l" id="capacity-la">
+                Current capacity - care homes: local authority-level insights
               </h1>
               <p className="govuk-body">
-                Examining individual care providers offers insight into how
-                their capacity compares with other care providers at local
-                authority, regional and national level.
+                The number of adult social care beds per 100,000 adult
+                population provides an indicator of current care capacity. A
+                higher number suggests more sufficient capacity.
               </p>
               <p className="govuk-body">
-                {locationNamesCP[1]} is a provider with (
-                {finalCpData.find(
+                Care homes in {locationNames[1]} have{' '}
+                <strong>
+                  {filteredBedData.find(
+                    (metric) =>
+                      metric.metric_id === 'bedcount_per_100000_adults_total' &&
+                      metric.location_type === 'LA'
+                  )?.data_point ?? 'Loading...'}{' '}
+                  beds per 100,000 adult population
+                </strong>
+                , compared to the {locationNames[2]} average of{' '}
+                {filteredBedData.find(
                   (metric) =>
-                    metric.metric_id === 'bedcount_total' &&
-                    metric.location_type === 'Care provider location'
-                )?.data_point ?? 'Loading...'}{' '}
-                beds) in {locationNamesCP[2]} total beds, compared to the median
-                (
-                {finalCpData.find(
-                  (metric) =>
-                    metric.metric_id === 'median_bed_count_total' &&
+                    metric.metric_id === 'bedcount_per_100000_adults_total' &&
                     metric.location_type === 'Regional'
                 )?.data_point ?? 'Loading...'}{' '}
-                beds) in {locationNamesCP[2]}.
+                per 100,000.
               </p>
               <ConditionalText
-                data={finalCpData}
-                ColumnHeaders={locationNamesCP}
-                section="CapacityCareProvider"
-                locations={locationNamesCP}
+                data={filteredBedData}
+                ColumnHeaders={locationNames}
+                section="CapacityLA"
+                locations={locationNames}
                 metric_Id="median_occupancy_total"
               ></ConditionalText>
-              <p className="govuk-body">
-                <strong>Note: </strong>If fewer than 5 beds are occupied, the
-                percentage of beds occupied is shown as 0. For details on
-                rounding and suppression of data, see indicator definition and
-                supporting information.
-              </p>
               <h2 className="govuk-heading-m">
-                Explore the data: care providers in {locationNames[1]}
+                Explore the data: adult social care beds per 100,000 adult
+                population and occupancy
               </h2>
+              <p className="govuk-body">
+                {' '}
+                You can filter this data by type of beds
+              </p>
+              <form action="/metric/total-beds">
+                <button
+                  type="submit"
+                  className="govuk-button govuk-button--secondary"
+                  data-module="govuk-button"
+                >
+                  Explore data
+                </button>
+              </form>
               <DataTable
-                columnHeaders={locationNamesCP}
-                rowHeaders={careProviderRowHeaders}
-                data={finalCpData}
-                showCareProvider={true}
-                careProviderMedianMetrics={careProviderMedianMetrics}
+                columnHeaders={locationNames}
+                rowHeaders={bedRowHeaders}
+                data={filteredBedData}
+                showCareProvider={false}
                 percentageRows={metricDateType}
               ></DataTable>
               <DownloadTableDataCSVLink
-                data={TableService.removeLoadDateTime(finalCpData)}
-                filename="Care providers data"
+                data={TableService.removeLoadDateTime(filteredBedData)}
+                filename="Current Capacity"
                 xLabel=""
               ></DownloadTableDataCSVLink>
-              <p className="govuk-body">
-                Source: {CPDataSource}
+              <p className="govuk-body govuk-!-margin-bottom-9">
+                Source: {bedsDataSource}
                 <br />
-                Data correct as of {CPLatestDate}
+                Data correct as of {bedDataLatestDate}
               </p>
+              <div className="govuk-grid-row govuk-!-margin-bottom-9">
+                <h1 className="govuk-heading-l" id="capacity-cp">
+                  Current capacity - care homes: care provider-level insights
+                </h1>
+                <p className="govuk-body">
+                  Examining individual care providers offers insight into how
+                  their capacity compares with other care providers at local
+                  authority, regional and national level.
+                </p>
+                <p className="govuk-body">
+                  {locationNamesCP[1]} is a provider with (
+                  {finalCpData.find(
+                    (metric) =>
+                      metric.metric_id === 'bedcount_total' &&
+                      metric.location_type === 'Care provider location'
+                  )?.data_point ?? 'Loading...'}{' '}
+                  beds) in {locationNamesCP[2]} total beds, compared to the
+                  median (
+                  {finalCpData.find(
+                    (metric) =>
+                      metric.metric_id === 'median_bed_count_total' &&
+                      metric.location_type === 'Regional'
+                  )?.data_point ?? 'Loading...'}{' '}
+                  beds) in {locationNamesCP[2]}.
+                </p>
+                <ConditionalText
+                  data={finalCpData}
+                  ColumnHeaders={locationNamesCP}
+                  section="CapacityCareProvider"
+                  locations={locationNamesCP}
+                  metric_Id="median_occupancy_total"
+                ></ConditionalText>
+                <p className="govuk-body">
+                  <strong>Note: </strong>If fewer than 5 beds are occupied, the
+                  percentage of beds occupied is shown as 0. For details on
+                  rounding and suppression of data, see indicator definition and
+                  supporting information.
+                </p>
+                <h2 className="govuk-heading-m">
+                  Explore the data: care providers in {locationNames[1]}
+                </h2>
+                <DataTable
+                  columnHeaders={locationNamesCP}
+                  rowHeaders={careProviderRowHeaders}
+                  data={finalCpData}
+                  showCareProvider={true}
+                  careProviderMedianMetrics={careProviderMedianMetrics}
+                  percentageRows={metricDateType}
+                ></DataTable>
+                <DownloadTableDataCSVLink
+                  data={TableService.removeLoadDateTime(finalCpData)}
+                  filename="Care providers data"
+                  xLabel=""
+                ></DownloadTableDataCSVLink>
+                <p className="govuk-body">
+                  Source: {CPDataSource}
+                  <br />
+                  Data correct as of {CPLatestDate}
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 
