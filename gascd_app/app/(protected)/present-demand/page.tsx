@@ -286,7 +286,7 @@ const PresentDemandPage: React.FC = () => {
 
   return (
     <>
-      <title>Present demands</title>
+      <title>Current needs and capacties</title>
       <Layout
         autoSpaceMainContent={false}
         showLoginInformation={true}
@@ -307,9 +307,9 @@ const PresentDemandPage: React.FC = () => {
           </div>
           <div className="govuk-grid-column-two-thirds">
             <div className="govuk-grid-row govuk-!-margin-bottom-9">
-              <h2 className="govuk-heading-l">
+              <h1 className="govuk-heading-l">
                 Current population needs and capacity
-              </h2>
+              </h1>
               <h2 className="govuk-heading-m" id="summary">
                 Introduction
               </h2>
@@ -402,9 +402,9 @@ const PresentDemandPage: React.FC = () => {
               </dl>
             </div>
             <div className="govuk-grid-row govuk-!-margin-bottom-9">
-              <h1 className="govuk-heading-l" id="drivers">
+              <h2 className="govuk-heading-l" id="drivers">
                 Drivers of population needs
-              </h1>
+              </h2>
               <p className="govuk-body">
                 Population needs for adult social care are influenced by a range
                 of factors, including the population&apos;s age structure,
@@ -445,9 +445,9 @@ const PresentDemandPage: React.FC = () => {
             </p>
 
             <div className="govuk-grid-row govuk-!-margin-bottom-9">
-              <h1 className="govuk-heading-l" id="capacity-la">
+              <h2 className="govuk-heading-l" id="capacity-la">
                 Current capacity - care homes: local authority-level insights
-              </h1>
+              </h2>
               <p className="govuk-body">
                 The number of adult social care beds per 100,000 adult
                 population provides an indicator of current care capacity. A
@@ -513,9 +513,9 @@ const PresentDemandPage: React.FC = () => {
                 Data correct as of {bedDataLatestDate}
               </p>
               <div className="govuk-grid-row govuk-!-margin-bottom-9">
-                <h1 className="govuk-heading-l" id="capacity-cp">
+                <h2 className="govuk-heading-l" id="capacity-cp">
                   Current capacity - care homes: care provider-level insights
-                </h1>
+                </h2>
                 <p className="govuk-body">
                   Examining individual care providers offers insight into how
                   their capacity compares with other care providers at local

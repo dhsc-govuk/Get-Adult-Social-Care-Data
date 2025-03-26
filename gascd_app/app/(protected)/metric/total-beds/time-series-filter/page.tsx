@@ -42,40 +42,46 @@ const TotalBedsFiltersPage: React.FC = () => {
   };
 
   return (
-    <Layout
-      showLoginInformation={true}
-      currentPage={'/metric/total-beds/time-series-filter'}
-    >
-      <a href="/metric/total-beds#time-series" className="govuk-back-link">
-        Back
-      </a>
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
-          <span className="govuk-caption-m">
-            Total beds per 100,000 population
-          </span>
-          <h1 className="govuk-heading-l">Edit time series filters</h1>
-          <p className="govuk-body">
-            Select filters to refine the data displayed.
-          </p>
-          <Filters
-            filters={filters}
-            onChange={handleCheckboxChange}
-            useCheckboxes={true}
-          />
-          <Link href="/metric/total-beds#time-series" onClick={handleSubmit}>
-            <button type="button" className="govuk-button">
-              Apply changes
-            </button>
-          </Link>
-          <p className="govuk-body">
-            <Link href="/metric/total-beds#time-series" className="govuk-link">
-              Cancel and go back
+    <>
+      <title>Edit time series filter</title>
+      <Layout
+        showLoginInformation={true}
+        currentPage={'/metric/total-beds/time-series-filter'}
+      >
+        <a href="/metric/total-beds#time-series" className="govuk-back-link">
+          Back
+        </a>
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <span className="govuk-caption-m">
+              Total beds per 100,000 population
+            </span>
+            <h1 className="govuk-heading-l">Edit time series filters</h1>
+            <p className="govuk-body">
+              Select filters to refine the data displayed.
+            </p>
+            <Filters
+              filters={filters}
+              onChange={handleCheckboxChange}
+              useCheckboxes={true}
+            />
+            <Link href="/metric/total-beds#time-series" onClick={handleSubmit}>
+              <button type="button" className="govuk-button">
+                Apply changes
+              </button>
             </Link>
-          </p>
+            <p className="govuk-body">
+              <Link
+                href="/metric/total-beds#time-series"
+                className="govuk-link"
+              >
+                Cancel and go back
+              </Link>
+            </p>
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 

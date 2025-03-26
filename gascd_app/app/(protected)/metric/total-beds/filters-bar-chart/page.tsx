@@ -57,40 +57,43 @@ const TotalBedsFiltersPage: React.FC = () => {
   };
 
   return (
-    <Layout
-      showLoginInformation={true}
-      currentPage={'/metric/total-beds/filters'}
-    >
-      <Link href="/metric/total-beds#chart" className="govuk-back-link">
-        Back
-      </Link>
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
-          <span className="govuk-caption-m">
-            Adult social care beds per 100,000 adult population
-          </span>
-          <h1 className="govuk-heading-l">Edit chart filter</h1>
-          <p className="govuk-body">
-            Select the filter to refine the data displayed.
-          </p>
-          <FiltersList
-            filters={filters}
-            onChange={handleRadioChange}
-            useCheckboxes={false}
-          />
-          <Link href="/metric/total-beds#chart" onClick={handleSubmit}>
-            <button type="button" className="govuk-button">
-              Apply changes
-            </button>
-          </Link>
-          <p className="govuk-body">
-            <Link href="/metric/total-beds#chart" className="govuk-link">
-              Cancel and go back
+    <>
+      <title>Edit chart filter</title>
+      <Layout
+        showLoginInformation={true}
+        currentPage={'/metric/total-beds/filters'}
+      >
+        <Link href="/metric/total-beds#chart" className="govuk-back-link">
+          Back
+        </Link>
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <span className="govuk-caption-m">
+              Adult social care beds per 100,000 adult population
+            </span>
+            <h1 className="govuk-heading-l">Edit chart filter</h1>
+            <p className="govuk-body">
+              Select the filter to refine the data displayed.
+            </p>
+            <FiltersList
+              filters={filters}
+              onChange={handleRadioChange}
+              useCheckboxes={false}
+            />
+            <Link href="/metric/total-beds#chart" onClick={handleSubmit}>
+              <button type="button" className="govuk-button">
+                Apply changes
+              </button>
             </Link>
-          </p>
+            <p className="govuk-body">
+              <Link href="/metric/total-beds#chart" className="govuk-link">
+                Cancel and go back
+              </Link>
+            </p>
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 

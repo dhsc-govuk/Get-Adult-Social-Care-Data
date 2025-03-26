@@ -76,7 +76,7 @@ const PresentDemandLocations: React.FC = () => {
         </a>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
-            <h2 className="govuk-heading-l">Edit locations </h2>
+            <h1 className="govuk-heading-l">Edit locations </h1>
             <h2 className="govuk-heading-m"> Your locations</h2>
             <div className="govuk-form-group">
               <form>
