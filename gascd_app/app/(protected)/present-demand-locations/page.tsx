@@ -41,7 +41,6 @@ const PresentDemandLocations: React.FC = () => {
           const locations =
             await PresentDemandService.getAvailableLocations(cpLocation);
           setAvailableLocations(locations);
-          console.log(locations, 'locations ');
         } catch (error) {
           console.error('Error fetching data', error);
         }
