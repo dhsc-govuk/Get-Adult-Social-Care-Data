@@ -62,64 +62,67 @@ const PresentDemandLocations: React.FC = () => {
   };
 
   return (
-    <Layout
-      autoSpaceMainContent={false}
-      showLoginInformation={true}
-      currentPage="present-demand-locations"
-      showNavBar={false}
-    >
-      <a href="/metric/total-beds" className="govuk-back-link">
-        Back
-      </a>
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
-          <span className="govuk-caption-m">
-            Adult social care beds per 100,000 adult population
-          </span>
-          <h1 className="govuk-heading-l">Edit location</h1>
-          <p className="govuk-body">
-            Select the filter to refine the data displayed.
-          </p>
-          <h2 className="govuk-heading-m">Local authority</h2>
-          <div className="govuk-form-group">
-            <form>
-              <fieldset className="govuk-fieldset govuk-!-margin-bottom-6">
-                <div className="govuk-radios" data-module="govuk-radios">
-                  {availableLocations.map((item, index) => (
-                    <div className="govuk-radios__item" key={item.la_code}>
-                      <input
-                        className="govuk-radios__input"
-                        id={`radio-${index}`}
-                        name="options"
-                        type="radio"
-                        value={item.la_code}
-                        onChange={() => handleChange(item.la_code)}
-                      />
-                      <label
-                        className="govuk-label govuk-radios__label"
-                        htmlFor={`radio-${index}`}
-                      >
-                        {item.la_name}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </fieldset>
-              <Link href="/metric/total-beds" onClick={handleSubmit}>
-                <button type="button" className="govuk-button">
-                  Apply changes
-                </button>
-              </Link>
-              <p className="govuk-body">
-                <Link href="/metric/total-beds" className="govuk-link">
-                  Cancel and go back
+    <>
+      <title> Edit location</title>
+      <Layout
+        autoSpaceMainContent={false}
+        showLoginInformation={true}
+        currentPage="present-demand-locations"
+        showNavBar={false}
+      >
+        <a href="/metric/total-beds" className="govuk-back-link">
+          Back
+        </a>
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <span className="govuk-caption-m">
+              Adult social care beds per 100,000 adult population
+            </span>
+            <h1 className="govuk-heading-l">Edit location</h1>
+            <p className="govuk-body">
+              Select the filter to refine the data displayed.
+            </p>
+            <h2 className="govuk-heading-m">Local authority</h2>
+            <div className="govuk-form-group">
+              <form>
+                <fieldset className="govuk-fieldset govuk-!-margin-bottom-6">
+                  <div className="govuk-radios" data-module="govuk-radios">
+                    {availableLocations.map((item, index) => (
+                      <div className="govuk-radios__item" key={item.la_code}>
+                        <input
+                          className="govuk-radios__input"
+                          id={`radio-${index}`}
+                          name="options"
+                          type="radio"
+                          value={item.la_code}
+                          onChange={() => handleChange(item.la_code)}
+                        />
+                        <label
+                          className="govuk-label govuk-radios__label"
+                          htmlFor={`radio-${index}`}
+                        >
+                          {item.la_name}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </fieldset>
+                <Link href="/metric/total-beds" onClick={handleSubmit}>
+                  <button type="button" className="govuk-button">
+                    Apply changes
+                  </button>
                 </Link>
-              </p>
-            </form>
+                <p className="govuk-body">
+                  <Link href="/metric/total-beds" className="govuk-link">
+                    Cancel and go back
+                  </Link>
+                </p>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 

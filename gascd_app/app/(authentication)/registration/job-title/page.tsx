@@ -20,37 +20,40 @@ const RegisterJobTitlePage: React.FC = () => {
   };
 
   return (
-    <Layout showLoginInformation={false} currentPage={'register-job-title'}>
-      <a href="/register/your-name" className="govuk-back-link">
-        Back
-      </a>
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
-          <h1 className="govuk-heading-l">What is your job title?</h1>
+    <>
+      <title>What is your job title</title>
+      <Layout showLoginInformation={false} currentPage={'register-job-title'}>
+        <a href="/register/your-name" className="govuk-back-link">
+          Back
+        </a>
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <h1 className="govuk-heading-l">What is your job title?</h1>
 
-          <form
-            className="form"
-            action="organisation-type"
-            method="post"
-            onSubmit={handleSubmit}
-          >
-            <div className="govuk-form-group">
-              <LabelledInput
-                inputId="register-job-title"
-                eventName="jobTitle"
-                value={jobTitle}
-                onChange={(e) => setJobTitle(e.target.value)}
-                ariaLabel="Enter job title"
-              ></LabelledInput>
-            </div>
+            <form
+              className="form"
+              action="organisation-type"
+              method="post"
+              onSubmit={handleSubmit}
+            >
+              <div className="govuk-form-group">
+                <LabelledInput
+                  inputId="register-job-title"
+                  eventName="jobTitle"
+                  value={jobTitle}
+                  onChange={(e) => setJobTitle(e.target.value)}
+                  ariaLabel="Enter job title"
+                ></LabelledInput>
+              </div>
 
-            <button className="govuk-button" type="submit">
-              Continue
-            </button>
-          </form>
+              <button className="govuk-button" type="submit">
+                Continue
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 

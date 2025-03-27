@@ -25,51 +25,54 @@ const RegisterYourNamePage: React.FC = () => {
   };
 
   return (
-    <Layout showLoginInformation={false} currentPage={'register-your-name'}>
-      <a href="/register/confirm-code" className="govuk-back-link">
-        Back
-      </a>
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
-          <h1 className="govuk-heading-l">What is your name?</h1>
+    <>
+      <title>What is your name</title>
+      <Layout showLoginInformation={false} currentPage={'register-your-name'}>
+        <a href="/register/confirm-code" className="govuk-back-link">
+          Back
+        </a>
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <h1 className="govuk-heading-l">What is your name?</h1>
 
-          <form
-            className="form"
-            action="job-title"
-            method="post"
-            onSubmit={handleSubmit}
-          >
-            <div className="govuk-form-group">
-              <LabelledInput
-                inputId="register-first-name"
-                eventName="firstName"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                ariaLabel="Enter first name"
-              >
-                First Name
-              </LabelledInput>
-            </div>
+            <form
+              className="form"
+              action="job-title"
+              method="post"
+              onSubmit={handleSubmit}
+            >
+              <div className="govuk-form-group">
+                <LabelledInput
+                  inputId="register-first-name"
+                  eventName="firstName"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  ariaLabel="Enter first name"
+                >
+                  First Name
+                </LabelledInput>
+              </div>
 
-            <div className="govuk-form-group">
-              <LabelledInput
-                inputId="register-last-name"
-                eventName="lastName"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                ariaLabel="Enter last name"
-              >
-                Last Name
-              </LabelledInput>
-            </div>
+              <div className="govuk-form-group">
+                <LabelledInput
+                  inputId="register-last-name"
+                  eventName="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  ariaLabel="Enter last name"
+                >
+                  Last Name
+                </LabelledInput>
+              </div>
 
-            <button className="govuk-button" type="submit">
-              Continue
-            </button>
-          </form>
+              <button className="govuk-button" type="submit">
+                Continue
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 
