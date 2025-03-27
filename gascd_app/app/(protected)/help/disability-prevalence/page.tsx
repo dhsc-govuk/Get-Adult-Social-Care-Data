@@ -8,7 +8,8 @@ const DisabilyPrevalence: React.FC = () => {
   return (
     <>
       <title>
-        Indicator definition and supporting information: disability prevalence
+        Indicator definition and supporting information: disability prevalence -
+        Get adult social care data - GOV.UK
       </title>
       <Layout showLoginInformation={false} currentPage={'disabilty prevalence'}>
         <Link onClick={() => router.back()} className="govuk-back-link" href="">

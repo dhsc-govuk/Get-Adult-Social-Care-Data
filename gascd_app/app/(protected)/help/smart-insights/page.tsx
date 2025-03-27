@@ -7,7 +7,7 @@ const SmartInsightsPage: React.FC = () => {
   const router = useRouter();
   return (
     <>
-      <title>About smart insights</title>
+      <title>About smart insights - Get adult social care data - GOV.UK</title>
       <Layout showLoginInformation={false} currentPage={'smart insights'}>
         <Link className="govuk-back-link" href="/metric/total-beds">
           Back

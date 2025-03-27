@@ -6,7 +6,9 @@ import Layout from '@/components/common/layout/Layout';
 const RegisterYourNamePage: React.FC = () => {
   return (
     <>
-      <title>Request for access submitted</title>
+      <title>
+        Request for access submitted - Get adult social care data - GOV.UK
+      </title>
       <Layout showLoginInformation={false} currentPage={'register-your-name'}>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">

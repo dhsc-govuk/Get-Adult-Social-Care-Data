@@ -8,7 +8,8 @@ const PopulationSize: React.FC = () => {
   return (
     <>
       <title>
-        Indicator definition and supporting information: population size
+        Indicator definition and supporting information: population size - Get
+        adult social care data - GOV.UK
       </title>
       <Layout showLoginInformation={false} currentPage={'population size'}>
         <Link onClick={() => router.back()} className="govuk-back-link" href="">

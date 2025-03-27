@@ -118,11 +118,11 @@ const PresentDemandPage: React.FC = () => {
             session.user.locationId ?? ' ',
             session.user.locationType
           );
-          localStorage.setItem('selectedValue',locationId);
+          localStorage.setItem('selectedValue', locationId);
           setCPLocationId(locationId);
         } else {
           const locationId = session.user?.locationId;
-          localStorage.setItem('selectedValue',locationId!);
+          localStorage.setItem('selectedValue', locationId!);
           setCPLocationId(locationId);
         }
       }
@@ -289,7 +289,9 @@ const PresentDemandPage: React.FC = () => {
 
   return (
     <>
-      <title>Current needs and capacties</title>
+      <title>
+        Current needs and capacaties - Get adult social care data - GOV.UK
+      </title>
       <Layout
         autoSpaceMainContent={false}
         showLoginInformation={true}
