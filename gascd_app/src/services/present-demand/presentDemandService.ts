@@ -9,73 +9,52 @@ import { metadata } from '../../../app/layout';
 
 class PresentDemandService {
   public static async getLocations(query: string): Promise<Locations> {
-    try {
-      const response = await fetch(
-        `/api/get_location_data?provider_location_id=${query}`
-      );
-      if (!response.ok) {
-        throw new Error(`Error fetching data: ${response.statusText}`);
-      }
+    const response = await fetch(
+      `/api/get_location_data?provider_location_id=${query}`
+    );
 
-      return await response.json();
-    } catch (error) {
-      console.error('error', error);
-      throw new Error('Failed to retrieve location data');
+    if (!response.ok) {
+      throw new Error(`Error fetching data: ${response.statusText}`);
     }
+
+    return await response.json();
   }
 
   public static async getLaLocations(query: string): Promise<Locations> {
-    try {
-      const response = await fetch(
-        `/api/get_la_location_data?la_code=${query}`
-      );
-      if (!response.ok) {
-        throw new Error(`Error fetching data: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('error', error);
-      throw new Error('Failed to retrieve location data');
+    const response = await fetch(`/api/get_la_location_data?la_code=${query}`);
+    if (!response.ok) {
+      throw new Error(`Error fetching data: ${response.statusText}`);
     }
+
+    return await response.json();
   }
 
   public static async getAvailableLocations(
     query: string
   ): Promise<Indicator[]> {
-    try {
-      const response = await fetch(
-        `api/get_available_locations?provider_location_id=${query}`
-      );
-      if (!response.ok) {
-        throw new Error(`Error fetching data: ${response.statusText}`);
-      }
-      return await response.json();
-    } catch (error) {
-      console.error('error', error);
-      throw new Error('Failed to retrieve available location data');
+    const response = await fetch(
+      `api/get_available_locations?provider_location_id=${query}`
+    );
+    if (!response.ok) {
+      throw new Error(`Error fetching data: ${response.statusText}`);
     }
+    return await response.json();
   }
 
   public static async getDefaultCPLocation(
     providerLocationId: string,
     locationType: string
   ): Promise<any> {
-    try {
-      const response = await fetch(
-        `api/get_available_locations?provider_location_id=${encodeURIComponent(providerLocationId)}&location_type=${encodeURIComponent(locationType)}`
-      );
+    const response = await fetch(
+      `api/get_available_locations?provider_location_id=${encodeURIComponent(providerLocationId)}&location_type=${encodeURIComponent(locationType)}`
+    );
 
-      if (!response.ok) {
-        throw new Error(`Error fetching data: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      return data[0].metric_location_id;
-    } catch (error) {
-      console.error('error', error);
-      throw new Error('Failed to retrieve available location data');
+    if (!response.ok) {
+      throw new Error(`Error fetching data: ${response.statusText}`);
     }
+
+    const data = await response.json();
+    return data[0].metric_location_id;
   }
 
   public static async getLocationNames(
@@ -127,6 +106,10 @@ class PresentDemandService {
     const [day, month, year] = dateStr.split('/').map(Number);
     const date = new Date(year, month - 1, day);
 
+    if (isNaN(date.getTime())) {
+      throw new Error('Invalid date');
+    }
+
     return new Intl.DateTimeFormat('en-GB', {
       day: '2-digit',
       month: 'long',
@@ -137,6 +120,11 @@ class PresentDemandService {
   public static createDate(data: string): Date {
     const [day, month, year] = data.split('/').map(Number);
     const date = new Date(year, month - 1, day);
+
+    if (isNaN(date.getTime())) {
+      throw new Error('Invalid date');
+    }
+
     return date;
   }
 
