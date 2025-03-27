@@ -1,6 +1,9 @@
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import { Location } from '@/data/interfaces/Location';
 import { Indicator } from '@/data/interfaces/Indicator';
+import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
+import IndicatorDisplayService from '@/services/indicator/IndicatorDisplayService';
+import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 
 global.fetch = jest.fn();
 
@@ -330,12 +333,12 @@ describe('IndicatorFetchService', () => {
   });
   describe('formatDate', () => {
     it('formats date correctly', () => {
-      const result = PresentDemandService.formatDate('25/12/2023');
+      const result = PresentDemandService.formatDate('12/25/2023');
       expect(result).toBe('25 December 2023');
     });
 
     it('formats single-digit day and month correctly', () => {
-      const result = PresentDemandService.formatDate('5/3/2022');
+      const result = PresentDemandService.formatDate('3/5/2022');
       expect(result).toBe('05 March 2022');
     });
 
@@ -386,7 +389,9 @@ describe('IndicatorFetchService', () => {
     it('returns the most recent metric date', () => {
       const result =
         PresentDemandService.getMostRecentIndicator(mockIndicators);
-      expect(result).toBe('30/05/2023');
+      expect(result).toBe(
+        'Fri Jun 30 2023 00:00:00 GMT+0100 (British Summer Time)'
+      );
     });
 
     it('returns an empty string when given an empty array', () => {
@@ -397,7 +402,9 @@ describe('IndicatorFetchService', () => {
     it('handles a single-entry array correctly', () => {
       const singleEntry = [mockIndicators[1]];
       const result = PresentDemandService.getMostRecentIndicator(singleEntry);
-      expect(result).toBe('15/04/2023');
+      expect(result).toBe(
+        'Mon May 15 2023 00:00:00 GMT+0100 (British Summer Time)'
+      );
     });
   });
 
@@ -449,14 +456,78 @@ describe('IndicatorFetchService', () => {
     it('returns the formatted most recent date', () => {
       const result = PresentDemandService.getMostRecentDate(mockIndicators);
       expect(PresentDemandService.formatDate).toHaveBeenCalledWith(
-        '30/05/2023'
+        'Fri Jun 30 2023 00:00:00 GMT+0100 (British Summer Time)'
       );
-      expect(result).toBe('Formatted: 30/05/2023');
+      expect(result).toBe(
+        'Formatted: Fri Jun 30 2023 00:00:00 GMT+0100 (British Summer Time)'
+      );
     });
 
     it('returns an empty string when given an empty array', () => {
       const result = PresentDemandService.getMostRecentDate([]);
       expect(result).toBe('Formatted: ');
+    });
+  });
+
+  describe('getDataSource', () => {
+    const mockDataQuery1: IndicatorQuery = {
+      metric_ids: ['metric1', 'metric2'],
+      location_ids: ['location1', 'location2'],
+    };
+
+    const mockDataQuery2: IndicatorQuery = {
+      metric_ids: ['metric3'],
+      location_ids: ['location3'],
+    };
+
+    let getDisplayDataSpy: jest.SpyInstance;
+    let getSourceSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      getDisplayDataSpy = jest.spyOn(IndicatorFetchService, 'getDisplayData');
+      getSourceSpy = jest.spyOn(IndicatorDisplayService, 'getSource');
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('should combine metric_ids and location_ids from both queries and return the source', async () => {
+      const mockMetaData = {};
+      const mockSource = 'combined-source';
+
+      getDisplayDataSpy.mockResolvedValue(mockMetaData);
+      getSourceSpy.mockReturnValue(mockSource);
+
+      const result = await PresentDemandService.getDataSource(
+        mockDataQuery1,
+        mockDataQuery2
+      );
+
+      expect(getDisplayDataSpy).toHaveBeenCalledWith({
+        metric_ids: ['metric1', 'metric2', 'metric3'],
+        location_ids: ['location1', 'location2', 'location3'],
+      });
+      expect(getSourceSpy).toHaveBeenCalledWith(mockMetaData);
+      expect(result).toBe(mockSource);
+    });
+
+    it('should throw an error if getDisplayData fails', async () => {
+      getDisplayDataSpy.mockRejectedValue(new Error('Fetch Error'));
+
+      await expect(
+        PresentDemandService.getDataSource(mockDataQuery1, mockDataQuery2)
+      ).rejects.toThrow('Fetch Error');
+    });
+
+    it('should throw an error if getSource fails', async () => {
+      const mockMetaData = {};
+      getDisplayDataSpy.mockResolvedValue(mockMetaData);
+      getSourceSpy.mockRejectedValue(new Error('Source Error'));
+
+      await expect(
+        PresentDemandService.getDataSource(mockDataQuery1, mockDataQuery2)
+      ).rejects.toThrow('Source Error');
     });
   });
 });

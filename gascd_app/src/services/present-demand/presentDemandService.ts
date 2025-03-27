@@ -105,10 +105,6 @@ class PresentDemandService {
   public static formatDate(dateStr: string): string {
     const date = new Date(dateStr);
 
-    if (isNaN(date.getTime())) {
-      throw new Error('Invalid date');
-    }
-
     return new Intl.DateTimeFormat('en-GB', {
       day: '2-digit',
       month: 'long',
