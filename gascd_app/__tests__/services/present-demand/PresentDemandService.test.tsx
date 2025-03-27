@@ -344,24 +344,119 @@ describe('IndicatorFetchService', () => {
     });
   });
 
-  describe('createDate', () => {
-    it('creates a valid Date object', () => {
-      const result = PresentDemandService.createDate('25/12/2023');
-      expect(result).toBeInstanceOf(Date);
-      expect(result.getFullYear()).toBe(2023);
-      expect(result.getMonth()).toBe(11);
-      expect(result.getDate()).toBe(25);
+  describe('getMostRecentIndicator', () => {
+    const mockIndicators: Indicator[] = [
+      {
+        metric_date: new Date(2023, 3, 1),
+        location_id: '1',
+        metric_id: 'A',
+        data_point: 100,
+        metric_date_type: '',
+        location_type: '',
+        numerator: 0,
+        multiplier: 0,
+        denominator: 0,
+        load_date_time: new Date(2023, 3, 1),
+      },
+      {
+        metric_date: new Date(2023, 4, 15),
+        location_id: '2',
+        metric_id: 'B',
+        data_point: 200,
+        metric_date_type: '',
+        location_type: '',
+        numerator: 0,
+        multiplier: 0,
+        denominator: 0,
+        load_date_time: new Date(2023, 4, 15),
+      },
+      {
+        metric_date: new Date(2023, 5, 30),
+        location_id: '3',
+        metric_id: 'C',
+        data_point: 300,
+        metric_date_type: '',
+        location_type: '',
+        numerator: 0,
+        multiplier: 0,
+        denominator: 0,
+        load_date_time: new Date(2023, 5, 30),
+      },
+    ];
+    it('returns the most recent metric date', () => {
+      const result =
+        PresentDemandService.getMostRecentIndicator(mockIndicators);
+      expect(result).toBe('30/05/2023');
     });
 
-    it('creates a Date object for single-digit day and month', () => {
-      const result = PresentDemandService.createDate('5/3/2022');
-      expect(result.getFullYear()).toBe(2022);
-      expect(result.getMonth()).toBe(2);
-      expect(result.getDate()).toBe(5);
+    it('returns an empty string when given an empty array', () => {
+      const result = PresentDemandService.getMostRecentIndicator([]);
+      expect(result).toBe('');
     });
 
-    it('throws an error for invalid date', () => {
-      expect(() => PresentDemandService.createDate('invalid')).toThrow();
+    it('handles a single-entry array correctly', () => {
+      const singleEntry = [mockIndicators[1]];
+      const result = PresentDemandService.getMostRecentIndicator(singleEntry);
+      expect(result).toBe('15/04/2023');
+    });
+  });
+
+  describe('getMostRecentDate', () => {
+    const mockIndicators: Indicator[] = [
+      {
+        metric_date: new Date(2023, 3, 1),
+        location_id: '1',
+        metric_id: 'A',
+        data_point: 100,
+        metric_date_type: '',
+        location_type: '',
+        numerator: 0,
+        multiplier: 0,
+        denominator: 0,
+        load_date_time: new Date(2023, 3, 1),
+      },
+      {
+        metric_date: new Date(2023, 4, 15),
+        location_id: '2',
+        metric_id: 'B',
+        data_point: 200,
+        metric_date_type: '',
+        location_type: '',
+        numerator: 0,
+        multiplier: 0,
+        denominator: 0,
+        load_date_time: new Date(2023, 4, 15),
+      },
+      {
+        metric_date: new Date(2023, 5, 30),
+        location_id: '3',
+        metric_id: 'C',
+        data_point: 300,
+        metric_date_type: '',
+        location_type: '',
+        numerator: 0,
+        multiplier: 0,
+        denominator: 0,
+        load_date_time: new Date(2023, 5, 30),
+      },
+    ];
+    beforeEach(() => {
+      jest
+        .spyOn(PresentDemandService, 'formatDate')
+        .mockImplementation((date) => `Formatted: ${date}`);
+    });
+
+    it('returns the formatted most recent date', () => {
+      const result = PresentDemandService.getMostRecentDate(mockIndicators);
+      expect(PresentDemandService.formatDate).toHaveBeenCalledWith(
+        '30/05/2023'
+      );
+      expect(result).toBe('Formatted: 30/05/2023');
+    });
+
+    it('returns an empty string when given an empty array', () => {
+      const result = PresentDemandService.getMostRecentDate([]);
+      expect(result).toBe('Formatted: ');
     });
   });
 });

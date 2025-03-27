@@ -103,8 +103,7 @@ class PresentDemandService {
   }
 
   public static formatDate(dateStr: string): string {
-    const [day, month, year] = dateStr.split('/').map(Number);
-    const date = new Date(year, month - 1, day);
+    const date = new Date(dateStr);
 
     if (isNaN(date.getTime())) {
       throw new Error('Invalid date');
@@ -117,17 +116,6 @@ class PresentDemandService {
     }).format(date);
   }
 
-  public static createDate(data: string): Date {
-    const [day, month, year] = data.split('/').map(Number);
-    const date = new Date(year, month - 1, day);
-
-    if (isNaN(date.getTime())) {
-      throw new Error('Invalid date');
-    }
-
-    return date;
-  }
-
   public static getMostRecentIndicator(indicators: Indicator[]): string {
     if (indicators.length === 0) {
       return '';
@@ -135,10 +123,7 @@ class PresentDemandService {
 
     return indicators
       .reduce((latest, current) => {
-        return this.createDate(current.metric_date.toString()) >
-          this.createDate(latest.metric_date.toString())
-          ? current
-          : latest;
+        return current.metric_date > latest.metric_date ? current : latest;
       }, indicators[0])
       .metric_date.toString();
   }
