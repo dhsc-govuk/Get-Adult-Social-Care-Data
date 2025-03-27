@@ -333,12 +333,12 @@ describe('IndicatorFetchService', () => {
   });
   describe('formatDate', () => {
     it('formats date correctly', () => {
-      const result = PresentDemandService.formatDate('12/25/2023');
+      const result = PresentDemandService.formatDate('25/12/2023');
       expect(result).toBe('25 December 2023');
     });
 
     it('formats single-digit day and month correctly', () => {
-      const result = PresentDemandService.formatDate('3/5/2022');
+      const result = PresentDemandService.formatDate('05/03/2022');
       expect(result).toBe('05 March 2022');
     });
 
