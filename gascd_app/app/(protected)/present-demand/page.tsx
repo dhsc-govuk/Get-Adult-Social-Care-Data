@@ -289,9 +289,6 @@ const PresentDemandPage: React.FC = () => {
 
   return (
     <>
-      <title>
-        Current needs and capacaties - Get adult social care data - GOV.UK
-      </title>
       <Layout
         autoSpaceMainContent={false}
         showLoginInformation={true}

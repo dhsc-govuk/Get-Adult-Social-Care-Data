@@ -24,9 +24,6 @@ const RegisterJobTitlePage: React.FC = () => {
 
   return (
     <>
-      <title>
-        What is your organisation type - Get adult social care data - GOV.UK
-      </title>
       <Layout
         showLoginInformation={false}
         currentPage={'register-organisation-type'}

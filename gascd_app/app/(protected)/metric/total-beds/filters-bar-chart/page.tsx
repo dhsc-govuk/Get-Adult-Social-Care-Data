@@ -58,7 +58,6 @@ const TotalBedsFiltersPage: React.FC = () => {
 
   return (
     <>
-      <title>Edit chart filter - Get adult social care data - GOV.UK</title>
       <Layout
         showLoginInformation={true}
         currentPage={'/metric/total-beds/filters'}

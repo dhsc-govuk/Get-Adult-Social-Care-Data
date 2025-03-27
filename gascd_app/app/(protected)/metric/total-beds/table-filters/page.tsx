@@ -40,7 +40,6 @@ const TableFiltersPage: React.FC = () => {
 
   return (
     <>
-      <title>Edit table filter - Get adult social care data - GOV.UK</title>
       <Layout showLoginInformation={true} currentPage={'/total-beds/filters'}>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">

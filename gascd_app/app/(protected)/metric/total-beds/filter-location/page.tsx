@@ -63,7 +63,6 @@ const PresentDemandLocations: React.FC = () => {
 
   return (
     <>
-      <title> Edit location - Get adult social care data - GOV.UK</title>
       <Layout
         autoSpaceMainContent={false}
         showLoginInformation={true}
