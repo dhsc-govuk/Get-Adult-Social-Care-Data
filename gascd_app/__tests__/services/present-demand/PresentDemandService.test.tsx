@@ -40,6 +40,13 @@ describe('IndicatorFetchService', () => {
         'Error fetching data: Not Found'
       );
     });
+    it('throws a generic error when fetch fails', async () => {
+      (fetch as jest.Mock).mockRejectedValue(new Error('Network Error'));
+
+      await expect(PresentDemandService.getLocations(query)).rejects.toThrow(
+        'Failed to retrieve location data'
+      );
+    });
   });
 
   describe('getLaLocations', () => {
@@ -68,6 +75,13 @@ describe('IndicatorFetchService', () => {
 
       await expect(PresentDemandService.getLaLocations(query)).rejects.toThrow(
         'Error fetching data: Not Found'
+      );
+    });
+    it('throws a generic error when fetch fails', async () => {
+      (fetch as jest.Mock).mockRejectedValue(new Error('Network Error'));
+
+      await expect(PresentDemandService.getLaLocations(query)).rejects.toThrow(
+        'Failed to retrieve location data'
       );
     });
   });
@@ -124,6 +138,13 @@ describe('IndicatorFetchService', () => {
         PresentDemandService.getAvailableLocations(query)
       ).rejects.toThrow('Error fetching data: Not Found');
     });
+    it('throws a generic error when fetch fails', async () => {
+      (fetch as jest.Mock).mockRejectedValue(new Error('Network Error'));
+
+      await expect(
+        PresentDemandService.getAvailableLocations(query)
+      ).rejects.toThrow('Failed to retrieve available location data');
+    });
   });
   describe('getDefaultCPLocation', () => {
     const providerLocationId: string = '1';
@@ -159,6 +180,16 @@ describe('IndicatorFetchService', () => {
           locationType
         )
       ).rejects.toThrow('Error fetching data: Not Found');
+    });
+    it('throws a generic error when fetch fails', async () => {
+      (fetch as jest.Mock).mockRejectedValue(new Error('Network Error'));
+
+      await expect(
+        PresentDemandService.getDefaultCPLocation(
+          providerLocationId,
+          locationType
+        )
+      ).rejects.toThrow('Failed to retrieve available location data');
     });
   });
   describe('getLocationNames', () => {

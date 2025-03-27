@@ -6,52 +6,86 @@ import IndicatorDisplayService from '../indicator/IndicatorDisplayService';
 
 class PresentDemandService {
   public static async getLocations(query: string): Promise<Locations> {
-    const response = await fetch(
-      `/api/get_location_data?provider_location_id=${query}`
-    );
+    try {
+      const response = await fetch(
+        `/api/get_location_data?provider_location_id=${query}`
+      );
 
-    if (!response.ok) {
-      throw new Error(`Error fetching data: ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      console.error('Error in getLocations:', errorMessage); // to be set as a log
+      throw new Error(`Failed to retrieve location data: ${errorMessage}`);
     }
-
-    return await response.json();
   }
 
   public static async getLaLocations(query: string): Promise<Locations> {
-    const response = await fetch(`/api/get_la_location_data?la_code=${query}`);
-    if (!response.ok) {
-      throw new Error(`Error fetching data: ${response.statusText}`);
-    }
+    try {
+      const response = await fetch(
+        `/api/get_la_location_data?la_code=${query}`
+      );
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
+      }
 
-    return await response.json();
+      return await response.json();
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      console.error('Error in getLaLocations:', errorMessage); //to be set as a log
+      throw new Error(`Failed to retrieve location data: ${errorMessage}`);
+    }
   }
 
   public static async getAvailableLocations(
     query: string
   ): Promise<Indicator[]> {
-    const response = await fetch(
-      `api/get_available_locations?provider_location_id=${query}`
-    );
-    if (!response.ok) {
-      throw new Error(`Error fetching data: ${response.statusText}`);
+    try {
+      const response = await fetch(
+        `api/get_available_locations?provider_location_id=${query}`
+      );
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
+      }
+      return await response.json();
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      console.error('Error in getAvailableLocations:', errorMessage); // to be set as a log
+      throw new Error(
+        `Failed to retrieve available location data: ${errorMessage}`
+      );
     }
-    return await response.json();
   }
 
   public static async getDefaultCPLocation(
     providerLocationId: string,
     locationType: string
   ): Promise<any> {
-    const response = await fetch(
-      `api/get_available_locations?provider_location_id=${encodeURIComponent(providerLocationId)}&location_type=${encodeURIComponent(locationType)}`
-    );
+    try {
+      const response = await fetch(
+        `api/get_available_locations?provider_location_id=${encodeURIComponent(providerLocationId)}&location_type=${encodeURIComponent(locationType)}`
+      );
 
-    if (!response.ok) {
-      throw new Error(`Error fetching data: ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data[0].metric_location_id;
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      console.error('Error in getDefaultCPLocation:', errorMessage); // to be set as a log
+      throw new Error(
+        `Failed to retrieve available location data: ${errorMessage}`
+      );
     }
-
-    const data = await response.json();
-    return data[0].metric_location_id;
   }
 
   public static async getLocationNames(
