@@ -1,11 +1,8 @@
 import { Indicator } from '@/data/interfaces/Indicator';
-import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { Locations } from '@/data/interfaces/Locations';
 import IndicatorFetchService from '../indicator/IndicatorFetchService';
-import IndicatorDisplayrService from '../indicator/IndicatorDisplayService';
 import IndicatorDisplayService from '../indicator/IndicatorDisplayService';
-import { metadata } from '../../../app/layout';
 
 class PresentDemandService {
   public static async getLocations(query: string): Promise<Locations> {
