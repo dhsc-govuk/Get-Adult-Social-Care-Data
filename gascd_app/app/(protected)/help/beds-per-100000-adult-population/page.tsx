@@ -9,7 +9,7 @@ const BedsPer100000AdultPopulation: React.FC = () => {
     <>
       <title>
         Indicator definition and supporting information: adult social care beds
-        per 100,000 adult population
+        per 100,000 adult population - Get adult social care data - GOV.UK
       </title>
       <Layout
         showLoginInformation={false}

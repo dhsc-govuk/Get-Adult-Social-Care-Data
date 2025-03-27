@@ -15,7 +15,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <>
-      <title>Log in</title>
+      <title>Log in - Get adult social care data - GOV.UK</title>
       <Layout
         showLoginInformation={false}
         currentPage="login"

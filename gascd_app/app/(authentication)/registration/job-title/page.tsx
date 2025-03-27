@@ -21,7 +21,9 @@ const RegisterJobTitlePage: React.FC = () => {
 
   return (
     <>
-      <title>What is your job title</title>
+      <title>
+        What is your job title - Get adult social care data - GOV.UK
+      </title>
       <Layout showLoginInformation={false} currentPage={'register-job-title'}>
         <a href="/register/your-name" className="govuk-back-link">
           Back

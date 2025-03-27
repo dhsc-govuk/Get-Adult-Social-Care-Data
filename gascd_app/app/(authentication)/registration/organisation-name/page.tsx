@@ -20,7 +20,9 @@ const RegisterYourNamePage: React.FC = () => {
   };
   return (
     <>
-      <title> Enter your organisations name</title>
+      <title>
+        Enter your organisations name - Get adult social care data - GOV.UK
+      </title>
       <Layout
         showLoginInformation={false}
         currentPage={'register-your-organisation-name'}
