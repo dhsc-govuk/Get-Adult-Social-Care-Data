@@ -5,12 +5,16 @@ class AppInsightsLogger {
   isLocal: boolean = false;
   constructor(instrumentationKey: string) {
     console.warn(" instrumentationKey ", instrumentationKey);
+    console.log("appInsights: ", appInsights);
     if(instrumentationKey && instrumentationKey !== ''){
       this.isLocal = process.env.NEXT_PUBLIC_APP_ENV === 'local';
       if(!this.isLocal){
         if (!appInsights.defaultClient) {
+          console.log("Setting up AppInsights");
           appInsights.setup(instrumentationKey).start();
         }
+        console.log("Getting default client");
+        console.log("client: ", this.client);
         this.client = appInsights.defaultClient;
       }
     }
