@@ -9,20 +9,26 @@ class AppInsightsLogger {
     if(instrumentationKey && instrumentationKey !== ''){
       this.isLocal = process.env.NEXT_PUBLIC_APP_ENV === 'local';
       if(!this.isLocal){
-        if (!appInsights.defaultClient) {
-          console.log("Setting up AppInsights");
-          appInsights.setup(instrumentationKey).start();
+        if (appInsights) {
+          if (!appInsights.defaultClient) {
+            console.log("Setting up AppInsights");
+            appInsights.setup(instrumentationKey).start();
+          }
+          console.log("Getting default client");
+          console.log("client: ", this.client);
+          this.client = appInsights.defaultClient;
         }
-        console.log("Getting default client");
-        console.log("client: ", this.client);
-        this.client = appInsights.defaultClient;
       }
     }
   }
 
   logEvent(eventName: string, properties = {}) {
     if(!this.isLocal){
+      if(this.client){
       this.client!.trackEvent({ name: eventName, properties });
+      }else{
+        console.warn("App insights client not initialized.");
+      }
     }
   }
 }
