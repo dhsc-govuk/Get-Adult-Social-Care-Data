@@ -11,7 +11,11 @@ const PhaseBanner: React.FC = () => {
         </strong>
         <span className="govuk-phase-banner__text">
           This is a new service. Help us improve it and{' '}
-          <Link href={feedback_url} className="govuk-link" target="_blank">
+          <Link
+            href={feedback_url ?? ''}
+            className="govuk-link"
+            target="_blank"
+          >
             give your feedback (opens in new tab)
           </Link>
           .
