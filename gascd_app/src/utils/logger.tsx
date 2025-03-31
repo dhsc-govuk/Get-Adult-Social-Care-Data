@@ -2,14 +2,16 @@ import appInsights from 'applicationinsights';
 
 class AppInsightsLogger {
   client: appInsights.TelemetryClient | undefined;
-  isLocal: boolean;
+  isLocal: boolean = false;
   constructor(instrumentationKey: string) {
-    this.isLocal = process.env.NEXT_PUBLIC_APP_ENV === 'local';
-    if(!this.isLocal){
-      if (!appInsights.defaultClient) {
-        appInsights.setup(instrumentationKey).start();
+    if(instrumentationKey && instrumentationKey !== ''){
+      this.isLocal = process.env.NEXT_PUBLIC_APP_ENV === 'local';
+      if(!this.isLocal){
+        if (!appInsights.defaultClient) {
+          appInsights.setup(instrumentationKey).start();
+        }
+        this.client = appInsights.defaultClient;
       }
-      this.client = appInsights.defaultClient;      
     }
   }
 
