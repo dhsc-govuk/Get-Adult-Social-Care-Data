@@ -3,7 +3,6 @@ import React from 'react';
 
 const PhaseBanner: React.FC = () => {
   const feedback_url = process.env.NEXT_PUBLIC_FEEDBACK_FORM_LINK as string;
-  console.log(feedback_url);
   return (
     <div className="govuk-phase-banner">
       <p className="govuk-phase-banner__content">
