@@ -1,22 +1,17 @@
-describe('User can follow the current login process', () => {
-  it('Should navigate to the homepage and go through the current log in process', () => {
-    // login validation is not currently set
+describe('Azure AD B2C Login Test', () => {
+  it('should login and go to the present-demand page', () => {
+    cy.log(Cypress.env('AZURE_AD_TENANT_ID'));
+    cy.loginWithB2C().then(() => {
+      cy.visit('/');
+      cy.contains('Present demand').should('be.visible');
+    });
+  });
+});
 
-    cy.visit('');
-
-    cy.get('.govuk-link').contains('Login').click();
-    cy.url().should('include', '/login');
-
-    cy.contains('label', 'Enter your email address')
-      .siblings('input')
-      .type('Example@example.com');
-
-    cy.contains('label', 'Enter your password')
-      .siblings('input')
-      .type('Password');
-
-    cy.get('.govuk-button').contains('Login').click();
-
-    cy.url().should('include', 'home');
+describe('Variables', () => {
+  it('should print env variables', () => {
+    cy.log('AZURE_AD_TENANT_NAME:', Cypress.env('AZURE_AD_TENANT_NAME'));
+    cy.log('AZURE_AD_CLIENT_ID:', Cypress.env('AZURE_AD_CLIENT_ID'));
+    cy.log('AZURE_AD_CLIENT_SECRET:', Cypress.env('AZURE_AD_CLIENT_SECRET'));
   });
 });

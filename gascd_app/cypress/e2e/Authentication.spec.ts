@@ -19,7 +19,7 @@ describe('Azure Authentication', () => {
       cy.visit('', {
         onBeforeLoad(win) {
           win.localStorage.setItem('authToken', accessToken);
-          // cy.setCookie('authCookieName', accessToken);
+          cy.setCookie('authCookieName', accessToken);
         },
       });
     });
