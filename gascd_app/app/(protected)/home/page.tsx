@@ -24,7 +24,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <title>Home - Get adult social care data - GOV.UK</title>
       <Layout
         autoSpaceMainContent={false}
         breadcrumbs={breadcrumbs}

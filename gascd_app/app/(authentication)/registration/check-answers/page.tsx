@@ -35,7 +35,6 @@ const RegisterYourNamePage: React.FC = () => {
   };
   return (
     <>
-      <title>Check your answers before submitting your request</title>
       <Layout
         showLoginInformation={false}
         currentPage={'register-check-answers'}

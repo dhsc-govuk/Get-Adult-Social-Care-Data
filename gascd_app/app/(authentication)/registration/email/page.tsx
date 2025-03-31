@@ -13,10 +13,6 @@ const RegisterEmailPage: React.FC = () => {
 
   return (
     <>
-      <title>
-        Sign in to Get adult social care data or request access - Get adult
-        social care data - GOV.UK
-      </title>
       <Layout showLoginInformation={false} currentPage={'register-email'}>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">

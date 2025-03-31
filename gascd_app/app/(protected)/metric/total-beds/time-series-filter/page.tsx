@@ -43,9 +43,6 @@ const TotalBedsFiltersPage: React.FC = () => {
 
   return (
     <>
-      <title>
-        Edit time series filter - Get adult social care data - GOV.UK
-      </title>
       <Layout
         showLoginInformation={true}
         currentPage={'/metric/total-beds/time-series-filter'}

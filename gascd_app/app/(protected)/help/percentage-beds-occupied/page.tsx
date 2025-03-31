@@ -7,10 +7,6 @@ const PercentageBedsOccupied: React.FC = () => {
   const router = useRouter();
   return (
     <>
-      <title>
-        Indicator definition and supporting information: percentage of adult
-        social care beds occupied - Get adult social care data - GOV.UK
-      </title>
       <Layout
         showLoginInformation={false}
         currentPage={'percentage beds occupied'}

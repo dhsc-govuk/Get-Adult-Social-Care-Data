@@ -7,11 +7,6 @@ const PopulationAge: React.FC = () => {
   const router = useRouter();
   return (
     <>
-      <title>
-        Indicator definition and supporting information: percentage of
-        population aged 18 to 64, or 65 and over - Get adult social care data -
-        GOV.UK
-      </title>
       <Layout showLoginInformation={false} currentPage={'population age'}>
         <Link onClick={() => router.back()} className="govuk-back-link" href="">
           Back

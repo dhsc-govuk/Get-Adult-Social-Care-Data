@@ -8,11 +8,6 @@ const PercentageBedsOccupiedCareProviders: React.FC = () => {
 
   return (
     <>
-      <title>
-        Indicator definition and supporting information: percentage of adult
-        social care beds occupied in care provider location - Get adult social
-        care data - GOV.UK
-      </title>
       <Layout
         showLoginInformation={false}
         currentPage={'beds care provider location'}

@@ -7,10 +7,6 @@ import StandardButton from '@/components/common/buttons/functionality/standard-b
 const RegisterConfirmCodePage: React.FC = () => {
   return (
     <>
-      <title>
-        Enter code to confirm your email address - Get adult social care data -
-        GOV.UK
-      </title>
       <Layout
         showLoginInformation={false}
         currentPage={'register-confirm-code'}

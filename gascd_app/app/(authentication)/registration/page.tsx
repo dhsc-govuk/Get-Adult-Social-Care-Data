@@ -22,7 +22,6 @@ const RegisterPage: React.FC = () => {
 
   return (
     <>
-      <title>Get adult social care data: sign in or request access</title>
       <Layout
         breadcrumbs={breadcrumbs}
         showLoginInformation={false}
