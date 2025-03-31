@@ -4,6 +4,7 @@ class AppInsightsLogger {
   client: appInsights.TelemetryClient | undefined;
   isLocal: boolean = false;
   constructor(instrumentationKey: string) {
+    console.warn(" instrumentationKey ", instrumentationKey);
     if(instrumentationKey && instrumentationKey !== ''){
       this.isLocal = process.env.NEXT_PUBLIC_APP_ENV === 'local';
       if(!this.isLocal){
