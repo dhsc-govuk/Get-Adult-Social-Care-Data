@@ -3,6 +3,7 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { Locations } from '@/data/interfaces/Locations';
 import IndicatorFetchService from '../indicator/IndicatorFetchService';
 import IndicatorDisplayService from '../indicator/IndicatorDisplayService';
+import LogService from '../logger/logService';
 
 class PresentDemandService {
   public static async getLocations(query: string): Promise<Locations> {
@@ -19,7 +20,7 @@ class PresentDemandService {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
-      console.error('Error in getLocations:', errorMessage); // to be set as a log
+      LogService.logEvent(`Error in getLocations: ${errorMessage}`);
       throw new Error(`Failed to retrieve location data: ${errorMessage}`);
     }
   }
@@ -37,7 +38,7 @@ class PresentDemandService {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
-      console.error('Error in getLaLocations:', errorMessage); //to be set as a log
+      LogService.logEvent(`Error in getLaLocations: ${errorMessage}`);
       throw new Error(`Failed to retrieve location data: ${errorMessage}`);
     }
   }
@@ -56,7 +57,7 @@ class PresentDemandService {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
-      console.error('Error in getAvailableLocations:', errorMessage); // to be set as a log
+      LogService.logEvent(`Error in getAvailableLocations: ${errorMessage}`);
       throw new Error(
         `Failed to retrieve available location data: ${errorMessage}`
       );
@@ -81,7 +82,7 @@ class PresentDemandService {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
-      console.error('Error in getDefaultCPLocation:', errorMessage); // to be set as a log
+      LogService.logEvent(`Error in getDefaultCPLocation: ${errorMessage}`);
       throw new Error(
         `Failed to retrieve available location data: ${errorMessage}`
       );
