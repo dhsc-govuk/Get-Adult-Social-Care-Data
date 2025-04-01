@@ -4,18 +4,14 @@ class AppInsightsLogger {
   client: appInsights.TelemetryClient | undefined;
   isLocal: boolean = false;
   constructor(instrumentationKey: string) {
-    console.warn(" instrumentationKey ", instrumentationKey);
-    console.log("appInsights: ", appInsights);
+    const appInsights = require("applicationinsights");
     if(instrumentationKey && instrumentationKey !== ''){
       this.isLocal = process.env.NEXT_PUBLIC_APP_ENV === 'local';
       if(!this.isLocal){
         if (appInsights) {
           if (!appInsights.defaultClient) {
-            console.log("Setting up AppInsights");
             appInsights.setup(instrumentationKey).start();
           }
-          console.log("Getting default client");
-          console.log("client: ", this.client);
           this.client = appInsights.defaultClient;
         }
       }
@@ -25,7 +21,7 @@ class AppInsightsLogger {
   logEvent(eventName: string, properties = {}) {
     if(!this.isLocal){
       if(this.client){
-      this.client!.trackEvent({ name: eventName, properties });
+        this.client!.trackEvent({ name: eventName, properties });
       }else{
         console.warn("App insights client not initialized.");
       }

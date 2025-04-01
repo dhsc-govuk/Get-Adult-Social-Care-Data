@@ -7,11 +7,8 @@ import ButtonWithArrow from '@/components/common/buttons/navigation/button-with-
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/authOptions';
 import { redirect } from 'next/navigation';
-import AppInsightsLogger from '@/utils/logger';
 
 export default async function HomePage() {
-
-  const logger = new AppInsightsLogger(process.env.APPINSIGHTS_INSTRUMENTATIONKEY ?? '');
   const breadcrumbs: Array<Breadcrumb> = [
     {
       text: 'Homepage',
@@ -22,7 +19,6 @@ export default async function HomePage() {
   const session = await getServerSession(authOptions);
 
   if (session) {
-    logger.logEvent('User Logged in success');
     redirect('/present-demand');
   }
 

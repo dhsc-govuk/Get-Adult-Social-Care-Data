@@ -4,7 +4,7 @@ import AppInsightsLogger from '@/utils/logger';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/authOptions';
 
-const logger = new AppInsightsLogger(process.env.APPINSIGHTS_INSTRUMENTATIONKEY ?? '');
+const logger = new AppInsightsLogger(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING ?? '');
 
 export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
