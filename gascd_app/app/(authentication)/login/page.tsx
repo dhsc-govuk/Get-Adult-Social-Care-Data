@@ -15,7 +15,6 @@ const LoginPage: React.FC = () => {
 
   return (
     <>
-      <title>Log in</title>
       <Layout
         showLoginInformation={false}
         currentPage="login"

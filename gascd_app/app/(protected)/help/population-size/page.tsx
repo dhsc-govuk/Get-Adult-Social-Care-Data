@@ -7,9 +7,6 @@ const PopulationSize: React.FC = () => {
   const router = useRouter();
   return (
     <>
-      <title>
-        Indicator definition and supporting information: population size
-      </title>
       <Layout showLoginInformation={false} currentPage={'population size'}>
         <Link onClick={() => router.back()} className="govuk-back-link" href="">
           Back

@@ -24,7 +24,6 @@ const RegisterJobTitlePage: React.FC = () => {
 
   return (
     <>
-      <title>What is your organisation type</title>
       <Layout
         showLoginInformation={false}
         currentPage={'register-organisation-type'}

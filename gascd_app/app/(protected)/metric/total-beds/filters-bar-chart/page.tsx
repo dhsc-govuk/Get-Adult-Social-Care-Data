@@ -58,7 +58,6 @@ const TotalBedsFiltersPage: React.FC = () => {
 
   return (
     <>
-      <title>Edit chart filter</title>
       <Layout
         showLoginInformation={true}
         currentPage={'/metric/total-beds/filters'}

@@ -7,7 +7,6 @@ const SmartInsightsPage: React.FC = () => {
   const router = useRouter();
   return (
     <>
-      <title>About smart insights</title>
       <Layout showLoginInformation={false} currentPage={'smart insights'}>
         <Link className="govuk-back-link" href="/metric/total-beds">
           Back

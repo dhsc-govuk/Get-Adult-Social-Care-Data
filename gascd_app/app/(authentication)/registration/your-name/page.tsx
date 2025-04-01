@@ -26,7 +26,6 @@ const RegisterYourNamePage: React.FC = () => {
 
   return (
     <>
-      <title>What is your name</title>
       <Layout showLoginInformation={false} currentPage={'register-your-name'}>
         <a href="/register/confirm-code" className="govuk-back-link">
           Back

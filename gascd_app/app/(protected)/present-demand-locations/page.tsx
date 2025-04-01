@@ -63,7 +63,6 @@ const PresentDemandLocations: React.FC = () => {
 
   return (
     <>
-      <title>Present Demand Locations</title>
       <Layout
         autoSpaceMainContent={false}
         showLoginInformation={true}

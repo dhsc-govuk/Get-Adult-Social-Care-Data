@@ -20,7 +20,6 @@ const RegisterYourNamePage: React.FC = () => {
   };
   return (
     <>
-      <title> Enter your organisations name</title>
       <Layout
         showLoginInformation={false}
         currentPage={'register-your-organisation-name'}

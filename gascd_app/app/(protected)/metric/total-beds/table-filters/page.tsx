@@ -40,7 +40,6 @@ const TableFiltersPage: React.FC = () => {
 
   return (
     <>
-      <title>Edit table filter</title>
       <Layout showLoginInformation={true} currentPage={'/total-beds/filters'}>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">

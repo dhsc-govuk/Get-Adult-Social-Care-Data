@@ -63,7 +63,6 @@ const PresentDemandLocations: React.FC = () => {
 
   return (
     <>
-      <title> Edit location</title>
       <Layout
         autoSpaceMainContent={false}
         showLoginInformation={true}

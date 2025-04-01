@@ -24,7 +24,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <title>Home</title>
       <Layout
         autoSpaceMainContent={false}
         breadcrumbs={breadcrumbs}

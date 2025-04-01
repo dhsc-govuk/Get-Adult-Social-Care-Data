@@ -7,10 +7,6 @@ const BedsPer100000AdultPopulation: React.FC = () => {
   const router = useRouter();
   return (
     <>
-      <title>
-        Indicator definition and supporting information: adult social care beds
-        per 100,000 adult population
-      </title>
       <Layout
         showLoginInformation={false}
         currentPage={'beds per 100,000 adult population'}
