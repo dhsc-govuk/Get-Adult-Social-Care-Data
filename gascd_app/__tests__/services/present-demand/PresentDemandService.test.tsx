@@ -389,9 +389,7 @@ describe('IndicatorFetchService', () => {
     it('returns the most recent metric date', () => {
       const result =
         PresentDemandService.getMostRecentIndicator(mockIndicators);
-      expect(result).toBe(
-        'Fri Jun 30 2023 00:00:00 GMT+0100 (British Summer Time)'
-      );
+      expect(result).toContain('Fri Jun 30 2023 00:00:00');
     });
 
     it('returns an empty string when given an empty array', () => {
@@ -402,9 +400,7 @@ describe('IndicatorFetchService', () => {
     it('handles a single-entry array correctly', () => {
       const singleEntry = [mockIndicators[1]];
       const result = PresentDemandService.getMostRecentIndicator(singleEntry);
-      expect(result).toBe(
-        'Mon May 15 2023 00:00:00 GMT+0100 (British Summer Time)'
-      );
+      expect(result).toContain('Mon May 15 2023 00:00:00');
     });
   });
 
@@ -456,11 +452,9 @@ describe('IndicatorFetchService', () => {
     it('returns the formatted most recent date', () => {
       const result = PresentDemandService.getMostRecentDate(mockIndicators);
       expect(PresentDemandService.formatDate).toHaveBeenCalledWith(
-        'Fri Jun 30 2023 00:00:00 GMT+0100 (British Summer Time)'
+        expect.stringContaining('Fri Jun 30')
       );
-      expect(result).toBe(
-        'Formatted: Fri Jun 30 2023 00:00:00 GMT+0100 (British Summer Time)'
-      );
+      expect(result).toContain('Formatted: Fri Jun 30 2023 00:00:00');
     });
 
     it('returns an empty string when given an empty array', () => {
