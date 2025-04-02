@@ -21,7 +21,7 @@
   "dependencies": {
     "@axe-core/playwright": "^4.10.1",
     "@ministryofjustice/frontend": "^3.3.1",
-    "@next/eslint-plugin-next": "^15.1.0",
+    "@next/eslint-plugin-next": "^15.2.4",
     "@playwright/test": "^1.51.1",
     "@types/d3": "^7.4.3",
     "applicationinsights": "^3.6.0",
