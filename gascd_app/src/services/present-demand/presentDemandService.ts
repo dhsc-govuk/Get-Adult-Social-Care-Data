@@ -3,6 +3,7 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { Locations } from '@/data/interfaces/Locations';
 import IndicatorFetchService from '../indicator/IndicatorFetchService';
 import IndicatorDisplayService from '../indicator/IndicatorDisplayService';
+import LogService from '../logger/logService';
 
 class PresentDemandService {
   public static async getLocations(query: string): Promise<Locations> {
@@ -10,14 +11,17 @@ class PresentDemandService {
       const response = await fetch(
         `/api/get_location_data?provider_location_id=${query}`
       );
+
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
 
       return await response.json();
-    } catch (error) {
-      console.error('error', error);
-      throw new Error('Failed to retrieve location data');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      LogService.logEvent(`Error in getLocations: ${errorMessage}`);
+      throw new Error(`Failed to retrieve location data: ${errorMessage}`);
     }
   }
 
@@ -31,9 +35,11 @@ class PresentDemandService {
       }
 
       return await response.json();
-    } catch (error) {
-      console.error('error', error);
-      throw new Error('Failed to retrieve location data');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      LogService.logEvent(`Error in getLaLocations: ${errorMessage}`);
+      throw new Error(`Failed to retrieve location data: ${errorMessage}`);
     }
   }
 
@@ -48,9 +54,13 @@ class PresentDemandService {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
       return await response.json();
-    } catch (error) {
-      console.error('error', error);
-      throw new Error('Failed to retrieve available location data');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      LogService.logEvent(`Error in getAvailableLocations: ${errorMessage}`);
+      throw new Error(
+        `Failed to retrieve available location data: ${errorMessage}`
+      );
     }
   }
 
@@ -69,9 +79,13 @@ class PresentDemandService {
 
       const data = await response.json();
       return data[0].metric_location_id;
-    } catch (error) {
-      console.error('error', error);
-      throw new Error('Failed to retrieve available location data');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      LogService.logEvent(`Error in getDefaultCPLocation: ${errorMessage}`);
+      throw new Error(
+        `Failed to retrieve available location data: ${errorMessage}`
+      );
     }
   }
 
@@ -131,12 +145,6 @@ class PresentDemandService {
     }).format(date);
   }
 
-  public static createDate(data: string): Date {
-    const [day, month, year] = data.split('/').map(Number);
-    const date = new Date(year, month - 1, day);
-    return date;
-  }
-
   public static getMostRecentIndicator(indicators: Indicator[]): string {
     if (indicators.length === 0) {
       return '';
@@ -144,10 +152,7 @@ class PresentDemandService {
 
     return indicators
       .reduce((latest, current) => {
-        return this.createDate(current.metric_date.toString()) >
-          this.createDate(latest.metric_date.toString())
-          ? current
-          : latest;
+        return current.metric_date > latest.metric_date ? current : latest;
       }, indicators[0])
       .metric_date.toString();
   }
