@@ -302,9 +302,6 @@ const PresentDemandPage: React.FC = () => {
         showNavBar={false}
         session={session}
       >
-        <a href="#" className="govuk-back-link">
-          Back
-        </a>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-one-third">
             <div className="govuk-grid-row">
