@@ -1,5 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c';
+import CredentialsProvider from 'next-auth/providers/credentials';
 
 declare module 'next-auth' {
   interface Session {
@@ -33,6 +34,30 @@ declare module 'next-auth/jwt' {
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    CredentialsProvider({
+      // The name to display on the sign in form (e.g. 'Sign in with...')
+      id: 'dummy-creds',
+      name: 'dummy-creds',
+      // The credentials is used to generate a suitable form on the sign in page.
+      // You can specify whatever fields you are expecting to be submitted.
+      // e.g. domain, username, password, 2FA token, etc.
+      // You can pass any HTML attribute to the <input> tag through the object.
+      credentials: {
+        email: {
+          label: 'email',
+          type: 'email'        
+        },
+      },
+      async authorize(credentials, req) {
+        const mockUser = {
+          id: 'test-user-123',
+          name: 'Test User',
+          email: 'test@example.com',
+          image: 'https://via.placeholder.com/150'
+        }
+        return mockUser
+      },
+    }),
     AzureADB2CProvider({
       id: 'azure-ad-b2c-signin',
       name: 'Azure B2C Sign-in',
@@ -68,6 +93,7 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET as string,
   callbacks: {
     async jwt({ token, account, profile }) {
+      console.log(token, account, profile);
       if (account && profile) {
         token.idToken = account.id_token as string;
         token.locationType = profile['extension_Location_Type'] as string;
@@ -77,6 +103,14 @@ export const authOptions: NextAuthOptions = {
           : (false as boolean);
         token.accessToken = account.access_token as string;
         token.refreshToken = account.refresh_token;
+      } else if (account && account.provider == 'dummy-creds') {
+        // Test data?
+        token.idToken = account.providerAccountId as string;
+        token.locationType = 'LA';
+        token.locationId = '1';
+        token.smartInsight = true;
+        token.accessToken = '';
+        token.refreshToken = '';
       }
       return token;
     },
