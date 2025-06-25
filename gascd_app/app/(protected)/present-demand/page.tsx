@@ -624,7 +624,7 @@ const PresentDemandPage: React.FC = () => {
                   </summary>
                   
                   <div className="govuk-details__text">
-                    If you have any issues using this service, email 
+                    <span>If you have any issues using this service, email </span>
                     <a href="mailto:getadultsocialcaredata.team@dhsc.gov.uk" className="govuk-link">getadultsocialcaredata.team@dhsc.gov.uk</a>.
                   </div>
 
