@@ -23,29 +23,35 @@ const LoginPage: React.FC = () => {
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-l">
-              Get adult social care data              
+              Get adult social care data
             </h1>
-            <p className="govuk-body-l">
-              The best place for care providers to find useful information
-              relevant to Adult Social Care in England.
-            </p>
             <h2 className="govuk-heading-m">
               Introduction
             </h2>
             <p className="govuk-body">
-              This new digital service is owned by DHSC and is being developed by the data access project. The aim is to support adult social care stakeholders to make better evidence-based decisions which will help them to improve outcomes for people who need adult social care services. The project does not collect any additional information but aims to reflect back data that is already being collected at national level, with people who need it. Data shared through the tool complies with current Data Sharing Agreements.              
+              The government collects and stores a significant amount of adult social care data from care providers and local authorities. This data is currently used for government purposes. The government is in the process of building a new data service so that the existing data can also be used to help answer the questions that are most important to adult social care stakeholders, such as care providers.
             </p>
             <p className="govuk-body">
-              The content here has been developed and designed with ongoing support from a range of care providers, to understand what data insight is most useful to them. Over time, the content will expand to new topics and new user groups.
+              This new digital service is owned by DHSC and is being developed by the data access project. Its aim is to support adult social care stakeholders to make better evidence-based decisions, which will help them improve outcomes for people who need adult social care services. The project does not collect any additional information, but instead aims to share data that is already being collected with people who need it. Data shared through the tool complies with current Data Sharing Agreements.
             </p>
             <p className="govuk-body">
-              This version of the service is being shared with a limited number of care home providers for testing purposes only (private beta).              
+              The information in this service has been developed and designed with ongoing support from a range of care providers, to understand what data insight is most useful. Over time, it is anticipated that the service will expand and change to include new topics and new user groups.
+            </p>
+            <p className="govuk-body">
+              Please note that this service provides information only and does not constitute advice. DHSC does not accept any liability for decisions made by providers following use of this service. Further details are in the Full Disclaimer (viewable after sign in).
+            </p>
+            <h2 className="govuk-heading-m">
+              Beta phase testing
+            </h2>
+            <p className="govuk-body">
+              Get Adult Social Care Data is a beta phase test of the service being shared with a limited number of care home providers for testing purposes only (private beta). Get adult social care data provides information, such as on current provision and capacity based on the latest information given to us by providers. The information is presented only to assist in testing the accessibility of information presented in this way, and not for commercial purposes. In agreeing to participate you have agreed not to publish, copy, share or otherwise reproduce this information or utilise this service for any commercial purposes.
             </p>
             <p className="govuk-inset-text">
-              Please note that this service provides information only and does not constitute advice. DHSC does not accept any liability for decisions made by providers following use of this service. Content is not to be published or shared with third parties.
+              This service does not constitute advice, and the information presented in or by Get adult social care data is solely for the purpose of testing the service and must not be treated as accurate. Providers accessing this service must still carry out their own due diligence with respect to any information contained within it, including checking the accuracy of the information given. DHSC does not accept liability for any loss or damage that may come from the use of this service whether within the terms of its use or outside. Please refer to the Full Disclaimer (viewable after sign in) for further details.
             </p>
+
             <ButtonWithArrow
-              buttonString="Sign in"
+              buttonString="Agree and sign in"
               buttonUrl="#"
               onClick={handleSubmit}
             ></ButtonWithArrow>
