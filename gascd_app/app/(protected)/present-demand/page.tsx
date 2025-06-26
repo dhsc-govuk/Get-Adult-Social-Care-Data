@@ -61,6 +61,8 @@ const PresentDemandPage: React.FC = () => {
     'total_population',
     'perc_18_64',
     'perc_65over',
+    'perc_75over',
+    'perc_85over',
     'perc_population_disability_disabled_total',
     'dementia_register_65over_per100k',
   ];
@@ -80,6 +82,8 @@ const PresentDemandPage: React.FC = () => {
     total_population: 'Population',
     perc_18_64: 'Aged 18-65',
     perc_65over: 'Aged 65 and over',
+    perc_75over: 'Aged 75 and over',
+    perc_85over: 'Aged 85 and over',
     perc_population_disability_disabled_total: 'Disability prevalence',
     dementia_register_65over_per100k:
       'Registered dementia patients per 100,000',
@@ -103,6 +107,8 @@ const PresentDemandPage: React.FC = () => {
   const metrics_require_percentage = [
     'perc_18_64',
     'perc_65over',
+    'perc_75over',
+    'perc_85over',
     'perc_population_disability_disabled_total',
     'median_occupancy_total',
     'median_occupancy_total',
