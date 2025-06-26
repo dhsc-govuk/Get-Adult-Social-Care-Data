@@ -358,6 +358,17 @@ const TotalBedsPage: React.FC = () => {
             ) : (
               <></>
             )}
+
+            <details className="govuk-details govuk-!-margin-top-9">
+              <summary className="govuk-details__summary">
+                <span className="govuk-details__summary-text">Get help with this page</span>
+              </summary>
+              
+              <div className="govuk-details__text">
+                <span>If you have any issues using this service, email </span>
+                <a href="mailto:getadultsocialcaredata.team@dhsc.gov.uk" className="govuk-link">getadultsocialcaredata.team@dhsc.gov.uk</a>.
+              </div>
+            </details>
           </div>
         </div>
       </Layout>

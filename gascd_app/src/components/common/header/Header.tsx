@@ -40,7 +40,7 @@ const Header: React.FC<Props> = ({ session }) => {
           {!session ? (
             <>&nbsp;</>
           ) : (
-            <p style={{ float: 'right' }}>
+            <p style={{ float: 'right', margin: 0 }}>
               <LogoutButton />
             </p>
           )}
