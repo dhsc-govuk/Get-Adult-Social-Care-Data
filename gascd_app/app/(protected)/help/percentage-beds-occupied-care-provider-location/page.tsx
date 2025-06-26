@@ -133,7 +133,9 @@ const PercentageBedsOccupiedCareProviders: React.FC = () => {
                     <br></br>
                     Small number suppression is applied. If a care provider 
                     location has an occupied bed count fewer than 6, the
-                    corresponding percentage is shown as 0.
+                    corresponding percentage is shown as 0. Care provider 
+                    locations in the Isles of Scilly are excluded from all 
+                    aggregated values.
                   </td>
                 </tr>
 

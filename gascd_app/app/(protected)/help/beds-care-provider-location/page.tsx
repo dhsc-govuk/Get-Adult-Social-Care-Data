@@ -121,7 +121,8 @@ const BedsCareProviderLocations: React.FC = () => {
                     <br></br>
                     Small number suppression is applied. If a care provider 
                     location has a bed count fewer than 6, the value is 
-                    shown as 0.
+                    shown as 0. Care provider locations in the 
+                    Isles of Scilly are excluded from all aggregated values.
                   </td>
                 </tr>
 
