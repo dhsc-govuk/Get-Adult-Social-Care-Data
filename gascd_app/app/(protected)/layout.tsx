@@ -10,7 +10,6 @@ export default async function AuthLayout({
 }) {
   const session = await getServerSession(authOptions);
   if (!session || !session.idToken) {
-    console.log(">>> NO SESSION")
     redirect('/login');
   }
 
@@ -22,13 +21,10 @@ export default async function AuthLayout({
       // Always force jwt verification in production
       redirect('/login');
     } else if (process.env.LOCAL_AUTH) {
-      console.log("LOCAL AUTH >>>")
       // Ignore if using local auth in development mode
     } else {
-      console.log("FAIL >>>")
       redirect('/login');
     }
   }
   return <>{children}</>;
 }
- 
