@@ -123,6 +123,11 @@ const PercentageBedsOccupiedCareProviders: React.FC = () => {
                     tool. The mandated reporting period is between the 8th and
                     14th every month, or the next working day if the 14th falls
                     on a weekend or holiday.
+                    <br></br>
+                    <br></br>
+                    Small number suppression is applied. If a care provider 
+                    location has an occupied bed count of fewer than 6, the
+                    corresponding percentage is shown as 0.
                   </td>
                 </tr>
 
