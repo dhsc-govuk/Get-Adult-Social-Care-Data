@@ -540,7 +540,7 @@ const PresentDemandPage: React.FC = () => {
                       metric.location_type === 'Care provider location'
                   )?.data_point ?? 'Loading...'}{' '}
                   beds) in {locationNamesCP[2]} total beds, compared to the
-                  median (
+                  average (
                   {finalCpData.find(
                     (metric) =>
                       metric.metric_id === 'median_bed_count_total' &&
@@ -556,9 +556,9 @@ const PresentDemandPage: React.FC = () => {
                   metric_Id="median_occupancy_total"
                 ></ConditionalText>
                 <p className="govuk-body">
-                  <strong>Note: </strong>If fewer than 5 beds are occupied, the
-                  percentage of beds occupied is shown as 0. For details on
-                  rounding and suppression of data, see indicator definition and
+                  <strong>Note: </strong>If a care provider location has fewer than 6 beds, the
+                  number of beds is shown as 0. If a care provider location has fewer than 6 beds occupied, the
+                  percentage of beds occupied is shown as 0. For details on suppression of data, see indicator definition and
                   supporting information.
                 </p>
                 <h2 className="govuk-heading-m">

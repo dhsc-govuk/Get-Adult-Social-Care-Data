@@ -112,6 +112,17 @@ const BedsCareProviderLocations: React.FC = () => {
                     tool. The mandated reporting period is between the 8th and
                     14th every month, or the next working day if the 14th falls
                     on a weekend or holiday.
+                    <br></br>
+                    <br></br>
+                    The median bed count is the middle value when all bed 
+                    counts are arranged from smallest to largest. The median is 
+                    calculated for the local authority, region, and England. 
+                    <br></br>
+                    <br></br>
+                    Small number suppression is applied. If a care provider 
+                    location has a bed count fewer than 6, the value is 
+                    shown as 0. Care provider locations in the 
+                    Isles of Scilly are excluded from all aggregated values.
                   </td>
                 </tr>
 

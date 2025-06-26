@@ -125,7 +125,7 @@ describe('Tests for the conditional text component', () => {
     );
 
     expect(screen.getByRole('paragraph')).toHaveTextContent(
-      'Test Care Provider has (40%) occupancy for all adult social care beds compared to the median occupancy of all care homes in Northumberland (25%), suggesting limited availability for new admissions.'
+      'Test Care Provider has (40%) occupancy for all adult social care beds compared to the average occupancy of all care homes in Northumberland (25%), suggesting limited availability for new admissions.'
     );
   });
 
@@ -142,7 +142,7 @@ describe('Tests for the conditional text component', () => {
     );
 
     expect(screen.getByRole('paragraph')).toHaveTextContent(
-      'Test Care Provider has (20%) occupancy for all adult social care beds compared to the median occupancy of all care homes in Northumberland (25%), suggesting greater availability for new admissions.'
+      'Test Care Provider has (20%) occupancy for all adult social care beds compared to the average occupancy of all care homes in Northumberland (25%), suggesting greater availability for new admissions.'
     );
   });
 
@@ -159,7 +159,7 @@ describe('Tests for the conditional text component', () => {
     );
 
     expect(screen.getByRole('paragraph')).toHaveTextContent(
-      'Test Care Provider has (20%) occupancy for all adult social care beds compared to the median occupancy of all care homes in Northumberland (20%), suggesting a similar level of availability for new admissions.'
+      'Test Care Provider has (20%) occupancy for all adult social care beds compared to the average occupancy of all care homes in Northumberland (20%), suggesting a similar level of availability for new admissions.'
     );
   });
 });
