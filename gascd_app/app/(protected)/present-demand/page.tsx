@@ -558,7 +558,7 @@ const PresentDemandPage: React.FC = () => {
                 <p className="govuk-body">
                   <strong>Note: </strong>If a care provider location has fewer than 6 beds, the
                   number of beds is shown as 0. If a care provider location has fewer than 6 beds occupied, the
-                  percentage of beds occupied is shown as 0. For details on rounding and suppression of data, see indicator definition and
+                  percentage of beds occupied is shown as 0. For details on suppression of data, see indicator definition and
                   supporting information.
                 </p>
                 <h2 className="govuk-heading-m">

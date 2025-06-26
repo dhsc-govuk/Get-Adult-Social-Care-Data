@@ -135,7 +135,7 @@ const compareDriversConditionals = (
         <>
           {locations[1]} has{' '}
           <strong>({careProvider?.data_point ?? 0}%) occupancy </strong> for all
-          adult social care beds compared to the median occupancy of all care
+          adult social care beds compared to the average occupancy of all care
           homes in {locations[2]} ({region.data_point}%), suggesting limited
           availability for new admissions.
         </>
@@ -146,7 +146,7 @@ const compareDriversConditionals = (
         <>
           {locations[1]} has{' '}
           <strong>({careProvider?.data_point ?? 0}%) occupancy </strong> for all
-          adult social care beds compared to the median occupancy of all care
+          adult social care beds compared to the average occupancy of all care
           homes in {locations[2]} ({region.data_point}%), suggesting greater
           availability for new admissions.
         </>
@@ -156,7 +156,7 @@ const compareDriversConditionals = (
       <>
         {locations[1]} has{' '}
         <strong>({careProvider?.data_point ?? 0}%) occupancy </strong>
-        for all adult social care beds compared to the median occupancy of all
+        for all adult social care beds compared to the average occupancy of all
         care homes in {locations[2]} ({region.data_point}%), suggesting a
         similar level of availability for new admissions.
       </>

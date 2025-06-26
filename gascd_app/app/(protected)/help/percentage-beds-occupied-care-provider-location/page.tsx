@@ -125,8 +125,14 @@ const PercentageBedsOccupiedCareProviders: React.FC = () => {
                     on a weekend or holiday.
                     <br></br>
                     <br></br>
+                    The median bed occupancy is the middle value when all bed 
+                    occupancies are arranged from smallest to largest. The 
+                    median is calculated for the local authority, region, and
+                    England. 
+                    <br></br>
+                    <br></br>
                     Small number suppression is applied. If a care provider 
-                    location has an occupied bed count of fewer than 6, the
+                    location has an occupied bed count fewer than 6, the
                     corresponding percentage is shown as 0.
                   </td>
                 </tr>

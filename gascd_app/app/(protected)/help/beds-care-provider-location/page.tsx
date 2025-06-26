@@ -114,8 +114,13 @@ const BedsCareProviderLocations: React.FC = () => {
                     on a weekend or holiday.
                     <br></br>
                     <br></br>
+                    The median bed count is the middle value when all bed 
+                    counts are arranged from smallest to largest. The median is 
+                    calculated for the local authority, region, and England.                    <br></br>
+                    <br></br>
+                    <br></br>
                     Small number suppression is applied. If a care provider 
-                    location has a bed count of fewer than 6, the value is 
+                    location has a bed count fewer than 6, the value is 
                     shown as 0.
                   </td>
                 </tr>
