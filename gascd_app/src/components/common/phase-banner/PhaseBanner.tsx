@@ -2,7 +2,11 @@ import Link from 'next/link';
 import React from 'react';
 
 const PhaseBanner: React.FC = () => {
-  const feedback_url = process.env.NEXT_PUBLIC_FEEDBACK_FORM_LINK as string;
+  let feedback_url = process.env.NEXT_PUBLIC_FEEDBACK_FORM_LINK as string;
+  // XXX work out why this is sometimes not set
+  if (!feedback_url) {
+    feedback_url = "https://forms.gle/z3f2Zx9Uuuohwkao7"
+  }
   return (
     <div className="govuk-phase-banner">
       <p className="govuk-phase-banner__content">
