@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { downloadCSV } from '../../../helpers/downloadToCsvHelpers';
+import Link from 'next/link';
 
 type Props = {
   data: any[];
@@ -12,19 +13,20 @@ const DownloadTableDataCSVLink: React.FC<Props> = ({
   filename = 'data.csv',
   xLabel,
 }) => {
-  const handleDownloadClick = () => {
+  const handleDownloadClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     downloadCSV(data, filename, xLabel);
   };
 
   return (
     <>
-      <a
+      <Link
         href="#"
         className="govuk-link govuk-body"
         onClick={handleDownloadClick}
       >
         Download table data (CSV)
-      </a>
+      </Link>
     </>
   );
 };
