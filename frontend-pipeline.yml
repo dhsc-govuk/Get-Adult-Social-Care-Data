@@ -35,24 +35,28 @@ parameters:
         acr_connection: "$(dev_acr_connection)"
         acr_name: "$(dev_acr_name)"
         container_port: "$(dev_container_port)"
+        feedback_form_link: "$(feedback_form_link)"
       - name: test
         environment_name: "Webapp - test"
         arm_connection: "$(test_arm_service_connections)"
         acr_connection: "$(test_acr_connection)"
         acr_name: "$(test_acr_name)"
         container_port: "$(test_container_port)"
+        feedback_form_link: "$(feedback_form_link)"
       - name: uat
         environment_name: "Webapp - UAT"
         arm_connection: "$(uat_arm_service_connections)"
         acr_connection: "$(uat_acr_connection)"
         acr_name: "$(uat_acr_name)"
         container_port: "$(uat_container_port)"
+        feedback_form_link: "$(feedback_form_link)"
       - name: prod
         environment_name: "Webapp - prod"
         arm_connection: "$(prod_arm_service_connections)"
         acr_connection: "$(prod_acr_connection)"
         acr_name: "$(prod_acr_name)"
         container_port: "$(prod_container_port)"
+        feedback_form_link: "$(feedback_form_link)"
 
 stages:
   # Build/deploy across environments
@@ -82,6 +86,7 @@ stages:
                         arguments: >
                           --build-arg CONTAINER_PORT=${{environment.container_port}}
                           --build-arg NEXT_PUBLIC_APP_ENV=${{environment.name}}
+                          --build-arg NEXT_PUBLIC_FEEDBACK_FORM_LINK=${{environment.feedback_form_link}}
                         tags: |
                           $(tag)
                           latest
