@@ -14,6 +14,7 @@ import PresentDemandService from '@/services/present-demand/presentDemandService
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { MetaData } from '@/data/interfaces/MetaData';
 import LogService from '@/services/logger/logService';
+import Link from 'next/link';
 
 const PresentDemandPage: React.FC = () => {
   const [filteredDemographicData, setFilteredDemographicData] = useState<
@@ -355,7 +356,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a
+                  <a 
                     href="/help/beds-per-100000-adult-population"
                     className="govuk-link"
                   >
@@ -363,7 +364,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a
+                  <a 
                     href="/help/percentage-beds-occupied"
                     className="govuk-link"
                   >
@@ -371,7 +372,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a
+                  <a 
                     href="/help/beds-care-provider-location"
                     className="govuk-link"
                   >
@@ -379,7 +380,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a
+                  <a 
                     href="/help/percentage-beds-occupied-care-provider-location"
                     className="govuk-link"
                   >
