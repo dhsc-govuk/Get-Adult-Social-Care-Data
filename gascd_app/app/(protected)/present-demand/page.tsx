@@ -346,47 +346,47 @@ const PresentDemandPage: React.FC = () => {
               </p>
               <ul className="govuk-list govuk-list--bullet">
                 <li>
-                  <Link href="/help/population-age" className="govuk-link">
+                  <a href="/help/population-age" className="govuk-link">
                     Population age
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href="/help/disability-prevalence" className="govuk-link">
+                  <a href="/help/disability-prevalence" className="govuk-link">
                     Population disability
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a 
                     href="/help/beds-per-100000-adult-population"
                     className="govuk-link"
                   >
                     Adult social care beds per 100,000 adult population
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a 
                     href="/help/percentage-beds-occupied"
                     className="govuk-link"
                   >
                     Percentage of adult social care beds occupied
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a 
                     href="/help/beds-care-provider-location"
                     className="govuk-link"
                   >
                     Number of adult social care beds in care provider location
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a 
                     href="/help/percentage-beds-occupied-care-provider-location"
                     className="govuk-link"
                   >
                     Percentage of adult social care beds occupied in care
                     provider location
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </div>

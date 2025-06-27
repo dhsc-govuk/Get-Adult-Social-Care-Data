@@ -252,12 +252,12 @@ const IndicatorTable: React.FC<Props> = ({
             <br />
             Data correct as of {barDataLatestDate}
             <br />
-            <Link
+            <a
               href="/help/beds-per-100000-adult-population"
               className="govuk-link"
             >
               View supporting information for this data
-            </Link>
+            </a>
           </p>
         </div>
         <div
@@ -358,8 +358,7 @@ const IndicatorTable: React.FC<Props> = ({
           Data correct as of {tableDataLatestDate}
           <br />
           <a
-            // href="../0-3/help/beds-per-100000-people.html"
-            href="#" //todo
+            href="/help/beds-per-100000-adult-population"
             className="govuk-link"
           >
             View supporting information for this data
