@@ -1,6 +1,11 @@
 import NextAuthSessionProvider from '@/providers/SessionProvider';
 import '../src/styles/globals.scss';
 import Axe from '../src/utils/axe';
+import { Viewport } from "next";
+
+export const viewport: Viewport = {
+  themeColor: '#1d70b8',
+}
 
 export default async function RootLayout({
   children,
@@ -16,3 +21,4 @@ export default async function RootLayout({
     </html>
   );
 }
+
