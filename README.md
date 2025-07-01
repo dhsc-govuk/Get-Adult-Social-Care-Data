@@ -21,8 +21,10 @@ This is the Repo/Code for the DHSC Data Access Platform Frontend. This applicati
 
 - [React](https://react.dev/)
 - [GovUk React](https://govuk-react.github.io/govuk-react/?path=/docs/welcome--docs)
-- [Python](https://www.python.org/)
-- [Azure](https://azure.microsoft.com/en-gb) - [Web](https://azure.microsoft.com/en-gb/products/app-service/web), [Function App](https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview?pivots=programming-language-csharp) and [Pipelines](https://azure.microsoft.com/en-us/products/devops/pipelines)
+- [Azure](https://azure.microsoft.com/en-gb)
+  - [Web](https://azure.microsoft.com/en-gb/products/app-service/web)
+  - [Function App](https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview?pivots=programming-language-csharp)
+  - [Pipelines](https://azure.microsoft.com/en-us/products/devops/pipelines)
 
 With this project we aim to:
 
@@ -37,23 +39,23 @@ With this project we aim to:
 
 This project requires the following pre-requisites:
 
-1. [NodeJs](https://nodejs.org/en)
-2. [Docker](https://www.docker.com/)
-3. [Make](https://makefiletutorial.com/)
-4. [GitLeaks](https://github.com/gitleaks/gitleaks)
+1. [Mise](https://mise.jdx.dev/getting-started.html)
+2. [Make](https://makefiletutorial.com/)
+3. [NodeJs](https://nodejs.org/en)
+4. [Docker](https://www.docker.com/)
+5. [GitLeaks](https://github.com/gitleaks/gitleaks)
 
 #### Installing project dependencies
 
 1. Clone the repo to your chosen directory
-2. Navigate to the App directory `cd app`
-3. Install dependencies `npm i`
+2. Run `mise install` to install the correct version of node
+3. Run `make` to build the NodeJS app
 
 #### Setting up husky pre-commit hooks
 
 1. Navigate to the root of the project
 2. Run the command 'make setup-husky' (NOTE: Some machines have had errors when initially trying this command, if you get a warning then run 'npx    husky' before running the Make command)
 3. Linting and Prettier should now run on any staged changes during pre-commit
-
 
 ## Usage
 
@@ -62,10 +64,8 @@ This project requires the following pre-requisites:
 To run the application you must ensure you've followed the setup steps
 
 - To run the app via Docker in the project root directory run: `make docker-up`
-- To run the app via Node:
-  - Navigate to app directory: `cd app`
-  - spin up the application: `npm start`
-  - To run tests (_currently there is low test coverage_) `npm test`
+- To run the app via Node: `make run-dev`
+- To run tests (_currently there is low test coverage_) `make test`
 
 ## Continuous Integration, Development and Deployment
 
