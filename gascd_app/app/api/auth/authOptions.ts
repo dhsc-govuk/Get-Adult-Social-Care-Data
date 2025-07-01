@@ -78,8 +78,6 @@ export const authOptions: NextAuthOptions = {
           : (false as boolean);
         token.accessToken = account.access_token as string;
         token.refreshToken = account.refresh_token;
-      } else if (account && account.provider == 'dummy-creds') {
-        token.idToken = account.providerAccountId as string;
       }
       return token;
     },
@@ -96,7 +94,7 @@ export const authOptions: NextAuthOptions = {
 };
 
 // Dummy auth for local development only
-if (process.env.LOCAL_AUTH) {
+if (process.env.LOCAL_AUTH === "true") {
   authOptions.providers.push(CredentialsProvider({
       id: 'dummy-creds',
       name: 'dummy-creds',
@@ -108,6 +106,7 @@ if (process.env.LOCAL_AUTH) {
         },
       },
       async authorize(credentials, req) {
+        // Gives a mock user matching the email address provided
         const mockUser = {
           id: 'test-user-123',
           name: 'Test User',

@@ -9,6 +9,13 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
+  if (process.env.NODE_ENV != 'production' && process.env.LOCAL_AUTH == 'true') {
+    if (session?.user) {
+      // Skip jwt validation if doing local auth
+      return <>{children}</>;
+    }
+  }
+
   if (!session || !session.idToken) {
     redirect('/login');
   }
@@ -17,14 +24,7 @@ export default async function AuthLayout({
     await verifyAuthToken(session.idToken);
   } catch (error) {
     console.error('Error verifying token:', error);
-    if (process.env.NODE_ENV == 'production') {
-      // Always force jwt verification in production
       redirect('/login');
-    } else if (process.env.LOCAL_AUTH) {
-      // Ignore if using local auth in development mode
-    } else {
-      redirect('/login');
-    }
   }
   return <>{children}</>;
 }
