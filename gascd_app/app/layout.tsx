@@ -8,10 +8,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="govuk-template--rebranded">
       <Axe />
       <NextAuthSessionProvider>
-        <body className="govuk-frontend-supported">{children}</body>
+        <body className="govuk-frontend-supported govuk-template__body">{children}</body>
       </NextAuthSessionProvider>
     </html>
   );
