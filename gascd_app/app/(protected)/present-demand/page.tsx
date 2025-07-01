@@ -14,6 +14,7 @@ import PresentDemandService from '@/services/present-demand/presentDemandService
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { MetaData } from '@/data/interfaces/MetaData';
 import LogService from '@/services/logger/logService';
+import Link from 'next/link';
 
 const PresentDemandPage: React.FC = () => {
   const [filteredDemographicData, setFilteredDemographicData] = useState<
@@ -61,6 +62,8 @@ const PresentDemandPage: React.FC = () => {
     'total_population',
     'perc_18_64',
     'perc_65over',
+    'perc_75over',
+    'perc_85over',
     'perc_population_disability_disabled_total',
     'dementia_register_65over_per100k',
   ];
@@ -80,6 +83,8 @@ const PresentDemandPage: React.FC = () => {
     total_population: 'Population',
     perc_18_64: 'Aged 18-65',
     perc_65over: 'Aged 65 and over',
+    perc_75over: 'Aged 75 and over',
+    perc_85over: 'Aged 85 and over',
     perc_population_disability_disabled_total: 'Disability prevalence',
     dementia_register_65over_per100k:
       'Registered dementia patients per 100,000',
@@ -103,6 +108,8 @@ const PresentDemandPage: React.FC = () => {
   const metrics_require_percentage = [
     'perc_18_64',
     'perc_65over',
+    'perc_75over',
+    'perc_85over',
     'perc_population_disability_disabled_total',
     'median_occupancy_total',
     'median_occupancy_total',
@@ -349,7 +356,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a
+                  <a 
                     href="/help/beds-per-100000-adult-population"
                     className="govuk-link"
                   >
@@ -357,7 +364,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a
+                  <a 
                     href="/help/percentage-beds-occupied"
                     className="govuk-link"
                   >
@@ -365,7 +372,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a
+                  <a 
                     href="/help/beds-care-provider-location"
                     className="govuk-link"
                   >
@@ -373,7 +380,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a
+                  <a 
                     href="/help/percentage-beds-occupied-care-provider-location"
                     className="govuk-link"
                   >
@@ -534,7 +541,7 @@ const PresentDemandPage: React.FC = () => {
                       metric.location_type === 'Care provider location'
                   )?.data_point ?? 'Loading...'}{' '}
                   beds) in {locationNamesCP[2]} total beds, compared to the
-                  median (
+                  average (
                   {finalCpData.find(
                     (metric) =>
                       metric.metric_id === 'median_bed_count_total' &&
@@ -550,9 +557,9 @@ const PresentDemandPage: React.FC = () => {
                   metric_Id="median_occupancy_total"
                 ></ConditionalText>
                 <p className="govuk-body">
-                  <strong>Note: </strong>If fewer than 5 beds are occupied, the
-                  percentage of beds occupied is shown as 0. For details on
-                  rounding and suppression of data, see indicator definition and
+                  <strong>Note: </strong>If a care provider location has fewer than 6 beds, the
+                  number of beds is shown as 0. If a care provider location has fewer than 6 beds occupied, the
+                  percentage of beds occupied is shown as 0. For details on suppression of data, see indicator definition and
                   supporting information.
                 </p>
                 <h2 className="govuk-heading-m">

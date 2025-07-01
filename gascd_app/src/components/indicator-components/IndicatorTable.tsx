@@ -9,6 +9,7 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import TableService from '@/services/Table/TableService';
 import IndicatorDisplayService from '@/services/indicator/IndicatorDisplayService';
+import Link from 'next/link';
 
 type Props = {
   data: BarchartData[];
@@ -252,7 +253,7 @@ const IndicatorTable: React.FC<Props> = ({
             Data correct as of {barDataLatestDate}
             <br />
             <a
-              href="../0-3/help/beds-per-100000-people.html"
+              href="/help/beds-per-100000-adult-population"
               className="govuk-link"
             >
               View supporting information for this data
@@ -357,8 +358,7 @@ const IndicatorTable: React.FC<Props> = ({
           Data correct as of {tableDataLatestDate}
           <br />
           <a
-            // href="../0-3/help/beds-per-100000-people.html"
-            href="#" //todo
+            href="/help/beds-per-100000-adult-population"
             className="govuk-link"
           >
             View supporting information for this data

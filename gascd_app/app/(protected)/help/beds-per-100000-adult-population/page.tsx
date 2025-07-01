@@ -115,8 +115,11 @@ const BedsPer100000AdultPopulation: React.FC = () => {
                     day if the 14th falls on a weekend or holiday.
                     <br></br>
                     <br></br>
-                    Small number suppression is applied. All bed counts in the
-                    local authority are rounded to the nearest 5.
+                    Small number suppression is applied. If fewer than 3 
+                    care provider locations offer a given bed type within a 
+                    local authority, region, or country, the value for that 
+                    area will be shown as 0. Care provider locations in the 
+                    Isles of Scilly are excluded from all aggregated values.
                   </td>
                 </tr>
 
