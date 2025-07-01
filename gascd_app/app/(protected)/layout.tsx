@@ -24,7 +24,7 @@ export default async function AuthLayout({
     await verifyAuthToken(session.idToken);
   } catch (error) {
     console.error('Error verifying token:', error);
-      redirect('/login');
+    redirect('/login');
   }
   return <>{children}</>;
 }
