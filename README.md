@@ -67,6 +67,16 @@ To run the application you must ensure you've followed the setup steps
 - To run the app via Node: `make run-dev`
 - To run tests (_currently there is low test coverage_) `make test`
 
+### Skipping Azure auth whilst in development
+
+The default auth provider is Azure B2C, which can be a hassle to set up if you're just making frontend changes. There is a local auth setup for development and testing, which you can use as follows:
+
+* Add LOCAL_AUTH=true to your .env file
+* Remove any existing AZURE_AD_* variables from your .env file
+* Start the app and sign in
+* The dummy auth provider will appear as an alternative when the default (Azure) auth method fails
+* Enter any email address in the 'dummy-creds' login box to authenticate
+
 ## Continuous Integration, Development and Deployment
 
 ### CI/CD
