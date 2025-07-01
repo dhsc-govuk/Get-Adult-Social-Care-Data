@@ -1,5 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c';
+import CredentialsProvider from 'next-auth/providers/credentials';
 
 declare module 'next-auth' {
   interface Session {
@@ -91,3 +92,27 @@ export const authOptions: NextAuthOptions = {
     },
   },
 };
+
+// Dummy auth for local development only
+if (process.env.LOCAL_AUTH === "true") {
+  authOptions.providers.push(CredentialsProvider({
+      id: 'dummy-creds',
+      name: 'dummy-creds',
+      credentials: {
+        email: {
+          label: 'email',
+          type: 'email',
+          placeholder: 'test@example.com'
+        },
+      },
+      async authorize(credentials, req) {
+        // Gives a mock user matching the email address provided
+        const mockUser = {
+          id: 'test-user-123',
+          name: 'Test User',
+          email: credentials?.email,
+        }
+        return mockUser
+      },
+    }),);
+}
