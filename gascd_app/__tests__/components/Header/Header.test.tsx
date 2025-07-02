@@ -7,7 +7,7 @@ describe('Header Component', () => {
     const titleText = screen.getByText('GOV.UK');
     expect(titleText).toBeInTheDocument();
     expect(titleText.parentNode).toHaveClass(
-      'govuk-header__logotype__broken'
+      'govuk-header__logotype'
     );
   });
 });
