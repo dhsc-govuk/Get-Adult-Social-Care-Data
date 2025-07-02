@@ -19,8 +19,9 @@
 
 This is the Repo/Code for the DHSC Data Access Platform Frontend. This application primarily utilises the following technologies:
 
+- [NextJS](https://nextjs.org)
 - [React](https://react.dev/)
-- [GovUk React](https://govuk-react.github.io/govuk-react/?path=/docs/welcome--docs)
+- [govuk-frontend](https://github.com/alphagov/govuk-frontend)
 - [Azure](https://azure.microsoft.com/en-gb)
   - [Web](https://azure.microsoft.com/en-gb/products/app-service/web)
   - [Function App](https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview?pivots=programming-language-csharp)
@@ -94,4 +95,4 @@ This project uses Azure DevOps Pipelines for continuous integration and deployme
 | :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
 | [DHSC Alpha Data](https://github.com/madetech/dhsc-alpha-data)                     | Repository for Data work required for DHSC Alpha                                                                                            |
 | [DHSC Alpha Infrastructure](https://github.com/madetech/dhsc-alpha-infrastructure) | Infrastructure Repository for the DHSC Alpha Delivery                                                                                       |
-| [Govuk React](https://github.com/govuk-react/govuk-react?tab=readme-ov-file)       | An implementation of the [GOV.UK Design System](https://govuk-design-system-production.cloudapps.digital/) in [React](https://reactjs.org/) |
+| [Govuk React](https://github.com/govuk-react/govuk-react?tab=readme-ov-file)       | An implementation of the [GOV.UK Design System](https://govuk-design-system-production.cloudapps.digital/) in [React](https://reactjs.org/). Not used directly, but most of the components were adapted from this package. |
