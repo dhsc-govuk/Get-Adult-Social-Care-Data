@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import { initAll } from '../../../../public/govuk-frontend/js/govuk-frontend.min.js';
 import Header from '../header/Header';
+import ServiceName from '../service-name/ServiceName';
 import Footer from '../footer/Footer';
 import { focusMainContent } from '../../../helpers/ManageFocus';
 import PhaseBanner from '../phase-banner/PhaseBanner';
@@ -66,7 +67,8 @@ const Layout: React.FC<Props> = ({
         >
           Skip to main content
         </a>
-        <Header session={session} />
+        <Header />
+        <ServiceName session={session} />
         <div className="govuk-width-container">
           <div role="region" aria-label="Phasebar">
             <PhaseBanner />

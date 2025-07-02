@@ -18,6 +18,6 @@ afterAll(() => server.close());
 describe('Logout Button component', () => {
   test('is rendered', () => {
     render(<LogoutButton />);
-    expect(screen.getByText('Sign Out')).toBeInTheDocument();
+    expect(screen.getByText('Sign out')).toBeInTheDocument();
   });
 });
