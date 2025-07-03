@@ -11,7 +11,10 @@ class AppInsightsLogger {
         if (appInsights) {
           if (!appInsights.defaultClient) {
             appInsights.setup(instrumentationKey)
+            // make sure console errors go to azure
             .setAutoCollectConsole(true, true)
+            // but don't send debug/warnings to azure
+            .setInternalLogging(false, false)
             .start();
           }
           this.client = appInsights.defaultClient;
