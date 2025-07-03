@@ -2,6 +2,7 @@
 
 import { signOut } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
+import LogService from '@/services/logger/logService';
 
 const LogoutButton: React.FC = () => {
   const [logoutUrl, setLogoutUrl] = useState('');
@@ -29,6 +30,7 @@ const LogoutButton: React.FC = () => {
   const handleSignOut = async () => {
     localStorage.clear();
     await signOut({ redirect: false });
+    LogService.logEvent('User logged out');
     if (logoutUrl) {
       window.location.href = logoutUrl;
     } else {
