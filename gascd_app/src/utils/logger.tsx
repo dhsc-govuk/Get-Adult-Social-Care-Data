@@ -10,7 +10,11 @@ class AppInsightsLogger {
       if(!this.isLocal){
         if (appInsights) {
           if (!appInsights.defaultClient) {
-            appInsights.setup(instrumentationKey).start();
+            appInsights.setup(instrumentationKey)
+              .setAutoCollectConsole(true, true)
+              .setAutoCollectExceptions(true)
+              .setAutoCollectHeartbeat(true)
+              .start();
           }
           this.client = appInsights.defaultClient;
         }
