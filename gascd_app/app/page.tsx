@@ -1,10 +1,7 @@
-import HomePage from './(protected)/home/page';
-import AuthLayout from './(protected)/layout';
+import { redirect } from 'next/navigation';
 
 export default function Home() {
   return (
-    <AuthLayout>
-      <HomePage />
-    </AuthLayout>
+    redirect("/home")
   );
 }
