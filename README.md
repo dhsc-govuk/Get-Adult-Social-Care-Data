@@ -89,7 +89,7 @@ You can connect your local development instance to the DEV database on Azure as 
   # Get DB values from the infra repo
   DB_DATABASE=<db_name>
   DB_SERVER=<db_server_id>.database.windows.net
-  DB_PORT= 1433
+  DB_PORT=1433
   # Allows app to connect with your Azure CLI creds
   NEXT_PUBLIC_APP_ENV=local
   # If using local (non-azure) auth, ensure you have the following set
