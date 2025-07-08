@@ -52,6 +52,12 @@ This project requires the following pre-requisites:
 2. Run `mise install` to install the correct version of node
 3. Run `make` to build the NodeJS app
 
+### Installing development commit hooks
+
+`make setup-husky`
+
+This will use husky (https://typicode.github.io/husky/) to install pre-commit hooks for linting and secret checking.
+
 ## Usage
 
 ### Running the application

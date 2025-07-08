@@ -20,6 +20,10 @@ test: gascd_app/node_modules
 	cd gascd_app; \
      ${NPM_COMMAND} run test
 
+setup-husky: gascd_app/node_modules
+	cd gascd_app; \
+     ${NPM_COMMAND} run husky:init
+
 # Docker utilities
 
 docker-rebuild-no-cache:	
@@ -43,4 +47,4 @@ clean:
 # Pre-commit hooks
 
 
-.PHONY: docker-rebuild-no-cache docker-up docker-up-rebuild docker-down format-staged run-dev dev test
+.PHONY: docker-rebuild-no-cache docker-up docker-up-rebuild docker-down format-staged run-dev dev test setup-husky
