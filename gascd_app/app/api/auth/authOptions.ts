@@ -1,6 +1,9 @@
 import { NextAuthOptions } from 'next-auth';
 import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import AppInsightsLogger from '@/utils/logger';
+
+const log = new AppInsightsLogger(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING ?? '');
 
 declare module 'next-auth' {
   interface Session {
@@ -91,6 +94,17 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+  logger: {
+    error(code, metadata) {
+      console.error({"type": "auth error", "code": code, "metadata": metadata});
+    },
+    warn(code) {
+      console.log({"type": "auth warn", "code": code})
+    },
+    debug(code, metadata) {
+      console.log({"type": "auth debug", "code": code, "metadata": metadata});
+    }
+  }
 };
 
 // Dummy auth for local development only
