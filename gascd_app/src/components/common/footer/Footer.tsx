@@ -32,7 +32,7 @@ const Footer: React.FC = () => {
 
             <ul className="govuk-footer__inline-list">        
               <li className="govuk-footer__inline-list-item">
-                <a className="govuk-footer__link" href="disclaimer">
+                <a className="govuk-footer__link" href="/disclaimer">
                   Disclaimer
                 </a>
               </li>
