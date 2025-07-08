@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "format": "prettier --write",
     "lint-staged": "lint-staged",
-    "test": "jest --config jest.config.ts",
+    "test": "jest --config jest.config.ts --collect-coverage",
+    "test:nocov": "jest --config jest.config.ts",
     "test:watch": "jest --watch",
     "cypress": "cypress open"
   },

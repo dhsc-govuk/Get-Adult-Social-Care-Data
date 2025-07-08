@@ -16,7 +16,8 @@ const config: Config = {
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   reporters: ['default'],
-  collectCoverage: true,
+  // specified on the command line
+  //collectCoverage: true,
   collectCoverageFrom: ['app/**/*.{js,ts,tsx}', 'src/**/*.{js,ts,tsx}'],
   coveragePathIgnorePatterns: [
     '/app/\\(authentication\\)/registration/',

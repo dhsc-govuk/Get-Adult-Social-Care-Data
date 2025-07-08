@@ -108,7 +108,7 @@ export const authOptions: NextAuthOptions = {
 };
 
 // Dummy auth for local development only
-if (process.env.LOCAL_AUTH === "true") {
+if (process.env.NODE_ENV != 'production' && process.env.LOCAL_AUTH == 'true') {
   authOptions.providers.push(CredentialsProvider({
       id: 'dummy-creds',
       name: 'dummy-creds',

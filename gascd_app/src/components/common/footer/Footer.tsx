@@ -28,7 +28,16 @@ const Footer: React.FC = () => {
         </svg>
         <div className="govuk-footer__meta">
           <div className="govuk-footer__meta-item govuk-footer__meta-item--grow">
-            <svg
+            <h2 className="govuk-visually-hidden">Support links</h2>
+
+            <ul className="govuk-footer__inline-list">        
+              <li className="govuk-footer__inline-list-item">
+                <a className="govuk-footer__link" href="/disclaimer">
+                  Disclaimer
+                </a>
+              </li>
+            </ul>
+          <svg
               aria-hidden="true"
               focusable="false"
               className="govuk-footer__licence-logo"
