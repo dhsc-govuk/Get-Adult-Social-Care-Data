@@ -1,9 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import AppInsightsLogger from '@/utils/logger';
-
-const log = new AppInsightsLogger(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING ?? '');
 
 declare module 'next-auth' {
   interface Session {
@@ -81,11 +78,14 @@ export const authOptions: NextAuthOptions = {
           : (false as boolean);
         token.accessToken = account.access_token as string;
         token.refreshToken = account.refresh_token;
-      } else if (process.env.NODE_ENV != 'production' && account?.provider == "dummy-creds") {
+      } else if (
+        process.env.NODE_ENV != 'production' &&
+        account?.provider == 'dummy-creds'
+      ) {
         // Default values for test/dev users
-        token.locationType = process.env.LOCAL_AUTH_LOCATION_TYPE
-        token.locationId = process.env.LOCAL_AUTH_LOCATION_ID
-        token.smartInsight = false
+        token.locationType = process.env.LOCAL_AUTH_LOCATION_TYPE;
+        token.locationId = process.env.LOCAL_AUTH_LOCATION_ID;
+        token.smartInsight = false;
       }
       return token;
     },
@@ -101,27 +101,28 @@ export const authOptions: NextAuthOptions = {
   },
   logger: {
     error(code, metadata) {
-      console.error({"type": "auth error", "code": code, "metadata": metadata});
+      console.error({ type: 'auth error', code: code, metadata: metadata });
     },
     warn(code) {
-      console.log({"type": "auth warn", "code": code})
+      console.log({ type: 'auth warn', code: code });
     },
     debug(code, metadata) {
-      console.log({"type": "auth debug", "code": code, "metadata": metadata});
-    }
-  }
+      console.log({ type: 'auth debug', code: code, metadata: metadata });
+    },
+  },
 };
 
 // Dummy auth for local development only
 if (process.env.NODE_ENV != 'production' && process.env.LOCAL_AUTH == 'true') {
-  authOptions.providers.push(CredentialsProvider({
+  authOptions.providers.push(
+    CredentialsProvider({
       id: 'dummy-creds',
       name: 'dummy-creds',
       credentials: {
         email: {
           label: 'email',
           type: 'email',
-          placeholder: 'test@example.com'
+          placeholder: 'test@example.com',
         },
       },
       async authorize(credentials, req) {
@@ -130,8 +131,9 @@ if (process.env.NODE_ENV != 'production' && process.env.LOCAL_AUTH == 'true') {
           id: 'test-user-123',
           name: 'Test User',
           email: credentials?.email,
-        }
-        return mockUser
+        };
+        return mockUser;
       },
-    }),);
+    })
+  );
 }
