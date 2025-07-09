@@ -6,7 +6,17 @@ const nextConfig: NextConfig = {
     AZURESIGNIN: process.env.AZURE_AD_B2C_USER_SIGN_IN,
     LOGOUTURL: process.env.NEXTAUTH_URL,
   },
-  output: 'standalone'
+  serverExternalPackages: [
+    '@azure/monitor-opentelemetry',
+    '@opentelemetry/api',
+    '@opentelemetry/resources',
+    '@opentelemetry/sdk-metrics',
+    '@opentelemetry/sdk-node',
+    '@opentelemetry/sdk-trace-base',
+    '@opentelemetry/semantic-conventions',
+    '@opentelemetry/exporter-jaeger',
+  ],
+  output: 'standalone',
 };
 
 export default nextConfig;
