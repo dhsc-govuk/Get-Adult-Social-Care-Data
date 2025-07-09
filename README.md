@@ -52,11 +52,11 @@ This project requires the following pre-requisites:
 2. Run `mise install` to install the correct version of node
 3. Run `make` to build the NodeJS app
 
-#### Setting up husky pre-commit hooks
+### Installing development commit hooks
 
-1. Navigate to the root of the project
-2. Run the command 'make setup-husky' (NOTE: Some machines have had errors when initially trying this command, if you get a warning then run 'npx    husky' before running the Make command)
-3. Linting and Prettier should now run on any staged changes during pre-commit
+`make setup-husky`
+
+This will use husky (https://typicode.github.io/husky/) to install pre-commit hooks for linting and secret checking.
 
 ## Usage
 
@@ -72,11 +72,32 @@ To run the application you must ensure you've followed the setup steps
 
 The default auth provider is Azure B2C, which can be a hassle to set up if you're just making frontend changes. There is a local auth setup for development and testing, which you can use as follows:
 
-* Add LOCAL_AUTH=true to your .env file
+* Add LOCAL_AUTH=true to your `gascd_app/.env` file
 * Remove any existing AZURE_AD_* variables from your .env file
 * Start the app and sign in
 * The dummy auth provider will appear as an alternative when the default (Azure) auth method fails
 * Enter any email address in the 'dummy-creds' login box to authenticate
+
+### Development database access
+
+You can connect your local development instance to the DEV database on Azure as follows:
+
+* Install the Azure CLI (`brew install az`)
+* Log into Azure in your terminal using `az login`
+* Set the following in `gascd_app/.env`
+```bash
+  # Get DB values from the infra repo
+  DB_DATABASE=<db_name>
+  DB_SERVER=<db_server_id>.database.windows.net
+  DB_PORT=1433
+  # Allows app to connect with your Azure CLI creds
+  NEXT_PUBLIC_APP_ENV=local
+  # If using local (non-azure) auth, ensure you have the following set
+  LOCAL_AUTH=true
+  LOCAL_AUTH_LOCATION_TYPE=Care provider location
+  LOCAL_AUTH_LOCATION_ID=testcpl1
+```
+* Start the app
 
 ## Continuous Integration, Development and Deployment
 

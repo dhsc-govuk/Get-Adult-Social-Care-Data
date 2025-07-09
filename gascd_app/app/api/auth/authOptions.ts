@@ -81,6 +81,11 @@ export const authOptions: NextAuthOptions = {
           : (false as boolean);
         token.accessToken = account.access_token as string;
         token.refreshToken = account.refresh_token;
+      } else if (process.env.NODE_ENV != 'production' && account?.provider == "dummy-creds") {
+        // Default values for test/dev users
+        token.locationType = process.env.LOCAL_AUTH_LOCATION_TYPE
+        token.locationId = process.env.LOCAL_AUTH_LOCATION_ID
+        token.smartInsight = false
       }
       return token;
     },

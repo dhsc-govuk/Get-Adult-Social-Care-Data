@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "husky:init": "cd .. && husky gascd_app/.husky",
     "start": "next start -p $CONTAINER_PORT",
     "lint": "eslint .",
     "format": "prettier --write",
