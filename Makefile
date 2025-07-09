@@ -20,6 +20,10 @@ test: gascd_app/node_modules
 	cd gascd_app; \
      ${NPM_COMMAND} run test
 
+setup-husky: gascd_app/node_modules
+	cd gascd_app; \
+     ${NPM_COMMAND} run husky:init
+
 # Docker utilities
 
 docker-rebuild-no-cache:	
@@ -42,20 +46,5 @@ clean:
 
 # Pre-commit hooks
 
-setup-husky: gascd_app/node_modules
-	cd gascd_app; \
-	 ${NPM_COMMAND} install -g husky
-	cd ..; \
-	 ${NPX_COMMAND} husky install
-	find .husky/_ ! -name 'husky.sh' -type f -exec rm -f {} +
-	echo '#!/bin/sh' > .husky/_/pre-commit
-	echo '"$$(dirname "$$0")/husky.sh"' >> .husky/_/pre-commit
-	echo '' >> .husky/_/pre-commit
-	echo 'echo "Running linter and Prettier"' >> .husky/_/pre-commit
-	echo 'cd gascd_app' >> .husky/_/pre-commit
-	echo '${NPX_COMMAND} lint-staged' >> .husky/_/pre-commit
-	echo 'echo "Running GitLeaks for secret detection"' >> .husky/_/pre-commit
-	echo 'gitleaks detect --source . --verbose --no-git' >> .husky/_/pre-commit
-	chmod +x .husky/_/pre-commit
 
-.PHONY: docker-rebuild-no-cache docker-up docker-up-rebuild docker-down format-staged run-dev dev test
+.PHONY: docker-rebuild-no-cache docker-up docker-up-rebuild docker-down format-staged run-dev dev test setup-husky

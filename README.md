@@ -52,11 +52,11 @@ This project requires the following pre-requisites:
 2. Run `mise install` to install the correct version of node
 3. Run `make` to build the NodeJS app
 
-#### Setting up husky pre-commit hooks
+### Installing development commit hooks
 
-1. Navigate to the root of the project
-2. Run the command 'make setup-husky' (NOTE: Some machines have had errors when initially trying this command, if you get a warning then run 'npx    husky' before running the Make command)
-3. Linting and Prettier should now run on any staged changes during pre-commit
+`make setup-husky`
+
+This will use husky (https://typicode.github.io/husky/) to install pre-commit hooks for linting and secret checking.
 
 ## Usage
 

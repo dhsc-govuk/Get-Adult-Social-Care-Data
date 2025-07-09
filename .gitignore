@@ -144,8 +144,6 @@ next-env.d.ts
 
 .vscode
 
-/.husky
-
 #Test files
 junit.xml
 

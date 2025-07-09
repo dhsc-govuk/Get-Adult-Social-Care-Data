@@ -1,0 +1,5 @@
+cd gascd_app
+echo "Running linter and Prettier"
+npx lint-staged
+echo "Running GitLeaks for secret detection"
+gitleaks detect --source . --verbose --no-git
