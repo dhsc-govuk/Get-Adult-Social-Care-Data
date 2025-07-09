@@ -38,7 +38,8 @@
     "next-auth": "^4.24.11",
     "playwright": "^1.51.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@axe-core/react": "^4.10.1",
