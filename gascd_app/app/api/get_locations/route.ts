@@ -5,6 +5,7 @@ import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { authOptions } from '../auth/authOptions';
 import { getServerSession } from 'next-auth';
 import { Locations } from '@/data/interfaces/Locations';
+import logger from '@/utils/logger';
 
 // Handler for HTTP GET request
 export async function POST(req: NextRequest) {
@@ -49,7 +50,7 @@ export async function POST(req: NextRequest) {
     await pool.close();
     return NextResponse.json(rows);
   } catch (err) {
-    console.error('Error during database operations:', err);
+    logger.error('Error during database operations:', err);
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json(
       { error: `Error fetching data: ${errorMessage}` },

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../api/auth/authOptions';
 import { verifyAuthToken } from '../../src/helpers/auth/verifyAuthToken';
+import logger from '@/utils/logger';
 
 export default async function AuthLayout({
   children,
@@ -9,7 +10,10 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
-  if (process.env.NODE_ENV != 'production' && process.env.LOCAL_AUTH == 'true') {
+  if (
+    process.env.NODE_ENV != 'production' &&
+    process.env.LOCAL_AUTH == 'true'
+  ) {
     if (session?.user) {
       // Skip jwt validation if doing local auth
       return <>{children}</>;
@@ -23,7 +27,7 @@ export default async function AuthLayout({
   try {
     await verifyAuthToken(session.idToken);
   } catch (error) {
-    console.error('Error verifying token:', error);
+    logger.error('Error verifying token:', error);
     redirect('/login');
   }
   return <>{children}</>;
