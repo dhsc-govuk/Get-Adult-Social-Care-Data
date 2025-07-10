@@ -1,7 +1,7 @@
 import { NextAuthOptions } from 'next-auth';
 import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { eventLogger } from '@/utils/eventlogging';
+import logger from '@/utils/logger';
 
 declare module 'next-auth' {
   interface Session {
@@ -102,17 +102,17 @@ export const authOptions: NextAuthOptions = {
   },
   logger: {
     error(code, metadata) {
-      eventLogger.error('auth error', {
+      logger.error('auth error', {
         type: 'auth error',
         code: code,
         metadata: metadata,
       });
     },
     warn(code) {
-      eventLogger.log('auth warn', { type: 'auth warn', code: code });
+      logger.log('auth warn', { type: 'auth warn', code: code });
     },
     debug(code, metadata) {
-      eventLogger.log('auth debug', {
+      logger.log('auth debug', {
         type: 'auth debug',
         code: code,
         metadata: metadata,
