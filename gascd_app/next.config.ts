@@ -16,6 +16,9 @@ const nextConfig: NextConfig = {
     '@opentelemetry/semantic-conventions',
     '@opentelemetry/exporter-jaeger',
   ],
+  logging: {
+    incomingRequests: false,
+  },
   output: 'standalone',
 };
 
