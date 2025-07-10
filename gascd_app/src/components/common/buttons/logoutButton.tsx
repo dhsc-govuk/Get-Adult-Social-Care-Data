@@ -28,9 +28,9 @@ const LogoutButton: React.FC = () => {
   }, []);
 
   const handleSignOut = async () => {
+    LogService.logEvent('User logged out');
     localStorage.clear();
     await signOut({ redirect: false });
-    LogService.logEvent('User logged out');
     if (logoutUrl) {
       window.location.href = logoutUrl;
     } else {
@@ -45,7 +45,7 @@ const LogoutButton: React.FC = () => {
       onClick={handleSignOut}
       style={{
         border: 'none',
-        margin:0
+        margin: 0,
       }}
     >
       Sign out
