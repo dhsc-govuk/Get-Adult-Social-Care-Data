@@ -17,6 +17,7 @@ const options: AzureMonitorOpenTelemetryOptions = {
   },
   resource: customResource,
   instrumentationOptions: {
+    http: { enabled: true },
     winston: { enabled: true },
   },
 };
