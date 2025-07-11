@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+// This test is run under node environment, otherwise the winston logger has issues
 import { getServerSession } from 'next-auth';
 import AuthLayout from '../../app/(protected)/layout';
 import { redirect } from 'next/navigation';
