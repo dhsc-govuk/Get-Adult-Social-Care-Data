@@ -24,7 +24,6 @@
     "@axe-core/playwright": "^4.10.1",
     "@azure/monitor-opentelemetry": "^1.11.1",
     "@next/eslint-plugin-next": "^15.2.4",
-    "@opentelemetry/instrumentation-winston": "^0.48.0",
     "@playwright/test": "^1.51.1",
     "@types/d3": "^7.4.3",
     "axios": "^1.7.5",
