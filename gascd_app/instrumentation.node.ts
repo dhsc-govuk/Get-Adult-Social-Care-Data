@@ -1,3 +1,4 @@
+// See docs/logging.md for an overview of the telemetry/logging setup
 import {
   useAzureMonitor,
   AzureMonitorOpenTelemetryOptions,
