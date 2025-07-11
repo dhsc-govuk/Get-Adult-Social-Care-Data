@@ -37,3 +37,6 @@ LogService.logEvent("The user did something")
 
 Application logs can be found in the `traces` table of Azure App Insights.
 
+## Azure Log Analytics
+
+In production, App Insights resources are backed by Azure Log Analytics workspaces, which means that all of the above are also available in the following Log Analytics tables: `AppRequests`, `AppExceptions` and `AppTraces`.
