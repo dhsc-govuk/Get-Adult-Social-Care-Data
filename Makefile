@@ -38,6 +38,9 @@ docker-up-rebuild:
 docker-down:
 	docker-compose -f ./gascd_app/docker-compose.yml down
 
+docker-db:
+	docker-compose -f ./gascd_app/docker-compose-db.yml up -d
+
 format-staged:
 	cd gascd_app && ${NPX_COMMAND} lint-staged
 

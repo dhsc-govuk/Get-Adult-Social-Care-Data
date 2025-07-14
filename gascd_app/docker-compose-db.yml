@@ -1,0 +1,18 @@
+services:
+    mssql-server:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: mssql-server
+        environment:
+            ACCEPT_EULA: "Y"
+            MSSQL_SA_PASSWORD: "${DB_PASSWORD}"
+            MSSQL_PID: "Evaluation"
+        ports:
+            - "1433:1433"
+        volumes:
+            - mssql_data:/var/opt/mssql
+        restart: always 
+
+# Define named volumes
+volumes:
+  mssql_data:
+    driver: local
