@@ -1,6 +1,7 @@
 import React from 'react';
 import { Session } from 'next-auth';
 import LogoutButton from '../buttons/logoutButton';
+import Link from 'next/link';
 
 type Props = {
     session?: Session | null;
@@ -13,9 +14,9 @@ const ServiceName: React.FC<Props> = ({ session }) => {
         <div className="govuk-width-container">
         <div className="govuk-service-navigation__container">
         <span className="govuk-service-navigation__service-name">
-        <a href="/" className="govuk-service-navigation__link">
+        <Link href="/" className="govuk-service-navigation__link">
         Get adult social care data
-        </a>
+        </Link>
         </span>
         {!session ? (
             <>&nbsp;</>
