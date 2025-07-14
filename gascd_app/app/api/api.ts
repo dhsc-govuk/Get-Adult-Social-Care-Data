@@ -1,7 +1,8 @@
-import axios, { AxiosResponse } from "axios";
-import RawCapacityTrackerAgencyByRegionData from "../../src/data/mockResponses/capacity_tracker_agency_by_region.json";
-import RawCapacityTrackerAgencyByLaData from "../../src/data/mockResponses/capacity_tracker_agency_by_la.json";
-import { CapacityTrackerTotalHoursAgencyWorked } from "../../src/data/interfaces/CapacityTrackerTotalHoursAgencyWorked";
+import axios, { AxiosResponse } from 'axios';
+import RawCapacityTrackerAgencyByRegionData from '../../src/data/mockResponses/capacity_tracker_agency_by_region.json';
+import RawCapacityTrackerAgencyByLaData from '../../src/data/mockResponses/capacity_tracker_agency_by_la.json';
+import { CapacityTrackerTotalHoursAgencyWorked } from '../../src/data/interfaces/CapacityTrackerTotalHoursAgencyWorked';
+import logger from '@/utils/logger';
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
   const token: string = await fetch(
@@ -13,14 +14,14 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
     .then((data) => data[0].id_token);
 
   return {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,
   };
 }
 
 export async function getCapacityTrackerData(locationLevel: string) {
-  if (process.env.NEXT_PUBLIC_APP_ENV === "local") {
-    if (locationLevel === "region") {
+  if (process.env.NEXT_PUBLIC_APP_ENV === 'local') {
+    if (locationLevel === 'region') {
       return RawCapacityTrackerAgencyByRegionData;
     } else {
       return RawCapacityTrackerAgencyByLaData;
@@ -39,7 +40,7 @@ export async function getCapacityTrackerData(locationLevel: string) {
         );
       return response.data;
     } catch (error) {
-      console.error("Error fetching capacity tracker data:", error);
+      logger.error('Error fetching capacity tracker data:', error);
       throw error;
     }
   }

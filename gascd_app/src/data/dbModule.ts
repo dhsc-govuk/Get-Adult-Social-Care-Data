@@ -1,5 +1,10 @@
-import { AzureCliCredential, ManagedIdentityCredential, TokenCredential } from '@azure/identity';
+import {
+  AzureCliCredential,
+  ManagedIdentityCredential,
+  TokenCredential,
+} from '@azure/identity';
 import sql, { config as SQLConfig, ConnectionPool } from 'mssql';
+import logger from '@/utils/logger';
 
 export async function getAccessToken(): Promise<string> {
   const isLocal = process.env.NEXT_PUBLIC_APP_ENV === 'local';
@@ -12,20 +17,24 @@ export async function getAccessToken(): Promise<string> {
     if (clientId) {
       credential = new ManagedIdentityCredential(clientId);
     } else {
-      console.warn("MANAGED_IDENTITY_CLIENT_ID environment variable is missing. Proceeding without client ID.");
+      logger.warn(
+        'MANAGED_IDENTITY_CLIENT_ID environment variable is missing. Proceeding without client ID.'
+      );
       credential = new ManagedIdentityCredential();
     }
   }
 
   try {
-    const tokenResponse = await credential.getToken("https://database.windows.net/.default");
+    const tokenResponse = await credential.getToken(
+      'https://database.windows.net/.default'
+    );
     if (tokenResponse) {
       return tokenResponse.token;
     } else {
-      throw new Error("Failed to receive token.");
+      throw new Error('Failed to receive token.');
     }
   } catch (err) {
-    console.error("Failed to get access token:", err);
+    logger.error('Failed to get access token:', err);
     throw err;
   }
 }

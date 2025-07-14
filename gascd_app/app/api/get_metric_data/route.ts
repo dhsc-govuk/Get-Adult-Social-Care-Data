@@ -4,6 +4,7 @@ import { Indicator } from '@/data/interfaces/Indicator';
 import QueryBuilderService from '@/services/query-builder/QueryBuilderService';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/authOptions';
+import logger from '@/utils/logger';
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(rows);
   } catch (err) {
-    console.error('Error during database operations:', err);
+    logger.error('Error during database operations:', err);
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json(
       { error: `Error fetching data: ${errorMessage}` },

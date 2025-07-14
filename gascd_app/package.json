@@ -22,10 +22,10 @@
   },
   "dependencies": {
     "@axe-core/playwright": "^4.10.1",
+    "@azure/monitor-opentelemetry": "^1.11.1",
     "@next/eslint-plugin-next": "^15.2.4",
     "@playwright/test": "^1.51.1",
     "@types/d3": "^7.4.3",
-    "applicationinsights": "^3.6.0",
     "axios": "^1.7.5",
     "d3": "^7.9.0",
     "govuk-frontend": "^5.10.0",
@@ -38,7 +38,8 @@
     "next-auth": "^4.24.11",
     "playwright": "^1.51.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@axe-core/react": "^4.10.1",
