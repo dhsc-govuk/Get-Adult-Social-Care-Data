@@ -132,10 +132,6 @@ Alternatively you can connect your local development instance to the DEV databas
   DB_PORT=1433
   # Allows app to connect with your Azure CLI creds
   DB_AUTH_TYPE=azure-cli
-  # If using local (non-azure) auth, ensure you have the following set
-  LOCAL_AUTH=true
-  LOCAL_AUTH_LOCATION_TYPE=Care provider location
-  LOCAL_AUTH_LOCATION_ID=testcpl1
 ```
 * Start the app
 
