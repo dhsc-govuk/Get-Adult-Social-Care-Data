@@ -112,7 +112,11 @@ DB_PASSWORD="<a-password-for-the-db>" make docker-db
 DB_PASSWORD="<a-password-for-the-db>" make docker-db-init
 ```
 
-TODO - how to get some dummy data into the DB?
+[Experimental] - there is also a script to import CSV files into the docker database for dummy content:
+
+```bash
+./dbtools/import_csv.sh {csvfile} {tablename}
+```
 
 ## Connecting to the Azure DEV database
 
