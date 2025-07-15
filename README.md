@@ -89,26 +89,30 @@ You can spin up a local SQL server as follows:
 
 * Set the following in `gascd_app/.env`
 ```bash
-  # Get DB values from the infra repo
   DB_DATABASE=Analytical_Datastore
   DB_SERVER=localhost
   DB_PORT=1433
   DB_AUTH_TYPE=local
   DB_USERNAME=sa
-  DB_PASSWORD=<something-that-passes-mssql-password-requirements>
+  DB_PASSWORD=<a-password-for-the-db>
 ```
-* Run `make docker-db`
-* Start the app
 
-To bootstrap the database and tables, you can to generate an SQL bootstrap file from the .sqlproject in the data repo as follows:
+To bootstrap the database and tables, you need to to generate an SQL bootstrap file from the .sqlproject in the data repo as follows:
 
 ```bash
-./utils/generate_bootstrap_sql.py /path/to/dhsc-gascd-data/sql/Analytical_Datastore
+./dbtools/generate_bootstrap_sql.py /path/to/dhsc-gascd-data/sql/Analytical_Datastore
 ```
 
-You can then run this SQL file against your docker DB (VS Code comes with plugins for connecting to SQL Server Databases).
+You can then run this SQL file against your docker DB as follows:
 
-* XXX TODO - how to get some useful data into a local DB?
+```bash
+# Build and start the MSSQL server
+DB_PASSWORD="<a-password-for-the-db>" make docker-db
+# Imports the SQL bootstrap file
+DB_PASSWORD="<a-password-for-the-db>" make docker-db-init
+```
+
+TODO - how to get some dummy data into the DB?
 
 ## Connecting to the Azure DEV database
 

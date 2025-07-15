@@ -39,7 +39,15 @@ docker-down:
 	docker-compose -f ./gascd_app/docker-compose.yml down
 
 docker-db:
-	docker-compose -f ./gascd_app/docker-compose-db.yml up -d
+	docker-compose -f ./dbtools/docker-compose-db.yml up -d
+
+docker-db-init:
+	docker cp ./Analytical_Datastore_bootstrap.sql mssql-server:/tmp/
+	docker exec -it \
+		mssql-server /bin/bash -c "\
+		echo 'Running SQL scripts inside mssql-server container...'; \
+		/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P \"$(DB_PASSWORD)\" -i \"/tmp/Analytical_Datastore_bootstrap.sql\" -o /dev/stdout; \
+		"
 
 format-staged:
 	cd gascd_app && ${NPX_COMMAND} lint-staged
