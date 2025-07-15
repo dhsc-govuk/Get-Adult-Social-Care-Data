@@ -83,7 +83,7 @@ The default auth provider is Azure B2C, which can be a hassle to set up if you'r
 * The dummy auth provider will appear as an alternative when the default (Azure) auth method fails
 * Enter any email address in the 'dummy-creds' login box to authenticate
 
-### Development database access
+### Development database setup
 
 You can spin up a local SQL server as follows:
 
@@ -100,7 +100,17 @@ You can spin up a local SQL server as follows:
 * Run `make docker-db`
 * Start the app
 
-(TODO - scripts to actually populate the local DB)
+To bootstrap the database and tables, you can to generate an SQL bootstrap file from the .sqlproject in the data repo as follows:
+
+```bash
+./utils/generate_bootstrap_sql.py /path/to/dhsc-gascd-data/sql/Analytical_Datastore
+```
+
+You can then run this SQL file against your docker DB (VS Code comes with plugins for connecting to SQL Server Databases).
+
+* XXX TODO - how to get some useful data into a local DB?
+
+## Connecting to the Azure DEV database
 
 Alternatively you can connect your local development instance to the DEV database on Azure as follows:
 
