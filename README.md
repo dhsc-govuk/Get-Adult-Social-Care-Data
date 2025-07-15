@@ -135,6 +135,12 @@ Alternatively you can connect your local development instance to the DEV databas
 ```
 * Start the app
 
+## Debugging Database queries
+
+You can log raw SQL queries to the terminal by running the app as follows:
+
+`DEBUG=mssql:* make run-dev`
+
 ## Continuous Integration, Development and Deployment
 
 ### CI/CD
