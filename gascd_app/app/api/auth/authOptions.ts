@@ -110,7 +110,6 @@ export const authOptions: NextAuthOptions = {
     },
     warn(code) {
       logger.warn('auth warn', {
-        level: 'warn',
         type: 'auth warn',
         code: code
       });
