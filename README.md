@@ -94,10 +94,13 @@ You can spin up a local SQL server as follows:
   DB_PORT=1433
   DB_AUTH_TYPE=local
   DB_USERNAME=sa
+  # See below for password complexity requirements
   DB_PASSWORD=<a-password-for-the-db>
 ```
+* Please note that the DB_PASSWORD must meet [SQL server password complexity](https://learn.microsoft.com/en-us/sql/relational-databases/security/password-policy?view=sql-server-ver16#password-complexity)
 
-To bootstrap the database and tables, you need to to generate an SQL bootstrap file from the .sqlproject in the data repo as follows:
+
+To bootstrap the database and tables, you need to to generate an SQL bootstrap file from the `.sqlproject` in the [dhsc-gasdc-data repo](https://github.com/madetech/dhsc-gascd-data) as follows:
 
 ```bash
 ./dbtools/generate_bootstrap_sql.py /path/to/dhsc-gascd-data/sql/Analytical_Datastore
