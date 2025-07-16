@@ -41,6 +41,9 @@ docker-down:
 docker-db:
 	docker-compose -f ./dbtools/docker-compose-db.yml up -d
 
+docker-db-down:
+	docker-compose -f ./dbtools/docker-compose-db.yml down
+
 docker-db-init:
 	docker cp ./Analytical_Datastore_bootstrap.sql mssql-server:/tmp/
 	docker exec -it \
