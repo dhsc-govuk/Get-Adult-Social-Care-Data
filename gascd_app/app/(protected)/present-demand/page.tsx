@@ -302,6 +302,7 @@ const PresentDemandPage: React.FC = () => {
         autoSpaceMainContent={false}
         showLoginInformation={true}
         currentPage="present-demand"
+        backURL="/"
         showNavBar={false}
         session={session}
       >
@@ -352,7 +353,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a 
+                  <a
                     href="/help/beds-per-100000-adult-population"
                     className="govuk-link"
                   >
@@ -360,7 +361,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a 
+                  <a
                     href="/help/percentage-beds-occupied"
                     className="govuk-link"
                   >
@@ -368,7 +369,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a 
+                  <a
                     href="/help/beds-care-provider-location"
                     className="govuk-link"
                   >
@@ -376,7 +377,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a 
+                  <a
                     href="/help/percentage-beds-occupied-care-provider-location"
                     className="govuk-link"
                   >
@@ -553,10 +554,12 @@ const PresentDemandPage: React.FC = () => {
                   metric_Id="median_occupancy_total"
                 ></ConditionalText>
                 <p className="govuk-body">
-                  <strong>Note: </strong>If a care provider location has fewer than 6 beds, the
-                  number of beds is shown as 0. If a care provider location has fewer than 6 beds occupied, the
-                  percentage of beds occupied is shown as 0. For details on suppression of data, see indicator definition and
-                  supporting information.
+                  <strong>Note: </strong>If a care provider location has fewer
+                  than 6 beds, the number of beds is shown as 0. If a care
+                  provider location has fewer than 6 beds occupied, the
+                  percentage of beds occupied is shown as 0. For details on
+                  suppression of data, see indicator definition and supporting
+                  information.
                 </p>
                 <h2 className="govuk-heading-m">
                   Explore the data: care providers in {locationNames[1]}
