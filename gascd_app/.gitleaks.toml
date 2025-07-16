@@ -1,1 +1,4 @@
 files = ["\\.env$", "\\.env\\..*$"]
+
+[[allowlists]]
+paths = ['''node_modules''']
