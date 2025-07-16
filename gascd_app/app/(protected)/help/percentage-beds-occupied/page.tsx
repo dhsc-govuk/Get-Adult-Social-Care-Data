@@ -11,9 +11,9 @@ const PercentageBedsOccupied: React.FC = () => {
         showLoginInformation={false}
         currentPage={'percentage beds occupied'}
       >
-        <Link onClick={() => router.back()} className="govuk-back-link" href="">
+        <button onClick={() => router.back()} className="govuk-back-link">
           Back
-        </Link>
+        </button>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-l">
@@ -114,11 +114,11 @@ const PercentageBedsOccupied: React.FC = () => {
                     day if the 14th falls on a weekend or holiday.
                     <br></br>
                     <br></br>
-                    Small number suppression is applied. If fewer than 3 
-                    care provider locations offer a given bed type within a 
-                    local authority, region, or country, the value for that 
-                    area will be shown as 0. Care provider locations in the 
-                    Isles of Scilly are excluded from all aggregated values.
+                    Small number suppression is applied. If fewer than 3 care
+                    provider locations offer a given bed type within a local
+                    authority, region, or country, the value for that area will
+                    be shown as 0. Care provider locations in the Isles of
+                    Scilly are excluded from all aggregated values.
                   </td>
                 </tr>
 

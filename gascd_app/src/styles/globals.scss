@@ -9,3 +9,9 @@ html, body {
     box-sizing: border-box;
     width: 100%;
   }
+
+.govuk-back-link {
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+}

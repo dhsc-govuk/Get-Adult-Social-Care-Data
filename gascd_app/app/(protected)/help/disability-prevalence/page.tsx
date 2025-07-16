@@ -8,9 +8,9 @@ const DisabilyPrevalence: React.FC = () => {
   return (
     <>
       <Layout showLoginInformation={false} currentPage={'disabilty prevalence'}>
-        <Link onClick={() => router.back()} className="govuk-back-link" href="">
+        <button onClick={() => router.back()} className="govuk-back-link">
           Back
-        </Link>
+        </button>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-l">
