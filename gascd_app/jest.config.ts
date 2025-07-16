@@ -20,7 +20,6 @@ const config: Config = {
   //collectCoverage: true,
   collectCoverageFrom: ['app/**/*.{js,ts,tsx}', 'src/**/*.{js,ts,tsx}'],
   coveragePathIgnorePatterns: [
-    '/app/\\(authentication\\)/registration/',
     '/app/\\(protected\\)/help/',
     '/src/data/types/govuk-frontend.d.ts',
   ],
