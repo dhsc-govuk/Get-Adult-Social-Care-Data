@@ -24,10 +24,7 @@ export default async function HomePage() {
 
         <div className="govuk-grid-row">
           <a href="/present-demand">
-            <div
-              className="govuk-grid-column-one-half"
-              style={{ backgroundColor: '#eee', paddingTop: '15px' }}
-            >
+            <div className="govuk-grid-column-one-half card">
               <h2 className="govuk-heading-m">Current population needs</h2>
               <p className="govuk-body">
                 Assess data indicators on a range of factors shaping current

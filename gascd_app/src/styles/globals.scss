@@ -9,3 +9,9 @@ html, body {
     box-sizing: border-box;
     width: 100%;
   }
+
+.govuk-grid-column-one-half.card {
+  background: #f3f2f1;
+  border: 0.5em solid white;
+  padding: 15px;
+}
