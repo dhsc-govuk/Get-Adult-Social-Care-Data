@@ -6,6 +6,12 @@ import pluginNext from '@next/eslint-plugin-next';
 
 export default [
   {
+    ignores: [
+      '.next/',
+      'coverage/'
+    ]
+  },
+  {
     files: ['**/*.{js,jsx,ts,tsx}'],
     settings: {
       react: {
@@ -28,6 +34,8 @@ export default [
       ...reactHooks.config,
       //...typescriptEslint.configs.recommended.rules, temporarily removed for build.
       'react/react-in-jsx-scope': 'off',
+      ...pluginNext.configs.recommended.rules,
+      ...pluginNext.configs['core-web-vitals'].rules
     },
   },
 ];

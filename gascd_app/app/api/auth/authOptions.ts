@@ -109,10 +109,13 @@ export const authOptions: NextAuthOptions = {
       });
     },
     warn(code) {
-      logger.log('auth warn', { type: 'auth warn', code: code });
+      logger.warn('auth warn', {
+        type: 'auth warn',
+        code: code
+      });
     },
     debug(code, metadata) {
-      logger.log('auth debug', {
+      logger.debug('auth debug', {
         type: 'auth debug',
         code: code,
         metadata: metadata,
