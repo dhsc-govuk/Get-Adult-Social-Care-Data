@@ -1,58 +1,41 @@
-import '../../../src/styles/main.scss';
-
 import React from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
-import { Breadcrumb } from '../../../src/data/interfaces/Breadcrumb';
-import ButtonWithArrow from '@/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../api/auth/authOptions';
-import { redirect } from 'next/navigation';
 
 export default async function HomePage() {
-  const breadcrumbs: Array<Breadcrumb> = [
-    {
-      text: 'Homepage',
-      url: '/home',
-    },
-  ];
-
-  const session = await getServerSession(authOptions);
-
-  if (session) {
-    redirect('/present-demand');
-  }
-
   return (
     <>
       <Layout
         autoSpaceMainContent={false}
-        breadcrumbs={breadcrumbs}
         showLoginInformation={true}
         currentPage="home"
-        session={session}
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-full">
-            <h1 className="govuk-heading-l">
-              Access data and insights for adult social care in England
-            </h1>
+            <h1 className="govuk-heading-xl">Get adult social care data</h1>
+            <p className="govuk-body-l">
+              Access the latest data on adult social care capacity and
+              population needs across England.
+            </p>
+            <h2 className="govuk-heading-m govuk-!-margin-top-7">
+              Population needs
+            </h2>
           </div>
         </div>
-        {!session ? (
-          <>
-            {/* TODO Add this Back when Needed */}
-            {/* <div className="govuk-grid-row">
-            <ButtonWithArrow buttonString="Register" buttonUrl="/register" />
-          </div> */}
-            <div className="govuk-grid-row">
-              <ButtonWithArrow buttonString="Log in" buttonUrl="/login" />
+
+        <div className="govuk-grid-row">
+          <a href="/present-demand">
+            <div
+              className="govuk-grid-column-one-half"
+              style={{ backgroundColor: '#eee', paddingTop: '15px' }}
+            >
+              <h2 className="govuk-heading-m">Current population needs</h2>
+              <p className="govuk-body">
+                Assess data indicators on a range of factors shaping current
+                population needs for adult social care.
+              </p>
             </div>
-          </>
-        ) : (
-          <div className="govuk-grid-row">
-            <p className="govuk-body"> Welcome back you are logged in!</p>
-          </div>
-        )}
+          </a>
+        </div>
       </Layout>
     </>
   );
