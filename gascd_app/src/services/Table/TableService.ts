@@ -1,20 +1,7 @@
 import { Indicator } from '@/data/interfaces/Indicator';
+import IndicatorService from '../indicator/IndicatorService';
 
 class TableService {
-  public static parseDate(entry: Indicator) {
-    if (entry.metric_date_type == 'string') {
-      // expects dd/mm/yyyy
-      let dateparts = entry.metric_date.split('/');
-      return new Date(
-        parseInt(dateparts[2]),
-        parseInt(dateparts[1]),
-        parseInt(dateparts[0])
-      );
-    } else {
-      return entry.metric_date;
-    }
-  }
-
   public static filterDate(data: Indicator[]): Indicator[] {
     const latestEntries: Record<string, any> = {};
     data.forEach((entry) => {
@@ -22,7 +9,8 @@ class TableService {
       const key = `${metric_id}-${location_id}`;
       if (
         !latestEntries[key] ||
-        this.parseDate(entry) > this.parseDate(latestEntries[key])
+        IndicatorService.parseDate(entry) >
+          IndicatorService.parseDate(latestEntries[key])
       ) {
         latestEntries[key] = entry;
       }

@@ -157,15 +157,23 @@ class IndicatorService {
         valueTag: entry.metric_date.toString(),
         metric: entry.metric_id,
         value: entry.data_point,
-        date: this.parseDate(entry.metric_date),
+        date: IndicatorService.parseDate(entry),
       }))
       .sort((a, b) => a.date.getTime() - b.date.getTime());
   }
 
-  private parseDate(date: Date) {
-    const parts = date.toString().split('/');
-    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-    return new Date(formattedDate);
+  public static parseDate(entry: Indicator): Date {
+    if (entry.metric_date_type == 'string') {
+      // expects dd/mm/yyyy
+      let dateparts = entry.metric_date.split('/');
+      return new Date(
+        parseInt(dateparts[2]),
+        parseInt(dateparts[1]),
+        parseInt(dateparts[0])
+      );
+    } else {
+      return entry.metric_date;
+    }
   }
 }
 

@@ -61,41 +61,6 @@ describe('TableService', () => {
     });
   });
 
-  describe('parseDate', () => {
-    it('should parse date strings', () => {
-      const entry_with_string: Indicator = {
-        metric_id: '1',
-        location_id: '1',
-        data_point: 10,
-        metric_date_type: 'string',
-        metric_date: '23/4/2020',
-        location_type: '',
-        numerator: 0,
-        multiplier: 0,
-        denominator: 0,
-        load_date_time: new Date(2024, 3, 10),
-      };
-      const result: Indicator[] = TableService.parseDate(entry_with_string);
-      expect(result).toEqual(new Date(2020, 4, 23));
-    });
-    it('should return dates as-is', () => {
-      const entry_with_date: Indicator = {
-        metric_id: '1',
-        location_id: '1',
-        data_point: 10,
-        metric_date_type: 'date',
-        metric_date: new Date(2021, 6, 5),
-        location_type: '',
-        numerator: 0,
-        multiplier: 0,
-        denominator: 0,
-        load_date_time: new Date(2024, 3, 10),
-      };
-      const result: Indicator[] = TableService.parseDate(entry_with_date);
-      expect(result).toEqual(new Date(2021, 6, 5));
-    });
-  });
-
   describe('removeLoadDateTime', () => {
     it('should return data without the load_date_time field', () => {
       const result = TableService.removeLoadDateTime(mockData);
