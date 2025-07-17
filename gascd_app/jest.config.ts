@@ -8,8 +8,8 @@ const config: Config = {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
   },
   moduleNameMapper: {
+    '^@/test-utils/(.*)$': '<rootDir>/__tests__/utils/$1',
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@/test-utils/(.*)$': '<rootDir>/tests/utils/$1',
     '^.+\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     d3: '<rootDir>/node_modules/d3/dist/d3.min.js',
     '^d3-(.*)$': '<rootDir>/node_modules/d3-$1/dist/d3-$1.min.js',

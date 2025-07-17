@@ -1,13 +1,18 @@
-import React from 'react';
-import Layout from '../../../src/components/common/layout/Layout';
+'use client';
 
-export default async function HomePage() {
+import React from 'react';
+import Layout from '@/components/common/layout/Layout';
+import { useSession } from 'next-auth/react';
+
+const HomePage: React.FC = () => {
+  const { data: session, status } = useSession();
   return (
     <>
       <Layout
         autoSpaceMainContent={false}
         showLoginInformation={true}
         currentPage="home"
+        session={session}
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-full">
@@ -36,4 +41,6 @@ export default async function HomePage() {
       </Layout>
     </>
   );
-}
+};
+
+export default HomePage;
