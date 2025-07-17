@@ -88,6 +88,15 @@ export const authOptions: NextAuthOptions = {
         token.locationId = process.env.LOCAL_AUTH_LOCATION_ID;
         token.smartInsight = false;
       }
+
+      if (account) {
+        // Existence of 'account' means that this is an actual sign-in attempt
+        // - see https://next-auth.js.org/configuration/callbacks
+        logger.info('User logged in success', {
+          userid: account.providerAccountId,
+        });
+      }
+
       return token;
     },
     async session({ session, token }) {
@@ -111,7 +120,7 @@ export const authOptions: NextAuthOptions = {
     warn(code) {
       logger.warn('auth warn', {
         type: 'auth warn',
-        code: code
+        code: code,
       });
     },
     debug(code, metadata) {
