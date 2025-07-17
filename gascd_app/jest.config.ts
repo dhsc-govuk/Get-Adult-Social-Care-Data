@@ -13,6 +13,9 @@ const config: Config = {
     '^.+\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     d3: '<rootDir>/node_modules/d3/dist/d3.min.js',
     '^d3-(.*)$': '<rootDir>/node_modules/d3-$1/dist/d3-$1.min.js',
+    // Mock out govuk JS for jest tests
+    'govuk-frontend/js/govuk-frontend\.min\.js$':
+      '<rootDir>/__tests__/__mocks__/govuk-frontend-mock.js',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   reporters: ['default'],
