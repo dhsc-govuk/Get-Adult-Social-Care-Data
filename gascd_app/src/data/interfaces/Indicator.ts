@@ -1,7 +1,7 @@
 export interface Indicator {
   metric_id: string;
   metric_date_type: string;
-  metric_date: Date;
+  metric_date: any;
   location_type: string;
   location_id: string;
   numerator: number;
