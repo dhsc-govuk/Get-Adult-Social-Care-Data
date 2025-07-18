@@ -163,17 +163,21 @@ class IndicatorService {
   }
 
   public static parseDate(entry: Indicator): Date {
-    if (entry.metric_date_type == 'string') {
-      // expects dd/mm/yyyy
-      let dateparts = entry.metric_date.split('/');
-      return new Date(
-        parseInt(dateparts[2]),
-        parseInt(dateparts[1]),
-        parseInt(dateparts[0])
-      );
-    } else {
-      return entry.metric_date;
+    if (typeof entry.metric_date == 'string') {
+      if (entry.metric_date.includes('/')) {
+        // expects dd/mm/yyyy
+        let dateparts = entry.metric_date.split('/');
+        return new Date(
+          parseInt(dateparts[2]),
+          parseInt(dateparts[1]),
+          parseInt(dateparts[0])
+        );
+      } else {
+        // Assume it is a parseable date
+        return new Date(entry.metric_date);
+      }
     }
+    return entry.metric_date;
   }
 }
 
