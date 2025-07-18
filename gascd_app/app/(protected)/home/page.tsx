@@ -21,22 +21,22 @@ const HomePage: React.FC = () => {
               Access the latest data on adult social care capacity and
               population needs across England.
             </p>
-            <h2 className="govuk-heading-m govuk-!-margin-top-7">
-              Population needs
-            </h2>
+            <h2 className="govuk-heading-m">Population needs</h2>
           </div>
         </div>
 
         <div className="govuk-grid-row">
-          <a href="/present-demand">
-            <div className="govuk-grid-column-one-half card">
-              <h2 className="govuk-heading-m">Current population needs</h2>
+          <div className="govuk-grid-column-one-half">
+            <a href="/present-demand" className="app-card">
+              <h2 className="govuk-heading-m app-card__heading">
+                Current population needs
+              </h2>
               <p className="govuk-body">
                 Assess data indicators on a range of factors shaping current
                 population needs for adult social care.
               </p>
-            </div>
-          </a>
+            </a>
+          </div>
         </div>
       </Layout>
     </>

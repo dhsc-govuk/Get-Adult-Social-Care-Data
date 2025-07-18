@@ -93,7 +93,7 @@ const Layout: React.FC<Props> = ({
             }
           >
             {backURL && (
-              <div style={{ marginTop: '-40px' }}>
+              <div className="backlink-wrapper">
                 <a href={backURL} className="govuk-back-link">
                   Back
                 </a>
