@@ -1,12 +1,39 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '@/components/common/layout/Layout';
 import { useSession } from 'next-auth/react';
 import '../../../src/styles/population-age.scss';
 
 const PopulationAgePage: React.FC = () => {
   const { data: session, status } = useSession();
+  const [selectedAge, setSelectedAge] = useState('aged-85-years-and-over');
+  const [mapUrl, setMapUrl] = useState('');
+
+  const handleAgeChange = (event) => {
+    event.preventDefault();
+    setSelectedAge(event.target.value);
+  };
+
+  const handleUpdateClick = (event) => {
+    event.preventDefault();
+    updateMap();
+  };
+
+  const updateMap = () => {
+    let baseUrl = `https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a`;
+    let map_qs =
+      'lad=E07000203&embed=true&embedInteractive=true&embedAreaSearch=false&embedCategorySelection=false&embedView=viewport';
+    map_qs +=
+      '&embedBounds=0.4518427976473447,51.95149998586203,1.7552472023533312,52.516917630727676';
+    const newUrl = `${baseUrl}/${selectedAge}?${map_qs}`;
+    setMapUrl(newUrl);
+  };
+
+  useEffect(() => {
+    updateMap();
+  }, []);
+
   return (
     <>
       <Layout
@@ -63,7 +90,9 @@ const PopulationAgePage: React.FC = () => {
                         id="mapAgeGroup-2"
                         name="mapAgeGroup"
                         type="radio"
-                        value="Aged 65 to 74"
+                        onChange={handleAgeChange}
+                        checked={selectedAge === 'aged-65-to-74-years'}
+                        value="aged-65-to-74-years"
                       />
                       <label
                         className="govuk-label govuk-radios__label"
@@ -76,14 +105,16 @@ const PopulationAgePage: React.FC = () => {
                     <div className="govuk-radios__item">
                       <input
                         className="govuk-radios__input"
-                        id=" mapAgeGroup-3"
+                        id="mapAgeGroup-3"
                         name="mapAgeGroup"
                         type="radio"
-                        value="Aged 75 to 84"
+                        onChange={handleAgeChange}
+                        checked={selectedAge === 'aged-75-to-84-years'}
+                        value="aged-75-to-84-years"
                       />
                       <label
                         className="govuk-label govuk-radios__label"
-                        htmlFor=" mapAgeGroup-3"
+                        htmlFor="mapAgeGroup-3"
                       >
                         Aged 75 to 84
                       </label>
@@ -92,21 +123,26 @@ const PopulationAgePage: React.FC = () => {
                     <div className="govuk-radios__item">
                       <input
                         className="govuk-radios__input"
-                        id=" mapAgeGroup-4"
+                        id="mapAgeGroup-4"
                         name="mapAgeGroup"
                         type="radio"
-                        value="Aged 85 and over"
+                        onChange={handleAgeChange}
+                        checked={selectedAge === 'aged-85-years-and-over'}
+                        value="aged-85-years-and-over"
                       />
                       <label
                         className="govuk-label govuk-radios__label"
-                        htmlFor=" mapAgeGroup-4"
+                        htmlFor="mapAgeGroup-4"
                       >
                         Aged 85 and over
                       </label>
                     </div>
                   </div>
 
-                  <button className="govuk-button govuk-button--secondary govuk-!-margin-top-2">
+                  <button
+                    className="govuk-button govuk-button--secondary govuk-!-margin-top-2"
+                    onClick={handleUpdateClick}
+                  >
                     Update age group
                   </button>
                 </fieldset>
@@ -115,13 +151,15 @@ const PopulationAgePage: React.FC = () => {
 
             <div className="govuk-form-group">
               <h3 className="govuk-heading-s">[DATA VIS COMPONENT HEADING]</h3>
-              <iframe
-                width="100%"
-                height="600px"
-                title="ONS Census Maps"
-                frameBorder="0"
-                src="https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a/aged-85-years-and-over/?lad=E07000203&amp;embed=true&amp;embedInteractive=true&amp;embedAreaSearch=false&amp;embedCategorySelection=false&amp;embedView=viewport&amp;embedBounds=0.4518427976473447%2C51.95149998586203%2C1.7552472023533312%2C52.516917630727676"
-              ></iframe>
+              {mapUrl && (
+                <iframe
+                  width="100%"
+                  height="600px"
+                  title="ONS Census Maps"
+                  frameBorder="0"
+                  src={mapUrl}
+                ></iframe>
+              )}
             </div>
 
             <p className="govuk-body">
