@@ -30,7 +30,10 @@ describe('HomePage', () => {
     });
     expect(linkElement).toBeInTheDocument();
 
-    // Optionally, you can also assert the link's destination (href attribute)
-    expect(linkElement).toHaveAttribute('href', '/present-demand');
+    const linkElement2 = screen.getByRole('link', {
+      name: /Population age/i,
+    });
+    expect(linkElement2).toBeInTheDocument();
+    expect(linkElement2).toHaveAttribute('href', '/population-age');
   });
 });
