@@ -5,17 +5,16 @@ import Layout from '@/components/common/layout/Layout';
 import { useSession } from 'next-auth/react';
 import '../../../src/styles/population-age.scss';
 
-const PopulationAgePage: React.FC = () => {
+export default function PopulationAgePage() {
   const { data: session, status } = useSession();
   const [selectedAge, setSelectedAge] = useState('aged-85-years-and-over');
   const [mapUrl, setMapUrl] = useState('');
 
-  const handleAgeChange = (event) => {
-    event.preventDefault();
+  const handleAgeChange = (event: any) => {
     setSelectedAge(event.target.value);
   };
 
-  const handleUpdateClick = (event) => {
+  const handleUpdateClick = (event: any) => {
     event.preventDefault();
     updateMap();
   };
@@ -211,6 +210,4 @@ const PopulationAgePage: React.FC = () => {
       </Layout>
     </>
   );
-};
-
-export default PopulationAgePage;
+}
