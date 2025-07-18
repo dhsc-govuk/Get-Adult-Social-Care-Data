@@ -11,6 +11,12 @@ html, body {
     width: 100%;
   }
 
+// Pull the back link up when visible
 .backlink-wrapper {
-  margin-top: -40px;
+  margin-top: -20px;
+}
+@media (min-width: 40.0625em) {
+  .backlink-wrapper {
+    margin-top: -40px;
+  }
 }

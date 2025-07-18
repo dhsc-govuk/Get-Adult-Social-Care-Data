@@ -305,14 +305,10 @@ const PresentDemandPage: React.FC = () => {
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-one-third">
-            <div className="govuk-grid-row">
-              <div className="govuk-grid-column-full">
-                <ContentSidePanel items={contentItems} />
-              </div>
-            </div>
+            <ContentSidePanel items={contentItems} />
           </div>
           <div className="govuk-grid-column-two-thirds">
-            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+            <div className="govuk-!-margin-bottom-9">
               <h1 className="govuk-heading-l">
                 Current population needs and capacity
               </h1>
@@ -329,7 +325,7 @@ const PresentDemandPage: React.FC = () => {
                 find insights into current capacity to meet those needs.
               </p>
             </div>
-            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+            <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-m" id="definition">
                 Indicator definition and supporting information
               </h2>
@@ -384,7 +380,7 @@ const PresentDemandPage: React.FC = () => {
                 </li>
               </ul>
             </div>
-            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+            <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-m" id="selected-locations">
                 Your selected locations
               </h2>
@@ -407,7 +403,7 @@ const PresentDemandPage: React.FC = () => {
                 </div>
               </dl>
             </div>
-            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+            <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-l" id="drivers">
                 Drivers of population needs
               </h2>
@@ -429,7 +425,7 @@ const PresentDemandPage: React.FC = () => {
                 metric_Id="perc_65over"
               ></ConditionalText>
             </div>
-            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+            <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-m govuk-!-margin-bottom-9">
                 Explore the data: demographic factors
               </h2>
@@ -452,7 +448,7 @@ const PresentDemandPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+            <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-l" id="capacity-la">
                 Current capacity - care homes: local authority-level insights
               </h2>
@@ -487,7 +483,7 @@ const PresentDemandPage: React.FC = () => {
                 metric_Id="median_occupancy_total"
               ></ConditionalText>
             </div>
-            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+            <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-m">
                 Explore the data: adult social care beds per 100,000 adult
                 population and occupancy
@@ -523,7 +519,7 @@ const PresentDemandPage: React.FC = () => {
                 Data correct as of {bedDataLatestDate}
               </p>
             </div>
-            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+            <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-l" id="capacity-cp">
                 Current capacity - care homes: care provider-level insights
               </h2>
