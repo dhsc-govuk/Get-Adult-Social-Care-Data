@@ -19,7 +19,7 @@ describe('TableService', () => {
       metric_id: '1',
       location_id: '1',
       data_point: 20,
-      metric_date_type: 'string',
+      metric_date_type: '',
       metric_date: '5/3/2024',
       location_type: '',
       numerator: 0,
