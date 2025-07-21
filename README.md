@@ -14,6 +14,8 @@
   - [CI/CD](#cicd)
 - [Further documentation](#further-documentation)
   - [Related Repositories](#related-repositories)
+  - [Logging](docs/logging.md)
+  - [Local Development Application Performance Monitoring](docs/apm.md)
 
 ## About This Project
 
