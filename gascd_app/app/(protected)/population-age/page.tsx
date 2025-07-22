@@ -22,7 +22,7 @@ export default function PopulationAgePage() {
   const updateMap = () => {
     let baseUrl = `https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a`;
     let map_qs =
-      'lad=E07000203&embed=true&embedInteractive=true&embedAreaSearch=false&embedCategorySelection=false&embedView=viewport';
+      'lad=E08000012&geoLock=lad&embed=true&embedInteractive=true&embedAreaSearch=false&embedCategorySelection=false&embedView=viewport';
     map_qs +=
       '&embedBounds=0.4518427976473447,51.95149998586203,1.7552472023533312,52.516917630727676';
     const newUrl = `${baseUrl}/${selectedAge}?${map_qs}`;
