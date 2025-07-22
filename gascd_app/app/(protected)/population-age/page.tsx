@@ -4,10 +4,13 @@ import React, { useState, useEffect } from 'react';
 import Layout from '@/components/common/layout/Layout';
 import { useSession } from 'next-auth/react';
 import '../../../src/styles/population-age.scss';
+import PresentDemandService from '@/services/present-demand/presentDemandService';
 
 export default function PopulationAgePage() {
   const { data: session, status } = useSession();
   const [selectedAge, setSelectedAge] = useState('aged-85-years-and-over');
+  const [CPLocationId, setCPLocationId] = useState('');
+  const [locationId, setLocationId] = useState('');
   const [mapUrl, setMapUrl] = useState('');
 
   const handleAgeChange = (event: any) => {
@@ -20,18 +23,72 @@ export default function PopulationAgePage() {
   };
 
   const updateMap = () => {
-    let baseUrl = `https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a`;
+    const baseUrl = `https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a`;
     let map_qs =
-      'lad=E08000012&geoLock=lad&embed=true&embedInteractive=true&embedAreaSearch=false&embedCategorySelection=false&embedView=viewport';
-    map_qs +=
-      '&embedBounds=0.4518427976473447,51.95149998586203,1.7552472023533312,52.516917630727676';
+      '&geoLock=lad&embed=true&embedInteractive=true&embedAreaSearch=false&embedCategorySelection=false&embedView=viewport';
+    const bbox = [
+      [-0.77547, 51.27925],
+      [-0.54849, 51.39241],
+    ];
+    //const lad_code = 'E07000214';
+    map_qs += `&embedBounds=${bbox[0]},${bbox[1]}`;
+    map_qs += `&lad=${locationId}`;
+
     const newUrl = `${baseUrl}/${selectedAge}?${map_qs}`;
+    console.log(newUrl);
     setMapUrl(newUrl);
   };
 
   useEffect(() => {
-    updateMap();
-  }, []);
+    if (locationId) {
+      updateMap();
+    }
+  }, [locationId]);
+
+  useEffect(() => {
+    const fetchCareProviderLocationName = async () => {
+      const storedLocationId = localStorage.getItem('selectedValue');
+      if (storedLocationId) {
+        setCPLocationId(storedLocationId);
+      } else if (session) {
+        if (session.user.locationType == 'Care provider') {
+          const locationId = await PresentDemandService.getDefaultCPLocation(
+            session.user.locationId ?? ' ',
+            session.user.locationType
+          );
+          localStorage.setItem('selectedValue', locationId);
+          setCPLocationId(locationId);
+        } else {
+          const locationId = session.user?.locationId;
+          localStorage.setItem('selectedValue', locationId!);
+          setCPLocationId(locationId);
+        }
+      }
+    };
+    fetchCareProviderLocationName();
+  }, [session]);
+
+  useEffect(() => {
+    const fetchLocationIds = async () => {
+      if (CPLocationId) {
+        try {
+          const locationids = await PresentDemandService.getLocationIds(
+            CPLocationId,
+            false
+          );
+          const locationIdsCP = await PresentDemandService.getLocationIds(
+            CPLocationId,
+            true
+          );
+          console.log(locationids, locationIdsCP);
+          setLocationId(locationids[1]);
+        } catch (error) {
+          console.error('Error fetching location ids:', error);
+        }
+      }
+    };
+    fetchLocationIds();
+  }, [CPLocationId]);
 
   return (
     <>
