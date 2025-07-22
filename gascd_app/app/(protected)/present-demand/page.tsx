@@ -194,30 +194,37 @@ const PresentDemandPage: React.FC = () => {
   }, [CPLocationId]);
 
   useEffect(() => {
-    setDemographicQuery(() => ({
-      metric_ids: demographicMetricIds,
-      location_ids: locationIds,
-    }));
+    if (locationIds.length > 0) {
+      setDemographicQuery(() => ({
+        metric_ids: demographicMetricIds,
+        location_ids: locationIds,
+      }));
+    }
   }, [locationIds]);
 
   useEffect(() => {
-    setBedsQuery(() => ({
-      metric_ids: bedsMetricIds,
-      location_ids: locationIds,
-    }));
+    if (locationIds.length > 0) {
+      setBedsQuery(() => ({
+        metric_ids: bedsMetricIds,
+        location_ids: locationIds,
+      }));
+    }
   }, [locationIds]);
 
   useEffect(() => {
-    if (CPLocationId)
+    if (CPLocationId) {
       setCareProviderData1Query(() => ({
         metric_ids: careProviderMetricIds1,
         location_ids: [CPLocationId],
       }));
-    setCareProviderData2Query(() => ({
-      metric_ids: careProviderMetricIds2,
-      location_ids: locationIds,
-    }));
-  }, [locationIds]);
+    }
+    if (locationIds.length) {
+      setCareProviderData2Query(() => ({
+        metric_ids: careProviderMetricIds2,
+        location_ids: locationIds,
+      }));
+    }
+  }, [CPLocationId, locationIds]);
 
   useEffect(() => {
     if (filteredDemographicData.length > 0) {
