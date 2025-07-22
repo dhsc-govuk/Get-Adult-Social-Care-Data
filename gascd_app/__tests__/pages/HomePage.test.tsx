@@ -18,7 +18,7 @@ describe('HomePage', () => {
     // 2. Check for some body text
     // getByText is a straightforward way to find non-interactive text content.
     const bodyTextElement = screen.getByText(
-      /Access the latest data on adult social care capacity and population needs across England./i
+      /Access the latest data on population needs and adult social care capacity at national, regional and local levels in England./i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
@@ -26,7 +26,7 @@ describe('HomePage', () => {
     // We find the link by its role and accessible name (the text it displays).
     // This is generally more robust than checking the href directly at first.
     const linkElement = screen.getByRole('link', {
-      name: /Current population needs/i,
+      name: /Current population needs and capacity/i,
     });
     expect(linkElement).toBeInTheDocument();
 
