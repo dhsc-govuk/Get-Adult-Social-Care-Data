@@ -8,12 +8,10 @@ const BedsCareProviderLocations: React.FC = () => {
   return (
     <>
       <Layout
+        backURL="/present-demand"
         showLoginInformation={false}
         currentPage={'beds care provider locations'}
       >
-        <Link onClick={() => router.back()} className="govuk-back-link" href="">
-          Back
-        </Link>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-l">
@@ -114,15 +112,15 @@ const BedsCareProviderLocations: React.FC = () => {
                     on a weekend or holiday.
                     <br></br>
                     <br></br>
-                    The median bed count is the middle value when all bed 
-                    counts are arranged from smallest to largest. The median is 
-                    calculated for the local authority, region, and England. 
+                    The median bed count is the middle value when all bed counts
+                    are arranged from smallest to largest. The median is
+                    calculated for the local authority, region, and England.
                     <br></br>
                     <br></br>
-                    Small number suppression is applied. If a care provider 
-                    location has a bed count fewer than 6, the value is 
-                    shown as 0. Care provider locations in the 
-                    Isles of Scilly are excluded from all aggregated values.
+                    Small number suppression is applied. If a care provider
+                    location has a bed count fewer than 6, the value is shown as
+                    0. Care provider locations in the Isles of Scilly are
+                    excluded from all aggregated values.
                   </td>
                 </tr>
 

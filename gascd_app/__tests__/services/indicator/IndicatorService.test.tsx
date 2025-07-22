@@ -70,3 +70,54 @@ describe('IndicatorService', () => {
     expect(graphData[2].valueTag).toBe(new Date(2024, 3, 1).toString());
   });
 });
+
+describe('parseDate', () => {
+  it('should parse date strings', () => {
+    const entry_with_string: Indicator = {
+      metric_id: '1',
+      location_id: '1',
+      data_point: 10,
+      metric_date_type: '',
+      // Some of the backend data has dates in this format
+      metric_date: '23/4/2020',
+      location_type: '',
+      numerator: 0,
+      multiplier: 0,
+      denominator: 0,
+      load_date_time: new Date(2024, 3, 10),
+    };
+    const result: Date = IndicatorService.parseDate(entry_with_string);
+    expect(result).toEqual(new Date(2020, 4, 23));
+
+    const entry_with_iso_string: Indicator = {
+      metric_id: '1',
+      location_id: '1',
+      data_point: 10,
+      metric_date_type: '',
+      metric_date: '1995-01-20T05:30:00Z',
+      location_type: '',
+      numerator: 0,
+      multiplier: 0,
+      denominator: 0,
+      load_date_time: new Date(2024, 3, 10),
+    };
+    const result_iso: Date = IndicatorService.parseDate(entry_with_iso_string);
+    expect(result_iso).toEqual(new Date(Date.UTC(1995, 0, 20, 5, 30)));
+  });
+  it('should return dates as-is', () => {
+    const entry_with_date: Indicator = {
+      metric_id: '1',
+      location_id: '1',
+      data_point: 10,
+      metric_date_type: '',
+      metric_date: new Date(2021, 6, 5),
+      location_type: '',
+      numerator: 0,
+      multiplier: 0,
+      denominator: 0,
+      load_date_time: new Date(2024, 3, 10),
+    };
+    const result: Date = IndicatorService.parseDate(entry_with_date);
+    expect(result).toEqual(new Date(2021, 6, 5));
+  });
+});

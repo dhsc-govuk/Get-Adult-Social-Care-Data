@@ -52,19 +52,6 @@ export const authOptions: NextAuthOptions = {
         return { id: profile.sub };
       },
     }),
-    AzureADB2CProvider({
-      id: 'azure-ad-b2c-signup',
-      name: 'Azure B2C Sign-up',
-      clientId: process.env.AZURE_AD_CLIENT_ID as string,
-      clientSecret: process.env.AZURE_AD_CLIENT_SECRET as string,
-      tenantId: process.env.AZURE_AD_TENANT_ID as string,
-      primaryUserFlow: process.env.AZURE_AD_B2C_USER_SIGN_UP as string,
-      authorization: { params: { scope: 'openid offline_access profile' } },
-      wellKnown: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${process.env.AZURE_AD_B2C_USER_SIGN_UP}`,
-      profile: (profile) => {
-        return { id: profile.sub };
-      },
-    }),
   ],
 
   secret: process.env.NEXTAUTH_SECRET as string,
@@ -88,6 +75,15 @@ export const authOptions: NextAuthOptions = {
         token.locationId = process.env.LOCAL_AUTH_LOCATION_ID;
         token.smartInsight = false;
       }
+
+      if (account) {
+        // Existence of 'account' means that this is an actual sign-in attempt
+        // - see https://next-auth.js.org/configuration/callbacks
+        logger.info('User logged in success', {
+          userid: account.providerAccountId,
+        });
+      }
+
       return token;
     },
     async session({ session, token }) {
@@ -109,10 +105,13 @@ export const authOptions: NextAuthOptions = {
       });
     },
     warn(code) {
-      logger.log('auth warn', { type: 'auth warn', code: code });
+      logger.warn('auth warn', {
+        type: 'auth warn',
+        code: code,
+      });
     },
     debug(code, metadata) {
-      logger.log('auth debug', {
+      logger.debug('auth debug', {
         type: 'auth debug',
         code: code,
         metadata: metadata,

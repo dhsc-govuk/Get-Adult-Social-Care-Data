@@ -9,11 +9,9 @@ const BedsPer100000AdultPopulation: React.FC = () => {
     <>
       <Layout
         showLoginInformation={false}
+        backURL="/present-demand"
         currentPage={'beds per 100,000 adult population'}
       >
-        <Link onClick={() => router.back()} className="govuk-back-link" href="">
-          Back
-        </Link>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-l">
@@ -115,11 +113,11 @@ const BedsPer100000AdultPopulation: React.FC = () => {
                     day if the 14th falls on a weekend or holiday.
                     <br></br>
                     <br></br>
-                    Small number suppression is applied. If fewer than 3 
-                    care provider locations offer a given bed type within a 
-                    local authority, region, or country, the value for that 
-                    area will be shown as 0. Care provider locations in the 
-                    Isles of Scilly are excluded from all aggregated values.
+                    Small number suppression is applied. If fewer than 3 care
+                    provider locations offer a given bed type within a local
+                    authority, region, or country, the value for that area will
+                    be shown as 0. Care provider locations in the Isles of
+                    Scilly are excluded from all aggregated values.
                   </td>
                 </tr>
 
