@@ -114,6 +114,12 @@ DB_PASSWORD="<a-password-for-the-db>" make docker-db
 # Imports the SQL bootstrap file
 DB_PASSWORD="<a-password-for-the-db>" make docker-db-init
 ```
+Then run the following to load in the test data
+
+```bash
+./dbtools/test_data_generation/main.py
+```
+See docs for information on how to configure the test data
 
 [Experimental] - there is also a script to import CSV files into the docker database for dummy content:
 
