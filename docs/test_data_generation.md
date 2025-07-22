@@ -66,6 +66,8 @@ ff
 ### Prerequisites
 - Python 3.7+
 - SQL Server with ODBC Driver 18
+  - https://github.com/mkleehammer/pyodbc/wiki/Connecting-to-SQL-Server-from-Mac-OSX
+  - https://github.com/mkleehammer/pyodbc/wiki/Connecting-to-SQL-Server-from-Windows
 - Required Python packages:
   ```bash
   pip install pandas pyodbc python-dotenv
