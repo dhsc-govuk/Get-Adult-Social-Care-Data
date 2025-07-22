@@ -1,59 +1,45 @@
-import '../../../src/styles/main.scss';
+'use client';
 
 import React from 'react';
-import Layout from '../../../src/components/common/layout/Layout';
-import { Breadcrumb } from '../../../src/data/interfaces/Breadcrumb';
-import ButtonWithArrow from '@/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../api/auth/authOptions';
-import { redirect } from 'next/navigation';
+import Layout from '@/components/common/layout/Layout';
+import { useSession } from 'next-auth/react';
 
-export default async function HomePage() {
-  const breadcrumbs: Array<Breadcrumb> = [
-    {
-      text: 'Homepage',
-      url: '/home',
-    },
-  ];
-
-  const session = await getServerSession(authOptions);
-
-  if (session) {
-    redirect('/present-demand');
-  }
-
+const HomePage: React.FC = () => {
+  const { data: session, status } = useSession();
   return (
     <>
       <Layout
         autoSpaceMainContent={false}
-        breadcrumbs={breadcrumbs}
         showLoginInformation={true}
         currentPage="home"
         session={session}
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-full">
-            <h1 className="govuk-heading-l">
-              Access data and insights for adult social care in England
-            </h1>
+            <h1 className="govuk-heading-xl">Get adult social care data</h1>
+            <p className="govuk-body-l govuk-!-margin-bottom-9">
+              Access the latest data on population needs and adult social care
+              capacity at national, regional and local levels in England.
+            </p>
           </div>
         </div>
-        {!session ? (
-          <>
-            {/* TODO Add this Back when Needed */}
-            {/* <div className="govuk-grid-row">
-            <ButtonWithArrow buttonString="Register" buttonUrl="/register" />
-          </div> */}
-            <div className="govuk-grid-row">
-              <ButtonWithArrow buttonString="Log in" buttonUrl="/login" />
-            </div>
-          </>
-        ) : (
-          <div className="govuk-grid-row">
-            <p className="govuk-body"> Welcome back you are logged in!</p>
+
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-one-half">
+            <a href="/present-demand" className="app-card">
+              <h2 className="govuk-heading-m app-card__heading">
+                Current population needs and capacity
+              </h2>
+              <p className="govuk-body">
+                Find and compare data indicators for current population needs
+                and adult social care capacity.
+              </p>
+            </a>
           </div>
-        )}
+        </div>
       </Layout>
     </>
   );
-}
+};
+
+export default HomePage;
