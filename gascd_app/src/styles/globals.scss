@@ -1,7 +1,8 @@
 $govuk-assets-path: "/govuk-frontend/";
 $govuk-fonts-path: "/govuk-frontend/fonts/";
 
-@import "govuk-frontend/dist/govuk/all";
+@import "govuk-frontend/dist/govuk/index";
+@import "./styles.scss";
 
 html, body {
     margin: 0;
@@ -9,3 +10,13 @@ html, body {
     box-sizing: border-box;
     width: 100%;
   }
+
+// Pull the back link up when visible
+.backlink-wrapper {
+  margin-top: -20px;
+}
+@media (min-width: 40.0625em) {
+  .backlink-wrapper {
+    margin-top: -40px;
+  }
+}

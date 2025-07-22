@@ -43,10 +43,6 @@ const LogoutButton: React.FC = () => {
     <button
       className="govuk-button govuk-button--inverse"
       onClick={handleSignOut}
-      style={{
-        border: 'none',
-        margin: 0,
-      }}
     >
       Sign out
     </button>

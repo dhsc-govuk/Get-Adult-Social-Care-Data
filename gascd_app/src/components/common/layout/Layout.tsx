@@ -24,6 +24,7 @@ type Props = {
   autoSpaceMainContent?: boolean;
   showLoginInformation: boolean;
   currentPage: string;
+  backURL?: string;
   showNavBar?: boolean;
   session?: Session | null;
 };
@@ -35,6 +36,7 @@ const Layout: React.FC<Props> = ({
   autoSpaceMainContent = true,
   showNavBar = false,
   currentPage,
+  backURL,
   session,
 }) => {
   const layoutRef = useRef<HTMLDivElement | null>(null);
@@ -80,10 +82,6 @@ const Layout: React.FC<Props> = ({
             <div className="govuk-grid-column-one-third">
               {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
             </div>
-            {/* <div className="govuk-grid-column-two-thirds govuk-!-margin-top-3">
-            {showLoginInformation && <LoginInformation />}
-          </div> */}
-            {/* Temporarily commented out due to prototype design ^^ */}
           </div>
           <main
             ref={mainRef}
@@ -94,7 +92,14 @@ const Layout: React.FC<Props> = ({
                 : 'govuk-main-wrapper'
             }
           >
-            <div id="main-content">{children}</div>
+            {backURL && (
+              <div className="backlink-wrapper">
+                <a href={backURL} className="govuk-back-link">
+                  Back
+                </a>
+              </div>
+            )}
+            {children}
           </main>
         </div>
         <Footer />

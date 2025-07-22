@@ -276,11 +276,9 @@ const TotalBedsPage: React.FC = () => {
         showLoginInformation={false}
         currentPage="total-beds"
         showNavBar={false}
+        backURL="/present-demand"
         session={session}
       >
-        <Link href="/present-demand" className="govuk-back-link">
-          Back
-        </Link>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-one-third">
             <ContentSidePanel items={contentItems} />
@@ -361,12 +359,20 @@ const TotalBedsPage: React.FC = () => {
 
             <details className="govuk-details govuk-!-margin-top-9">
               <summary className="govuk-details__summary">
-                <span className="govuk-details__summary-text">Get help with this page</span>
+                <span className="govuk-details__summary-text">
+                  Get help with this page
+                </span>
               </summary>
-              
+
               <div className="govuk-details__text">
                 <span>If you have any issues using this service, email </span>
-                <a href="mailto:getadultsocialcaredata.team@dhsc.gov.uk" className="govuk-link">getadultsocialcaredata.team@dhsc.gov.uk</a>.
+                <a
+                  href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
+                  className="govuk-link"
+                >
+                  getadultsocialcaredata.team@dhsc.gov.uk
+                </a>
+                .
               </div>
             </details>
           </div>
