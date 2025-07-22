@@ -163,10 +163,10 @@ class IndicatorService {
   }
 
   public static parseDate(entry: Indicator): Date {
-    if (typeof entry.metric_date == 'string') {
+    if (typeof entry.metric_date === 'string') {
       if (entry.metric_date.includes('/')) {
         // expects dd/mm/yyyy
-        let dateparts = entry.metric_date.split('/');
+        const dateparts = entry.metric_date.split('/');
         return new Date(
           parseInt(dateparts[2]),
           parseInt(dateparts[1]),
