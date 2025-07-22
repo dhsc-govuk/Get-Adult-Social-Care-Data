@@ -17,11 +17,10 @@ const HomePage: React.FC = () => {
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-full">
             <h1 className="govuk-heading-xl">Get adult social care data</h1>
-            <p className="govuk-body-l">
-              Access the latest data on adult social care capacity and
-              population needs across England.
+            <p className="govuk-body-l govuk-!-margin-bottom-9">
+              Access the latest data on population needs and adult social care
+              capacity at national, regional and local levels in England.
             </p>
-            <h2 className="govuk-heading-m">Population needs</h2>
           </div>
         </div>
 
@@ -29,11 +28,11 @@ const HomePage: React.FC = () => {
           <div className="govuk-grid-column-one-half">
             <a href="/present-demand" className="app-card">
               <h2 className="govuk-heading-m app-card__heading">
-                Current population needs
+                Current population needs and capacity
               </h2>
               <p className="govuk-body">
-                Assess data indicators on a range of factors shaping current
-                population needs for adult social care.
+                Find and compare data indicators for current population needs
+                and adult social care capacity.
               </p>
             </a>
           </div>
