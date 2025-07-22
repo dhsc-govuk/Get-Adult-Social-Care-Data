@@ -1,0 +1,90 @@
+/*****
+  * Styles (CSS)
+  * Global service pages (Get adult social care data)
+*****/
+
+/* Fix to address the lack of GOV.UK Design System (Frontend) CSS classes being applied across all HTML DOM elements */
+h1, h2, h3, p, ul, ol {
+  font-family: "GDS Transport", arial, sans-serif;
+}
+
+p, ul, ol {
+  font-size: 1.1875rem;
+  line-height: 1.3157894737;
+  color: #0b0c0c
+}
+
+/* Expansion on the GOV.UK Design System service navigation component https://design-system.service.gov.uk/components/service-navigation) to include the recommended 'Sign out' button (https://govuk-frontend-review.herokuapp.com/full-page-examples/companies-you-follow-slot) */
+
+/* When the 'Sign out' link is with other items */
+.app-sign-out-grouped {
+  margin-left: auto;
+  padding: 15px 0 10px;
+}
+
+.govuk-template--rebranded .app-sign-out-grouped {
+  padding: 10px 0;
+}
+
+.app-sign-out-grouped .govuk-button {
+  margin: 0;
+  width: auto;
+}
+
+/* When the 'Sign out' link is the only item */
+.app-sign-out {
+  margin-left: auto;
+  padding: 0;
+}
+@media (min-width: 40.0625em) {
+  .app-sign-out {
+    padding: 15px 0 10px;
+  }
+}
+
+.govuk-template--rebranded .app-sign-out {
+  padding: 0;
+}
+@media (min-width: 40.0625em) {
+  .govuk-template--rebranded .app-sign-out {
+    padding: 10px 0;
+  }
+}
+
+.app-sign-out .govuk-button {
+  margin: 0;
+  width: auto;
+}
+
+/* Card component taken from the HMRC Design System landing page (https://design.tax.service.gov.uk) */
+.app-card {
+  background-color: #f8f8f8;
+  margin-bottom: 20px;
+  padding: 20px;
+  text-decoration: none;
+}
+/* @media (min-width: 48.0625em) {
+  .app-card {
+    min-height: 145px;
+  }
+} */
+
+.app-card p:last-child {
+  margin-bottom: 0;
+}
+
+.app-card,.js-enabled .print-page {
+  display: block;
+}
+
+.app-card:hover {
+  background-color: #005ea5;
+  color: #fff;
+}
+.app-card:hover > * {
+  color: inherit;
+}
+
+.app-card__heading {
+  color: #005ea5;
+}

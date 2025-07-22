@@ -7,10 +7,11 @@ const PopulationAge: React.FC = () => {
   const router = useRouter();
   return (
     <>
-      <Layout showLoginInformation={false} currentPage={'population age'}>
-        <Link onClick={() => router.back()} className="govuk-back-link" href="">
-          Back
-        </Link>
+      <Layout
+        showLoginInformation={false}
+        currentPage={'population age'}
+        backURL="/present-demand"
+      >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-l">
