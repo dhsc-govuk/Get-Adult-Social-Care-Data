@@ -4,14 +4,23 @@ import React, { useState, useEffect } from 'react';
 import Layout from '@/components/common/layout/Layout';
 import { useSession } from 'next-auth/react';
 import '../../../src/styles/population-age.scss';
-import PresentDemandService from '@/services/present-demand/presentDemandService';
+import { Locations } from '@/data/interfaces/Locations';
+import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 
 export default function PopulationAgePage() {
   const { data: session, status } = useSession();
   const [selectedAge, setSelectedAge] = useState('aged-85-years-and-over');
-  const [CPLocationId, setCPLocationId] = useState('');
   const [locationId, setLocationId] = useState('');
+  const [CPLocationId, setCPLocationId] = useState('');
+  const [mapAvailable, setMapAvailable] = useState(true);
   const [mapUrl, setMapUrl] = useState('');
+
+  const coord_lookup = {
+    E06000035: [
+      [0.39735, 51.3279],
+      [0.72351, 51.48725],
+    ],
+  };
 
   const handleAgeChange = (event: any) => {
     setSelectedAge(event.target.value);
@@ -23,20 +32,23 @@ export default function PopulationAgePage() {
   };
 
   const updateMap = () => {
-    const baseUrl = `https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a`;
-    let map_qs =
-      '&geoLock=lad&embed=true&embedInteractive=true&embedAreaSearch=false&embedCategorySelection=false&embedView=viewport';
-    const bbox = [
-      [-0.77547, 51.27925],
-      [-0.54849, 51.39241],
-    ];
-    //const lad_code = 'E07000214';
-    map_qs += `&embedBounds=${bbox[0]},${bbox[1]}`;
-    map_qs += `&lad=${locationId}`;
+    const bbox = coord_lookup[locationId];
+    if (bbox) {
+      const baseUrl = `https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a`;
+      let map_qs =
+        '&embed=true&embedInteractive=true&embedAreaSearch=false&embedCategorySelection=false&embedView=viewport';
+      //const lad_code = 'E07000214';
+      map_qs += `&embedBounds=${bbox[0]},${bbox[1]}`;
+      map_qs += `&lad=${locationId}`;
 
-    const newUrl = `${baseUrl}/${selectedAge}?${map_qs}`;
-    console.log(newUrl);
-    setMapUrl(newUrl);
+      const newUrl = `${baseUrl}/${selectedAge}?${map_qs}`;
+      console.log(newUrl);
+      setMapUrl(newUrl);
+      setMapAvailable(true);
+    } else {
+      // we don't have coordinates, so cannot draw a map
+      setMapAvailable(false);
+    }
   };
 
   useEffect(() => {
@@ -46,42 +58,30 @@ export default function PopulationAgePage() {
   }, [locationId]);
 
   useEffect(() => {
-    const fetchCareProviderLocationName = async () => {
-      const storedLocationId = localStorage.getItem('selectedValue');
-      if (storedLocationId) {
-        setCPLocationId(storedLocationId);
-      } else if (session) {
-        if (session.user.locationType == 'Care provider') {
-          const locationId = await PresentDemandService.getDefaultCPLocation(
-            session.user.locationId ?? ' ',
-            session.user.locationType
-          );
-          localStorage.setItem('selectedValue', locationId);
-          setCPLocationId(locationId);
-        } else {
-          const locationId = session.user?.locationId;
-          localStorage.setItem('selectedValue', locationId!);
-          setCPLocationId(locationId);
-        }
+    if (session) {
+      let locationId = session.user.locationId;
+      let locationType = session.user.locationType;
+      if (locationType == 'Care provider') {
+        locationId = localStorage.getItem('selectedValue')!;
       }
-    };
-    fetchCareProviderLocationName();
+      if (locationId) {
+        setCPLocationId(locationId);
+      }
+    }
   }, [session]);
 
   useEffect(() => {
     const fetchLocationIds = async () => {
       if (CPLocationId) {
         try {
-          const locationids = await PresentDemandService.getLocationIds(
-            CPLocationId,
-            false
-          );
-          const locationIdsCP = await PresentDemandService.getLocationIds(
-            CPLocationId,
-            true
-          );
-          console.log(locationids, locationIdsCP);
-          setLocationId(locationids[1]);
+          let locationids: string[] = [];
+          const locations: Locations[] =
+            await IndicatorFetchService.getLocalAuthoritiesInProviderLocationRegion(
+              CPLocationId
+            );
+          locationids = locations.map((item: { la_code: any }) => item.la_code);
+          console.log(locationids);
+          setLocationId(locationids[0]);
         } catch (error) {
           console.error('Error fetching location ids:', error);
         }
@@ -126,84 +126,86 @@ export default function PopulationAgePage() {
               is defined, sourced, and updated.
             </p>
 
-            <form action="population-age#map" method="post">
-              <div className="govuk-form-block">
-                <fieldset className="govuk-fieldset">
-                  <legend className="govuk-fieldset__legend govuk-fieldset__legend--s">
-                    <h3 className="govuk-fieldset__heading">
-                      Select age group
-                    </h3>
-                  </legend>
+            {mapAvailable && (
+              <form action="population-age#map" method="post">
+                <div className="govuk-form-block">
+                  <fieldset className="govuk-fieldset">
+                    <legend className="govuk-fieldset__legend govuk-fieldset__legend--s">
+                      <h3 className="govuk-fieldset__heading">
+                        Select age group
+                      </h3>
+                    </legend>
 
-                  <div
-                    className="govuk-radios govuk-radios--inline govuk-radios--small"
-                    data-module="govuk-radios"
-                    data-govuk-radios-init=""
-                  >
-                    <div className="govuk-radios__item">
-                      <input
-                        className="govuk-radios__input"
-                        id="mapAgeGroup-2"
-                        name="mapAgeGroup"
-                        type="radio"
-                        onChange={handleAgeChange}
-                        checked={selectedAge === 'aged-65-to-74-years'}
-                        value="aged-65-to-74-years"
-                      />
-                      <label
-                        className="govuk-label govuk-radios__label"
-                        htmlFor="mapAgeGroup-2"
-                      >
-                        Aged 65 to 74
-                      </label>
+                    <div
+                      className="govuk-radios govuk-radios--inline govuk-radios--small"
+                      data-module="govuk-radios"
+                      data-govuk-radios-init=""
+                    >
+                      <div className="govuk-radios__item">
+                        <input
+                          className="govuk-radios__input"
+                          id="mapAgeGroup-2"
+                          name="mapAgeGroup"
+                          type="radio"
+                          onChange={handleAgeChange}
+                          checked={selectedAge === 'aged-65-to-74-years'}
+                          value="aged-65-to-74-years"
+                        />
+                        <label
+                          className="govuk-label govuk-radios__label"
+                          htmlFor="mapAgeGroup-2"
+                        >
+                          Aged 65 to 74
+                        </label>
+                      </div>
+
+                      <div className="govuk-radios__item">
+                        <input
+                          className="govuk-radios__input"
+                          id="mapAgeGroup-3"
+                          name="mapAgeGroup"
+                          type="radio"
+                          onChange={handleAgeChange}
+                          checked={selectedAge === 'aged-75-to-84-years'}
+                          value="aged-75-to-84-years"
+                        />
+                        <label
+                          className="govuk-label govuk-radios__label"
+                          htmlFor="mapAgeGroup-3"
+                        >
+                          Aged 75 to 84
+                        </label>
+                      </div>
+
+                      <div className="govuk-radios__item">
+                        <input
+                          className="govuk-radios__input"
+                          id="mapAgeGroup-4"
+                          name="mapAgeGroup"
+                          type="radio"
+                          onChange={handleAgeChange}
+                          checked={selectedAge === 'aged-85-years-and-over'}
+                          value="aged-85-years-and-over"
+                        />
+                        <label
+                          className="govuk-label govuk-radios__label"
+                          htmlFor="mapAgeGroup-4"
+                        >
+                          Aged 85 and over
+                        </label>
+                      </div>
                     </div>
 
-                    <div className="govuk-radios__item">
-                      <input
-                        className="govuk-radios__input"
-                        id="mapAgeGroup-3"
-                        name="mapAgeGroup"
-                        type="radio"
-                        onChange={handleAgeChange}
-                        checked={selectedAge === 'aged-75-to-84-years'}
-                        value="aged-75-to-84-years"
-                      />
-                      <label
-                        className="govuk-label govuk-radios__label"
-                        htmlFor="mapAgeGroup-3"
-                      >
-                        Aged 75 to 84
-                      </label>
-                    </div>
-
-                    <div className="govuk-radios__item">
-                      <input
-                        className="govuk-radios__input"
-                        id="mapAgeGroup-4"
-                        name="mapAgeGroup"
-                        type="radio"
-                        onChange={handleAgeChange}
-                        checked={selectedAge === 'aged-85-years-and-over'}
-                        value="aged-85-years-and-over"
-                      />
-                      <label
-                        className="govuk-label govuk-radios__label"
-                        htmlFor="mapAgeGroup-4"
-                      >
-                        Aged 85 and over
-                      </label>
-                    </div>
-                  </div>
-
-                  <button
-                    className="govuk-button govuk-button--secondary govuk-!-margin-top-2"
-                    onClick={handleUpdateClick}
-                  >
-                    Update age group
-                  </button>
-                </fieldset>
-              </div>
-            </form>
+                    <button
+                      className="govuk-button govuk-button--secondary govuk-!-margin-top-2"
+                      onClick={handleUpdateClick}
+                    >
+                      Update age group
+                    </button>
+                  </fieldset>
+                </div>
+              </form>
+            )}
 
             <div className="govuk-form-group">
               <h3 className="govuk-heading-s">[DATA VIS COMPONENT HEADING]</h3>
