@@ -117,7 +117,7 @@ DB_PASSWORD="<a-password-for-the-db>" make docker-db-init
 Then run the following to load in the test data
 
 ```bash
-./dbtools/test_data_generation/main.py
+uv run ./dbtools/test_data_generation/main.py
 ```
 See docs for information on how to configure the test data
 

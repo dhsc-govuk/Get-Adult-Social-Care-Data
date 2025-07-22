@@ -1,3 +1,12 @@
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#     "pandas",
+#     "pyodbc",
+#     "python-dotenv",
+# ]
+# ///
+
 from generator import generate_public_metrics, generate_restricted_metrics, generate_la_lookup_table, generate_provider_location_full_lookup, generate_metric_location_user_access, generate_metric_metadata
 from db_utils import insert_to_sql_server
 
