@@ -15,7 +15,6 @@ export default function PopulationAgePage() {
   const [mapAvailable, setMapAvailable] = useState(true);
   const [mapStateKey, setMapStateKey] = useState(1);
   const [mapUrl, setMapUrl] = useState('');
-  const mapState = 1;
 
   const handleAgeChange = (event: any) => {
     setSelectedAge(event.target.value);
