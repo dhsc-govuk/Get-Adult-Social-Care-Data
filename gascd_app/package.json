@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "husky:init": "cd .. && husky gascd_app/.husky",
-    "start": "next start -p $CONTAINER_PORT",
+    "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write",
     "lint-staged": "lint-staged",
