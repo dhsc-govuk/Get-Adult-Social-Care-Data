@@ -6,14 +6,15 @@ import { useSession } from 'next-auth/react';
 import '../../../src/styles/population-age.scss';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import { LAGeoData } from './la_geo_data';
+import { Locations } from '@/data/interfaces/Locations';
 
 export default function PopulationAgePage() {
   const { data: session, status } = useSession();
   const [selectedAge, setSelectedAge] = useState('aged-85-years-and-over');
-  const [locationId, setLocationId] = useState('');
   const [CPLocationId, setCPLocationId] = useState('');
   const [mapAvailable, setMapAvailable] = useState(true);
   const [mapStateKey, setMapStateKey] = useState(1);
+  const [locationData, setLocationData] = useState<Locations | null>(null);
   const [mapUrl, setMapUrl] = useState('');
   const mapAlternative =
     'https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a/aged-85-years-and-over';
@@ -29,17 +30,19 @@ export default function PopulationAgePage() {
 
   const handleUpdateClick = (event: any) => {
     event.preventDefault();
-    updateMap();
+    if (locationData) {
+      updateMap(locationData.la_code);
+    }
   };
 
-  const updateMap = () => {
-    const geodata = LAGeoData[locationId];
+  const updateMap = (la_code: string) => {
+    const geodata = LAGeoData[la_code];
     if (geodata && geodata.bbox) {
       const baseUrl = `https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a`;
       let map_qs =
         '&embed=true&embedInteractive=true&embedAreaSearch=false&embedCategorySelection=false&embedView=viewport';
       map_qs += `&embedBounds=${geodata.bbox[0]},${geodata.bbox[1]}`;
-      map_qs += `&lad=${locationId}`;
+      map_qs += `&lad=${la_code}`;
 
       const newUrl = `${baseUrl}/${selectedAge}?${map_qs}`;
       setMapUrl(newUrl);
@@ -69,7 +72,7 @@ export default function PopulationAgePage() {
         try {
           const location_data =
             await PresentDemandService.getLocations(CPLocationId);
-          setLocationId(location_data.la_code);
+          setLocationData(location_data);
         } catch (error) {
           console.error('Error fetching location ids:', error);
         }
@@ -79,10 +82,10 @@ export default function PopulationAgePage() {
   }, [CPLocationId]);
 
   useEffect(() => {
-    if (locationId) {
-      updateMap();
+    if (locationData && locationData.la_code) {
+      updateMap(locationData.la_code);
     }
-  }, [locationId]);
+  }, [locationData]);
 
   return (
     <>
@@ -109,8 +112,15 @@ export default function PopulationAgePage() {
               Map of population percentages for older age groups
             </h2>
             <p className="govuk-body">
-              <strong>Your care home location:</strong> {CPLocationId}{' '}
-              {locationId}
+              <strong>Your care home location:</strong>
+              <br />
+              {(locationData && (
+                <span>
+                  {locationData?.provider_location_name},{' '}
+                  {locationData?.la_name}
+                </span>
+              )) ||
+                'Loading'}
               <br />
               {mapAvailable && (
                 <a href="#" className="govuk-link" onClick={handleReset}>
@@ -211,7 +221,7 @@ export default function PopulationAgePage() {
               </p>
             )}
 
-            {mapUrl && (
+            {(mapUrl && (
               <div className="govuk-form-group">
                 <h3 className="govuk-heading-s">
                   Map showing population age group percentages at local
@@ -227,7 +237,7 @@ export default function PopulationAgePage() {
                   src={mapUrl}
                 ></iframe>
               </div>
-            )}
+            )) || <p>Loading map...</p>}
 
             {mapAvailable && (
               <p className="govuk-body">
