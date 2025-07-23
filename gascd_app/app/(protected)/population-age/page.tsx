@@ -221,7 +221,7 @@ export default function PopulationAgePage() {
               </p>
             )}
 
-            {(mapUrl && (
+            {mapUrl && (
               <div className="govuk-form-group">
                 <h3 className="govuk-heading-s">
                   Map showing population age group percentages at local
@@ -237,7 +237,9 @@ export default function PopulationAgePage() {
                   src={mapUrl}
                 ></iframe>
               </div>
-            )) || <p>Loading map...</p>}
+            )}
+
+            {mapAvailable && !mapUrl && <p>Loading map...</p>}
 
             {mapAvailable && (
               <p className="govuk-body">
