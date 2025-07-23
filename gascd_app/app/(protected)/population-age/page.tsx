@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Layout from '@/components/common/layout/Layout';
 import { useSession } from 'next-auth/react';
 import '../../../src/styles/population-age.scss';
-import { Locations } from '@/data/interfaces/Locations';
-import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
+import PresentDemandService from '@/services/present-demand/presentDemandService';
+import { LAGeoData } from './la_geo_data';
 
 export default function PopulationAgePage() {
   const { data: session, status } = useSession();
@@ -13,17 +13,17 @@ export default function PopulationAgePage() {
   const [locationId, setLocationId] = useState('');
   const [CPLocationId, setCPLocationId] = useState('');
   const [mapAvailable, setMapAvailable] = useState(true);
+  const [mapStateKey, setMapStateKey] = useState(1);
   const [mapUrl, setMapUrl] = useState('');
-
-  const coord_lookup = {
-    E06000035: [
-      [0.39735, 51.3279],
-      [0.72351, 51.48725],
-    ],
-  };
+  const mapState = 1;
 
   const handleAgeChange = (event: any) => {
     setSelectedAge(event.target.value);
+  };
+
+  const handleReset = (event: any) => {
+    event.preventDefault();
+    setMapStateKey(mapStateKey + 1);
   };
 
   const handleUpdateClick = (event: any) => {
@@ -32,17 +32,15 @@ export default function PopulationAgePage() {
   };
 
   const updateMap = () => {
-    const bbox = coord_lookup[locationId];
-    if (bbox) {
+    const geodata = LAGeoData[locationId];
+    if (geodata && geodata.bbox) {
       const baseUrl = `https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a`;
       let map_qs =
         '&embed=true&embedInteractive=true&embedAreaSearch=false&embedCategorySelection=false&embedView=viewport';
-      //const lad_code = 'E07000214';
-      map_qs += `&embedBounds=${bbox[0]},${bbox[1]}`;
+      map_qs += `&embedBounds=${geodata.bbox[0]},${geodata.bbox[1]}`;
       map_qs += `&lad=${locationId}`;
 
       const newUrl = `${baseUrl}/${selectedAge}?${map_qs}`;
-      console.log(newUrl);
       setMapUrl(newUrl);
       setMapAvailable(true);
     } else {
@@ -50,12 +48,6 @@ export default function PopulationAgePage() {
       setMapAvailable(false);
     }
   };
-
-  useEffect(() => {
-    if (locationId) {
-      updateMap();
-    }
-  }, [locationId]);
 
   useEffect(() => {
     if (session) {
@@ -71,24 +63,25 @@ export default function PopulationAgePage() {
   }, [session]);
 
   useEffect(() => {
-    const fetchLocationIds = async () => {
+    const fetchLocation = async () => {
       if (CPLocationId) {
         try {
-          let locationids: string[] = [];
-          const locations: Locations[] =
-            await IndicatorFetchService.getLocalAuthoritiesInProviderLocationRegion(
-              CPLocationId
-            );
-          locationids = locations.map((item: { la_code: any }) => item.la_code);
-          console.log(locationids);
-          setLocationId(locationids[0]);
+          const location_data =
+            await PresentDemandService.getLocations(CPLocationId);
+          setLocationId(location_data.la_code);
         } catch (error) {
           console.error('Error fetching location ids:', error);
         }
       }
     };
-    fetchLocationIds();
+    fetchLocation();
   }, [CPLocationId]);
+
+  useEffect(() => {
+    if (locationId) {
+      updateMap();
+    }
+  }, [locationId]);
 
   return (
     <>
@@ -101,10 +94,10 @@ export default function PopulationAgePage() {
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
-            <h1 className="govuk-heading-l">Population age</h1>
+            <h1 className="govuk-heading-l">Population age percentages</h1>
             <p className="govuk-body-l">
-              Explore population data by age group across local authorities and
-              districts in England.
+              Use the map to view population percentages for older age groups at
+              local levels in England.
             </p>
           </div>
         </div>
@@ -112,18 +105,15 @@ export default function PopulationAgePage() {
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-full">
             <h2 id="map" className="govuk-heading-m govuk-!-padding-top-7">
-              Map: population by age group
+              Map of population percentages for older age groups
             </h2>
             <p className="govuk-body">
-              <strong>Location:</strong> Greenfields Care, Mid Suffolk, Suffolk,
-              East of England.
-            </p>
-            <p className="govuk-body">
-              Find out how{' '}
-              <a href="../help/population-age" className="govuk-link">
-                percentage of population in age group
-              </a>{' '}
-              is defined, sourced, and updated.
+              <strong>Your care home location:</strong> {CPLocationId}{' '}
+              {locationId}
+              <br />
+              <a href="#" className="govuk-link" onClick={handleReset}>
+                Reset map to this location
+              </a>
             </p>
 
             {mapAvailable && (
@@ -200,25 +190,36 @@ export default function PopulationAgePage() {
                       className="govuk-button govuk-button--secondary govuk-!-margin-top-2"
                       onClick={handleUpdateClick}
                     >
-                      Update age group
+                      Apply age group filter
                     </button>
                   </fieldset>
                 </div>
               </form>
             )}
 
-            <div className="govuk-form-group">
-              <h3 className="govuk-heading-s">[DATA VIS COMPONENT HEADING]</h3>
-              {mapUrl && (
+            {!mapAvailable && (
+              <p>
+                Sorry - map data is not currently available for your location
+              </p>
+            )}
+
+            {mapUrl && (
+              <div className="govuk-form-group">
+                <h3 className="govuk-heading-s">
+                  Map showing population age group percentages at local
+                  authority district level and Middle Layer Super Output Area
+                  (MSOA) level
+                </h3>
                 <iframe
+                  key={mapStateKey}
                   width="100%"
                   height="600px"
                   title="ONS Census Maps"
                   frameBorder="0"
                   src={mapUrl}
                 ></iframe>
-              )}
-            </div>
+              </div>
+            )}
 
             <p className="govuk-body">
               Source:{' '}
@@ -231,7 +232,7 @@ export default function PopulationAgePage() {
                 Office for National Statistics (opens in new tab)
               </a>
               <br />
-              Data correct as of 5 February 2025
+              Data correct as of March 2021
             </p>
           </div>
         </div>
@@ -256,11 +257,6 @@ export default function PopulationAgePage() {
               <li>
                 <a href="../help/population-age" className="govuk-link">
                   Percentage of population in age group
-                </a>
-              </li>
-              <li>
-                <a href="../help/disability-prevalence" className="govuk-link">
-                  Disability prevalence
                 </a>
               </li>
             </ul>
