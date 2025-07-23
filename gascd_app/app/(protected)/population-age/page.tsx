@@ -15,6 +15,8 @@ export default function PopulationAgePage() {
   const [mapAvailable, setMapAvailable] = useState(true);
   const [mapStateKey, setMapStateKey] = useState(1);
   const [mapUrl, setMapUrl] = useState('');
+  const mapAlternative =
+    'https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a/aged-85-years-and-over';
 
   const handleAgeChange = (event: any) => {
     setSelectedAge(event.target.value);
@@ -110,9 +112,11 @@ export default function PopulationAgePage() {
               <strong>Your care home location:</strong> {CPLocationId}{' '}
               {locationId}
               <br />
-              <a href="#" className="govuk-link" onClick={handleReset}>
-                Reset map to this location
-              </a>
+              {mapAvailable && (
+                <a href="#" className="govuk-link" onClick={handleReset}>
+                  Reset map to this location
+                </a>
+              )}
             </p>
 
             {mapAvailable && (
@@ -198,7 +202,12 @@ export default function PopulationAgePage() {
 
             {!mapAvailable && (
               <p>
-                Sorry - map data is not currently available for your location
+                Map data is not currently available for your care home location.
+                <br />
+                You can{' '}
+                <a href={mapAlternative} target="_blank" rel="noreferrer">
+                  browse the entire map on the ONS website.
+                </a>
               </p>
             )}
 
@@ -220,19 +229,21 @@ export default function PopulationAgePage() {
               </div>
             )}
 
-            <p className="govuk-body">
-              Source:{' '}
-              <a
-                href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/populationestimatesforenglandandwales/mid2023"
-                className="govuk-link"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Office for National Statistics (opens in new tab)
-              </a>
-              <br />
-              Data correct as of March 2021
-            </p>
+            {mapAvailable && (
+              <p className="govuk-body">
+                Source:{' '}
+                <a
+                  href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/populationestimatesforenglandandwales/mid2023"
+                  className="govuk-link"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Office for National Statistics (opens in new tab)
+                </a>
+                <br />
+                Data correct as of March 2021
+              </p>
+            )}
           </div>
         </div>
 
