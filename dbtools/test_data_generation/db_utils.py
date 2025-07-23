@@ -19,7 +19,7 @@ def insert_to_sql_server(df, table_name, schema='ref'):
     
     conn_str = (
         'DRIVER={ODBC Driver 18 for SQL Server};'
-        'SERVER=localhost;'
+        'SERVER=127.0.0.1;'
         'DATABASE=Analytical_Datastore;'
         'UID=SA;'
         f'PWD={password};'
@@ -53,6 +53,7 @@ def insert_to_sql_server(df, table_name, schema='ref'):
         print(f"Error inserting data: {e}")
         if conn:
             conn.rollback()
+        import sys; sys.exit(1)
     finally:
         if conn:
             conn.close()

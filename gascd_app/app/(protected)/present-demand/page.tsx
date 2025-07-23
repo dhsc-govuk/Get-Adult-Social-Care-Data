@@ -13,8 +13,6 @@ import { useSession } from 'next-auth/react';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { MetaData } from '@/data/interfaces/MetaData';
-import LogService from '@/services/logger/logService';
-import Link from 'next/link';
 
 const PresentDemandPage: React.FC = () => {
   const [filteredDemographicData, setFilteredDemographicData] = useState<
@@ -139,7 +137,6 @@ const PresentDemandPage: React.FC = () => {
   }, [session]);
 
   useEffect(() => {
-    LogService.logEvent('User logged in success');
     const fetchMetadataByType = async () => {
       try {
         setMetricDataType(
@@ -197,30 +194,37 @@ const PresentDemandPage: React.FC = () => {
   }, [CPLocationId]);
 
   useEffect(() => {
-    setDemographicQuery(() => ({
-      metric_ids: demographicMetricIds,
-      location_ids: locationIds,
-    }));
+    if (locationIds.length > 0) {
+      setDemographicQuery(() => ({
+        metric_ids: demographicMetricIds,
+        location_ids: locationIds,
+      }));
+    }
   }, [locationIds]);
 
   useEffect(() => {
-    setBedsQuery(() => ({
-      metric_ids: bedsMetricIds,
-      location_ids: locationIds,
-    }));
+    if (locationIds.length > 0) {
+      setBedsQuery(() => ({
+        metric_ids: bedsMetricIds,
+        location_ids: locationIds,
+      }));
+    }
   }, [locationIds]);
 
   useEffect(() => {
-    if (CPLocationId)
+    if (CPLocationId) {
       setCareProviderData1Query(() => ({
         metric_ids: careProviderMetricIds1,
         location_ids: [CPLocationId],
       }));
-    setCareProviderData2Query(() => ({
-      metric_ids: careProviderMetricIds2,
-      location_ids: locationIds,
-    }));
-  }, [locationIds]);
+    }
+    if (locationIds.length) {
+      setCareProviderData2Query(() => ({
+        metric_ids: careProviderMetricIds2,
+        location_ids: locationIds,
+      }));
+    }
+  }, [CPLocationId, locationIds]);
 
   useEffect(() => {
     if (filteredDemographicData.length > 0) {
@@ -302,19 +306,16 @@ const PresentDemandPage: React.FC = () => {
         autoSpaceMainContent={false}
         showLoginInformation={true}
         currentPage="present-demand"
+        backURL="/"
         showNavBar={false}
         session={session}
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-one-third">
-            <div className="govuk-grid-row">
-              <div className="govuk-grid-column-full">
-                <ContentSidePanel items={contentItems} />
-              </div>
-            </div>
+            <ContentSidePanel items={contentItems} />
           </div>
           <div className="govuk-grid-column-two-thirds">
-            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+            <div className="govuk-!-margin-bottom-9">
               <h1 className="govuk-heading-l">
                 Current population needs and capacity
               </h1>
@@ -331,7 +332,7 @@ const PresentDemandPage: React.FC = () => {
                 find insights into current capacity to meet those needs.
               </p>
             </div>
-            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+            <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-m" id="definition">
                 Indicator definition and supporting information
               </h2>
@@ -352,7 +353,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a 
+                  <a
                     href="/help/beds-per-100000-adult-population"
                     className="govuk-link"
                   >
@@ -360,7 +361,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a 
+                  <a
                     href="/help/percentage-beds-occupied"
                     className="govuk-link"
                   >
@@ -368,7 +369,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a 
+                  <a
                     href="/help/beds-care-provider-location"
                     className="govuk-link"
                   >
@@ -376,7 +377,7 @@ const PresentDemandPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a 
+                  <a
                     href="/help/percentage-beds-occupied-care-provider-location"
                     className="govuk-link"
                   >
@@ -386,7 +387,7 @@ const PresentDemandPage: React.FC = () => {
                 </li>
               </ul>
             </div>
-            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+            <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-m" id="selected-locations">
                 Your selected locations
               </h2>
@@ -409,7 +410,7 @@ const PresentDemandPage: React.FC = () => {
                 </div>
               </dl>
             </div>
-            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+            <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-l" id="drivers">
                 Drivers of population needs
               </h2>
@@ -431,28 +432,30 @@ const PresentDemandPage: React.FC = () => {
                 metric_Id="perc_65over"
               ></ConditionalText>
             </div>
-            <h2 className="govuk-heading-m govuk-!-margin-bottom-9">
-              Explore the data: demographic factors
-            </h2>
-            <DataTable
-              columnHeaders={locationNames}
-              rowHeaders={demographicRowHeaders}
-              data={filteredDemographicData}
-              showCareProvider={false}
-              percentageRows={metricDateType}
-            ></DataTable>
-            <DownloadTableDataCSVLink
-              data={TableService.removeLoadDateTime(filteredDemographicData)}
-              filename="Demographic factors"
-              xLabel=""
-            ></DownloadTableDataCSVLink>
-            <p className="govuk-body govuk-!-margin-bottom-9">
-              Source: {demographicDataSource}
-              <br />
-              Data correct as of {demographicLatestDate}
-            </p>
+            <div className="govuk-!-margin-bottom-9">
+              <h2 className="govuk-heading-m govuk-!-margin-bottom-9">
+                Explore the data: demographic factors
+              </h2>
+              <DataTable
+                columnHeaders={locationNames}
+                rowHeaders={demographicRowHeaders}
+                data={filteredDemographicData}
+                showCareProvider={false}
+                percentageRows={metricDateType}
+              ></DataTable>
+              <DownloadTableDataCSVLink
+                data={TableService.removeLoadDateTime(filteredDemographicData)}
+                filename="Demographic factors"
+                xLabel=""
+              ></DownloadTableDataCSVLink>
+              <p className="govuk-body govuk-!-margin-bottom-9">
+                Source: {demographicDataSource}
+                <br />
+                Data correct as of {demographicLatestDate}
+              </p>
+            </div>
 
-            <div className="govuk-grid-row govuk-!-margin-bottom-9">
+            <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-l" id="capacity-la">
                 Current capacity - care homes: local authority-level insights
               </h2>
@@ -486,6 +489,8 @@ const PresentDemandPage: React.FC = () => {
                 locations={locationNames}
                 metric_Id="median_occupancy_total"
               ></ConditionalText>
+            </div>
+            <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-m">
                 Explore the data: adult social care beds per 100,000 adult
                 population and occupancy
@@ -520,66 +525,67 @@ const PresentDemandPage: React.FC = () => {
                 <br />
                 Data correct as of {bedDataLatestDate}
               </p>
-              <div className="govuk-grid-row govuk-!-margin-bottom-9">
-                <h2 className="govuk-heading-l" id="capacity-cp">
-                  Current capacity - care homes: care provider-level insights
-                </h2>
-                <p className="govuk-body">
-                  Examining individual care providers offers insight into how
-                  their capacity compares with other care providers at local
-                  authority, regional and national level.
-                </p>
-                <p className="govuk-body">
-                  {locationNamesCP[1]} is a provider with (
-                  {finalCpData.find(
-                    (metric) =>
-                      metric.metric_id === 'bedcount_total' &&
-                      metric.location_type === 'Care provider location'
-                  )?.data_point ?? 'Loading...'}{' '}
-                  beds) in {locationNamesCP[2]} total beds, compared to the
-                  average (
-                  {finalCpData.find(
-                    (metric) =>
-                      metric.metric_id === 'median_bed_count_total' &&
-                      metric.location_type === 'Regional'
-                  )?.data_point ?? 'Loading...'}{' '}
-                  beds) in {locationNamesCP[2]}.
-                </p>
-                <ConditionalText
-                  data={finalCpData}
-                  ColumnHeaders={locationNamesCP}
-                  section="CapacityCareProvider"
-                  locations={locationNamesCP}
-                  metric_Id="median_occupancy_total"
-                ></ConditionalText>
-                <p className="govuk-body">
-                  <strong>Note: </strong>If a care provider location has fewer than 6 beds, the
-                  number of beds is shown as 0. If a care provider location has fewer than 6 beds occupied, the
-                  percentage of beds occupied is shown as 0. For details on suppression of data, see indicator definition and
-                  supporting information.
-                </p>
-                <h2 className="govuk-heading-m">
-                  Explore the data: care providers in {locationNames[1]}
-                </h2>
-                <DataTable
-                  columnHeaders={locationNamesCP}
-                  rowHeaders={careProviderRowHeaders}
-                  data={finalCpData}
-                  showCareProvider={true}
-                  careProviderMedianMetrics={careProviderMedianMetrics}
-                  percentageRows={metricDateType}
-                ></DataTable>
-                <DownloadTableDataCSVLink
-                  data={TableService.removeLoadDateTime(finalCpData)}
-                  filename="Care providers data"
-                  xLabel=""
-                ></DownloadTableDataCSVLink>
-                <p className="govuk-body">
-                  Source: {CPDataSource}
-                  <br />
-                  Data correct as of {CPLatestDate}
-                </p>
-              </div>
+            </div>
+            <div className="govuk-!-margin-bottom-9">
+              <h2 className="govuk-heading-l" id="capacity-cp">
+                Current capacity - care homes: care provider-level insights
+              </h2>
+              <p className="govuk-body">
+                Examining individual care providers offers insight into how
+                their capacity compares with other care providers at local
+                authority, regional and national level.
+              </p>
+              <p className="govuk-body">
+                {locationNamesCP[1]} is a provider with (
+                {finalCpData.find(
+                  (metric) =>
+                    metric.metric_id === 'bedcount_total' &&
+                    metric.location_type === 'Care provider location'
+                )?.data_point ?? 'Loading...'}{' '}
+                beds) in {locationNamesCP[2]} total beds, compared to the
+                average (
+                {finalCpData.find(
+                  (metric) =>
+                    metric.metric_id === 'median_bed_count_total' &&
+                    metric.location_type === 'Regional'
+                )?.data_point ?? 'Loading...'}{' '}
+                beds) in {locationNamesCP[2]}.
+              </p>
+              <ConditionalText
+                data={finalCpData}
+                ColumnHeaders={locationNamesCP}
+                section="CapacityCareProvider"
+                locations={locationNamesCP}
+                metric_Id="median_occupancy_total"
+              ></ConditionalText>
+              <p className="govuk-body">
+                <strong>Note: </strong>If a care provider location has fewer
+                than 6 beds, the number of beds is shown as 0. If a care
+                provider location has fewer than 6 beds occupied, the percentage
+                of beds occupied is shown as 0. For details on suppression of
+                data, see indicator definition and supporting information.
+              </p>
+              <h2 className="govuk-heading-m">
+                Explore the data: care providers in {locationNames[1]}
+              </h2>
+              <DataTable
+                columnHeaders={locationNamesCP}
+                rowHeaders={careProviderRowHeaders}
+                data={finalCpData}
+                showCareProvider={true}
+                careProviderMedianMetrics={careProviderMedianMetrics}
+                percentageRows={metricDateType}
+              ></DataTable>
+              <DownloadTableDataCSVLink
+                data={TableService.removeLoadDateTime(finalCpData)}
+                filename="Care providers data"
+                xLabel=""
+              ></DownloadTableDataCSVLink>
+              <p className="govuk-body">
+                Source: {CPDataSource}
+                <br />
+                Data correct as of {CPLatestDate}
+              </p>
             </div>
           </div>
         </div>

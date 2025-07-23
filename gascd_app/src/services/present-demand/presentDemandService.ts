@@ -4,6 +4,7 @@ import { Locations } from '@/data/interfaces/Locations';
 import IndicatorFetchService from '../indicator/IndicatorFetchService';
 import IndicatorDisplayService from '../indicator/IndicatorDisplayService';
 import LogService from '../logger/logService';
+import IndicatorService from '../indicator/IndicatorService';
 
 class PresentDemandService {
   public static async getLocations(query: string): Promise<Locations> {
@@ -152,7 +153,10 @@ class PresentDemandService {
 
     return indicators
       .reduce((latest, current) => {
-        return current.metric_date > latest.metric_date ? current : latest;
+        return IndicatorService.parseDate(current) >
+          IndicatorService.parseDate(latest)
+          ? current
+          : latest;
       }, indicators[0])
       .metric_date.toString();
   }
