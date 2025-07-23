@@ -107,7 +107,6 @@ stages:
                         containerRegistry: ${{environment.acr_connection}}
                         arguments: >
                           --build-arg CONTAINER_PORT=${{environment.container_port}}
-                          --build-arg NEXT_PUBLIC_APP_ENV=${{environment.name}}
                         tags: |
                           $(tag)
                           latest

@@ -42,9 +42,6 @@ RUN \
 FROM base AS runner
 WORKDIR /app
 
-ARG NEXT_PUBLIC_APP_ENV
-ENV NEXT_PUBLIC_APP_ENV=${NEXT_PUBLIC_APP_ENV}
-
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED=1
 
