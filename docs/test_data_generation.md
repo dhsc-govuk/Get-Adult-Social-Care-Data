@@ -68,10 +68,6 @@ The sytem generates two lookup tables:
 - SQL Server with ODBC Driver 18
   - https://github.com/mkleehammer/pyodbc/wiki/Connecting-to-SQL-Server-from-Mac-OSX
   - https://github.com/mkleehammer/pyodbc/wiki/Connecting-to-SQL-Server-from-Windows
-- Required Python packages:
-  ```bash
-  pip install pandas pyodbc python-dotenv
-  ```
 
 ### Database Setup
 See `README.md` for instructions on how to set up the database.
@@ -80,13 +76,7 @@ See `README.md` for instructions on how to set up the database.
 
 ### Basic Usage
 ```bash
-python ./dbtools/test_data_generation/main.py
-```
-
-or for dependancy support
-
-```bash
-uv run ./dbtools/test_data_generation/main.py
+./dbtools/test_data_generation/main.py
 ```
 
 This will generate and insert all test data into the configured SQL Server database.

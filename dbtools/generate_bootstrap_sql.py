@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
 import os, sys
 
 def generate_bootstrap_sql(sqlproj_path: str):
@@ -99,5 +99,9 @@ def generate_bootstrap_sql(sqlproj_path: str):
         print(f"Error: Could not write to output file '{output_file_path}'. Error: {e}")
 
 if __name__ == "__main__":
-     sql_project_directory = sys.argv[1]
-     generate_bootstrap_sql(sql_project_directory)
+    try:
+        sql_project_directory = sys.argv[1]
+    except IndexError:
+        print(f"Usage: {sys.argv[0]} /path/to/sqlproj")
+        sys.exit(1)
+    generate_bootstrap_sql(sql_project_directory)
