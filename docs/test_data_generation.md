@@ -81,6 +81,12 @@ See `README.md` for instructions on how to set up the database.
 
 This will generate and insert all test data into the configured SQL Server database.
 
+There is also a 'truncate' option to delete existing data first:
+
+```bash
+./dbtools/test_data_generation/main.py --truncate
+```
+
 ## Configuration
 
 The test data generation tool configurable to support different testing scenarios and data requirements. Configuration is split across three main files in the `configs/` directory, each handling different aspects of the generated data.

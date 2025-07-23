@@ -9,7 +9,7 @@ env_path = Path(__file__).parent.parent.parent / "gascd_app" / ".env"
 load_dotenv(dotenv_path=env_path)
 
 
-def insert_to_sql_server(df, table_name, schema='ref'):
+def insert_to_sql_server(df, table_name, schema='ref', truncate=False):
     """Insert DataFrame directly to SQL Server"""
     
     # Get password from environment variable
@@ -31,9 +31,10 @@ def insert_to_sql_server(df, table_name, schema='ref'):
         conn = pyodbc.connect(conn_str)
         cursor = conn.cursor()
         
-        # Clear existing data with TRUNCATE
-        cursor.execute(f"TRUNCATE TABLE {schema}.{table_name}")
-        print(f"Successfully truncated {schema}.{table_name}")
+        if truncate:
+            # Clear existing data with TRUNCATE
+            cursor.execute(f"TRUNCATE TABLE {schema}.{table_name}")
+            print(f"Successfully truncated {schema}.{table_name}")
 
         # Prepare bulk insert statement
         columns = ', '.join(df.columns)
