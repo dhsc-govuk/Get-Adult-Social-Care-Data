@@ -80,7 +80,13 @@ See `README.md` for instructions on how to set up the database.
 
 ### Basic Usage
 ```bash
-python main.py
+python ./dbtools/test_data_generation/main.py
+```
+
+or for dependancy support
+
+```bash
+uv run ./dbtools/test_data_generation/main.py
 ```
 
 This will generate and insert all test data into the configured SQL Server database.
