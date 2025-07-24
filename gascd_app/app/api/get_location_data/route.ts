@@ -27,7 +27,14 @@ export async function GET(req: NextRequest) {
       `);
 
     await pool.close();
-    return NextResponse.json(resultSet.recordset[0], { status: 200 });
+    let results: [];
+    if (resultSet.recordset.length) {
+      results = resultSet.recordset[0];
+    } else {
+      logger.warn('No location data found');
+      results = [];
+    }
+    return NextResponse.json(results, { status: 200 });
   } catch (err) {
     logger.error('Error during database operations:', err);
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
