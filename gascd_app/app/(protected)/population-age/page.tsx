@@ -5,8 +5,9 @@ import Layout from '@/components/common/layout/Layout';
 import { useSession } from 'next-auth/react';
 import '../../../src/styles/population-age.scss';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
-import { LAGeoData } from './la_geo_data';
+import { LAGeoData } from '../../../src/helpers/maps/la_geo_data';
 import { Locations } from '@/data/interfaces/Locations';
+import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
 
 export default function PopulationAgePage() {
   const { data: session, status } = useSession();
@@ -30,26 +31,21 @@ export default function PopulationAgePage() {
 
   const handleUpdateClick = (event: any) => {
     event.preventDefault();
-    if (locationData) {
-      updateMap(locationData.la_code);
-    }
+    updateMap();
   };
 
-  const updateMap = (la_code: string) => {
-    const geodata = LAGeoData[la_code];
-    if (geodata && geodata.bbox) {
-      const baseUrl = `https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a`;
-      let map_qs =
-        '&embed=true&embedInteractive=true&embedAreaSearch=false&embedCategorySelection=false&embedView=viewport';
-      map_qs += `&embedBounds=${geodata.bbox[0]},${geodata.bbox[1]}`;
-      map_qs += `&lad=${la_code}`;
-
-      const newUrl = `${baseUrl}/${selectedAge}?${map_qs}`;
-      setMapUrl(newUrl);
-      setMapAvailable(true);
-    } else {
-      // we don't have coordinates, so cannot draw a map
-      setMapAvailable(false);
+  const updateMap = () => {
+    if (locationData) {
+      const newUrl = generatePopulationMapURL(
+        locationData.la_code,
+        selectedAge
+      );
+      if (newUrl) {
+        setMapUrl(newUrl);
+        setMapAvailable(true);
+      } else {
+        setMapAvailable(false);
+      }
     }
   };
 
@@ -83,7 +79,7 @@ export default function PopulationAgePage() {
 
   useEffect(() => {
     if (locationData && locationData.la_code) {
-      updateMap(locationData.la_code);
+      updateMap();
     }
   }, [locationData]);
 
