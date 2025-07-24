@@ -6,15 +6,15 @@ import { renderWithSession } from '@/test-utils/test-utils';
 import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
 import { LAGeoData } from '@/helpers/maps/la_geo_data';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
-import LogService from '@/services/logger/logService';
+import { map } from 'd3';
+
+// Mock out things we don't need to prevent them making api requests
+jest.mock('@/components/common/buttons/logoutButton');
+jest.mock('@/services/logger/logService');
 
 describe('PopulationAge', () => {
   it('should render the heading, body text, and a link', () => {
-    jest.spyOn(LogService, 'logEvent').mockResolvedValue(undefined);
-
-    act(() => {
-      renderWithSession(<PopulationAgePage />);
-    });
+    renderWithSession(<PopulationAgePage />);
 
     const headingElement = screen.getByRole('heading', {
       name: /Population age percentages/i,
@@ -27,13 +27,13 @@ describe('PopulationAge', () => {
     expect(bodyTextElement).toBeInTheDocument();
   });
 
-  it('should render the location name ', async () => {
-    const mockLocations: Locations = {
+  it('should show a message if la not supported', async () => {
+    const unsupportedLACode: Locations = {
       provider_location_id: '',
       provider_location_name: 'The Shire',
       provider_id: '',
       provider_name: '',
-      la_code: '',
+      la_code: '12345',
       la_name: 'Middle Earth',
       region_code: '',
       region_name: '',
@@ -43,15 +43,48 @@ describe('PopulationAge', () => {
     };
     jest
       .spyOn(PresentDemandService, 'getLocations')
-      .mockResolvedValue(Promise.resolve(mockLocations as any));
-    jest.spyOn(LogService, 'logEvent').mockResolvedValue(undefined);
+      .mockResolvedValue(Promise.resolve(unsupportedLACode as any));
 
-    act(() => {
-      renderWithSession(<PopulationAgePage />);
-    });
+    renderWithSession(<PopulationAgePage />);
 
     const bodyTextElement = await screen.findByText(/The Shire/i);
     expect(bodyTextElement.innerHTML).toContain('The Shire, Middle Earth');
+
+    const notsupported = await screen.findByText(
+      /Map data is not currently available for your care home location./i
+    );
+    expect(notsupported).toBeInTheDocument();
+  });
+
+  it('should show an iframe if LA is supported', async () => {
+    const supportedLACode: Locations = {
+      provider_location_id: '',
+      provider_location_name: 'Mordor',
+      provider_id: '',
+      provider_name: '',
+      la_code: 'E06000001',
+      la_name: 'Middle Earth',
+      region_code: '',
+      region_name: '',
+      country_code: '',
+      country_name: '',
+      load_date_time: '',
+    };
+    jest
+      .spyOn(PresentDemandService, 'getLocations')
+      .mockResolvedValue(Promise.resolve(supportedLACode as any));
+
+    renderWithSession(<PopulationAgePage />);
+
+    const bodyTextElement = await screen.findByText(/Mordor/i);
+    expect(bodyTextElement.innerHTML).toContain('Mordor, Middle Earth');
+
+    const iframe = await screen.findByTestId('map-frame');
+    expect(iframe).toBeInTheDocument();
+    const map_url = iframe.getAttribute('src');
+    expect(map_url).toContain('&lad=E06000001');
+    // Default age range
+    expect(map_url).toContain('/aged-85-years-and-over?');
   });
 });
 
@@ -69,7 +102,7 @@ describe('generatePopulationMapURL', () => {
     const url = generatePopulationMapURL(test_la.meta.code, 'agerangeX');
     expect(url).toContain('https://www.ons.gov.uk/');
     expect(url).toContain('&lad=E06000001');
-    expect(url).toContain('/agerangeX');
+    expect(url).toContain('/agerangeX?');
     expect(url).toContain(`&embedBounds=${test_la.bbox[0]},${test_la.bbox[1]}`);
   });
 });

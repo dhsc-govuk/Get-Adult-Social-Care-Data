@@ -225,6 +225,7 @@ export default function PopulationAgePage() {
                 </h3>
                 <iframe
                   key={mapStateKey}
+                  data-testid="map-frame"
                   width="100%"
                   height="600px"
                   title="ONS Census Maps"
