@@ -1,6 +1,7 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../authOptions';
 import { NextRequest, NextResponse } from 'next/server';
+import logger from '@/utils/logger';
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -18,11 +19,12 @@ export async function POST(req: NextRequest) {
   const idToken = session?.idToken as string;
 
   if (!tenant || !userFlow || !logoutRedirectUrl) {
+    logger.warn('Missing environment variables for azure logout URL');
     return NextResponse.json(
       {
         error: 'Missing required environment variables',
       },
-      { status: 500 }
+      { status: 404 }
     );
   }
 

@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     const pool = await connectToDB();
     const queryParams = await req.json();
 
-    if (!queryParams.metric_ids || !queryParams.location_ids) {
+    if (!queryParams.metric_ids?.length || !queryParams.location_ids?.length) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -27,7 +27,6 @@ export async function POST(req: NextRequest) {
         session?.user.locationType ?? '',
         session?.user.locationId ?? ''
       );
-
     const resultSet = await request_with_param.query(queryString);
     const rows: Indicator[] = resultSet.recordset;
     await pool.close();
