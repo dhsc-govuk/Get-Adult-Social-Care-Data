@@ -6,8 +6,8 @@ import { SessionProvider } from 'next-auth/react';
 export const mockSession: any = {
   expires: '1',
   user: {
-    locationType: '',
-    locationId: '',
+    locationType: 'Care provider location',
+    locationId: 'testlocation1',
     smartInsights: false,
   },
 };

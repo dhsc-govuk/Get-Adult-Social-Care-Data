@@ -5,7 +5,6 @@ import Layout from '@/components/common/layout/Layout';
 import { useSession } from 'next-auth/react';
 import '../../../src/styles/population-age.scss';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
-import { LAGeoData } from '../../../src/helpers/maps/la_geo_data';
 import { Locations } from '@/data/interfaces/Locations';
 import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
 
