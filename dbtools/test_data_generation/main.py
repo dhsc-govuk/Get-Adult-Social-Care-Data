@@ -12,43 +12,44 @@ import sys
 from generator import generate_public_metrics, generate_restricted_metrics, generate_la_lookup_table, generate_provider_location_full_lookup, generate_metric_location_user_access, generate_metric_metadata
 from db_utils import insert_to_sql_server
 
-def main(truncate=False):
+def main(truncate=False, docker=False):
     """Generate tables"""
 
     # Generate unrestricted metrics
     print("Generating unrestricted metrics...")
     df_unrestricted = generate_public_metrics()
-    insert_to_sql_server(df_unrestricted, 'all_unrestricted_metrics', 'metrics', truncate=truncate)
+    insert_to_sql_server(df_unrestricted, 'all_unrestricted_metrics', 'metrics', truncate=truncate, docker=docker)
 
     # Generate restricted metrics
     print("Generating restricted metrics...")
     df_restricted = generate_restricted_metrics()
-    insert_to_sql_server(df_restricted, 'all_restricted_metrics', 'metrics', truncate=truncate)
+    insert_to_sql_server(df_restricted, 'all_restricted_metrics', 'metrics', truncate=truncate, docker=docker)
 
     # Generate LA lookup table
     print("Generating LA lookup table...")
     df_la_lookup = generate_la_lookup_table()
-    insert_to_sql_server(df_la_lookup, 'la_lookup', 'ref', truncate=truncate)
+    insert_to_sql_server(df_la_lookup, 'la_lookup', 'ref', truncate=truncate, docker=docker)
 
     # Generate full lookup table
     print("Generating full lookup table...")
     df_full_lookup = generate_provider_location_full_lookup()
-    insert_to_sql_server(df_full_lookup, 'provider_location_full_lookup', 'ref', truncate=truncate)
+    insert_to_sql_server(df_full_lookup, 'provider_location_full_lookup', 'ref', truncate=truncate, docker=docker)
 
     # Generate metric location user access table
     print("Generating metric location user access table...")
     df_access = generate_metric_location_user_access()
-    insert_to_sql_server(df_access, 'metric_location_user_access', 'access', truncate=truncate)
+    insert_to_sql_server(df_access, 'metric_location_user_access', 'access', truncate=truncate, docker=docker)
 
     # Generate metric metadata
     print("Generating metric metadata...")
     df_metadata = generate_metric_metadata()
-    insert_to_sql_server(df_metadata, 'metadata', 'metrics', truncate=truncate)
+    insert_to_sql_server(df_metadata, 'metadata', 'metrics', truncate=truncate, docker=docker)
 
 if __name__ == "__main__":
     truncate = '--truncate' in sys.argv
-    if truncate:
+    docker = '--docker' in sys.argv
+    if truncate and not docker:
         print("Warning: this will delete all existing data in the DB.")
         if input("Continue? [y/N]: ") != "y":
             sys.exit(0)
-    main(truncate)
+    main(truncate, docker)

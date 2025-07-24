@@ -9,7 +9,7 @@ env_path = Path(__file__).parent.parent.parent / "gascd_app" / ".env"
 load_dotenv(dotenv_path=env_path)
 
 
-def insert_to_sql_server(df, table_name, schema='ref', truncate=False):
+def insert_to_sql_server(df, table_name, schema='ref', truncate=False, docker=False):
     """Insert DataFrame directly to SQL Server"""
     
     # Get password from environment variable
@@ -17,9 +17,13 @@ def insert_to_sql_server(df, table_name, schema='ref', truncate=False):
     if not password:
         raise ValueError("DB_PASSWORD environment variable not set")
     
+    server = 'mssql-server' if docker else '127.0.0.1'
+
+    print(f'Connecting to database host: {server}')
+
     conn_str = (
         'DRIVER={ODBC Driver 18 for SQL Server};'
-        'SERVER=127.0.0.1;'
+        f'SERVER={server};'
         'DATABASE=Analytical_Datastore;'
         'UID=SA;'
         f'PWD={password};'
