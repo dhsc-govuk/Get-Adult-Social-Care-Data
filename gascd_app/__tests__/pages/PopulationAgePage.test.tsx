@@ -8,12 +8,12 @@ describe('PopulationAge', () => {
     renderWithSession(<PopulationAgePage />);
 
     const headingElement = screen.getByRole('heading', {
-      name: /Population age/i,
+      name: /Population age percentages/i,
     });
     expect(headingElement).toBeInTheDocument();
 
     const bodyTextElement = screen.getByText(
-      /Explore population data by age group across local authorities and districts in England/i
+      /Use the map to view population percentages for older age groups at local levels in England/i
     );
     expect(bodyTextElement).toBeInTheDocument();
   });
