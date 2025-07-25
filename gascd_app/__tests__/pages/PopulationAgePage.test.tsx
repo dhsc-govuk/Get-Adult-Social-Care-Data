@@ -6,7 +6,6 @@ import { renderWithSession } from '@/test-utils/test-utils';
 import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
 import { LAGeoData } from '@/helpers/maps/la_geo_data';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
-import { map } from 'd3';
 
 // Mock out things we don't need to prevent them making api requests
 jest.mock('@/components/common/buttons/logoutButton');
