@@ -15,8 +15,6 @@ services:
       es01:
         condition: service_healthy
     image: docker.elastic.co/apm/apm-server:${STACK_VERSION}
-    env_file:
-      - elk-local.env
     volumes:
       - certs:/usr/share/apm-server/certs
     ports:

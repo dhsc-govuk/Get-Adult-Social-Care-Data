@@ -6,6 +6,12 @@ This project supports local tracing, metrics, and logging using the ELK stack (E
 
 ### 2. Start the ELK + APM Stack
 
+Create a `.env` file under [`apm/`](../apm/). Use `[`apm/example.env`](../apm/example.env) as a reference, making sure to supply passwords.
+
+```sh
+cp apm/example.env apm/.env
+```
+
 Run the following command from the project root:
 
 ```sh
@@ -21,7 +27,7 @@ This will start Elasticsearch, Kibana, and APM Server using the configuration in
 ### 4. Access Kibana
 
 - Open [http://localhost:5601](http://localhost:5601) in your browser.
-- Login with the credentials set in [`apm/elk-local.env`](../apm/elk-local.env) (username: `elastic` / password: from env file).
+- Login with the credentials set in [`apm/.env`](../apm/.env) (username: `elastic` / password: from env file).
 - Navigate to the **APM** section to view traces and metrics.
 - Use **Discover** to search logs.
 
@@ -36,7 +42,7 @@ make elk-apm-down
 ## Configuration Files
 
 - [`apm/docker-compose-elk.yml`](../apm/docker-compose-elk.yml): Docker Compose setup for ELK and APM.
-- [`apm/elk-local.env`](../apm/elk-local.env): Environment variables for the stack.
+- [`apm/.env`](../apm/example.env): Environment variables for the stack.
 - [`apm/otel.yaml`](../apm/otel.yaml): OpenTelemetry Collector configuration.
 - [`apm/kibana.yml`](../apm/kibana.yml): Kibana configuration.
 
@@ -44,7 +50,7 @@ make elk-apm-down
 
 - If you cannot see traces, ensure `ENABLE_LOCAL_OTEL=true` is set and your app is restarted.
 - Check container logs.
-- The ELK stack can consume a lot of memory and storage. Try Increasing your docker desktop resources and adjusting the [`MEM_LIMIT`](../apm/elk-local.env) environment variable
+- The ELK stack can consume a lot of memory and storage. Try Increasing your docker desktop resources and adjusting the [`MEM_LIMIT`](../apm/example.env) environment variable
 - Make sure ports `9200`, `5601`, and `8200` are not already in use.
 
 ## References
