@@ -13,6 +13,7 @@ export interface LAGeoLookup {
 
 // Generated from ONS data
 // https://cdn.ons.gov.uk/maptiles/cm-geos/v2/{lacode}.geojson
+// - using the script in utils/import_la_locations.py
 export const LAGeoData: LAGeoLookup = {
   E06000001: {
     meta: {
