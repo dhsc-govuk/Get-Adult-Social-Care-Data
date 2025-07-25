@@ -630,7 +630,8 @@ const PresentDemandPage: React.FC = () => {
               <p className="govuk-body">
                 Every local authority in England must produce a Market Position
                 Statement (MPS) to comply with their duties under the Care Act
-                2014. You can usually find these on the local authority website.
+                2014. You can usually find these on the local authority&apos;s
+                website.
               </p>
               <p className="govuk-body">MPSs include information on:</p>
               <ul className="govuk-list govuk-list--bullet">
