@@ -618,6 +618,7 @@ const PresentDemandPage: React.FC = () => {
                 <p className="govuk-body">
                   <a
                     href={mspData.url}
+                    data-testid="msp-link"
                     className="govuk-link"
                     target="_blank"
                     rel="noreferrer"
