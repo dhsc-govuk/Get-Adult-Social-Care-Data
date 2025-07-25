@@ -7,6 +7,7 @@ import '../../../src/styles/population-age.scss';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import { Locations } from '@/data/interfaces/Locations';
 import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
+import LogService from '@/services/logger/logService';
 
 export default function PopulationAgePage() {
   const { data: session, status } = useSession();
@@ -50,6 +51,8 @@ export default function PopulationAgePage() {
 
   useEffect(() => {
     if (session) {
+      // This pattern is pretty common in the app and could
+      // do with being more reusable
       let locationId = session.user.locationId;
       let locationType = session.user.locationType;
       if (locationType == 'Care provider') {
@@ -69,7 +72,9 @@ export default function PopulationAgePage() {
             await PresentDemandService.getLocations(CPLocationId);
           setLocationData(location_data);
         } catch (error) {
-          console.error('Error fetching location ids:', error);
+          LogService.logEvent(
+            'Error fetching location ids: ' + (error as Error).message
+          );
         }
       }
     };
