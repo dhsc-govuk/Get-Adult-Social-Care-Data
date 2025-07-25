@@ -36,6 +36,18 @@ const HomePage: React.FC = () => {
               </p>
             </a>
           </div>
+
+          <div className="govuk-grid-column-one-half">
+            <a href="/population-age" className="app-card">
+              <h2 className="govuk-heading-m app-card__heading">
+                Map of population age percentages
+              </h2>
+              <p className="govuk-body">
+                Use the map to view population percentages for older age groups
+                at local levels in England.
+              </p>
+            </a>
+          </div>
         </div>
       </Layout>
     </>
