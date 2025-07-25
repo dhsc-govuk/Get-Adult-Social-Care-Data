@@ -27,7 +27,6 @@ describe('logEvent Service', () => {
   });
 
   it('should not throw an error when logging', async () => {
-    process.env.NEXT_PUBLIC_APP_ENV = '';
     const mockResponse = {
       ok: true,
       json: () => Promise.resolve({ data: 'test' }),
