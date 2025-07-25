@@ -22,7 +22,7 @@ This will start Elasticsearch, Kibana, and APM Server using the configuration in
 
 ### 3. Configure the Application
 
-- Set the environment variable `ENABLE_LOCAL_OTEL=true` in your [`gascd_app/.env`](../gascd_app/.env) file to enable OpenTelemetry instrumentation for local development.
+- Set the environment variable `ENABLE_APM_LOCAL=true` in your [`gascd_app/.env`](../gascd_app/.env) file to enable OpenTelemetry instrumentation for local development.
 
 ### 4. Access Kibana
 
@@ -48,7 +48,7 @@ make elk-apm-down
 
 ## Troubleshooting
 
-- If you cannot see traces, ensure `ENABLE_LOCAL_OTEL=true` is set and your app is restarted.
+- If you cannot see traces, ensure `ENABLE_APM_LOCAL=true` is set and your app is restarted.
 - Check container logs.
 - The ELK stack can consume a lot of memory and storage. Try Increasing your docker desktop resources and adjusting the [`MEM_LIMIT`](../apm/example.env) environment variable
 - Make sure ports `9200`, `5601`, and `8200` are not already in use.
