@@ -1,4 +1,4 @@
-import Layout from "@/components/common/layout/Layout";
+import Layout from '@/components/common/layout/Layout';
 
 function NotFound() {
   return (
@@ -9,9 +9,7 @@ function NotFound() {
     >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
-          <h1 className="govuk-heading-l">
-            Page not found
-          </h1>
+          <h1 className="govuk-heading-l">Page not found</h1>
           <p className="govuk-body">
             If you typed the web address, check it is correct.
           </p>
@@ -21,7 +19,7 @@ function NotFound() {
         </div>
       </div>
     </Layout>
-  )
+  );
 }
 
-export default NotFound
+export default NotFound;

@@ -64,6 +64,23 @@ format-staged:
 clean:
 	rm -rf gascd_app/node_modules
 
+# Local APM ELK stack Management
+
+elk-apm-up:
+	docker-compose -f ./apm/docker-compose-elk.yml up -d
+
+elk-apm-stop:
+	docker-compose -f ./apm/docker-compose-elk.yml stop
+
+elk-apm-down:
+	docker-compose -f ./apm/docker-compose-elk.yml down -v
+
+elk-apm-logs:
+	docker-compose -f ./apm/docker-compose-elk.yml logs
+
+elk-apm-restart:
+	docker-compose -f ./apm/docker-compose-elk.yml restart
+
 # Pre-commit hooks
 
 

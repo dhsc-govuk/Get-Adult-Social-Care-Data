@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
     '@opentelemetry/semantic-conventions',
     '@opentelemetry/exporter-jaeger',
     '@opentelemetry/instrumentation-winston',
+    '@opentelemetry/auto-instrumentations-node',
   ],
   logging: {
     incomingRequests: false,
