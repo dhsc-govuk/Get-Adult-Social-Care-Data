@@ -30,11 +30,11 @@ describe('PopulationAge', () => {
   it('should show a message if la not supported', async () => {
     const unsupportedLACode: Locations = {
       provider_location_id: '',
-      provider_location_name: 'The Shire',
+      provider_location_name: 'Care4all',
       provider_id: '',
       provider_name: '',
       la_code: '12345',
-      la_name: 'Middle Earth',
+      la_name: 'Caringtown',
       region_code: '',
       region_name: '',
       country_code: '',
@@ -47,8 +47,8 @@ describe('PopulationAge', () => {
 
     renderWithSession(<PopulationAgePage />);
 
-    const bodyTextElement = await screen.findByText(/The Shire/i);
-    expect(bodyTextElement.innerHTML).toContain('The Shire, Middle Earth');
+    const bodyTextElement = await screen.findByText(/Care4all/i);
+    expect(bodyTextElement.innerHTML).toContain('Care4all, Caringtown');
 
     const notsupported = await screen.findByText(
       /Map data is not currently available for your care home location./i
@@ -59,11 +59,11 @@ describe('PopulationAge', () => {
   it('should show an iframe if LA is supported', async () => {
     const supportedLACode: Locations = {
       provider_location_id: '',
-      provider_location_name: 'Mordor',
+      provider_location_name: 'Care4U',
       provider_id: '',
       provider_name: '',
       la_code: 'E06000001',
-      la_name: 'Middle Earth',
+      la_name: 'Caresville',
       region_code: '',
       region_name: '',
       country_code: '',
@@ -72,12 +72,12 @@ describe('PopulationAge', () => {
     };
     jest
       .spyOn(PresentDemandService, 'getLocations')
-      .mockResolvedValue(Promise.resolve(supportedLACode as any));
+      .mockResolvedValue(supportedLACode as any);
 
     renderWithSession(<PopulationAgePage />);
 
-    const bodyTextElement = await screen.findByText(/Mordor/i);
-    expect(bodyTextElement.innerHTML).toContain('Mordor, Middle Earth');
+    const bodyTextElement = await screen.findByText(/Care4U/i);
+    expect(bodyTextElement.innerHTML).toContain('Care4U, Caresville');
 
     const iframe = await screen.findByTestId('map-frame');
     expect(iframe).toBeInTheDocument();
@@ -104,5 +104,8 @@ describe('generatePopulationMapURL', () => {
     expect(url).toContain('&lad=E06000001');
     expect(url).toContain('/agerangeX?');
     expect(url).toContain(`&embedBounds=${test_la.bbox[0]},${test_la.bbox[1]}`);
+
+    const url2 = generatePopulationMapURL(test_la.meta.code, 'agerangeY');
+    expect(url2).toContain('/agerangeY?');
   });
 });
