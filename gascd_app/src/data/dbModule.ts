@@ -4,13 +4,12 @@ import {
   TokenCredential,
 } from '@azure/identity';
 import sql, { config as SQLConfig, ConnectionPool } from 'mssql';
+import tds from 'tedious';
 import logger from '@/utils/logger';
 
-export async function getAccessToken(): Promise<string> {
-  const isLocal = process.env.NEXT_PUBLIC_APP_ENV === 'local';
+export async function getAccessToken(useCLI = false): Promise<string> {
   let credential: TokenCredential;
-
-  if (isLocal) {
+  if (useCLI) {
     credential = new AzureCliCredential();
   } else {
     const clientId = process.env.SQL_MANAGED_IDENTITY_CLIENT_ID;
@@ -43,26 +42,42 @@ export async function connectToDB(): Promise<ConnectionPool> {
   const dbServer = process.env.DB_SERVER;
   const dbPort = Number(process.env.DB_PORT);
   const dbName = process.env.DB_DATABASE;
+  const authType: string = process.env.DB_AUTH_TYPE || 'azure-managed';
 
   if (!dbServer || !dbPort || !dbName) {
     throw new Error('Missing database configuration environment variables.');
   }
 
-  const token = await getAccessToken();
+  let authOptions: tds.ConnectionAuthentication;
+  let trustCert = false;
+  if (authType === 'local') {
+    authOptions = {
+      type: 'default',
+      options: {
+        userName: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+      },
+    };
+    trustCert = true;
+  } else if (['azure-cli', 'azure-managed'].includes(authType)) {
+    authOptions = {
+      type: 'azure-active-directory-access-token',
+      options: {
+        token: await getAccessToken(authType === 'azure-cli'),
+      },
+    };
+  } else {
+    throw new Error(`Invalid DB_AUTH_TYPE: ${authType}`);
+  }
 
   const config: SQLConfig = {
     server: dbServer,
     port: dbPort,
     database: dbName,
-    authentication: {
-      type: 'azure-active-directory-access-token',
-      options: {
-        token: token,
-      },
-    },
+    authentication: authOptions,
     options: {
       encrypt: true,
-      trustServerCertificate: false,
+      trustServerCertificate: trustCert,
       enableArithAbort: true,
     },
   };

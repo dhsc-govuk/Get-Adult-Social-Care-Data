@@ -1,0 +1,49 @@
+// Temp styles for the population age page
+
+/* Contents box styling */
+.contents-box {
+    background-color: #f3f2f1; /* GOV.UK light grey */
+    padding: 20px;
+    margin-bottom: 20px;
+    /* max-width: 63%; Adjusted width for better spacing */
+}
+
+/* Remove default list indentation */
+.govuk-list--number {
+    counter-reset: main-counter;
+    list-style-type: none;
+    padding-left: 0; /* Remove padding */
+    margin-left: 0; /* Remove margin */
+}
+
+.govuk-list--number > li {
+    counter-increment: main-counter;
+}
+
+.govuk-list--number > li::before {
+    content: counter(main-counter) ". ";
+    font-weight: normal;
+}
+
+/* Styling for the nested (child) unordered list */
+.nested-list {
+    counter-reset: sub-counter;
+    list-style-type: none;
+    padding-left: 1.5rem; /* Align nested items properly */
+    margin-left: 0;
+}
+
+.nested-list li {
+    counter-increment: sub-counter;
+}
+
+.nested-list li::before {
+    content: counter(main-counter) ". " counter(sub-counter) ". ";
+    font-weight: normal;
+}
+
+/* Expansion on the GOV.UK Design System radio component https://design-system.service.gov.uk/components/radio) to stop inline radio buttons labels wrapping */
+.govuk-radios--inline {
+    text-wrap-mode: nowrap;
+}
+

@@ -42,9 +42,6 @@ RUN \
 FROM base AS runner
 WORKDIR /app
 
-ARG NEXT_PUBLIC_APP_ENV
-ENV NEXT_PUBLIC_APP_ENV=${NEXT_PUBLIC_APP_ENV}
-
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED=1
 
@@ -59,10 +56,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
-
-ARG CONTAINER_PORT
-ENV PORT=${CONTAINER_PORT}
-EXPOSE ${CONTAINER_PORT}
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/config/next-config-js/output

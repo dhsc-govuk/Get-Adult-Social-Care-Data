@@ -40,7 +40,7 @@ describe('Logout API Route', () => {
     expect(json).toEqual({ error: 'Unauthorised: No active session' });
   });
 
-  test('should return 500 if required environment variables are missing', async () => {
+  test('should return 404 if required environment variables are missing', async () => {
     process.env.AZURE_AD_TENANT_NAME = '';
     process.env.AZURE_AD_B2C_USER_SIGN_IN = '';
     process.env.AZURE_AD_B2C_LOGOUT_URL = '';
@@ -59,7 +59,7 @@ describe('Logout API Route', () => {
     const response = await POST(mockRequest);
     const json = await response.json();
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(404);
     expect(json).toEqual({
       error: 'Missing required environment variables',
     });

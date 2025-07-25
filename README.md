@@ -74,15 +74,64 @@ To run the application you must ensure you've followed the setup steps
 
 The default auth provider is Azure B2C, which can be a hassle to set up if you're just making frontend changes. There is a local auth setup for development and testing, which you can use as follows:
 
-* Add LOCAL_AUTH=true to your `gascd_app/.env` file
+* Add the following to your `gascd_app/.env` file
+```bash
+  LOCAL_AUTH=true
+  LOCAL_AUTH_LOCATION_TYPE=Care provider location
+  LOCAL_AUTH_LOCATION_ID=testcpl1
+```
 * Remove any existing AZURE_AD_* variables from your .env file
 * Start the app and sign in
 * The dummy auth provider will appear as an alternative when the default (Azure) auth method fails
 * Enter any email address in the 'dummy-creds' login box to authenticate
 
-### Development database access
+### Development database setup
 
-You can connect your local development instance to the DEV database on Azure as follows:
+You can spin up a local SQL server as follows:
+
+* Set the following in `gascd_app/.env`
+```bash
+  DB_DATABASE=Analytical_Datastore
+  DB_SERVER=localhost
+  DB_PORT=1433
+  DB_AUTH_TYPE=local
+  DB_USERNAME=sa
+  # See below for password complexity requirements
+  DB_PASSWORD=<a-password-for-the-db>
+```
+* Please note that the DB_PASSWORD must meet [SQL server password complexity](https://learn.microsoft.com/en-us/sql/relational-databases/security/password-policy?view=sql-server-ver16#password-complexity)
+
+
+To bootstrap the database and tables, you need to to generate an SQL bootstrap file from the `.sqlproject` in the [dhsc-gasdc-data repo](https://github.com/madetech/dhsc-gascd-data) as follows:
+
+```bash
+./dbtools/generate_bootstrap_sql.py /path/to/dhsc-gascd-data/sql/Analytical_Datastore
+```
+
+You can then run this SQL file against your docker DB as follows:
+
+```bash
+# Build and start the MSSQL server
+DB_PASSWORD="<a-password-for-the-db>" make docker-db
+# Imports the SQL bootstrap file
+DB_PASSWORD="<a-password-for-the-db>" make docker-db-init
+```
+Then run the following to load in the test data
+
+```bash
+DB_PASSWORD="<a-password-for-the-db>" make docker-db-init-data
+```
+See docs for information on how to configure the test data
+
+[Experimental] - there is also a script to import CSV files into the docker database for dummy content:
+
+```bash
+./dbtools/import_csv.sh {csvfile} {tablename}
+```
+
+## Connecting to the Azure DEV database
+
+Alternatively you can connect your local development instance to the DEV database on Azure as follows:
 
 * Install the Azure CLI (`brew install az`)
 * Log into Azure in your terminal using `az login`
@@ -93,13 +142,15 @@ You can connect your local development instance to the DEV database on Azure as 
   DB_SERVER=<db_server_id>.database.windows.net
   DB_PORT=1433
   # Allows app to connect with your Azure CLI creds
-  NEXT_PUBLIC_APP_ENV=local
-  # If using local (non-azure) auth, ensure you have the following set
-  LOCAL_AUTH=true
-  LOCAL_AUTH_LOCATION_TYPE=Care provider location
-  LOCAL_AUTH_LOCATION_ID=testcpl1
+  DB_AUTH_TYPE=azure-cli
 ```
 * Start the app
+
+## Debugging Database queries
+
+You can log raw SQL queries to the terminal by running the app as follows:
+
+`DEBUG=mssql:* make run-dev`
 
 ## Continuous Integration, Development and Deployment
 

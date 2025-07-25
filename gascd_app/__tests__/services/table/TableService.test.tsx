@@ -20,7 +20,7 @@ describe('TableService', () => {
       location_id: '1',
       data_point: 20,
       metric_date_type: '',
-      metric_date: new Date(2024, 3, 5),
+      metric_date: '5/3/2024',
       location_type: '',
       numerator: 0,
       multiplier: 0,
@@ -39,45 +39,32 @@ describe('TableService', () => {
       denominator: 0,
       load_date_time: new Date(2024, 2, 20),
     },
+    {
+      metric_id: '2',
+      location_id: '2',
+      data_point: 22,
+      metric_date_type: '',
+      metric_date: '1/1/2023',
+      location_type: '',
+      numerator: 0,
+      multiplier: 0,
+      denominator: 0,
+      load_date_time: new Date(2024, 2, 20),
+    },
   ];
 
   describe('filterDate', () => {
     it('should return only the latest entry for each metric-location pair', () => {
       const result: Indicator[] = TableService.filterDate(mockData);
       expect(result).toHaveLength(2);
-      expect(result).toEqual([
-        {
-          metric_id: '1',
-          location_id: '1',
-          data_point: 20,
-          metric_date_type: '',
-          metric_date: new Date(2024, 3, 5),
-          location_type: '',
-          numerator: 0,
-          multiplier: 0,
-          denominator: 0,
-          load_date_time: new Date(2024, 3, 11),
-        },
-        {
-          metric_id: '2',
-          location_id: '2',
-          data_point: 30,
-          metric_date_type: '',
-          metric_date: new Date(2024, 2, 15),
-          location_type: '',
-          numerator: 0,
-          multiplier: 0,
-          denominator: 0,
-          load_date_time: new Date(2024, 2, 20),
-        },
-      ]);
+      expect(result).toEqual([mockData[1], mockData[2]]);
     });
   });
 
   describe('removeLoadDateTime', () => {
     it('should return data without the load_date_time field', () => {
       const result = TableService.removeLoadDateTime(mockData);
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(4);
       result.forEach((item: Omit<Indicator, 'load_date_time'>) => {
         expect(item).not.toHaveProperty('load_date_time');
       });

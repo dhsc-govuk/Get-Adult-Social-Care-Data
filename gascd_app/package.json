@@ -7,13 +7,13 @@
     "dev": "next dev",
     "build": "next build",
     "husky:init": "cd .. && husky gascd_app/.husky",
-    "start": "next start -p $CONTAINER_PORT",
+    "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write",
     "lint-staged": "lint-staged",
     "test": "jest --config jest.config.ts --collect-coverage",
     "test:nocov": "jest --config jest.config.ts",
-    "test:watch": "jest --watch",
+    "test:watch": "jest --config jest.config.ts --watch",
     "cypress": "cypress open"
   },
   "lint-staged": {

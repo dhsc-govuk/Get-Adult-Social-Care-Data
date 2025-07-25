@@ -11,16 +11,9 @@ const PercentageBedsOccupiedCareProviders: React.FC = () => {
       <Layout
         showLoginInformation={false}
         currentPage={'beds care provider location'}
+        backURL="/present-demand"
         showNavBar={false}
       >
-        <Link
-          href="#"
-          onClick={() => router.back()}
-          className="govuk-back-link"
-        >
-          Back
-        </Link>
-
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-l">
@@ -125,16 +118,16 @@ const PercentageBedsOccupiedCareProviders: React.FC = () => {
                     on a weekend or holiday.
                     <br></br>
                     <br></br>
-                    The median bed occupancy is the middle value when all bed 
-                    occupancies are arranged from smallest to largest. The 
+                    The median bed occupancy is the middle value when all bed
+                    occupancies are arranged from smallest to largest. The
                     median is calculated for the local authority, region, and
-                    England. 
+                    England.
                     <br></br>
                     <br></br>
-                    Small number suppression is applied. If a care provider 
+                    Small number suppression is applied. If a care provider
                     location has an occupied bed count fewer than 6, the
-                    corresponding percentage is shown as 0. Care provider 
-                    locations in the Isles of Scilly are excluded from all 
+                    corresponding percentage is shown as 0. Care provider
+                    locations in the Isles of Scilly are excluded from all
                     aggregated values.
                   </td>
                 </tr>

@@ -4,9 +4,9 @@ services:
         image: gascd_frontend_image
         build:
             context: .
-            args:
-                CONTAINER_PORT: ${CONTAINER_PORT}
         ports:
-            - '${HOST_PORT}:${CONTAINER_PORT}'
+            - 3001:80
         env_file:
             - .env
+        environment:
+            - PORT=80
