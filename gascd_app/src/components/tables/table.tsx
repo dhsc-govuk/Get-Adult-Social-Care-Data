@@ -62,9 +62,12 @@ const DataTable: React.FC<DataTableProps> = ({
       <tbody className="govuk-table__body">
         {Object.entries(rowHeaders).map(([key, value]) => (
           <tr key={key}>
-            <td className="govuk-table__cell govuk-table__cell--header">
+            <th
+              scope="row"
+              className="govuk-table__cell govuk-table__cell--header"
+            >
               {value}
-            </td>
+            </th>
             {showCareProvider && (
               <td className="govuk-table__cell">
                 {getFormattedDataPoint(
