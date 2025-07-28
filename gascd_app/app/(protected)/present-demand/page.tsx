@@ -308,6 +308,7 @@ const PresentDemandPage: React.FC = () => {
       heading: 'Indicator definition and supporting information',
     },
     { link: '#selected-locations', heading: 'Your selected locations' },
+    { link: '#drivers', heading: 'Drivers of population needs' },
     {
       link: '#capacity-la',
       heading: 'Current capacity - care homes: local authority-level insights',
@@ -433,7 +434,7 @@ const PresentDemandPage: React.FC = () => {
               </dl>
             </div>
             <div className="govuk-!-margin-bottom-9">
-              <h2 className="govuk-heading-l" id="drivers">
+              <h2 className="govuk-heading-m" id="drivers">
                 Drivers of population needs
               </h2>
               <p className="govuk-body">
@@ -455,9 +456,9 @@ const PresentDemandPage: React.FC = () => {
               ></ConditionalText>
             </div>
             <div className="govuk-!-margin-bottom-9">
-              <h2 className="govuk-heading-m govuk-!-margin-bottom-9">
+              <h3 className="govuk-heading-s">
                 Explore the data: demographic factors
-              </h2>
+              </h3>
               <DataTable
                 columnHeaders={locationNames}
                 rowHeaders={demographicRowHeaders}
@@ -477,8 +478,8 @@ const PresentDemandPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="govuk-!-margin-bottom-9">
-              <h2 className="govuk-heading-l" id="capacity-la">
+            <div className="">
+              <h2 className="govuk-heading-m" id="capacity-la">
                 Current capacity - care homes: local authority-level insights
               </h2>
               <p className="govuk-body">
@@ -513,10 +514,6 @@ const PresentDemandPage: React.FC = () => {
               ></ConditionalText>
             </div>
             <div className="govuk-!-margin-bottom-9">
-              <h2 className="govuk-heading-m">
-                Explore the data: adult social care beds per 100,000 adult
-                population and occupancy
-              </h2>
               <p className="govuk-body">
                 {' '}
                 You can filter this data by type of beds
@@ -530,6 +527,10 @@ const PresentDemandPage: React.FC = () => {
                   Explore data
                 </button>
               </form>
+              <h3 className="govuk-heading-s">
+                Explore the data: adult social care beds per 100,000 adult
+                population and occupancy
+              </h3>
               <DataTable
                 columnHeaders={locationNames}
                 rowHeaders={bedRowHeaders}
@@ -549,7 +550,7 @@ const PresentDemandPage: React.FC = () => {
               </p>
             </div>
             <div className="govuk-!-margin-bottom-9">
-              <h2 className="govuk-heading-l" id="capacity-cp">
+              <h2 className="govuk-heading-m" id="capacity-cp">
                 Current capacity - care homes: care provider-level insights
               </h2>
               <p className="govuk-body">
@@ -588,9 +589,9 @@ const PresentDemandPage: React.FC = () => {
                 of beds occupied is shown as 0. For details on suppression of
                 data, see indicator definition and supporting information.
               </p>
-              <h2 className="govuk-heading-m">
+              <h3 className="govuk-heading-s">
                 Explore the data: care providers in {locationNames[1]}
-              </h2>
+              </h3>
               <DataTable
                 columnHeaders={locationNamesCP}
                 rowHeaders={careProviderRowHeaders}
