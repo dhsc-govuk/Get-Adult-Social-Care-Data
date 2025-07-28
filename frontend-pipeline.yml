@@ -78,8 +78,8 @@ stages:
               testResultsFiles: "gascd_app/junit.xml"
               failTaskOnFailedTests: true
   # Build
-  - stage: Build_Prod
-    displayName: "Prod: Build and push stage"
+  - stage: Build_Image
+    displayName: "Build/push Docker image (all environments)"
     condition: succeeded()
     jobs:
       - deployment: Build
