@@ -110,8 +110,8 @@ stages:
                       displayName: Tag image for ${{environment.acr_name}} ACR
 
                     - script: |
-                        docker push "${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)
-                        docker push "${{environment.acr_name}}.azurecr.io/$(imageRepository):latest
+                        docker push ${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)
+                        docker push ${{environment.acr_name}}.azurecr.io/$(imageRepository):latest
                       displayName: Push image to ${{environment.acr_name}} ACR
   # Deploy across environments
   - ${{ each environment in parameters.environments}}:
