@@ -193,7 +193,6 @@ const PresentDemandPage: React.FC = () => {
           );
           setLocationIds(locationids);
           setLocationIdsCP(locationIdsCP);
-          console.log(locationids, locationIdsCP);
         } catch (error) {
           console.error('Error fetching location ids:', error);
         }
