@@ -13,6 +13,8 @@ import { useSession } from 'next-auth/react';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { MetaData } from '@/data/interfaces/MetaData';
+import { Locations } from '@/data/interfaces/Locations';
+import { MSPItem, MSPLookup } from '@/helpers/msp/msp-lookup';
 
 const PresentDemandPage: React.FC = () => {
   const [filteredDemographicData, setFilteredDemographicData] = useState<
@@ -26,6 +28,8 @@ const PresentDemandPage: React.FC = () => {
   const [locationNamesCP, setLocationNamesCP] = useState<string[]>([]);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [locationIdsCP, setLocationIdsCP] = useState<string[]>([]);
+  const [localAuthorityData, setLocalAuthorityData] = useState<Locations>();
+  const [mspData, setMspData] = useState<MSPItem>();
   const [demographicDataSource, setDemographicDataSource] = useState<string>();
   const [bedsDataSource, setBedsDataSource] = useState<string>();
   const [CPDataSource, setCPDataSource] = useState<string>();
@@ -163,6 +167,10 @@ const PresentDemandPage: React.FC = () => {
           );
           setLocationNames(locationNames);
           setLocationNamesCP(locationNamesCP);
+
+          // XXX why do we need to call this quite so many times?
+          const laData = await PresentDemandService.getLocations(CPLocationId);
+          setLocalAuthorityData(laData);
         } catch (error) {
           console.error('Error fetching location names:', error);
         }
@@ -283,6 +291,15 @@ const PresentDemandPage: React.FC = () => {
     fetchAllData();
   }, [demographicQuery]);
 
+  useEffect(() => {
+    if (localAuthorityData?.la_code) {
+      const msp = MSPLookup[localAuthorityData.la_code];
+      if (msp) {
+        setMspData(msp);
+      }
+    }
+  }, [localAuthorityData]);
+
   const contentItems = [
     { link: '#summary', heading: 'Introduction' },
     {
@@ -290,6 +307,7 @@ const PresentDemandPage: React.FC = () => {
       heading: 'Indicator definition and supporting information',
     },
     { link: '#selected-locations', heading: 'Your selected locations' },
+    { link: '#drivers', heading: 'Drivers of population needs' },
     {
       link: '#capacity-la',
       heading: 'Current capacity - care homes: local authority-level insights',
@@ -297,6 +315,10 @@ const PresentDemandPage: React.FC = () => {
     {
       link: '#capacity-cp',
       heading: 'Current capacity - care homes: care provider-level insights',
+    },
+    {
+      link: '#market-position-statement',
+      heading: 'Find more information on your local care market',
     },
   ];
 
@@ -411,7 +433,7 @@ const PresentDemandPage: React.FC = () => {
               </dl>
             </div>
             <div className="govuk-!-margin-bottom-9">
-              <h2 className="govuk-heading-l" id="drivers">
+              <h2 className="govuk-heading-m" id="drivers">
                 Drivers of population needs
               </h2>
               <p className="govuk-body">
@@ -433,9 +455,9 @@ const PresentDemandPage: React.FC = () => {
               ></ConditionalText>
             </div>
             <div className="govuk-!-margin-bottom-9">
-              <h2 className="govuk-heading-m govuk-!-margin-bottom-9">
+              <h3 className="govuk-heading-s">
                 Explore the data: demographic factors
-              </h2>
+              </h3>
               <DataTable
                 columnHeaders={locationNames}
                 rowHeaders={demographicRowHeaders}
@@ -455,8 +477,8 @@ const PresentDemandPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="govuk-!-margin-bottom-9">
-              <h2 className="govuk-heading-l" id="capacity-la">
+            <div className="">
+              <h2 className="govuk-heading-m" id="capacity-la">
                 Current capacity - care homes: local authority-level insights
               </h2>
               <p className="govuk-body">
@@ -491,10 +513,6 @@ const PresentDemandPage: React.FC = () => {
               ></ConditionalText>
             </div>
             <div className="govuk-!-margin-bottom-9">
-              <h2 className="govuk-heading-m">
-                Explore the data: adult social care beds per 100,000 adult
-                population and occupancy
-              </h2>
               <p className="govuk-body">
                 {' '}
                 You can filter this data by type of beds
@@ -508,6 +526,10 @@ const PresentDemandPage: React.FC = () => {
                   Explore data
                 </button>
               </form>
+              <h3 className="govuk-heading-s">
+                Explore the data: adult social care beds per 100,000 adult
+                population and occupancy
+              </h3>
               <DataTable
                 columnHeaders={locationNames}
                 rowHeaders={bedRowHeaders}
@@ -527,7 +549,7 @@ const PresentDemandPage: React.FC = () => {
               </p>
             </div>
             <div className="govuk-!-margin-bottom-9">
-              <h2 className="govuk-heading-l" id="capacity-cp">
+              <h2 className="govuk-heading-m" id="capacity-cp">
                 Current capacity - care homes: care provider-level insights
               </h2>
               <p className="govuk-body">
@@ -536,14 +558,15 @@ const PresentDemandPage: React.FC = () => {
                 authority, regional and national level.
               </p>
               <p className="govuk-body">
-                {locationNamesCP[1]} is a provider with (
-                {finalCpData.find(
-                  (metric) =>
-                    metric.metric_id === 'bedcount_total' &&
-                    metric.location_type === 'Care provider location'
-                )?.data_point ?? 'Loading...'}{' '}
-                beds) in {locationNamesCP[2]} total beds, compared to the
-                average (
+                {locationNamesCP[1]} is a provider with{' '}
+                <strong>
+                  {finalCpData.find(
+                    (metric) =>
+                      metric.metric_id === 'bedcount_total' &&
+                      metric.location_type === 'Care provider location'
+                  )?.data_point ?? 'Loading...'}{' '}
+                </strong>
+                total beds, compared to the media (
                 {finalCpData.find(
                   (metric) =>
                     metric.metric_id === 'median_bed_count_total' &&
@@ -565,9 +588,9 @@ const PresentDemandPage: React.FC = () => {
                 of beds occupied is shown as 0. For details on suppression of
                 data, see indicator definition and supporting information.
               </p>
-              <h2 className="govuk-heading-m">
+              <h3 className="govuk-heading-s">
                 Explore the data: care providers in {locationNames[1]}
-              </h2>
+              </h3>
               <DataTable
                 columnHeaders={locationNamesCP}
                 rowHeaders={careProviderRowHeaders}
@@ -586,6 +609,65 @@ const PresentDemandPage: React.FC = () => {
                 <br />
                 Data correct as of {CPLatestDate}
               </p>
+              <h2
+                className="govuk-heading-m govuk-!-margin-top-9"
+                id="market-position-statement"
+              >
+                Find more information on your local care market
+              </h2>
+              {mspData && mspData.url && (
+                <p className="govuk-body">
+                  <a
+                    href={mspData.url}
+                    data-testid="msp-link"
+                    className="govuk-link"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Market Position Statement for {locationNames[1]} (opens in
+                    new tab)
+                  </a>
+                </p>
+              )}
+              <p className="govuk-body">
+                Every local authority in England must produce a Market Position
+                Statement (MPS) to comply with their duties under the Care Act
+                2014. You can usually find these on the local authority&apos;s
+                website.
+              </p>
+              <p className="govuk-body">MPSs include information on:</p>
+              <ul className="govuk-list govuk-list--bullet">
+                <li>supply and demand in the local care market</li>
+                <li>
+                  forecasts of future supply and demand for adult social care
+                  services
+                </li>
+                <li>
+                  how the local authority will support the local care market to
+                  meet demand
+                </li>
+                <li>
+                  potential business opportunities for current or prospective
+                  care providers
+                </li>
+              </ul>
+              <details className="govuk-details govuk-!-margin-top-9">
+                <summary className="govuk-details__summary">
+                  <span className="govuk-details__summary-text">
+                    Get help with this page
+                  </span>
+                </summary>
+                <div className="govuk-details__text">
+                  If you have any issues using this service, email{' '}
+                  <a
+                    href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
+                    className="govuk-link"
+                  >
+                    getadultsocialcaredata.team@dhsc.gov.uk
+                  </a>
+                  .
+                </div>
+              </details>
             </div>
           </div>
         </div>
