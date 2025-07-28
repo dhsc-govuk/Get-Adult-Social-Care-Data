@@ -558,14 +558,15 @@ const PresentDemandPage: React.FC = () => {
                 authority, regional and national level.
               </p>
               <p className="govuk-body">
-                {locationNamesCP[1]} is a provider with (
-                {finalCpData.find(
-                  (metric) =>
-                    metric.metric_id === 'bedcount_total' &&
-                    metric.location_type === 'Care provider location'
-                )?.data_point ?? 'Loading...'}{' '}
-                beds) in {locationNamesCP[2]} total beds, compared to the
-                average (
+                {locationNamesCP[1]} is a provider with{' '}
+                <strong>
+                  {finalCpData.find(
+                    (metric) =>
+                      metric.metric_id === 'bedcount_total' &&
+                      metric.location_type === 'Care provider location'
+                  )?.data_point ?? 'Loading...'}{' '}
+                </strong>
+                total beds, compared to the media (
                 {finalCpData.find(
                   (metric) =>
                     metric.metric_id === 'median_bed_count_total' &&
