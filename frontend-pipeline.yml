@@ -105,8 +105,8 @@ stages:
                         containerRegistry: ${{environment.acr_connection}}
 
                     - script: |
-                        docker tag $(imageRepository):$(tag) "${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)
-                        docker tag $(imageRepository):latest "${{environment.acr_name}}.azurecr.io/$(imageRepository):latest
+                        docker tag $(imageRepository):$(tag) ${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)
+                        docker tag $(imageRepository):latest ${{environment.acr_name}}.azurecr.io/$(imageRepository):latest
                       displayName: Tag image for ${{environment.acr_name}} ACR
 
                     - script: |
