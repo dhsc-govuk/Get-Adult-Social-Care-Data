@@ -30,10 +30,11 @@ export async function connectToDB(): Promise<ConnectionPool> {
     trustCert = true;
   } else {
     authOptions = {
+      // Uses the DefaultAzureCredential chain to try and find a relevant credential
+      // (supports Azure CLI locally and Managed indentities in production)
+      // https://learn.microsoft.com/en-gb/azure/developer/javascript/sdk/authentication/credential-chains#use-defaultazurecredential-for-flexibility
       type: 'azure-active-directory-default',
-      options: {
-        clientId: process.env.SQL_MANAGED_IDENTITY_CLIENT_ID || '',
-      },
+      options: {},
     };
   }
 
