@@ -211,14 +211,18 @@ export default function PopulationAgePage() {
             )}
 
             {!mapAvailable && (
-              <p>
-                Map data is not currently available for your care home location.
-                <br />
-                You can{' '}
-                <a href={mapAlternative} target="_blank" rel="noreferrer">
-                  browse the entire map on the ONS website.
-                </a>
-              </p>
+              <div>
+                <p className="govuk-body">
+                  Map data is not currently available for your care home
+                  location.
+                </p>
+                <p className="govuk-body">
+                  <a href={mapAlternative} target="_blank" rel="noreferrer">
+                    View the map on the Office for National Statistics website
+                    (opens in new tab)
+                  </a>
+                </p>
+              </div>
             )}
 
             {mapUrl && (
