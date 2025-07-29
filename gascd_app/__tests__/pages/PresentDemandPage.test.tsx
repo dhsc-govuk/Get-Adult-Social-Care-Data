@@ -54,7 +54,7 @@ describe('PresentDemandPage', () => {
     expect(mspHeading).toBeInTheDocument();
 
     const bodyTextElement = screen.getByText(
-      /Every local authority in England must produce a Market Position Statement/i
+      /Most local authorities in England publish Market Position Statements/i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
@@ -94,7 +94,7 @@ describe('PresentDemandPage', () => {
     });
     expect(mspHeading).toBeInTheDocument();
     const bodyTextElement = screen.getByText(
-      /Every local authority in England must produce a Market Position Statement/i
+      /Most local authorities in England publish Market Position Statements/i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
