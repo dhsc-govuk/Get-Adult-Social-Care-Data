@@ -630,12 +630,19 @@ const PresentDemandPage: React.FC = () => {
                 </p>
               )}
               <p className="govuk-body">
-                Every local authority in England must produce a Market Position
-                Statement (MPS) to comply with their duties under the Care Act
-                2014. You can usually find these on the local authority&apos;s
-                website.
+                Most local authorities in England publish Market Position
+                Statements (MPS) to help care providers understand the local
+                care market.
               </p>
-              <p className="govuk-body">MPSs include information on:</p>
+              <p className="govuk-body">
+                You can usually find these{' '}
+                <abbr title="Market Position Statement">MPS</abbr> documents on
+                local authority websites.
+              </p>
+              <p className="govuk-body">
+                <abbr title="Market Position Statement">MPS</abbr> documents
+                include information on:
+              </p>
               <ul className="govuk-list govuk-list--bullet">
                 <li>supply and demand in the local care market</li>
                 <li>
@@ -647,8 +654,8 @@ const PresentDemandPage: React.FC = () => {
                   meet demand
                 </li>
                 <li>
-                  potential business opportunities for current or prospective
-                  care providers
+                  how the local authority will engage with care providers on
+                  challenges in the sector, such as funding pressures
                 </li>
               </ul>
               <details className="govuk-details govuk-!-margin-top-9">

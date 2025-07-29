@@ -53,6 +53,15 @@ describe('PopulationAge', () => {
       /Map data is not currently available for your care home location./i
     );
     expect(notsupported).toBeInTheDocument();
+
+    const linkElement2 = screen.getByRole('link', {
+      name: /View the map on the Office for National Statistics website/i,
+    });
+    expect(linkElement2).toBeInTheDocument();
+    expect(linkElement2).toHaveAttribute(
+      'href',
+      'https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a/aged-85-years-and-over'
+    );
   });
 
   it('should show an iframe if LA is supported', async () => {
