@@ -7,37 +7,6 @@ import sql, { config as SQLConfig, ConnectionPool } from 'mssql';
 import tds from 'tedious';
 import logger from '@/utils/logger';
 
-export async function getAccessToken(useCLI = false): Promise<string> {
-  let credential: TokenCredential;
-  if (useCLI) {
-    credential = new AzureCliCredential();
-  } else {
-    const clientId = process.env.SQL_MANAGED_IDENTITY_CLIENT_ID;
-    if (clientId) {
-      credential = new ManagedIdentityCredential(clientId);
-    } else {
-      logger.warn(
-        'MANAGED_IDENTITY_CLIENT_ID environment variable is missing. Proceeding without client ID.'
-      );
-      credential = new ManagedIdentityCredential();
-    }
-  }
-
-  try {
-    const tokenResponse = await credential.getToken(
-      'https://database.windows.net/.default'
-    );
-    if (tokenResponse) {
-      return tokenResponse.token;
-    } else {
-      throw new Error('Failed to receive token.');
-    }
-  } catch (err) {
-    logger.error('Failed to get access token:', err);
-    throw err;
-  }
-}
-
 export async function connectToDB(): Promise<ConnectionPool> {
   const dbServer = process.env.DB_SERVER;
   const dbPort = Number(process.env.DB_PORT);
@@ -49,7 +18,7 @@ export async function connectToDB(): Promise<ConnectionPool> {
   }
 
   let authOptions: tds.ConnectionAuthentication;
-  let trustCert = false;
+  let trustCert = false; // by default we don't trust self-signed certs
   if (authType === 'local') {
     authOptions = {
       type: 'default',
@@ -59,15 +28,13 @@ export async function connectToDB(): Promise<ConnectionPool> {
       },
     };
     trustCert = true;
-  } else if (['azure-cli', 'azure-managed'].includes(authType)) {
+  } else {
     authOptions = {
-      type: 'azure-active-directory-access-token',
+      type: 'azure-active-directory-default',
       options: {
-        token: await getAccessToken(authType === 'azure-cli'),
+        clientId: process.env.SQL_MANAGED_IDENTITY_CLIENT_ID || '',
       },
     };
-  } else {
-    throw new Error(`Invalid DB_AUTH_TYPE: ${authType}`);
   }
 
   const config: SQLConfig = {
@@ -84,3 +51,6 @@ export async function connectToDB(): Promise<ConnectionPool> {
 
   return sql.connect(config);
 }
+
+// Set up a single connection pool to be re-used through application
+export const dbPool = connectToDB();

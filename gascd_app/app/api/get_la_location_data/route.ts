@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDB } from '../../../src/data/dbModule';
+import { dbPool } from '../../../src/data/dbModule';
 import logger from '@/utils/logger';
 
 export async function GET(req: NextRequest) {
   try {
-    const pool = await connectToDB();
+    const pool = await dbPool;
     const { searchParams } = new URL(req.url);
     let la_code = searchParams.get('la_code');
     const resultSet = await pool.request().input('la_code', la_code).query(`
@@ -20,7 +20,6 @@ export async function GET(req: NextRequest) {
         WHERE la_code = @la_code
       `);
 
-    await pool.close();
     return NextResponse.json(resultSet.recordset[0], { status: 200 });
   } catch (err) {
     logger.error('Error during database operations:', err);

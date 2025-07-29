@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDB } from '../../../src/data/dbModule';
+import { dbPool } from '../../../src/data/dbModule';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import QueryBuilderService from '@/services/query-builder/QueryBuilderService';
@@ -7,7 +7,7 @@ import logger from '@/utils/logger';
 
 export async function POST(req: NextRequest) {
   try {
-    const pool = await connectToDB();
+    const pool = await dbPool;
     const queryParams = await req.json();
 
     if (!queryParams.metric_ids) {
@@ -24,7 +24,6 @@ export async function POST(req: NextRequest) {
     const resultSet = await request_with_param.query(queryString);
 
     const rows: IndicatorDisplay[] = resultSet.recordset;
-    await pool.close();
     return NextResponse.json(rows);
   } catch (err) {
     logger.error('Error during database operations:', err);
@@ -38,13 +37,12 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    const pool = await connectToDB();
+    const pool = await dbPool;
     const resultSet = await pool
       .request()
       .query('SELECT * FROM metrics.metadata');
     const rows = resultSet.recordset;
 
-    await pool.close();
     return NextResponse.json(rows);
   } catch (err) {
     logger.error('Error during database operations:', err);
