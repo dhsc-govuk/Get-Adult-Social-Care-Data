@@ -34,7 +34,9 @@ export async function connectToDB(): Promise<ConnectionPool> {
       // (supports Azure CLI locally and Managed indentities in production)
       // https://learn.microsoft.com/en-gb/azure/developer/javascript/sdk/authentication/credential-chains#use-defaultazurecredential-for-flexibility
       type: 'azure-active-directory-default',
-      options: {},
+      options: {
+        clientId: process.env.SQL_MANAGED_IDENTITY_CLIENT_ID,
+      },
     };
   }
 
