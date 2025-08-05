@@ -2,6 +2,7 @@ import React from 'react';
 import './footer.scss';
 
 const Footer: React.FC = () => {
+  let feedback_url = process.env.NEXT_PUBLIC_FEEDBACK_FORM_LINK as string;
   return (
     <footer id="footer" className="govuk-footer">
       <div className="govuk-width-container">
@@ -37,6 +38,13 @@ const Footer: React.FC = () => {
                   Disclaimer
                 </a>
               </li>
+              {feedback_url && (
+                <li className="govuk-footer__inline-list-item">
+                  <a className="govuk-footer__link" href={feedback_url}>
+                    Feedback
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
           <div className="govuk-footer__meta-item">
@@ -44,7 +52,7 @@ const Footer: React.FC = () => {
               className="govuk-footer__link govuk-footer__copyright-logo"
               href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
             >
-              © Crown copyright
+              &copy; Crown copyright
             </a>
           </div>
         </div>

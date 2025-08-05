@@ -22,4 +22,14 @@ describe('Footer', () => {
     });
     expect(disclaimer).toHaveAttribute('href', '/disclaimer');
   });
+
+  it('renders feedback link', () => {
+    render(<Footer />);
+    const feedback = screen.getByRole('link', {
+      name: /feedback/i,
+    });
+    expect(feedback).toBeInTheDocument();
+    expect(feedback).toHaveAttribute('href', 'http://feedback.form.local/');
+    expect(feedback).toHaveClass('govuk-footer__link');
+  });
 });
