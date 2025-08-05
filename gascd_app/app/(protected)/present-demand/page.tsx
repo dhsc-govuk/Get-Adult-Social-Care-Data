@@ -15,6 +15,7 @@ import DownloadTableDataCSVLink from '@/components/metric-components/download-ta
 import { MetaData } from '@/data/interfaces/MetaData';
 import { Locations } from '@/data/interfaces/Locations';
 import { MSPItem, MSPLookup } from '@/helpers/msp/msp-lookup';
+import Feedback from '@/components/common/feedback/Feedback';
 
 const PresentDemandPage: React.FC = () => {
   const [filteredDemographicData, setFilteredDemographicData] = useState<
@@ -319,6 +320,10 @@ const PresentDemandPage: React.FC = () => {
     {
       link: '#market-position-statement',
       heading: 'Find more information on your local care market',
+    },
+    {
+      link: '#feedback',
+      heading: 'Give your feedback',
     },
   ];
 
@@ -658,6 +663,11 @@ const PresentDemandPage: React.FC = () => {
                   challenges in the sector, such as funding pressures
                 </li>
               </ul>
+
+              <div className="govuk-!-margin-top-9">
+                <Feedback />
+              </div>
+
               <details className="govuk-details govuk-!-margin-top-9">
                 <summary className="govuk-details__summary">
                   <span className="govuk-details__summary-text">

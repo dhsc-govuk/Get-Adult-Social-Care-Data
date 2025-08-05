@@ -8,6 +8,7 @@ import PresentDemandService from '@/services/present-demand/presentDemandService
 import { Locations } from '@/data/interfaces/Locations';
 import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
 import LogService from '@/services/logger/logService';
+import Feedback from '@/components/common/feedback/Feedback';
 
 export default function PopulationAgePage() {
   const { data: session, status } = useSession();
@@ -287,6 +288,14 @@ export default function PopulationAgePage() {
                 </a>
               </li>
             </ul>
+          </div>
+        </div>
+
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <div className="govuk-!-margin-top-9">
+              <Feedback />
+            </div>
           </div>
         </div>
       </Layout>

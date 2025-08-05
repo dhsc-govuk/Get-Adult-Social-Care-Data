@@ -20,6 +20,7 @@ import { useRouter } from 'next/navigation';
 import TableService from '@/services/Table/TableService';
 import SmartInsights from '@/components/indicator-components/SmartInsights';
 import { Locations } from '@/data/interfaces/Locations';
+import Feedback from '@/components/common/feedback/Feedback';
 
 const TotalBedsPage: React.FC = () => {
   const router = useRouter();
@@ -268,6 +269,10 @@ const TotalBedsPage: React.FC = () => {
     ...(session?.user.smartInsights
       ? [{ link: '#smart-insights', heading: 'Smart insights (experimental)' }]
       : []),
+    {
+      link: '#feedback',
+      heading: 'Give your feedback',
+    },
   ];
 
   return (
@@ -356,6 +361,10 @@ const TotalBedsPage: React.FC = () => {
             ) : (
               <></>
             )}
+
+            <div className="govuk-!-margin-top-9">
+              <Feedback />
+            </div>
 
             <details className="govuk-details govuk-!-margin-top-9">
               <summary className="govuk-details__summary">
