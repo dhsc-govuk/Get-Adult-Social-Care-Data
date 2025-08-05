@@ -63,7 +63,7 @@ stages:
           - checkout: self
           - task: NodeTool@0
             inputs:
-              versionSpec: "22.17.0"
+              versionSpec: "24.4.1"
           - script: npm ci
             displayName: install dependencies
             workingDirectory: gascd_app
