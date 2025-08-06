@@ -2,6 +2,11 @@
 # Based on the recommended docker/nextjs setup:
 # https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
 
+# Production dockerfile
+# Used by:
+# - Azure devops pipeline for building images on Azure
+# - Local development docker-compose for dev/testing
+
 FROM node:24.4.1-alpine AS base
 
 # Install dependencies only when needed
