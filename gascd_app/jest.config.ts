@@ -25,6 +25,7 @@ const config: Config = {
   coveragePathIgnorePatterns: [
     '/app/\\(protected\\)/help/',
     '/src/data/types/govuk-frontend.d.ts',
+    '/src/utils/axe.ts',
   ],
   // todo enable
   // coverageThreshold: {
