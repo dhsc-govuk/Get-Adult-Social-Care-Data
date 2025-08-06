@@ -1,10 +1,8 @@
 import React from 'react';
 import './footer.scss';
-import { FALLBACK_FEEDBACK_URL } from '../feedback/Feedback';
 
 const Footer: React.FC = () => {
-  let feedback_url =
-    process.env.NEXT_PUBLIC_FEEDBACK_FORM_LINK || FALLBACK_FEEDBACK_URL;
+  let feedback_url = process.env.NEXT_PUBLIC_FEEDBACK_FORM_LINK;
   return (
     <footer id="footer" className="govuk-footer">
       <div className="govuk-width-container">

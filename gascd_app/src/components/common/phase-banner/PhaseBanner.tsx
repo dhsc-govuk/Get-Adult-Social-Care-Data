@@ -1,14 +1,8 @@
 import Link from 'next/link';
 import React from 'react';
-import { FALLBACK_FEEDBACK_URL } from '../feedback/Feedback';
 
 const PhaseBanner: React.FC = () => {
-  let feedback_url =
-    process.env.NEXT_PUBLIC_FEEDBACK_FORM_LINK || FALLBACK_FEEDBACK_URL;
-  // XXX work out why this is sometimes not set
-  if (!feedback_url) {
-    feedback_url = 'https://forms.gle/z3f2Zx9Uuuohwkao7';
-  }
+  let feedback_url = process.env.NEXT_PUBLIC_FEEDBACK_FORM_LINK;
   return (
     <div className="govuk-phase-banner">
       <p className="govuk-phase-banner__content">
@@ -18,7 +12,7 @@ const PhaseBanner: React.FC = () => {
         <span className="govuk-phase-banner__text">
           This is a new service. Help us improve it and{' '}
           <Link
-            href={feedback_url ?? ''}
+            href={feedback_url || ''}
             className="govuk-link"
             target="_blank"
           >
