@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import HomePage from '../../app/(protected)/home/page';
+import Home from '../../app/page';
 import { renderWithSession } from '@/test-utils/test-utils';
 
 describe('HomePage', () => {
@@ -35,5 +36,15 @@ describe('HomePage', () => {
     });
     expect(linkElement2).toBeInTheDocument();
     expect(linkElement2).toHaveAttribute('href', '/population-age');
+  });
+});
+
+describe('Home', () => {
+  it('Should redirect correctly', () => {
+    const home_render = () => {
+      render(<Home />);
+    };
+    // XXX Ideally in future this would test the actual routing
+    expect(home_render).toThrow('NEXT_REDIRECT');
   });
 });
