@@ -1,3 +1,5 @@
+# Local development docker compose for the frontend
+# (only used for development/testing at the moment)
 services:
     app:
         container_name: gascd_app

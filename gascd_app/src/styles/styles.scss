@@ -88,3 +88,19 @@ p, ul, ol {
 .app-card__heading {
   color: #005ea5;
 }
+
+/* Component used on GOV.UK to distinguish a section needing focus (e.g. feedback) */
+.call-to-action {
+  margin: 0 0 20px 0;
+  background-color: #f3f2f1;
+  padding: 30px;
+  padding-bottom: 10px;
+}
+@media print {
+  .call-to-action {
+    background: none;
+    border: 1pt solid #b1b4b6;
+    padding: 15px;
+    margin: 15px 0;
+  }
+}

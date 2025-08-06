@@ -8,6 +8,7 @@ import PresentDemandService from '@/services/present-demand/presentDemandService
 import { Locations } from '@/data/interfaces/Locations';
 import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
 import LogService from '@/services/logger/logService';
+import Feedback from '@/components/common/feedback/Feedback';
 
 export default function PopulationAgePage() {
   const { data: session, status } = useSession();
@@ -289,6 +290,32 @@ export default function PopulationAgePage() {
             </ul>
           </div>
         </div>
+
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <div className="govuk-!-margin-top-9">
+              <Feedback />
+            </div>
+          </div>
+        </div>
+
+        <details className="govuk-details govuk-!-margin-top-9">
+          <summary className="govuk-details__summary">
+            <span className="govuk-details__summary-text">
+              Get help with this page
+            </span>
+          </summary>
+          <div className="govuk-details__text">
+            If you have any issues using this service, email{' '}
+            <a
+              href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
+              className="govuk-link"
+            >
+              getadultsocialcaredata.team@dhsc.gov.uk
+            </a>
+            .
+          </div>
+        </details>
       </Layout>
     </>
   );

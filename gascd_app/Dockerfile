@@ -2,6 +2,11 @@
 # Based on the recommended docker/nextjs setup:
 # https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
 
+# Production dockerfile
+# Used by:
+# - Azure devops pipeline for building images on Azure
+# - Local development docker-compose for dev/testing
+
 FROM node:24.4.1-alpine AS base
 
 # Install dependencies only when needed
@@ -41,9 +46,6 @@ RUN \
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
-
-# Uncomment the following line in case you want to disable telemetry during runtime.
-# ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
