@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
 import Feedback from '../../../src/components/common/feedback/Feedback';
