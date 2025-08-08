@@ -1,6 +1,7 @@
 // Support for in-browser app insights integration
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { createBrowserHistory } from 'history';
+import LogService from '@/services/logger/logService';
 
 let appInsights: ApplicationInsights | null = null;
 let browserHistory: any;
@@ -14,7 +15,14 @@ export const initializeAppInsights = (connectionString: string) => {
         enableAutoRouteTracking: true,
       },
     });
-    appInsights.loadAppInsights();
+    try {
+      appInsights.loadAppInsights();
+    } catch (err) {
+      // Most likely a connection string issue. Clear the app insights setup and re-throw
+      appInsights = null;
+      LogService.logEvent('Error loading browser app insights' + err);
+      return;
+    }
 
     // Manually track route changes using the history listener
     browserHistory.listen(({ location }: any) => {
