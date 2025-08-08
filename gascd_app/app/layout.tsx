@@ -13,15 +13,15 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const webInsightsConnectionString =
-    process.env.WEB_APPLICATIONINSIGHTS_CONNECTION_STRING || '';
+  const browserInsightsConnectionString =
+    process.env.BROWSER_APPLICATIONINSIGHTS_CONNECTION_STRING || '';
   return (
     <html lang="en" className="govuk-template--rebranded">
       <Axe />
       <NextAuthSessionProvider>
         <body className="govuk-frontend-supported govuk-template__body">
           <AppInsightsInitializer
-            connectionString={webInsightsConnectionString}
+            connectionString={browserInsightsConnectionString}
           />
           {children}
         </body>

@@ -7,6 +7,7 @@ interface AppInsightsInitializerProps {
   connectionString: string;
 }
 
+// Sets up the in-browser app insights integration
 export function AppInsightsInitializer({
   connectionString,
 }: AppInsightsInitializerProps) {
@@ -14,5 +15,5 @@ export function AppInsightsInitializer({
     initializeAppInsights(connectionString);
   }, [connectionString]);
 
-  return null; // This component doesn't render anything, it just initializes App Insights
+  return null;
 }
