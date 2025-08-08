@@ -1,10 +1,12 @@
 // Support for in-browser app insights integration
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { createBrowserHistory } from 'history';
+import { ReactPlugin } from '@microsoft/applicationinsights-react-js';
 import LogService from '@/services/logger/logService';
 
 let appInsights: ApplicationInsights | null = null;
 let browserHistory: any;
+let reactPlugin = new ReactPlugin();
 
 export const initializeAppInsights = (connectionString: string) => {
   if (connectionString && !appInsights) {
@@ -12,7 +14,10 @@ export const initializeAppInsights = (connectionString: string) => {
     appInsights = new ApplicationInsights({
       config: {
         connectionString: connectionString,
-        enableAutoRouteTracking: true,
+        extensions: [reactPlugin],
+        extensionConfig: {
+          [reactPlugin.identifier]: { history: browserHistory },
+        },
       },
     });
     try {
@@ -23,14 +28,6 @@ export const initializeAppInsights = (connectionString: string) => {
       LogService.logEvent('Error loading browser app insights' + err);
       return;
     }
-
-    // Manually track route changes using the history listener
-    browserHistory.listen(({ location }: any) => {
-      if (appInsights) {
-        appInsights.trackPageView({ uri: location.pathname });
-      }
-    });
-
     console.log('Application Insights initialized.');
   }
 };

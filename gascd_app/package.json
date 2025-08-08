@@ -23,6 +23,7 @@
   "dependencies": {
     "@axe-core/playwright": "^4.10.1",
     "@azure/monitor-opentelemetry": "^1.11.1",
+    "@microsoft/applicationinsights-react-js": "^19.3.7",
     "@microsoft/applicationinsights-web": "^3.3.9",
     "@next/eslint-plugin-next": "^15.2.4",
     "@opentelemetry/auto-instrumentations-node": "^0.62.0",
