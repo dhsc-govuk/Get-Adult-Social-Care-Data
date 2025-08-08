@@ -64,6 +64,7 @@ const PresentDemandLocations: React.FC = () => {
   return (
     <>
       <Layout
+        title="Edit locations"
         autoSpaceMainContent={false}
         showLoginInformation={true}
         currentPage="present-demand-locations"

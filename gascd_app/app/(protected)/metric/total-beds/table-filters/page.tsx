@@ -40,7 +40,11 @@ const TableFiltersPage: React.FC = () => {
 
   return (
     <>
-      <Layout showLoginInformation={true} currentPage={'/total-beds/filters'}>
+      <Layout
+        title="Total beds per 100,000 population"
+        showLoginInformation={true}
+        currentPage={'/total-beds/filters'}
+      >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
             <span className="govuk-caption-m">

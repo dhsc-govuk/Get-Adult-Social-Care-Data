@@ -5,8 +5,8 @@ const DisclaimerPage: React.FC = () => {
   return (
     <>
       <Layout
-        showLoginInformation={false}
         title="Disclaimer"
+        showLoginInformation={false}
         currentPage="disclaimer"
         showNavBar={false}
       >

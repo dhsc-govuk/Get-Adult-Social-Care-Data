@@ -14,12 +14,11 @@ import { focusMainContent } from '../../../helpers/ManageFocus';
 import PhaseBanner from '../phase-banner/PhaseBanner';
 import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
 import { Breadcrumb } from '../../../data/interfaces/Breadcrumb';
-// import LoginInformation from '../../util-components/login-information/LoginInformation';
 import Navbar from '../navbar/Navbar';
 import { Session } from 'next-auth';
 
 type Props = {
-  title?: string;
+  title: string;
   children?: ReactNode;
   breadcrumbs?: Array<Breadcrumb>;
   autoSpaceMainContent?: boolean;
@@ -42,25 +41,17 @@ const Layout: React.FC<Props> = ({
   session,
 }) => {
   const title_suffix = 'Get adult social care data - GOV.UK';
-  const full_title = title && title + ' - ' + title_suffix;
+  const full_title = title + ' - ' + title_suffix;
   const layoutRef = useRef<HTMLDivElement | null>(null);
   const mainRef = useRef<HTMLDivElement | null>(null);
-  const [pageTitle, setPageTitle] = useState(full_title || title_suffix);
 
   useEffect(() => {
     initAll();
-
-    if (!title) {
-      const titleElement = document.querySelector('h1');
-      if (titleElement) {
-        setPageTitle(titleElement.innerText + ' - ' + title_suffix);
-      }
-    }
-  }, [children]);
+  });
 
   return (
     <>
-      <title>{pageTitle}</title>
+      <title>{full_title}</title>
       <div ref={layoutRef} tabIndex={-1} id="layout">
         <a
           href="#main-content"

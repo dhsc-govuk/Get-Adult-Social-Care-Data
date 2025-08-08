@@ -8,6 +8,7 @@ const BedsPer100000AdultPopulation: React.FC = () => {
   return (
     <>
       <Layout
+        title="Indicator definition: Adult social care beds per 100,000 adult population"
         showLoginInformation={false}
         backURL="/present-demand"
         currentPage={'beds per 100,000 adult population'}

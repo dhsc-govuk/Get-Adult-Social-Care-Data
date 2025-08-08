@@ -3,6 +3,7 @@ import Layout from '@/components/common/layout/Layout';
 function NotFound() {
   return (
     <Layout
+      title="Page not found"
       showLoginInformation={false}
       currentPage="not-found"
       showNavBar={true}

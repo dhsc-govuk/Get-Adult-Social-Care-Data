@@ -8,6 +8,7 @@ const DisabilyPrevalence: React.FC = () => {
   return (
     <>
       <Layout
+        title="Indicator definition: Disability prevalence"
         showLoginInformation={false}
         currentPage={'disabilty prevalence'}
         backURL="/present-demand"
