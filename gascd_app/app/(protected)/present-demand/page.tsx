@@ -68,7 +68,14 @@ const PresentDemandPage: React.FC = () => {
     'perc_75over',
     'perc_85over',
     'perc_population_disability_disabled_total',
-    'dementia_register_65over_per100k',
+    'perc_households_deprivation_deprived_total',
+    'perc_household_ownership_total',
+    'perc_households_one_person_total',
+    'perc_unpaid_care_provider_total',
+    'perc_general_health_total',
+    'learning_disabilty_prevalence',
+    'dementia_estimated_diagnosis_rate_65over',
+    'dementia_qof_prevalence_65over',
   ];
 
   const bedsMetricIds = [
@@ -81,17 +88,6 @@ const PresentDemandPage: React.FC = () => {
     'median_bed_count_total',
     'median_occupancy_total',
   ];
-
-  const demographicRowHeaders = {
-    total_population: 'Population',
-    perc_18_64: 'Aged 18-65',
-    perc_65over: 'Aged 65 and over',
-    perc_75over: 'Aged 75 and over',
-    perc_85over: 'Aged 85 and over',
-    perc_population_disability_disabled_total: 'Disability prevalence',
-    dementia_register_65over_per100k:
-      'Registered dementia patients per 100,000',
-  };
 
   const bedRowHeaders = {
     bedcount_per_100000_adults_total: 'Beds per 100,000 adult population',
@@ -108,15 +104,11 @@ const PresentDemandPage: React.FC = () => {
     median_occupancy_total: 'occupancy_rate_total',
   };
 
-  const metrics_require_percentage = [
-    'perc_18_64',
-    'perc_65over',
-    'perc_75over',
-    'perc_85over',
-    'perc_population_disability_disabled_total',
-    'median_occupancy_total',
-    'median_occupancy_total',
-  ];
+  const cleanupLocationIDs = (location_ids_to_clean: string[]) => {
+    // XXX Ideally the functions using this would use a different list of location IDs which didn't have
+    // the 'Filter' word crowbarred into it from the Present Demand service.
+    return location_ids_to_clean.filter((item) => item !== 'Filter');
+  };
 
   useEffect(() => {
     const fetchCareProviderLocationName = async () => {
@@ -206,7 +198,7 @@ const PresentDemandPage: React.FC = () => {
     if (locationIds.length > 0) {
       setDemographicQuery(() => ({
         metric_ids: demographicMetricIds,
-        location_ids: locationIds,
+        location_ids: cleanupLocationIDs(locationIds),
       }));
     }
   }, [locationIds]);
@@ -215,7 +207,7 @@ const PresentDemandPage: React.FC = () => {
     if (locationIds.length > 0) {
       setBedsQuery(() => ({
         metric_ids: bedsMetricIds,
-        location_ids: locationIds,
+        location_ids: cleanupLocationIDs(locationIds),
       }));
     }
   }, [locationIds]);
@@ -230,7 +222,7 @@ const PresentDemandPage: React.FC = () => {
     if (locationIds.length) {
       setCareProviderData2Query(() => ({
         metric_ids: careProviderMetricIds2,
-        location_ids: locationIds,
+        location_ids: cleanupLocationIDs(locationIds),
       }));
     }
   }, [CPLocationId, locationIds]);
@@ -327,6 +319,20 @@ const PresentDemandPage: React.FC = () => {
     },
   ];
 
+  // Re-usable way to create multiple demographic tables
+  // from the same data, but displaying different rows
+  const renderDemographicDataTable = (headers: {}) => {
+    return (
+      <DataTable
+        columnHeaders={locationNames}
+        rowHeaders={headers}
+        data={filteredDemographicData}
+        showCareProvider={false}
+        percentageRows={metricDateType}
+      ></DataTable>
+    );
+  };
+
   return (
     <>
       <Layout
@@ -408,24 +414,139 @@ const PresentDemandPage: React.FC = () => {
             </div>
             <div className="govuk-!-margin-bottom-9">
               <h3 className="govuk-heading-s">
-                Explore the data: demographic factors
+                [Table comparing population size and age in {locationNames[1]}{' '}
+                to regional and national statistics]
               </h3>
-              <DataTable
-                columnHeaders={locationNames}
-                rowHeaders={demographicRowHeaders}
-                data={filteredDemographicData}
-                showCareProvider={false}
-                percentageRows={metricDateType}
-              ></DataTable>
-              <DownloadTableDataCSVLink
-                data={TableService.removeLoadDateTime(filteredDemographicData)}
-                filename="Demographic factors"
-                xLabel=""
-              ></DownloadTableDataCSVLink>
+              {renderDemographicDataTable({
+                total_population: 'Total adult population',
+                perc_18_64: 'Aged 18-65',
+                perc_65over: 'Aged 65 and over',
+                perc_75over: 'Aged 75 and over',
+                perc_85over: 'Aged 85 and over',
+              })}
+              <p>
+                <DownloadTableDataCSVLink
+                  data={TableService.removeLoadDateTime(
+                    filteredDemographicData
+                  )}
+                  filename="Demographic factors"
+                  xLabel=""
+                ></DownloadTableDataCSVLink>
+              </p>
               <p className="govuk-body govuk-!-margin-bottom-9">
-                Source: {demographicDataSource}
+                [Source: Population estimates from the Office for National
+                Statistics (ONS)]
                 <br />
                 Data correct as of {demographicLatestDate}
+              </p>
+            </div>
+
+            <div className="govuk-!-margin-bottom-9">
+              <h3 className="govuk-heading-s">
+                [Table comparing economic indicators in {locationNames[1]} to
+                regional and national statistics]
+              </h3>
+              {renderDemographicDataTable({
+                perc_household_ownership_total:
+                  '[Households where the property is owned outright (with no mortgage)]',
+                perc_households_deprivation_deprived_total:
+                  "[Households that are 'deprived in 4 dimensions']",
+              })}
+              <details className="govuk-details">
+                <summary className="govuk-details__summary">
+                  <span className="govuk-details__summary-text">
+                    [What &quot;deprived in 4 dimensions&quot; means]
+                  </span>
+                </summary>
+                <div className="govuk-details__text">
+                  [A household is &quot;deprived in 4 dimensions&quot; if all
+                  the following apply:<p></p>
+                  <ul className="govuk-list govuk-list--bullet govuk-list--spaced">
+                    <li>
+                      no one in the household has at least level 2 education and
+                      no one aged 16 to 18 years is a full-time student
+                    </li>
+                    <li>
+                      any household member is unemployed or economically
+                      inactive due to long-term sickness or disability, and is
+                      not a full-time student
+                    </li>
+                    <li>any household member is disabled</li>
+                    <li>
+                      the household&apos;s accommodation is overcrowded, in a
+                      shared dwelling or has no central heating]
+                    </li>
+                  </ul>
+                </div>
+              </details>
+              <p className="govuk-body govuk-!-margin-bottom-9">
+                [Source: Census 2021 from the Office for National Statistics
+                (ONS)]
+                <br />
+                Data correct as of XXX
+              </p>
+            </div>
+
+            <div className="govuk-!-margin-bottom-9">
+              <h3 className="govuk-heading-s">
+                [Table comparing the age of one-person households and unpaid
+                care provision in {locationNames[1]} to regional and national
+                statistics]
+              </h3>
+              {renderDemographicDataTable({
+                perc_households_one_person_total:
+                  'Percentage of one-person households where the person is aged 65 or over',
+                perc_unpaid_care_provider_total:
+                  'Percentage of people aged 5 or over who provide unpaid care',
+              })}
+              <p className="govuk-body govuk-!-margin-bottom-9">
+                [Source: Census 2021 from the Office for National Statistics
+                (ONS)]
+                <br />
+                Data correct as of XXX
+              </p>
+            </div>
+
+            <div className="govuk-!-margin-bottom-9">
+              <h3 className="govuk-heading-s">
+                [Table comparing general health reports and disability
+                prevalence in {locationNames[1]} to regional and national
+                statistics]
+              </h3>
+              {renderDemographicDataTable({
+                perc_general_health_total:
+                  '[People who reported being in bad or very bad health]',
+                perc_population_disability_disabled_total:
+                  '[Disability prevalence – people who reported a long-term physical or mental health condition or illness that limits day-to-day activities]',
+                learning_disabilty_prevalence:
+                  '[Learning disability prevalence – all ages, as a proportion of people registered at GP practices]',
+              })}
+              <p className="govuk-body govuk-!-margin-bottom-9">
+                [Sources: Census 2021 from the Office for National Statistics
+                (ONS), Fingertips public health profiles from the Department of
+                Health and Social Care (DHSC)]
+                <br />
+                Data correct as of XXX
+              </p>
+            </div>
+
+            <div className="govuk-!-margin-bottom-9">
+              <h3 className="govuk-heading-s">
+                [Table comparing recorded dementia prevalence and dementia
+                estimates in {locationNames[1]} to regional and national
+                statistics]
+              </h3>
+              {renderDemographicDataTable({
+                dementia_qof_prevalence_65over:
+                  '[Dementia prevalence – all ages, as a proportion of people registered at GP practices]',
+                dementia_estimated_diagnosis_rate_65over:
+                  '[Estimated number of people aged 65 and over with dementia, per 100,000 adult population]',
+              })}
+              <p className="govuk-body govuk-!-margin-bottom-9">
+                [Source: Fingertips public health profiles from the Department
+                of Health and Social Care (DHSC)]
+                <br />
+                Data correct as of XXX
               </p>
             </div>
 
