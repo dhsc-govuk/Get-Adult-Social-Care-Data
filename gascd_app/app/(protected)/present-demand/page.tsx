@@ -303,10 +303,6 @@ const PresentDemandPage: React.FC = () => {
 
   const contentItems = [
     { link: '#summary', heading: 'Introduction' },
-    {
-      link: '#definition',
-      heading: 'Indicator definition and supporting information',
-    },
     { link: '#selected-locations', heading: 'Your selected locations' },
     { link: '#drivers', heading: 'Drivers of population needs' },
     {
@@ -316,6 +312,10 @@ const PresentDemandPage: React.FC = () => {
     {
       link: '#capacity-cp',
       heading: 'Current capacity - care homes: care provider-level insights',
+    },
+    {
+      link: '#definition',
+      heading: 'Indicator definitions and supporting information',
     },
     {
       link: '#market-position-statement',
@@ -359,61 +359,7 @@ const PresentDemandPage: React.FC = () => {
                 find insights into current capacity to meet those needs.
               </p>
             </div>
-            <div className="govuk-!-margin-bottom-9">
-              <h2 className="govuk-heading-m" id="definition">
-                Indicator definition and supporting information
-              </h2>
-              <p className="govuk-body">
-                Find detailed information about each indicator, including data
-                definitions, data source, update schedule, and any limitations
-                to be aware of before using the data.
-              </p>
-              <ul className="govuk-list govuk-list--bullet">
-                <li>
-                  <a href="/help/population-age" className="govuk-link">
-                    Population age
-                  </a>
-                </li>
-                <li>
-                  <a href="/help/disability-prevalence" className="govuk-link">
-                    Population disability
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/help/beds-per-100000-adult-population"
-                    className="govuk-link"
-                  >
-                    Adult social care beds per 100,000 adult population
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/help/percentage-beds-occupied"
-                    className="govuk-link"
-                  >
-                    Percentage of adult social care beds occupied
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/help/beds-care-provider-location"
-                    className="govuk-link"
-                  >
-                    Number of adult social care beds in care provider location
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/help/percentage-beds-occupied-care-provider-location"
-                    className="govuk-link"
-                  >
-                    Percentage of adult social care beds occupied in care
-                    provider location
-                  </a>
-                </li>
-              </ul>
-            </div>
+
             <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-m" id="selected-locations">
                 Your selected locations
@@ -437,6 +383,7 @@ const PresentDemandPage: React.FC = () => {
                 </div>
               </dl>
             </div>
+
             <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-m" id="drivers">
                 Drivers of population needs
@@ -553,6 +500,7 @@ const PresentDemandPage: React.FC = () => {
                 Data correct as of {bedDataLatestDate}
               </p>
             </div>
+
             <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-m" id="capacity-cp">
                 Current capacity - care homes: care provider-level insights
@@ -614,6 +562,65 @@ const PresentDemandPage: React.FC = () => {
                 <br />
                 Data correct as of {CPLatestDate}
               </p>
+            </div>
+
+            <div className="govuk-!-margin-bottom-9">
+              <h2 className="govuk-heading-m" id="definition">
+                Indicator definitions and supporting information
+              </h2>
+              <p className="govuk-body">
+                Find detailed information about each indicator, including data
+                definitions, data source, update schedule, and any limitations
+                to be aware of before using the data.
+              </p>
+              <ul className="govuk-list govuk-list--bullet">
+                <li>
+                  <a href="/help/population-age" className="govuk-link">
+                    Population age
+                  </a>
+                </li>
+                <li>
+                  <a href="/help/disability-prevalence" className="govuk-link">
+                    Population disability
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/help/beds-per-100000-adult-population"
+                    className="govuk-link"
+                  >
+                    Adult social care beds per 100,000 adult population
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/help/percentage-beds-occupied"
+                    className="govuk-link"
+                  >
+                    Percentage of adult social care beds occupied
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/help/beds-care-provider-location"
+                    className="govuk-link"
+                  >
+                    Number of adult social care beds in care provider location
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/help/percentage-beds-occupied-care-provider-location"
+                    className="govuk-link"
+                  >
+                    Percentage of adult social care beds occupied in care
+                    provider location
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="govuk-!-margin-bottom-9">
               <h2
                 className="govuk-heading-m govuk-!-margin-top-9"
                 id="market-position-statement"
