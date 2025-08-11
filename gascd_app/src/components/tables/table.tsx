@@ -48,12 +48,23 @@ const DataTable: React.FC<DataTableProps> = ({
   careProviderMedianMetrics,
   percentageRows,
 }) => {
+  const columnClass = (columnIndex: number) => {
+    if (columnIndex === 0) {
+      return 'govuk-table__header govuk-!-width-one-third';
+    } else {
+      return 'govuk-table__header';
+    }
+  };
   return (
     <table className="govuk-table">
       <thead className="govuk-table__head">
         <tr className="govuk-table__row">
           {columnHeaders.map((columnHeader, columnIndex) => (
-            <th key={columnIndex} scope="col" className="govuk-table__header">
+            <th
+              key={columnIndex}
+              scope="col"
+              className={columnClass(columnIndex)}
+            >
               {columnHeader}
             </th>
           ))}
