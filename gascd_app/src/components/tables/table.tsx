@@ -3,6 +3,7 @@ import { Indicator } from '@/data/interfaces/Indicator';
 import { MetaData } from '@/data/interfaces/MetaData';
 
 type DataTableProps = {
+  caption?: string;
   columnHeaders: string[];
   rowHeaders: Object;
   data: Indicator[];
@@ -41,6 +42,7 @@ const getFormattedDataPoint = (
 };
 
 const DataTable: React.FC<DataTableProps> = ({
+  caption,
   columnHeaders,
   rowHeaders,
   data,
@@ -57,6 +59,11 @@ const DataTable: React.FC<DataTableProps> = ({
   };
   return (
     <table className="govuk-table">
+      {caption && (
+        <caption className="govuk-table__caption govuk-table__caption--s govuk-!-margin-top-7">
+          {caption}
+        </caption>
+      )}
       <thead className="govuk-table__head">
         <tr className="govuk-table__row">
           {columnHeaders.map((columnHeader, columnIndex) => (

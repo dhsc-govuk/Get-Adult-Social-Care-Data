@@ -321,9 +321,10 @@ const PresentDemandPage: React.FC = () => {
 
   // Re-usable way to create multiple demographic tables
   // from the same data, but displaying different rows
-  const renderDemographicDataTable = (headers: {}) => {
+  const renderDemographicDataTable = (caption: string, headers: {}) => {
     return (
       <DataTable
+        caption={caption}
         columnHeaders={locationNames}
         rowHeaders={headers}
         data={filteredDemographicData}
@@ -390,7 +391,7 @@ const PresentDemandPage: React.FC = () => {
               </dl>
             </div>
 
-            <div className="govuk-!-margin-bottom-9">
+            <div>
               <h2 className="govuk-heading-m" id="drivers">
                 Drivers of population needs
               </h2>
@@ -412,18 +413,17 @@ const PresentDemandPage: React.FC = () => {
                 metric_Id="perc_65over"
               ></ConditionalText>
             </div>
-            <div className="govuk-!-margin-bottom-9">
-              <h3 className="govuk-heading-s">
-                [Table comparing population size and age in {locationNames[1]}{' '}
-                to regional and national statistics]
-              </h3>
-              {renderDemographicDataTable({
-                total_population: 'Total adult population',
-                perc_18_64: 'Aged 18-65',
-                perc_65over: 'Aged 65 and over',
-                perc_75over: 'Aged 75 and over',
-                perc_85over: 'Aged 85 and over',
-              })}
+            <div>
+              {renderDemographicDataTable(
+                `[Table comparing population size and age in ${locationNames[1]} to regional and national statistics]`,
+                {
+                  total_population: 'Total adult population',
+                  perc_18_64: 'Aged 18-65',
+                  perc_65over: 'Aged 65 and over',
+                  perc_75over: 'Aged 75 and over',
+                  perc_85over: 'Aged 85 and over',
+                }
+              )}
               <p>
                 <DownloadTableDataCSVLink
                   data={TableService.removeLoadDateTime(
@@ -433,7 +433,7 @@ const PresentDemandPage: React.FC = () => {
                   xLabel=""
                 ></DownloadTableDataCSVLink>
               </p>
-              <p className="govuk-body govuk-!-margin-bottom-9">
+              <p className="govuk-body">
                 [Source: Population estimates from the Office for National
                 Statistics (ONS)]
                 <br />
@@ -441,17 +441,16 @@ const PresentDemandPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="govuk-!-margin-bottom-9">
-              <h3 className="govuk-heading-s">
-                [Table comparing economic indicators in {locationNames[1]} to
-                regional and national statistics]
-              </h3>
-              {renderDemographicDataTable({
-                perc_household_ownership_total:
-                  '[Households where the property is owned outright (with no mortgage)]',
-                perc_households_deprivation_deprived_total:
-                  "[Households that are 'deprived in 4 dimensions']",
-              })}
+            <div>
+              {renderDemographicDataTable(
+                `[Table comparing economic indicators in ${locationNames[1]} to regional and national statistics]`,
+                {
+                  perc_household_ownership_total:
+                    '[Households where the property is owned outright (with no mortgage)]',
+                  perc_households_deprivation_deprived_total:
+                    "[Households that are 'deprived in 4 dimensions']",
+                }
+              )}
               <details className="govuk-details">
                 <summary className="govuk-details__summary">
                   <span className="govuk-details__summary-text">
@@ -479,7 +478,7 @@ const PresentDemandPage: React.FC = () => {
                   </ul>
                 </div>
               </details>
-              <p className="govuk-body govuk-!-margin-bottom-9">
+              <p className="govuk-body">
                 [Source: Census 2021 from the Office for National Statistics
                 (ONS)]
                 <br />
@@ -487,19 +486,17 @@ const PresentDemandPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="govuk-!-margin-bottom-9">
-              <h3 className="govuk-heading-s">
-                [Table comparing the age of one-person households and unpaid
-                care provision in {locationNames[1]} to regional and national
-                statistics]
-              </h3>
-              {renderDemographicDataTable({
-                perc_households_one_person_total:
-                  'Percentage of one-person households where the person is aged 65 or over',
-                perc_unpaid_care_provider_total:
-                  'Percentage of people aged 5 or over who provide unpaid care',
-              })}
-              <p className="govuk-body govuk-!-margin-bottom-9">
+            <div>
+              {renderDemographicDataTable(
+                `[Table comparing the age of one-person households and unpaid care provision in ${locationNames[1]} to regional and national statistics]`,
+                {
+                  perc_households_one_person_total:
+                    'Percentage of one-person households where the person is aged 65 or over',
+                  perc_unpaid_care_provider_total:
+                    'Percentage of people aged 5 or over who provide unpaid care',
+                }
+              )}
+              <p className="govuk-body">
                 [Source: Census 2021 from the Office for National Statistics
                 (ONS)]
                 <br />
@@ -507,21 +504,19 @@ const PresentDemandPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="govuk-!-margin-bottom-9">
-              <h3 className="govuk-heading-s">
-                [Table comparing general health reports and disability
-                prevalence in {locationNames[1]} to regional and national
-                statistics]
-              </h3>
-              {renderDemographicDataTable({
-                perc_general_health_total:
-                  '[People who reported being in bad or very bad health]',
-                perc_population_disability_disabled_total:
-                  '[Disability prevalence – people who reported a long-term physical or mental health condition or illness that limits day-to-day activities]',
-                learning_disabilty_prevalence:
-                  '[Learning disability prevalence – all ages, as a proportion of people registered at GP practices]',
-              })}
-              <p className="govuk-body govuk-!-margin-bottom-9">
+            <div>
+              {renderDemographicDataTable(
+                `[Table comparing general health reports and disability prevalence in ${locationNames[1]} to regional and national statistics]`,
+                {
+                  perc_general_health_total:
+                    '[People who reported being in bad or very bad health]',
+                  perc_population_disability_disabled_total:
+                    '[Disability prevalence – people who reported a long-term physical or mental health condition or illness that limits day-to-day activities]',
+                  learning_disabilty_prevalence:
+                    '[Learning disability prevalence – all ages, as a proportion of people registered at GP practices]',
+                }
+              )}
+              <p className="govuk-body">
                 [Sources: Census 2021 from the Office for National Statistics
                 (ONS), Fingertips public health profiles from the Department of
                 Health and Social Care (DHSC)]
@@ -530,19 +525,50 @@ const PresentDemandPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="govuk-!-margin-bottom-9">
-              <h3 className="govuk-heading-s">
-                [Table comparing recorded dementia prevalence and dementia
-                estimates in {locationNames[1]} to regional and national
-                statistics]
-              </h3>
-              {renderDemographicDataTable({
-                dementia_qof_prevalence:
-                  '[Dementia prevalence – all ages, as a proportion of people registered at GP practices]',
-                dementia_estimated_diagnosis_rate_65over:
-                  "[Estimated 'dementia diagnosis rate' – aged 65 and over",
-              })}
-              <p className="govuk-body govuk-!-margin-bottom-9">
+            <div>
+              {renderDemographicDataTable(
+                `[Table comparing dementia prevalence and dementia estimates in ${locationNames[1]} to regional and national statistics]`,
+                {
+                  dementia_qof_prevalence:
+                    '[Dementia prevalence – all ages, as a proportion of people registered at GP practices]',
+                  dementia_estimated_diagnosis_rate_65over:
+                    "[Estimated 'dementia diagnosis rate' – aged 65 and over",
+                }
+              )}
+              <details className="govuk-details">
+                <summary className="govuk-details__summary">
+                  <span className="govuk-details__summary-text">
+                    [What &lsquo;dementia diagnosis rate&rsquo; means]
+                  </span>
+                </summary>
+                <div className="govuk-details__text">
+                  [The &lsquo;dementia diagnosis rate&rsquo; is found by
+                  dividing the number of people with a formal diagnosis of
+                  dementia by the estimated number of people expected to have
+                  dementia.<p></p>
+                  <p>
+                    The estimated number of people expected to have dementia is
+                    worked out by combining:
+                  </p>
+                  <ul className="govuk-list govuk-list--bullet">
+                    <li>
+                      the characteristics of the local registered population
+                    </li>
+                    <li>studies on dementia prevalence by age and sex</li>
+                  </ul>
+                  <a
+                    href="https://fingertips.phe.org.uk/dementia#page/6/gid/1938132811/ati/15/iid/92949/age/27/sex/4/cat/-1/ctp/-1/yrr/1/cid/4/tbm/1"
+                    className="govuk-link"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Details on how &lsquo;dementia diagnosis rate&rsquo; is
+                    calculated (opens in new tab).
+                  </a>
+                  ]<p></p>
+                </div>
+              </details>
+              <p className="govuk-body">
                 [Source: Fingertips public health profiles from the Department
                 of Health and Social Care (DHSC)]
                 <br />
@@ -551,7 +577,10 @@ const PresentDemandPage: React.FC = () => {
             </div>
 
             <div className="">
-              <h2 className="govuk-heading-m" id="capacity-la">
+              <h2
+                className="govuk-heading-m govuk-!-margin-top-9"
+                id="capacity-la"
+              >
                 Current capacity - care homes: local authority-level insights
               </h2>
               <p className="govuk-body">
@@ -599,11 +628,8 @@ const PresentDemandPage: React.FC = () => {
                   Explore data
                 </button>
               </form>
-              <h3 className="govuk-heading-s">
-                Explore the data: adult social care beds per 100,000 adult
-                population and occupancy
-              </h3>
               <DataTable
+                caption={`[Table comparing provision of adult social care beds and occupancy levels in ${locationNames[1]} to regional and national statistics]`}
                 columnHeaders={locationNames}
                 rowHeaders={bedRowHeaders}
                 data={filteredBedData}
@@ -662,10 +688,8 @@ const PresentDemandPage: React.FC = () => {
                 of beds occupied is shown as 0. For details on suppression of
                 data, see indicator definition and supporting information.
               </p>
-              <h3 className="govuk-heading-s">
-                Explore the data: care providers in {locationNames[1]}
-              </h3>
               <DataTable
+                caption={`[Table comparing provision at your care home to median numbers of care beds at local, regional and national levels]`}
                 columnHeaders={locationNamesCP}
                 rowHeaders={careProviderRowHeaders}
                 data={finalCpData}
