@@ -75,7 +75,7 @@ const PresentDemandPage: React.FC = () => {
     'perc_general_health_total',
     'learning_disabilty_prevalence',
     'dementia_estimated_diagnosis_rate_65over',
-    'dementia_qof_prevalence_65over',
+    'dementia_qof_prevalence',
   ];
 
   const bedsMetricIds = [
@@ -537,10 +537,10 @@ const PresentDemandPage: React.FC = () => {
                 statistics]
               </h3>
               {renderDemographicDataTable({
-                dementia_qof_prevalence_65over:
+                dementia_qof_prevalence:
                   '[Dementia prevalence – all ages, as a proportion of people registered at GP practices]',
                 dementia_estimated_diagnosis_rate_65over:
-                  '[Estimated number of people aged 65 and over with dementia, per 100,000 adult population]',
+                  "[Estimated 'dementia diagnosis rate' – aged 65 and over",
               })}
               <p className="govuk-body govuk-!-margin-bottom-9">
                 [Source: Fingertips public health profiles from the Department
