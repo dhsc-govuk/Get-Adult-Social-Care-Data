@@ -1,3 +1,18 @@
+export function extractTableCellText(table: HTMLTableElement): string[][] {
+  const rows = table.rows;
+  const cellTexts: any[] = [];
+
+  for (let row of rows) {
+    const rowCells: string[] = [];
+    for (let cell of row.cells) {
+      rowCells.push(cell.textContent || '');
+    }
+    cellTexts.push(rowCells);
+  }
+
+  return cellTexts;
+}
+
 const createCSVHeaders = (dataRows: any[], xLabel: string): string => {
   const headers = Object.keys(dataRows[0])
     .filter((key) => key !== 'metric')
@@ -5,7 +20,7 @@ const createCSVHeaders = (dataRows: any[], xLabel: string): string => {
   return headers.join(',') + '\r\n';
 };
 
-export function generateCSVRows(dataRows: any[]): string {
+function generateCSVRows(dataRows: any[]): string {
   return (
     dataRows
       .map((dataRow) => {
@@ -18,14 +33,11 @@ export function generateCSVRows(dataRows: any[]): string {
   );
 }
 
-export function createCSVBlob(csvData: string): Blob {
+function createCSVBlob(csvData: string): Blob {
   return new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
 }
 
-export function createDownloadLink(
-  blob: Blob,
-  filename: string
-): HTMLAnchorElement {
+function createDownloadLink(blob: Blob, filename: string): HTMLAnchorElement {
   const blobUrl = URL.createObjectURL(blob);
   const downloadLink = document.createElement('a');
   downloadLink.href = blobUrl;
@@ -34,7 +46,7 @@ export function createDownloadLink(
   return downloadLink;
 }
 
-export function initiateDownload(downloadLink: HTMLAnchorElement) {
+function initiateDownload(downloadLink: HTMLAnchorElement) {
   document.body.appendChild(downloadLink);
   downloadLink.click();
   document.body.removeChild(downloadLink);

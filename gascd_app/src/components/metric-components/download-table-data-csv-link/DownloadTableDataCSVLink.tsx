@@ -1,5 +1,8 @@
 import React, { RefObject, useState } from 'react';
-import { downloadCSV } from '../../../helpers/downloadToCsvHelpers';
+import {
+  downloadCSV,
+  extractTableCellText,
+} from '../../../helpers/downloadToCsvHelpers';
 import Link from 'next/link';
 
 type Props = {
@@ -8,21 +11,6 @@ type Props = {
   filename?: string;
   xLabel: string;
 };
-
-function extractTableCellText(table: HTMLTableElement): string[][] {
-  const rows = table.rows;
-  const cellTexts: any[] = [];
-
-  for (let row of rows) {
-    const rowCells: string[] = [];
-    for (let cell of row.cells) {
-      rowCells.push(cell.textContent || '');
-    }
-    cellTexts.push(rowCells);
-  }
-
-  return cellTexts;
-}
 
 const DownloadTableDataCSVLink: React.FC<Props> = ({
   tableref,
