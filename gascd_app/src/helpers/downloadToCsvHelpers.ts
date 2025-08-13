@@ -13,10 +13,14 @@ export function extractTableCellText(table: HTMLTableElement): string[][] {
   return cellTexts;
 }
 
+export function parseInputData(input: any): any[] {
+  return typeof input !== 'object' ? JSON.parse(input) : input;
+}
+
 const createCSVHeaders = (dataRows: any[], xLabel: string): string => {
   const headers = Object.keys(dataRows[0])
     .filter((key) => key !== 'metric')
-    .map((key) => (key === 'xAxisValue' ? xLabel : key));
+    .map((key) => (key === 'xAxisValue' ? xLabel : `"${key}"`));
   return headers.join(',') + '\r\n';
 };
 
@@ -54,11 +58,13 @@ function initiateDownload(downloadLink: HTMLAnchorElement) {
 }
 
 export function convertToCSV(dataRows: any[], xLabel: string): string {
+  const parsedData = parseInputData(dataRows);
   let csvContent = '';
-  if (xLabel) {
-    csvContent += createCSVHeaders(dataRows, xLabel);
+  if (!(parsedData[0] instanceof Array)) {
+    csvContent += createCSVHeaders(parsedData, xLabel);
   }
-  csvContent += generateCSVRows(dataRows);
+
+  csvContent += generateCSVRows(parsedData);
   return csvContent;
 }
 

@@ -21,6 +21,15 @@ describe('convertToCSV', () => {
     const csv = convertToCSV(mocktable, '');
     expect(csv).toBe('"Fruit\'s","Cost,X",""Quant""\r\n');
   });
+
+  it('should add headers if objects are used', () => {
+    const mockstruct = [
+      { Fruit: 'Apple', Cost: '1.00' },
+      { Fruit: 'Pear', Cost: '2.00' },
+    ];
+    const csv = convertToCSV(mockstruct, '');
+    expect(csv).toBe('"Fruit","Cost"\r\n"Apple","1.00"\r\n"Pear","2.00"\r\n');
+  });
 });
 
 describe('extractTableCellText', () => {
