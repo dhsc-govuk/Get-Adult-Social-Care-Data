@@ -320,7 +320,16 @@ const PresentDemandPage: React.FC = () => {
 
   // Re-usable way to create multiple demographic tables
   // from the same data, but displaying different rows
-  const renderDemographicDataTable = (caption: string, headers: {}) => {
+  type DemoGraphicTableProps = {
+    caption: string;
+    headers: {};
+    children?: React.ReactElement;
+  };
+  const DemoGraphicTable: React.FC<DemoGraphicTableProps> = ({
+    caption,
+    headers,
+    children,
+  }) => {
     return (
       <DataTable
         caption={caption}
@@ -329,7 +338,9 @@ const PresentDemandPage: React.FC = () => {
         data={filteredDemographicData}
         showCareProvider={false}
         percentageRows={metricDateType}
-      ></DataTable>
+      >
+        {children}
+      </DataTable>
     );
   };
 
@@ -414,16 +425,16 @@ const PresentDemandPage: React.FC = () => {
               ></ConditionalText>
             </div>
             <div>
-              {renderDemographicDataTable(
-                `[Table comparing population size and age in ${locationNames[1]} to regional and national statistics]`,
-                {
+              <DemoGraphicTable
+                caption={`[Table comparing population size and age in ${locationNames[1]} to regional and national statistics]`}
+                headers={{
                   total_population: 'Total adult population',
                   perc_18_64: 'Aged 18-65',
                   perc_65over: 'Aged 65 and over',
                   perc_75over: 'Aged 75 and over',
                   perc_85over: 'Aged 85 and over',
-                }
-              )}
+                }}
+              />
               <p className="govuk-body">
                 [Source: Population estimates from the Office for National
                 Statistics (ONS)]
@@ -442,42 +453,43 @@ const PresentDemandPage: React.FC = () => {
             </div>
 
             <div>
-              {renderDemographicDataTable(
-                `[Table comparing economic indicators in ${locationNames[1]} to regional and national statistics]`,
-                {
+              <DemoGraphicTable
+                caption={`[Table comparing economic indicators in ${locationNames[1]} to regional and national statistics]`}
+                headers={{
                   perc_household_ownership_total:
                     '[Households where the property is owned outright (with no mortgage)]',
                   perc_households_deprivation_deprived_total:
                     "[Households that are 'deprived in 4 dimensions']",
-                }
-              )}
-              <details className="govuk-details">
-                <summary className="govuk-details__summary">
-                  <span className="govuk-details__summary-text">
-                    [What &quot;deprived in 4 dimensions&quot; means]
-                  </span>
-                </summary>
-                <div className="govuk-details__text">
-                  [A household is &quot;deprived in 4 dimensions&quot; if all
-                  the following apply:<p></p>
-                  <ul className="govuk-list govuk-list--bullet govuk-list--spaced">
-                    <li>
-                      no one in the household has at least level 2 education and
-                      no one aged 16 to 18 years is a full-time student
-                    </li>
-                    <li>
-                      any household member is unemployed or economically
-                      inactive due to long-term sickness or disability, and is
-                      not a full-time student
-                    </li>
-                    <li>any household member is disabled</li>
-                    <li>
-                      the household&apos;s accommodation is overcrowded, in a
-                      shared dwelling or has no central heating]
-                    </li>
-                  </ul>
-                </div>
-              </details>
+                }}
+              >
+                <details className="govuk-details">
+                  <summary className="govuk-details__summary">
+                    <span className="govuk-details__summary-text">
+                      [What &quot;deprived in 4 dimensions&quot; means]
+                    </span>
+                  </summary>
+                  <div className="govuk-details__text">
+                    [A household is &quot;deprived in 4 dimensions&quot; if all
+                    the following apply:<p></p>
+                    <ul className="govuk-list govuk-list--bullet govuk-list--spaced">
+                      <li>
+                        no one in the household has at least level 2 education
+                        and no one aged 16 to 18 years is a full-time student
+                      </li>
+                      <li>
+                        any household member is unemployed or economically
+                        inactive due to long-term sickness or disability, and is
+                        not a full-time student
+                      </li>
+                      <li>any household member is disabled</li>
+                      <li>
+                        the household&apos;s accommodation is overcrowded, in a
+                        shared dwelling or has no central heating]
+                      </li>
+                    </ul>
+                  </div>
+                </details>
+              </DemoGraphicTable>
               <p className="govuk-body">
                 [Source: Census 2021 from the Office for National Statistics
                 (ONS)]
@@ -487,15 +499,15 @@ const PresentDemandPage: React.FC = () => {
             </div>
 
             <div>
-              {renderDemographicDataTable(
-                `[Table comparing the age of one-person households and unpaid care provision in ${locationNames[1]} to regional and national statistics]`,
-                {
+              <DemoGraphicTable
+                caption={`[Table comparing the age of one-person households and unpaid care provision in ${locationNames[1]} to regional and national statistics]`}
+                headers={{
                   perc_households_one_person_total:
                     'Percentage of one-person households where the person is aged 65 or over',
                   perc_unpaid_care_provider_total:
                     'Percentage of people aged 5 or over who provide unpaid care',
-                }
-              )}
+                }}
+              />
               <p className="govuk-body">
                 [Source: Census 2021 from the Office for National Statistics
                 (ONS)]
@@ -505,17 +517,17 @@ const PresentDemandPage: React.FC = () => {
             </div>
 
             <div>
-              {renderDemographicDataTable(
-                `[Table comparing general health reports and disability prevalence in ${locationNames[1]} to regional and national statistics]`,
-                {
+              <DemoGraphicTable
+                caption={`[Table comparing general health reports and disability prevalence in ${locationNames[1]} to regional and national statistics]`}
+                headers={{
                   perc_general_health_total:
                     '[People who reported being in bad or very bad health]',
                   perc_population_disability_disabled_total:
                     '[Disability prevalence – people who reported a long-term physical or mental health condition or illness that limits day-to-day activities]',
                   learning_disabilty_prevalence:
                     '[Learning disability prevalence – all ages, as a proportion of people registered at GP practices]',
-                }
-              )}
+                }}
+              />
               <p className="govuk-body">
                 [Sources: Census 2021 from the Office for National Statistics
                 (ONS), Fingertips public health profiles from the Department of
@@ -526,48 +538,49 @@ const PresentDemandPage: React.FC = () => {
             </div>
 
             <div>
-              {renderDemographicDataTable(
-                `[Table comparing dementia prevalence and dementia estimates in ${locationNames[1]} to regional and national statistics]`,
-                {
+              <DemoGraphicTable
+                caption={`[Table comparing dementia prevalence and dementia estimates in ${locationNames[1]} to regional and national statistics]`}
+                headers={{
                   dementia_qof_prevalence:
                     '[Dementia prevalence – all ages, as a proportion of people registered at GP practices]',
                   dementia_estimated_diagnosis_rate_65over:
                     "[Estimated 'dementia diagnosis rate' – aged 65 and over",
-                }
-              )}
-              <details className="govuk-details">
-                <summary className="govuk-details__summary">
-                  <span className="govuk-details__summary-text">
-                    [What &lsquo;dementia diagnosis rate&rsquo; means]
-                  </span>
-                </summary>
-                <div className="govuk-details__text">
-                  [The &lsquo;dementia diagnosis rate&rsquo; is found by
-                  dividing the number of people with a formal diagnosis of
-                  dementia by the estimated number of people expected to have
-                  dementia.<p></p>
-                  <p>
-                    The estimated number of people expected to have dementia is
-                    worked out by combining:
-                  </p>
-                  <ul className="govuk-list govuk-list--bullet">
-                    <li>
-                      the characteristics of the local registered population
-                    </li>
-                    <li>studies on dementia prevalence by age and sex</li>
-                  </ul>
-                  <a
-                    href="https://fingertips.phe.org.uk/dementia#page/6/gid/1938132811/ati/15/iid/92949/age/27/sex/4/cat/-1/ctp/-1/yrr/1/cid/4/tbm/1"
-                    className="govuk-link"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Details on how &lsquo;dementia diagnosis rate&rsquo; is
-                    calculated (opens in new tab).
-                  </a>
-                  ]<p></p>
-                </div>
-              </details>
+                }}
+              >
+                <details className="govuk-details">
+                  <summary className="govuk-details__summary">
+                    <span className="govuk-details__summary-text">
+                      [What &lsquo;dementia diagnosis rate&rsquo; means]
+                    </span>
+                  </summary>
+                  <div className="govuk-details__text">
+                    [The &lsquo;dementia diagnosis rate&rsquo; is found by
+                    dividing the number of people with a formal diagnosis of
+                    dementia by the estimated number of people expected to have
+                    dementia.<p></p>
+                    <p>
+                      The estimated number of people expected to have dementia
+                      is worked out by combining:
+                    </p>
+                    <ul className="govuk-list govuk-list--bullet">
+                      <li>
+                        the characteristics of the local registered population
+                      </li>
+                      <li>studies on dementia prevalence by age and sex</li>
+                    </ul>
+                    <a
+                      href="https://fingertips.phe.org.uk/dementia#page/6/gid/1938132811/ati/15/iid/92949/age/27/sex/4/cat/-1/ctp/-1/yrr/1/cid/4/tbm/1"
+                      className="govuk-link"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Details on how &lsquo;dementia diagnosis rate&rsquo; is
+                      calculated (opens in new tab).
+                    </a>
+                    ]<p></p>
+                  </div>
+                </details>
+              </DemoGraphicTable>
               <p className="govuk-body">
                 [Source: Fingertips public health profiles from the Department
                 of Health and Social Care (DHSC)]

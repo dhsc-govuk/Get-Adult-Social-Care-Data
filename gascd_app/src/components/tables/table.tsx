@@ -11,7 +11,10 @@ type DataTableProps = {
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
   percentageRows?: MetaData[];
+  source?: string;
+  last_updated?: string;
   csv_download?: boolean;
+  children?: React.ReactNode;
 };
 
 const getCareProviderKey = (
@@ -52,6 +55,7 @@ const DataTable: React.FC<DataTableProps> = ({
   careProviderMedianMetrics,
   percentageRows,
   csv_download = true,
+  children,
 }) => {
   const tableref = useRef<HTMLTableElement>(null);
 
@@ -134,10 +138,12 @@ const DataTable: React.FC<DataTableProps> = ({
           ))}
         </tbody>
       </table>
-      {(csv_download && (
-        <DownloadTableDataCSVLink tableref={tableref} xLabel="" />
-      )) ||
-        ''}
+      {children}
+      {csv_download && (
+        <p>
+          <DownloadTableDataCSVLink tableref={tableref} xLabel="" />
+        </p>
+      )}
     </div>
   );
 };
