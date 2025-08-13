@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { MetaData } from '@/data/interfaces/MetaData';
+import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 type DataTableProps = {
   caption?: string;
@@ -10,6 +11,7 @@ type DataTableProps = {
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
   percentageRows?: MetaData[];
+  csv_download?: boolean;
 };
 
 const getCareProviderKey = (
@@ -49,7 +51,10 @@ const DataTable: React.FC<DataTableProps> = ({
   showCareProvider,
   careProviderMedianMetrics,
   percentageRows,
+  csv_download = true,
 }) => {
+  const tableref = useRef<HTMLTableElement>(null);
+
   const columnClass = (columnIndex: number) => {
     if (columnIndex === 0) {
       return 'govuk-table__header govuk-!-width-one-third';
@@ -58,73 +63,82 @@ const DataTable: React.FC<DataTableProps> = ({
     }
   };
   return (
-    <table className="govuk-table">
-      {caption && (
-        <caption className="govuk-table__caption govuk-table__caption--s govuk-!-margin-top-7">
-          {caption}
-        </caption>
-      )}
-      <thead className="govuk-table__head">
-        <tr className="govuk-table__row">
-          {columnHeaders.map((columnHeader, columnIndex) => (
-            <th
-              key={columnIndex}
-              scope="col"
-              className={columnClass(columnIndex)}
-            >
-              {columnHeader}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody className="govuk-table__body">
-        {Object.entries(rowHeaders).map(([key, value]) => (
-          <tr key={key}>
-            <th
-              scope="row"
-              className="govuk-table__cell govuk-table__cell--header"
-            >
-              {value}
-            </th>
-            {showCareProvider && (
+    <div>
+      <table className="govuk-table" ref={tableref}>
+        {caption && (
+          <caption className="govuk-table__caption govuk-table__caption--s govuk-!-margin-top-7">
+            {caption}
+          </caption>
+        )}
+        <thead className="govuk-table__head">
+          <tr className="govuk-table__row">
+            {columnHeaders.map((columnHeader, columnIndex) => (
+              <th
+                key={columnIndex}
+                scope="col"
+                className={columnClass(columnIndex)}
+              >
+                {columnHeader}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="govuk-table__body">
+          {Object.entries(rowHeaders).map(([key, value]) => (
+            <tr key={key}>
+              <th
+                scope="row"
+                className="govuk-table__cell govuk-table__cell--header"
+              >
+                {value}
+              </th>
+              {showCareProvider && (
+                <td className="govuk-table__cell">
+                  {getFormattedDataPoint(
+                    data,
+                    getCareProviderKey(key, careProviderMedianMetrics),
+                    'Care provider location',
+                    percentageRows?.some((item) => item.metric_id === key) ??
+                      false
+                  )}
+                </td>
+              )}
               <td className="govuk-table__cell">
                 {getFormattedDataPoint(
                   data,
-                  getCareProviderKey(key, careProviderMedianMetrics),
-                  'Care provider location',
+                  key,
+                  'LA',
                   percentageRows?.some((item) => item.metric_id === key) ??
                     false
                 )}
               </td>
-            )}
-            <td className="govuk-table__cell">
-              {getFormattedDataPoint(
-                data,
-                key,
-                'LA',
-                percentageRows?.some((item) => item.metric_id === key) ?? false
-              )}
-            </td>
-            <td className="govuk-table__cell">
-              {getFormattedDataPoint(
-                data,
-                key,
-                'Regional',
-                percentageRows?.some((item) => item.metric_id === key) ?? false
-              )}
-            </td>
-            <td className="govuk-table__cell">
-              {getFormattedDataPoint(
-                data,
-                key,
-                'National',
-                percentageRows?.some((item) => item.metric_id === key) ?? false
-              )}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+              <td className="govuk-table__cell">
+                {getFormattedDataPoint(
+                  data,
+                  key,
+                  'Regional',
+                  percentageRows?.some((item) => item.metric_id === key) ??
+                    false
+                )}
+              </td>
+              <td className="govuk-table__cell">
+                {getFormattedDataPoint(
+                  data,
+                  key,
+                  'National',
+                  percentageRows?.some((item) => item.metric_id === key) ??
+                    false
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {(csv_download && (
+        <DownloadTableDataCSVLink tableref={tableref} xLabel="" />
+      )) ||
+        ''}
+    </div>
   );
 };
 

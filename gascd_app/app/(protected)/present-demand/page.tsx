@@ -11,7 +11,6 @@ import DataTable from '@/components/tables/table';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import { useSession } from 'next-auth/react';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
-import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { MetaData } from '@/data/interfaces/MetaData';
 import { Locations } from '@/data/interfaces/Locations';
 import { MSPItem, MSPLookup } from '@/helpers/msp/msp-lookup';
@@ -424,20 +423,20 @@ const PresentDemandPage: React.FC = () => {
                   perc_85over: 'Aged 85 and over',
                 }
               )}
-              <p>
-                <DownloadTableDataCSVLink
-                  data={TableService.removeLoadDateTime(
-                    filteredDemographicData
-                  )}
-                  filename="Demographic factors"
-                  xLabel=""
-                ></DownloadTableDataCSVLink>
-              </p>
               <p className="govuk-body">
                 [Source: Population estimates from the Office for National
                 Statistics (ONS)]
                 <br />
                 Data correct as of {demographicLatestDate}
+                <br />
+                {filteredDemographicData.length > 0 && (
+                  <span>
+                    Data correct as of{' '}
+                    {PresentDemandService.getMostRecentDate(
+                      filteredDemographicData
+                    )}
+                  </span>
+                )}
               </p>
             </div>
 
@@ -636,11 +635,6 @@ const PresentDemandPage: React.FC = () => {
                 showCareProvider={false}
                 percentageRows={metricDateType}
               ></DataTable>
-              <DownloadTableDataCSVLink
-                data={TableService.removeLoadDateTime(filteredBedData)}
-                filename="Current Capacity"
-                xLabel=""
-              ></DownloadTableDataCSVLink>
               <p className="govuk-body govuk-!-margin-bottom-9">
                 Source: {bedsDataSource}
                 <br />
@@ -697,11 +691,6 @@ const PresentDemandPage: React.FC = () => {
                 careProviderMedianMetrics={careProviderMedianMetrics}
                 percentageRows={metricDateType}
               ></DataTable>
-              <DownloadTableDataCSVLink
-                data={TableService.removeLoadDateTime(finalCpData)}
-                filename="Care providers data"
-                xLabel=""
-              ></DownloadTableDataCSVLink>
               <p className="govuk-body">
                 Source: {CPDataSource}
                 <br />
