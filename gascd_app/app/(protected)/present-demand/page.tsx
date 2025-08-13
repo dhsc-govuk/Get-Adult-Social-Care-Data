@@ -360,7 +360,11 @@ const PresentDemandPage: React.FC = () => {
                     Selected locations
                   </dt>
                   <dd className="govuk-summary-list__value">
-                    <p>{locationNamesCP.slice(1).join(', ')}</p>
+                    {locationNamesCP && (
+                      <p data-testid="location-names">
+                        {locationNamesCP.slice(1).join(', ')}
+                      </p>
+                    )}
                   </dd>
                   <dd className="govuk-summary-list__actions">
                     <a className="govuk-link" href="/present-demand-locations">
