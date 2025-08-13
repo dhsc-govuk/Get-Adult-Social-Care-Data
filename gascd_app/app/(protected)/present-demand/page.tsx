@@ -652,61 +652,133 @@ const PresentDemandPage: React.FC = () => {
               ></DataTable>
             </div>
 
-            <div className="govuk-!-margin-bottom-9">
-              <h2 className="govuk-heading-m" id="definition">
-                Indicator definitions and supporting information
-              </h2>
-              <p className="govuk-body">
-                Find detailed information about each indicator, including data
-                definitions, data source, update schedule, and any limitations
-                to be aware of before using the data.
-              </p>
-              <ul className="govuk-list govuk-list--bullet">
-                <li>
-                  <a href="/help/population-age" className="govuk-link">
-                    Population age
-                  </a>
-                </li>
-                <li>
-                  <a href="/help/disability-prevalence" className="govuk-link">
-                    Population disability
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/help/beds-per-100000-adult-population"
-                    className="govuk-link"
-                  >
-                    Adult social care beds per 100,000 adult population
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/help/percentage-beds-occupied"
-                    className="govuk-link"
-                  >
-                    Percentage of adult social care beds occupied
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/help/beds-care-provider-location"
-                    className="govuk-link"
-                  >
-                    Number of adult social care beds in care provider location
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/help/percentage-beds-occupied-care-provider-location"
-                    className="govuk-link"
-                  >
-                    Percentage of adult social care beds occupied in care
-                    provider location
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <h2
+              className="govuk-heading-m govuk-!-margin-top-9"
+              id="definition"
+            >
+              Indicator definitions and supporting information
+            </h2>
+            <p className="govuk-body">
+              Find detailed information about each indicator, including data
+              definitions, data source, update schedule, and any limitations to
+              be aware of before using the data.
+            </p>
+
+            <h3 className="govuk-heading-s">Indicators for population needs</h3>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>
+                <a href="/help/population-size" className="govuk-link">
+                  Population size
+                </a>
+              </li>
+              <li>
+                <a href="/help/population-age" className="govuk-link">
+                  Population age
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/households-property-owned-outright"
+                  className="govuk-link"
+                >
+                  Households where the property is owned outright
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/households-deprived-4-dimensions"
+                  className="govuk-link"
+                >
+                  Households deprived in 4 dimensions
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/percentage-one-person-households-65-or-over"
+                  className="govuk-link"
+                >
+                  One-person households where the person is aged 65 or over
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/percentage-people-5-or-over-who-provide-unpaid-care"
+                  className="govuk-link"
+                >
+                  People aged 5 or over who provide unpaid care
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/people-in-bad-or-very-bad-health"
+                  className="govuk-link"
+                >
+                  People in bad or very bad health
+                </a>
+              </li>
+              <li>
+                <a href="/help/disability-prevalence" className="govuk-link">
+                  Disability prevalence
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/learning-disability-prevalence"
+                  className="govuk-link"
+                >
+                  Learning disability prevalence
+                </a>
+              </li>
+              <li>
+                <a href="/help/dementia-prevalence" className="govuk-link">
+                  Dementia prevalence
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/estimated-dementia-diagnosis-rate-65-and-over"
+                  className="govuk-link"
+                >
+                  Estimated dementia diagnosis rate
+                </a>
+              </li>
+            </ul>
+
+            <h3 className="govuk-heading-s">
+              Indicators for care home capacity
+            </h3>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>
+                <a
+                  href="/help/beds-per-100000-adult-population"
+                  className="govuk-link"
+                >
+                  Adult social care beds per 100,000 adult population
+                </a>
+              </li>
+              <li>
+                <a href="/help/percentage-beds-occupied" className="govuk-link">
+                  Percentage of adult social care beds occupied
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/beds-care-provider-location"
+                  className="govuk-link"
+                >
+                  Number of adult social care beds in care provider location
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/percentage-beds-occupied-care-provider-location"
+                  className="govuk-link"
+                >
+                  Percentage of adult social care beds occupied in care provider
+                  location
+                </a>
+              </li>
+            </ul>
 
             <div className="govuk-!-margin-bottom-9">
               <h2
