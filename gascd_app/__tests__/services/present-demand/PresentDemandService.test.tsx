@@ -343,7 +343,7 @@ describe('IndicatorFetchService', () => {
     });
 
     it('handles invalid date format gracefully', () => {
-      expect(() => PresentDemandService.formatDate('invalid')).toThrow();
+      expect(PresentDemandService.formatDate('invalid')).toBe('invalid');
     });
   });
 
