@@ -91,6 +91,7 @@ export default function PopulationAgePage() {
   return (
     <>
       <Layout
+        title="Population age percentages"
         autoSpaceMainContent={false}
         showLoginInformation={true}
         backURL="/home"

@@ -8,6 +8,7 @@ const PercentageBedsOccupied: React.FC = () => {
   return (
     <>
       <Layout
+        title="Indicator definition: Percentage of adult social care beds occupied"
         showLoginInformation={false}
         backURL="/present-demand"
         currentPage={'percentage beds occupied'}

@@ -8,6 +8,7 @@ const BedsCareProviderLocations: React.FC = () => {
   return (
     <>
       <Layout
+        title="Indicator definition: Number of adult social care beds in care provider location"
         backURL="/present-demand"
         showLoginInformation={false}
         currentPage={'beds care provider locations'}

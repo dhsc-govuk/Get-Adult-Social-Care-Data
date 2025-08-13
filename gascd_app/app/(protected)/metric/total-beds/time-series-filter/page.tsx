@@ -44,6 +44,7 @@ const TotalBedsFiltersPage: React.FC = () => {
   return (
     <>
       <Layout
+        title="Total beds per 100,000 population"
         showLoginInformation={true}
         currentPage={'/metric/total-beds/time-series-filter'}
       >

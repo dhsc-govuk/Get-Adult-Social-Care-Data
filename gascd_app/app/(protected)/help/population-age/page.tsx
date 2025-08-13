@@ -8,6 +8,7 @@ const PopulationAge: React.FC = () => {
   return (
     <>
       <Layout
+        title="Indicator definition: percentage of population aged 18 to 64, or 65 and over"
         showLoginInformation={false}
         currentPage={'population age'}
         backURL="/present-demand"

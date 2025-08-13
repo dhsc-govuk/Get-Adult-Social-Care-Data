@@ -59,6 +59,7 @@ const TotalBedsFiltersPage: React.FC = () => {
   return (
     <>
       <Layout
+        title="Adult social care beds per 100,000 adult population"
         showLoginInformation={true}
         currentPage={'/metric/total-beds/filters'}
       >
