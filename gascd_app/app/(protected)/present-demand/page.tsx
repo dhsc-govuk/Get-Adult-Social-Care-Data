@@ -336,6 +336,7 @@ const PresentDemandPage: React.FC = () => {
   return (
     <>
       <Layout
+        title="Current population needs and capacity"
         autoSpaceMainContent={false}
         showLoginInformation={true}
         currentPage="present-demand"

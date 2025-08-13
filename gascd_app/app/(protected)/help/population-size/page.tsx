@@ -8,6 +8,7 @@ const PopulationSize: React.FC = () => {
   return (
     <>
       <Layout
+        title="Indicator definition: population size"
         showLoginInformation={false}
         currentPage={'population size'}
         backURL="/present-demand"
