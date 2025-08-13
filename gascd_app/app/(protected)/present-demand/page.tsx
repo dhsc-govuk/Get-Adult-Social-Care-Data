@@ -30,15 +30,7 @@ const PresentDemandPage: React.FC = () => {
   const [locationIdsCP, setLocationIdsCP] = useState<string[]>([]);
   const [localAuthorityData, setLocalAuthorityData] = useState<Locations>();
   const [mspData, setMspData] = useState<MSPItem>();
-  const [demographicDataSource, setDemographicDataSource] = useState<string>();
-  const [bedsDataSource, setBedsDataSource] = useState<string>();
-  const [CPDataSource, setCPDataSource] = useState<string>();
   const [metricDateType, setMetricDataType] = useState<MetaData[]>([]);
-  const [demographicLatestDate, setDemographicLatestDate] = useState<
-    string | null
-  >();
-  const [bedDataLatestDate, setBedDataLatestDate] = useState<string | null>();
-  const [CPLatestDate, setCPLatestDate] = useState<string | null>();
   const [demographicQuery, setDemographicQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
@@ -227,22 +219,6 @@ const PresentDemandPage: React.FC = () => {
   }, [CPLocationId, locationIds]);
 
   useEffect(() => {
-    if (filteredDemographicData.length > 0) {
-      setDemographicLatestDate(
-        PresentDemandService.getMostRecentDate(filteredDemographicData)
-      );
-    }
-    if (filteredBedData.length > 0) {
-      setBedDataLatestDate(
-        PresentDemandService.getMostRecentDate(filteredBedData)
-      );
-    }
-    if (finalCpData.length > 0) {
-      setCPLatestDate(PresentDemandService.getMostRecentDate(finalCpData));
-    }
-  }, [filteredDemographicData, filteredBedData, finalCpData]);
-
-  useEffect(() => {
     const fetchAllData = async () => {
       if (!CPLocationId) return;
       try {
@@ -251,30 +227,20 @@ const PresentDemandPage: React.FC = () => {
         const filteredDemographicData =
           TableService.filterDate(demographicData);
         setFilteredDemographicData(filteredDemographicData);
-        setDemographicDataSource(
-          await PresentDemandService.getDataSource(demographicQuery)
-        );
         const bedData: Indicator[] =
           await IndicatorFetchService.getData(bedsQuery);
         const filteredBedData = TableService.filterDate(bedData);
         setFilteredBedData(filteredBedData);
-        setBedsDataSource(await PresentDemandService.getDataSource(bedsQuery));
         const CPData: Indicator[] = await IndicatorFetchService.getData(
           careProviderDataQuery1
         );
         const CPData2: Indicator[] = await IndicatorFetchService.getData(
           careProviderDataQuery2
         );
-        const data1: Indicator[] = TableService.filterDate(CPData);
-        const data2: Indicator[] = TableService.filterDate(CPData2);
+        //const data1: Indicator[] = TableService.filterDate(CPData);
+        //const data2: Indicator[] = TableService.filterDate(CPData2);
         const comboData: Indicator[] = [...CPData, ...CPData2];
         const filteredCPData = TableService.filterDate(comboData);
-        setCPDataSource(
-          await PresentDemandService.getDataSource(
-            careProviderDataQuery1,
-            careProviderDataQuery2
-          )
-        );
         setFinalCpData(filteredCPData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -617,17 +583,15 @@ const PresentDemandPage: React.FC = () => {
               </form>
               <DataTable
                 caption={`[Table comparing provision of adult social care beds and occupancy levels in ${locationNames[1]} to regional and national statistics]`}
+                source={
+                  '[Source: Capacity Tracker from the Department of Health and Social Care (DHSC)]'
+                }
                 columnHeaders={locationNames}
                 rowHeaders={bedRowHeaders}
                 data={filteredBedData}
                 showCareProvider={false}
                 percentageRows={metricDateType}
               ></DataTable>
-              <p className="govuk-body govuk-!-margin-bottom-9">
-                Source: {bedsDataSource}
-                <br />
-                Data correct as of {bedDataLatestDate}
-              </p>
             </div>
 
             <div className="govuk-!-margin-bottom-9">
@@ -672,6 +636,9 @@ const PresentDemandPage: React.FC = () => {
               </p>
               <DataTable
                 caption={`[Table comparing provision at your care home to median numbers of care beds at local, regional and national levels]`}
+                source={
+                  '[Source: Capacity Tracker from the Department of Health and Social Care (DHSC)]'
+                }
                 columnHeaders={locationNamesCP}
                 rowHeaders={careProviderRowHeaders}
                 data={finalCpData}
@@ -679,11 +646,6 @@ const PresentDemandPage: React.FC = () => {
                 careProviderMedianMetrics={careProviderMedianMetrics}
                 percentageRows={metricDateType}
               ></DataTable>
-              <p className="govuk-body">
-                Source: {CPDataSource}
-                <br />
-                Data correct as of {CPLatestDate}
-              </p>
             </div>
 
             <div className="govuk-!-margin-bottom-9">
