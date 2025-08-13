@@ -146,24 +146,45 @@ class PresentDemandService {
     }).format(date);
   }
 
-  public static getMostRecentIndicator(indicators: Indicator[]): string {
+  public static getMostRecentIndicator(
+    indicators: Indicator[],
+    metric_ids?: string[]
+  ): string {
     if (indicators.length === 0) {
       return '';
     }
 
-    return indicators
+    let filtered_indicators = indicators;
+    if (metric_ids) {
+      filtered_indicators = indicators.filter((item) =>
+        metric_ids.includes(item.metric_id)
+      );
+    }
+
+    if (filtered_indicators.length === 0) {
+      return '';
+    }
+
+    return filtered_indicators
       .reduce((latest, current) => {
         return IndicatorService.parseDate(current) >
           IndicatorService.parseDate(latest)
           ? current
           : latest;
-      }, indicators[0])
+      }, filtered_indicators[0])
       .metric_date.toString();
   }
 
-  public static getMostRecentDate(data: Indicator[]): string {
-    const recentData = this.getMostRecentIndicator(data);
-    return this.formatDate(recentData);
+  public static getMostRecentDate(
+    data: Indicator[],
+    metric_ids?: string[]
+  ): string {
+    const recentData = this.getMostRecentIndicator(data, metric_ids);
+    if (recentData) {
+      return this.formatDate(recentData);
+    } else {
+      return '';
+    }
   }
 
   public static async getDataSource(

@@ -323,11 +323,13 @@ const PresentDemandPage: React.FC = () => {
   type DemoGraphicTableProps = {
     caption: string;
     headers: {};
+    source: string;
     children?: React.ReactElement;
   };
   const DemoGraphicTable: React.FC<DemoGraphicTableProps> = ({
     caption,
     headers,
+    source,
     children,
   }) => {
     return (
@@ -338,6 +340,7 @@ const PresentDemandPage: React.FC = () => {
         data={filteredDemographicData}
         showCareProvider={false}
         percentageRows={metricDateType}
+        source={source}
       >
         {children}
       </DataTable>
@@ -427,6 +430,7 @@ const PresentDemandPage: React.FC = () => {
             <div>
               <DemoGraphicTable
                 caption={`[Table comparing population size and age in ${locationNames[1]} to regional and national statistics]`}
+                source={`[Source: Population estimates from the Office for National Statistics (ONS)]`}
                 headers={{
                   total_population: 'Total adult population',
                   perc_18_64: 'Aged 18-65',
@@ -435,26 +439,14 @@ const PresentDemandPage: React.FC = () => {
                   perc_85over: 'Aged 85 and over',
                 }}
               />
-              <p className="govuk-body">
-                [Source: Population estimates from the Office for National
-                Statistics (ONS)]
-                <br />
-                Data correct as of {demographicLatestDate}
-                <br />
-                {filteredDemographicData.length > 0 && (
-                  <span>
-                    Data correct as of{' '}
-                    {PresentDemandService.getMostRecentDate(
-                      filteredDemographicData
-                    )}
-                  </span>
-                )}
-              </p>
             </div>
 
             <div>
               <DemoGraphicTable
                 caption={`[Table comparing economic indicators in ${locationNames[1]} to regional and national statistics]`}
+                source={
+                  '[Source: Census 2021 from the Office for National Statistics (ONS)]'
+                }
                 headers={{
                   perc_household_ownership_total:
                     '[Households where the property is owned outright (with no mortgage)]',
@@ -490,17 +482,12 @@ const PresentDemandPage: React.FC = () => {
                   </div>
                 </details>
               </DemoGraphicTable>
-              <p className="govuk-body">
-                [Source: Census 2021 from the Office for National Statistics
-                (ONS)]
-                <br />
-                Data correct as of XXX
-              </p>
             </div>
 
             <div>
               <DemoGraphicTable
                 caption={`[Table comparing the age of one-person households and unpaid care provision in ${locationNames[1]} to regional and national statistics]`}
+                source={`[Source: Census 2021 from the Office for National Statistics (ONS)]`}
                 headers={{
                   perc_households_one_person_total:
                     'Percentage of one-person households where the person is aged 65 or over',
@@ -508,17 +495,14 @@ const PresentDemandPage: React.FC = () => {
                     'Percentage of people aged 5 or over who provide unpaid care',
                 }}
               />
-              <p className="govuk-body">
-                [Source: Census 2021 from the Office for National Statistics
-                (ONS)]
-                <br />
-                Data correct as of XXX
-              </p>
             </div>
 
             <div>
               <DemoGraphicTable
-                caption={`[Table comparing general health reports and disability prevalence in ${locationNames[1]} to regional and national statistics]`}
+                caption={`[Table general health reports and disability prevalence in ${locationNames[1]} to regional and national statistics]`}
+                source={
+                  '[Sources: Census 2021 from the Office for National Statistics (ONS), Fingertips public health profiles from the Department of Health and Social Care (DHSC)]'
+                }
                 headers={{
                   perc_general_health_total:
                     '[People who reported being in bad or very bad health]',
@@ -528,18 +512,14 @@ const PresentDemandPage: React.FC = () => {
                     '[Learning disability prevalence – all ages, as a proportion of people registered at GP practices]',
                 }}
               />
-              <p className="govuk-body">
-                [Sources: Census 2021 from the Office for National Statistics
-                (ONS), Fingertips public health profiles from the Department of
-                Health and Social Care (DHSC)]
-                <br />
-                Data correct as of XXX
-              </p>
             </div>
 
             <div>
               <DemoGraphicTable
                 caption={`[Table comparing dementia prevalence and dementia estimates in ${locationNames[1]} to regional and national statistics]`}
+                source={
+                  '[Source: Fingertips public health profiles from the Department of Health and Social Care (DHSC)]'
+                }
                 headers={{
                   dementia_qof_prevalence:
                     '[Dementia prevalence – all ages, as a proportion of people registered at GP practices]',
@@ -581,12 +561,6 @@ const PresentDemandPage: React.FC = () => {
                   </div>
                 </details>
               </DemoGraphicTable>
-              <p className="govuk-body">
-                [Source: Fingertips public health profiles from the Department
-                of Health and Social Care (DHSC)]
-                <br />
-                Data correct as of XXX
-              </p>
             </div>
 
             <div className="">

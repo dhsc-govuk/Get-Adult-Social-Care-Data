@@ -402,6 +402,28 @@ describe('IndicatorFetchService', () => {
       const result = PresentDemandService.getMostRecentIndicator(singleEntry);
       expect(result).toContain('Mon May 15 2023 00:00:00');
     });
+
+    it('handles a limited set of metric ids', () => {
+      const result = PresentDemandService.getMostRecentIndicator(
+        mockIndicators,
+        ['A']
+      );
+      expect(result).toContain('Apr 01 2023 00:00:00');
+
+      const result2 = PresentDemandService.getMostRecentIndicator(
+        mockIndicators,
+        ['A', 'C']
+      );
+      expect(result2).toContain('Jun 30 2023 00:00:00');
+    });
+
+    it('handles an empty set of metric ids', () => {
+      const result = PresentDemandService.getMostRecentIndicator(
+        mockIndicators,
+        []
+      );
+      expect(result).toBe('');
+    });
   });
 
   describe('getMostRecentDate', () => {
@@ -459,7 +481,25 @@ describe('IndicatorFetchService', () => {
 
     it('returns an empty string when given an empty array', () => {
       const result = PresentDemandService.getMostRecentDate([]);
-      expect(result).toBe('Formatted: ');
+      expect(result).toBe('');
+    });
+
+    it('handles a limited set of metric ids', () => {
+      const result = PresentDemandService.getMostRecentDate(mockIndicators, [
+        'A',
+      ]);
+      expect(result).toContain('Formatted: Sat Apr 01 2023 00:00:00');
+
+      const result2 = PresentDemandService.getMostRecentDate(mockIndicators, [
+        'A',
+        'C',
+      ]);
+      expect(result2).toContain('Formatted: Fri Jun 30 2023 00:00:00');
+    });
+
+    it('handles an empty set of metric ids', () => {
+      const result = PresentDemandService.getMostRecentDate(mockIndicators, []);
+      expect(result).toBe('');
     });
   });
 

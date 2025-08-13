@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { MetaData } from '@/data/interfaces/MetaData';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
+import PresentDemandService from '@/services/present-demand/presentDemandService';
 
 type DataTableProps = {
   caption?: string;
@@ -56,9 +57,9 @@ const DataTable: React.FC<DataTableProps> = ({
   percentageRows,
   csv_download = true,
   children,
+  source,
 }) => {
   const tableref = useRef<HTMLTableElement>(null);
-
   const columnClass = (columnIndex: number) => {
     if (columnIndex === 0) {
       return 'govuk-table__header govuk-!-width-one-third';
@@ -140,10 +141,23 @@ const DataTable: React.FC<DataTableProps> = ({
       </table>
       {children}
       {csv_download && (
-        <p>
+        <p className="govuk-body">
           <DownloadTableDataCSVLink tableref={tableref} xLabel="" />
         </p>
       )}
+      <p className="govuk-body">
+        {source}
+        <br />
+        {data.length > 0 && (
+          <span>
+            Data correct as of{' '}
+            {PresentDemandService.getMostRecentDate(
+              data,
+              Object.keys(rowHeaders)
+            )}
+          </span>
+        )}
+      </p>
     </div>
   );
 };
