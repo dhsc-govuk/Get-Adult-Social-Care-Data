@@ -285,7 +285,7 @@ export default function PopulationAgePage() {
               </li>
               <li>
                 <a href="../help/population-age" className="govuk-link">
-                  Percentage of population in age group
+                  Population age
                 </a>
               </li>
             </ul>
