@@ -399,8 +399,8 @@ const PresentDemandPage: React.FC = () => {
             </div>
             <div>
               <DemoGraphicTable
-                caption={`[Table comparing population size and age in ${locationNames[1]} to regional and national statistics]`}
-                source={`[Source: Population estimates from the Office for National Statistics (ONS)]`}
+                caption={`Table comparing population size and age in ${locationNames[1]} to regional and national statistics`}
+                source={`Source: Population estimates from the Office for National Statistics (ONS)`}
                 headers={{
                   total_population: 'Total adult population',
                   perc_18_64: 'Aged 18-65',
@@ -413,25 +413,25 @@ const PresentDemandPage: React.FC = () => {
 
             <div>
               <DemoGraphicTable
-                caption={`[Table comparing economic indicators in ${locationNames[1]} to regional and national statistics]`}
+                caption={`Table comparing economic indicators in ${locationNames[1]} to regional and national statistics`}
                 source={
-                  '[Source: Census 2021 from the Office for National Statistics (ONS)]'
+                  'Source: Census 2021 from the Office for National Statistics (ONS)'
                 }
                 headers={{
                   perc_household_ownership_total:
-                    '[Households where the property is owned outright (with no mortgage)]',
+                    'Households where the property is owned outright (with no mortgage)',
                   perc_households_deprivation_deprived_total:
-                    "[Households that are 'deprived in 4 dimensions']",
+                    "Households that are 'deprived in 4 dimensions'",
                 }}
               >
                 <details className="govuk-details">
                   <summary className="govuk-details__summary">
                     <span className="govuk-details__summary-text">
-                      [What &quot;deprived in 4 dimensions&quot; means]
+                      What &lsquo;deprived in 4 dimensions&rsquo; means
                     </span>
                   </summary>
                   <div className="govuk-details__text">
-                    [A household is &quot;deprived in 4 dimensions&quot; if all
+                    A household is &lsquo;deprived in 4 dimensions&lsquo; if all
                     the following apply:<p></p>
                     <ul className="govuk-list govuk-list--bullet govuk-list--spaced">
                       <li>
@@ -446,7 +446,7 @@ const PresentDemandPage: React.FC = () => {
                       <li>any household member is disabled</li>
                       <li>
                         the household&apos;s accommodation is overcrowded, in a
-                        shared dwelling or has no central heating]
+                        shared dwelling or has no central heating
                       </li>
                     </ul>
                   </div>
@@ -456,8 +456,8 @@ const PresentDemandPage: React.FC = () => {
 
             <div>
               <DemoGraphicTable
-                caption={`[Table comparing the age of one-person households and unpaid care provision in ${locationNames[1]} to regional and national statistics]`}
-                source={`[Source: Census 2021 from the Office for National Statistics (ONS)]`}
+                caption={`Table comparing the age of one-person households and unpaid care provision in ${locationNames[1]} to regional and national statistics`}
+                source={`Source: Census 2021 from the Office for National Statistics (ONS)`}
                 headers={{
                   perc_households_one_person_total:
                     'Percentage of one-person households where the person is aged 65 or over',
@@ -469,42 +469,42 @@ const PresentDemandPage: React.FC = () => {
 
             <div>
               <DemoGraphicTable
-                caption={`[Table general health reports and disability prevalence in ${locationNames[1]} to regional and national statistics]`}
+                caption={`Table comparing general health reports and disability prevalence in ${locationNames[1]} to regional and national statistics`}
                 source={
-                  '[Sources: Census 2021 from the Office for National Statistics (ONS), Fingertips public health profiles from the Department of Health and Social Care (DHSC)]'
+                  'Sources: Census 2021 from the Office for National Statistics (ONS), Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
                 }
                 headers={{
                   perc_general_health_total:
-                    '[People who reported being in bad or very bad health]',
+                    'People who reported being in bad or very bad health',
                   perc_population_disability_disabled_total:
-                    '[Disability prevalence – people who reported a long-term physical or mental health condition or illness that limits day-to-day activities]',
+                    'Disability prevalence – people who reported a long-term physical or mental health condition or illness that limits day-to-day activities',
                   learning_disabilty_prevalence:
-                    '[Learning disability prevalence – all ages, as a proportion of people registered at GP practices]',
+                    'Learning disability prevalence – all ages, as a proportion of people registered at GP practices',
                 }}
               />
             </div>
 
             <div>
               <DemoGraphicTable
-                caption={`[Table comparing dementia prevalence and dementia estimates in ${locationNames[1]} to regional and national statistics]`}
+                caption={`Table comparing dementia prevalence and dementia estimates in ${locationNames[1]} to regional and national statistics`}
                 source={
-                  '[Source: Fingertips public health profiles from the Department of Health and Social Care (DHSC)]'
+                  'Source: Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
                 }
                 headers={{
                   dementia_qof_prevalence:
-                    '[Dementia prevalence – all ages, as a proportion of people registered at GP practices]',
+                    'Dementia prevalence – all ages, as a proportion of people registered at GP practices',
                   dementia_estimated_diagnosis_rate_65over:
-                    "[Estimated 'dementia diagnosis rate' – aged 65 and over",
+                    "Estimated 'dementia diagnosis rate' – aged 65 and over",
                 }}
               >
                 <details className="govuk-details">
                   <summary className="govuk-details__summary">
                     <span className="govuk-details__summary-text">
-                      [What &lsquo;dementia diagnosis rate&rsquo; means]
+                      What &lsquo;dementia diagnosis rate&rsquo; means
                     </span>
                   </summary>
                   <div className="govuk-details__text">
-                    [The &lsquo;dementia diagnosis rate&rsquo; is found by
+                    The &lsquo;dementia diagnosis rate&rsquo; is found by
                     dividing the number of people with a formal diagnosis of
                     dementia by the estimated number of people expected to have
                     dementia.<p></p>
@@ -527,7 +527,7 @@ const PresentDemandPage: React.FC = () => {
                       Details on how &lsquo;dementia diagnosis rate&rsquo; is
                       calculated (opens in new tab).
                     </a>
-                    ]<p></p>
+                    <p></p>
                   </div>
                 </details>
               </DemoGraphicTable>
@@ -586,9 +586,9 @@ const PresentDemandPage: React.FC = () => {
                 </button>
               </form>
               <DataTable
-                caption={`[Table comparing provision of adult social care beds and occupancy levels in ${locationNames[1]} to regional and national statistics]`}
+                caption={`Table comparing provision of adult social care beds and occupancy levels in ${locationNames[1]} to regional and national statistics`}
                 source={
-                  '[Source: Capacity Tracker from the Department of Health and Social Care (DHSC)]'
+                  'Source: Capacity Tracker from the Department of Health and Social Care (DHSC)'
                 }
                 columnHeaders={locationNames}
                 rowHeaders={bedRowHeaders}
@@ -639,9 +639,9 @@ const PresentDemandPage: React.FC = () => {
                 data, see indicator definition and supporting information.
               </p>
               <DataTable
-                caption={`[Table comparing provision at your care home to median numbers of care beds at local, regional and national levels]`}
+                caption={`Table comparing provision at the care provider location to median numbers of care beds at local, regional and national levels`}
                 source={
-                  '[Source: Capacity Tracker from the Department of Health and Social Care (DHSC)]'
+                  'Source: Capacity Tracker from the Department of Health and Social Care (DHSC)'
                 }
                 columnHeaders={locationNamesCP}
                 rowHeaders={careProviderRowHeaders}
