@@ -71,16 +71,6 @@ const PercentageBedsOccupied: React.FC = () => {
 
                 <tr className="govuk-table__row">
                   <th scope="row" className="govuk-table__header">
-                    Data available for
-                  </th>
-                  <td className="govuk-table__cell">
-                    [Generated automatically, e.g. 5 February 2019 to 5 February
-                    2025]
-                  </td>
-                </tr>
-
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
                     Methodology
                   </th>
                   <td className="govuk-table__cell">
