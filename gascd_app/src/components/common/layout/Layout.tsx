@@ -22,8 +22,8 @@ type Props = {
   children?: ReactNode;
   breadcrumbs?: Array<Breadcrumb>;
   autoSpaceMainContent?: boolean;
-  showLoginInformation: boolean;
-  currentPage: string;
+  showLoginInformation?: boolean;
+  currentPage?: string;
   backURL?: string;
   showNavBar?: boolean;
   session?: Session | null;
@@ -69,7 +69,6 @@ const Layout: React.FC<Props> = ({
             <PhaseBanner />
           </div>
         </div>
-        {/* {showNavBar && <Navbar currentPage={currentPage} /> } */}
         <div className="govuk-width-container">
           <div className="govuk-grid-row">
             <div className="govuk-grid-column-one-third">
