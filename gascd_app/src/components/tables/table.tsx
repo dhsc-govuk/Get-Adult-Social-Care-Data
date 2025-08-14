@@ -64,7 +64,7 @@ const DataTable: React.FC<DataTableProps> = ({
     if (columnIndex === 0) {
       return 'govuk-table__header govuk-!-width-one-third';
     } else {
-      return 'govuk-table__header';
+      return 'govuk-table__header govuk-table__cell--numeric';
     }
   };
   return (
@@ -98,7 +98,7 @@ const DataTable: React.FC<DataTableProps> = ({
                 {value}
               </th>
               {showCareProvider && (
-                <td className="govuk-table__cell">
+                <td className="govuk-table__cell govuk-table__cell--numeric">
                   {getFormattedDataPoint(
                     data,
                     getCareProviderKey(key, careProviderMedianMetrics),
@@ -108,7 +108,7 @@ const DataTable: React.FC<DataTableProps> = ({
                   )}
                 </td>
               )}
-              <td className="govuk-table__cell">
+              <td className="govuk-table__cell govuk-table__cell--numeric">
                 {getFormattedDataPoint(
                   data,
                   key,
@@ -117,7 +117,7 @@ const DataTable: React.FC<DataTableProps> = ({
                     false
                 )}
               </td>
-              <td className="govuk-table__cell">
+              <td className="govuk-table__cell govuk-table__cell--numeric">
                 {getFormattedDataPoint(
                   data,
                   key,
@@ -126,7 +126,7 @@ const DataTable: React.FC<DataTableProps> = ({
                     false
                 )}
               </td>
-              <td className="govuk-table__cell">
+              <td className="govuk-table__cell govuk-table__cell--numeric">
                 {getFormattedDataPoint(
                   data,
                   key,
