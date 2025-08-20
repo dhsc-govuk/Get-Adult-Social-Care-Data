@@ -26,6 +26,54 @@ describe('PresentDemandPage', () => {
       /Understanding current population needs and capacity for adult social care services helps identify where needs are being met and where gaps may exist./i
     );
     expect(bodyTextElement).toBeInTheDocument();
+
+    // Check that all main headings exist in the side menu
+    const sidenav = screen.getByLabelText('Side navigation');
+    expect(sidenav).toBeInTheDocument();
+    const sidenav_links = sidenav.getElementsByTagName('a');
+    const sidenav_urls = [];
+    for (let link of sidenav_links) {
+      sidenav_urls.push(link.innerHTML);
+    }
+    const expected_headings = [
+      'Your selected locations',
+      'Drivers of population needs',
+      'Current capacity - care homes: local authority-level insights',
+      'Current capacity - care homes: care provider-level insights',
+      'Indicator definitions and supporting information',
+      'Find more information on your local care market',
+    ];
+    for (let heading_text of expected_headings) {
+      expect(
+        screen.getByRole('heading', { name: heading_text })
+      ).toBeInTheDocument();
+      expect(sidenav_urls).toContain(heading_text);
+    }
+  });
+
+  it('should render the user care location', async () => {
+    const laCode: Locations = {
+      provider_location_id: '',
+      provider_location_name: 'Care4all',
+      provider_id: '',
+      provider_name: '',
+      la_code: '',
+      la_name: 'Caringtown',
+      region_code: '',
+      region_name: 'Careston',
+      country_code: '',
+      country_name: 'UK',
+      load_date_time: '',
+    };
+    jest
+      .spyOn(PresentDemandService, 'getLocations')
+      .mockResolvedValue(Promise.resolve(laCode as any));
+
+    renderWithSession(<PresentDemandPage />);
+
+    const location_label = await screen.findByTestId('location-names');
+    expect(location_label).toBeInTheDocument();
+    expect(location_label.innerHTML).toBe('Care4all, Caringtown, Careston, UK');
   });
 
   it('should render an MSP statement', async () => {

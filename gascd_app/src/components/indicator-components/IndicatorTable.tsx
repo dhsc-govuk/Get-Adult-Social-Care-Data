@@ -243,7 +243,7 @@ const IndicatorTable: React.FC<Props> = ({
           <div ref={barchartSVG} id="chart-container"></div>
           <br />
           <DownloadTableDataCSVLink
-            data={data}
+            rawdata={data}
             filename={chartDisplay ? chartDisplay[0].metric_name : 'Error'}
             xLabel={chartDisplay ? chartDisplay[0].numerator : 'Error'}
           />
@@ -292,7 +292,7 @@ const IndicatorTable: React.FC<Props> = ({
           </table>
           <div ref={lineGraphSVG} id="line-graph-container"></div>
           <DownloadTableDataCSVLink
-            data={data}
+            rawdata={data}
             filename={
               lineGraphDisplay ? lineGraphDisplay[0].metric_name : 'Error'
             }
@@ -347,22 +347,18 @@ const IndicatorTable: React.FC<Props> = ({
             data={tableFilteredData}
             showCareProvider={false}
           />
-          <p className="govuk-body" />
-          <DownloadTableDataCSVLink
-            data={data}
-            filename={chartDisplay ? chartDisplay[0].metric_name : 'Error'}
-            xLabel={chartDisplay ? chartDisplay[0].numerator : 'Error'}
-          />
-          <p className="govuk-body">Source: {tableDataSource}</p>
-          <br />
-          Data correct as of {tableDataLatestDate}
-          <br />
-          <a
-            href="/help/beds-per-100000-adult-population"
-            className="govuk-link"
-          >
-            View supporting information for this data
-          </a>
+          <p className="govuk-body">
+            Source: {tableDataSource}
+            <br />
+            Data correct as of {tableDataLatestDate}
+            <br />
+            <a
+              href="/help/beds-per-100000-adult-population"
+              className="govuk-link"
+            >
+              View supporting information for this data
+            </a>
+          </p>
         </div>
       </div>
     </>
