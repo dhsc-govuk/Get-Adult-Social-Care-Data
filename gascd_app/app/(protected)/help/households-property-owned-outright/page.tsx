@@ -44,7 +44,7 @@ const HouseholdsPropertyOwned = () => {
 
               <div className="govuk-summary-list__row">
                 <dt className="govuk-summary-list__key">Data correct as of</dt>
-                <dd className="govuk-summary-list__value"></dd>
+                <dd className="govuk-summary-list__value">21 March 2021</dd>
               </div>
 
               <div className="govuk-summary-list__row">

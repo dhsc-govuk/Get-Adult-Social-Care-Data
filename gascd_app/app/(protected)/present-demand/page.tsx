@@ -403,7 +403,7 @@ const PresentDemandPage: React.FC = () => {
                 source={`Source: Population estimates from the Office for National Statistics (ONS)`}
                 headers={{
                   total_population: 'Total adult population',
-                  perc_18_64: 'Aged 18-65',
+                  perc_18_64: 'Aged 18 to 64',
                   perc_65over: 'Aged 65 and over',
                   perc_75over: 'Aged 75 and over',
                   perc_85over: 'Aged 85 and over',
@@ -486,7 +486,7 @@ const PresentDemandPage: React.FC = () => {
 
             <div>
               <DemoGraphicTable
-                caption={`Table comparing dementia prevalence and dementia estimates in ${locationNames[1]} to regional and national statistics`}
+                caption={`Table comparing dementia prevalence and dementia diagnosis rate in ${locationNames[1]} to regional and national statistics`}
                 source={
                   'Source: Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
                 }
