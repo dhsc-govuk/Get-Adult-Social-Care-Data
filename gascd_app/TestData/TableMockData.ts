@@ -282,7 +282,7 @@ export const mockTableDataWithCareProvider = [
 
 export const mockTableRowHeaders = {
   total_population: 'Population',
-  perc_18_64: 'Aged 18-65',
+  perc_18_64: 'Aged 18 to 64',
   perc_65over: 'Aged 65 and over',
   perc_population_disability_disabled_total: 'Disability prevalence',
   dementia_register_65over_per100k: 'Registered dementia patients per 100,000',
