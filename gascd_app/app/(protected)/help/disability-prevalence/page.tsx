@@ -59,7 +59,7 @@ const DisabilyPrevalence: React.FC = () => {
                     Data correct as of
                   </th>
                   <td className="govuk-table__cell">
-                    [Generated automatically]
+                    21 March 2021
                   </td>
                 </tr>
                 <tr className="govuk-table__row">
