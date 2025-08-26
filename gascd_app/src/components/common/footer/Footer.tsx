@@ -47,6 +47,11 @@ const Footer: React.FC = () => {
                   </a>
                 </li>
               )}
+              <li className="govuk-footer__inline-list-item">
+                <a className="govuk-footer__link" href="/privacy-policy">
+                  Privacy
+                </a>
+              </li>
             </ul>
           </div>
           <div className="govuk-footer__meta-item">
