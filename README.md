@@ -77,13 +77,14 @@ The default auth provider is Azure B2C, which can be a hassle to set up if you'r
 * Add the following to your `gascd_app/.env` file
 ```bash
   LOCAL_AUTH=true
+  LOCAL_AUTH_PASSWORD=<my-ace-password>
   LOCAL_AUTH_LOCATION_TYPE=Care provider location
   LOCAL_AUTH_LOCATION_ID=testcpl1
 ```
 * Remove any existing AZURE_AD_* variables from your .env file
 * Start the app and sign in
 * The dummy auth provider will appear as an alternative when the default (Azure) auth method fails
-* Enter any email address in the 'dummy-creds' login box to authenticate
+* Enter any email address in the 'dummy-creds' login box, along with the password you set above
 
 ### Development database setup
 
@@ -153,6 +154,19 @@ You can log raw SQL queries to the terminal by running the app as follows:
 `DEBUG=mssql:* make run-dev`
 
 ## Continuous Integration, Development and Deployment
+
+### E2E tests
+
+There are some basic end-to-end tests written with cypress, which you can run against a local docker build.
+
+First ensure you have local auth and a local db set up and configured in your .env (see above). Then run:
+
+```bash
+# In one terminal
+make docker-up # or docker-up-rebuild
+# In a second terminal
+make test-e2e
+```
 
 ### CI/CD
 

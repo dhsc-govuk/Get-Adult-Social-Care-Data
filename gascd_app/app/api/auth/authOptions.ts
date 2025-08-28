@@ -121,7 +121,7 @@ export const authOptions: NextAuthOptions = {
 };
 
 // Dummy auth for local development only
-if (process.env.NODE_ENV != 'production' && process.env.LOCAL_AUTH == 'true') {
+if (process.env.LOCAL_AUTH == 'true' && process.env.LOCAL_AUTH_PASSWORD) {
   authOptions.providers.push(
     CredentialsProvider({
       id: 'dummy-creds',
@@ -132,15 +132,23 @@ if (process.env.NODE_ENV != 'production' && process.env.LOCAL_AUTH == 'true') {
           type: 'email',
           placeholder: 'test@example.com',
         },
+        password: {
+          label: 'password',
+          type: 'password',
+        },
       },
       async authorize(credentials, req) {
-        // Gives a mock user matching the email address provided
-        const mockUser = {
-          id: 'test-user-123',
-          name: 'Test User',
-          email: credentials?.email,
-        };
-        return mockUser;
+        if (credentials?.password == process.env.LOCAL_AUTH_PASSWORD) {
+          // Gives a mock user matching the email address provided
+          const mockUser = {
+            id: 'test-user-123',
+            name: 'Test User',
+            email: credentials?.email,
+          };
+          return mockUser;
+        } else {
+          return null;
+        }
       },
     })
   );
