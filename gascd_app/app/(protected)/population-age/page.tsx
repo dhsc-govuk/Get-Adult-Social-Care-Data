@@ -219,7 +219,12 @@ export default function PopulationAgePage() {
                   location.
                 </p>
                 <p className="govuk-body">
-                  <a href={mapAlternative} target="_blank" rel="noreferrer">
+                  <a
+                    href={mapAlternative}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="govuk-link"
+                  >
                     View the map on the Office for National Statistics website
                     (opens in new tab)
                   </a>
