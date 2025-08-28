@@ -50,16 +50,9 @@ const PercentageBedsOccupied: React.FC = () => {
                       href="https://www.necsu.nhs.uk/digital-applications/capacity-tracker/"
                       className="govuk-link"
                       target="_blank"
-                    ></Link>
-                    Capacity Tracker (opens in new tab)
-                  </td>
-                </tr>
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
-                    Data correct as of
-                  </th>
-                  <td className="govuk-table__cell">
-                    [Generated automatically]
+                    >
+                      Capacity Tracker (opens in new tab)
+                    </Link>
                   </td>
                 </tr>
                 <tr className="govuk-table__row">
