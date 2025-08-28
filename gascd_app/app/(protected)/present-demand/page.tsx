@@ -616,7 +616,7 @@ const PresentDemandPage: React.FC = () => {
                       metric.location_type === 'Care provider location'
                   )?.data_point ?? 'Loading...'}{' '}
                 </strong>
-                total beds, compared to the media (
+                total beds, compared to the median (
                 {finalCpData.find(
                   (metric) =>
                     metric.metric_id === 'median_bed_count_total' &&
