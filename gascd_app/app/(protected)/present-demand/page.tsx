@@ -555,7 +555,7 @@ const PresentDemandPage: React.FC = () => {
                   )?.data_point ?? 'Loading...'}{' '}
                   beds per 100,000 adult population
                 </strong>
-                , compared to the {locationNames[2]} average of{' '}
+                , compared to the {locationNames[2]} regional average of{' '}
                 {filteredBedData.find(
                   (metric) =>
                     metric.metric_id === 'bedcount_per_100000_adults_total' &&
