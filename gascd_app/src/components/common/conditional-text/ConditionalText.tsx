@@ -96,8 +96,8 @@ const compareDriversConditionals = (
             {' '}
             operating at {localAuthority.data_point}% occupancy,{' '}
           </strong>
-          which is higher than the regional average of ({region.data_point}%).
-          This suggets a more limited capacity to meet population needs as the
+          which is higher than the regional average ({region.data_point}%). This
+          suggests a more limited capacity to meet population needs as the
           regional average.
         </>
       );
@@ -110,9 +110,9 @@ const compareDriversConditionals = (
             {' '}
             operating at {localAuthority.data_point}% occupancy,{' '}
           </strong>
-          which is lower than the regional average of ({region.data_point}%).
-          This suggests a greater capacity to meet population needs as the
-          regional average.
+          which is lower than the regional average ({region.data_point}%). This
+          suggests a greater capacity to meet population needs as the regional
+          average.
         </>
       );
     }
@@ -123,9 +123,9 @@ const compareDriversConditionals = (
           {' '}
           operating at {localAuthority.data_point}% occupancy,
         </strong>{' '}
-        which is in line with the regional average of ({region.data_point}%).
-        This suggests a similar capacity to meet population needs as the
-        regional average.
+        which is in line with the regional average ({region.data_point}%). This
+        suggests a similar capacity to meet population needs as the regional
+        average.
       </>
     );
   }

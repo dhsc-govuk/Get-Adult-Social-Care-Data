@@ -78,7 +78,7 @@ describe('Tests for the conditional text component', () => {
     );
 
     expect(screen.getByRole('paragraph')).toHaveTextContent(
-      'Care homes in Northumberland are operating at 35% occupancy, which is higher than the regional average of (25%). This suggets a more limited capacity to meet population needs as the regional average.'
+      'Care homes in Northumberland are operating at 35% occupancy, which is higher than the regional average (25%). This suggests a more limited capacity to meet population needs as the regional average.'
     );
   });
 
@@ -93,7 +93,7 @@ describe('Tests for the conditional text component', () => {
     );
 
     expect(screen.getByRole('paragraph')).toHaveTextContent(
-      'Care homes in Northumberland are operating at 20% occupancy, which is lower than the regional average of (25%). This suggests a greater capacity to meet population needs as the regional average.'
+      'Care homes in Northumberland are operating at 20% occupancy, which is lower than the regional average (25%). This suggests a greater capacity to meet population needs as the regional average.'
     );
   });
 
@@ -108,7 +108,7 @@ describe('Tests for the conditional text component', () => {
     );
 
     expect(screen.getByRole('paragraph')).toHaveTextContent(
-      'Care homes in Northumberland are operating at 20% occupancy, which is in line with the regional average of (20%). This suggests a similar capacity to meet population needs as the regional average.'
+      'Care homes in Northumberland are operating at 20% occupancy, which is in line with the regional average (20%). This suggests a similar capacity to meet population needs as the regional average.'
     );
   });
 
