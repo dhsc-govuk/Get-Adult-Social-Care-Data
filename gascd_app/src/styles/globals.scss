@@ -20,3 +20,8 @@ html, body {
     margin-top: -40px;
   }
 }
+
+// bodge some non-bulletted lists
+ul.nobullet {
+  list-style-type: none;
+}
