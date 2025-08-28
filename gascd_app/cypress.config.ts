@@ -12,5 +12,7 @@ export default defineConfig({
     experimentalModifyObstructiveThirdPartyCode: true,
     baseUrl: process.env.CYPRESS_BASE_URL,
     specPattern: 'cypress/e2e/**/*.spec.{js,jsx,ts,tsx}',
+    // Give nextjs a bit more time to respond
+    defaultCommandTimeout: 10000,
   },
 });
