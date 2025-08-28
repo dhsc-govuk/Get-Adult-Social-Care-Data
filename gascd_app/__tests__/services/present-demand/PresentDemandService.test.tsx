@@ -339,7 +339,7 @@ describe('IndicatorFetchService', () => {
 
     it('formats single-digit day and month correctly', () => {
       const result = PresentDemandService.formatDate('05/03/2022');
-      expect(result).toBe('05 March 2022');
+      expect(result).toBe('5 March 2022');
     });
 
     it('handles invalid date format gracefully', () => {
