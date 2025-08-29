@@ -22,7 +22,7 @@ test: gascd_app/node_modules
 
 test-e2e: gascd_app/node_modules
 	cd gascd_app; \
-     ${NPM_COMMAND} run cypress:headless
+     CYPRESS_BASE_URL=http://localhost:3000/ ${NPM_COMMAND} run cypress
 
 setup-husky: gascd_app/node_modules
 	cd gascd_app; \
