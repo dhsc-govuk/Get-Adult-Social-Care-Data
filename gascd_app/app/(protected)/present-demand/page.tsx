@@ -555,7 +555,7 @@ const PresentDemandPage: React.FC = () => {
                   )?.data_point ?? 'Loading...'}{' '}
                   beds per 100,000 adult population
                 </strong>
-                , compared to the {locationNames[2]} average of{' '}
+                , compared to the {locationNames[2]} regional average of{' '}
                 {filteredBedData.find(
                   (metric) =>
                     metric.metric_id === 'bedcount_per_100000_adults_total' &&
@@ -616,7 +616,7 @@ const PresentDemandPage: React.FC = () => {
                       metric.location_type === 'Care provider location'
                   )?.data_point ?? 'Loading...'}{' '}
                 </strong>
-                total beds, compared to the media (
+                total beds, compared to the median (
                 {finalCpData.find(
                   (metric) =>
                     metric.metric_id === 'median_bed_count_total' &&

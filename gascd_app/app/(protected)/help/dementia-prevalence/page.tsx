@@ -43,7 +43,7 @@ const DementiaPrevalence = () => {
 
               <div className="govuk-summary-list__row">
                 <dt className="govuk-summary-list__key">Data correct as of</dt>
-                <dd className="govuk-summary-list__value">01 October 2024</dd>
+                <dd className="govuk-summary-list__value">1 October 2024</dd>
               </div>
 
               <div className="govuk-summary-list__row">
