@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "husky:init": "cd .. && husky gascd_app/.husky",
     "start": "next start",
@@ -26,7 +26,7 @@
     "@azure/monitor-opentelemetry": "^1.11.1",
     "@microsoft/applicationinsights-react-js": "^19.3.7",
     "@microsoft/applicationinsights-web": "^3.3.9",
-    "@next/eslint-plugin-next": "^15.2.4",
+    "@next/eslint-plugin-next": "15.5.2",
     "@opentelemetry/auto-instrumentations-node": "^0.62.0",
     "@playwright/test": "^1.51.1",
     "@types/d3": "^7.4.3",
@@ -39,11 +39,11 @@
     "jwks-rsa": "^3.1.0",
     "mssql": "^11.0.1",
     "msw": "^2.7.3",
-    "next": "^15.2.4",
+    "next": "15.5.2",
     "next-auth": "^4.24.11",
     "playwright": "^1.51.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
     "winston": "^3.17.0"
   },
   "devDependencies": {
@@ -56,8 +56,8 @@
     "@types/jest": "^29.5.14",
     "@types/mssql": "^9.1.6",
     "@types/node": "^24.1.0",
-    "@types/react": "^19.0.3",
-    "@types/react-dom": "^19.0.3",
+    "@types/react": "19.1.12",
+    "@types/react-dom": "19.1.9",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "axe-html-reporter": "^2.2.11",
@@ -82,5 +82,9 @@
     "ts-node": "^10.9.2",
     "typescript": "5.7.2",
     "typescript-eslint": "^8.0.1"
+  },
+  "overrides": {
+    "@types/react": "19.1.12",
+    "@types/react-dom": "19.1.9"
   }
 }
