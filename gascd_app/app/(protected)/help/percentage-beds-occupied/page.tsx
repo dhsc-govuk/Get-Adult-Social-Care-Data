@@ -8,6 +8,7 @@ const PercentageBedsOccupied: React.FC = () => {
   return (
     <>
       <Layout
+        title="Indicator definition: Percentage of adult social care beds occupied"
         showLoginInformation={false}
         backURL="/present-demand"
         currentPage={'percentage beds occupied'}
@@ -49,16 +50,9 @@ const PercentageBedsOccupied: React.FC = () => {
                       href="https://www.necsu.nhs.uk/digital-applications/capacity-tracker/"
                       className="govuk-link"
                       target="_blank"
-                    ></Link>
-                    Capacity Tracker (opens in new tab)
-                  </td>
-                </tr>
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
-                    Data correct as of
-                  </th>
-                  <td className="govuk-table__cell">
-                    [Generated automatically]
+                    >
+                      Capacity Tracker (opens in new tab)
+                    </Link>
                   </td>
                 </tr>
                 <tr className="govuk-table__row">
@@ -66,16 +60,6 @@ const PercentageBedsOccupied: React.FC = () => {
                     Update frequency
                   </th>
                   <td className="govuk-table__cell">Daily</td>
-                </tr>
-
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
-                    Data available for
-                  </th>
-                  <td className="govuk-table__cell">
-                    [Generated automatically, e.g. 5 February 2019 to 5 February
-                    2025]
-                  </td>
                 </tr>
 
                 <tr className="govuk-table__row">

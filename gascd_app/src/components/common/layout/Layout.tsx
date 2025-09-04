@@ -14,22 +14,23 @@ import { focusMainContent } from '../../../helpers/ManageFocus';
 import PhaseBanner from '../phase-banner/PhaseBanner';
 import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
 import { Breadcrumb } from '../../../data/interfaces/Breadcrumb';
-// import LoginInformation from '../../util-components/login-information/LoginInformation';
 import Navbar from '../navbar/Navbar';
 import { Session } from 'next-auth';
 
 type Props = {
+  title: string;
   children?: ReactNode;
   breadcrumbs?: Array<Breadcrumb>;
   autoSpaceMainContent?: boolean;
-  showLoginInformation: boolean;
-  currentPage: string;
+  showLoginInformation?: boolean;
+  currentPage?: string;
   backURL?: string;
   showNavBar?: boolean;
   session?: Session | null;
 };
 
 const Layout: React.FC<Props> = ({
+  title,
   children,
   breadcrumbs,
   showLoginInformation,
@@ -39,26 +40,18 @@ const Layout: React.FC<Props> = ({
   backURL,
   session,
 }) => {
+  const title_suffix = 'Get adult social care data - GOV.UK';
+  const full_title = title + ' - ' + title_suffix;
   const layoutRef = useRef<HTMLDivElement | null>(null);
   const mainRef = useRef<HTMLDivElement | null>(null);
-  const [pageTitle, setPageTitle] = useState(
-    'Get adult social care data - GOV.UK'
-  );
 
   useEffect(() => {
     initAll();
-
-    const titleElement = document.querySelector('h1');
-    if (titleElement) {
-      setPageTitle(
-        titleElement.innerText + ' - Get adult social care data - GOV.UK'
-      );
-    }
-  }, [children]);
+  });
 
   return (
     <>
-      <title>{pageTitle}</title>
+      <title>{full_title}</title>
       <div ref={layoutRef} tabIndex={-1} id="layout">
         <a
           href="#main-content"
@@ -76,7 +69,6 @@ const Layout: React.FC<Props> = ({
             <PhaseBanner />
           </div>
         </div>
-        {/* {showNavBar && <Navbar currentPage={currentPage} /> } */}
         <div className="govuk-width-container">
           <div className="govuk-grid-row">
             <div className="govuk-grid-column-one-third">

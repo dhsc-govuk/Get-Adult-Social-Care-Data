@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
+import Feedback from '../../../src/components/common/feedback/Feedback';
 import { useSession } from 'next-auth/react';
 
 const HomePage: React.FC = () => {
@@ -9,6 +10,7 @@ const HomePage: React.FC = () => {
   return (
     <>
       <Layout
+        title="Home"
         autoSpaceMainContent={false}
         showLoginInformation={true}
         currentPage="home"
@@ -47,6 +49,14 @@ const HomePage: React.FC = () => {
                 at local levels in England.
               </p>
             </a>
+          </div>
+        </div>
+
+        <hr className="govuk-section-break govuk-section-break--xl govuk-section-break--visible"></hr>
+
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <Feedback highlight={false} />
           </div>
         </div>
       </Layout>

@@ -8,6 +8,7 @@ import PresentDemandService from '@/services/present-demand/presentDemandService
 import { Locations } from '@/data/interfaces/Locations';
 import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
 import LogService from '@/services/logger/logService';
+import Feedback from '@/components/common/feedback/Feedback';
 
 export default function PopulationAgePage() {
   const { data: session, status } = useSession();
@@ -90,6 +91,7 @@ export default function PopulationAgePage() {
   return (
     <>
       <Layout
+        title="Population age percentages"
         autoSpaceMainContent={false}
         showLoginInformation={true}
         backURL="/home"
@@ -217,7 +219,12 @@ export default function PopulationAgePage() {
                   location.
                 </p>
                 <p className="govuk-body">
-                  <a href={mapAlternative} target="_blank" rel="noreferrer">
+                  <a
+                    href={mapAlternative}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="govuk-link"
+                  >
                     View the map on the Office for National Statistics website
                     (opens in new tab)
                   </a>
@@ -248,15 +255,8 @@ export default function PopulationAgePage() {
 
             {mapAvailable && (
               <p className="govuk-body">
-                Source:{' '}
-                <a
-                  href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/populationestimatesforenglandandwales/mid2023"
-                  className="govuk-link"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Office for National Statistics (opens in new tab)
-                </a>
+                Source: Population estimates from the Office for National
+                Statistics (ONS)
                 <br />
                 Data correct as of March 2021
               </p>
@@ -267,28 +267,53 @@ export default function PopulationAgePage() {
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
             <h2 className="govuk-heading-m govuk-!-margin-top-9" id="footnotes">
-              Footnotes
+              Indicator definitions and supporting information
             </h2>
             <p className="govuk-body">
-              Find out how each indicator is defined, sourced, and updated.
-            </p>
-            <p className="govuk-body">
-              Select an indicator to view its footnotes:
+              Find detailed information about each indicator, including data
+              definitions, data source, update schedule, and any limitations to
+              be aware of before using the data.
             </p>
             <ul className="govuk-list govuk-list--bullet">
               <li>
-                <a href="../help/population-size" className="govuk-link">
+                <a href="/help/population-size" className="govuk-link">
                   Population size
                 </a>
               </li>
               <li>
-                <a href="../help/population-age" className="govuk-link">
-                  Percentage of population in age group
+                <a href="/help/population-age" className="govuk-link">
+                  Population age
                 </a>
               </li>
             </ul>
           </div>
         </div>
+
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <div className="govuk-!-margin-top-9">
+              <Feedback />
+            </div>
+          </div>
+        </div>
+
+        <details className="govuk-details govuk-!-margin-top-9">
+          <summary className="govuk-details__summary">
+            <span className="govuk-details__summary-text">
+              Get help with this page
+            </span>
+          </summary>
+          <div className="govuk-details__text">
+            If you have any issues using this service, email{' '}
+            <a
+              href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
+              className="govuk-link"
+            >
+              getadultsocialcaredata.team@dhsc.gov.uk
+            </a>
+            .
+          </div>
+        </details>
       </Layout>
     </>
   );

@@ -20,6 +20,10 @@ test: gascd_app/node_modules
 	cd gascd_app; \
      ${NPM_COMMAND} run test
 
+test-e2e: gascd_app/node_modules
+	cd gascd_app; \
+     CYPRESS_BASE_URL=http://localhost:3000/ ${NPM_COMMAND} run cypress:headless
+
 setup-husky: gascd_app/node_modules
 	cd gascd_app; \
      ${NPM_COMMAND} run husky:init
@@ -30,10 +34,10 @@ docker-rebuild-no-cache:
 	docker-compose -f ./gascd_app/docker-compose.yml build --no-cache 
 
 docker-up:
-	docker-compose -f ./gascd_app/docker-compose.yml up -d
+	docker-compose -f ./gascd_app/docker-compose.yml up
 
 docker-up-rebuild:	
-	docker-compose -f ./gascd_app/docker-compose.yml up -d --build --force-recreate
+	docker-compose -f ./gascd_app/docker-compose.yml up --build --force-recreate
 
 docker-down:
 	docker-compose -f ./gascd_app/docker-compose.yml down

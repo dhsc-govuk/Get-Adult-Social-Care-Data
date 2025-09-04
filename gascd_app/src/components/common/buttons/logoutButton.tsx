@@ -34,8 +34,7 @@ const LogoutButton: React.FC = () => {
     if (logoutUrl) {
       window.location.href = logoutUrl;
     } else {
-      // Force reload to reflect signout
-      window.location.reload();
+      window.location.href = '/login';
     }
   };
 

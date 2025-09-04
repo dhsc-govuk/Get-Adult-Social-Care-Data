@@ -8,6 +8,7 @@ const BedsCareProviderLocations: React.FC = () => {
   return (
     <>
       <Layout
+        title="Indicator definition: Number of adult social care beds in care provider location"
         backURL="/present-demand"
         showLoginInformation={false}
         currentPage={'beds care provider locations'}
@@ -55,27 +56,9 @@ const BedsCareProviderLocations: React.FC = () => {
                 </tr>
                 <tr className="govuk-table__row">
                   <th scope="row" className="govuk-table__header">
-                    Data correct as of
-                  </th>
-                  <td className="govuk-table__cell">
-                    [Generated automatically]
-                  </td>
-                </tr>
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
                     Update frequency
                   </th>
                   <td className="govuk-table__cell">Daily</td>
-                </tr>
-
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
-                    Data available for
-                  </th>
-                  <td className="govuk-table__cell">
-                    [Generated automatically, e.g. 5 February 2019 to 5 February
-                    2025]
-                  </td>
                 </tr>
 
                 <tr className="govuk-table__row">

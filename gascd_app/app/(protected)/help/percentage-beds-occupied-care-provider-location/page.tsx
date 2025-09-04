@@ -9,6 +9,7 @@ const PercentageBedsOccupiedCareProviders: React.FC = () => {
   return (
     <>
       <Layout
+        title="Indicator definition: Percentage of adult social care beds occupied in care provider location"
         showLoginInformation={false}
         currentPage={'beds care provider location'}
         backURL="/present-demand"
@@ -57,28 +58,11 @@ const PercentageBedsOccupiedCareProviders: React.FC = () => {
                 </tr>
                 <tr className="govuk-table__row">
                   <th scope="row" className="govuk-table__header">
-                    Data correct as of
-                  </th>
-                  <td className="govuk-table__cell">
-                    [Generated automatically]
-                  </td>
-                </tr>
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
                     Update frequency
                   </th>
                   <td className="govuk-table__cell">Daily</td>
                 </tr>
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
-                    Data available for
-                  </th>
-                  <td className="govuk-table__cell">
-                    {' '}
-                    [Generated automatically, e.g. 5 February 2019 to 5 February
-                    2025]
-                  </td>
-                </tr>
+
                 <tr className="govuk-table__row">
                   <th scope="row" className="govuk-table__header">
                     Methodology

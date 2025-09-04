@@ -64,6 +64,7 @@ const PresentDemandLocations: React.FC = () => {
   return (
     <>
       <Layout
+        title="Adult social care beds per 100,000 adult population"
         autoSpaceMainContent={false}
         showLoginInformation={true}
         currentPage="present-demand-locations"

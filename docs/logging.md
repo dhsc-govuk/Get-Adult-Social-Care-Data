@@ -1,13 +1,17 @@
 # Logging / Telemetry overview
 
-This application is set up to send logs and telemetry to Azure App Insights, using a combination of:
+This application is set up to send usage analytics, logs and telemetry to Azure App Insights, using a combination of:
 
 * OpenTelemetry (via @azure/monitor-opentelemetry)
+* Browser Analytics (via @microsoft/applicationinsights-web)
 * Winston (https://github.com/winstonjs/winston)
 
 ## Configuration
 
 The environment variable `APPLICATIONINSIGHTS_CONNECTION_STRING` needs to be set to the Connection String of the relevant Azure App Insights resource. In production this is handled automatically by the terraform infra repo.
+
+Browser analytics are connected to a separate App Insights resource (as the key is exposed publically). This is
+configured via the following environment variable: `BROWSER_APPLICATIONINSIGHTS_CONNECTION_STRING`.
 
 ## HTTP Request telemetry
 

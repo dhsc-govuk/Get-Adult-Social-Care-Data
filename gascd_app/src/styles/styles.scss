@@ -3,17 +3,6 @@
   * Global service pages (Get adult social care data)
 *****/
 
-/* Fix to address the lack of GOV.UK Design System (Frontend) CSS classes being applied across all HTML DOM elements */
-h1, h2, h3, p, ul, ol {
-  font-family: "GDS Transport", arial, sans-serif;
-}
-
-p, ul, ol {
-  font-size: 1.1875rem;
-  line-height: 1.3157894737;
-  color: #0b0c0c
-}
-
 /* Expansion on the GOV.UK Design System service navigation component https://design-system.service.gov.uk/components/service-navigation) to include the recommended 'Sign out' button (https://govuk-frontend-review.herokuapp.com/full-page-examples/companies-you-follow-slot) */
 
 /* When the 'Sign out' link is with other items */
@@ -87,4 +76,42 @@ p, ul, ol {
 
 .app-card__heading {
   color: #005ea5;
+}
+
+/* Hide the Open Government Licence (OGL) icon, content and link in the footer */
+.govuk-footer__inline-list {
+  margin-bottom: 0;
+}
+
+.govuk-footer__inline-list-item {
+  margin-bottom: 0;
+}
+
+.govuk-footer__licence-logo {
+  display: none;
+}
+
+.govuk-footer__licence-description {
+  display: none;
+}
+
+/* Expansion on the GOV.UK Design System radio component https://design-system.service.gov.uk/components/radio) to stop inline radio buttons labels wrapping */
+.govuk-radios--inline {
+  text-wrap-mode: nowrap;
+}
+
+/* Component used on GOV.UK to distinguish a section needing focus (e.g. feedback) */
+.call-to-action {
+  margin: 0 0 20px 0;
+  background-color: #f3f2f1;
+  padding: 30px;
+  padding-bottom: 10px;
+}
+@media print {
+  .call-to-action {
+    background: none;
+    border: 1pt solid #b1b4b6;
+    padding: 15px;
+    margin: 15px 0;
+  }
 }
