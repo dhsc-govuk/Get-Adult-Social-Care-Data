@@ -8,8 +8,12 @@ import PresentDemandService from '@/services/present-demand/presentDemandService
 // Mock out things we are not testing at the moment to prevent them making api requests
 jest.mock('@/components/common/buttons/logoutButton');
 jest.mock('@/services/logger/logService');
-//jest.mock('@/services/present-demand/presentDemandService')
 jest.mock('@/services/indicator/IndicatorFetchService');
+
+beforeEach(() => {
+  // Stop localstorage usage interfering with other tests
+  window.localStorage.clear();
+});
 
 // This is NOT currently a good test of most of the page functionality,
 // but we have to start somewhere eh?
@@ -57,7 +61,7 @@ describe('PresentDemandPage', () => {
       provider_location_name: 'Care4all',
       provider_id: '',
       provider_name: '',
-      la_code: '',
+      la_code: 'testla1',
       la_name: 'Caringtown',
       region_code: '',
       region_name: 'Careston',
@@ -65,6 +69,7 @@ describe('PresentDemandPage', () => {
       country_name: 'UK',
       load_date_time: '',
     };
+    const allowed_locations = [{ metric_location_id: 'testlocation1' }];
     jest
       .spyOn(PresentDemandService, 'getLocations')
       .mockResolvedValue(Promise.resolve(laCode as any));

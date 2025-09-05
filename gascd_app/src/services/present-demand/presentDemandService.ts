@@ -73,7 +73,7 @@ class PresentDemandService {
     // XXX - this should ideally be handled by a completely different permissions setup
     const valid_locations = await this.getAvailableLocations(userLocationId);
     const valid_location_ids = valid_locations.map(
-      (item) => item.metric_location_id
+      (item: any) => item.metric_location_id
     );
     return valid_location_ids.includes(cpLocationID);
   }
