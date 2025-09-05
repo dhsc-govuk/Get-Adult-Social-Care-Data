@@ -9,7 +9,10 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import TableService from '@/services/Table/TableService';
 import IndicatorDisplayService from '@/services/indicator/IndicatorDisplayService';
-import Link from 'next/link';
+import {
+  Tabs,
+  createAll,
+} from '../../../public/govuk-frontend/js/govuk-frontend.min.js';
 
 type Props = {
   data: BarchartData[];
@@ -78,6 +81,7 @@ const IndicatorTable: React.FC<Props> = ({
   });
 
   useEffect(() => {
+    createAll(Tabs);
     if (locationLAId) {
       setLocalAuthority(locationLAId);
     }
