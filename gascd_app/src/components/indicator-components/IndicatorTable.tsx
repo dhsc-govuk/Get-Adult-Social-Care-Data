@@ -211,7 +211,7 @@ const IndicatorTable: React.FC<Props> = ({
           <h2 className="govuk-heading-m">Bar chart</h2>
           <p className="govuk-body">
             This chart shows data for all local authorities in{' '}
-            {locationNames[1]}.
+            {locationNames[2]}.
           </p>
           <table className="govuk-table">
             <tbody className="govuk-table__body">
