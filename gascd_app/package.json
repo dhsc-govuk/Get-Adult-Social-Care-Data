@@ -31,7 +31,6 @@
     "@opentelemetry/auto-instrumentations-node": "^0.62.0",
     "@playwright/test": "^1.51.1",
     "@types/d3": "^7.4.3",
-    "axios": "^1.7.5",
     "d3": "^7.9.0",
     "govuk-frontend": "^5.11.2",
     "history": "^5.3.0",
