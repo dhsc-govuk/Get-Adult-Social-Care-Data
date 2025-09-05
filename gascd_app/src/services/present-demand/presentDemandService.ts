@@ -158,7 +158,7 @@ class PresentDemandService {
     const date = new Date(year, month - 1, day);
 
     return new Intl.DateTimeFormat('en-GB', {
-      day: '2-digit',
+      day: 'numeric',
       month: 'long',
       year: 'numeric',
     }).format(date);

@@ -10,10 +10,7 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
-  if (
-    process.env.NODE_ENV != 'production' &&
-    process.env.LOCAL_AUTH == 'true'
-  ) {
+  if (process.env.LOCAL_AUTH == 'true') {
     if (session?.user) {
       // Skip jwt validation if doing local auth
       return <>{children}</>;

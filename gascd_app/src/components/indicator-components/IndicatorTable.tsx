@@ -9,7 +9,10 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import TableService from '@/services/Table/TableService';
 import IndicatorDisplayService from '@/services/indicator/IndicatorDisplayService';
-import Link from 'next/link';
+import {
+  Tabs,
+  createAll,
+} from '../../../public/govuk-frontend/js/govuk-frontend.min.js';
 
 type Props = {
   data: BarchartData[];
@@ -78,6 +81,7 @@ const IndicatorTable: React.FC<Props> = ({
   });
 
   useEffect(() => {
+    createAll(Tabs);
     if (locationLAId) {
       setLocalAuthority(locationLAId);
     }
@@ -210,7 +214,8 @@ const IndicatorTable: React.FC<Props> = ({
         <div className="govuk-tabs__panel" id="chart">
           <h2 className="govuk-heading-m">Bar chart</h2>
           <p className="govuk-body">
-            This chart shows data for all local authorities in {locationName}.
+            This chart shows data for all local authorities in{' '}
+            {locationNames[2]}.
           </p>
           <table className="govuk-table">
             <tbody className="govuk-table__body">
@@ -219,7 +224,7 @@ const IndicatorTable: React.FC<Props> = ({
                   Filter
                 </th>
                 <td className="govuk-table__cell">
-                  <ul className="moj-side-navigation__list">
+                  <ul className="govuk-!-margin-top-0 nobullet">
                     {selectedChartFilters.map((filter, index) => (
                       <li key={index}>{filter}</li>
                     ))}
@@ -236,7 +241,7 @@ const IndicatorTable: React.FC<Props> = ({
               </tr>
             </tbody>
           </table>
-          <h3>
+          <h3 className="govuk-heading-s">
             Adult social care beds per 100,000 adult population by local
             authority
           </h3>
@@ -273,7 +278,7 @@ const IndicatorTable: React.FC<Props> = ({
                   Filter
                 </th>
                 <td className="govuk-table__cell">
-                  <ul className="moj-side-navigation__list">
+                  <ul className="govuk-!-margin-top-0 nobullet">
                     {selectedLineFilters.map((filter, index) => (
                       <li key={index}>{filter}</li>
                     ))}
@@ -290,6 +295,10 @@ const IndicatorTable: React.FC<Props> = ({
               </tr>
             </tbody>
           </table>
+          <h3 className="govuk-heading-s">
+            Adult social care beds per 100,000 adult population in{' '}
+            {locationNames[1]}
+          </h3>
           <div ref={lineGraphSVG} id="line-graph-container"></div>
           <DownloadTableDataCSVLink
             rawdata={data}
@@ -324,7 +333,7 @@ const IndicatorTable: React.FC<Props> = ({
                   Filters
                 </th>
                 <td className="govuk-table__cell">
-                  <ul className="moj-side-navigation__list">
+                  <ul className="govuk-!-margin-top-0 nobullet">
                     {selectedTableFilters?.map((filter, index) => (
                       <li key={index}>{filter}</li>
                     ))}
@@ -342,16 +351,14 @@ const IndicatorTable: React.FC<Props> = ({
             </tbody>
           </table>
           <DataTable
+            caption="Adult social care beds per 100,000 adult population"
             columnHeaders={locationNames}
             rowHeaders={rowHeaders ?? {}}
             data={tableFilteredData}
             showCareProvider={false}
+            source={tableDataSource}
           />
           <p className="govuk-body">
-            Source: {tableDataSource}
-            <br />
-            Data correct as of {tableDataLatestDate}
-            <br />
             <a
               href="/help/beds-per-100000-adult-population"
               className="govuk-link"

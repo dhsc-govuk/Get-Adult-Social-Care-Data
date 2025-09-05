@@ -20,6 +20,10 @@ test: gascd_app/node_modules
 	cd gascd_app; \
      ${NPM_COMMAND} run test
 
+test-e2e: gascd_app/node_modules
+	cd gascd_app; \
+     CYPRESS_BASE_URL=http://localhost:3000/ ${NPM_COMMAND} run cypress:headless
+
 setup-husky: gascd_app/node_modules
 	cd gascd_app; \
      ${NPM_COMMAND} run husky:init

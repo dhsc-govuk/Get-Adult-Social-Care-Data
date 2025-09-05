@@ -1,20 +1,10 @@
-'use client';
-import React, {
-  MouseEvent,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { initAll } from '../../../../public/govuk-frontend/js/govuk-frontend.min.js';
+import React, { ReactNode } from 'react';
 import Header from '../header/Header';
 import ServiceName from '../service-name/ServiceName';
 import Footer from '../footer/Footer';
-import { focusMainContent } from '../../../helpers/ManageFocus';
 import PhaseBanner from '../phase-banner/PhaseBanner';
 import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
 import { Breadcrumb } from '../../../data/interfaces/Breadcrumb';
-import Navbar from '../navbar/Navbar';
 import { Session } from 'next-auth';
 
 type Props = {
@@ -42,24 +32,12 @@ const Layout: React.FC<Props> = ({
 }) => {
   const title_suffix = 'Get adult social care data - GOV.UK';
   const full_title = title + ' - ' + title_suffix;
-  const layoutRef = useRef<HTMLDivElement | null>(null);
-  const mainRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    initAll();
-  });
 
   return (
     <>
       <title>{full_title}</title>
-      <div ref={layoutRef} tabIndex={-1} id="layout">
-        <a
-          href="#main-content"
-          className="govuk-skip-link"
-          onClick={(e: MouseEvent<HTMLAnchorElement>) =>
-            focusMainContent(e, mainRef)
-          }
-        >
+      <div tabIndex={-1} id="layout">
+        <a href="#main-content" className="govuk-skip-link">
           Skip to main content
         </a>
         <Header />
@@ -76,7 +54,6 @@ const Layout: React.FC<Props> = ({
             </div>
           </div>
           <main
-            ref={mainRef}
             id="main-content"
             className={
               autoSpaceMainContent
