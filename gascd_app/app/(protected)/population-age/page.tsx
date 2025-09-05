@@ -251,7 +251,9 @@ export default function PopulationAgePage() {
               </div>
             )}
 
-            {mapAvailable && !mapUrl && <p>Loading map...</p>}
+            {mapAvailable && !mapUrl && (
+              <p className="govuk-body">Loading map...</p>
+            )}
 
             {mapAvailable && (
               <p className="govuk-body">
