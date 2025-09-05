@@ -39,9 +39,13 @@ describe('User can navigate the key parts of the site', () => {
 
     // Scroll through the data visualisations
     cy.get('a').contains('Time series').click();
+    cy.contains('h2', 'Time series').should('be.visible');
     cy.get('a').contains('Map').click();
+    cy.contains('h2', 'Map').should('be.visible');
     cy.get('a').contains('Table').click();
+    cy.contains('h2', 'Table').should('be.visible');
     cy.get('a').contains('Bar chart').click();
+    cy.contains('h2', 'Bar chart').should('be.visible');
 
     // Head back
     cy.get('.govuk-back-link').click();
