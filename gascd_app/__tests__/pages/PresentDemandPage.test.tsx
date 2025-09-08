@@ -116,6 +116,8 @@ describe('PresentDemandPage', () => {
     await expect(screen.findByTestId('location-names')).rejects.toThrow(
       'Unable to find an element'
     );
+    // saved value is reset
+    expect(window.localStorage.getItem('selectedValue')).toBe(null);
   });
 
   it('should render an MSP statement', async () => {
