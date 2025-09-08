@@ -15,6 +15,21 @@ beforeEach(() => {
   window.localStorage.clear();
 });
 
+// An example care provider location
+const exampleLaCode: Locations = {
+  provider_location_id: '',
+  provider_location_name: 'Care4all',
+  provider_id: '',
+  provider_name: '',
+  la_code: 'testla1',
+  la_name: 'Caringtown',
+  region_code: '',
+  region_name: 'Careston',
+  country_code: '',
+  country_name: 'UK',
+  load_date_time: '',
+};
+
 // This is NOT currently a good test of most of the page functionality,
 // but we have to start somewhere eh?
 describe('PresentDemandPage', () => {
@@ -56,29 +71,51 @@ describe('PresentDemandPage', () => {
   });
 
   it('should render the user care location', async () => {
-    const laCode: Locations = {
-      provider_location_id: '',
-      provider_location_name: 'Care4all',
-      provider_id: '',
-      provider_name: '',
-      la_code: 'testla1',
-      la_name: 'Caringtown',
-      region_code: '',
-      region_name: 'Careston',
-      country_code: '',
-      country_name: 'UK',
-      load_date_time: '',
-    };
-    const allowed_locations = [{ metric_location_id: 'testlocation1' }];
     jest
       .spyOn(PresentDemandService, 'getLocations')
-      .mockResolvedValue(Promise.resolve(laCode as any));
+      .mockResolvedValue(Promise.resolve(exampleLaCode as any));
 
     renderWithSession(<PresentDemandPage />);
 
     const location_label = await screen.findByTestId('location-names');
     expect(location_label).toBeInTheDocument();
     expect(location_label.innerHTML).toBe('Care4all, Caringtown, Careston, UK');
+  });
+
+  it('should render the user care location for stored locations', async () => {
+    const allowed_locations = [{ metric_location_id: 'testlocation_another' }];
+    window.localStorage.setItem('selectedValue', 'testlocation_another');
+    jest
+      .spyOn(PresentDemandService, 'getLocations')
+      .mockResolvedValue(Promise.resolve(exampleLaCode as any));
+    jest
+      .spyOn(PresentDemandService, 'getAvailableLocations')
+      .mockResolvedValue(Promise.resolve(allowed_locations as any));
+
+    renderWithSession(<PresentDemandPage />);
+
+    const location_label = await screen.findByTestId('location-names');
+    expect(location_label).toBeInTheDocument();
+    expect(location_label.innerHTML).toBe('Care4all, Caringtown, Careston, UK');
+  });
+
+  it('should *not* the user care location if saved location is invalid', async () => {
+    const allowed_locations = [{ metric_location_id: 'testlocation1' }];
+    // Manually set the stored location to something invalid
+    window.localStorage.setItem('selectedValue', 'invalid');
+    jest
+      .spyOn(PresentDemandService, 'getLocations')
+      .mockResolvedValue(Promise.resolve(exampleLaCode as any));
+    jest
+      .spyOn(PresentDemandService, 'getAvailableLocations')
+      .mockResolvedValue(Promise.resolve(allowed_locations as any));
+
+    renderWithSession(<PresentDemandPage />);
+
+    // Element should not appear
+    await expect(screen.findByTestId('location-names')).rejects.toThrow(
+      'Unable to find an element'
+    );
   });
 
   it('should render an MSP statement', async () => {
