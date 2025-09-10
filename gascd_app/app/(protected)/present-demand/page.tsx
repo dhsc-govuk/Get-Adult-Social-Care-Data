@@ -103,22 +103,41 @@ const PresentDemandPage: React.FC = () => {
 
   useEffect(() => {
     const fetchCareProviderLocationName = async () => {
+      const userLocationId = session?.user.locationId;
+      if (!userLocationId) {
+        // Can't load any data without a valid user location
+        return;
+      }
+      let foundLocationId;
       const storedLocationId = localStorage.getItem('selectedValue');
       if (storedLocationId) {
-        setCPLocationId(storedLocationId);
-      } else if (session) {
+        // Check the stored value is actually valid
+        if (
+          await PresentDemandService.checkCPLocation(
+            storedLocationId,
+            userLocationId
+          )
+        ) {
+          foundLocationId = storedLocationId;
+        } else {
+          // Clear the local value if not valid
+          console.warn('Invalid stored CP value found. Removing.');
+          localStorage.removeItem('selectedValue');
+        }
+      } else {
+        // get it from the user
         if (session.user.locationType == 'Care provider') {
-          const locationId = await PresentDemandService.getDefaultCPLocation(
-            session.user.locationId ?? ' ',
+          foundLocationId = await PresentDemandService.getDefaultCPLocation(
+            userLocationId,
             session.user.locationType
           );
-          localStorage.setItem('selectedValue', locationId);
-          setCPLocationId(locationId);
         } else {
-          const locationId = session.user?.locationId;
-          localStorage.setItem('selectedValue', locationId!);
-          setCPLocationId(locationId);
+          foundLocationId = userLocationId;
         }
+      }
+      if (foundLocationId) {
+        localStorage.setItem('selectedValue', foundLocationId);
+        setCPLocationId(foundLocationId);
       }
     };
     fetchCareProviderLocationName();
@@ -360,7 +379,7 @@ const PresentDemandPage: React.FC = () => {
                     Selected locations
                   </dt>
                   <dd className="govuk-summary-list__value">
-                    {locationNamesCP && (
+                    {locationNamesCP && locationNamesCP.length && (
                       <p data-testid="location-names">
                         {locationNamesCP.slice(1).join(', ')}
                       </p>
