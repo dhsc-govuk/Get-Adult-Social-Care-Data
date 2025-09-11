@@ -65,6 +65,19 @@ class PresentDemandService {
     }
   }
 
+  public static async checkCPLocation(
+    cpLocationID: string,
+    userLocationId: string
+  ) {
+    // Verify that the user can actually view the given cpLocation
+    // XXX - this should ideally be handled by a completely different permissions setup
+    const valid_locations = await this.getAvailableLocations(userLocationId);
+    const valid_location_ids = valid_locations.map(
+      (item: any) => item.metric_location_id
+    );
+    return valid_location_ids.includes(cpLocationID);
+  }
+
   public static async getDefaultCPLocation(
     providerLocationId: string,
     locationType: string
