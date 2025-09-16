@@ -1,0 +1,62 @@
+name: Model Tests (example file from openfga docs)
+
+# model_file: ./model.fga # you can specify an external .fga file, or include it inline
+model: |
+  model
+    schema 1.1
+
+  type user
+
+  type organization
+     relations
+       define member : [user]
+       define admin : [user with non_expired_grant]
+
+   condition non_expired_grant(current_time: timestamp, grant_time: timestamp, grant_duration: duration) {
+     current_time < grant_time + grant_duration
+  }
+
+# You can provide relationship tuples in one of the following ways:
+# - As a single external file using 'tuple_file'
+# - As multiple external files using 'tuple_files'
+# - Inline directly using 'tuples'
+#
+# Examples:
+# tuple_file: ./tuples.yaml           # Single external file
+# tuple_files:                        # Multiple external files
+#   - ./tuples_2.yaml
+#   - ./tuples_3.yaml
+tuples:                                # Inline tuple definitions go here
+
+
+   # Anne is a member of the Acme organization
+  - user: user:anne
+    relation: member
+    object: organization:acme
+
+  # Peter has the admin role from February 2nd 2024 0AM to 1AM
+  - user: user:peter
+    relation: admin
+    object: organization:acme
+    condition: 
+      name: non_expired_grant
+      context: 
+        grant_time : "2024-02-01T00:00:00Z"
+        grant_duration : 1h
+
+tests:
+  - name: Test
+    check:
+      - user: user:anne
+        object: organization:acme
+        assertions:
+          member: true
+          admin: false
+
+      - user: user:peter
+        object: organization:acme
+        context: 
+          current_time : "2024-02-01T00:10:00Z"
+        assertions:
+          member: false
+          admin: true

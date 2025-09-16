@@ -1,0 +1,44 @@
+name: GASCD Model Tests # optional
+
+# model_file: ./model.fga # you can specify an external .fga file, or include it inline
+model: |
+  model
+    schema 1.1
+
+  type user
+
+  # e.g. care location
+  type organization
+    relations
+      define member : [user]
+
+  type location
+    relations
+      define viewer : [organization]
+
+  type metric
+    relations
+      define viewer: [organization#member with location_match]
+
+  condition location_match(metric_location: string, user_location: string) {
+    metric_location == user_location
+  }
+
+# OpenFGA yaml formatter doesn't seem to like this key, but it works fine
+tuple_files:
+  - ./modeltests.yaml
+
+
+tests:
+  - name: Test
+    check:
+      - user: user:matt
+        object: metric:total_beds
+        assertions:
+          viewer: false
+      - user: user:matt
+        object: metric:total_beds
+        context: 
+          user_location: bristol
+        assertions:
+          viewer: true
