@@ -1,0 +1,28 @@
+# user_memberships:
+- user: user:anne
+  relation: member
+  object: provider:nhs_bristol
+
+- user: user:bob
+  relation: member
+  object: provider:bupa_london
+
+# providers:
+- user: provider:nhs_bristol
+  relation: provider
+  object: provider_location:bristol
+
+- user: provider:bupa_london
+  relation: provider
+  object: provider_location:london
+
+# private access for nhs
+- user: provider:nhs_bristol#member
+  relation: metric_viewer
+  object: metric:beds_occupied
+
+# public access to a metric
+- user: user:*
+  relation: metric_viewer
+  object: metric:public_x
+

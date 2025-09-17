@@ -1,44 +1,102 @@
 name: GASCD Model Tests # optional
 
 # model_file: ./model.fga # you can specify an external .fga file, or include it inline
-model: |
-  model
-    schema 1.1
-
-  type user
-
-  # e.g. care location
-  type organization
-    relations
-      define member : [user]
-
-  type location
-    relations
-      define viewer : [organization]
-
-  type metric
-    relations
-      define viewer: [organization#member with location_match, user with location_match]
-
-  condition location_match(metric_location: string, user_location: string) {
-    metric_location == user_location
-  }
+model_file: ./model.fga 
 
 # OpenFGA yaml formatter doesn't seem to like this key, but it works fine
 tuple_files:
-  - ./modeltests.yaml
-
+  - ./testtuples.yaml
 
 tests:
-  - name: Test
+  - name: Test public metric (no location)
+    # If no location relation is set up, then nobody can view the metric
     check:
-      - user: user:matt
-        object: metric:total_beds
+      - user: user:anne
+        object: metric:public_x
         assertions:
-          viewer: false
-      - user: user:matt
-        object: metric:total_beds
-        context: 
-          user_location: bristol
+          can_view: false
+      - user: user:bob
+        object: metric:public_x
         assertions:
-          viewer: true
+          can_view: false
+    list_users:
+      - object: metric:public_x
+        user_filter:
+          - type: user
+        assertions:
+          can_view:
+            users: []
+          
+  - name: Test public metric (bristol)
+    tuples:
+      - user: provider_location:bristol
+        relation: location
+        object: metric:public_x
+    check:
+      - user: user:anne
+        object: metric:public_x
+        assertions:
+          can_view: true
+      - user: user:bob
+        object: metric:public_x
+        assertions:
+          can_view: false
+
+  - name: Test public metric (london)
+    tuples:
+      - user: provider_location:london
+        relation: location
+        object: metric:public_x
+    check:
+      - user: user:anne
+        object: metric:public_x
+        assertions:
+          can_view: false
+      - user: user:bob
+        object: metric:public_x
+        assertions:
+          can_view: true
+          
+  - name: Test private metric (no access)
+    check:
+      - user: user:anne
+        object: metric:beds_occupied
+        assertions:
+          can_view: false
+      - user: user:bob
+        object: metric:beds_occupied
+        assertions:
+          can_view: false
+
+  - name: Test private metric (bristol)
+    tuples:
+      - user: provider_location:bristol
+        relation: location
+        object: metric:beds_occupied
+    check:
+      - user: user:anne
+        object: metric:beds_occupied
+        assertions:
+          can_view: true
+      - user: user:bob
+        object: metric:beds_occupied
+        assertions:
+          can_view: false
+
+  - name: Test private metric (london)
+    tuples:
+      - user: provider_location:london
+        relation: location
+        object: metric:beds_occupied
+    check:
+      - user: user:anne
+        object: metric:beds_occupied
+        assertions:
+          can_view: false
+      # even though bob is in the correct location, 
+      # he has no access to this specific metric (beds_occupied)
+      - user: user:bob
+        object: metric:beds_occupied
+        assertions:
+          can_view: false
+

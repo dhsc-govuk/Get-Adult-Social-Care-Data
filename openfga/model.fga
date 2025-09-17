@@ -1,0 +1,30 @@
+model
+schema 1.1
+
+type user
+
+type provider
+  relations
+    # A user is a 'member' of a provider
+    define member : [user]
+
+type provider_location
+  relations
+    define provider: [provider]
+    define can_view_metrics: [user] or member from provider
+
+type region
+  relations
+    define provider_location: [provider_location]
+    define can_view_metrics: [user] or can_view_metrics from provider_location
+
+type metric
+  relations
+    # A metric is associated with a specific location via contextual tuple
+    define location: [provider_location, region]
+    # Condition 1: An explicit, direct permission
+    define metric_viewer: [provider#member, user, user:*]
+    # Condition 2: The implicit, location-based permission from the previous model
+    define has_location_access: can_view_metrics from location
+    # A user 'can_view' only if they are BOTH a 'viewer' AND have 'has_location_access'
+    define can_view: metric_viewer and has_location_access
