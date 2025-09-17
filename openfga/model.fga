@@ -5,7 +5,6 @@ type user
 
 type provider
   relations
-    # A user is a 'member' of a provider
     define member : [user]
 
 type provider_location
@@ -20,11 +19,12 @@ type region
 
 type metric
   relations
-    # A metric is associated with a specific location via contextual tuple
+    # A metric is associated with a specific location
+    # via contextual tuple provided at request time
     define location: [provider_location, region]
-    # Condition 1: An explicit, direct permission
+    # Condition 1: An explicit, direct permission which is required to view the metric in any location
     define metric_viewer: [provider#member, user, user:*]
-    # Condition 2: The implicit, location-based permission from the previous model
-    define has_location_access: can_view_metrics from location
-    # A user 'can_view' only if they are BOTH a 'viewer' AND have 'has_location_access'
+    # Condition 2: The implicit, location-based permission calculated 
+    define has_location_access: [user:*] or can_view_metrics from location
+    # A user 'can_view' only if they are BOTH a 'metric_viewer' AND have 'has_location_access'
     define can_view: metric_viewer and has_location_access

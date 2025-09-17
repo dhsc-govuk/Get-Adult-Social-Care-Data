@@ -1,4 +1,5 @@
 # user_memberships:
+# - puts users in their providers
 - user: user:anne
   relation: member
   object: provider:nhs_bristol
@@ -8,6 +9,7 @@
   object: provider:bupa_london
 
 # providers:
+# - associates providers with a provider location
 - user: provider:nhs_bristol
   relation: provider
   object: provider_location:bristol
@@ -16,13 +18,34 @@
   relation: provider
   object: provider_location:london
 
-# private access for nhs
+# regions
+# - gives all provider_locations a region
+- user: provider_location:bristol
+  relation: provider_location
+  object: region:southwest
+
+- user: provider_location:london
+  relation: provider_location
+  object: region:southeast
+
+# metrics
+
+# public access to a metric requires the relations metric_viewer and has_location_access user:*
+- user: user:*
+  relation: metric_viewer
+  object: metric:public_x
+- user: user:*
+  relation: has_location_access
+  object: metric:public_x
+  
+# private access for providers to specific metrics (also requires location)
 - user: provider:nhs_bristol#member
   relation: metric_viewer
   object: metric:beds_occupied
 
-# public access to a metric
-- user: user:*
+- user: provider:bupa_london#member
   relation: metric_viewer
-  object: metric:public_x
+  object: metric:population_age
+
+
 

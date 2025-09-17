@@ -9,23 +9,23 @@ tuple_files:
 
 tests:
   - name: Test public metric (no location)
-    # If no location relation is set up, then nobody can view the metric
+    # For public metrics, any (or no) location allows access
     check:
       - user: user:anne
         object: metric:public_x
         assertions:
-          can_view: false
+          can_view: true
       - user: user:bob
         object: metric:public_x
         assertions:
-          can_view: false
+          can_view: true
     list_users:
       - object: metric:public_x
         user_filter:
           - type: user
         assertions:
           can_view:
-            users: []
+            users: [user:*]
           
   - name: Test public metric (bristol)
     tuples:
@@ -40,7 +40,7 @@ tests:
       - user: user:bob
         object: metric:public_x
         assertions:
-          can_view: false
+          can_view: true
 
   - name: Test public metric (london)
     tuples:
@@ -51,13 +51,14 @@ tests:
       - user: user:anne
         object: metric:public_x
         assertions:
-          can_view: false
+          can_view: true
       - user: user:bob
         object: metric:public_x
         assertions:
           can_view: true
           
-  - name: Test private metric (no access)
+  - name: Test private metric (no location)
+    # If private, 
     check:
       - user: user:anne
         object: metric:beds_occupied
@@ -94,9 +95,35 @@ tests:
         assertions:
           can_view: false
       # even though bob is in the correct location, 
-      # he has no access to this specific metric (beds_occupied)
+      # he has NO access to this specific metric (beds_occupied)
       - user: user:bob
         object: metric:beds_occupied
         assertions:
           can_view: false
 
+  - name: Test private metric (southwest region)
+    tuples:
+      - user: region:southwest
+        relation: location
+        object: metric:beds_occupied
+    list_users:
+      - object: metric:beds_occupied
+        user_filter:
+          - type: user
+        assertions:
+          can_view:
+            users:
+              - user:anne
+
+  - name: Test private metric (southeast region)
+    tuples:
+      - user: region:southeast
+        relation: location
+        object: metric:beds_occupied
+    list_users:
+      - object: metric:beds_occupied
+        user_filter:
+          - type: user
+        assertions:
+          can_view:
+            users: []
