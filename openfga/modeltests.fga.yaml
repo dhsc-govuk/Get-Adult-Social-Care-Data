@@ -18,7 +18,7 @@ model: |
 
   type metric
     relations
-      define viewer: [organization#member with location_match]
+      define viewer: [organization#member with location_match, user with location_match]
 
   condition location_match(metric_location: string, user_location: string) {
     metric_location == user_location

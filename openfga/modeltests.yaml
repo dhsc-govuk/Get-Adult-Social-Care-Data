@@ -17,15 +17,11 @@
     context:
       metric_location: bristol
 
-
-
-- user: group:testcpl1#member
-  relation: viewer
-  object: metric:totalbeds
-- user: organization:testcpl1#member
+- user: user:matt
   relation: viewer
   object: metric:totalbeds
   condition:
     name: location_match
     context:
-      metric_location:testcp1  
+      metric_location: bristol
+
