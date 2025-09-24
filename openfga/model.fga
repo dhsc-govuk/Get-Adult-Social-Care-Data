@@ -12,16 +12,27 @@ type provider_location
     define provider: [provider]
     define can_view_metrics: [user] or member from provider
 
-type region
+type local_authority
   relations
     define provider_location: [provider_location]
-    define can_view_metrics: [user] or can_view_metrics from provider_location
+    define region: [region]
+    define can_view_metrics: [user] or can_view_metrics from provider_location or can_view_metrics from region
+
+type region
+  relations
+    define local_authority: [local_authority]
+    define can_view_metrics: [user] or can_view_metrics from local_authority
+
+type country
+  relations
+    define region: [region]
+    define can_view_metrics: [user] or can_view_metrics from region
 
 type metric
   relations
     # A metric is associated with a specific location
     # via contextual tuple provided at request time
-    define location: [provider_location, region]
+    define location: [provider_location, local_authority, region, country]
     # Condition 1: An explicit, direct permission which is required to view the metric in any location
     define metric_viewer: [provider#member, user, user:*]
     # Condition 2: The implicit, location-based permission calculated 

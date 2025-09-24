@@ -2,31 +2,76 @@
 # - puts users in their providers
 - user: user:anne
   relation: member
-  object: provider:nhs_bristol
+  object: provider:care_provider_B
 
 - user: user:bob
   relation: member
-  object: provider:bupa_london
+  object: provider:care_provider_A
 
 # providers:
 # - associates providers with a provider location
-- user: provider:nhs_bristol
+- user: provider:care_provider_B
   relation: provider
-  object: provider_location:bristol
+  object: provider_location:care_provider_B_bristol
 
-- user: provider:bupa_london
+- user: provider:care_provider_A
   relation: provider
-  object: provider_location:london
+  object: provider_location:care_provider_A_london
 
-# regions
-# - gives all provider_locations a region
-- user: provider_location:bristol
+# provider_locations:
+# - gives all provider_locations a local authority
+- user: provider_location:care_provider_B_bristol
   relation: provider_location
+  object: local_authority:bristol_city
+
+- user: provider_location:care_provider_A_london
+  relation: provider_location
+  object: local_authority:westminster
+
+# local_authorities:
+# - gives all local authorities a region  
+- user: local_authority:bristol_city
+  relation: local_authority
   object: region:southwest
 
-- user: provider_location:london
-  relation: provider_location
+- user: local_authority:bath_somerset
+  relation: local_authority
+  object: region:southwest
+
+- user: local_authority:westminster
+  relation: local_authority
   object: region:southeast
+
+- user: local_authority:tower_hamlets
+  relation: local_authority
+  object: region:southeast
+  
+# regions:
+# - gives all regions their local authorities
+- user: region:southwest
+  relation: region
+  object: local_authority:bristol_city
+
+- user: region:southwest
+  relation: region
+  object: local_authority:bath_somerset
+
+- user: region:southeast
+  relation: region
+  object: local_authority:westminster
+
+- user: region:southeast
+  relation: region
+  object: local_authority:tower_hamlets
+
+# - gives all regions their country
+- user: region:southwest
+  relation: region
+  object: country:england
+
+- user: region:southeast
+  relation: region
+  object: country:england
 
 # metrics
 
@@ -39,13 +84,6 @@
   object: metric:public_x
   
 # private access for providers to specific metrics (also requires location)
-- user: provider:nhs_bristol#member
+- user: provider:care_provider_B#member
   relation: metric_viewer
-  object: metric:beds_occupied
-
-- user: provider:bupa_london#member
-  relation: metric_viewer
-  object: metric:population_age
-
-
-
+  object: metric:ct_metrics
