@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDB } from '../../../src/data/dbModule';
+import { dbPool } from '../../../src/data/dbModule';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import QueryBuilderService from '@/services/query-builder/QueryBuilderService';
 import logger from '@/utils/logger';
 
 export async function POST(req: NextRequest) {
   try {
-    const pool = await connectToDB();
+    const pool = await dbPool;
     const queryParams = await req.json();
 
     const request = pool.request();
@@ -18,7 +18,6 @@ export async function POST(req: NextRequest) {
 
     const rows: string[] = resultSet.recordset.map((row) => row.smart_insights);
 
-    await pool.close();
     return NextResponse.json(rows);
   } catch (err) {
     logger.error('Error during database operations:', err);
@@ -32,7 +31,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    const pool = await connectToDB();
+    const pool = await dbPool;
 
     const resultSet = await pool
       .request()
@@ -40,7 +39,6 @@ export async function GET(req: NextRequest) {
 
     const rows = resultSet.recordset;
 
-    await pool.close();
     return NextResponse.json(rows);
   } catch (err) {
     logger.error('Error during database operations:', err);

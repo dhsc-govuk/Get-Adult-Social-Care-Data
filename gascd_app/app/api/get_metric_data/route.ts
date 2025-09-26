@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDB } from '../../../src/data/dbModule';
+import { dbPool } from '../../../src/data/dbModule';
 import { Indicator } from '@/data/interfaces/Indicator';
 import QueryBuilderService from '@/services/query-builder/QueryBuilderService';
 import { getServerSession } from 'next-auth/next';
@@ -9,7 +9,7 @@ import logger from '@/utils/logger';
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    const pool = await connectToDB();
+    const pool = await dbPool;
     const queryParams = await req.json();
 
     if (!queryParams.metric_ids?.length || !queryParams.location_ids?.length) {
@@ -29,7 +29,6 @@ export async function POST(req: NextRequest) {
       );
     const resultSet = await request_with_param.query(queryString);
     const rows: Indicator[] = resultSet.recordset;
-    await pool.close();
 
     return NextResponse.json(rows);
   } catch (err) {

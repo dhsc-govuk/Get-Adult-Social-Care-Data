@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDB } from '../../../src/data/dbModule';
+import { dbPool } from '../../../src/data/dbModule';
 import { Location } from '@/data/interfaces/Location';
 import QueryBuilderService from '@/services/query-builder/QueryBuilderService';
 
 export async function POST(req: NextRequest) {
   try {
-    const pool = await connectToDB();
+    const pool = await dbPool;
     const queryParams = await req.json();
 
     const request = pool.request();
@@ -17,7 +17,6 @@ export async function POST(req: NextRequest) {
 
     const rows: Location[] = resultSet.recordset;
 
-    await pool.close();
     return NextResponse.json(rows);
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
@@ -30,13 +29,12 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    const pool = await connectToDB();
+    const pool = await dbPool;
 
     const resultSet = await pool.request().query('SELECT * FROM ref.la_lookup');
 
     const rows = resultSet.recordset;
 
-    await pool.close();
     return NextResponse.json(rows);
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
