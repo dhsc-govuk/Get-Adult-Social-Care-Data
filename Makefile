@@ -37,7 +37,7 @@ docker-up:
 	docker-compose -f ./gascd_app/docker-compose.yml up
 
 docker-up-rebuild:	
-	docker-compose -f ./gascd_app/docker-compose.yml up --build --force-recreate
+	docker-compose -f ./gascd_app/docker-compose.yml up --build --force-recreate 
 
 docker-down:
 	docker-compose -f ./gascd_app/docker-compose.yml down
