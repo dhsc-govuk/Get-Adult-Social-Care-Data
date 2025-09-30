@@ -33,6 +33,11 @@ const Layout: React.FC<Props> = ({
   const title_suffix = 'Get adult social care data - GOV.UK';
   const full_title = title + ' - ' + title_suffix;
 
+  // Public version numbers to pass to the footer
+  // - these are public variables as they are injected at build time, regardless of environment
+  const tag = process.env.NEXT_PUBLIC_FINGERTIPS_GIT_TAG || 'v0.0.0';
+  const hash = process.env.NEXT_PUBLIC_FINGERTIPS_GIT_HASH || '';
+
   return (
     <>
       <title>{full_title}</title>
@@ -71,7 +76,7 @@ const Layout: React.FC<Props> = ({
             {children}
           </main>
         </div>
-        <Footer />
+        <Footer version_tag={tag} version_hash={hash} />
       </div>
     </>
   );
