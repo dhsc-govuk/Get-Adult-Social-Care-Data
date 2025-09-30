@@ -3,8 +3,8 @@ import './footer.scss';
 import { FALLBACK_FEEDBACK_URL } from '../feedback/Feedback';
 
 type Props = {
-  version_tag: string;
-  version_hash: string;
+  version_tag?: string;
+  version_hash?: string;
 };
 
 const Footer: React.FC<Props> = ({ version_tag, version_hash }) => {
@@ -13,6 +13,7 @@ const Footer: React.FC<Props> = ({ version_tag, version_hash }) => {
   return (
     <footer
       id="footer"
+      data-testid="footer"
       className="govuk-footer"
       data-version-tag={version_tag}
       data-version-hash={version_hash}
