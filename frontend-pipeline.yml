@@ -86,7 +86,11 @@ stages:
           runOnce:
             deploy:
               steps:
+                # This step fetches the last 50 commits and all tags.
+                # (performance optimization over fetchDepth: 0)
                 - checkout: self
+                  fetchDepth: 50
+                  fetchTags: true
 
                 - script: |
                     NEXT_PUBLIC_FINGERTIPS_GIT_HASH=$(git rev-parse --short HEAD) \
