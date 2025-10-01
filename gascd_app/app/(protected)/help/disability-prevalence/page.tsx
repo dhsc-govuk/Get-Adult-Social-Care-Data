@@ -8,6 +8,7 @@ const DisabilyPrevalence: React.FC = () => {
   return (
     <>
       <Layout
+        title="Indicator definition: Disability prevalence"
         showLoginInformation={false}
         currentPage={'disabilty prevalence'}
         backURL="/present-demand"
@@ -57,25 +58,13 @@ const DisabilyPrevalence: React.FC = () => {
                   <th scope="row" className="govuk-table__header">
                     Data correct as of
                   </th>
-                  <td className="govuk-table__cell">
-                    [Generated automatically]
-                  </td>
+                  <td className="govuk-table__cell">21 March 2021</td>
                 </tr>
                 <tr className="govuk-table__row">
                   <th scope="row" className="govuk-table__header">
                     Update frequency
                   </th>
                   <td className="govuk-table__cell">Every 10 years</td>
-                </tr>
-
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
-                    Data available for
-                  </th>
-                  <td className="govuk-table__cell">
-                    [Generated automatically, e.g. 5 February 2019 to 5 February
-                    2025]
-                  </td>
                 </tr>
 
                 <tr className="govuk-table__row">

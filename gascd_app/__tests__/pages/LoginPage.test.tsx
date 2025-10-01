@@ -1,10 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import LoginPage from '../../app/(authentication)/login/page';
-import { text } from 'd3';
 
 describe('LoginPage', () => {
-  it('should render the heading, and a login button', () => {
+  it('should render the heading, some body text, and disclaimer link', () => {
     render(<LoginPage />);
 
     const headingElement = screen.getByRole('heading', {
@@ -12,22 +11,30 @@ describe('LoginPage', () => {
     });
     expect(headingElement).toBeInTheDocument();
 
+    const subheadingElement = screen.getByRole('heading', {
+      name: /Introduction/i,
+    });
+    expect(subheadingElement).toBeInTheDocument();
+
     const bodyTextElement = screen.getByText(
-      /This service does not constitute advice/i
+      /This new digital service is owned by DHSC/i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
-    const disclaimers = screen.getAllByRole('link', {
-      name: /Full Disclaimer/i,
+    const links = screen.getAllByRole('link', {
+      name: /Full Disclaimer \(opens in new tab\)/i,
     });
-    expect(disclaimers.length).toBe(2);
-    disclaimers.forEach((disclaimer) => {
-      expect(disclaimer).toBeInTheDocument();
-      expect(disclaimer).toHaveAttribute('href', '/disclaimer');
-    });
+    expect(links.length).toBe(2);
+    for (let link of links) {
+      expect(link).toHaveAttribute('href', '/disclaimer');
+    }
+  });
 
-    const loginButton = screen.getByRole('button');
-    expect(loginButton).toBeInTheDocument();
-    expect(loginButton).toHaveTextContent('Agree and sign in');
+  it('should render a login link', () => {
+    render(<LoginPage />);
+
+    const signin_button = screen.getByRole('button', {
+      name: /Agree and sign in/i,
+    });
   });
 });

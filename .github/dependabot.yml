@@ -9,3 +9,6 @@ updates:
     directory: "/gascd_app" # Location of package manifests
     schedule:
       interval: "weekly"
+    # Temporarily disabled because I don't trust npm enough to run automated package updates on anything
+    # See https://gascd.atlassian.net/browse/GASCDS-384
+    open-pull-requests-limit: 0

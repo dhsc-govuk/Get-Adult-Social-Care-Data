@@ -1,21 +1,34 @@
-import React, { useState } from 'react';
-import { downloadCSV } from '../../../helpers/downloadToCsvHelpers';
+import React, { RefObject, useState } from 'react';
+import {
+  downloadCSV,
+  extractTableCellText,
+} from '../../../helpers/downloadToCsvHelpers';
 import Link from 'next/link';
 
 type Props = {
-  data: any[];
+  tableref?: RefObject<HTMLTableElement | null>;
+  rawdata?: any[];
   filename?: string;
   xLabel: string;
 };
 
 const DownloadTableDataCSVLink: React.FC<Props> = ({
-  data,
+  tableref,
+  rawdata,
   filename = 'data.csv',
   xLabel,
 }) => {
   const handleDownloadClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    downloadCSV(data, filename, xLabel);
+
+    if (tableref?.current) {
+      const csv_data = extractTableCellText(tableref.current);
+      downloadCSV(csv_data, filename, xLabel);
+    } else if (rawdata?.length) {
+      downloadCSV(rawdata, filename, xLabel);
+    } else {
+      console.error('No exportable table data found');
+    }
   };
 
   return (

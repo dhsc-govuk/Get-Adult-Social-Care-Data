@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDB } from '../../../src/data/dbModule';
+import { dbPool } from '../../../src/data/dbModule';
 import logger from '@/utils/logger';
 
 export async function GET(req: NextRequest) {
   try {
-    const pool = await connectToDB();
+    const pool = await dbPool;
     const { searchParams } = new URL(req.url);
     let provider_location_id = searchParams.get('provider_location_id');
     let location_type =
@@ -18,7 +18,6 @@ export async function GET(req: NextRequest) {
         WHERE user_access_location_id = @provider_location_id AND user_access_location_type = @location_type AND metric_type = 'Capacity Tracker'
       `);
 
-    await pool.close();
     return NextResponse.json(resultSet.recordset, { status: 200 });
   } catch (err) {
     logger.error('Error during database operations:', err);

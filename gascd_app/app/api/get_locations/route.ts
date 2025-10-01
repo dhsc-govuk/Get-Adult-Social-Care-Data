@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDB } from '../../../src/data/dbModule';
+import { dbPool } from '../../../src/data/dbModule';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { authOptions } from '../auth/authOptions';
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
         a.region_code = b.region_code;
     `;
 
-    const pool = await connectToDB();
+    const pool = await dbPool;
     const request = pool.request();
 
     if (provider_location_id) {
@@ -47,7 +47,6 @@ export async function POST(req: NextRequest) {
     const resultSet = await request.query(query);
     const rows: Locations[] = resultSet.recordset;
 
-    await pool.close();
     return NextResponse.json(rows);
   } catch (err) {
     logger.error('Error during database operations:', err);

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDB } from '../../../src/data/dbModule';
+import { dbPool } from '../../../src/data/dbModule';
 import logger from '@/utils/logger';
 
 export async function GET(req: NextRequest) {
   try {
-    const pool = await connectToDB();
+    const pool = await dbPool;
     const { searchParams } = new URL(req.url);
     let provider_location_id = searchParams.get('provider_location_id');
     const resultSet = await pool
@@ -26,7 +26,6 @@ export async function GET(req: NextRequest) {
         WHERE provider_location_id = @provider_location_id
       `);
 
-    await pool.close();
     let results: [];
     if (resultSet.recordset.length) {
       results = resultSet.recordset[0];

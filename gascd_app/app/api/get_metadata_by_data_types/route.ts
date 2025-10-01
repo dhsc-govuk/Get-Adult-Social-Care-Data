@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDB } from '../../../src/data/dbModule';
+import { dbPool } from '../../../src/data/dbModule';
 import logger from '@/utils/logger';
 
 export async function GET(req: NextRequest) {
   try {
-    const pool = await connectToDB();
+    const pool = await dbPool;
     const { searchParams } = new URL(req.url);
     let metric_data_type = searchParams.get('metric_data_type');
     const results = await pool
@@ -12,7 +12,6 @@ export async function GET(req: NextRequest) {
       .input('metric_data_type', metric_data_type).query(`
         SELECT * FROM metrics.metadata WHERE metric_data_type = @metric_data_type`);
 
-    await pool.close();
     return NextResponse.json(results.recordset, { status: 200 });
   } catch (err) {
     logger.error('Error during database operations:', err);

@@ -65,6 +65,19 @@ class PresentDemandService {
     }
   }
 
+  public static async checkCPLocation(
+    cpLocationID: string,
+    userLocationId: string
+  ) {
+    // Verify that the user can actually view the given cpLocation
+    // XXX - this should ideally be handled by a completely different permissions setup
+    const valid_locations = await this.getAvailableLocations(userLocationId);
+    const valid_location_ids = valid_locations.map(
+      (item: any) => item.metric_location_id
+    );
+    return valid_location_ids.includes(cpLocationID);
+  }
+
   public static async getDefaultCPLocation(
     providerLocationId: string,
     locationType: string
@@ -136,34 +149,60 @@ class PresentDemandService {
   }
 
   public static formatDate(dateStr: string): string {
+    if (!dateStr.includes('/')) {
+      // Not a recognised format
+      return dateStr;
+    }
+
     const [day, month, year] = dateStr.split('/').map(Number);
     const date = new Date(year, month - 1, day);
 
     return new Intl.DateTimeFormat('en-GB', {
-      day: '2-digit',
+      day: 'numeric',
       month: 'long',
       year: 'numeric',
     }).format(date);
   }
 
-  public static getMostRecentIndicator(indicators: Indicator[]): string {
+  public static getMostRecentIndicator(
+    indicators: Indicator[],
+    metric_ids?: string[]
+  ): string {
     if (indicators.length === 0) {
       return '';
     }
 
-    return indicators
+    let filtered_indicators = indicators;
+    if (metric_ids) {
+      filtered_indicators = indicators.filter((item) =>
+        metric_ids.includes(item.metric_id)
+      );
+    }
+
+    if (filtered_indicators.length === 0) {
+      return '';
+    }
+
+    return filtered_indicators
       .reduce((latest, current) => {
         return IndicatorService.parseDate(current) >
           IndicatorService.parseDate(latest)
           ? current
           : latest;
-      }, indicators[0])
+      }, filtered_indicators[0])
       .metric_date.toString();
   }
 
-  public static getMostRecentDate(data: Indicator[]): string {
-    const recentData = this.getMostRecentIndicator(data);
-    return this.formatDate(recentData);
+  public static getMostRecentDate(
+    data: Indicator[],
+    metric_ids?: string[]
+  ): string {
+    const recentData = this.getMostRecentIndicator(data, metric_ids);
+    if (recentData) {
+      return this.formatDate(recentData);
+    } else {
+      return '';
+    }
   }
 
   public static async getDataSource(

@@ -9,6 +9,7 @@ const HomePage: React.FC = () => {
   return (
     <>
       <Layout
+        title="Home"
         autoSpaceMainContent={false}
         showLoginInformation={true}
         currentPage="home"

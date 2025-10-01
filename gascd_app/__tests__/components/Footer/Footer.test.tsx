@@ -23,6 +23,14 @@ describe('Footer', () => {
     expect(disclaimer).toHaveAttribute('href', '/disclaimer');
   });
 
+  it('renders privacy link', () => {
+    render(<Footer />);
+    const disclaimer = screen.getByRole('link', {
+      name: /Privacy/i,
+    });
+    expect(disclaimer).toHaveAttribute('href', '/privacy-policy');
+  });
+
   it('renders feedback link', () => {
     render(<Footer />);
     const feedback = screen.getByRole('link', {

@@ -11,7 +11,6 @@ import DataTable from '@/components/tables/table';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import { useSession } from 'next-auth/react';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
-import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { MetaData } from '@/data/interfaces/MetaData';
 import { Locations } from '@/data/interfaces/Locations';
 import { MSPItem, MSPLookup } from '@/helpers/msp/msp-lookup';
@@ -31,15 +30,7 @@ const PresentDemandPage: React.FC = () => {
   const [locationIdsCP, setLocationIdsCP] = useState<string[]>([]);
   const [localAuthorityData, setLocalAuthorityData] = useState<Locations>();
   const [mspData, setMspData] = useState<MSPItem>();
-  const [demographicDataSource, setDemographicDataSource] = useState<string>();
-  const [bedsDataSource, setBedsDataSource] = useState<string>();
-  const [CPDataSource, setCPDataSource] = useState<string>();
   const [metricDateType, setMetricDataType] = useState<MetaData[]>([]);
-  const [demographicLatestDate, setDemographicLatestDate] = useState<
-    string | null
-  >();
-  const [bedDataLatestDate, setBedDataLatestDate] = useState<string | null>();
-  const [CPLatestDate, setCPLatestDate] = useState<string | null>();
   const [demographicQuery, setDemographicQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
@@ -68,7 +59,14 @@ const PresentDemandPage: React.FC = () => {
     'perc_75over',
     'perc_85over',
     'perc_population_disability_disabled_total',
-    'dementia_register_65over_per100k',
+    'perc_households_deprivation_deprived_total',
+    'perc_household_ownership_total',
+    'perc_households_one_person_total',
+    'perc_unpaid_care_provider_total',
+    'perc_general_health_total',
+    'learning_disabilty_prevalence',
+    'dementia_estimated_diagnosis_rate_65over',
+    'dementia_qof_prevalence',
   ];
 
   const bedsMetricIds = [
@@ -81,17 +79,6 @@ const PresentDemandPage: React.FC = () => {
     'median_bed_count_total',
     'median_occupancy_total',
   ];
-
-  const demographicRowHeaders = {
-    total_population: 'Population',
-    perc_18_64: 'Aged 18-65',
-    perc_65over: 'Aged 65 and over',
-    perc_75over: 'Aged 75 and over',
-    perc_85over: 'Aged 85 and over',
-    perc_population_disability_disabled_total: 'Disability prevalence',
-    dementia_register_65over_per100k:
-      'Registered dementia patients per 100,000',
-  };
 
   const bedRowHeaders = {
     bedcount_per_100000_adults_total: 'Beds per 100,000 adult population',
@@ -108,34 +95,49 @@ const PresentDemandPage: React.FC = () => {
     median_occupancy_total: 'occupancy_rate_total',
   };
 
-  const metrics_require_percentage = [
-    'perc_18_64',
-    'perc_65over',
-    'perc_75over',
-    'perc_85over',
-    'perc_population_disability_disabled_total',
-    'median_occupancy_total',
-    'median_occupancy_total',
-  ];
+  const cleanupLocationIDs = (location_ids_to_clean: string[]) => {
+    // XXX Ideally the functions using this would use a different list of location IDs which didn't have
+    // the 'Filter' word crowbarred into it from the Present Demand service.
+    return location_ids_to_clean.filter((item) => item !== 'Filter');
+  };
 
   useEffect(() => {
     const fetchCareProviderLocationName = async () => {
+      const userLocationId = session?.user.locationId;
+      if (!userLocationId) {
+        // Can't load any data without a valid user location
+        return;
+      }
+      let foundLocationId;
       const storedLocationId = localStorage.getItem('selectedValue');
       if (storedLocationId) {
-        setCPLocationId(storedLocationId);
-      } else if (session) {
+        // Check the stored value is actually valid
+        if (
+          await PresentDemandService.checkCPLocation(
+            storedLocationId,
+            userLocationId
+          )
+        ) {
+          foundLocationId = storedLocationId;
+        } else {
+          // Clear the local value if not valid
+          console.warn('Invalid stored CP value found. Removing.');
+          localStorage.removeItem('selectedValue');
+        }
+      } else {
+        // get it from the user
         if (session.user.locationType == 'Care provider') {
-          const locationId = await PresentDemandService.getDefaultCPLocation(
-            session.user.locationId ?? ' ',
+          foundLocationId = await PresentDemandService.getDefaultCPLocation(
+            userLocationId,
             session.user.locationType
           );
-          localStorage.setItem('selectedValue', locationId);
-          setCPLocationId(locationId);
         } else {
-          const locationId = session.user?.locationId;
-          localStorage.setItem('selectedValue', locationId!);
-          setCPLocationId(locationId);
+          foundLocationId = userLocationId;
         }
+      }
+      if (foundLocationId) {
+        localStorage.setItem('selectedValue', foundLocationId);
+        setCPLocationId(foundLocationId);
       }
     };
     fetchCareProviderLocationName();
@@ -206,7 +208,7 @@ const PresentDemandPage: React.FC = () => {
     if (locationIds.length > 0) {
       setDemographicQuery(() => ({
         metric_ids: demographicMetricIds,
-        location_ids: locationIds,
+        location_ids: cleanupLocationIDs(locationIds),
       }));
     }
   }, [locationIds]);
@@ -215,7 +217,7 @@ const PresentDemandPage: React.FC = () => {
     if (locationIds.length > 0) {
       setBedsQuery(() => ({
         metric_ids: bedsMetricIds,
-        location_ids: locationIds,
+        location_ids: cleanupLocationIDs(locationIds),
       }));
     }
   }, [locationIds]);
@@ -230,26 +232,10 @@ const PresentDemandPage: React.FC = () => {
     if (locationIds.length) {
       setCareProviderData2Query(() => ({
         metric_ids: careProviderMetricIds2,
-        location_ids: locationIds,
+        location_ids: cleanupLocationIDs(locationIds),
       }));
     }
   }, [CPLocationId, locationIds]);
-
-  useEffect(() => {
-    if (filteredDemographicData.length > 0) {
-      setDemographicLatestDate(
-        PresentDemandService.getMostRecentDate(filteredDemographicData)
-      );
-    }
-    if (filteredBedData.length > 0) {
-      setBedDataLatestDate(
-        PresentDemandService.getMostRecentDate(filteredBedData)
-      );
-    }
-    if (finalCpData.length > 0) {
-      setCPLatestDate(PresentDemandService.getMostRecentDate(finalCpData));
-    }
-  }, [filteredDemographicData, filteredBedData, finalCpData]);
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -260,30 +246,20 @@ const PresentDemandPage: React.FC = () => {
         const filteredDemographicData =
           TableService.filterDate(demographicData);
         setFilteredDemographicData(filteredDemographicData);
-        setDemographicDataSource(
-          await PresentDemandService.getDataSource(demographicQuery)
-        );
         const bedData: Indicator[] =
           await IndicatorFetchService.getData(bedsQuery);
         const filteredBedData = TableService.filterDate(bedData);
         setFilteredBedData(filteredBedData);
-        setBedsDataSource(await PresentDemandService.getDataSource(bedsQuery));
         const CPData: Indicator[] = await IndicatorFetchService.getData(
           careProviderDataQuery1
         );
         const CPData2: Indicator[] = await IndicatorFetchService.getData(
           careProviderDataQuery2
         );
-        const data1: Indicator[] = TableService.filterDate(CPData);
-        const data2: Indicator[] = TableService.filterDate(CPData2);
+        //const data1: Indicator[] = TableService.filterDate(CPData);
+        //const data2: Indicator[] = TableService.filterDate(CPData2);
         const comboData: Indicator[] = [...CPData, ...CPData2];
         const filteredCPData = TableService.filterDate(comboData);
-        setCPDataSource(
-          await PresentDemandService.getDataSource(
-            careProviderDataQuery1,
-            careProviderDataQuery2
-          )
-        );
         setFinalCpData(filteredCPData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -303,10 +279,6 @@ const PresentDemandPage: React.FC = () => {
 
   const contentItems = [
     { link: '#summary', heading: 'Introduction' },
-    {
-      link: '#definition',
-      heading: 'Indicator definition and supporting information',
-    },
     { link: '#selected-locations', heading: 'Your selected locations' },
     { link: '#drivers', heading: 'Drivers of population needs' },
     {
@@ -318,6 +290,10 @@ const PresentDemandPage: React.FC = () => {
       heading: 'Current capacity - care homes: care provider-level insights',
     },
     {
+      link: '#definition',
+      heading: 'Indicator definitions and supporting information',
+    },
+    {
       link: '#market-position-statement',
       heading: 'Find more information on your local care market',
     },
@@ -327,9 +303,39 @@ const PresentDemandPage: React.FC = () => {
     },
   ];
 
+  // Re-usable way to create multiple demographic tables
+  // from the same data, but displaying different rows
+  type DemoGraphicTableProps = {
+    caption: string;
+    headers: {};
+    source: string;
+    children?: React.ReactElement;
+  };
+  const DemoGraphicTable: React.FC<DemoGraphicTableProps> = ({
+    caption,
+    headers,
+    source,
+    children,
+  }) => {
+    return (
+      <DataTable
+        caption={caption}
+        columnHeaders={locationNames}
+        rowHeaders={headers}
+        data={filteredDemographicData}
+        showCareProvider={false}
+        percentageRows={metricDateType}
+        source={source}
+      >
+        {children}
+      </DataTable>
+    );
+  };
+
   return (
     <>
       <Layout
+        title="Current population needs and capacity"
         autoSpaceMainContent={false}
         showLoginInformation={true}
         currentPage="present-demand"
@@ -359,61 +365,7 @@ const PresentDemandPage: React.FC = () => {
                 find insights into current capacity to meet those needs.
               </p>
             </div>
-            <div className="govuk-!-margin-bottom-9">
-              <h2 className="govuk-heading-m" id="definition">
-                Indicator definition and supporting information
-              </h2>
-              <p className="govuk-body">
-                Find detailed information about each indicator, including data
-                definitions, data source, update schedule, and any limitations
-                to be aware of before using the data.
-              </p>
-              <ul className="govuk-list govuk-list--bullet">
-                <li>
-                  <a href="/help/population-age" className="govuk-link">
-                    Population age
-                  </a>
-                </li>
-                <li>
-                  <a href="/help/disability-prevalence" className="govuk-link">
-                    Population disability
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/help/beds-per-100000-adult-population"
-                    className="govuk-link"
-                  >
-                    Adult social care beds per 100,000 adult population
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/help/percentage-beds-occupied"
-                    className="govuk-link"
-                  >
-                    Percentage of adult social care beds occupied
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/help/beds-care-provider-location"
-                    className="govuk-link"
-                  >
-                    Number of adult social care beds in care provider location
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/help/percentage-beds-occupied-care-provider-location"
-                    className="govuk-link"
-                  >
-                    Percentage of adult social care beds occupied in care
-                    provider location
-                  </a>
-                </li>
-              </ul>
-            </div>
+
             <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-m" id="selected-locations">
                 Your selected locations
@@ -427,7 +379,11 @@ const PresentDemandPage: React.FC = () => {
                     Selected locations
                   </dt>
                   <dd className="govuk-summary-list__value">
-                    <p>{locationNamesCP.slice(1).join(', ')}</p>
+                    {locationNamesCP && locationNamesCP.length && (
+                      <p data-testid="location-names">
+                        {locationNamesCP.slice(1).join(', ')}
+                      </p>
+                    )}
                   </dd>
                   <dd className="govuk-summary-list__actions">
                     <a className="govuk-link" href="/present-demand-locations">
@@ -437,7 +393,8 @@ const PresentDemandPage: React.FC = () => {
                 </div>
               </dl>
             </div>
-            <div className="govuk-!-margin-bottom-9">
+
+            <div>
               <h2 className="govuk-heading-m" id="drivers">
                 Drivers of population needs
               </h2>
@@ -459,31 +416,147 @@ const PresentDemandPage: React.FC = () => {
                 metric_Id="perc_65over"
               ></ConditionalText>
             </div>
-            <div className="govuk-!-margin-bottom-9">
-              <h3 className="govuk-heading-s">
-                Explore the data: demographic factors
-              </h3>
-              <DataTable
-                columnHeaders={locationNames}
-                rowHeaders={demographicRowHeaders}
-                data={filteredDemographicData}
-                showCareProvider={false}
-                percentageRows={metricDateType}
-              ></DataTable>
-              <DownloadTableDataCSVLink
-                data={TableService.removeLoadDateTime(filteredDemographicData)}
-                filename="Demographic factors"
-                xLabel=""
-              ></DownloadTableDataCSVLink>
-              <p className="govuk-body govuk-!-margin-bottom-9">
-                Source: {demographicDataSource}
-                <br />
-                Data correct as of {demographicLatestDate}
-              </p>
+            <div>
+              <DemoGraphicTable
+                caption={`Table comparing population size and age in ${locationNames[1]} to regional and national statistics`}
+                source={`Source: Population estimates from the Office for National Statistics (ONS)`}
+                headers={{
+                  total_population: 'Total adult population',
+                  perc_18_64: 'Aged 18 to 64',
+                  perc_65over: 'Aged 65 and over',
+                  perc_75over: 'Aged 75 and over',
+                  perc_85over: 'Aged 85 and over',
+                }}
+              />
+            </div>
+
+            <div>
+              <DemoGraphicTable
+                caption={`Table comparing economic indicators in ${locationNames[1]} to regional and national statistics`}
+                source={
+                  'Source: Census 2021 from the Office for National Statistics (ONS)'
+                }
+                headers={{
+                  perc_household_ownership_total:
+                    'Households where the property is owned outright (with no mortgage)',
+                  perc_households_deprivation_deprived_total:
+                    "Households that are 'deprived in 4 dimensions'",
+                }}
+              >
+                <details className="govuk-details">
+                  <summary className="govuk-details__summary">
+                    <span className="govuk-details__summary-text">
+                      What &lsquo;deprived in 4 dimensions&rsquo; means
+                    </span>
+                  </summary>
+                  <div className="govuk-details__text">
+                    A household is &lsquo;deprived in 4 dimensions&lsquo; if all
+                    the following apply:<p></p>
+                    <ul className="govuk-list govuk-list--bullet govuk-list--spaced">
+                      <li>
+                        no one in the household has at least level 2 education
+                        and no one aged 16 to 18 years is a full-time student
+                      </li>
+                      <li>
+                        any household member is unemployed or economically
+                        inactive due to long-term sickness or disability, and is
+                        not a full-time student
+                      </li>
+                      <li>any household member is disabled</li>
+                      <li>
+                        the household&apos;s accommodation is overcrowded, in a
+                        shared dwelling or has no central heating
+                      </li>
+                    </ul>
+                  </div>
+                </details>
+              </DemoGraphicTable>
+            </div>
+
+            <div>
+              <DemoGraphicTable
+                caption={`Table comparing the age of one-person households and unpaid care provision in ${locationNames[1]} to regional and national statistics`}
+                source={`Source: Census 2021 from the Office for National Statistics (ONS)`}
+                headers={{
+                  perc_households_one_person_total:
+                    'Percentage of one-person households where the person is aged 65 or over',
+                  perc_unpaid_care_provider_total:
+                    'Percentage of people aged 5 or over who provide unpaid care',
+                }}
+              />
+            </div>
+
+            <div>
+              <DemoGraphicTable
+                caption={`Table comparing general health reports and disability prevalence in ${locationNames[1]} to regional and national statistics`}
+                source={
+                  'Sources: Census 2021 from the Office for National Statistics (ONS), Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
+                }
+                headers={{
+                  perc_general_health_total:
+                    'People who reported being in bad or very bad health',
+                  perc_population_disability_disabled_total:
+                    'Disability prevalence – people who reported a long-term physical or mental health condition or illness that limits day-to-day activities',
+                  learning_disabilty_prevalence:
+                    'Learning disability prevalence – all ages, as a proportion of people registered at GP practices',
+                }}
+              />
+            </div>
+
+            <div>
+              <DemoGraphicTable
+                caption={`Table comparing dementia prevalence and dementia diagnosis rate in ${locationNames[1]} to regional and national statistics`}
+                source={
+                  'Source: Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
+                }
+                headers={{
+                  dementia_qof_prevalence:
+                    'Dementia prevalence – all ages, as a proportion of people registered at GP practices',
+                  dementia_estimated_diagnosis_rate_65over:
+                    "Estimated 'dementia diagnosis rate' – aged 65 and over",
+                }}
+              >
+                <details className="govuk-details">
+                  <summary className="govuk-details__summary">
+                    <span className="govuk-details__summary-text">
+                      What &lsquo;dementia diagnosis rate&rsquo; means
+                    </span>
+                  </summary>
+                  <div className="govuk-details__text">
+                    The &lsquo;dementia diagnosis rate&rsquo; is found by
+                    dividing the number of people with a formal diagnosis of
+                    dementia by the estimated number of people expected to have
+                    dementia.<p></p>
+                    <p>
+                      The estimated number of people expected to have dementia
+                      is worked out by combining:
+                    </p>
+                    <ul className="govuk-list govuk-list--bullet">
+                      <li>
+                        the characteristics of the local registered population
+                      </li>
+                      <li>studies on dementia prevalence by age and sex</li>
+                    </ul>
+                    <a
+                      href="https://fingertips.phe.org.uk/dementia#page/6/gid/1938132811/ati/15/iid/92949/age/27/sex/4/cat/-1/ctp/-1/yrr/1/cid/4/tbm/1"
+                      className="govuk-link"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Details on how &lsquo;dementia diagnosis rate&rsquo; is
+                      calculated (opens in new tab).
+                    </a>
+                    <p></p>
+                  </div>
+                </details>
+              </DemoGraphicTable>
             </div>
 
             <div className="">
-              <h2 className="govuk-heading-m" id="capacity-la">
+              <h2
+                className="govuk-heading-m govuk-!-margin-top-9"
+                id="capacity-la"
+              >
                 Current capacity - care homes: local authority-level insights
               </h2>
               <p className="govuk-body">
@@ -501,7 +574,7 @@ const PresentDemandPage: React.FC = () => {
                   )?.data_point ?? 'Loading...'}{' '}
                   beds per 100,000 adult population
                 </strong>
-                , compared to the {locationNames[2]} average of{' '}
+                , compared to the {locationNames[2]} regional average of{' '}
                 {filteredBedData.find(
                   (metric) =>
                     metric.metric_id === 'bedcount_per_100000_adults_total' &&
@@ -531,28 +604,19 @@ const PresentDemandPage: React.FC = () => {
                   Explore data
                 </button>
               </form>
-              <h3 className="govuk-heading-s">
-                Explore the data: adult social care beds per 100,000 adult
-                population and occupancy
-              </h3>
               <DataTable
+                caption={`Table comparing provision of adult social care beds and occupancy levels in ${locationNames[1]} to regional and national statistics`}
+                source={
+                  'Source: Capacity Tracker from the Department of Health and Social Care (DHSC)'
+                }
                 columnHeaders={locationNames}
                 rowHeaders={bedRowHeaders}
                 data={filteredBedData}
                 showCareProvider={false}
                 percentageRows={metricDateType}
               ></DataTable>
-              <DownloadTableDataCSVLink
-                data={TableService.removeLoadDateTime(filteredBedData)}
-                filename="Current Capacity"
-                xLabel=""
-              ></DownloadTableDataCSVLink>
-              <p className="govuk-body govuk-!-margin-bottom-9">
-                Source: {bedsDataSource}
-                <br />
-                Data correct as of {bedDataLatestDate}
-              </p>
             </div>
+
             <div className="govuk-!-margin-bottom-9">
               <h2 className="govuk-heading-m" id="capacity-cp">
                 Current capacity - care homes: care provider-level insights
@@ -571,7 +635,7 @@ const PresentDemandPage: React.FC = () => {
                       metric.location_type === 'Care provider location'
                   )?.data_point ?? 'Loading...'}{' '}
                 </strong>
-                total beds, compared to the media (
+                total beds, compared to the median (
                 {finalCpData.find(
                   (metric) =>
                     metric.metric_id === 'median_bed_count_total' &&
@@ -593,10 +657,11 @@ const PresentDemandPage: React.FC = () => {
                 of beds occupied is shown as 0. For details on suppression of
                 data, see indicator definition and supporting information.
               </p>
-              <h3 className="govuk-heading-s">
-                Explore the data: care providers in {locationNames[1]}
-              </h3>
               <DataTable
+                caption={`Table comparing provision at the care provider location to median numbers of care beds at local, regional and national levels`}
+                source={
+                  'Source: Capacity Tracker from the Department of Health and Social Care (DHSC)'
+                }
                 columnHeaders={locationNamesCP}
                 rowHeaders={careProviderRowHeaders}
                 data={finalCpData}
@@ -604,16 +669,137 @@ const PresentDemandPage: React.FC = () => {
                 careProviderMedianMetrics={careProviderMedianMetrics}
                 percentageRows={metricDateType}
               ></DataTable>
-              <DownloadTableDataCSVLink
-                data={TableService.removeLoadDateTime(finalCpData)}
-                filename="Care providers data"
-                xLabel=""
-              ></DownloadTableDataCSVLink>
-              <p className="govuk-body">
-                Source: {CPDataSource}
-                <br />
-                Data correct as of {CPLatestDate}
-              </p>
+            </div>
+
+            <h2
+              className="govuk-heading-m govuk-!-margin-top-9"
+              id="definition"
+            >
+              Indicator definitions and supporting information
+            </h2>
+            <p className="govuk-body">
+              Find detailed information about each indicator, including data
+              definitions, data source, update schedule, and any limitations to
+              be aware of before using the data.
+            </p>
+
+            <h3 className="govuk-heading-s">Indicators for population needs</h3>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>
+                <a href="/help/population-size" className="govuk-link">
+                  Population size
+                </a>
+              </li>
+              <li>
+                <a href="/help/population-age" className="govuk-link">
+                  Population age
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/households-property-owned-outright"
+                  className="govuk-link"
+                >
+                  Households where the property is owned outright
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/households-deprived-4-dimensions"
+                  className="govuk-link"
+                >
+                  Households deprived in 4 dimensions
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/percentage-one-person-households-65-or-over"
+                  className="govuk-link"
+                >
+                  One-person households where the person is aged 65 or over
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/percentage-people-5-or-over-who-provide-unpaid-care"
+                  className="govuk-link"
+                >
+                  People aged 5 or over who provide unpaid care
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/people-in-bad-or-very-bad-health"
+                  className="govuk-link"
+                >
+                  People in bad or very bad health
+                </a>
+              </li>
+              <li>
+                <a href="/help/disability-prevalence" className="govuk-link">
+                  Disability prevalence
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/learning-disability-prevalence"
+                  className="govuk-link"
+                >
+                  Learning disability prevalence
+                </a>
+              </li>
+              <li>
+                <a href="/help/dementia-prevalence" className="govuk-link">
+                  Dementia prevalence
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/estimated-dementia-diagnosis-rate-65-and-over"
+                  className="govuk-link"
+                >
+                  Estimated dementia diagnosis rate
+                </a>
+              </li>
+            </ul>
+
+            <h3 className="govuk-heading-s">
+              Indicators for care home capacity
+            </h3>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>
+                <a
+                  href="/help/beds-per-100000-adult-population"
+                  className="govuk-link"
+                >
+                  Adult social care beds per 100,000 adult population
+                </a>
+              </li>
+              <li>
+                <a href="/help/percentage-beds-occupied" className="govuk-link">
+                  Percentage of adult social care beds occupied
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/beds-care-provider-location"
+                  className="govuk-link"
+                >
+                  Number of adult social care beds in care provider location
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/percentage-beds-occupied-care-provider-location"
+                  className="govuk-link"
+                >
+                  Percentage of adult social care beds occupied in care provider
+                  location
+                </a>
+              </li>
+            </ul>
+
+            <div className="govuk-!-margin-bottom-9">
               <h2
                 className="govuk-heading-m govuk-!-margin-top-9"
                 id="market-position-statement"

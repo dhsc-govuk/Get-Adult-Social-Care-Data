@@ -6,6 +6,7 @@ const LoginPage: React.FC = () => {
   return (
     <>
       <Layout
+        title="Login"
         showLoginInformation={false}
         currentPage="login"
         showNavBar={false}

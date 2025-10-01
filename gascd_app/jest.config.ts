@@ -27,15 +27,7 @@ const config: Config = {
     '/src/data/types/govuk-frontend.d.ts',
     '/src/utils/axe.ts',
   ],
-  // todo enable
-  // coverageThreshold: {
-  //   "global": {
-  //     "branches": 80,
-  //     "functions": 80,
-  //     "lines": 80,
-  //     "statements": 80
-  //   }
-  // }
+  coverageReporters: ['html', 'cobertura', 'text-summary'],
 };
 
 export default config;

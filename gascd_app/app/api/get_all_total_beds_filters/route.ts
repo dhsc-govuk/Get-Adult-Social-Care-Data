@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDB } from '../../../src/data/dbModule';
+import { dbPool } from '../../../src/data/dbModule';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import logger from '@/utils/logger';
 
 export async function GET(req: NextRequest) {
   try {
-    const pool = await connectToDB();
+    const pool = await dbPool;
     const resultSet = await pool
       .request()
       .query(
@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) {
         checked: false,
       })
     );
-    await pool.close();
     return NextResponse.json(rows);
   } catch (err) {
     logger.error('Error during database operations:', err);
