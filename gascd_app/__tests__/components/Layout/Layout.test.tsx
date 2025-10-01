@@ -27,4 +27,13 @@ describe('Layout', () => {
     expect(backlink).toBeInTheDocument();
     expect(backlink.getAttribute('href')).toBe('/myback');
   });
+
+  it('Renders version numbers in footer', () => {
+    render(<Layout title="My test page" />);
+    const footer = screen.getByTestId('footer');
+    expect(footer).toBeInTheDocument();
+    // These should match those in jest.setup.ts
+    expect(footer.getAttribute('data-version-tag')).toBe('0.1.0');
+    expect(footer.getAttribute('data-version-hash')).toBe('testab1234');
+  });
 });

@@ -93,9 +93,9 @@ stages:
                   fetchTags: true
 
                 - script: |
-                    NEXT_PUBLIC_FINGERTIPS_GIT_HASH=$(git rev-parse --short HEAD) \
-                    NEXT_PUBLIC_FINGERTIPS_GIT_TAG=$(git describe --tags --abbrev=0 --always) \
-                    docker build -f $(dockerfilePath) -t $(imageRepository):$(tag) -t $(imageRepository):latest gascd_app/. --build-arg NEXT_PUBLIC_FINGERTIPS_GIT_HASH --build-arg NEXT_PUBLIC_FINGERTIPS_GIT_TAG
+                    NEXT_PUBLIC_GASCD_GIT_HASH=$(git rev-parse --short HEAD) \
+                    NEXT_PUBLIC_GASCD_GIT_TAG=$(git describe --tags --abbrev=0 --always) \
+                    docker build -f $(dockerfilePath) -t $(imageRepository):$(tag) -t $(imageRepository):latest gascd_app/. --build-arg NEXT_PUBLIC_GASCD_GIT_HASH --build-arg NEXT_PUBLIC_GASCD_GIT_TAG
                   displayName: Build Image
 
                 - ${{ each environment in parameters.environments}}:

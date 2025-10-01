@@ -35,8 +35,8 @@ const Layout: React.FC<Props> = ({
 
   // Public version numbers to pass to the footer
   // - these are public variables as they are injected at build time, regardless of environment
-  const tag = process.env.NEXT_PUBLIC_FINGERTIPS_GIT_TAG || 'v0.0.0';
-  const hash = process.env.NEXT_PUBLIC_FINGERTIPS_GIT_HASH || '';
+  const tag = process.env.NEXT_PUBLIC_GASCD_GIT_TAG || '0.0.0';
+  const hash = process.env.NEXT_PUBLIC_GASCD_GIT_HASH || '';
 
   return (
     <>
