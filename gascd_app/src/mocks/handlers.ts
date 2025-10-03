@@ -46,6 +46,22 @@ export const handlers = [
     return HttpResponse.json(locations);
   }),
 
+  http.get<{ la_code: string }>(
+    api_root + '/localauthorities/:la_code',
+    ({ params }) => {
+      const la_code = params.la_code;
+      const la_data = {
+        la_code: la_code,
+        la_name: 'Mock LA',
+        region_code: 'E12000001',
+        region_name: 'North East',
+        country_code: 'E92000001',
+        country_name: 'England',
+      };
+      return HttpResponse.json(la_data);
+    }
+  ),
+
   http.get<{ metric_id: string }>(
     api_root + '/metrics/:metric_id',
     ({ request, params }) => {
