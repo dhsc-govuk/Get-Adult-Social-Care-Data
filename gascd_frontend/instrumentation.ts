@@ -1,16 +1,3 @@
-const startMockServer = async () => {
-  if (
-    process.env.NEXT_RUNTIME === 'nodejs' &&
-    process.env.MOCK_SERVER === 'true'
-  ) {
-    const { server } = await import('./src/mocks/node');
-    server.listen({
-      //onUnhandledRequest: 'bypass',
-    });
-    console.log('Mock server set up');
-  }
-};
-
 const startAppInsights = async () => {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
@@ -29,5 +16,4 @@ const startAppInsights = async () => {
 
 export async function register() {
   startAppInsights();
-  startMockServer();
 }

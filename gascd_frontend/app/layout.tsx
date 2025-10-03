@@ -24,6 +24,16 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Server-side mocking is set up here (rather than instrumentation.ts)
+  // to avoid issues with hot-reloading
+  if (
+    process.env.NEXT_RUNTIME === 'nodejs' &&
+    process.env.MOCK_SERVER === 'true'
+  ) {
+    const { server } = await import('@/mocks/node');
+    server.listen({ onUnhandledRequest: 'bypass' });
+  }
+
   const browserInsightsConnectionString =
     process.env.BROWSER_APPLICATIONINSIGHTS_CONNECTION_STRING || '';
   const ONELOGIN_HOME_URL = process.env.ONELOGIN_HOME_URL || '';
