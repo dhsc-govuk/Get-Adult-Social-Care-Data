@@ -1,10 +1,8 @@
 import { http, HttpResponse } from 'msw';
 import * as fs from 'fs';
+import { metric_metadata } from '@/data/mockResponses/metric_metadata';
 
 const api_root = process.env.DATA_API_ROOT;
-const metrics_metadata = JSON.parse(
-  fs.readFileSync('src/data/mockResponses/metric_metadata.json', 'utf8')
-);
 
 export const handlers = [
   http.get(api_root + '/providers/:providerid', () => {
@@ -24,8 +22,8 @@ export const handlers = [
   }),
 
   http.get(api_root + '/metadata/metrics', () => {
-    const percentage_metrics = metrics_metadata.filter(
-      (item: any) => item.metric_data_type == 'Percentage'
+    const percentage_metrics = metric_metadata.filter(
+      (item) => item.metric_data_type === 'Percentage'
     );
     return HttpResponse.json(percentage_metrics);
   }),
