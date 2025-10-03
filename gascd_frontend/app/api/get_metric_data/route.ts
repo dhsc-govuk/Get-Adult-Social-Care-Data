@@ -8,11 +8,37 @@ import { headers } from 'next/headers';
 import { addUserTelemetry } from '@/helpers/telemetry/usertelemetry';
 
 export async function POST(req: NextRequest) {
+  const queryParams = await req.json();
+
+  if (!queryParams.metric_ids?.length || !queryParams.location_ids?.length) {
+    return NextResponse.json(
+      { error: 'Missing required fields' },
+      { status: 400 }
+    );
+  }
+
+  if (process.env.DATA_API_ROOT) {
+    const metric_ids = queryParams.metric_ids;
+    let all_metrics: any[] = [];
+    for (let metric_id of metric_ids) {
+      const metric_url =
+        process.env.DATA_API_ROOT +
+        `/metrics/${metric_id}` +
+        '?location_ids=' +
+        queryParams.location_ids;
+      const response = await fetch(metric_url);
+      const data = await response.json();
+      all_metrics.push(...data);
+    }
+    return NextResponse.json(all_metrics, { status: 200 });
+  }
+
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
     const pool = await dbPool;
+<<<<<<< HEAD:gascd_frontend/app/api/get_metric_data/route.ts
     const queryParams = await req.json();
 
     await addUserTelemetry();
@@ -23,6 +49,8 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+=======
+>>>>>>> 2241229 (Add mocks for metric data and available locations):gascd_app/app/api/get_metric_data/route.ts
 
     const request = pool.request();
     const { queryString, request_with_param } =
