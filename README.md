@@ -60,6 +60,12 @@ This project requires the following pre-requisites:
 
 This will use husky (https://typicode.github.io/husky/) to install pre-commit hooks for linting and secret checking.
 
+## Setting up environment variables
+
+Create an initial environment file as follows:
+- Copy `gascd_app/.env.template` to `gascd_app/.env`
+- Enter a random string for `NEXTAUTH_SECRET` in `gascd_app/.env`
+
 ## Usage
 
 ### Running the application
