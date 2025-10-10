@@ -25,9 +25,9 @@ describe('Footer', () => {
 
   it('renders version numbers', () => {
     render(<Footer version_hash="abcd1234" version_tag="1.0.0" />);
-    const footerel = screen.getByTestId('footer');
-    expect(footerel).toHaveAttribute('data-version-tag', '1.0.0');
-    expect(footerel).toHaveAttribute('data-version-hash', 'abcd1234');
+    const footer = screen.getByTestId('footer');
+    expect(footer).toHaveAttribute('data-version-tag', '1.0.0');
+    expect(footer).toHaveAttribute('data-version-hash', 'abcd1234');
   });
 
   it('renders privacy link', () => {
