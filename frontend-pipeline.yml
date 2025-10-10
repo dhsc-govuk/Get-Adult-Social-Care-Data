@@ -86,10 +86,16 @@ stages:
           runOnce:
             deploy:
               steps:
+                # This step fetches the last 50 commits and all tags.
+                # (performance optimization over fetchDepth: 0)
                 - checkout: self
+                  fetchDepth: 50
+                  fetchTags: true
 
                 - script: |
-                    docker build -f $(dockerfilePath) -t $(imageRepository):$(tag) -t $(imageRepository):latest gascd_app/.
+                    NEXT_PUBLIC_GASCD_GIT_HASH=$(git rev-parse --short HEAD) \
+                    NEXT_PUBLIC_GASCD_GIT_TAG=$(git describe --tags --abbrev=0 --always) \
+                    docker build -f $(dockerfilePath) -t $(imageRepository):$(tag) -t $(imageRepository):latest gascd_app/. --build-arg NEXT_PUBLIC_GASCD_GIT_HASH --build-arg NEXT_PUBLIC_GASCD_GIT_TAG
                   displayName: Build Image
 
                 - ${{ each environment in parameters.environments}}:

@@ -23,6 +23,13 @@ describe('Footer', () => {
     expect(disclaimer).toHaveAttribute('href', '/disclaimer');
   });
 
+  it('renders version numbers', () => {
+    render(<Footer version_hash="abcd1234" version_tag="1.0.0" />);
+    const footer = screen.getByTestId('footer');
+    expect(footer).toHaveAttribute('data-version-tag', '1.0.0');
+    expect(footer).toHaveAttribute('data-version-hash', 'abcd1234');
+  });
+
   it('renders privacy link', () => {
     render(<Footer />);
     const disclaimer = screen.getByRole('link', {

@@ -76,6 +76,16 @@ To run the application you must ensure you've followed the setup steps
 - To run the app via Node: `make run-dev`
 - To run tests (_currently there is low test coverage_) `make test`
 
+### Version numbers in development
+
+The deployment pipelines generate version numbers from git, and these are rendered in the footer. To simulate this in development you can run:
+
+```bash
+NEXT_PUBLIC_GASCD_GIT_HASH=$(git rev-parse --short HEAD) \
+NEXT_PUBLIC_GASCD_GIT_TAG=$(git describe --tags --abbrev=0 --always) \
+make run-dev
+```
+
 ### Skipping Azure auth whilst in development
 
 The default auth provider is Azure B2C, which can be a hassle to set up if you're just making frontend changes. There is a local auth setup for development and testing, which you can use as follows:

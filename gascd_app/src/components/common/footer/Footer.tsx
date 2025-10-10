@@ -2,11 +2,22 @@ import React from 'react';
 import './footer.scss';
 import { FALLBACK_FEEDBACK_URL } from '../feedback/Feedback';
 
-const Footer: React.FC = () => {
+type Props = {
+  version_tag?: string;
+  version_hash?: string;
+};
+
+const Footer: React.FC<Props> = ({ version_tag, version_hash }) => {
   let feedback_url =
     process.env.NEXT_PUBLIC_FEEDBACK_FORM_LINK || FALLBACK_FEEDBACK_URL;
   return (
-    <footer id="footer" className="govuk-footer">
+    <footer
+      id="footer"
+      data-testid="footer"
+      className="govuk-footer"
+      data-version-tag={version_tag}
+      data-version-hash={version_hash}
+    >
       <div className="govuk-width-container">
         <svg
           xmlns="http://www.w3.org/2000/svg"

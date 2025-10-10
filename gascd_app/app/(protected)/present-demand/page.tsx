@@ -379,7 +379,7 @@ const PresentDemandPage: React.FC = () => {
                     Selected locations
                   </dt>
                   <dd className="govuk-summary-list__value">
-                    {locationNamesCP && locationNamesCP.length && (
+                    {locationNamesCP && locationNamesCP.length > 0 && (
                       <p data-testid="location-names">
                         {locationNamesCP.slice(1).join(', ')}
                       </p>

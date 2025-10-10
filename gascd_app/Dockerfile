@@ -31,6 +31,12 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Pass in git version info to allow it to be baked into public js
+ARG NEXT_PUBLIC_GASCD_GIT_HASH
+ENV NEXT_PUBLIC_GASCD_GIT_HASH=${NEXT_PUBLIC_GASCD_GIT_HASH}
+ARG NEXT_PUBLIC_GASCD_GIT_TAG
+ENV NEXT_PUBLIC_GASCD_GIT_TAG=${NEXT_PUBLIC_GASCD_GIT_TAG}
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
