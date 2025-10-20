@@ -1,4 +1,4 @@
-import NextAuthSessionProvider from '@/providers/SessionProvider';
+//import NextAuthSessionProvider from '@/providers/SessionProvider';
 import '../src/styles/globals.scss';
 import Axe from '../src/utils/axe';
 import { Viewport } from 'next';
@@ -18,14 +18,12 @@ export default async function RootLayout({
   return (
     <html lang="en" className="govuk-template--rebranded">
       <Axe />
-      <NextAuthSessionProvider>
-        <body className="govuk-frontend-supported govuk-template__body">
-          <AppInsightsInitializer
-            connectionString={browserInsightsConnectionString}
-          />
-          {children}
-        </body>
-      </NextAuthSessionProvider>
+      <body className="govuk-frontend-supported govuk-template__body">
+        <AppInsightsInitializer
+          connectionString={browserInsightsConnectionString}
+        />
+        {children}
+      </body>
     </html>
   );
 }
