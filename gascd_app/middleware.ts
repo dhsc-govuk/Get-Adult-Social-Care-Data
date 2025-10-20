@@ -8,12 +8,15 @@ export async function middleware(request: NextRequest) {
   // but is not a replacement for auth checks in each page/route
   // (it only checks for the presence of a cookie, not its validity)
   if (!sessionCookie) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/api/(.*)'], // Specify the routes the middleware applies to
+  matcher: [
+    // match all /api routes except /api/auth/*
+    '/api/((?!auth).*)',
+  ],
 };
