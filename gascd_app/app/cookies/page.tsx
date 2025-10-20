@@ -51,6 +51,40 @@ const CookiesPage = () => {
               We will not set any essential cookies until you start using the
               service.
             </p>
+            <details className="govuk-details">
+              <summary className="govuk-details__summary">
+                <span className="govuk-details__summary-text">
+                  Essential cookies used by this service
+                </span>
+              </summary>
+              <div className="govuk-details__text">
+                <h3 className="govuk-heading-s">Essential cookies we use</h3>
+                <table className="govuk-table">
+                  <thead className="govuk-table__head">
+                    <tr className="govuk-table__row">
+                      <th scope="row" className="govuk-table__header">
+                        Name
+                      </th>
+                      <th scope="row" className="govuk-table__header">
+                        Purpose
+                      </th>
+                      <th scope="row" className="govuk-table__header">
+                        Expires
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="govuk-table__body">
+                    <tr className="govuk-table__row">
+                      <td className="govuk-table__cell">Cookie 1</td>
+                      <td className="govuk-table__cell">
+                        Plain language description of cookie purpose
+                      </td>
+                      <td className="govuk-table__cell">Cookie duration</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </details>
 
             <h2 className="govuk-heading-m">Optional cookies</h2>
             <p className="govuk-body">
@@ -67,6 +101,40 @@ const CookiesPage = () => {
               you use this service and help us make it better. We do not allow
               Google to use or share this data.
             </p>
+            <details className="govuk-details">
+              <summary className="govuk-details__summary">
+                <span className="govuk-details__summary-text">
+                  Analytics cookies used by this service
+                </span>
+              </summary>
+              <div className="govuk-details__text">
+                <h3 className="govuk-heading-s">Analytics cookies we use</h3>
+                <table className="govuk-table">
+                  <thead className="govuk-table__head">
+                    <tr className="govuk-table__row">
+                      <th scope="row" className="govuk-table__header">
+                        Name
+                      </th>
+                      <th scope="row" className="govuk-table__header">
+                        Purpose
+                      </th>
+                      <th scope="row" className="govuk-table__header">
+                        Expires
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="govuk-table__body">
+                    <tr className="govuk-table__row">
+                      <td className="govuk-table__cell">Cookie 1</td>
+                      <td className="govuk-table__cell">
+                        Plain language description of cookie purpose
+                      </td>
+                      <td className="govuk-table__cell">Cookie duration</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </details>
 
             <h3 className="govuk-heading-s">
               Do you want to accept analytics cookies?
