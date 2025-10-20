@@ -4,7 +4,7 @@ import { B2CPlugin } from './authPlugins';
 import { nextCookies } from 'better-auth/next-js';
 
 export const auth = betterAuth({
-  database: new Database('./sqlite.db'),
+  database: new Database('./gascd_users_sqlite.db'),
   //emailAndPassword: {
   //  enabled: true,
   //},

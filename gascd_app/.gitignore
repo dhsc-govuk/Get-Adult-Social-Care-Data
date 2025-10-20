@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 cypress.env.json
-sqlite.db
+gascd_users_sqlite.db
