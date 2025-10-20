@@ -9,7 +9,7 @@ import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import TableService from '@/services/Table/TableService';
 import DataTable from '@/components/tables/table';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
-import { useSession } from 'next-auth/react';
+import { authClient } from '@/utils/auth-client';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import { MetaData } from '@/data/interfaces/MetaData';
 import { Locations } from '@/data/interfaces/Locations';
@@ -20,7 +20,7 @@ const PresentDemandPage: React.FC = () => {
   const [filteredDemographicData, setFilteredDemographicData] = useState<
     Indicator[]
   >([]);
-  const { data: session, status } = useSession();
+  const { data: session } = authClient.useSession();
   const [filteredBedData, setFilteredBedData] = useState<Indicator[]>([]);
   const [finalCpData, setFinalCpData] = useState<Indicator[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
