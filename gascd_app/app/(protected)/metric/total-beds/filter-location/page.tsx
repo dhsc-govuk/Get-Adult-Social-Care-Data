@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
-import { useSession } from 'next-auth/react';
+import { authClient } from '@/utils/auth-client';
 import Link from 'next/link';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 
@@ -11,7 +11,7 @@ const PresentDemandLocations: React.FC = () => {
   const [selectedCPLocation, setSelectedCPLocation] = useState<string | null>(
     null
   );
-  const { data: session, status } = useSession();
+  const { data: session } = authClient.useSession();
   const [cpLocation, setCpLocation] = useState<string>();
 
   useEffect(() => {

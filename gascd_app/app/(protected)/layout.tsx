@@ -1,6 +1,4 @@
 import { redirect } from 'next/navigation';
-//import { getServerSession } from 'next-auth/next';
-//import { authOptions } from '../api/auth/authOptions';
 import { verifyAuthToken } from '../../src/helpers/auth/verifyAuthToken';
 import logger from '@/utils/logger';
 import { auth } from '@/utils/auth';
@@ -11,8 +9,6 @@ export default async function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  //const session = await getServerSession(authOptions);
-
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -25,6 +21,7 @@ export default async function AuthLayout({
   }
 
   if (!session || !session.user) {
+    // XXX does this need extra validation here?
     redirect('/login');
   }
 

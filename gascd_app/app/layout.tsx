@@ -1,4 +1,3 @@
-//import NextAuthSessionProvider from '@/providers/SessionProvider';
 import '../src/styles/globals.scss';
 import Axe from '../src/utils/axe';
 import { Viewport } from 'next';

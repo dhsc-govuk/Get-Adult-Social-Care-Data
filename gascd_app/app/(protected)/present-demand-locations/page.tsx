@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
-import { useSession } from 'next-auth/react';
+import { authClient } from '@/utils/auth-client';
 import Link from 'next/link';
 
 const PresentDemandLocations: React.FC = () => {
@@ -11,7 +11,7 @@ const PresentDemandLocations: React.FC = () => {
   const [selectedCPLocation, setSelectedCPLocation] = useState<string | null>(
     null
   );
-  const { data: session, status } = useSession();
+  const { data: session } = authClient.useSession();
   const [cpLocation, setCpLocation] = useState<string>();
 
   useEffect(() => {

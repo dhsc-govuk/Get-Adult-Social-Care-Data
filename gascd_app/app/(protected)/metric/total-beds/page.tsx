@@ -10,12 +10,10 @@ import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
-import { useSearchParams } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { authClient } from '@/utils/auth-client';
 import SmartInsightsFetchService from '@/services/smart-insights/SmartInsightsFetchService';
 import { parseMarkdownBlocks } from '@/utils/parseMarkdown';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import TableService from '@/services/Table/TableService';
 import SmartInsights from '@/components/indicator-components/SmartInsights';
@@ -28,7 +26,7 @@ const TotalBedsPage: React.FC = () => {
   const [indicatorService, setIndicatorService] =
     useState<IndicatorService | null>(null);
 
-  const { data: session, status } = useSession();
+  const { data: session } = authClient.useSession();
   const [smartInsights, setSmartInsights] = useState<string[]>(['']);
 
   const [locationId, setlocationId] = useState<string>();

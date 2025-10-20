@@ -4,19 +4,13 @@ import React, { useCallback, useState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
 import ButtonWithArrow from '../../../src/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
 import { authClient } from '@/utils/auth-client';
-//import { signIn } from 'next-auth/react';
 
 const LoginPage: React.FC = () => {
   const handleSubmit = async () => {
     const { data, error } = await authClient.signIn.oauth2({
       providerId: 'azure-ad-b2c-signin', // required
       callbackURL: '/home',
-      //errorCallbackURL: "/error-page",
-      //newUserCallbackURL: "/welcome",
-      //disableRedirect: false,
-      //requestSignUp: false,
     });
-    //signIn('azure-ad-b2c-signin', { callbackUrl: '/home' })
   };
 
   return (
