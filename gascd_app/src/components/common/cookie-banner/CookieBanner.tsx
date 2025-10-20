@@ -19,9 +19,8 @@ const CookieBanner: React.FC = () => {
                 We use some essential cookies to make this service work.
               </p>
               <p className="govuk-body">
-                We’d like to set additional cookies so we can remember your
-                settings, understand how people use the service and make
-                improvements.
+                We&apos;d also like to use analytics cookies so we can
+                understand how you use the service and make improvements.
               </p>
             </div>
           </div>
@@ -30,20 +29,20 @@ const CookieBanner: React.FC = () => {
           <button
             value="yes"
             type="submit"
-            name="cookies[additional]"
+            name="cookies[analytics]"
             className="govuk-button"
             data-module="govuk-button"
           >
-            Accept additional cookies
+            Accept analytics cookies
           </button>
           <button
             value="no"
             type="submit"
-            name="cookies[additional]"
+            name="cookies[analytics]"
             className="govuk-button"
             data-module="govuk-button"
           >
-            Reject additional cookies
+            Reject analytics cookies
           </button>
           <a className="govuk-link" href="/cookies">
             View cookies
@@ -58,7 +57,7 @@ const CookieBanner: React.FC = () => {
           <div className="govuk-grid-column-two-thirds">
             <div className="govuk-cookie-banner__content">
               <p className="govuk-body">
-                You’ve accepted additional cookies. You can{' '}
+                You&apos;ve accepted additional cookies. You can{' '}
                 <a className="govuk-link" href="/cookies">
                   change your cookie settings
                 </a>{' '}
@@ -87,7 +86,7 @@ const CookieBanner: React.FC = () => {
           <div className="govuk-grid-column-two-thirds">
             <div className="govuk-cookie-banner__content">
               <p className="govuk-body">
-                You’ve rejected additional cookies. You can{' '}
+                You&apos;ve rejected analytics cookies. You can{' '}
                 <a className="govuk-link" href="/cookies">
                   change your cookie settings
                 </a>{' '}
