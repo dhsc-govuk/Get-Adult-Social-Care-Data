@@ -63,6 +63,11 @@ const Footer: React.FC<Props> = ({ version_tag, version_hash }) => {
                   Privacy
                 </a>
               </li>
+              <li className="govuk-footer__inline-list-item">
+                <a className="govuk-footer__link" href="/cookies">
+                  Cookies
+                </a>
+              </li>
             </ul>
           </div>
           <div className="govuk-footer__meta-item">

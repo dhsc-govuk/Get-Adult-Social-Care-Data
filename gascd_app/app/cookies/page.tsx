@@ -166,6 +166,7 @@ const CookiesPage = () => {
                         name="options"
                         type="radio"
                         value="no"
+                        defaultChecked
                         onChange={() => handleChange(false)}
                       />
                       <label
