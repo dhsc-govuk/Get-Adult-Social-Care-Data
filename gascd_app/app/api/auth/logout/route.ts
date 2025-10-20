@@ -1,10 +1,12 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../authOptions';
 import { NextRequest, NextResponse } from 'next/server';
 import logger from '@/utils/logger';
+import { auth } from '@/utils/auth';
+import { headers } from 'next/headers';
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   if (!session) {
     return NextResponse.json(
