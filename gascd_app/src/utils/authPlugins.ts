@@ -10,6 +10,8 @@ export const B2CPlugin = () => {
         clientSecret: process.env.AZURE_AD_CLIENT_SECRET as string,
         discoveryUrl: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${process.env.AZURE_AD_B2C_USER_SIGN_IN}`,
         scopes: ['openid', 'offline_access', 'profile'],
+        // No manual signup support, but users are implicitly created on login
+        disableImplicitSignUp: true,
         // Ensure location details after updated on every login
         overrideUserInfo: true,
         // Custom userinfo method, to deal with B2Cs list of emails
