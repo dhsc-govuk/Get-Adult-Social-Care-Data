@@ -17,9 +17,6 @@ export const B2CPlugin = () => {
               sub: string;
               emails: string[];
               emailVerified: boolean;
-              name: string;
-              extension_Location_ID: string;
-              extension_Location_Type: string;
             };
             if (decoded) {
               if (decoded.sub && decoded.emails) {
