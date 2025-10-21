@@ -1,9 +1,13 @@
 import { createAuthClient } from 'better-auth/react';
-import { genericOAuthClient } from 'better-auth/client/plugins';
+import {
+  genericOAuthClient,
+  inferAdditionalFields,
+} from 'better-auth/client/plugins';
+import type { auth } from './auth';
 
 export const authClient = createAuthClient({
   baseURL: process.env.BASE_URL!, // Optional if the API base URL matches the frontend
-  plugins: [genericOAuthClient()],
+  plugins: [genericOAuthClient(), inferAdditionalFields<typeof auth>()],
 });
 
 export const { signIn, signOut, useSession } = authClient;
