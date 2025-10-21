@@ -5,7 +5,7 @@ import Footer from '../footer/Footer';
 import PhaseBanner from '../phase-banner/PhaseBanner';
 import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
 import { Breadcrumb } from '../../../data/interfaces/Breadcrumb';
-import { Session } from 'next-auth';
+import { Session } from '@/utils/auth-client';
 
 type Props = {
   title: string;

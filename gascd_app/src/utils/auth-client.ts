@@ -7,3 +7,7 @@ export const authClient = createAuthClient({
 });
 
 export const { signIn, signOut, useSession } = authClient;
+
+// Support for customisations to the session type
+// https://www.better-auth.com/docs/concepts/typescript#inferring-types
+export type Session = typeof authClient.$Infer.Session;
