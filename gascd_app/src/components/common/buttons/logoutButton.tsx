@@ -29,7 +29,7 @@ const LogoutButton: React.FC = () => {
   }, []);
 
   const handleSignOut = async () => {
-    LogService.logEvent('User logged out');
+    await LogService.logEvent('User logged out');
     localStorage.clear();
     await authClient.signOut({
       fetchOptions: {
