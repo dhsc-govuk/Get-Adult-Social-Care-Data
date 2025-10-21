@@ -5,19 +5,19 @@ import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 
-global.fetch = jest.fn();
+global.fetch = vi.fn();
 
 describe('IndicatorFetchService', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('getLocations', () => {
     it('fetches and returns locations', async () => {
       const mockLocations: Location[] = [{ la_name: 'London', la_code: '1' }];
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockLocations),
+        json: vi.fn().mockResolvedValue(mockLocations),
       });
 
       const query: IndicatorQuery = { metric_ids: [], location_ids: [] };
@@ -31,7 +31,7 @@ describe('IndicatorFetchService', () => {
     });
 
     it('throws error on failed fetch', async () => {
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: false,
         statusText: 'Internal Server Error',
       });
@@ -46,9 +46,9 @@ describe('IndicatorFetchService', () => {
   describe('getLocalAuthoritiesInProviderLocationRegion', () => {
     it(' fetches data with providerLocationId', async () => {
       const mockData = [{ id: '1', name: 'Region A' }];
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockData),
+        json: vi.fn().mockResolvedValue(mockData),
       });
 
       const result =
@@ -64,9 +64,9 @@ describe('IndicatorFetchService', () => {
     });
 
     it('sends an empty request body when providerLocationId is undefined', async () => {
-      global.fetch = jest.fn().mockResolvedValue({
+      global.fetch = vi.fn().mockResolvedValue({
         ok: true,
-        json: jest.fn().mockResolvedValue([{ id: '1', name: 'Location A' }]),
+        json: vi.fn().mockResolvedValue([{ id: '1', name: 'Location A' }]),
       });
 
       await IndicatorFetchService.getLocalAuthoritiesInProviderLocationRegion(
@@ -82,7 +82,7 @@ describe('IndicatorFetchService', () => {
     });
 
     it(' throws error on failed fetch', async () => {
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: false,
         statusText: 'Bad Request',
       });
@@ -99,9 +99,9 @@ describe('IndicatorFetchService', () => {
         { metric_id: '2', filter_bedtype: 'Nursing', checked: false },
         { metric_id: '1', filter_bedtype: 'General', checked: false },
       ];
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockFilters),
+        json: vi.fn().mockResolvedValue(mockFilters),
       });
 
       const result = await IndicatorFetchService.getFilters('metric1');
@@ -114,7 +114,7 @@ describe('IndicatorFetchService', () => {
     });
 
     it('throws error on failed fetch', async () => {
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: false,
         statusText: 'Not Found',
       });
@@ -141,9 +141,9 @@ describe('IndicatorFetchService', () => {
           load_date_time: new Date(),
         },
       ];
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockData),
+        json: vi.fn().mockResolvedValue(mockData),
       });
 
       const query: IndicatorQuery = { metric_ids: [], location_ids: [] };
@@ -157,7 +157,7 @@ describe('IndicatorFetchService', () => {
     });
 
     it('throws error on failed fetch', async () => {
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: false,
         statusText: 'Service Unavailable',
       });
@@ -196,9 +196,9 @@ describe('IndicatorFetchService', () => {
           comments: '',
         },
       ];
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockMetadata),
+        json: vi.fn().mockResolvedValue(mockMetadata),
       });
 
       const result = await IndicatorFetchService.getMetadateByType('testType');
@@ -210,7 +210,7 @@ describe('IndicatorFetchService', () => {
     });
 
     it('throws error on failed fetch', async () => {
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: false,
         statusText: 'Forbidden',
       });
@@ -248,9 +248,9 @@ describe('IndicatorFetchService', () => {
           comments: '',
         },
       ];
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockDisplayData),
+        json: vi.fn().mockResolvedValue(mockDisplayData),
       });
 
       const query: IndicatorQuery = { metric_ids: [], location_ids: [] };
@@ -264,7 +264,7 @@ describe('IndicatorFetchService', () => {
     });
 
     it('throws error on failed fetch', async () => {
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: false,
         statusText: 'Unauthorized',
       });

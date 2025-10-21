@@ -2,22 +2,22 @@ import sql from 'mssql';
 import QueryBuilderService from '@/services/query-builder/QueryBuilderService';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 
-jest.mock('mssql', () => {
+vi.mock('mssql', () => {
   return {
-    Request: jest.fn().mockImplementation(() => {
+    Request: vi.fn().mockImplementation(() => {
       return {
-        input: jest.fn().mockReturnThis(),
+        input: vi.fn().mockReturnThis(),
       };
     }),
 
-    ConnectionPool: jest.fn().mockImplementation(() => {
+    ConnectionPool: vi.fn().mockImplementation(() => {
       return {
-        connect: jest.fn().mockResolvedValue(true),
-        request: jest.fn().mockReturnThis(),
+        connect: vi.fn().mockResolvedValue(true),
+        request: vi.fn().mockReturnThis(),
       };
     }),
 
-    VarChar: jest.fn().mockReturnValue('VarChar'),
+    VarChar: vi.fn().mockReturnValue('VarChar'),
   };
 });
 

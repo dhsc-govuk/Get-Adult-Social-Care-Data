@@ -6,9 +6,9 @@ import PresentDemandPage from '../../app/(protected)/present-demand/page';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 
 // Mock out things we are not testing at the moment to prevent them making api requests
-jest.mock('@/components/common/buttons/logoutButton');
-jest.mock('@/services/logger/logService');
-jest.mock('@/services/indicator/IndicatorFetchService');
+vi.mock('@/components/common/buttons/logoutButton');
+vi.mock('@/services/logger/logService');
+vi.mock('@/services/indicator/IndicatorFetchService');
 
 beforeEach(() => {
   // Stop localstorage usage interfering with other tests
@@ -71,9 +71,9 @@ describe('PresentDemandPage', () => {
   });
 
   it('should render the user care location', async () => {
-    jest
-      .spyOn(PresentDemandService, 'getLocations')
-      .mockResolvedValue(Promise.resolve(exampleLaCode as any));
+    vi.spyOn(PresentDemandService, 'getLocations').mockResolvedValue(
+      Promise.resolve(exampleLaCode as any)
+    );
 
     renderWithSession(<PresentDemandPage />);
 
@@ -85,12 +85,12 @@ describe('PresentDemandPage', () => {
   it('should render the user care location for stored locations', async () => {
     const allowed_locations = [{ metric_location_id: 'testlocation_another' }];
     window.localStorage.setItem('selectedValue', 'testlocation_another');
-    jest
-      .spyOn(PresentDemandService, 'getLocations')
-      .mockResolvedValue(Promise.resolve(exampleLaCode as any));
-    jest
-      .spyOn(PresentDemandService, 'getAvailableLocations')
-      .mockResolvedValue(Promise.resolve(allowed_locations as any));
+    vi.spyOn(PresentDemandService, 'getLocations').mockResolvedValue(
+      Promise.resolve(exampleLaCode as any)
+    );
+    vi.spyOn(PresentDemandService, 'getAvailableLocations').mockResolvedValue(
+      Promise.resolve(allowed_locations as any)
+    );
 
     renderWithSession(<PresentDemandPage />);
 
@@ -103,12 +103,12 @@ describe('PresentDemandPage', () => {
     const allowed_locations = [{ metric_location_id: 'testlocation1' }];
     // Manually set the stored location to something invalid
     window.localStorage.setItem('selectedValue', 'invalid');
-    jest
-      .spyOn(PresentDemandService, 'getLocations')
-      .mockResolvedValue(Promise.resolve(exampleLaCode as any));
-    jest
-      .spyOn(PresentDemandService, 'getAvailableLocations')
-      .mockResolvedValue(Promise.resolve(allowed_locations as any));
+    vi.spyOn(PresentDemandService, 'getLocations').mockResolvedValue(
+      Promise.resolve(exampleLaCode as any)
+    );
+    vi.spyOn(PresentDemandService, 'getAvailableLocations').mockResolvedValue(
+      Promise.resolve(allowed_locations as any)
+    );
 
     renderWithSession(<PresentDemandPage />);
 
@@ -134,9 +134,9 @@ describe('PresentDemandPage', () => {
       country_name: '',
       load_date_time: '',
     };
-    jest
-      .spyOn(PresentDemandService, 'getLocations')
-      .mockResolvedValue(supportedLACode as any);
+    vi.spyOn(PresentDemandService, 'getLocations').mockResolvedValue(
+      supportedLACode as any
+    );
 
     renderWithSession(<PresentDemandPage />);
 
@@ -174,9 +174,9 @@ describe('PresentDemandPage', () => {
       country_name: '',
       load_date_time: '',
     };
-    jest
-      .spyOn(PresentDemandService, 'getLocations')
-      .mockResolvedValue(unsupportedLACode as any);
+    vi.spyOn(PresentDemandService, 'getLocations').mockResolvedValue(
+      unsupportedLACode as any
+    );
 
     renderWithSession(<PresentDemandPage />);
 

@@ -6,16 +6,16 @@ import { POST } from '../../../app/api/auth/logout/route';
 import { getServerSession } from 'next-auth';
 import { NextRequest } from 'next/server';
 
-jest.mock('next-auth', () => ({
-  getServerSession: jest.fn(),
+vi.mock('next-auth', () => ({
+  getServerSession: vi.fn(),
 }));
 
 describe('Logout API Route', () => {
   const mockEnvVars = process.env;
 
   beforeEach(() => {
-    jest.resetModules();
-    jest.resetAllMocks();
+    vi.resetModules();
+    vi.resetAllMocks();
     process.env = { ...mockEnvVars };
   });
 
@@ -24,7 +24,7 @@ describe('Logout API Route', () => {
   });
 
   test('should return 401 if no active session', async () => {
-    (getServerSession as jest.Mock).mockReturnValue(null);
+    (getServerSession as vi.Mock).mockReturnValue(null);
 
     const mockRequest = new NextRequest(
       new URL('http://localhost/api/auth/logout'),
@@ -45,7 +45,7 @@ describe('Logout API Route', () => {
     process.env.AZURE_AD_B2C_USER_SIGN_IN = '';
     process.env.AZURE_AD_B2C_LOGOUT_URL = '';
 
-    (getServerSession as jest.Mock).mockResolvedValue({
+    (getServerSession as vi.Mock).mockResolvedValue({
       idToken: 'authorised-id-token',
     });
 
@@ -70,7 +70,7 @@ describe('Logout API Route', () => {
     process.env.AZURE_AD_B2C_USER_SIGN_IN = 'MOCK_B2C_FLOW';
     process.env.AZURE_AD_B2C_LOGOUT_URL = 'MOCK_REDIRECT_URL';
 
-    (getServerSession as jest.Mock).mockResolvedValue({
+    (getServerSession as vi.Mock).mockResolvedValue({
       idToken: 'authorised-id-token',
     });
 
