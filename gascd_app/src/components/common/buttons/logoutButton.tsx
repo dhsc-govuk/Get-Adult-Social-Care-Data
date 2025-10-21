@@ -1,6 +1,5 @@
 'use client';
 
-import { signOut } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import LogService from '@/services/logger/logService';
 import { authClient } from '@/utils/auth-client';
