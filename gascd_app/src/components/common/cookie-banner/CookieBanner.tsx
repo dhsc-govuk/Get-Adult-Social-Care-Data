@@ -1,6 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const CookieBanner: React.FC = () => {
+  const [selectedCookiesConsent, setSelectedCookiesConsent] =
+    useState<boolean>();
+
+  const handleSubmit = () => {
+    if (selectedCookiesConsent) {
+      document
+        .getElementById('cookie-accept-message')!
+        .removeAttribute('hidden');
+      document
+        .querySelector('.govuk-cookie-banner__message')!
+        .setAttribute('hidden', 'true');
+      console.log('Cookies Approved');
+    } else {
+      document
+        .getElementById('cookie-reject-message')!
+        .removeAttribute('hidden');
+      document
+        .querySelector('.govuk-cookie-banner__message')!
+        .setAttribute('hidden', 'true');
+      console.log('Cookies Rejected');
+    }
+  };
+
+  const hideBanner = () => {
+    document
+      .querySelector('.govuk-cookie-banner')!
+      .setAttribute('hidden', 'true');
+  };
+
   return (
     <div
       className="govuk-cookie-banner"
@@ -32,6 +61,7 @@ const CookieBanner: React.FC = () => {
             name="cookies[analytics]"
             className="govuk-button"
             data-module="govuk-button"
+            onClick={() => handleSubmit()}
           >
             Accept analytics cookies
           </button>
@@ -41,6 +71,7 @@ const CookieBanner: React.FC = () => {
             name="cookies[analytics]"
             className="govuk-button"
             data-module="govuk-button"
+            onClick={() => handleSubmit()}
           >
             Reject analytics cookies
           </button>
@@ -51,6 +82,7 @@ const CookieBanner: React.FC = () => {
       </div>
       <div
         className="govuk-cookie-banner__message govuk-width-container"
+        id="cookie-accept-message"
         hidden
       >
         <div className="govuk-grid-row">
@@ -73,6 +105,7 @@ const CookieBanner: React.FC = () => {
             name="cookies[hide]"
             className="govuk-button"
             data-module="govuk-button"
+            onClick={() => hideBanner()}
           >
             Hide cookie message
           </button>
@@ -80,6 +113,7 @@ const CookieBanner: React.FC = () => {
       </div>
       <div
         className="govuk-cookie-banner__message govuk-width-container"
+        id="cookie-reject-message"
         hidden
       >
         <div className="govuk-grid-row">
@@ -102,6 +136,7 @@ const CookieBanner: React.FC = () => {
             name="cookies[hide]"
             className="govuk-button"
             data-module="govuk-button"
+            onClick={() => hideBanner()}
           >
             Hide cookie message
           </button>
