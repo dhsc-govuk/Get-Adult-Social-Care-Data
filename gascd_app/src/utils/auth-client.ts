@@ -6,7 +6,6 @@ import {
 import type { auth } from './auth';
 
 export const authClient = createAuthClient({
-  baseURL: process.env.BASE_URL!, // Optional if the API base URL matches the frontend
   plugins: [genericOAuthClient(), inferAdditionalFields<typeof auth>()],
 });
 
