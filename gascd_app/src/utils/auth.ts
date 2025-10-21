@@ -1,4 +1,4 @@
-import { betterAuth } from 'better-auth';
+import { betterAuth, boolean } from 'better-auth';
 import Database from 'better-sqlite3';
 import { B2CPlugin } from './authPlugins';
 import { nextCookies } from 'better-auth/next-js';
@@ -19,6 +19,12 @@ export const auth = betterAuth({
         type: 'string',
         required: false,
         input: false,
+      },
+      smartInsights: {
+        type: 'boolean',
+        required: false,
+        input: false,
+        default: false,
       },
     },
   },

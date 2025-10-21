@@ -40,6 +40,7 @@ export const B2CPlugin = () => {
             id: profile.id,
             locationId: profile.extension_Location_ID,
             locationType: profile.extension_Location_Type,
+            smartInsights: profile.extension_Smart_Insights,
           };
         },
       },

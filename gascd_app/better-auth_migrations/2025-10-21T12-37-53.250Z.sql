@@ -1,0 +1,1 @@
+alter table "user" add column "smartInsights" integer;
