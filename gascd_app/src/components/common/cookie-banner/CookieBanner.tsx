@@ -24,6 +24,16 @@ const CookieBanner: React.FC = () => {
     }
   };
 
+  const handleAccept = () => {
+    setSelectedCookiesConsent(true);
+    handleSubmit();
+  };
+
+  const handleReject = () => {
+    setSelectedCookiesConsent(false);
+    handleSubmit();
+  };
+
   const hideBanner = () => {
     document
       .querySelector('.govuk-cookie-banner')!
@@ -61,7 +71,7 @@ const CookieBanner: React.FC = () => {
             name="cookies[analytics]"
             className="govuk-button"
             data-module="govuk-button"
-            onClick={() => handleSubmit()}
+            onClick={() => handleAccept()}
           >
             Accept analytics cookies
           </button>
@@ -71,7 +81,7 @@ const CookieBanner: React.FC = () => {
             name="cookies[analytics]"
             className="govuk-button"
             data-module="govuk-button"
-            onClick={() => handleSubmit()}
+            onClick={() => handleReject()}
           >
             Reject analytics cookies
           </button>
