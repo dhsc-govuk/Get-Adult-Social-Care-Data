@@ -31,7 +31,7 @@ const Layout: React.FC<Props> = ({
   currentPage,
   backURL,
   session,
-  showCookieBanner = Cookies.get('cookies-consent') === undefined,
+  showCookieBanner = Cookies.get('GASCDConsentGDPR') === undefined,
 }) => {
   const title_suffix = 'Get adult social care data - GOV.UK';
   const full_title = title + ' - ' + title_suffix;
