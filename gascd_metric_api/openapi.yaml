@@ -1,0 +1,421 @@
+openapi: 3.0.3
+info:
+  title: "Get Adult Social Care API"
+  description: "A RESTful API for accessing health and care provider metric data, metadata, and insights."
+  version: "0.0.1"
+servers:
+  - url: "http://gascd.internal/api/"
+
+security:
+  - bearerAuth: []
+
+paths:
+  /locations:
+    get:
+      summary: "List or search for locations"
+      description: "Retrieves a list of locations, such as Local Authorities (LAs), optionally filtered by region. This endpoint replaces the old `/get_locations` and the GET part of `/get_location_names`."
+      parameters:
+        - name: regionId
+          in: query
+          description: "The region code to filter Local Authorities by."
+          required: false
+          schema:
+            type: string
+            example: "E12000001"
+      responses:
+        '200':
+          description: "A list of locations."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+
+  /locations/{locationId}:
+    get:
+      summary: "Get a specific location"
+      description: "Retrieves detailed information for a single location by its ID. This could be a Care Provider (CP) location, Local Authority (LA), region, or country. This endpoint consolidates the functionality of the old `/get_location_data` and `/get_la_location_data`."
+      parameters:
+        - name: locationId
+          in: path
+          required: true
+          description: "The unique identifier for the location."
+          schema:
+            type: string
+            example: "1-12345678"
+      responses:
+        '200':
+          description: "Detailed information for the requested location."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '404':
+          description: "Location not found."
+
+  /users/me/locations:
+    get:
+      summary: "Get locations available to the current user"
+      description: "Retrieves the list of Care Provider (CP) locations that the currently authenticated user has access to. This replaces the old `/get_available_locations` endpoint."
+      responses:
+        '200':
+          description: "A list of location summaries accessible by the user."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    location_id:
+                      type: string
+                      description: "The unique ID of the location."
+                    location_name:
+                      type: string
+                      description: "The display name of the location."
+
+  /metrics:
+    get:
+      summary: "List all metric metadata"
+      description: "Gets a list of all available metrics, with the option to filter by data type. This replaces and generalizes the old `/get_metadata_by_data_types` endpoint."
+      parameters:
+        - name: dataType
+          in: query
+          description: "Filter metrics by their data type, e.g., 'Percentage'."
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "A list of metric metadata objects."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MetricMetadata'
+
+  /metrics/{metricId}:
+    get:
+      summary: "Get metadata for a specific metric"
+      description: "Retrieves all metadata for a single metric, including its name, numerator, and denominator definitions. Replaces the old `/get_metadata` endpoint."
+      parameters:
+        - $ref: '#/components/parameters/MetricId'
+      responses:
+        '200':
+          description: "The metadata for the requested metric."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricMetadata'
+        '404':
+          description: "Metric not found."
+
+  /metrics/{metricId}/filters:
+    get:
+      summary: "Get available filters for a metric"
+      description: "Retrieves the available filter options for a specific metric or metric group. This is a generalized replacement for the old `/get_all_total_beds_filters`."
+      parameters:
+        - $ref: '#/components/parameters/MetricId'
+      responses:
+        '200':
+          description: "A list of available filter options."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MetricFilter'
+
+  /metric-data:
+    get:
+      summary: "Get time-series or most recent data for metrics"
+      description: "Retrieves data points for one or more metrics across one or more locations. Omit date parameters to get the most recent data point. Provide a startDate to get a time-series."
+      parameters:
+        - name: metricId
+          in: query
+          description: "Comma-separated list of metric IDs to retrieve data for."
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+            example: ["metric_a", "metric_b"]
+        - name: locationId
+          in: query
+          description: "Comma-separated list of location IDs to retrieve data for."
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+            example: ["1-12345678", "E09000001"]
+        - name: startDate
+          in: query
+          description: "The start date for the time series (YYYY-MM-DD). If omitted, only the most recent data point is returned."
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2024-01-01"
+        - name: endDate
+          in: query
+          description: "The end date for the time series (YYYY-MM-DD). Defaults to the current date if startDate is provided."
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2024-12-31"
+        - name: frequency
+          in: query
+          description: "The frequency of data points for the time series. Only applicable when startDate is provided."
+          required: false
+          schema:
+            type: string
+            enum: [daily, monthly, yearly]
+            default: monthly
+      responses:
+        '200':
+          description: "A list of matching metric data points."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MetricDataPoint'
+
+  /metrics/{metricId}/data:
+    get:
+      summary: "Get time-series or most recent data for a single metric"
+      description: "Retrieves data points for a single specified metric across one or more locations. Omit date parameters to get the most recent data point. Provide a startDate to get a time-series."
+      parameters:
+        - $ref: '#/components/parameters/MetricId'
+        - name: locationId
+          in: query
+          description: "Comma-separated list of location IDs to retrieve data for."
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+            example: ["1-12345678", "E09000001"]
+        - name: startDate
+          in: query
+          description: "The start date for the time series (YYYY-MM-DD). If omitted, only the most recent data point is returned."
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2024-01-01"
+        - name: endDate
+          in: query
+          description: "The end date for the time series (YYYY-MM-DD). Defaults to the current date if startDate is provided."
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2024-12-31"
+        - name: frequency
+          in: query
+          description: "The frequency of data points for the time series. Only applicable when startDate is provided."
+          required: false
+          schema:
+            type: string
+            enum: [daily, monthly, yearly]
+            default: monthly
+      responses:
+        '200':
+          description: "A list of matching metric data points for the specified metric."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MetricDataPoint'
+
+  /insights:
+    get:
+      summary: "Get smart insights"
+      description: "Retrieves smart insights (in Markdown format) for a given set of metrics and locations. Replaces the old `/get_smart_insights` endpoint."
+      parameters:
+        - name: metricId
+          in: query
+          description: "Comma-separated list of metric IDs to retrieve insights for."
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+        - name: locationId
+          in: query
+          description: "Comma-separated list of location IDs to retrieve insights for."
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: "A list of matching smart insights."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Insight'
+
+# Reusable components
+components:
+  parameters:
+    MetricId:
+      name: metricId
+      in: path
+      required: true
+      description: "The unique identifier for the metric."
+      schema:
+        type: string
+        example: "bedcount_per_100000_adults"
+
+  schemas:
+    Location:
+      type: object
+      description: "Represents a geographical or organizational location."
+      properties:
+        location_id:
+          type: string
+          description: "Unique identifier for the location (e.g., CP location ID, LA code, region code)."
+        location_name:
+          type: string
+          description: "Display name of the location."
+        location_type:
+          type: string
+          description: "The type of location."
+          enum: [provider, la, region, country]
+        provider_id:
+          type: string
+          description: "The parent provider ID, if applicable."
+        provider_name:
+          type: string
+          description: "The parent provider name, if applicable."
+        la_code:
+          type: string
+          description: "Local Authority code."
+        la_name:
+          type: string
+          description: "Local Authority name."
+        region_code:
+          type: string
+          description: "Region code."
+        region_name:
+          type: string
+          description: "Region name."
+        country_code:
+          type: string
+          description: "Country code."
+        country_name:
+          type: string
+          description: "Country name."
+
+    MetricMetadata:
+      type: object
+      description: "Defines the properties and context of a metric."
+      properties:
+        metric_id:
+          type: string
+          description: "The unique identifier for the metric."
+        metric_name:
+          type: string
+          description: "The display name for the metric."
+        data_type:
+          type: string
+          description: "The format of the metric's data, e.g., 'Percentage', 'Currency'."
+        data_source:
+          type: string
+          description: "The source of the data for this metric."
+        numerator:
+          type: string
+          description: "A description of the numerator."
+        denominator:
+          type: string
+          description: "A description of the denominator."
+
+    MetricFilter:
+      type: object
+      description: "An available filter for a metric, such as bed type."
+      properties:
+        metric_id:
+          type: string
+          description: "The specific metric ID this filter applies to."
+        filter_name:
+          type: string
+          description: "The name of the filter category (e.g., 'bed_type')."
+        filter_value:
+          type: string
+          description: "The value of the filter (e.g., 'nursing', 'residential')."
+        display_name:
+          type: string
+          description: "A user-friendly name for the filter value."
+
+    MetricDataPoint:
+      type: object
+      description: "A single data point for a metric at a specific time and location."
+      properties:
+        metric_id:
+          type: string
+          description: "The unique identifier for the metric."
+        location_id:
+          type: string
+          description: "The unique identifier for the location."
+        metric_date:
+          type: string
+          format: date
+          description: "The date the metric applies to."
+        value:
+          type: number
+          format: float
+          description: "The calculated data point."
+        numerator:
+          type: number
+          description: "The numerator value for the data point."
+        denominator:
+          type: number
+          description: "The denominator value for the data point."
+        multiplier:
+          type: number
+          description: "The multiplier used in the calculation."
+        load_date_time:
+          type: string
+          format: date-time
+          description: "The timestamp when the data was loaded into the system."
+
+    Insight:
+      type: object
+      description: "A text-based insight for a metric and location."
+      properties:
+        metric_id:
+          type: string
+          description: "The metric this insight applies to."
+        location_id:
+          type: string
+          description: "The location this insight applies to."
+        insight_markdown:
+          type: string
+          description: "The insight content, formatted as Markdown."
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      
