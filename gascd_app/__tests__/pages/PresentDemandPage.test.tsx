@@ -1,5 +1,4 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
-import '@testing-library/vi.dom';
 import { Locations } from '@/data/interfaces/Locations';
 import { renderWithSession } from '@/test-utils/test-utils';
 import PresentDemandPage from '../../app/(protected)/present-demand/page';

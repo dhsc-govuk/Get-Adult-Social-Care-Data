@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/vi.dom';
 import LoginPage from '../../app/(authentication)/login/page';
 
 describe('LoginPage', () => {

@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/vi.dom';
 import HomePage from '../../app/(protected)/home/page';
 import { renderWithSession } from '@/test-utils/test-utils';
 

@@ -1,5 +1,4 @@
 import { act, render, screen } from '@testing-library/react';
-import '@testing-library/vi.dom';
 import PopulationAgePage from '../../app/(protected)/population-age/page';
 import { Locations } from '@/data/interfaces/Locations';
 import { renderWithSession } from '@/test-utils/test-utils';
