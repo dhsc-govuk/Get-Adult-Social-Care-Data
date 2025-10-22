@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
 import Link from 'next/link';
+import Cookies from 'js-cookie';
 
 const CookiesPage = () => {
   const [selectedCookiesConsent, setSelectedCookiesConsent] =
@@ -14,9 +15,9 @@ const CookiesPage = () => {
 
   const handleSubmit = () => {
     if (selectedCookiesConsent) {
-      console.log('Cookies Approved');
+      Cookies.set('cookies-consent', 'true');
     } else {
-      console.log('Cookies Revoked');
+      Cookies.set('cookies-consent', 'false');
     }
   };
 

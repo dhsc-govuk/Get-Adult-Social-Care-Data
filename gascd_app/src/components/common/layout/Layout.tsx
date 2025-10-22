@@ -6,6 +6,7 @@ import PhaseBanner from '../phase-banner/PhaseBanner';
 import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
 import { Breadcrumb } from '../../../data/interfaces/Breadcrumb';
 import { Session } from 'next-auth';
+import Cookies from 'js-cookie';
 
 type Props = {
   title: string;
@@ -30,7 +31,7 @@ const Layout: React.FC<Props> = ({
   currentPage,
   backURL,
   session,
-  showCookieBanner = true,
+  showCookieBanner = Cookies.get('cookies-consent') === undefined,
 }) => {
   const title_suffix = 'Get adult social care data - GOV.UK';
   const full_title = title + ' - ' + title_suffix;

@@ -1,11 +1,14 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import Cookies from 'js-cookie';
 
 const CookieBanner: React.FC = () => {
   const [selectedCookiesConsent, setSelectedCookiesConsent] =
     useState<boolean>(false);
-  const [showCookieBanner, setShowCookieBanner] = useState<boolean>(true);
+  const [showCookieBanner, setShowCookieBanner] = useState<boolean>(
+    Cookies.get('cookies-consent') === undefined
+  );
   const [showCookiesAcceptedMessage, setShowCookiesAcceptedMessage] =
     useState<boolean>(false);
   const [showCookiesRejectedMessage, setShowCookiesRejectedMessage] =
@@ -18,6 +21,7 @@ const CookieBanner: React.FC = () => {
   };
 
   const handleReject = () => {
+    Cookies.set('cookies-consent', 'false');
     setSelectedCookiesConsent(false);
     setShowCookieBanner(false);
     setShowCookiesRejectedMessage(true);
@@ -25,7 +29,7 @@ const CookieBanner: React.FC = () => {
   };
 
   const handleAccept = () => {
-    setSelectedCookiesConsent(true);
+    Cookies.set('cookies-consent', 'true');
     setShowCookieBanner(false);
     setShowCookiesAcceptedMessage(true);
     setShowCookiesRejectedMessage(false);
