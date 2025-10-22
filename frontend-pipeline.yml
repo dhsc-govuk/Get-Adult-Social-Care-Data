@@ -48,10 +48,10 @@ parameters:
 stages:
   # Run tests once up front
   - stage: Tests
-    displayName: "Run jest tests"
+    displayName: "Run tests"
     jobs:
-      - job: JestTest
-        displayName: Run Jests Tests
+      - job: VitestTest
+        displayName: Run vitest Tests
         pool:
           vmImage: "ubuntu-latest"
         steps:
@@ -62,8 +62,8 @@ stages:
           - script: npm ci
             displayName: install dependencies
             workingDirectory: gascd_app
-          - script: npm run test -- --reporters=default --reporters=jest-junit --outputFile=gascd_app/junit.xml
-            displayName: Run Jest Tests
+          - script: npm run test -- --reporter=default --reporter=junit --outputFile=gascd_app/junit.xml
+            displayName: Run vitest Tests
             workingDirectory: gascd_app
           - task: PublishTestResults@2
             displayName: Publish Test Results
