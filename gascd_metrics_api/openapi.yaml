@@ -10,6 +10,27 @@ security:
   - bearerAuth: []
 
 paths:
+  /geo/postcode:
+    get:
+      summary: "Get geo details for a postcode"
+      parameters:
+        - name: postcode
+          description: "sanitised postcode (no whitespace) fixed case"
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Postcode object"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Postcode'
+        '400':
+          description: "Postcode doesn't meet validation requirements: 5-7 chars inclusive"
+        '404':
+          description: "No details found for postcode"
   /locations:
     get:
       summary: "List or search for locations"
@@ -412,6 +433,29 @@ components:
         insight_markdown:
           type: string
           description: "The insight content, formatted as Markdown."
+          
+    Postcode:
+      type: object
+      description: "Geo details for postcode"
+      properties:
+        sanitised_postcode:
+          type: string
+          description: "Clean postcode with no whitespace used to seach DB"
+        display_postcode:
+          type: string
+          description: "Properly formatted postcode for display"
+        latitude:
+          type: number
+          description: "The postcode latitude."
+        longitude:
+          type: number
+          description: "The postcode longitude."
+        la_code:
+          type: string
+          description: "Local authority code."
+        la_name:
+          type: string
+          description: "Local authority name."
 
   securitySchemes:
     bearerAuth:
