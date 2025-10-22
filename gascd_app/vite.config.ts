@@ -13,15 +13,8 @@ export default defineConfig({
     snapshotSerializers: [],
     testTimeout: 10000,
     coverage: {
-      enabled: true,
-      reporter: ['lcov', 'text', 'text-summary'],
-      //thresholds: {
-      //  statements: 90,
-      //  branches: 90,
-      //  functions: 90,
-      //  lines: 90,
-      //},
-      include: ['**/*.ts', '**/*.tsx'],
+      reporter: ['html', 'text-summary'],
+      include: ['app/**/*.{js,ts,tsx}', 'src/**/*.{js,ts,tsx}'],
       exclude: [
         '*.d.ts',
         '.next/**/*',
@@ -29,6 +22,10 @@ export default defineConfig({
         'instrumentation.*',
         '*.config.ts',
         '**/*.types.ts',
+        '/app/\\(protected\\)/help/',
+        '/src/data/types/govuk-frontend.d.ts',
+        '/src/data/types/govuk-frontend.d.ts',
+        '/src/utils/axe.ts',
       ],
     },
   },

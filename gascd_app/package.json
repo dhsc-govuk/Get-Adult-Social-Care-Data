@@ -12,9 +12,9 @@
     "lint": "eslint .",
     "format": "prettier --write",
     "lint-staged": "lint-staged",
-    "test": "vitest",
-    "test:nocov": "jest --config jest.config.ts",
-    "test:watch": "jest --config jest.config.ts --watch",
+    "test": "vitest run --coverage",
+    "test:nocov": "vitest run",
+    "test:watch": "vitest",
     "cypress": "cypress open --e2e",
     "cypress:headless": "cypress run --e2e"
   },
