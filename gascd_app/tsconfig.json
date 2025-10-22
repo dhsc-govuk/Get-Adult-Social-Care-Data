@@ -33,5 +33,5 @@
     "__tests__/**/*.ts",
     "./vitest.setup.ts"
   ],
-  "exclude": ["./cypress.config.ts", "node_modules"]
+  "exclude": ["./cypress.config.ts", "node_modules", "cypress"]
 }
