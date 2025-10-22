@@ -16,7 +16,7 @@ describe('AppInsightsInitializer', () => {
     const insights_blank = getAppInsights();
     expect(insights_blank).toBe(null);
 
-    const logspy = jest.spyOn(LogService, 'logEvent').mockResolvedValue();
+    const logspy = vi.spyOn(LogService, 'logEvent').mockResolvedValue();
     render(<AppInsightsInitializer connectionString="blah" />);
     expect(logspy).toHaveBeenCalledWith(
       'Error loading browser app insightsError: Please provide instrumentation key'

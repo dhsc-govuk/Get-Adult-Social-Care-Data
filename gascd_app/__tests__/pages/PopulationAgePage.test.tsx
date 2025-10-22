@@ -1,5 +1,5 @@
 import { act, render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
+import '@testing-library/vi.dom';
 import PopulationAgePage from '../../app/(protected)/population-age/page';
 import { Locations } from '@/data/interfaces/Locations';
 import { renderWithSession } from '@/test-utils/test-utils';
@@ -8,8 +8,8 @@ import { LAGeoData } from '@/helpers/maps/la_geo_data';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 
 // Mock out things we don't need to prevent them making api requests
-jest.mock('@/components/common/buttons/logoutButton');
-jest.mock('@/services/logger/logService');
+vi.mock('@/components/common/buttons/logoutButton');
+vi.mock('@/services/logger/logService');
 
 describe('PopulationAge', () => {
   it('should render the heading, body text, and a link', () => {
@@ -40,9 +40,9 @@ describe('PopulationAge', () => {
       country_name: '',
       load_date_time: '',
     };
-    jest
-      .spyOn(PresentDemandService, 'getLocations')
-      .mockResolvedValue(Promise.resolve(unsupportedLACode as any));
+    vi.spyOn(PresentDemandService, 'getLocations').mockResolvedValue(
+      Promise.resolve(unsupportedLACode as any)
+    );
 
     renderWithSession(<PopulationAgePage />);
 
@@ -78,9 +78,9 @@ describe('PopulationAge', () => {
       country_name: '',
       load_date_time: '',
     };
-    jest
-      .spyOn(PresentDemandService, 'getLocations')
-      .mockResolvedValue(supportedLACode as any);
+    vi.spyOn(PresentDemandService, 'getLocations').mockResolvedValue(
+      supportedLACode as any
+    );
 
     renderWithSession(<PopulationAgePage />);
 

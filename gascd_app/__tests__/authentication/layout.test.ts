@@ -1,5 +1,5 @@
 /**
- * @jest-environment node
+ * @vi.environment node
  */
 // This test is run under node environment, otherwise the winston logger has issues
 import { getServerSession } from 'next-auth';
@@ -9,31 +9,31 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { verifyAuthToken } from '../../src/helpers/auth/verifyAuthToken';
 
-jest.mock('next-auth/next', () => ({
-  getServerSession: jest.fn(),
+vi.mock('next-auth/next', () => ({
+  getServerSession: vi.fn(),
 }));
 
-jest.mock('@/helpers/auth/verifyAuthToken', () => ({
-  verifyAuthToken: jest.fn(),
+vi.mock('@/helpers/auth/verifyAuthToken', () => ({
+  verifyAuthToken: vi.fn(),
 }));
 
-jest.mock('next/navigation', () => ({
-  redirect: jest.fn(),
+vi.mock('next/navigation', () => ({
+  redirect: vi.fn(),
 }));
 
-const mockedGetServerSession = getServerSession as jest.Mock;
-const mockedAuthToken = verifyAuthToken as jest.Mock;
+const mockedGetServerSession = getServerSession as vi.Mock;
+const mockedAuthToken = verifyAuthToken as vi.Mock;
 const mockedRedirect = redirect;
 
 describe('Root Layout', () => {
   const mockChildren = React.createElement('div', null, 'Mock Component');
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('redirects to login page if no access token is in session', async () => {
-    (getServerSession as jest.Mock).mockReturnValue(null);
+    (getServerSession as vi.Mock).mockReturnValue(null);
     await AuthLayout({ children: mockChildren });
 
     expect(mockedRedirect).toHaveBeenCalledWith('/login');
