@@ -21,7 +21,7 @@ const CookieBanner: React.FC = () => {
   };
 
   const handleReject = () => {
-    Cookies.set('cookies-consent', 'false');
+    Cookies.set('cookies-consent', 'false', { expires: 365 });
     setSelectedCookiesConsent(false);
     setShowCookieBanner(false);
     setShowCookiesRejectedMessage(true);
@@ -29,7 +29,7 @@ const CookieBanner: React.FC = () => {
   };
 
   const handleAccept = () => {
-    Cookies.set('cookies-consent', 'true');
+    Cookies.set('cookies-consent', 'true', { expires: 365 });
     setShowCookieBanner(false);
     setShowCookiesAcceptedMessage(true);
     setShowCookiesRejectedMessage(false);

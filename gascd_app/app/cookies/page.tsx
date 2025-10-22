@@ -15,9 +15,9 @@ const CookiesPage = () => {
 
   const handleSubmit = () => {
     if (selectedCookiesConsent) {
-      Cookies.set('cookies-consent', 'true');
+      Cookies.set('cookies-consent', 'true', { expires: 365 });
     } else {
-      Cookies.set('cookies-consent', 'false');
+      Cookies.set('cookies-consent', 'false', { expires: 365 });
     }
   };
 
