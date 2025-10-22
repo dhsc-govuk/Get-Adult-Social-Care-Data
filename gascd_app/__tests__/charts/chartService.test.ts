@@ -117,10 +117,10 @@ describe('generate line chart', () => {
       .spyOn(ChartHelpers, 'initializeSvg')
       .mockReturnValue(chartSvg);
 
-    const xAxisScaleSpy = vi.spyOn(ChartHelpers, 'createBarXAxisScale');
-    const yAxisScaleSpy = vi.spyOn(ChartHelpers, 'createBarYAxisScale');
+    const xAxisScaleSpy = vi.spyOn(ChartHelpers, 'createXAxisScale');
+    const yAxisScaleSpy = vi.spyOn(ChartHelpers, 'createYAxisScale');
     const calculateQuartilesSpy = vi.spyOn(ChartHelpers, 'calculateQuartiles');
-    const renderBars = vi.spyOn(ChartHelpers, 'renderBars');
+    const renderLine = vi.spyOn(ChartHelpers, 'renderLineYAxis');
 
     const svgElement = generateLineGraphSvg(props);
     expect(svgElement).toBeInstanceOf(SVGSVGElement);
@@ -135,7 +135,7 @@ describe('generate line chart', () => {
     expect(xAxisScaleSpy).toHaveBeenCalled();
     expect(yAxisScaleSpy).toHaveBeenCalled();
     expect(calculateQuartilesSpy).toHaveBeenCalled();
-    expect(renderBars).toHaveBeenCalled();
+    expect(renderLine).toHaveBeenCalled();
   });
 
   it('should handle empty data', () => {
