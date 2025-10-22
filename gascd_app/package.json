@@ -23,13 +23,11 @@
     "**/*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"
   },
   "dependencies": {
-    "@axe-core/playwright": "^4.10.1",
     "@azure/monitor-opentelemetry": "^1.11.1",
     "@microsoft/applicationinsights-react-js": "^19.3.7",
     "@microsoft/applicationinsights-web": "^3.3.9",
     "@next/eslint-plugin-next": "15.5.2",
     "@opentelemetry/auto-instrumentations-node": "^0.62.0",
-    "@playwright/test": "^1.51.1",
     "@types/d3": "^7.4.3",
     "d3": "^7.9.0",
     "govuk-frontend": "^5.11.2",
@@ -41,7 +39,6 @@
     "msw": "^2.7.3",
     "next": "15.5.2",
     "next-auth": "^4.24.11",
-    "playwright": "^1.51.1",
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "winston": "^3.17.0"
