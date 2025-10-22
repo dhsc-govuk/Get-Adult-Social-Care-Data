@@ -7,7 +7,7 @@ const CookieBanner: React.FC = () => {
   const [selectedCookiesConsent, setSelectedCookiesConsent] =
     useState<boolean>(false);
   const [showCookieBanner, setShowCookieBanner] = useState<boolean>(
-    Cookies.get('cookies-consent') === undefined
+    Cookies.get('GASCDConsentGDPR') === undefined
   );
   const [showCookiesAcceptedMessage, setShowCookiesAcceptedMessage] =
     useState<boolean>(false);
@@ -21,7 +21,7 @@ const CookieBanner: React.FC = () => {
   };
 
   const handleReject = () => {
-    Cookies.set('cookies-consent', 'false', { expires: 365 });
+    Cookies.set('GASCDConsentGDPR', 'false', { expires: 365 });
     setSelectedCookiesConsent(false);
     setShowCookieBanner(false);
     setShowCookiesRejectedMessage(true);
@@ -29,7 +29,7 @@ const CookieBanner: React.FC = () => {
   };
 
   const handleAccept = () => {
-    Cookies.set('cookies-consent', 'true', { expires: 365 });
+    Cookies.set('GASCDConsentGDPR', 'true', { expires: 365 });
     setShowCookieBanner(false);
     setShowCookiesAcceptedMessage(true);
     setShowCookiesRejectedMessage(false);

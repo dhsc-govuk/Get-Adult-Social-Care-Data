@@ -6,8 +6,9 @@ import Link from 'next/link';
 import Cookies from 'js-cookie';
 
 const CookiesPage = () => {
-  const [selectedCookiesConsent, setSelectedCookiesConsent] =
-    useState<boolean>();
+  const [selectedCookiesConsent, setSelectedCookiesConsent] = useState<boolean>(
+    Cookies.get('GASCDConsentGDPR') === 'true'
+  );
 
   const handleChange = (value: any) => {
     setSelectedCookiesConsent(value);
@@ -15,9 +16,9 @@ const CookiesPage = () => {
 
   const handleSubmit = () => {
     if (selectedCookiesConsent) {
-      Cookies.set('cookies-consent', 'true', { expires: 365 });
+      Cookies.set('GASCDConsentGDPR', 'true', { expires: 365 });
     } else {
-      Cookies.set('cookies-consent', 'false', { expires: 365 });
+      Cookies.set('GASCDConsentGDPR', 'false', { expires: 365 });
     }
   };
 
