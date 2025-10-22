@@ -8,10 +8,6 @@ import {
   verifyAuthToken,
 } from '../../../src/helpers/auth/verifyAuthToken';
 
-vi.mock('jsonwebtoken', () => ({
-  verify: vi.fn(),
-}));
-
 const originalFetch = global.fetch;
 
 describe('Verify Auth Token', () => {
@@ -23,11 +19,10 @@ describe('Verify Auth Token', () => {
   });
 
   test('rejects access when JWT token fails jwt.verify checks', async () => {
-    (jwt.verify as vi.Mock).mockImplementation(
-      (token, key, options, callback) => {
-        callback(new Error('Invalid Token'), null);
-      }
-    );
+    const spy = vi.spyOn(jwt, 'verify');
+    spy.mockImplementation((token, key, options, callback) => {
+      callback(new Error('Invalid Token'), null);
+    });
 
     await expect(verifyAuthToken(mockAccessToken)).rejects.toThrow(
       'Invalid Token'
@@ -35,12 +30,11 @@ describe('Verify Auth Token', () => {
   });
 
   test('confirms token is valid if it passess jwt.verify checks', async () => {
-    (jwt.verify as vi.Mock).mockImplementation(
-      (token, key, options, callback) => {
-        const decodedJWT: VerifiedToken = { sub: 'user-1', oid: 'user-1' };
-        callback(null, decodedJWT);
-      }
-    );
+    const spy = vi.spyOn(jwt, 'verify');
+    spy.mockImplementation((token, key, options, callback) => {
+      const decodedJWT: VerifiedToken = { sub: 'user-1', oid: 'user-1' };
+      callback(null, decodedJWT);
+    });
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () =>
