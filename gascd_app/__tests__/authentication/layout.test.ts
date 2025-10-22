@@ -9,6 +9,7 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { verifyAuthToken } from '../../src/helpers/auth/verifyAuthToken';
 
+vi.mock('next-auth');
 vi.mock('next-auth/next', () => ({
   getServerSession: vi.fn(),
 }));
@@ -21,9 +22,9 @@ vi.mock('next/navigation', () => ({
   redirect: vi.fn(),
 }));
 
-const mockedGetServerSession = getServerSession as vi.Mock;
-const mockedAuthToken = verifyAuthToken as vi.Mock;
-const mockedRedirect = redirect;
+const mockedGetServerSession = vi.mocked(getServerSession);
+const mockedAuthToken = vi.mocked(verifyAuthToken);
+const mockedRedirect = vi.mocked(redirect);
 
 describe('Root Layout', () => {
   const mockChildren = React.createElement('div', null, 'Mock Component');
@@ -33,7 +34,7 @@ describe('Root Layout', () => {
   });
 
   test('redirects to login page if no access token is in session', async () => {
-    (getServerSession as vi.Mock).mockReturnValue(null);
+    mockedGetServerSession.mockReturnValue(null);
     await AuthLayout({ children: mockChildren });
 
     expect(mockedRedirect).toHaveBeenCalledWith('/login');
