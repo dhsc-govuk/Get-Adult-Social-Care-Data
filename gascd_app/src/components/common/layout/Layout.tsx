@@ -17,6 +17,7 @@ type Props = {
   backURL?: string;
   showNavBar?: boolean;
   session?: Session | null;
+  showCookieBanner?: boolean;
 };
 
 const Layout: React.FC<Props> = ({
@@ -29,6 +30,7 @@ const Layout: React.FC<Props> = ({
   currentPage,
   backURL,
   session,
+  showCookieBanner = true,
 }) => {
   const title_suffix = 'Get adult social care data - GOV.UK';
   const full_title = title + ' - ' + title_suffix;
@@ -45,7 +47,7 @@ const Layout: React.FC<Props> = ({
         <a href="#main-content" className="govuk-skip-link">
           Skip to main content
         </a>
-        <Header />
+        <Header showCookieBanner={showCookieBanner} />
         <ServiceName session={session} />
         <div className="govuk-width-container">
           <div role="region" aria-label="Phasebar">

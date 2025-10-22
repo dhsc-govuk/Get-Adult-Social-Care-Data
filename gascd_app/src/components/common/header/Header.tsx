@@ -1,16 +1,18 @@
-'use client';
-
 import Link from 'next/link';
 import React from 'react';
 import CookieBanner from '../cookie-banner/CookieBanner';
 
-const Header: React.FC = () => {
+type Props = {
+  showCookieBanner?: boolean;
+};
+
+const Header: React.FC<Props> = ({ showCookieBanner }) => {
   return (
     <header
       className="govuk-header govuk-header--full-width-border"
       data-module="govuk-header"
     >
-      <CookieBanner />
+      {showCookieBanner && <CookieBanner />}
       <div className="govuk-header__container govuk-width-container">
         <div className="govuk-header__logo">
           <Link

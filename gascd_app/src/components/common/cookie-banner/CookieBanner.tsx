@@ -5,7 +5,6 @@ const CookieBanner: React.FC = () => {
     useState<boolean>();
 
   const handleSubmit = (selectedCookiesConsent: boolean) => {
-    console.log(selectedCookiesConsent); // this is returning undefined?
     if (selectedCookiesConsent) {
       document
         .getElementById('cookie-accept-message')!
