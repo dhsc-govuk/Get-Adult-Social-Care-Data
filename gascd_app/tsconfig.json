@@ -18,7 +18,7 @@
       "@/*": ["./src/*"],
       "@/test-utils/*": ["./__tests__/utils/*"]
     },
-    "types": ["vitest/globals"],
+    "types": ["@testing-library/jest-dom/vitest", "vitest/globals"],
     "plugins": [
       {
         "name": "next"
@@ -30,7 +30,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "__tests__/**/*.ts"
+    "__tests__/**/*.ts",
+    "./vitest.setup.ts"
   ],
   "exclude": ["./cypress.config.ts", "node_modules"]
 }
