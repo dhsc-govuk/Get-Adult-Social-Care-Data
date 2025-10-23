@@ -62,7 +62,7 @@ stages:
           - script: npm ci
             displayName: install dependencies
             workingDirectory: gascd_app
-          - script: npm run test -- --reporter=default --reporter=junit --outputFile=gascd_app/junit.xml
+          - script: npm run test -- --reporter=default --reporter=junit --outputFile=junit.xml
             displayName: Run vitest Tests
             workingDirectory: gascd_app
           - task: PublishTestResults@2
