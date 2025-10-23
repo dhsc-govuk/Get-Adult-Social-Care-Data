@@ -78,11 +78,12 @@ const CookiesPage = () => {
                   </thead>
                   <tbody className="govuk-table__body">
                     <tr className="govuk-table__row">
-                      <td className="govuk-table__cell">Cookie 1</td>
+                      <td className="govuk-table__cell">GASCDConsentGDPR</td>
                       <td className="govuk-table__cell">
-                        Plain language description of cookie purpose
+                        This cookie tracks whether you have accepted or rejected
+                        analytical cookies
                       </td>
-                      <td className="govuk-table__cell">Cookie duration</td>
+                      <td className="govuk-table__cell">1 Year</td>
                     </tr>
                   </tbody>
                 </table>
