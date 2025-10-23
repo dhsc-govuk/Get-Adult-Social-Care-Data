@@ -8,6 +8,17 @@ const TEST_CONNECTION_STRING = 'InstrumentationKey=fake-connection-string';
 
 describe('AppInsightsInitializer', () => {
   test('It initialises app insights when called with a valid connection string', () => {
+    document.cookie = 'GASCDConsentGDPR=; path=/';
+
+    render(
+      <AppInsightsInitializer connectionString={TEST_CONNECTION_STRING} />
+    );
+
+    const insights_no_cookies = getAppInsights();
+    expect(insights_no_cookies).toBeNull();
+
+    document.cookie = 'GASCDConsentGDPR=true; path=/';
+
     const insights_initial = getAppInsights();
     expect(insights_initial).toBe(null);
 
