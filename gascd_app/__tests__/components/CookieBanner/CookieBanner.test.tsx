@@ -4,7 +4,8 @@ import CookieBanner from '@/components/common/cookie-banner/CookieBanner';
 
 describe('Tests for the cookie banner component', () => {
   it('Renders the cookie banner when no consent cookie is set', () => {
-    document.cookie = 'GASCDConsentGDPR=';
+    document.cookie =
+      'GASCDConsentGDPR=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
 
     render(<CookieBanner />);
 
