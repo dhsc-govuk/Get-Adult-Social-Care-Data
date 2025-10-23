@@ -81,9 +81,17 @@ const CookiesPage = () => {
                       <td className="govuk-table__cell">GASCDConsentGDPR</td>
                       <td className="govuk-table__cell">
                         This cookie tracks whether you have accepted or rejected
-                        analytical cookies
+                        analytical cookies.
                       </td>
                       <td className="govuk-table__cell">1 Year</td>
+                    </tr>
+                    <tr className="govuk-table__row">
+                      <td className="govuk-table__cell">next-auth.*</td>
+                      <td className="govuk-table__cell">
+                        These cookies are used to keep you logged in to the
+                        service.
+                      </td>
+                      <td className="govuk-table__cell">Session</td>
                     </tr>
                   </tbody>
                 </table>
