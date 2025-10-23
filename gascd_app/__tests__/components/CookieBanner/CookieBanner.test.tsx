@@ -4,7 +4,7 @@ import CookieBanner from '@/components/common/cookie-banner/CookieBanner';
 
 describe('Tests for the cookie banner component', () => {
   it('Renders the cookie banner when no consent cookie is set', () => {
-    document.cookie = 'GASCDConsentGDPR=; expires=; path=/';
+    document.cookie = 'GASCDConsentGDPR=';
 
     render(<CookieBanner />);
 
@@ -15,13 +15,13 @@ describe('Tests for the cookie banner component', () => {
   });
 
   it('Does not render the cookie banner when consent cookie is set', () => {
-    document.cookie = 'GASCDConsentGDPR=true; path=/';
+    document.cookie = 'GASCDConsentGDPR=true';
 
     render(<CookieBanner />);
 
     const bannerElement = screen.queryByRole('region', {
       name: /Cookies on Get adult social care data/i,
     });
-    expect(bannerElement).not.toBeInTheDocument();
+    expect(bannerElement).toBe(null);
   });
 });

@@ -30,6 +30,7 @@ const CookieBanner: React.FC = () => {
 
   const handleAccept = () => {
     Cookies.set('GASCDConsentGDPR', 'true', { expires: 365 });
+    setSelectedCookiesConsent(true);
     setShowCookieBanner(false);
     setShowCookiesAcceptedMessage(true);
     setShowCookiesRejectedMessage(false);
