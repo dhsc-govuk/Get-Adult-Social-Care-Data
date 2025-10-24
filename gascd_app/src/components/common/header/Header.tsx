@@ -3,16 +3,16 @@ import React from 'react';
 import CookieBanner from '../cookie-banner/CookieBanner';
 
 type Props = {
-  showCookieBanner?: boolean;
+  useCookieBanner?: boolean;
 };
 
-const Header: React.FC<Props> = ({ showCookieBanner }) => {
+const Header: React.FC<Props> = ({ useCookieBanner }) => {
   return (
     <header
       className="govuk-header govuk-header--full-width-border"
       data-module="govuk-header"
     >
-      {showCookieBanner && <CookieBanner />}
+      {useCookieBanner && <CookieBanner />}
       <div className="govuk-header__container govuk-width-container">
         <div className="govuk-header__logo">
           <Link
