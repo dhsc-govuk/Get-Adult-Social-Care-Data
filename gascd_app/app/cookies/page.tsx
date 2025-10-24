@@ -133,12 +133,12 @@ const CookiesPage = () => {
             </p>
 
             <h3 className="govuk-heading-s">
-              Analytics cookies (Google Analytics)
+              Analytics cookies (Azure App Insights)
             </h3>
             <p className="govuk-body">
-              We use Google Analytics software to collect information about how
-              you use this service and help us make it better. We do not allow
-              Google to use or share this data.
+              We use Azure App Insights software to collect information about
+              how you use this service and help us make it better. We do not
+              allow Microsoft to use or share this data.
             </p>
             <details className="govuk-details">
               <summary className="govuk-details__summary">
