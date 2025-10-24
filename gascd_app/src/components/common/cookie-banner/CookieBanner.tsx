@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import { COOKIE_CONSENT_NAME } from '../../../../constants.js';
 
 const CookieBanner: React.FC = () => {
   const [selectedCookiesConsent, setSelectedCookiesConsent] =
@@ -13,7 +14,7 @@ const CookieBanner: React.FC = () => {
     useState<boolean>(false);
 
   useEffect(() => {
-    if (Cookies.get('GASCDConsentGDPR') === undefined) {
+    if (Cookies.get(COOKIE_CONSENT_NAME) === undefined) {
       setShowCookieBanner(true);
     }
   }, []);
@@ -25,7 +26,7 @@ const CookieBanner: React.FC = () => {
   };
 
   const handleReject = () => {
-    Cookies.set('GASCDConsentGDPR', 'false', { expires: 365 });
+    Cookies.set(COOKIE_CONSENT_NAME, 'false', { expires: 365 });
     setSelectedCookiesConsent(false);
     setShowCookieBanner(false);
     setShowCookiesRejectedMessage(true);
@@ -33,7 +34,7 @@ const CookieBanner: React.FC = () => {
   };
 
   const handleAccept = () => {
-    Cookies.set('GASCDConsentGDPR', 'true', { expires: 365 });
+    Cookies.set(COOKIE_CONSENT_NAME, 'true', { expires: 365 });
     setSelectedCookiesConsent(true);
     setShowCookieBanner(false);
     setShowCookiesAcceptedMessage(true);

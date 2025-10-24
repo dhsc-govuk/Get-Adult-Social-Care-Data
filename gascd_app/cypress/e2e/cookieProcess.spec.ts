@@ -1,3 +1,5 @@
+import { COOKIE_CONSENT_NAME } from '../../constants.js';
+
 describe('User can set cookies', () => {
   it('Should navigate to the homepage and reject cookies', () => {
     // Currently assumes local dev auth setup
@@ -22,7 +24,7 @@ describe('User can set cookies', () => {
       'contains.text',
       "You've rejected analytics cookies."
     );
-    cy.getCookie('GASCDConsentGDPR').should('have.property', 'value', 'false');
+    cy.getCookie(COOKIE_CONSENT_NAME).should('have.property', 'value', 'false');
 
     // Hide cookie message
     cy.get('button').contains('Hide cookie message').click();
@@ -52,7 +54,7 @@ describe('User can set cookies', () => {
       'contains.text',
       "You've accepted analytics cookies."
     );
-    cy.getCookie('GASCDConsentGDPR').should('have.property', 'value', 'true');
+    cy.getCookie(COOKIE_CONSENT_NAME).should('have.property', 'value', 'true');
 
     // Hide cookie message
     cy.get('button').contains('Hide cookie message').click();
@@ -104,11 +106,11 @@ describe('User can set cookies', () => {
     // Set cookies to accept
     cy.get('input#radio-yes').check();
     cy.get('button').contains('Save cookie settings').click();
-    cy.getCookie('GASCDConsentGDPR').should('have.property', 'value', 'true');
+    cy.getCookie(COOKIE_CONSENT_NAME).should('have.property', 'value', 'true');
 
     // Set cookies to reject
     cy.get('input#radio-no').check();
     cy.get('button').contains('Save cookie settings').click();
-    cy.getCookie('GASCDConsentGDPR').should('have.property', 'value', 'false');
+    cy.getCookie(COOKIE_CONSENT_NAME).should('have.property', 'value', 'false');
   });
 });

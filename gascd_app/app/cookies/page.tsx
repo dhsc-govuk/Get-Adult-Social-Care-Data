@@ -4,10 +4,11 @@ import React, { useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
+import { COOKIE_CONSENT_NAME } from '../../constants.js';
 
 const CookiesPage = () => {
   const [selectedCookiesConsent, setSelectedCookiesConsent] = useState<boolean>(
-    Cookies.get('GASCDConsentGDPR') === 'true'
+    Cookies.get(COOKIE_CONSENT_NAME) === 'true'
   );
 
   const handleChange = (value: any) => {
@@ -16,11 +17,11 @@ const CookiesPage = () => {
 
   const handleSubmit = () => {
     if (selectedCookiesConsent) {
-      Cookies.set('GASCDConsentGDPR', 'true', { expires: 365 });
+      Cookies.set(COOKIE_CONSENT_NAME, 'true', { expires: 365 });
     } else {
       Cookies.remove('ai_session');
       Cookies.remove('ai_user');
-      Cookies.set('GASCDConsentGDPR', 'false', { expires: 365 });
+      Cookies.set(COOKIE_CONSENT_NAME, 'false', { expires: 365 });
     }
   };
 
@@ -80,7 +81,9 @@ const CookiesPage = () => {
                   </thead>
                   <tbody className="govuk-table__body">
                     <tr className="govuk-table__row">
-                      <td className="govuk-table__cell">GASCDConsentGDPR</td>
+                      <td className="govuk-table__cell">
+                        {COOKIE_CONSENT_NAME}
+                      </td>
                       <td className="govuk-table__cell">
                         This cookie tracks whether you have accepted or rejected
                         analytical cookies.

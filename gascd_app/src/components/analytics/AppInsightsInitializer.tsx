@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { initializeAppInsights } from './appInsights';
 import Cookies from 'js-cookie';
+import { COOKIE_CONSENT_NAME } from '../../../constants.js';
 
 interface AppInsightsInitializerProps {
   connectionString: string;
@@ -13,7 +14,7 @@ export function AppInsightsInitializer({
   connectionString,
 }: AppInsightsInitializerProps) {
   useEffect(() => {
-    if (Cookies.get('GASCDConsentGDPR') === 'true') {
+    if (Cookies.get(COOKIE_CONSENT_NAME) === 'true') {
       initializeAppInsights(connectionString);
     }
   }, [connectionString]);
