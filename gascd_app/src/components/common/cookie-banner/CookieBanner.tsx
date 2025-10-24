@@ -1,18 +1,22 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 
 const CookieBanner: React.FC = () => {
   const [selectedCookiesConsent, setSelectedCookiesConsent] =
     useState<boolean>(false);
-  const [showCookieBanner, setShowCookieBanner] = useState<boolean>(
-    Cookies.get('GASCDConsentGDPR') === undefined
-  );
+  const [showCookieBanner, setShowCookieBanner] = useState<boolean>(false);
   const [showCookiesAcceptedMessage, setShowCookiesAcceptedMessage] =
     useState<boolean>(false);
   const [showCookiesRejectedMessage, setShowCookiesRejectedMessage] =
     useState<boolean>(false);
+
+  useEffect(() => {
+    if (Cookies.get('GASCDConsentGDPR') === undefined) {
+      setShowCookieBanner(true);
+    }
+  }, []);
 
   const hideBanner = () => {
     setShowCookieBanner(false);
@@ -106,7 +110,7 @@ const CookieBanner: React.FC = () => {
               <div className="govuk-grid-column-two-thirds">
                 <div className="govuk-cookie-banner__content">
                   <p className="govuk-body">
-                    You&apos;ve accepted additional cookies. You can{' '}
+                    You&apos;ve accepted analytics cookies. You can{' '}
                     <a className="govuk-link" href="/cookies">
                       change your cookie settings
                     </a>{' '}
