@@ -88,12 +88,37 @@ const CookiesPage = () => {
                       <td className="govuk-table__cell">1 Year</td>
                     </tr>
                     <tr className="govuk-table__row">
-                      <td className="govuk-table__cell">next-auth.*</td>
                       <td className="govuk-table__cell">
-                        These cookies are used to keep you logged in to the
-                        service.
+                        __Host-next-auth.csrf-token
                       </td>
-                      <td className="govuk-table__cell">Session</td>
+                      <td className="govuk-table__cell">
+                        Manages your login session and ensures the sign-in
+                        process functions correctly
+                      </td>
+                      <td className="govuk-table__cell">
+                        End of browser session
+                      </td>
+                    </tr>
+                    <tr className="govuk-table__row">
+                      <td className="govuk-table__cell">
+                        __Secure-next-auth.callback-url{' '}
+                      </td>
+                      <td className="govuk-table__cell">
+                        Manages your login session and ensures the sign-in
+                        process functions correctly
+                      </td>
+                      <td className="govuk-table__cell">
+                        End of browser session
+                      </td>
+                    </tr>
+                    <tr className="govuk-table__row">
+                      <td className="govuk-table__cell">
+                        __Secure-next-auth.session-token
+                      </td>
+                      <td className="govuk-table__cell">
+                        Manages your login session
+                      </td>
+                      <td className="govuk-table__cell">1 month</td>
                     </tr>
                   </tbody>
                 </table>
@@ -139,11 +164,20 @@ const CookiesPage = () => {
                   </thead>
                   <tbody className="govuk-table__body">
                     <tr className="govuk-table__row">
-                      <td className="govuk-table__cell">Cookie 1</td>
+                      <td className="govuk-table__cell">ai_session</td>
                       <td className="govuk-table__cell">
-                        Plain language description of cookie purpose
+                        Application Insights tracking cookie
                       </td>
-                      <td className="govuk-table__cell">Cookie duration</td>
+                      <td className="govuk-table__cell">
+                        30 mins after last activity
+                      </td>
+                    </tr>
+                    <tr className="govuk-table__row">
+                      <td className="govuk-table__cell">ai_user</td>
+                      <td className="govuk-table__cell">
+                        Application Insights tracking cookie
+                      </td>
+                      <td className="govuk-table__cell">1 year</td>
                     </tr>
                   </tbody>
                 </table>
