@@ -18,6 +18,8 @@ const CookiesPage = () => {
     if (selectedCookiesConsent) {
       Cookies.set('GASCDConsentGDPR', 'true', { expires: 365 });
     } else {
+      Cookies.remove('ai_session');
+      Cookies.remove('ai_user');
       Cookies.set('GASCDConsentGDPR', 'false', { expires: 365 });
     }
   };
