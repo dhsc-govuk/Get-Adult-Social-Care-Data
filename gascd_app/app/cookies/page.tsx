@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
-import { COOKIE_CONSENT_NAME } from '../../constants.js';
+import { COOKIE_CONSENT_NAME } from '../../constants';
 
 const CookiesPage = () => {
   const [selectedCookiesConsent, setSelectedCookiesConsent] = useState<boolean>(
@@ -32,7 +32,7 @@ const CookiesPage = () => {
         showLoginInformation={false}
         currentPage="disclaimer"
         showNavBar={false}
-        showCookieBanner={false}
+        useCookieBanner={false}
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">

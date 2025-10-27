@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { COOKIE_CONSENT_NAME } from '../../../../constants.js';
+import { COOKIE_CONSENT_NAME } from '../../../../constants';
 
 const CookieBanner: React.FC = () => {
   const [selectedCookiesConsent, setSelectedCookiesConsent] =
