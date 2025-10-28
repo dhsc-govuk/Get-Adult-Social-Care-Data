@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../api/auth/authOptions';
 import { verifyAuthToken } from '../../src/helpers/auth/verifyAuthToken';
 import logger from '@/utils/logger';
+import { trace } from '@opentelemetry/api';
+import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
 
 export default async function AuthLayout({
   children,
@@ -10,6 +12,13 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
+  if (session?.user?.id) {
+    let activeSpan = trace.getActiveSpan();
+    if (activeSpan) {
+      activeSpan.setAttribute(SemanticAttributes.ENDUSER_ID, session.user.id);
+    }
+  }
+
   if (process.env.LOCAL_AUTH == 'true') {
     if (session?.user) {
       // Skip jwt validation if doing local auth

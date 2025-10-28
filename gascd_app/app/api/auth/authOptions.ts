@@ -9,6 +9,7 @@ declare module 'next-auth' {
     accessToken?: string;
     refreshToken?: string;
     user: {
+      id?: string;
       locationType?: string;
       locationId?: string;
       smartInsights?: boolean;
@@ -82,6 +83,7 @@ export const authOptions: NextAuthOptions = {
         logger.info('User logged in success', {
           userid: account.providerAccountId,
         });
+        token.userid = account.providerAccountId;
       }
 
       return token;
@@ -91,6 +93,7 @@ export const authOptions: NextAuthOptions = {
       session.user.locationType = token.locationType as string;
       session.user.locationId = token.locationId as string;
       session.user.smartInsights = token.smartInsight;
+      session.user.id = token.userid as string;
       session.accessToken = token.accessToken as string;
       session.refreshToken = token.refreshToken;
       return session;
