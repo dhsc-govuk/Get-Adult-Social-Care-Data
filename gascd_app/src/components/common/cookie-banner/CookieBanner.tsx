@@ -5,8 +5,6 @@ import Cookies from 'js-cookie';
 import { COOKIE_CONSENT_NAME } from '../../../../constants';
 
 const CookieBanner: React.FC = () => {
-  const [selectedCookiesConsent, setSelectedCookiesConsent] =
-    useState<boolean>(false);
   const [showCookieBanner, setShowCookieBanner] = useState<boolean>(false);
   const [showCookiesAcceptedMessage, setShowCookiesAcceptedMessage] =
     useState<boolean>(false);
@@ -27,7 +25,6 @@ const CookieBanner: React.FC = () => {
 
   const handleReject = () => {
     Cookies.set(COOKIE_CONSENT_NAME, 'false', { expires: 365 });
-    setSelectedCookiesConsent(false);
     setShowCookieBanner(false);
     setShowCookiesRejectedMessage(true);
     setShowCookiesAcceptedMessage(false);
@@ -35,7 +32,6 @@ const CookieBanner: React.FC = () => {
 
   const handleAccept = () => {
     Cookies.set(COOKIE_CONSENT_NAME, 'true', { expires: 365 });
-    setSelectedCookiesConsent(true);
     setShowCookieBanner(false);
     setShowCookiesAcceptedMessage(true);
     setShowCookiesRejectedMessage(false);
