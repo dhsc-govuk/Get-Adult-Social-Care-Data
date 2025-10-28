@@ -11,11 +11,16 @@ const CookiesPage = () => {
     Cookies.get(COOKIE_CONSENT_NAME) === 'true'
   );
 
+  const [cookiesSaved, setCookiesSaved] = useState<boolean>(false);
+
   const handleChange = (value: any) => {
     setSelectedCookiesConsent(value);
   };
 
   const handleSubmit = () => {
+    setCookiesSaved(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     if (selectedCookiesConsent) {
       Cookies.set(COOKIE_CONSENT_NAME, 'true', { expires: 365 });
     } else {
@@ -36,6 +41,29 @@ const CookiesPage = () => {
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
+            {cookiesSaved && (
+              <div
+                className="govuk-notification-banner govuk-notification-banner--success"
+                role="alert"
+                aria-labelledby="govuk-notification-banner-title"
+                data-module="govuk-notification-banner"
+              >
+                <div className="govuk-notification-banner__header">
+                  <h2
+                    className="govuk-notification-banner__title"
+                    id="govuk-notification-banner-title"
+                  >
+                    Success
+                  </h2>
+                </div>
+                <div className="govuk-notification-banner__content">
+                  <h3 className="govuk-notification-banner__heading">
+                    You&apos;ve set your cookie preferences.
+                  </h3>
+                </div>
+              </div>
+            )}
+
             <h1 className="govuk-heading-xl">
               Cookies on Get adult social care data
             </h1>
