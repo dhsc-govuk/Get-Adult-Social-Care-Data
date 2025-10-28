@@ -108,9 +108,21 @@ describe('User can set cookies', () => {
     cy.get('button').contains('Save cookie settings').click();
     cy.getCookie(COOKIE_CONSENT_NAME).should('have.property', 'value', 'true');
 
+    // Check success message
+    cy.get('.govuk-notification-banner__heading').should(
+      'contains.text',
+      'set your cookie preferences.'
+    );
+
     // Set cookies to reject
     cy.get('input#radio-no').check();
     cy.get('button').contains('Save cookie settings').click();
     cy.getCookie(COOKIE_CONSENT_NAME).should('have.property', 'value', 'false');
+
+    // Check success message
+    cy.get('.govuk-notification-banner__heading').should(
+      'contains.text',
+      'set your cookie preferences.'
+    );
   });
 });
