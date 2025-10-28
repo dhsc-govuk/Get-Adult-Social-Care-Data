@@ -19,7 +19,7 @@ const CookiesPage = () => {
 
   const handleSubmit = () => {
     setCookiesSaved(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0 });
 
     if (selectedCookiesConsent) {
       Cookies.set(COOKIE_CONSENT_NAME, 'true', { expires: 365 });
