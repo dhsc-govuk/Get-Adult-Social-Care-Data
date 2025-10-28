@@ -1,4 +1,4 @@
-import { COOKIE_CONSENT_NAME } from '../../constants';
+import { COOKIE_CONSENT_NAME } from '../../src/constants';
 
 describe('User can set cookies', () => {
   it('Should navigate to the homepage and reject cookies', () => {

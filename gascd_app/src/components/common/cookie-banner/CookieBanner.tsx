@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { COOKIE_CONSENT_NAME } from '../../../../constants';
+import { COOKIE_CONSENT_NAME } from '@/constants';
 
 const CookieBanner: React.FC = () => {
   const [showCookieBanner, setShowCookieBanner] = useState<boolean>(false);

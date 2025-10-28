@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { initializeAppInsights } from './appInsights';
 import Cookies from 'js-cookie';
-import { COOKIE_CONSENT_NAME } from '../../../constants';
+import { COOKIE_CONSENT_NAME } from '@/constants';
 
 interface AppInsightsInitializerProps {
   connectionString: string;
