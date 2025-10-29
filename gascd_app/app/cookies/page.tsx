@@ -23,10 +23,9 @@ const CookiesPage = () => {
     window.scrollTo({ top: 0 });
 
     if (selectedCookiesConsent) {
-      CookiesService.setConsentCookie('true');
+      CookiesService.setConsentCookieTrue();
     } else {
-      CookiesService.removeAnalyticsCookies();
-      CookiesService.setConsentCookie('false');
+      CookiesService.setConsentCookieFalse();
     }
   };
 

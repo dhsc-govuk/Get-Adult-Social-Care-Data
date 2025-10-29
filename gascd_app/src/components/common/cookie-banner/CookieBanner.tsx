@@ -25,15 +25,14 @@ const CookieBanner: React.FC = () => {
   };
 
   const handleReject = () => {
-    CookiesService.setConsentCookie('false');
-    CookiesService.removeAnalyticsCookies();
+    CookiesService.setConsentCookieFalse();
     setShowCookieBanner(false);
     setShowCookiesRejectedMessage(true);
     setShowCookiesAcceptedMessage(false);
   };
 
   const handleAccept = () => {
-    CookiesService.setConsentCookie('true');
+    CookiesService.setConsentCookieTrue();
     setShowCookieBanner(false);
     setShowCookiesAcceptedMessage(true);
     setShowCookiesRejectedMessage(false);
