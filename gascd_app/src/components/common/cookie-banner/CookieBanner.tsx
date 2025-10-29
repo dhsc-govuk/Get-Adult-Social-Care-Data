@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { COOKIE_CONSENT_NAME } from '@/constants';
+import CookiesService from '@/services/cookies/CookiesService';
 
 const CookieBanner: React.FC = () => {
   const [showCookieBanner, setShowCookieBanner] = useState<boolean>(false);
@@ -24,14 +25,15 @@ const CookieBanner: React.FC = () => {
   };
 
   const handleReject = () => {
-    Cookies.set(COOKIE_CONSENT_NAME, 'false', { expires: 365 });
+    CookiesService.setConsentCookie('false');
+    CookiesService.removeAnalyticsCookies();
     setShowCookieBanner(false);
     setShowCookiesRejectedMessage(true);
     setShowCookiesAcceptedMessage(false);
   };
 
   const handleAccept = () => {
-    Cookies.set(COOKIE_CONSENT_NAME, 'true', { expires: 365 });
+    CookiesService.setConsentCookie('true');
     setShowCookieBanner(false);
     setShowCookiesAcceptedMessage(true);
     setShowCookiesRejectedMessage(false);

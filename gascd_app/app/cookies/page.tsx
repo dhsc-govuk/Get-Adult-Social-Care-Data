@@ -5,6 +5,7 @@ import Layout from '@/components/common/layout/Layout';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
 import { COOKIE_CONSENT_NAME } from '@/constants';
+import CookiesService from '@/services/cookies/CookiesService';
 
 const CookiesPage = () => {
   const [selectedCookiesConsent, setSelectedCookiesConsent] = useState<boolean>(
@@ -22,11 +23,10 @@ const CookiesPage = () => {
     window.scrollTo({ top: 0 });
 
     if (selectedCookiesConsent) {
-      Cookies.set(COOKIE_CONSENT_NAME, 'true', { expires: 365 });
+      CookiesService.setConsentCookie('true');
     } else {
-      Cookies.remove('ai_session');
-      Cookies.remove('ai_user');
-      Cookies.set(COOKIE_CONSENT_NAME, 'false', { expires: 365 });
+      CookiesService.removeAnalyticsCookies();
+      CookiesService.setConsentCookie('false');
     }
   };
 
