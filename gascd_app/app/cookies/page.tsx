@@ -69,11 +69,13 @@ const CookiesPage = () => {
             </h1>
 
             <p className="govuk-body">
-              Cookies are small text files that we save on your phone, tablet or
-              computer when you use this service. Some cookies on Get adult
-              social care data are essential and others are optional.
+              Cookies are small files saved on your phone, tablet or computer
+              when you visit a website.
             </p>
-            <p className="govuk-body">We cannot use cookies to identify you.</p>
+            <p className="govuk-body">
+              We use cookies to make this site work and collect information
+              about how you use our service.
+            </p>
 
             <h2 className="govuk-heading-m">Essential cookies</h2>
             <p className="govuk-body">
