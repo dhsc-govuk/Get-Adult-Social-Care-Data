@@ -23,14 +23,34 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
         httpResponse.EnsureSuccessStatusCode();
     }
     
-    [Fact]
-    public async Task Invalid_User_Input()
+    [Theory]
+    [InlineData("")]
+    [InlineData(null)]
+    [InlineData(" ")]
+    public async Task Invalid_Empty_User_Input(string postcodeInput)
     {
         var (httpResponse, problemDetails) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, ProblemDetails>(
-            new GetPostcodeRequest {Postcode = " "});
+            new GetPostcodeRequest {Postcode = postcodeInput});
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
         problemDetails.Errors.Select(e => e.Name).ShouldBe(["postcode"]);
         problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Postcode is required."]);
+    }
+    
+      
+    [Theory]
+    [InlineData("katherine")]
+    [InlineData("katherine rules")]
+    [InlineData("NE1 4BJ")]
+    [InlineData("ne14bj")]
+    [InlineData("NE14BJ!")]
+    public async Task Invalid_Postcoder_Input(string postcodeInput)
+    {
+        var (httpResponse, problemDetails) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, ProblemDetails>(
+            new GetPostcodeRequest {Postcode = postcodeInput});
+        httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        problemDetails.Errors.Count().ShouldBe(1);
+        problemDetails.Errors.Select(e => e.Name).ShouldBe(["postcode"]);
+        problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Invalid postcode."]);
     }
 }
