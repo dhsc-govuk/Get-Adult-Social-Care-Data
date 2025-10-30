@@ -10,7 +10,7 @@ public class IntegrationTestFixture : IAsyncLifetime
     {
         PostgresContainer = new PostgreSqlBuilder()
             .WithDatabase("gascd_data")
-            .WithImage("postgres:17.0")
+            .WithImage("postgres:17.6")
             .WithResourceMapping("TestData/test-seed.sql", "/docker-entrypoint-initdb.d/")
             .Build();
 
