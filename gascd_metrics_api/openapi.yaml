@@ -539,6 +539,32 @@ components:
           type: string
           description: "The associated country ID."
 
+    Country:
+      type: object
+      description: "Represents a country"
+      properties:
+        id:
+          type: string
+          description: "Unique identifier for the country."
+        display_name:
+          type: string
+          description: "Display name of the country."
+        geo_data:
+          type: object
+          description: "Geographical data for the country."
+          properties:
+            latitude:
+              type: number
+              description: "Latitude of the centre point of the country."
+            longitude:
+              type: number
+              description: "Longitude of the centre point of the country."
+            bbox:
+              type: array
+              description: "Bounding box coordinates."
+              items:
+                type: number
+
     MetricMetadata:
       type: object
       description: "Defines the properties and context of a metric."
