@@ -480,6 +480,7 @@ components:
         local_authority_id:
           type: string
           description: "The associated local authority ID."
+    
     LocalAuthority:
       type: object
       description: "Represents a local authority"
@@ -508,6 +509,7 @@ components:
         region_id:
           type: string
           description: "The associated region ID."
+    
     Region:
       type: object
       description: "Represents a region"
