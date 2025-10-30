@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace gascd_api.Properties.Features.Geo.Postcode;
 
-public class GetPostcodeValidator :Validator<GetPostcodeRequest>
+public class GetPostcodeValidator : Validator<GetPostcodeRequest>
 {
     public GetPostcodeValidator()
     {
@@ -12,6 +12,6 @@ public class GetPostcodeValidator :Validator<GetPostcodeRequest>
             .MinimumLength(5).WithMessage("Invalid postcode.")
             .MaximumLength(7).WithMessage("Invalid postcode.")
             .Matches("^[A-Z0-9]+$").WithMessage("Invalid postcode.");
-        
+
     }
 }
