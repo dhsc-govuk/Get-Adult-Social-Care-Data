@@ -6,6 +6,7 @@ import {
 } from '@/components/analytics/appInsights';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import LogService from '@/services/logger/logService';
+import { mockSession } from '@/test-utils/test-utils';
 
 const TEST_CONNECTION_STRING = 'InstrumentationKey=fake-connection-string';
 
@@ -72,5 +73,32 @@ describe('AppInsightsInitializer', () => {
 
     const insights = getAppInsights();
     expect(insights).toBe(null);
+  });
+
+  test('It pulls the userid from the session', () => {
+    document.cookie = 'GASCDConsentGDPR=true;';
+    render(
+      <AppInsightsInitializer
+        connectionString={TEST_CONNECTION_STRING}
+        session={mockSession}
+      />
+    );
+
+    const insights = getAppInsights();
+    expect(insights).toBeDefined();
+    expect(insights).toBeInstanceOf(ApplicationInsights);
+    expect(insights?.context.user.authenticatedId).toBe(mockSession.user.id);
+  });
+
+  test('It has no userid if no session provided', () => {
+    document.cookie = 'GASCDConsentGDPR=true;';
+    render(
+      <AppInsightsInitializer connectionString={TEST_CONNECTION_STRING} />
+    );
+
+    const insights = getAppInsights();
+    expect(insights).toBeDefined();
+    expect(insights).toBeInstanceOf(ApplicationInsights);
+    expect(insights?.context.user.authenticatedId).toBe(undefined);
   });
 });
