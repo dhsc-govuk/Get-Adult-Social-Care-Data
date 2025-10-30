@@ -1,10 +1,9 @@
 using FastEndpoints;
 
-namespace gascd_api.Properties.Features.Geo.Postcode
+namespace gascd_api.Properties.Features.Geo.Postcode;
+
+public class GetPostcodeRequest
 {
-    public class GetPostcodeRequest
-    {
-        [QueryParam]
-        public string Postcode { get; set; }
-    }
+    [QueryParam]
+    public string? Postcode { get; set; }
 }

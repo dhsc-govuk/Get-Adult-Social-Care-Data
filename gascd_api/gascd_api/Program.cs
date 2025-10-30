@@ -1,6 +1,6 @@
-using gascd_api;
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using gascd_api;
 using Microsoft.EntityFrameworkCore;
 
 var bld = WebApplication.CreateBuilder();
@@ -10,7 +10,7 @@ bld.Services
     .SwaggerDocument();
 
 var app = bld.Build();
-    app.UseFastEndpoints(c => c.Errors.UseProblemDetails())
-    .UseSwaggerGen();
+app.UseFastEndpoints(c => c.Errors.UseProblemDetails())
+.UseSwaggerGen();
 
 app.Run();
