@@ -1,4 +1,4 @@
-namespace gascd_api.Test;
+namespace gascd_api.Tests;
 
 public class Tests
 {

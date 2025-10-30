@@ -10,4 +10,8 @@
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     </PropertyGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="gascd_api.Tests" />
+    </ItemGroup>
+
 </Project>

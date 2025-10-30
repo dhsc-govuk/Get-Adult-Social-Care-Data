@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gascd_api", "gascd_api\gascd_api.csproj", "{34CAB43C-2692-4353-A2BA-C9510AA508F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gascd_api.Test", "gascd_api.Test\gascd_api.Test.csproj", "{859B74A4-DBC8-4D87-AEA8-6731F2ED0855}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gascd_api.Tests", "gascd_api.Tests\gascd_api.Tests.csproj", "{859B74A4-DBC8-4D87-AEA8-6731F2ED0855}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
