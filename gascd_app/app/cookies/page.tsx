@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '@/components/common/layout/Layout';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
@@ -8,11 +8,18 @@ import { COOKIE_CONSENT_NAME } from '@/constants';
 import CookiesService from '@/services/cookies/CookiesService';
 
 const CookiesPage = () => {
-  const [selectedCookiesConsent, setSelectedCookiesConsent] = useState<boolean>(
-    Cookies.get(COOKIE_CONSENT_NAME) === 'true'
-  );
+  const [selectedCookiesConsent, setSelectedCookiesConsent] =
+    useState<boolean>(false);
 
   const [cookiesSaved, setCookiesSaved] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (Cookies.get(COOKIE_CONSENT_NAME) === 'true') {
+      setSelectedCookiesConsent(true);
+    } else {
+      setSelectedCookiesConsent(false);
+    }
+  }, []);
 
   const handleChange = (value: any) => {
     setSelectedCookiesConsent(value);
@@ -230,6 +237,7 @@ const CookiesPage = () => {
                         name="options"
                         type="radio"
                         value="yes"
+                        checked={selectedCookiesConsent}
                         onChange={() => handleChange(true)}
                       />
                       <label
@@ -246,7 +254,7 @@ const CookiesPage = () => {
                         name="options"
                         type="radio"
                         value="no"
-                        defaultChecked
+                        checked={!selectedCookiesConsent}
                         onChange={() => handleChange(false)}
                       />
                       <label
