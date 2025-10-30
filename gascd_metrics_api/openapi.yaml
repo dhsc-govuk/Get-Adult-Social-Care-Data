@@ -429,16 +429,16 @@ components:
           description: "Geographical data for the care provider location."
           properties:
             latitude:
-              type: number
+              type: float
               description: "Latitude of the location."
             longitude:
-              type: number
+              type: float
               description: "Longitude of the location."
             bbox:
               type: array
               description: "Bounding box coordinates."
               items:
-                type: number
+                type: float
         provider_id:
           type: string
           description: "The parent provider ID."
@@ -467,16 +467,16 @@ components:
           description: "Geographical data for the district."
           properties:
             latitude:
-              type: number
+              type: float
               description: "Latitude of the centre point of the district."
             longitude:
-              type: number
+              type: float
               description: "Longitude of the centre point of the district."
             bbox:
               type: array
               description: "Bounding box coordinates."
               items:
-                type: number
+                type: float
         local_authority_id:
           type: string
           description: "The associated local authority ID."
@@ -496,16 +496,16 @@ components:
           description: "Geographical data for the local authority."
           properties:
             latitude:
-              type: number
+              type: float
               description: "Latitude of the centre point of the local authority."
             longitude:
-              type: number
+              type: float
               description: "Longitude of the centre point of the local authority."
             bbox:
-              type: array
+              type: float
               description: "Bounding box coordinates."
               items:
-                type: number
+                type: float
         region_id:
           type: string
           description: "The associated region ID."
@@ -525,16 +525,16 @@ components:
           description: "Geographical data for the region."
           properties:
             latitude:
-              type: number
+              type: float
               description: "Latitude of the centre point of the region."
             longitude:
-              type: number
+              type: float
               description: "Longitude of the centre point of the region."
             bbox:
               type: array
               description: "Bounding box coordinates."
               items:
-                type: number
+                type: float
         country_id:
           type: string
           description: "The associated country ID."
@@ -554,16 +554,16 @@ components:
           description: "Geographical data for the country."
           properties:
             latitude:
-              type: number
+              type: float
               description: "Latitude of the centre point of the country."
             longitude:
-              type: number
+              type: float
               description: "Longitude of the centre point of the country."
             bbox:
               type: array
               description: "Bounding box coordinates."
               items:
-                type: number
+                type: float
 
     MetricMetadata:
       type: object
