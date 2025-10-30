@@ -19,7 +19,7 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetPostCode_ReturnsOk()
     {
         var (httpResponse, getLocationResponse) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
-                new GetPostcodeRequest {Postcode = "NE1 4BJ"});
+                new GetPostcodeRequest {Postcode = "NE14BJ"});
         httpResponse.EnsureSuccessStatusCode();
     }
     
@@ -39,8 +39,8 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
     
       
     [Theory]
-    [InlineData("katherine")]
-    [InlineData("katherine rules")]
+    [InlineData("kat")]
+    [InlineData("katherinerules")]
     [InlineData("NE1 4BJ")]
     [InlineData("ne14bj")]
     [InlineData("NE14BJ!")]
