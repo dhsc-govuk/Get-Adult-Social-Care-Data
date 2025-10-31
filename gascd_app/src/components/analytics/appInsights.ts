@@ -35,3 +35,7 @@ export const initializeAppInsights = (connectionString: string) => {
 export const getAppInsights = (): ApplicationInsights | null => {
   return appInsights;
 };
+
+export const resetAppInsights = () => {
+  appInsights = null;
+};
