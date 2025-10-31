@@ -18,21 +18,22 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetPostCode_ReturnsOk()
     {
-        var (httpResponse, getPostcodeResponse) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
+        var (httpCode, _) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
                 new GetPostcodeRequest { Postcode = "NE14BJ" });
-        httpResponse.EnsureSuccessStatusCode();
+        httpCode.EnsureSuccessStatusCode();
     }
     
     [Fact]
-    public async Task GetPostCode_ReturnsCorrect()
+    public async Task GetPostCode_ReturnsCorrectData()
     {
-        var (httpResponse, getPostcodeResponse) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
-            new GetPostcodeRequest { Postcode = "NE14BJ" });
-        httpResponse.EnsureSuccessStatusCode();
-        getPostcodeResponse.SanitisedPostcode.ShouldBe("NE14BJ");
-        // getPostcodeResponse.DisplayPostcode.ShouldBe("NE1 4BJ");
-        // getPostcodeResponse.Latitude.ShouldBe(54.975711m);
-        // getPostcodeResponse.Longitude.ShouldBe(-1.619474m);
+        var (httpCode, response) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
+            new GetPostcodeRequest { Postcode = "KT220UF" });
+        httpCode.EnsureSuccessStatusCode();
+        response.SanitisedPostcode.ShouldBe("KT220UF");
+        response.DisplayPostcode.ShouldBe("KT22 0UF");
+        response.Latitude.ShouldBe(51.33954856349381m);
+        response.Longitude.ShouldBe(-0.349629386m);
+        response.LaCode.ShouldBe("E07000207");
     }
 
     [Theory]
