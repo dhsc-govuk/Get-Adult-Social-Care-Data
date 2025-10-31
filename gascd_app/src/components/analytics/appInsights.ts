@@ -3,12 +3,16 @@ import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { createBrowserHistory } from 'history';
 import { ReactPlugin } from '@microsoft/applicationinsights-react-js';
 import LogService from '@/services/logger/logService';
+import { Session } from 'next-auth';
 
 let appInsights: ApplicationInsights | null = null;
 let browserHistory: any;
 let reactPlugin = new ReactPlugin();
 
-export const initializeAppInsights = (connectionString: string) => {
+export const initializeAppInsights = (
+  connectionString: string,
+  session?: Session | null
+) => {
   if (connectionString && !appInsights) {
     browserHistory = createBrowserHistory();
     appInsights = new ApplicationInsights({
@@ -22,6 +26,9 @@ export const initializeAppInsights = (connectionString: string) => {
     });
     try {
       appInsights.loadAppInsights();
+      if (session?.user?.id) {
+        appInsights.setAuthenticatedUserContext(session.user.id);
+      }
     } catch (err) {
       // Most likely a connection string issue. Clear the app insights setup and re-throw
       appInsights = null;
@@ -34,4 +41,8 @@ export const initializeAppInsights = (connectionString: string) => {
 
 export const getAppInsights = (): ApplicationInsights | null => {
   return appInsights;
+};
+
+export const resetAppInsights = () => {
+  appInsights = null;
 };

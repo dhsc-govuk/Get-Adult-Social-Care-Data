@@ -24,7 +24,6 @@ export default defineConfig({
         '**/*.types.ts',
         '/app/\\(protected\\)/help/',
         '/src/data/types/govuk-frontend.d.ts',
-        '/src/data/types/govuk-frontend.d.ts',
         '/src/utils/axe.ts',
       ],
     },
