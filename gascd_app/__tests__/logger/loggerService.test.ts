@@ -1,7 +1,7 @@
 import LogService from '@/services/logger/logService';
 
 describe('logEvent Service', () => {
-  const mockFetch = jest.fn();
+  const mockFetch = vi.fn();
   global.fetch = mockFetch;
 
   beforeEach(() => {
@@ -37,7 +37,7 @@ describe('logEvent Service', () => {
   });
 
   it('should log an error to the console if the response is not ok', async () => {
-    const mockConsoleError = jest
+    const mockConsoleError = vi
       .spyOn(console, 'error')
       .mockImplementation(() => {});
     mockFetch.mockResolvedValueOnce({

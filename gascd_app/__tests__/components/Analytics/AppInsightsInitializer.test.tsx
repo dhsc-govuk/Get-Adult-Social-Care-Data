@@ -31,7 +31,7 @@ describe('AppInsightsInitializer', () => {
   test('It does not initialises app insights when called with an invalid connection string', () => {
     document.cookie = 'GASCDConsentGDPR=true; path=/';
 
-    const logspy = jest.spyOn(LogService, 'logEvent').mockResolvedValue();
+    const logspy = vi.spyOn(LogService, 'logEvent').mockResolvedValue();
 
     render(<AppInsightsInitializer connectionString="blah" />);
 

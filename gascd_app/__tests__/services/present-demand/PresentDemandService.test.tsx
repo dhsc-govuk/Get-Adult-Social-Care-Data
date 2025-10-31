@@ -5,11 +5,11 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import IndicatorDisplayService from '@/services/indicator/IndicatorDisplayService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 
-global.fetch = jest.fn();
+global.fetch = vi.fn();
 
 describe('IndicatorFetchService', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('getLocations', () => {
@@ -17,9 +17,9 @@ describe('IndicatorFetchService', () => {
     const query = '123';
 
     it('fetches and returns locations successfully', async () => {
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockLocations),
+        json: vi.fn().mockResolvedValue(mockLocations),
       });
 
       const result = await PresentDemandService.getLocations(query);
@@ -31,7 +31,7 @@ describe('IndicatorFetchService', () => {
     });
 
     it('throws an error when the fetch response is not ok', async () => {
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: false,
         statusText: 'Not Found',
       });
@@ -47,9 +47,9 @@ describe('IndicatorFetchService', () => {
     const query = '123';
 
     it('fetches and returns la locations successfully', async () => {
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockLocations),
+        json: vi.fn().mockResolvedValue(mockLocations),
       });
 
       const result = await PresentDemandService.getLaLocations(query);
@@ -61,7 +61,7 @@ describe('IndicatorFetchService', () => {
     });
 
     it('throws an error when the fetch response is not ok', async () => {
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: false,
         statusText: 'Not Found',
       });
@@ -101,9 +101,9 @@ describe('IndicatorFetchService', () => {
     const query = '123';
 
     it('fetches and returns available locations successfully', async () => {
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockLocations),
+        json: vi.fn().mockResolvedValue(mockLocations),
       });
 
       const result = await PresentDemandService.getAvailableLocations(query);
@@ -115,7 +115,7 @@ describe('IndicatorFetchService', () => {
     });
 
     it('throws an error when the fetch response is not ok', async () => {
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: false,
         statusText: 'Not Found',
       });
@@ -131,9 +131,9 @@ describe('IndicatorFetchService', () => {
     const mockResponse = [{ metric_location_id: '123' }];
 
     it('fetches and returns la locations successfully', async () => {
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockResponse),
+        json: vi.fn().mockResolvedValue(mockResponse),
       });
 
       const result = await PresentDemandService.getDefaultCPLocation(
@@ -148,7 +148,7 @@ describe('IndicatorFetchService', () => {
     });
 
     it('throws an error when the fetch response is not ok', async () => {
-      (fetch as jest.Mock).mockResolvedValue({
+      (fetch as vi.Mock).mockResolvedValue({
         ok: false,
         statusText: 'Not Found',
       });
@@ -172,12 +172,12 @@ describe('IndicatorFetchService', () => {
     const query = '123';
 
     beforeEach(() => {
-      jest
-        .spyOn(PresentDemandService, 'getLocations')
-        .mockResolvedValue(mockLocationData as any);
-      jest
-        .spyOn(PresentDemandService, 'getLaLocations')
-        .mockResolvedValue(mockLocationData as any);
+      vi.spyOn(PresentDemandService, 'getLocations').mockResolvedValue(
+        mockLocationData as any
+      );
+      vi.spyOn(PresentDemandService, 'getLaLocations').mockResolvedValue(
+        mockLocationData as any
+      );
     });
 
     it('returns location names for present demand without care provider', async () => {
@@ -257,12 +257,12 @@ describe('IndicatorFetchService', () => {
     const query = '123';
 
     beforeEach(() => {
-      jest
-        .spyOn(PresentDemandService, 'getLocations')
-        .mockResolvedValue(mockLocationData as any);
-      jest
-        .spyOn(PresentDemandService, 'getLaLocations')
-        .mockResolvedValue(mockLocationData as any);
+      vi.spyOn(PresentDemandService, 'getLocations').mockResolvedValue(
+        mockLocationData as any
+      );
+      vi.spyOn(PresentDemandService, 'getLaLocations').mockResolvedValue(
+        mockLocationData as any
+      );
     });
 
     it('returns location names for present demand without care provider', async () => {
@@ -466,9 +466,9 @@ describe('IndicatorFetchService', () => {
       },
     ];
     beforeEach(() => {
-      jest
-        .spyOn(PresentDemandService, 'formatDate')
-        .mockImplementation((date) => `Formatted: ${date}`);
+      vi.spyOn(PresentDemandService, 'formatDate').mockImplementation(
+        (date) => `Formatted: ${date}`
+      );
     });
 
     it('returns the formatted most recent date', () => {
@@ -514,16 +514,16 @@ describe('IndicatorFetchService', () => {
       location_ids: ['location3'],
     };
 
-    let getDisplayDataSpy: jest.SpyInstance;
-    let getSourceSpy: jest.SpyInstance;
+    let getDisplayDataSpy: vi.SpyInstance;
+    let getSourceSpy: vi.SpyInstance;
 
     beforeEach(() => {
-      getDisplayDataSpy = jest.spyOn(IndicatorFetchService, 'getDisplayData');
-      getSourceSpy = jest.spyOn(IndicatorDisplayService, 'getSource');
+      getDisplayDataSpy = vi.spyOn(IndicatorFetchService, 'getDisplayData');
+      getSourceSpy = vi.spyOn(IndicatorDisplayService, 'getSource');
     });
 
     afterEach(() => {
-      jest.restoreAllMocks();
+      vi.restoreAllMocks();
     });
 
     it('should combine metric_ids and location_ids from both queries and return the source', async () => {

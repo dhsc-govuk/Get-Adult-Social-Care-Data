@@ -1,5 +1,5 @@
 /**
- * @jest-environment node
+ * @vi.environment node
  */
 import jwt from 'jsonwebtoken';
 import {
@@ -8,26 +8,21 @@ import {
   verifyAuthToken,
 } from '../../../src/helpers/auth/verifyAuthToken';
 
-jest.mock('jsonwebtoken', () => ({
-  verify: jest.fn(),
-}));
-
 const originalFetch = global.fetch;
 
 describe('Verify Auth Token', () => {
   const mockAccessToken = 'mock-access-token';
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     global.fetch = originalFetch;
   });
 
   test('rejects access when JWT token fails jwt.verify checks', async () => {
-    (jwt.verify as jest.Mock).mockImplementation(
-      (token, key, options, callback) => {
-        callback(new Error('Invalid Token'), null);
-      }
-    );
+    const spy = vi.spyOn(jwt, 'verify');
+    spy.mockImplementation((token, key, options, callback) => {
+      callback(new Error('Invalid Token'), null);
+    });
 
     await expect(verifyAuthToken(mockAccessToken)).rejects.toThrow(
       'Invalid Token'
@@ -35,13 +30,12 @@ describe('Verify Auth Token', () => {
   });
 
   test('confirms token is valid if it passess jwt.verify checks', async () => {
-    (jwt.verify as jest.Mock).mockImplementation(
-      (token, key, options, callback) => {
-        const decodedJWT: VerifiedToken = { sub: 'user-1', oid: 'user-1' };
-        callback(null, decodedJWT);
-      }
-    );
-    global.fetch = jest.fn().mockResolvedValue({
+    const spy = vi.spyOn(jwt, 'verify');
+    spy.mockImplementation((token, key, options, callback) => {
+      const decodedJWT: VerifiedToken = { sub: 'user-1', oid: 'user-1' };
+      callback(null, decodedJWT);
+    });
+    global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () =>
         ({ id: 'user-1', displayName: 'Test User' }) as B2CGraphUser,

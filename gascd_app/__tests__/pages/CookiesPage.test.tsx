@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import CookiesPage from '../../app/cookies/page';
 
 describe('CookiesPage', () => {

@@ -1,7 +1,7 @@
 import SmartInsightsFetchService from '@/services/smart-insights/SmartInsightsFetchService';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 
-global.fetch = jest.fn();
+global.fetch = vi.fn();
 
 describe('SmartInsightsFetchService - getData', () => {
   const mockQuery: IndicatorQuery = {
@@ -10,15 +10,15 @@ describe('SmartInsightsFetchService - getData', () => {
   };
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should return data when fetch is successful', async () => {
     const mockResponse = ['data1', 'data2', 'data3'];
 
-    (fetch as jest.Mock).mockResolvedValue({
+    (fetch as vi.Mock).mockResolvedValue({
       ok: true,
-      json: jest.fn().mockResolvedValue(mockResponse),
+      json: vi.fn().mockResolvedValue(mockResponse),
     });
 
     const result = await SmartInsightsFetchService.getData(mockQuery);
@@ -33,7 +33,7 @@ describe('SmartInsightsFetchService - getData', () => {
   });
 
   it('should throw an error when fetch fails', async () => {
-    (fetch as jest.Mock).mockResolvedValue({
+    (fetch as vi.Mock).mockResolvedValue({
       ok: false,
       statusText: 'Internal Server Error',
     });

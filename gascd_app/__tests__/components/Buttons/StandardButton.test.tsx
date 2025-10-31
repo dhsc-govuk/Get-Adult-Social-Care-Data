@@ -15,7 +15,7 @@ describe('StandardButton Component', () => {
   });
 
   it('calls the function when clicked', () => {
-    const mockFunction = jest.fn();
+    const mockFunction = vi.fn();
     render(
       <StandardButton
         buttonString="Click here"
