@@ -2,6 +2,7 @@ import { NextAuthOptions } from 'next-auth';
 import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import logger from '@/utils/logger';
+import { createHash } from 'crypto';
 
 declare module 'next-auth' {
   interface Session {
@@ -143,8 +144,15 @@ if (process.env.LOCAL_AUTH == 'true' && process.env.LOCAL_AUTH_PASSWORD) {
       async authorize(credentials, req) {
         if (credentials?.password == process.env.LOCAL_AUTH_PASSWORD) {
           // Gives a mock user matching the email address provided
+          let userid;
+          if (credentials?.email) {
+            // make a fake userid from the email address
+            userid = createHash('md5').update(credentials.email).digest('hex');
+          } else {
+            userid = 'test-user-123';
+          }
           const mockUser = {
-            id: 'test-user-123',
+            id: userid,
             name: 'Test User',
             email: credentials?.email,
           };

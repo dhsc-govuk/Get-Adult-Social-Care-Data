@@ -4,7 +4,7 @@ import { authOptions } from '../api/auth/authOptions';
 import { verifyAuthToken } from '../../src/helpers/auth/verifyAuthToken';
 import logger from '@/utils/logger';
 import { trace } from '@opentelemetry/api';
-import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
+import { ATTR_ENDUSER_ID } from '@opentelemetry/semantic-conventions/incubating';
 
 export default async function AuthLayout({
   children,
@@ -15,7 +15,7 @@ export default async function AuthLayout({
   if (session?.user?.id) {
     let activeSpan = trace.getActiveSpan();
     if (activeSpan) {
-      activeSpan.setAttribute(SemanticAttributes.ENDUSER_ID, session.user.id);
+      activeSpan.setAttribute(ATTR_ENDUSER_ID, session.user.id);
     }
   }
 
