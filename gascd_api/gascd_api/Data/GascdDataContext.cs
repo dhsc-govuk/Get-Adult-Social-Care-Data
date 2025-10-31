@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using gascd_api.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace gascd_api;
+namespace gascd_api.Data;
 
 public partial class GascdDataContext : DbContext
 {

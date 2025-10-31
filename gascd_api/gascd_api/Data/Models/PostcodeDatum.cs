@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace gascd_api;
+﻿namespace gascd_api.Data.Models;
 
 public partial class PostcodeDatum
 {
     public string SanitisedPostcode { get; init; } = null!;
 
-    public string? DisplayPostcode { get; init; }
+    public string DisplayPostcode { get; init; } = null!;
 
     public decimal? Latitude { get; init; }
 

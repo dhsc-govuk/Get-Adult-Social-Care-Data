@@ -24,6 +24,14 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
     }
     
     [Fact]
+    public async Task GetUnknownPostCode_Returns404()
+    {
+        var (httpCode, _) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
+            new GetPostcodeRequest { Postcode = "NE14BJ" });
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+    
+    [Fact]
     public async Task GetPostCode_ReturnsCorrectData()
     {
         var (httpCode, response) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(

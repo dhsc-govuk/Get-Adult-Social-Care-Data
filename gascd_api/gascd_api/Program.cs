@@ -1,6 +1,7 @@
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using gascd_api;
+using gascd_api.Data;
 using Microsoft.EntityFrameworkCore;
 
 var bld = WebApplication.CreateBuilder();
