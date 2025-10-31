@@ -19,10 +19,11 @@ internal class CustomWebAppFactory : WebApplicationFactory<Program>
         builder.ConfigureAppConfiguration((context, configBuilder) =>
         {
             var connStr = _container.GetConnectionString();
-            var inMemorySettings = new Dictionary<string, string>
+            var inMemorySettings = new Dictionary<string, string?>
             {
                 ["ConnectionStrings:DefaultConnection"] = connStr
             };
+            
             configBuilder.AddInMemoryCollection(inMemorySettings);
         });
     }
