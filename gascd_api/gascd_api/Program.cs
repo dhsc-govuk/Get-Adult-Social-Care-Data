@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 var bld = WebApplication.CreateBuilder();
 
 bld.Services
+    .AddDbContext<GascdDataContext>(o => o.UseNpgsql(bld.Configuration.GetConnectionString("DefaultConnection")))
     .AddFastEndpoints()
     .SwaggerDocument();
 
