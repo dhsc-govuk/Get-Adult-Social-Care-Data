@@ -39,6 +39,16 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
         problemDetails.Errors.Select(e => e.Name).ShouldBe(["postcode"]);
         problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Postcode is required."]);
     }
+    
+    [Fact]
+    public async Task Invalid_Empty_Request()
+    {
+        var (httpResponse, problemDetails) = await _client.GETAsync<GetPostcodeEndpoint, ProblemDetails>();
+        httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        problemDetails.Errors.Count().ShouldBe(1);
+        problemDetails.Errors.Select(e => e.Name).ShouldBe(["postcode"]);
+        problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Postcode is required."]);
+    }
 
 
     [Theory]

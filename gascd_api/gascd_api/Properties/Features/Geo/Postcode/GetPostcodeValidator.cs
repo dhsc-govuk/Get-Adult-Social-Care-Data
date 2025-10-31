@@ -12,6 +12,5 @@ public class GetPostcodeValidator : Validator<GetPostcodeRequest>
             .MinimumLength(5).WithMessage("Invalid postcode.")
             .MaximumLength(7).WithMessage("Invalid postcode.")
             .Matches("^[A-Z0-9]+$").WithMessage("Invalid postcode.");
-
     }
 }
