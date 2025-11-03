@@ -5,25 +5,32 @@ using System.Net;
 
 namespace gascd_api.Tests.Properties.Features;
 
-public class AuthTests : IClassFixture<IntegrationTestFixture>
+public class AuthTests(IntegrationTestFixture fixture) : IClassFixture<IntegrationTestFixture>
 {
-    private readonly HttpClient _client;
+    CustomWebAppFactory factory = new CustomWebAppFactory(fixture.PostgresContainer);
     
-    public AuthTests(IntegrationTestFixture fixture)
-    {
-        var factory = new CustomWebAppFactory(fixture.PostgresContainer);
-        _client = factory.CreateClient();
-        _client.DefaultRequestHeaders.Remove("x-api-key");
-    }
-
     [Fact]
-    public async Task UnAuthorisedAccess_ResultsInError()
+    public async Task UnauthorisedAccess_ResultsInError()
     {
-        var (httpCode, _) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
+       
+        var client = factory.CreateClient();
+        client.DefaultRequestHeaders.Remove("x-api-key");
+        var (httpCode, _) = await client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
             new GetPostcodeRequest { Postcode = "KT220UF" });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
     }
     
+    [Fact]
+    public async Task BadApiKey_ResultsInError()
+    {
+        var client = factory.CreateClient();
+        client.DefaultRequestHeaders.Remove("x-api-key");
+        client.DefaultRequestHeaders.Add("x-api-key", "bad-api-key");
+        
+        var (httpCode, _) = await client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
+            new GetPostcodeRequest { Postcode = "KT220UF" });
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+    }
 
 
 }
