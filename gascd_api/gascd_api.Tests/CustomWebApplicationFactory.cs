@@ -9,7 +9,7 @@ internal class CustomWebAppFactory(PostgreSqlContainer container) : WebApplicati
 {
     protected override void ConfigureClient(HttpClient client)
     {
-        client.DefaultRequestHeaders.Add("x-api-key", "secret");
+        client.DefaultRequestHeaders.Add("x-api-key", "test-secret-key");
         base.ConfigureClient(client);
     }
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -20,7 +20,7 @@ internal class CustomWebAppFactory(PostgreSqlContainer container) : WebApplicati
             var inMemorySettings = new Dictionary<string, string?>
             {
                 ["ConnectionStrings:DefaultConnection"] = connStr,
-                ["Auth:ApiKey"] = "secret"
+                ["Auth:ApiKey"] = "test-secret-key"
             };
 
             configBuilder.AddInMemoryCollection(inMemorySettings);
