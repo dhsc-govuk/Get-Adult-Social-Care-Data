@@ -1,33 +1,17 @@
 import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../api/auth/authOptions';
 import { verifyAuthToken } from '../../src/helpers/auth/verifyAuthToken';
 import logger from '@/utils/logger';
-import { trace } from '@opentelemetry/api';
-import { ATTR_ENDUSER_ID } from '@opentelemetry/semantic-conventions/incubating';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '../api/auth/authOptions';
+import { addUserTelemetry } from '@/helpers/telemetry/usertelemetry';
 
 export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  addUserTelemetry();
   const session = await getServerSession(authOptions);
-  if (session?.user?.id) {
-    let activeSpan = trace.getActiveSpan();
-    if (activeSpan) {
-      // Note - this would be better handled in middleware to apply to all telemetry
-      activeSpan.setAttribute(ATTR_ENDUSER_ID, session.user.id);
-      if (session.user.locationId) {
-        activeSpan.setAttribute('userOrganisationId', session.user.locationId);
-      }
-      if (session.user.locationType) {
-        activeSpan.setAttribute(
-          'userOrganisationType',
-          session.user.locationType
-        );
-      }
-    }
-  }
 
   if (process.env.LOCAL_AUTH == 'true') {
     if (session?.user) {
