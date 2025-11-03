@@ -3,11 +3,11 @@ using gascd_api.Properties.Features.Geo.Postcode;
 
 namespace gascd_api.Test.Properties.Features.Geo.Postcode;
 
-public class GetPostcodeValidatorTest : IDisposable
+public class GetPostcodeValidatorTests : IDisposable
 {
     private GetPostcodeValidator _validator;
 
-    public GetPostcodeValidatorTest()
+    public GetPostcodeValidatorTests()
     {
         _validator = new GetPostcodeValidator();
     }
