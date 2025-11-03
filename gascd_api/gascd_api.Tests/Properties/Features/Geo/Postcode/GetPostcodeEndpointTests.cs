@@ -21,6 +21,7 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
         var (httpCode, _) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
                 new GetPostcodeRequest { Postcode = "KT220UF" });
         httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
     
     [Fact]

@@ -12,10 +12,13 @@ public class GetPostcodeValidatorTest : IDisposable
         _validator = new GetPostcodeValidator();
     }
 
-    [Fact]
-    public void Valid_Postcode_should_be_valid()
+    [Theory]
+    [InlineData("N14BJ")]
+    [InlineData("NE14BJ")]
+    [InlineData("NE124BJ")]
+    public void ValidPostcode_ShouldBeValid(string postcode)
     {
-        var request = new GetPostcodeRequest { Postcode = "NE14BJ" };
+        var request = new GetPostcodeRequest { Postcode = postcode };
         var result = _validator.TestValidate(request);
         result.ShouldNotHaveAnyValidationErrors();
     }
@@ -27,7 +30,7 @@ public class GetPostcodeValidatorTest : IDisposable
     [InlineData("1234;")]
     [InlineData("1234$")]
     [InlineData("1234@")]
-    public void Invalid_Postcode_should_be_invalid(string postcodeInput)
+    public void InvalidPostcode_ShouldBeInvalid(string postcodeInput)
     {
         var request = new GetPostcodeRequest { Postcode = postcodeInput };
         var result = _validator.TestValidate(request);

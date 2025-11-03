@@ -5,20 +5,13 @@ using Testcontainers.PostgreSql;
 
 namespace gascd_api.Tests;
 
-internal class CustomWebAppFactory : WebApplicationFactory<Program>
+internal class CustomWebAppFactory(PostgreSqlContainer container) : WebApplicationFactory<Program>
 {
-    private readonly PostgreSqlContainer _container;
-
-    public CustomWebAppFactory(PostgreSqlContainer container)
-    {
-        _container = container;
-    }
-
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureAppConfiguration((context, configBuilder) =>
         {
-            var connStr = _container.GetConnectionString();
+            var connStr = container.GetConnectionString();
             var inMemorySettings = new Dictionary<string, string?>
             {
                 ["ConnectionStrings:DefaultConnection"] = connStr

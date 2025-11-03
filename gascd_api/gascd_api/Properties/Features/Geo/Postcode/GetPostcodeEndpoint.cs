@@ -5,8 +5,6 @@ namespace gascd_api.Properties.Features.Geo.Postcode;
 
 public class GetPostcodeEndpoint(GascdDataContext context) : Endpoint<GetPostcodeRequest, GetPostcodeResponse>
 {
-    private GascdDataContext _context = context;
-    
     public override void Configure()
     {
         Get("/api/geo/postcode");
@@ -15,7 +13,7 @@ public class GetPostcodeEndpoint(GascdDataContext context) : Endpoint<GetPostcod
 
     public override async Task HandleAsync(GetPostcodeRequest req, CancellationToken ct)
     {
-        var datum = _context.PostcodeData.SingleOrDefault(p => p.SanitisedPostcode == req.Postcode);
+        var datum = context.PostcodeData.SingleOrDefault(p => p.SanitisedPostcode == req.Postcode);
         if (datum == null)
         {
             await Send.NotFoundAsync(ct);
