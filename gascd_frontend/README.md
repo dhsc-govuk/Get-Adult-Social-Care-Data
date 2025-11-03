@@ -1,40 +1,4 @@
-# DHSC Get Adult Social Care Data Frontend Repository
-
-[![Build Status](https://dev.azure.com/DHSCSCDAPAlpha/DAP%20Alpha/_apis/build/status%2FFrontend?branchName=main)](https://dev.azure.com/DHSCSCDAPAlpha/DAP%20Alpha/_build/latest?definitionId=4&branchName=main)
-
-## Contents
-
-- [About This Project](#about-this-project)
-- [Setup](#setup)
-  - [Requirements](#requirements)
-    - [Installing project dependencies](#installing-project-dependencies)
-- [Usage](#usage)
-  - [Running the Application](#running-the-application)
-- [Continuous Integration, Development and Deployment](#continuous-integration-development-and-deployment)
-  - [CI/CD](#cicd)
-- [Further documentation](#further-documentation)
-  - [Related Repositories](#related-repositories)
-  - [Logging](docs/logging.md)
-  - [Local Development Application Performance Monitoring](docs/apm.md)
-
-## About This Project
-
-This is the Repo/Code for the DHSC Data Access Platform Frontend. This application primarily utilises the following technologies:
-
-- [NextJS](https://nextjs.org)
-- [React](https://react.dev/)
-- [govuk-frontend](https://github.com/alphagov/govuk-frontend)
-- [Azure](https://azure.microsoft.com/en-gb)
-  - [Web](https://azure.microsoft.com/en-gb/products/app-service/web)
-  - [Function App](https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview?pivots=programming-language-csharp)
-  - [Pipelines](https://azure.microsoft.com/en-us/products/devops/pipelines)
-
-With this project we aim to:
-
-- To improve both quality and efficiency of data and insight analysis at a local, regional and national level
-- To enable better decision making across all stakeholders to improve the delivery of high-quality care across the sector
-- To reduce siloed data sharing and alleviate cost and effort inefficiencies
-- To enhance data and insights sharing within the adult social care sector using NHS as a ‘baseline’
+# GASCD frontend app
 
 ## Setup
 
@@ -44,9 +8,8 @@ This project requires the following pre-requisites:
 
 1. [Mise](https://mise.jdx.dev/getting-started.html)
 2. [Make](https://makefiletutorial.com/)
-3. [NodeJs](https://nodejs.org/en)
-4. [Docker](https://www.docker.com/)
-5. [GitLeaks](https://github.com/gitleaks/gitleaks)
+3. [Docker](https://www.docker.com/)
+4. [GitLeaks](https://github.com/gitleaks/gitleaks)
 
 #### Installing project dependencies
 
@@ -63,6 +26,7 @@ This will use husky (https://typicode.github.io/husky/) to install pre-commit ho
 ## Setting up environment variables
 
 Create an initial environment file as follows:
+
 - Copy `gascd_app/.env.template` to `gascd_app/.env`
 - Enter a random string for `NEXTAUTH_SECRET` in `gascd_app/.env`
 
@@ -90,23 +54,26 @@ make run-dev
 
 The default auth provider is Azure B2C, which can be a hassle to set up if you're just making frontend changes. There is a local auth setup for development and testing, which you can use as follows:
 
-* Add the following to your `gascd_app/.env` file
+- Add the following to your `gascd_app/.env` file
+
 ```bash
   LOCAL_AUTH=true
   LOCAL_AUTH_PASSWORD=<my-ace-password>
   LOCAL_AUTH_LOCATION_TYPE=Care provider location
   LOCAL_AUTH_LOCATION_ID=testcpl1
 ```
-* Remove any existing AZURE_AD_* variables from your .env file
-* Start the app and sign in
-* The dummy auth provider will appear as an alternative when the default (Azure) auth method fails
-* Enter any email address in the 'dummy-creds' login box, along with the password you set above
+
+- Remove any existing AZURE*AD*\* variables from your .env file
+- Start the app and sign in
+- The dummy auth provider will appear as an alternative when the default (Azure) auth method fails
+- Enter any email address in the 'dummy-creds' login box, along with the password you set above
 
 ### Development database setup
 
 You can spin up a local SQL server as follows:
 
-* Set the following in `gascd_app/.env`
+- Set the following in `gascd_app/.env`
+
 ```bash
   DB_DATABASE=Analytical_Datastore
   DB_SERVER=localhost
@@ -116,8 +83,8 @@ You can spin up a local SQL server as follows:
   # See below for password complexity requirements
   DB_PASSWORD=<a-password-for-the-db>
 ```
-* Please note that the DB_PASSWORD must meet [SQL server password complexity](https://learn.microsoft.com/en-us/sql/relational-databases/security/password-policy?view=sql-server-ver16#password-complexity)
 
+- Please note that the DB_PASSWORD must meet [SQL server password complexity](https://learn.microsoft.com/en-us/sql/relational-databases/security/password-policy?view=sql-server-ver16#password-complexity)
 
 To bootstrap the database and tables, you need to to generate an SQL bootstrap file from the `.sqlproject` in the [dhsc-gasdc-data repo](https://github.com/madetech/dhsc-gascd-data) as follows:
 
@@ -133,11 +100,13 @@ DB_PASSWORD="<a-password-for-the-db>" make docker-db
 # Imports the SQL bootstrap file
 DB_PASSWORD="<a-password-for-the-db>" make docker-db-init
 ```
+
 Then run the following to load in the test data
 
 ```bash
 DB_PASSWORD="<a-password-for-the-db>" make docker-db-init-data
 ```
+
 See docs for information on how to configure the test data
 
 [Experimental] - there is also a script to import CSV files into the docker database for dummy content:
@@ -150,9 +119,10 @@ See docs for information on how to configure the test data
 
 Alternatively you can connect your local development instance to the DEV database on Azure as follows:
 
-* Install the Azure CLI (`brew install az`)
-* Log into Azure in your terminal using `az login`
-* Set the following in `gascd_app/.env`
+- Install the Azure CLI (`brew install az`)
+- Log into Azure in your terminal using `az login`
+- Set the following in `gascd_app/.env`
+
 ```bash
   # Get DB values from the infra repo
   DB_DATABASE=<db_name>
@@ -161,7 +131,8 @@ Alternatively you can connect your local development instance to the DEV databas
   # Allows app to connect with your Azure CLI creds
   DB_AUTH_TYPE=azure-cli
 ```
-* Start the app
+
+- Start the app
 
 ## Debugging Database queries
 
@@ -194,9 +165,8 @@ This project uses Azure DevOps Pipelines for continuous integration and deployme
 
 ## Further documentation
 
-
-| Name                                                                               | Description                                                                                                                                 |
-| :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
-| [DHSC Alpha Data](https://github.com/madetech/dhsc-alpha-data)                     | Repository for Data work required for DHSC Alpha                                                                                            |
-| [DHSC Alpha Infrastructure](https://github.com/madetech/dhsc-alpha-infrastructure) | Infrastructure Repository for the DHSC Alpha Delivery                                                                                       |
+| Name                                                                               | Description                                                                                                                                                                                                                |
+| :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [DHSC Alpha Data](https://github.com/madetech/dhsc-alpha-data)                     | Repository for Data work required for DHSC Alpha                                                                                                                                                                           |
+| [DHSC Alpha Infrastructure](https://github.com/madetech/dhsc-alpha-infrastructure) | Infrastructure Repository for the DHSC Alpha Delivery                                                                                                                                                                      |
 | [Govuk React](https://github.com/govuk-react/govuk-react?tab=readme-ov-file)       | An implementation of the [GOV.UK Design System](https://govuk-design-system-production.cloudapps.digital/) in [React](https://reactjs.org/). Not used directly, but most of the components were adapted from this package. |
