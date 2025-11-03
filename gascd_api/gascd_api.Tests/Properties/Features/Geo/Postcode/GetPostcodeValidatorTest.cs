@@ -22,7 +22,7 @@ public class GetPostcodeValidatorTest : IDisposable
         var result = _validator.TestValidate(request);
         result.ShouldNotHaveAnyValidationErrors();
     }
-    
+
     [Theory]
     [InlineData("NE14BJ!")]
     [InlineData("1234")]
@@ -40,6 +40,6 @@ public class GetPostcodeValidatorTest : IDisposable
 
     public void Dispose()
     {
-        
+
     }
 }

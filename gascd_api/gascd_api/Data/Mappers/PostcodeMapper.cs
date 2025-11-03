@@ -8,5 +8,5 @@ namespace gascd_api.Data.Mappers;
 public partial class PostcodeMapper
 {
     [MapperIgnoreTarget(nameof(GetPostcodeResponse.LaName))]
-    public partial GetPostcodeResponse PostCodeDatumToGetPostcodeResponse(PostcodeDatum  postcode);
+    public partial GetPostcodeResponse PostCodeDatumToGetPostcodeResponse(PostcodeDatum postcode);
 }

@@ -9,7 +9,6 @@ public class GetPostcodeEndpoint(GascdDataContext context, PostcodeMapper mapper
     public override void Configure()
     {
         Get("/api/geo/postcode");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(GetPostcodeRequest req, CancellationToken ct)

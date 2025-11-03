@@ -23,7 +23,7 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
-    
+
     [Fact]
     public async Task GetUnknownPostCode_Returns404()
     {
@@ -31,7 +31,7 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
             new GetPostcodeRequest { Postcode = "NE14BJ" });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
-    
+
     [Fact]
     public async Task GetPostCode_ReturnsCorrectData()
     {
@@ -57,7 +57,7 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
         problemDetails.Errors.Select(e => e.Name).ShouldBe(["postcode"]);
         problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Postcode is required."]);
     }
-    
+
     [Fact]
     public async Task Invalid_Empty_Request()
     {
