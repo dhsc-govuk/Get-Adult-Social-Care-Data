@@ -6,41 +6,36 @@ default: dev
 
 # Local dev setup
 
-dev: gascd_app/node_modules
+dev: node_modules
 
-run-dev: gascd_app/node_modules
-	cd gascd_app; \
-	 ${NPM_COMMAND} run dev
+run-dev: node_modules
+	${NPM_COMMAND} run dev
 
-gascd_app/node_modules: gascd_app/package.json gascd_app/package-lock.json
-	cd gascd_app; \
-	 ${NPM_COMMAND} ci
+node_modules: package.json package-lock.json
+	${NPM_COMMAND} ci
 
-test: gascd_app/node_modules
-	cd gascd_app; \
-     ${NPM_COMMAND} run test
+test: node_modules
+	${NPM_COMMAND} run test
 
-test-e2e: gascd_app/node_modules
-	cd gascd_app; \
-     CYPRESS_BASE_URL=http://localhost:3000/ ${NPM_COMMAND} run cypress:headless
+test-e2e: node_modules
+	CYPRESS_BASE_URL=http://localhost:3000/ ${NPM_COMMAND} run cypress:headless
 
-setup-husky: gascd_app/node_modules
-	cd gascd_app; \
-     ${NPM_COMMAND} run husky:init
+setup-husky: node_modules
+	${NPM_COMMAND} run husky:init
 
 # Docker utilities
 
 docker-rebuild-no-cache:	
-	docker-compose -f ./gascd_app/docker-compose.yml build --no-cache 
+	docker-compose -f ./docker-compose.yml build --no-cache 
 
 docker-up:
-	docker-compose -f ./gascd_app/docker-compose.yml up
+	docker-compose -f ./docker-compose.yml up
 
 docker-up-rebuild:	
-	docker-compose -f ./gascd_app/docker-compose.yml up --build --force-recreate
+	docker-compose -f ./docker-compose.yml up --build --force-recreate
 
 docker-down:
-	docker-compose -f ./gascd_app/docker-compose.yml down
+	docker-compose -f ./docker-compose.yml down
 
 docker-db:
 	docker-compose -f ./dbtools/docker-compose-db.yml up -d
@@ -59,14 +54,14 @@ docker-db-init:
 docker-db-init-data:
 	docker build -t test-data-gen ./dbtools/.
 	docker run --network=dbtools_default --rm \
-        --env-file ./gascd_app/.env \
+        --env-file ./gascd_frontend/.env \
         test-data-gen --docker
 
 format-staged:
-	cd gascd_app && ${NPX_COMMAND} lint-staged
+	${NPX_COMMAND} lint-staged
 
 clean:
-	rm -rf gascd_app/node_modules
+	rm -rf node_modules
 
 # Local APM ELK stack Management
 
