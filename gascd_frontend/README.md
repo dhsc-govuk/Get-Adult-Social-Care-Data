@@ -27,8 +27,8 @@ This will use husky (https://typicode.github.io/husky/) to install pre-commit ho
 
 Create an initial environment file as follows:
 
-- Copy `gascd_app/.env.template` to `gascd_app/.env`
-- Enter a random string for `NEXTAUTH_SECRET` in `gascd_app/.env`
+- Copy `.env.template` to `.env`
+- Enter a random string for `NEXTAUTH_SECRET` in `.env`
 
 ## Usage
 
@@ -54,7 +54,7 @@ make run-dev
 
 The default auth provider is Azure B2C, which can be a hassle to set up if you're just making frontend changes. There is a local auth setup for development and testing, which you can use as follows:
 
-- Add the following to your `gascd_app/.env` file
+- Add the following to your `.env` file
 
 ```bash
   LOCAL_AUTH=true
@@ -72,7 +72,7 @@ The default auth provider is Azure B2C, which can be a hassle to set up if you'r
 
 You can spin up a local SQL server as follows:
 
-- Set the following in `gascd_app/.env`
+- Set the following in `.env`
 
 ```bash
   DB_DATABASE=Analytical_Datastore
@@ -96,15 +96,15 @@ You can then run this SQL file against your docker DB as follows:
 
 ```bash
 # Build and start the MSSQL server
-DB_PASSWORD="<a-password-for-the-db>" make docker-db
+DB_PASSWORD="<a-password-for-the-db>" mise run docker-db
 # Imports the SQL bootstrap file
-DB_PASSWORD="<a-password-for-the-db>" make docker-db-init
+DB_PASSWORD="<a-password-for-the-db>" mise run docker-db-init
 ```
 
 Then run the following to load in the test data
 
 ```bash
-DB_PASSWORD="<a-password-for-the-db>" make docker-db-init-data
+DB_PASSWORD="<a-password-for-the-db>" mise run docker-db-init-data
 ```
 
 See docs for information on how to configure the test data
@@ -121,7 +121,7 @@ Alternatively you can connect your local development instance to the DEV databas
 
 - Install the Azure CLI (`brew install az`)
 - Log into Azure in your terminal using `az login`
-- Set the following in `gascd_app/.env`
+- Set the following in `.env`
 
 ```bash
   # Get DB values from the infra repo
