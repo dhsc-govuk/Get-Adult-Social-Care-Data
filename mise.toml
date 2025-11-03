@@ -1,0 +1,49 @@
+[tools]
+node = "24.4.1"
+uv = "0.8.0"
+
+#Local database tasks
+
+[tasks.docker-db]
+description = "Run a local database with docker"
+run = "docker-compose -f ./dbtools/docker-compose-db.yml up -d"
+
+[tasks.docker-db-down]
+description = "Stop a local database with docker"
+run = "docker-compose -f ./dbtools/docker-compose-db.yml down -v"
+
+[tasks.docker-db-init]
+description = "initialise a local database"
+run = """
+docker cp ./Analytical_Datastore_bootstrap.sql mssql-server:/tmp/
+docker exec -it \
+    mssql-server /bin/bash -c "\
+    echo 'Running SQL scripts inside mssql-server container...'; \
+    /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P \"$(DB_PASSWORD)\" -i \"/tmp/Analytical_Datastore_bootstrap.sql\" -o /dev/stdout; \
+    "
+"""
+
+[tasks.docker-db-init-data]
+description = "initialise a local database with data"
+run = """
+docker build -t test-data-gen ./dbtools/.
+docker run --network=dbtools_default --rm \
+    --env-file ./gascd_frontend/.env \
+    test-data-gen --docker
+"""
+
+# Local APM ELK stack Management
+[tasks.elk-apm-up]
+run = "docker-compose -f ./apm/docker-compose-elk.yml up -d"
+
+[tasks.elk-apm-stop]
+run = "docker-compose -f ./apm/docker-compose-elk.yml stop"
+
+[tasks.elk-apm-down]
+run = "docker-compose -f ./apm/docker-compose-elk.yml down -v"
+
+[tasks.elk-apm-logs]
+run = "docker-compose -f ./apm/docker-compose-elk.yml logs"
+
+[tasks.elk-apm-restart]
+run = "docker-compose -f ./apm/docker-compose-elk.yml restart"
