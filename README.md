@@ -1,20 +1,5 @@
 # DHSC Get Adult Social Care Data Repository
 
-## Contents
-
-- [About This Project](#about-this-project)
-- [Setup](#setup)
-  - [Requirements](#requirements)
-    - [Installing project dependencies](#installing-project-dependencies)
-- [Usage](#usage)
-  - [Running the Application](#running-the-application)
-- [Continuous Integration, Development and Deployment](#continuous-integration-development-and-deployment)
-  - [CI/CD](#cicd)
-- [Further documentation](#further-documentation)
-  - [Related Repositories](#related-repositories)
-  - [Logging](docs/logging.md)
-  - [Local Development Application Performance Monitoring](docs/apm.md)
-
 ## About This Project
 
 This is the Repo/Code for the DHSC Data Access Platform Frontend. This application primarily utilises the following technologies:
