@@ -1,9 +1,10 @@
 using FastEndpoints;
 using gascd_api.Data;
+using gascd_api.Data.Mappers;
 
 namespace gascd_api.Properties.Features.Geo.Postcode;
 
-public class GetPostcodeEndpoint(GascdDataContext context) : Endpoint<GetPostcodeRequest, GetPostcodeResponse>
+public class GetPostcodeEndpoint(GascdDataContext context, PostcodeMapper mapper) : Endpoint<GetPostcodeRequest, GetPostcodeResponse>
 {
     public override void Configure()
     {
@@ -19,14 +20,8 @@ public class GetPostcodeEndpoint(GascdDataContext context) : Endpoint<GetPostcod
             await Send.NotFoundAsync(ct);
             return;
         }
-        var response = new GetPostcodeResponse
-        {
-            SanitisedPostcode = datum.SanitisedPostcode, 
-            DisplayPostcode = datum.DisplayPostcode, 
-            Latitude = datum.Latitude, 
-            Longitude = datum.Longitude, 
-            LaCode = datum.LaCode
-        };
+
+        GetPostcodeResponse response = mapper.PostCodeDatumToGetPostcodeResponse(datum);
         await Send.OkAsync(response, ct);
     }
 }

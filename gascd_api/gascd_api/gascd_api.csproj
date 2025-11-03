@@ -24,6 +24,7 @@
       </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.10" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+      <PackageReference Include="Riok.Mapperly" Version="4.3.0" />
     </ItemGroup>
 
 </Project>
