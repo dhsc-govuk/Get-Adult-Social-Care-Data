@@ -1,4 +1,4 @@
-cd gascd_app
+cd gascd_frontend
 echo "Running linter and Prettier"
 npx lint-staged
 echo "Running GitLeaks for secret detection"

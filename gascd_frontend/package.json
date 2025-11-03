@@ -7,7 +7,7 @@
     "dev": "next dev",
     "dev:turbo": "next dev --turbopack",
     "build": "next build",
-    "husky:init": "cd .. && husky gascd_app/.husky",
+    "husky:init": "cd .. && husky gascd_frontend/.husky",
     "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write",
