@@ -16,13 +16,11 @@ import {
 
 describe('Table component tests', () => {
   beforeEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   test('fetches data and displays correctly in the DataTable component', async () => {
-    jest
-      .spyOn(IndicatorFetchService, 'getData')
-      .mockResolvedValue(mockTableData);
+    vi.spyOn(IndicatorFetchService, 'getData').mockResolvedValue(mockTableData);
 
     render(
       <DataTable
@@ -40,9 +38,7 @@ describe('Table component tests', () => {
     });
   });
   test('Displays the row and column headers correctly in the DataTable component', async () => {
-    jest
-      .spyOn(IndicatorFetchService, 'getData')
-      .mockResolvedValue(mockTableData);
+    vi.spyOn(IndicatorFetchService, 'getData').mockResolvedValue(mockTableData);
 
     render(
       <DataTable
@@ -67,9 +63,7 @@ describe('Table component tests', () => {
   });
 
   test('fetches data and displays correctly in the DataTable component when there are percentage rows added', async () => {
-    jest
-      .spyOn(IndicatorFetchService, 'getData')
-      .mockResolvedValue(mockTableData);
+    vi.spyOn(IndicatorFetchService, 'getData').mockResolvedValue(mockTableData);
 
     render(
       <DataTable
@@ -97,9 +91,9 @@ describe('Table component tests', () => {
   });
 
   test('Displays the correct Data and headers when showCareProvider flag is true', async () => {
-    jest
-      .spyOn(IndicatorFetchService, 'getData')
-      .mockResolvedValue(mockTableDataWithCareProvider);
+    vi.spyOn(IndicatorFetchService, 'getData').mockResolvedValue(
+      mockTableDataWithCareProvider
+    );
 
     render(
       <DataTable

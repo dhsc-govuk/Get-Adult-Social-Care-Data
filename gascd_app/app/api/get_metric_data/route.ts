@@ -5,12 +5,21 @@ import QueryBuilderService from '@/services/query-builder/QueryBuilderService';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/authOptions';
 import logger from '@/utils/logger';
+import { trace } from '@opentelemetry/api';
+import { ATTR_ENDUSER_ID } from '@opentelemetry/semantic-conventions/incubating';
 
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     const pool = await dbPool;
     const queryParams = await req.json();
+
+    if (session?.user.id) {
+      let activeSpan = trace.getActiveSpan();
+      if (activeSpan) {
+        activeSpan.setAttribute(ATTR_ENDUSER_ID, session.user.id);
+      }
+    }
 
     if (!queryParams.metric_ids?.length || !queryParams.location_ids?.length) {
       return NextResponse.json(

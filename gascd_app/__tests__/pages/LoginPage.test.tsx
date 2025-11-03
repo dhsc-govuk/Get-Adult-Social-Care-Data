@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import LoginPage from '../../app/(authentication)/login/page';
 
 describe('LoginPage', () => {
@@ -8,6 +7,7 @@ describe('LoginPage', () => {
 
     const headingElement = screen.getByRole('heading', {
       name: /Get adult social care data/i,
+      level: 1,
     });
     expect(headingElement).toBeInTheDocument();
 

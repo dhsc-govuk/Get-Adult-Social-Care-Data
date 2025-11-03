@@ -32,7 +32,7 @@ describe('Layout', () => {
     render(<Layout title="My test page" />);
     const footer = screen.getByTestId('footer');
     expect(footer).toBeInTheDocument();
-    // These should match those in jest.setup.ts
+    // These should match those in vi.setup.ts
     expect(footer.getAttribute('data-version-tag')).toBe('0.1.0');
     expect(footer.getAttribute('data-version-hash')).toBe('testab1234');
   });

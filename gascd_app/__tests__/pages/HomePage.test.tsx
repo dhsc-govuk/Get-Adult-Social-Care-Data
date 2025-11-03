@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import HomePage from '../../app/(protected)/home/page';
 import { renderWithSession } from '@/test-utils/test-utils';
 
@@ -12,6 +11,7 @@ describe('HomePage', () => {
     // accessible way to find headings by their text content (case-insensitive).
     const headingElement = screen.getByRole('heading', {
       name: /Get adult social care data/i,
+      level: 1,
     });
     expect(headingElement).toBeInTheDocument();
 

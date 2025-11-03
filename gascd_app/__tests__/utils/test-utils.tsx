@@ -2,10 +2,11 @@ import React, { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { SessionProvider } from 'next-auth/react';
 
-// Mock session for jest page tests
+// Mock session for page tests
 export const mockSession: any = {
   expires: '1',
   user: {
+    id: 'testing-user-1',
     locationType: 'Care provider location',
     locationId: 'testlocation1',
     smartInsights: false,
