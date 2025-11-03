@@ -15,7 +15,17 @@ export default async function AuthLayout({
   if (session?.user?.id) {
     let activeSpan = trace.getActiveSpan();
     if (activeSpan) {
+      // Note - this would be better handled in middleware to apply to all telemetry
       activeSpan.setAttribute(ATTR_ENDUSER_ID, session.user.id);
+      if (session.user.locationId) {
+        activeSpan.setAttribute('userOrganisationId', session.user.locationId);
+      }
+      if (session.user.locationType) {
+        activeSpan.setAttribute(
+          'userOrganisationType',
+          session.user.locationType
+        );
+      }
     }
   }
 
