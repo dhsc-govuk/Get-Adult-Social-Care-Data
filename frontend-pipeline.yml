@@ -18,7 +18,7 @@ variables:
   - name: imageRepository
     value: "dapalpha"
   - name: dockerfilePath
-    value: "$(Build.SourcesDirectory)/gascd_app/Dockerfile"
+    value: "$(Build.SourcesDirectory)/gascd_frontend/Dockerfile"
   - name: tag
     value: "$(Build.BuildId)"
   - name: vmImageName
@@ -48,10 +48,10 @@ parameters:
 stages:
   # Run tests once up front
   - stage: Tests
-    displayName: "Run jest tests"
+    displayName: "Run tests"
     jobs:
-      - job: JestTest
-        displayName: Run Jests Tests
+      - job: VitestTest
+        displayName: Run vitest Tests
         pool:
           vmImage: "ubuntu-latest"
         steps:
@@ -61,16 +61,16 @@ stages:
               versionSpec: "24.4.1"
           - script: npm ci
             displayName: install dependencies
-            workingDirectory: gascd_app
-          - script: npm run test -- --reporters=default --reporters=jest-junit --outputFile=gascd_app/junit.xml
-            displayName: Run Jest Tests
-            workingDirectory: gascd_app
+            workingDirectory: gascd_frontend
+          - script: npm run test -- --reporter=default --reporter=junit --outputFile=junit.xml
+            displayName: Run vitest Tests
+            workingDirectory: gascd_frontend
           - task: PublishTestResults@2
             displayName: Publish Test Results
             inputs:
               testResultsFormat: "JUnit"
               searchFolder: "$(Build.SourcesDirectory)"
-              testResultsFiles: "gascd_app/junit.xml"
+              testResultsFiles: "gascd_frontend/junit.xml"
               failTaskOnFailedTests: true
   # Build
   - stage: Build_Image
@@ -95,7 +95,7 @@ stages:
                 - script: |
                     NEXT_PUBLIC_GASCD_GIT_HASH=$(git rev-parse --short HEAD) \
                     NEXT_PUBLIC_GASCD_GIT_TAG=$(git describe --tags --abbrev=0 --always) \
-                    docker build -f $(dockerfilePath) -t $(imageRepository):$(tag) -t $(imageRepository):latest gascd_app/. --build-arg NEXT_PUBLIC_GASCD_GIT_HASH --build-arg NEXT_PUBLIC_GASCD_GIT_TAG
+                    docker build -f $(dockerfilePath) -t $(imageRepository):$(tag) -t $(imageRepository):latest gascd_frontend/. --build-arg NEXT_PUBLIC_GASCD_GIT_HASH --build-arg NEXT_PUBLIC_GASCD_GIT_TAG
                   displayName: Build Image
 
                 - ${{ each environment in parameters.environments}}:

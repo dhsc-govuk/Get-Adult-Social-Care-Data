@@ -1,0 +1,17 @@
+# Local development docker compose for the frontend
+# (only used for development/testing at the moment)
+services:
+    app:
+        container_name: gascd_frontend
+        image: gascd_frontend_image
+        build:
+            context: .
+            args:
+                - NEXT_PUBLIC_GASCD_GIT_HASH=${NEXT_PUBLIC_GASCD_GIT_HASH}
+                - NEXT_PUBLIC_GASCD_GIT_TAG=${NEXT_PUBLIC_GASCD_GIT_TAG}
+        ports:
+            - 3000:80
+        env_file:
+            - .env
+        environment:
+            - PORT=80
