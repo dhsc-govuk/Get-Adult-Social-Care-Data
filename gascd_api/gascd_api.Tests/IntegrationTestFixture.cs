@@ -5,8 +5,8 @@ namespace gascd_api.Tests;
 public class IntegrationTestFixture : IAsyncLifetime
 {
     public required PostgreSqlContainer PostgresContainer { get; set; }
-    
-    
+
+
 
     public async ValueTask InitializeAsync()
     {

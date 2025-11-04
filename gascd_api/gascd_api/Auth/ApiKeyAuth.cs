@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Text.Encodings.Web;
 
-namespace gascd_api.Properties.Auth;
+namespace gascd_api.Auth;
 
 sealed class ApiKeyAuth(IOptionsMonitor<AuthenticationSchemeOptions> options,
     ILoggerFactory logger,
@@ -33,5 +33,6 @@ sealed class ApiKeyAuth(IOptionsMonitor<AuthenticationSchemeOptions> options,
         return Task.FromResult(AuthenticateResult.Success(ticket));
     }
 
+    // allow access if given endpoint is null or if endpoint has the AllowAnonymous metadata attribute
     bool IsPublicEndpoint() => Context.GetEndpoint()?.Metadata.OfType<AllowAnonymousAttribute>().Any() is null or true;
 }

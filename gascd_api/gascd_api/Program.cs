@@ -2,7 +2,7 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using gascd_api.Data;
 using gascd_api.Data.Mappers;
-using gascd_api.Properties.Auth;
+using gascd_api.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using NSwag;

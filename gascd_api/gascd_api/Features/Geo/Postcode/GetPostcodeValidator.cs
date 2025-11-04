@@ -1,7 +1,7 @@
 using FastEndpoints;
 using FluentValidation;
 
-namespace gascd_api.Properties.Features.Geo.Postcode;
+namespace gascd_api.Features.Geo.Postcode;
 
 public class GetPostcodeValidator : Validator<GetPostcodeRequest>
 {

@@ -1,32 +1,32 @@
 using FastEndpoints;
-using gascd_api.Properties.Features.Geo.Postcode;
+using gascd_api.Features.Geo.Postcode;
 using Shouldly;
 using System.Net;
 
-namespace gascd_api.Tests.Properties.Features;
+namespace gascd_api.Tests.Features;
 
 public class AuthTests(IntegrationTestFixture fixture) : IClassFixture<IntegrationTestFixture>
 {
     CustomWebAppFactory factory = new CustomWebAppFactory(fixture.PostgresContainer);
-    
+
     [Fact]
     public async Task UnauthorisedAccess_ResultsInError()
     {
-       
+
         var client = factory.CreateClient();
         client.DefaultRequestHeaders.Remove("x-api-key");
         var (httpCode, _) = await client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
             new GetPostcodeRequest { Postcode = "KT220UF" });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
     }
-    
+
     [Fact]
     public async Task BadApiKey_ResultsInError()
     {
         var client = factory.CreateClient();
         client.DefaultRequestHeaders.Remove("x-api-key");
         client.DefaultRequestHeaders.Add("x-api-key", "bad-api-key");
-        
+
         var (httpCode, _) = await client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
             new GetPostcodeRequest { Postcode = "KT220UF" });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
