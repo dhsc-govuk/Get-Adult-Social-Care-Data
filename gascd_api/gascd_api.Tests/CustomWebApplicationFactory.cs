@@ -26,5 +26,4 @@ internal class CustomWebAppFactory(PostgreSqlContainer container) : WebApplicati
             configBuilder.AddInMemoryCollection(inMemorySettings);
         });
     }
-
 }

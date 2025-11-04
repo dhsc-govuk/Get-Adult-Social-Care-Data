@@ -6,8 +6,6 @@ public class IntegrationTestFixture : IAsyncLifetime
 {
     public required PostgreSqlContainer PostgresContainer { get; set; }
 
-
-
     public async ValueTask InitializeAsync()
     {
         PostgresContainer = new PostgreSqlBuilder()
@@ -21,7 +19,6 @@ public class IntegrationTestFixture : IAsyncLifetime
 
     public async ValueTask DisposeAsync()
     {
-
         await PostgresContainer.DisposeAsync();
 
     }
