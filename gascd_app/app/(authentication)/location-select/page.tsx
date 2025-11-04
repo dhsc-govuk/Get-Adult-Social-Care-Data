@@ -1,10 +1,8 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
-import ButtonWithArrow from '../../../src/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
 import Link from 'next/link';
-import { signIn } from 'next-auth/react';
 
 const LocationSelectPage: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('');
@@ -17,6 +15,16 @@ const LocationSelectPage: React.FC = () => {
     'Shoggins Care Services (Shrewsbury)',
     'Shoggins Care Services (Sudbury)',
   ];
+
+  const handleChange = (location: string) => {
+    setSelectedLocation(location);
+  };
+
+  const handleSubmit = () => {
+    if (selectedLocation) {
+      console.log('Selected location:', selectedLocation);
+    }
+  };
 
   return (
     <>
@@ -40,36 +48,45 @@ const LocationSelectPage: React.FC = () => {
               &apos;Change&apos; link at the top of the page.
             </p>
             <div className="govuk-form-group">
-              <div id="location-hint" className="govuk-hint">
-                Start typing for suggestions.
-              </div>
-              <select
-                className="govuk-select"
-                name="location_list"
-                id="location_list"
-              >
-                <option value="">Select an option</option>
-                {dummyLocations.map((location, index) => (
-                  <option key={index} value={location}>
-                    {location}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="govuk-button-group">
-              <button
-                type="submit"
-                className="govuk-button"
-                data-module="govuk-button"
-                onClick={setSelectedLocation(
-                  'Shoggins Care Services (Brighton)'
-                )}
-              >
-                Apply changes
-              </button>
-              <a href="" className="govuk-link" target="_blank">
-                Cancel and go back
-              </a>
+              <form>
+                <fieldset className="govuk-fieldset govuk-!-margin-bottom-6">
+                  <div id="location-hint" className="govuk-hint">
+                    Start typing for suggestions.
+                  </div>
+                  <select
+                    className="govuk-select"
+                    name="location_list"
+                    id="location_list"
+                    value={selectedLocation}
+                    onChange={(e) =>
+                      handleChange((e.target as HTMLSelectElement).value)
+                    }
+                  >
+                    <option value="">Select an option</option>
+                    {dummyLocations.map((location, index) => (
+                      <option key={index} value={location}>
+                        {location}
+                      </option>
+                    ))}
+                  </select>
+                </fieldset>
+                <div className="govuk-button-group">
+                  <Link href="/">
+                    <button
+                      type="button"
+                      className="govuk-button"
+                      onClick={() => handleSubmit()}
+                    >
+                      Apply changes
+                    </button>
+                  </Link>
+                  <p className="govuk-body">
+                    <Link href="/" className="govuk-link">
+                      Cancel and go back
+                    </Link>
+                  </p>
+                </div>
+              </form>
             </div>
           </div>
         </div>
