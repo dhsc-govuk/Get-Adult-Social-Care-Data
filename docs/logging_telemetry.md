@@ -19,6 +19,21 @@ This is set up in `instrumentation.node.ts` and uses the default http instrument
 
 Request information is stored in the `requests` table of Azure App Insights.
 
+Internal nextjs telemetry is handled separately and ends up in the `dependencies` table of Azure App Insights.
+
+## User properties
+
+The following user properties are sent using both browser analytics and opentelemetry:
+
+Official App Insights Properties
+* User ID 
+  * For public browser app insights analytics, this appears as 'Authenticated User Id'
+  * For server-side telemetry, this appears as 'User Id' (Azure's opentelemetry integration has no support for Authenticated User Id)
+
+Custom properties
+* userOrganisationId
+* userOrganisationType
+
 ## Unhandled exceptions
 
 These are handled in the same way as request telemetry, but end up in the `exceptions` table of Azure App Insights.
@@ -43,7 +58,7 @@ Application logs can be found in the `traces` table of Azure App Insights.
 
 ## Azure Log Analytics
 
-In production, App Insights resources are backed by Azure Log Analytics workspaces, which means that all of the above are also available in the following Log Analytics tables: `AppRequests`, `AppExceptions` and `AppTraces`.
+In production, App Insights resources are backed by Azure Log Analytics workspaces, which means that all of the above are also available in the following Log Analytics tables: `AppRequests`, `AppExceptions`, `AppTraces` and `AppDependencies`.
 
 ## 🔍 Dashboards & Workbooks
 
