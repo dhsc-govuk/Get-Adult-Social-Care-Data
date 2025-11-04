@@ -4,7 +4,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <OutputType>Exe</OutputType>
-        <RootNamespace>gascd_api.Test</RootNamespace>
+        <RootNamespace>gascd_api.Tests</RootNamespace>
         <TargetFramework>net9.0</TargetFramework>
         <!--
         This template uses native xUnit.net command line options when using 'dotnet run' and

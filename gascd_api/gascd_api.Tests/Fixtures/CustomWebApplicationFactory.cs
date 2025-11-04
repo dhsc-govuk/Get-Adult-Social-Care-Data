@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Testcontainers.PostgreSql;
 
-namespace gascd_api.Tests;
+namespace gascd_api.Tests.Fixtures;
 
 internal class CustomWebAppFactory(PostgreSqlContainer container) : WebApplicationFactory<Program>
 {
@@ -12,6 +12,7 @@ internal class CustomWebAppFactory(PostgreSqlContainer container) : WebApplicati
         client.DefaultRequestHeaders.Add("x-api-key", "test-secret-key");
         base.ConfigureClient(client);
     }
+    
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureAppConfiguration((context, configBuilder) =>

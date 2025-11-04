@@ -1,9 +1,10 @@
 using FastEndpoints;
 using gascd_api.Features.Geo.Postcode;
+using gascd_api.Tests.Fixtures;
 using Shouldly;
 using System.Net;
 
-namespace gascd_api.Tests.Endpoints;
+namespace gascd_api.Tests.Features.Geo.Postcode;
 
 public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
 {
