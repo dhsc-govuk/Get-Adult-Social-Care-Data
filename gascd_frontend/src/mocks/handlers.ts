@@ -29,7 +29,6 @@ export const handlers = [
   }),
 
   http.get(api_root + '/locations', () => {
-    let locations = [
       {
         metric_type: 'Capacity Tracker',
         metric_location_type: 'Care provider location',
@@ -100,4 +99,55 @@ export const handlers = [
       return HttpResponse.json(metrics);
     }
   ),
+
+    http.get(api_root + '/metric_location/cp_locations/:code', () => {
+    return HttpResponse.json({
+      id: 'testcpl1',
+      display_name: 'Mock Care Provider Location',
+      geo_data: {
+        latitude: 54.8798077426683,
+        longitude: -1.4036740441143998,
+      },
+      provider_id: 'testcp2',
+      provider_name: 'Mock Care Provider',
+      nominated_individual: 'John Doe',
+      local_authority_id: 'E08000024',
+    });
+  }),
+
+  http.get(api_root + '/metric_location/district/:code', () => {
+    return HttpResponse.json({
+      id: 'E05001171',
+      display_name: 'Silksworth',
+      geo_data: {
+        latitude: 54.8798077426683,
+        longitude: -1.4036740441143998,
+        bbox: [
+          [-1.4247455227942605, 54.86912871879158],
+          [-1.4247455227942605, 54.88889158836046],
+          [-1.3785352992918785, 54.86912871879158],
+          [-1.3785352992918785, 54.88889158836046],
+        ]
+      },
+      local_authority_id: 'E08000024',
+    });
+  }),
+
+    http.get(api_root + '/metric_location/local_authorities/:code', () => {
+    return HttpResponse.json({
+      id: 'E08000024',
+      display_name: 'Sunderland',
+      geo_data: {
+        latitude: 54.880445953877775,
+        longitude: -1.4519587820223236,
+        bbox: [
+          [-1.5688915330791782, 54.79905189140416],
+          [-1.5688915330791782, 54.79905189140416],
+          [-1.346135332338452, 54.944529934401686],
+          [-1.346135332338452, 54.944529934401686],
+        ]
+      },
+      region_id: 'E12000001',
+    });
+  }),
 ];
