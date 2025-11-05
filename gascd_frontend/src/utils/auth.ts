@@ -26,7 +26,6 @@ export const auth = betterAuth({
         type: 'boolean',
         required: false,
         input: false,
-        default: false,
       },
     },
   },
