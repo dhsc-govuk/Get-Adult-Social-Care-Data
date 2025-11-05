@@ -1,13 +1,22 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { Locations } from '@/data/interfaces/Locations';
-import { renderWithSession } from '@/test-utils/test-utils';
+import { mockSession } from '@/test-utils/test-utils';
 import PresentDemandPage from '../../app/(protected)/present-demand/page';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
+import { authClient } from '@/utils/auth-client';
 
 // Mock out things we are not testing at the moment to prevent them making api requests
 vi.mock('@/components/common/buttons/logoutButton');
 vi.mock('@/services/logger/logService');
 vi.mock('@/services/indicator/IndicatorFetchService');
+
+vi.mock('@/utils/auth-client', () => ({
+  authClient: {
+    useSession: vi.fn(), 
+  },
+}));
+const mockUseSession = vi.mocked(authClient.useSession);
+mockUseSession.mockReturnValue({data: mockSession} as any);
 
 beforeEach(() => {
   // Stop localstorage usage interfering with other tests
@@ -33,7 +42,7 @@ const exampleLaCode: Locations = {
 // but we have to start somewhere eh?
 describe('PresentDemandPage', () => {
   it('should render the heading, body text, and a link', () => {
-    renderWithSession(<PresentDemandPage />);
+    render(<PresentDemandPage />);
 
     const headingElement = screen.getByRole('heading', {
       name: /Current population needs and capacity/i,
@@ -74,7 +83,7 @@ describe('PresentDemandPage', () => {
       Promise.resolve(exampleLaCode as any)
     );
 
-    renderWithSession(<PresentDemandPage />);
+    render(<PresentDemandPage />);
 
     const location_label = await screen.findByTestId('location-names');
     expect(location_label).toBeInTheDocument();
@@ -91,7 +100,7 @@ describe('PresentDemandPage', () => {
       Promise.resolve(allowed_locations as any)
     );
 
-    renderWithSession(<PresentDemandPage />);
+    render(<PresentDemandPage />);
 
     const location_label = await screen.findByTestId('location-names');
     expect(location_label).toBeInTheDocument();
@@ -109,7 +118,7 @@ describe('PresentDemandPage', () => {
       Promise.resolve(allowed_locations as any)
     );
 
-    renderWithSession(<PresentDemandPage />);
+    render(<PresentDemandPage />);
 
     // Element should not appear
     await expect(screen.findByTestId('location-names')).rejects.toThrow(
@@ -133,11 +142,14 @@ describe('PresentDemandPage', () => {
       country_name: '',
       load_date_time: '',
     };
-    vi.spyOn(PresentDemandService, 'getLocations').mockResolvedValue(
+    const locationSpy = vi.spyOn(PresentDemandService, 'getLocations').mockResolvedValue(
       supportedLACode as any
     );
+    //vi.spyOn(authClient, 'useSession').mockReturnValue(mockSession);
 
-    renderWithSession(<PresentDemandPage />);
+    render(<PresentDemandPage />);
+
+    expect(locationSpy).toBeCalled();
 
     const mspHeading = screen.getByRole('heading', {
       name: /Find more information on your local care market/i,
@@ -177,7 +189,7 @@ describe('PresentDemandPage', () => {
       unsupportedLACode as any
     );
 
-    renderWithSession(<PresentDemandPage />);
+    render(<PresentDemandPage />);
 
     // heading and explainer text should still exist
     const mspHeading = screen.getByRole('heading', {

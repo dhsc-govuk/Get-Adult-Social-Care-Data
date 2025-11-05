@@ -1,18 +1,32 @@
 import { act, render, screen } from '@testing-library/react';
 import PopulationAgePage from '../../app/(protected)/population-age/page';
 import { Locations } from '@/data/interfaces/Locations';
-import { renderWithSession } from '@/test-utils/test-utils';
 import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
 import { LAGeoData } from '@/helpers/maps/la_geo_data';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
+import { mockSession } from '@/test-utils/test-utils';
+import { authClient } from '@/utils/auth-client';
 
 // Mock out things we don't need to prevent them making api requests
 vi.mock('@/components/common/buttons/logoutButton');
 vi.mock('@/services/logger/logService');
 
+vi.mock('@/utils/auth-client', () => ({
+  authClient: {
+    useSession: vi.fn(), 
+  },
+}));
+const mockUseSession = vi.mocked(authClient.useSession);
+mockUseSession.mockReturnValue({data: mockSession} as any);
+
+beforeEach(() => {
+  // Stop localstorage usage interfering with other tests
+  window.localStorage.clear();
+});
+
 describe('PopulationAge', () => {
   it('should render the heading, body text, and a link', () => {
-    renderWithSession(<PopulationAgePage />);
+    render(<PopulationAgePage />);
 
     const headingElement = screen.getByRole('heading', {
       name: /Population age percentages/i,
@@ -43,7 +57,7 @@ describe('PopulationAge', () => {
       Promise.resolve(unsupportedLACode as any)
     );
 
-    renderWithSession(<PopulationAgePage />);
+    render(<PopulationAgePage />);
 
     const bodyTextElement = await screen.findByText(/Care4all/i);
     expect(bodyTextElement.innerHTML).toContain('Care4all, Caringtown');
@@ -81,7 +95,7 @@ describe('PopulationAge', () => {
       supportedLACode as any
     );
 
-    renderWithSession(<PopulationAgePage />);
+    render(<PopulationAgePage />);
 
     const bodyTextElement = await screen.findByText(/Care4U/i);
     expect(bodyTextElement.innerHTML).toContain('Care4U, Caresville');
