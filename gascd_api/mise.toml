@@ -8,3 +8,6 @@ dotnet restore
 dotnet format --verify-no-changes --severity warn
 dotnet build --no-restore -warnaserror
 """
+
+[tasks.api]
+run = "dotnet run --project gascd_api"
