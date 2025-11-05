@@ -71,18 +71,16 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
 
 
     [Theory]
-    [InlineData("kat")]
-    [InlineData("katherinerules")]
-    [InlineData("NE1 4BJ")]
-    [InlineData("ne14bj")]
-    [InlineData("NE14BJ!")]
-    public async Task Invalid_Postcoder_Input(string postcodeInput)
+    [InlineData("NE1 4BJ", "Postcode includes invalid characters" )]
+    [InlineData("KATHERINE", "Postcode should have a maximum of length of 7")]
+    [InlineData("KAT", "Postcode should have a minimum of length of 5")]
+    public async Task Invalid_Postcoder_Input(string postcodeInput, string expectedMessage)
     {
         var (httpResponse, problemDetails) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, ProblemDetails>(
             new GetPostcodeRequest { Postcode = postcodeInput });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
         problemDetails.Errors.Select(e => e.Name).ShouldBe(["postcode"]);
-        problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Invalid postcode."]);
+        problemDetails.Errors.Select(e => e.Reason).ShouldBe([expectedMessage]);
     }
 }

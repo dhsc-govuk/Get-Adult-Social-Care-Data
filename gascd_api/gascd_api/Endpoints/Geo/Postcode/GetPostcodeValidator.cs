@@ -9,8 +9,8 @@ public class GetPostcodeValidator : Validator<GetPostcodeRequest>
     {
         RuleFor(x => x.Postcode)
             .NotEmpty().WithMessage("Postcode is required.")
-            .MinimumLength(5).WithMessage("Invalid postcode.")
-            .MaximumLength(7).WithMessage("Invalid postcode.")
-            .Matches("^[A-Z0-9]+$").WithMessage("Invalid postcode.");
+            .MinimumLength(5).WithMessage("Postcode should have a minimum of length of 5")
+            .MaximumLength(7).WithMessage("Postcode should have a maximum of length of 7")
+            .Matches("^[A-Z0-9]+$").WithMessage("Postcode includes invalid characters");
     }
 }
