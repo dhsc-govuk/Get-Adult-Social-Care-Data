@@ -2,13 +2,13 @@ import 'dotenv/config';
 import { auth } from '../src/utils/auth'; 
 
 const seedDevelopmentUser = async () => {
-  const email = "testaccount@gascd.local";
+  const email = process.env.LOCAL_AUTH_EMAIL;
   const password = process.env.LOCAL_AUTH_PASSWORD;
   const name = "Testing User";
 
-  if (!password) {
+  if (!password || !email) {
     console.error(
-      "❌ Error: LOCAL_AUTH_PASSWORD is not set in environment."
+      "❌ Error: LOCAL_AUTH_EMAIL and/or LOCAL_AUTH_PASSWORD not set in environment."
     );
     process.exit(1);
   }
