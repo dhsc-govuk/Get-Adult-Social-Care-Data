@@ -1,14 +1,16 @@
 'use server';
 
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../../app/api/auth/authOptions';
+import { auth } from '@/utils/auth';
 import { trace } from '@opentelemetry/api';
 import { ATTR_ENDUSER_ID } from '@opentelemetry/semantic-conventions/incubating';
+import { headers } from 'next/headers';
 
 // Server side helper to add user details to the current trace
 export const addUserTelemetry = async () => {
   // Note - when connected to app insights, the server-side user telemetry is added to the items in the 'dependencies' table
-  const session = await getServerSession(authOptions);
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   if (session?.user?.id) {
     let activeSpan = trace.getActiveSpan();
     if (activeSpan) {

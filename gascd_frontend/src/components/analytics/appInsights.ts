@@ -6,7 +6,7 @@ import {
 import { createBrowserHistory } from 'history';
 import { ReactPlugin } from '@microsoft/applicationinsights-react-js';
 import LogService from '@/services/logger/logService';
-import { Session } from 'next-auth';
+import { Session } from '@/utils/auth-client';
 
 let appInsights: ApplicationInsights | null = null;
 let browserHistory: any;

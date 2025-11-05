@@ -1,29 +1,29 @@
-/**
- * @vi.environment node
- */
-// This test is run under node environment, otherwise the winston logger has issues
-import { getServerSession } from 'next-auth';
 import AuthLayout from '../../app/(protected)/layout';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { verifyAuthToken } from '../../src/helpers/auth/verifyAuthToken';
+import { headers } from 'next/headers';
+import { auth } from '@/utils/auth';
+import { mockSession } from '@/test-utils/test-utils';
 
-vi.mock('next-auth');
-vi.mock('next-auth/next', () => ({
-  getServerSession: vi.fn(),
+vi.mock('next/headers', () => ({
+  headers: vi.fn(),
 }));
+const mockHeaders = vi.mocked(headers);
+mockHeaders.mockResolvedValue(new Headers()); 
 
-vi.mock('@/helpers/auth/verifyAuthToken', () => ({
-  verifyAuthToken: vi.fn(),
+vi.mock('@/utils/auth', () => ({
+  auth: {
+    api: {
+      getSession: vi.fn(),
+    },
+  },
 }));
+const mockGetSession = vi.mocked(auth.api.getSession);
 
 vi.mock('next/navigation', () => ({
   redirect: vi.fn(),
 }));
-
-const mockedGetServerSession = vi.mocked(getServerSession);
-const mockedAuthToken = vi.mocked(verifyAuthToken);
 const mockedRedirect = vi.mocked(redirect);
 
 describe('Root Layout', () => {
@@ -33,31 +33,19 @@ describe('Root Layout', () => {
     vi.clearAllMocks();
   });
 
-  test('redirects to login page if no access token is in session', async () => {
-    mockedGetServerSession.mockReturnValue(null);
+  test('redirects to login page if no session', async () => {
+    mockGetSession.mockResolvedValue(null);
     await AuthLayout({ children: mockChildren });
-
     expect(mockedRedirect).toHaveBeenCalledWith('/login');
   });
 
-  test('layout is rendered if access token is in session', async () => {
-    mockedGetServerSession.mockResolvedValue({
-      accessToken: 'mock-access-token',
-    });
+  test('layout is rendered if valid session', async () => {
+    mockGetSession.mockResolvedValue(mockSession);
     const response = await AuthLayout({ children: mockChildren });
-    expect(mockedRedirect).not.toHaveBeenCalled;
+    expect(mockedRedirect).not.toHaveBeenCalled();
 
     const renderedMarkup = renderToStaticMarkup(response);
     expect(renderedMarkup).toContain('Mock Component');
   });
 
-  test('redirects when token verification fails', async () => {
-    mockedGetServerSession.mockResolvedValue({
-      accessToken: 'mock-invalid-token',
-    });
-    mockedAuthToken.mockRejectedValue(new Error('Invalid token'));
-
-    await AuthLayout({ children: mockChildren });
-    expect(mockedRedirect).toHaveBeenCalledWith('/login');
-  });
 });
