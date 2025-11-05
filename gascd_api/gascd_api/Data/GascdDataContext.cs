@@ -14,7 +14,7 @@ public partial class GascdDataContext : DbContext
     {
     }
 
-    public virtual DbSet<PostcodeDatum> PostcodeData { get; set; }
+    public virtual DbSet<PostcodeDatum> PostcodeData { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

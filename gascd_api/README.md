@@ -37,7 +37,11 @@ Requirements:
 Tests run against a Docker containerised version of Postgres.
 
 - Install Docker 
-- Run the tests using `dotnet test`
+- Run the tests using `dotnet test` or `mise run test`
+
+## Linting
+
+Run linting manually using `mise run lint`
 
 ## Auth
 

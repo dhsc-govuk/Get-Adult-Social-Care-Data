@@ -12,7 +12,7 @@ internal class CustomWebAppFactory(PostgreSqlContainer container) : WebApplicati
         client.DefaultRequestHeaders.Add("x-api-key", "test-secret-key");
         base.ConfigureClient(client);
     }
-    
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureAppConfiguration((context, configBuilder) =>

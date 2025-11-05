@@ -71,7 +71,7 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
 
 
     [Theory]
-    [InlineData("NE1 4BJ", "Postcode includes invalid characters" )]
+    [InlineData("NE1 4BJ", "Postcode includes invalid characters")]
     [InlineData("KATHERINE", "Postcode should have a maximum of length of 7")]
     [InlineData("KAT", "Postcode should have a minimum of length of 5")]
     public async Task Invalid_Postcoder_Input(string postcodeInput, string expectedMessage)
