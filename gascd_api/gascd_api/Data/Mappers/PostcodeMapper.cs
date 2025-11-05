@@ -1,5 +1,5 @@
 using gascd_api.Data.Models;
-using gascd_api.Features.Geo.Postcode;
+using gascd_api.Endpoints.Geo.Postcode;
 using Riok.Mapperly.Abstractions;
 
 namespace gascd_api.Data.Mappers;
