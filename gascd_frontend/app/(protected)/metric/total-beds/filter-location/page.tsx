@@ -21,7 +21,9 @@ const PresentDemandLocations: React.FC = () => {
       if (locationType == 'Care provider') {
         locationId = localStorage.getItem('selectedValue')!;
       }
-      setCpLocation(locationId);
+      if (locationId) {
+        setCpLocation(locationId);
+      }
     }
   }, [session]);
 

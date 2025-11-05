@@ -26,7 +26,7 @@ const PresentDemandLocations: React.FC = () => {
             session.user.locationType
           );
           setCpLocation(locationId);
-        } else {
+        } else if (session.user.locationId) {
           setCpLocation(session.user.locationId);
         }
       }

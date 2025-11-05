@@ -6,7 +6,7 @@ import Feedback from '../../../src/components/common/feedback/Feedback';
 import { authClient } from '@/utils/auth-client';
 
 const HomePage: React.FC = () => {
-  const session = authClient.useSession();
+  const {data: session } = authClient.useSession();
   return (
     <>
       <Layout

@@ -126,8 +126,12 @@ const TotalBedsPage: React.FC = () => {
       if (locationType == 'Care provider') {
         locationId = localStorage.getItem('selectedValue')!;
       }
-      setlocationId(locationId);
-      setlocationType(session.user.locationType);
+      if (locationId) {
+        setlocationId(locationId);
+      }
+      if (session.user.locationType) {
+        setlocationType(session.user.locationType);
+      }
     }
   }, [session]);
 
