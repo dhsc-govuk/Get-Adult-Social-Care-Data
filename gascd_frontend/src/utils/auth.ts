@@ -7,9 +7,9 @@ import logger from '@/utils/logger';
 
 export const auth = betterAuth({
   database: new Database('./gascd_users_sqlite.db'),
-  //emailAndPassword: {
-  //  enabled: true,
-  //},
+  emailAndPassword: {
+    enabled: process.env.LOCAL_AUTH == 'true',
+  },
   user: {
     additionalFields: {
       locationType: {
@@ -32,6 +32,7 @@ export const auth = betterAuth({
   },
   plugins: [
     B2CPlugin(),
+    // https://www.better-auth.com/docs/integrations/next#server-action-cookies
     nextCookies(), // make sure this is the last plugin in the array
   ],
   hooks: {
