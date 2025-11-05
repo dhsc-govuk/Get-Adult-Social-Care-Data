@@ -100,7 +100,7 @@ export const handlers = [
     }
   ),
 
-    http.get(api_root + '/metric_location/cp_locations/:code', () => {
+  http.get(api_root + '/metric_location/cp_locations/:code', () => {
     return HttpResponse.json({
       id: 'testcpl1',
       display_name: 'Mock Care Provider Location',
@@ -133,7 +133,7 @@ export const handlers = [
     });
   }),
 
-    http.get(api_root + '/metric_location/local_authorities/:code', () => {
+  http.get(api_root + '/metric_location/local_authorities/:code', () => {
     return HttpResponse.json({
       id: 'E08000024',
       display_name: 'Sunderland',
@@ -141,13 +141,31 @@ export const handlers = [
         latitude: 54.880445953877775,
         longitude: -1.4519587820223236,
         bbox: [
-          [-1.5688915330791782, 54.79905189140416],
+          [-1.5688915330791782, 54.944529934401686],
           [-1.5688915330791782, 54.79905189140416],
           [-1.346135332338452, 54.944529934401686],
-          [-1.346135332338452, 54.944529934401686],
+          [-1.346135332338452, 54.79905189140416],
         ]
       },
       region_id: 'E12000001',
+    });
+  }),
+
+  http.get(api_root + '/metric_location/regions/:code', () => {
+    return HttpResponse.json({
+      id: 'E12000001',
+      display_name: 'North East',
+      geo_data: {
+        latitude: 55.02208006843618,
+        longitude: -1.9024409814666763,
+        bbox: [
+          [-2.6897904346299817, 54.45113757928627],
+          [-2.6897904346299817, 55.81166415447148],
+          [-0.7883089724322202, 54.45113757928627],
+          [-0.7883089724322202, 55.81166415447148],
+        ]
+      },
+      country_id: 'E92000001',
     });
   }),
 ];
