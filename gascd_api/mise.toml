@@ -10,7 +10,7 @@ dotnet build --no-restore -warnaserror
 """
 
 [tasks.api]
-run = "dotnet run --project gascd_api"
+run = "dotnet run --project api"
 
 [tasks.test]
 run = "dotnet test"
