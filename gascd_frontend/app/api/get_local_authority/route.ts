@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
 
     if (process.env.DATA_API_ROOT) {
         const url =
-            process.env.DATA_API_ROOT + '/metric_location/local_authorities/?code=' + la_code;
+            process.env.DATA_API_ROOT + '/metric_location/local_authorities/' + la_code;
 
         const response = await fetch(url);
         const data = await response.json();

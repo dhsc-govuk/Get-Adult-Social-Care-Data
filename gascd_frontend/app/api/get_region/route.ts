@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
 
     if (process.env.DATA_API_ROOT) {
         const url =
-            process.env.DATA_API_ROOT + '/metric_location/regions/?code=' + region_code;
+            process.env.DATA_API_ROOT + '/metric_location/regions/' + region_code;
 
         const response = await fetch(url);
         const data = await response.json();
