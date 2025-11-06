@@ -32,7 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\gascd_api\gascd_api.csproj" />
+      <ProjectReference Include="..\api\api.csproj" />
     </ItemGroup>
 
 

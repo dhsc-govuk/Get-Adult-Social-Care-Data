@@ -1,5 +1,5 @@
 using FluentValidation.TestHelper;
-using gascd_api.Endpoints.Geo.Postcode;
+using api.Endpoints.Geo.Postcode;
 
 namespace gascd_api.Tests.Endpoints.Geo.Postcode;
 

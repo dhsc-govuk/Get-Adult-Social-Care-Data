@@ -1,8 +1,8 @@
-using gascd_api.Data.Models;
-using gascd_api.Endpoints.Geo.Postcode;
+using api.Data.Models;
+using api.Endpoints.Geo.Postcode;
 using Riok.Mapperly.Abstractions;
 
-namespace gascd_api.Data.Mappers;
+namespace api.Data.Mappers;
 
 [Mapper]
 public partial class PostcodeMapper

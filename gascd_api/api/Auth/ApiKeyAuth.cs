@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Text.Encodings.Web;
 
-namespace gascd_api.Auth;
+namespace api.Auth;
 
 sealed class ApiKeyAuth(IOptionsMonitor<AuthenticationSchemeOptions> options,
     ILoggerFactory logger,

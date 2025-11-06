@@ -1,4 +1,4 @@
-namespace gascd_api.Endpoints.Geo.Postcode;
+namespace api.Endpoints.Geo.Postcode;
 
 public class GetPostcodeResponse
 {

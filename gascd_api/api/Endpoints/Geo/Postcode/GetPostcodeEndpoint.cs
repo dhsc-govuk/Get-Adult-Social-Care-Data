@@ -1,8 +1,8 @@
 using FastEndpoints;
-using gascd_api.Data;
-using gascd_api.Data.Mappers;
+using api.Data;
+using api.Data.Mappers;
 
-namespace gascd_api.Endpoints.Geo.Postcode;
+namespace api.Endpoints.Geo.Postcode;
 
 public class GetPostcodeEndpoint(GascdDataContext context, PostcodeMapper mapper) : Endpoint<GetPostcodeRequest, GetPostcodeResponse>
 {

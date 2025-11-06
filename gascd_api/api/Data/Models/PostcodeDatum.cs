@@ -1,4 +1,4 @@
-﻿namespace gascd_api.Data.Models;
+﻿namespace api.Data.Models;
 
 public partial class PostcodeDatum
 {

@@ -1,5 +1,5 @@
 using FastEndpoints;
-using gascd_api.Endpoints.Geo.Postcode;
+using api.Endpoints.Geo.Postcode;
 using gascd_api.Tests.Fixtures;
 using Shouldly;
 using System.Net;
