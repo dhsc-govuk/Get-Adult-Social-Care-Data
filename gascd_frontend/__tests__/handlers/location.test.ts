@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GET as GetLocalAuthority } from '../../app/api/get_local_authority/route';
 import { GET as GetCareProviderLocation } from '../../app/api/get_care_provider/route';
+import { GET as GetRegion } from '../../app/api/get_region/route';
 
 vi.mock('next/server', () => {
     return {
@@ -102,6 +103,55 @@ describe('get_care_provider_location', () => {
         expect(nextResponseMock.json).toHaveBeenCalledWith(mockCareProviderLocation, { status: 200 });
 
         expect(result).toEqual({ payload: mockCareProviderLocation, status: 200 });
+    });
+});
+
+describe('get_regions', () => {
+
+    const nextResponseMock = NextResponse as { json: ReturnType<typeof vi.fn> & { mock?: any } };
+    beforeEach(() => {
+        vi.stubGlobal('fetch', vi.fn());
+        (global.fetch as vi.Mock).mockClear?.();
+        (nextResponseMock.json as vi.Mock).mockClear?.();
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+    
+    it('fetches and returns region successfully', async () => {
+        const query = 'E12000001';
+        const mockRegion: {} = {
+            id: 'E12000001',
+            display_name: 'North East',
+            geo_data: {
+            latitude: 55.02208006843618,
+            longitude: -1.9024409814666763,
+            bbox: [
+                [-2.6897904346299817, 54.45113757928627],
+                [-2.6897904346299817, 55.81166415447148],
+                [-0.7883089724322202, 54.45113757928627],
+                [-0.7883089724322202, 55.81166415447148],
+            ]
+            },
+            country_id: 'E92000001',
+        };
+
+        (global.fetch as vi.Mock).mockResolvedValue({
+            json: async () => mockRegion,
+        });
+
+        const req = { url: `http://localhost/api/get_region?region_code=${query}` } as NextRequest;
+
+        const result = await GetRegion(req);
+
+        expect(global.fetch).toHaveBeenCalledWith(
+            `http://test.api.gascd.gov.uk/metric_location/regions/?code=${query}`
+        );
+
+        expect(nextResponseMock.json).toHaveBeenCalledWith(mockRegion, { status: 200 });
+
+        expect(result).toEqual({ payload: mockRegion, status: 200 });
     });
 });
 
