@@ -1,8 +1,8 @@
-using FastEndpoints;
-using FastEndpoints.Swagger;
 using api.Auth;
 using api.Data;
 using api.Data.Mappers;
+using FastEndpoints;
+using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using NSwag;

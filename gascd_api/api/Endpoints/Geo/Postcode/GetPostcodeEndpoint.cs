@@ -1,6 +1,6 @@
-using FastEndpoints;
 using api.Data;
 using api.Data.Mappers;
+using FastEndpoints;
 
 namespace api.Endpoints.Geo.Postcode;
 

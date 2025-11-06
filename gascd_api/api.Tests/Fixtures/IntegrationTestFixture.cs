@@ -1,6 +1,6 @@
 using Testcontainers.PostgreSql;
 
-namespace gascd_api.Tests.Fixtures;
+namespace api.Tests.Fixtures;
 
 public class IntegrationTestFixture : IAsyncLifetime
 {

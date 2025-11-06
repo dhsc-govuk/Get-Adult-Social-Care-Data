@@ -1,7 +1,7 @@
-using FluentValidation.TestHelper;
 using api.Endpoints.Geo.Postcode;
+using FluentValidation.TestHelper;
 
-namespace gascd_api.Tests.Endpoints.Geo.Postcode;
+namespace api.Tests.Endpoints.Geo.Postcode;
 
 public class GetPostcodeValidatorTests : IDisposable
 {

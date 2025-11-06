@@ -1,10 +1,10 @@
-using FastEndpoints;
 using api.Endpoints.Geo.Postcode;
-using gascd_api.Tests.Fixtures;
+using api.Tests.Fixtures;
+using FastEndpoints;
 using Shouldly;
 using System.Net;
 
-namespace gascd_api.Tests.Endpoints;
+namespace api.Tests.Endpoints;
 
 public class AuthTests(IntegrationTestFixture fixture) : IClassFixture<IntegrationTestFixture>
 {

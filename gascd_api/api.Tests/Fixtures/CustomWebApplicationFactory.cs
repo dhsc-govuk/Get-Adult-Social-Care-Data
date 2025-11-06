@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Testcontainers.PostgreSql;
 
-namespace gascd_api.Tests.Fixtures;
+namespace api.Tests.Fixtures;
 
 internal class CustomWebAppFactory(PostgreSqlContainer container) : WebApplicationFactory<Program>
 {

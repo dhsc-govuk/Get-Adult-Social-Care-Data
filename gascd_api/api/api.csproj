@@ -11,7 +11,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="gascd_api.Tests" />
+        <InternalsVisibleTo Include="api.Tests" />
     </ItemGroup>
 
     <ItemGroup>
