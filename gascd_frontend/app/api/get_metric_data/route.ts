@@ -38,7 +38,6 @@ export async function POST(req: NextRequest) {
       headers: await headers(),
     });
     const pool = await dbPool;
-<<<<<<< HEAD:gascd_frontend/app/api/get_metric_data/route.ts
     const queryParams = await req.json();
 
     await addUserTelemetry();
@@ -49,8 +48,6 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-=======
->>>>>>> 2241229 (Add mocks for metric data and available locations):gascd_app/app/api/get_metric_data/route.ts
 
     const request = pool.request();
     const { queryString, request_with_param } =
