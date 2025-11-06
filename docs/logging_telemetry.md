@@ -31,8 +31,9 @@ Official App Insights Properties
   * For server-side telemetry, this appears as 'User Id' (Azure's opentelemetry integration has no support for Authenticated User Id)
 
 Custom properties
-* userOrganisationId
-* userOrganisationType
+* primaryLocationId (taken from the user profile)
+* primaryLocationType (taken from the user profile)
+* activeLocationId (taken from the current selection in the user session)
 
 ## Unhandled exceptions
 
