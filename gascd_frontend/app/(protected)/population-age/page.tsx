@@ -9,6 +9,7 @@ import { Locations } from '@/data/interfaces/Locations';
 import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
 import LogService from '@/services/logger/logService';
 import Feedback from '@/components/common/feedback/Feedback';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 export default function PopulationAgePage() {
   const { data: session, status } = useSession();
@@ -61,6 +62,7 @@ export default function PopulationAgePage() {
       }
       if (locationId) {
         setCPLocationId(locationId);
+        AnalyticsService.trackMetricLocationView(locationId);
       }
     }
   }, [session]);

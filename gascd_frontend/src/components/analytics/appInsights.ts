@@ -7,6 +7,7 @@ import { createBrowserHistory } from 'history';
 import { ReactPlugin } from '@microsoft/applicationinsights-react-js';
 import LogService from '@/services/logger/logService';
 import { Session } from 'next-auth';
+import { PRIMARY_LOCATION_ID, PRIMARY_LOCATION_TYPE } from '@/constants';
 
 let appInsights: ApplicationInsights | null = null;
 let browserHistory: any;
@@ -34,8 +35,8 @@ export const initializeAppInsights = (
         // Custom telemetry method to add user properties to all analytics
         var telemetryInitializer = (envelope: ITelemetryItem) => {
           if (envelope.data) {
-            envelope.data.userOrganisationId = session.user.locationId;
-            envelope.data.userOrganisationType = session.user.locationType;
+            envelope.data[PRIMARY_LOCATION_ID] = session.user.locationId;
+            envelope.data[PRIMARY_LOCATION_TYPE] = session.user.locationType;
           }
         };
         appInsights.addTelemetryInitializer(telemetryInitializer);
