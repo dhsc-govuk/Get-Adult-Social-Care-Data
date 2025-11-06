@@ -15,6 +15,7 @@ import { MetaData } from '@/data/interfaces/MetaData';
 import { Locations } from '@/data/interfaces/Locations';
 import { MSPItem, MSPLookup } from '@/helpers/msp/msp-lookup';
 import Feedback from '@/components/common/feedback/Feedback';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 const PresentDemandPage: React.FC = () => {
   const [filteredDemographicData, setFilteredDemographicData] = useState<
@@ -138,6 +139,7 @@ const PresentDemandPage: React.FC = () => {
       if (foundLocationId) {
         localStorage.setItem('selectedValue', foundLocationId);
         setCPLocationId(foundLocationId);
+        AnalyticsService.trackMetricLocationView(foundLocationId);
       }
     };
     fetchCareProviderLocationName();
