@@ -33,7 +33,11 @@ Official App Insights Properties
 Custom properties
 * primaryLocationId (taken from the user profile)
 * primaryLocationType (taken from the user profile)
-* activeLocationId (taken from the current selection in the user session)
+
+Custom events
+* location_metrics_view (only available in browser-based analytics)
+  * Triggered when metrics are viewed for a particular user location
+  * These events have a custom property `activeLocationId` which is the currently selected user location
 
 ## Unhandled exceptions
 
