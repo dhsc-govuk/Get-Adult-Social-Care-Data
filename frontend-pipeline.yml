@@ -86,6 +86,7 @@ stages:
             workingDirectory: gascd_frontend
           - script: |
               set -e
+              export LOCAL_AUTH_PASSWORD=e2epasswordfortests
               docker compose -f ./docker-compose-e2e-tests.yml up --build --force-recreate -d
               CYPRESS_BASE_URL=http://localhost:3000/ npm run cypress:headless
               docker compose -f ./docker-compose-e2e-tests.yml down
