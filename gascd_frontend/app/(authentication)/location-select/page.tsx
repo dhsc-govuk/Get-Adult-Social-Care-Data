@@ -37,15 +37,17 @@ const LocationSelectPage: React.FC = () => {
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-xl">
-              Choose a location from your care provider group
+              Select a location from your care provider group
             </h1>
             <p className="govuk-body">
-              We use this to display your local and regional comparison data in
-              the service.
+              We use the selected location to show you:
             </p>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>data about the location</li>
+              <li>local and regional data based on that location</li>
+            </ul>
             <p className="govuk-body">
-              You can switch to another location at any time by using the
-              &apos;Change&apos; link at the top of the page.
+              You can change to another location in your care provider group at any time.
             </p>
             <div className="govuk-form-group">
               <form>
@@ -62,7 +64,7 @@ const LocationSelectPage: React.FC = () => {
                       handleChange((e.target as HTMLSelectElement).value)
                     }
                   >
-                    <option value="">Select an option</option>
+                    <option value="" disabled>Select an option</option>
                     {dummyLocations.map((location, index) => (
                       <option key={index} value={location}>
                         {location}
@@ -70,7 +72,7 @@ const LocationSelectPage: React.FC = () => {
                     ))}
                   </select>
                 </fieldset>
-                <div className="govuk-button-group">
+                <div className="govuk-button-group" style={{ alignItems: 'center' }}>
                   <Link href="/">
                     <button
                       type="button"
@@ -80,11 +82,9 @@ const LocationSelectPage: React.FC = () => {
                       Apply changes
                     </button>
                   </Link>
-                  <p className="govuk-body">
-                    <Link href="/" className="govuk-link">
-                      Cancel and go back
-                    </Link>
-                  </p>
+                  <Link href="/" className="govuk-link">
+                    Cancel and go back
+                  </Link>
                 </div>
               </form>
             </div>
