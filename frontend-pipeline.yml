@@ -72,6 +72,18 @@ stages:
               searchFolder: "$(Build.SourcesDirectory)"
               testResultsFiles: "gascd_frontend/junit.xml"
               failTaskOnFailedTests: true
+      - job: E2ETests
+        displayName: Run e2e Tests
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - checkout: self
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "24.4.1"
+          - script: npm install cypress@13.17.0
+            displayName: install cypress
+            workingDirectory: gascd_frontend
           - script: |
               set -e
               docker compose -f ./docker-compose-e2e-tests.yml up --build --force-recreate -d
