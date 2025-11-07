@@ -92,10 +92,6 @@ stages:
               docker compose -f ./docker-compose-e2e-tests.yml down
             displayName: Run e2e tests
             workingDirectory: gascd_frontend
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: gascd_frontend/cypress/screenshots
-              artifactName: CypressScreenshots
   - stage: Build_Image
     displayName: "Build/push Docker image (all environments)"
     condition: succeeded()
