@@ -1,13 +1,13 @@
 namespace api.Logging;
 
-public class AppLogging<T>(ILogger<T> logger)
+public class AppLogging<T>(ILogger<T> logger, IHttpContextAccessor httpContextAccessor)
 {
-    internal void Log(HttpContext httpContext, LogLevel level, string msg)
+    private void Log(LogLevel level, string msg)
     {
-        var traceId = httpContext.Items["trace-id"] as string;
-        var requestId = httpContext.Items["request-id"] as string;
+        var traceId = httpContextAccessor.HttpContext?.Items["trace-id"] as string;
+        var requestId = httpContextAccessor.HttpContext?.Items["request-id"] as string;
 
-        using (logger.BeginScope(new Dictionary<string, object>
+        using (logger.BeginScope(new Dictionary<string, string?>
         {
             ["trace-id"] = traceId,
             ["request-id"] = requestId
@@ -17,8 +17,8 @@ public class AppLogging<T>(ILogger<T> logger)
         }
     }
 
-    public void Info(HttpContext context, string msg)
+    public void Info(string msg)
     {
-        Log(context, LogLevel.Information, msg);
+        Log(LogLevel.Information, msg);
     }
 }

@@ -25,7 +25,8 @@ bld.Services
     .AddDbContext<GascdDataContext>(o => o.UseNpgsql(bld.Configuration.GetConnectionString("DefaultConnection")))
     .AddFastEndpoints()
     .AddSingleton<PostcodeMapper>()
-    .AddScoped(typeof(AppLogging<>))
+    .AddHttpContextAccessor()
+    .AddTransient( typeof(AppLogging<>))
     .SwaggerDocument(o =>
     {
         o.EnableJWTBearerAuth = false;
