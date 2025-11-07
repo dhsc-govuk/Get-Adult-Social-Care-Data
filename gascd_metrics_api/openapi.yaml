@@ -1,0 +1,319 @@
+openapi: 3.0.3
+info:
+  title: "Get Adult Social Care API"
+  description: "A RESTful API for accessing health and care provider metric data, metadata, and insights."
+  version: "0.0.1"
+servers:
+  - url: "http://gascd.internal/api/"
+
+security:
+  - bearerAuth: []
+
+paths:
+  /geo/postcode:
+    get:
+      summary: "Get geo details for a postcode"
+      parameters:
+        - name: postcode
+          description: "sanitised postcode (no whitespace) fixed case"
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Postcode object"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Postcode'
+        '400':
+          description: "Postcode doesn't meet validation requirements: 5-7 chars inclusive"
+        '404':
+          description: "No details found for postcode"
+
+  /metric_locations/cp_locations/{code}:
+    get:
+      summary: "Get a care provider location"
+      description: "Retrieves detailed information for a single care provider location by its ID."
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: "The unique identifier for the care provider."
+          schema:
+            type: string
+            example: "1-12345678"
+        - name: includeParents
+          in: query
+          required: false
+          description: "Whether to include parent location information."
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: "Detailed information for the requested location."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CareProviderLocation'
+        '404':
+          description: "Care provider location not found."
+  /metric_locations/districts/{code}:
+    get:
+      summary: "Get a discrict"
+      description: "Retrieves detailed information for a district by its ID."
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: "The unique identifier for the district."
+          schema:
+            type: string
+            example: "1-12345678"
+        - name: includeParents
+          in: query
+          required: false
+          description: "Whether to include parent location information."
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: "Detailed information for the requested location."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/District'
+        '404':
+          description: "District not found."
+  /metric_locations/local_authorities/{code}:
+      get:
+        summary: "Get a local authority"
+        description: "Retrieves detailed information for a local authority by its ID."
+        parameters:
+          - name: code
+            in: path
+            required: true
+            description: "The unique identifier for the local authority."
+            schema:
+              type: string
+              example: "1-12345678"
+          - name: includeParents
+            in: query
+            required: false
+            description: "Whether to include parent location information."
+            schema:
+              type: boolean
+              default: false
+        responses:
+          '200':
+            description: "Detailed information for the requested location."
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LocalAuthority'
+          '404':
+            description: "Local authority not found."
+  /metric_locations/regions/{code}:
+    get:
+      summary: "Get a region"
+      description: "Retrieves detailed information for a region by its ID."
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: "The unique identifier for the region."
+          schema:
+            type: string
+            example: "1-12345678"
+      responses:
+        '200':
+          description: "Detailed information for the requested location."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+        '404':
+          description: "Region not found."
+
+# Reusable components
+  schemas:
+    CareProviderLocation:
+      type: object
+      description: "Represents a care provider location"
+      properties:
+        id:
+          type: string
+          description: "Unique identifier for the care provider location."
+        display_name:
+          type: string
+          description: "Display name of the care provider location."
+        address:
+          type: string
+          description: "Address of the care provider location."
+        geo_data:
+          type: object
+          description: "Geographical data for the care provider location."
+          properties:
+            latitude:
+              type: number
+              description: "Latitude of the location."
+            longitude:
+              type: number
+              description: "Longitude of the location."
+            bbox:
+              type: array
+              description: "Bounding box coordinates."
+              items:
+                type: number
+        provider_id:
+          type: string
+          description: "The parent provider ID."
+        provider_name:
+          type: string
+          description: "The parent provider name."
+        nominated_individual:
+          type: string
+          description: "The nominated individual for the care provider location."
+        local_authority_id:
+          type: string
+          description: "The associated local authority ID."
+
+    District:
+      type: object
+      description: "Represents a district"
+      properties:
+        id:
+          type: string
+          description: "Unique identifier for the district."
+        display_name:
+          type: string
+          description: "Display name of the district."
+        geo_data:
+          type: object
+          description: "Geographical data for the district."
+          properties:
+            latitude:
+              type: number
+              description: "Latitude of the centre point of the district."
+            longitude:
+              type: number
+              description: "Longitude of the centre point of the district."
+            bbox:
+              type: array
+              description: "Bounding box coordinates."
+              items:
+                type: number
+        local_authority_id:
+          type: string
+          description: "The associated local authority ID."
+    
+    LocalAuthority:
+      type: object
+      description: "Represents a local authority"
+      properties:
+        id:
+          type: string
+          description: "Unique identifier for the local authority."
+        display_name:
+          type: string
+          description: "Display name of the local authority."
+        geo_data:
+          type: object
+          description: "Geographical data for the local authority."
+          properties:
+            latitude:
+              type: number
+              description: "Latitude of the centre point of the local authority."
+            longitude:
+              type: number
+              description: "Longitude of the centre point of the local authority."
+            bbox:
+              type: array
+              description: "Bounding box coordinates."
+              items:
+                type: number
+        region_id:
+          type: string
+          description: "The associated region ID."
+    
+    Region:
+      type: object
+      description: "Represents a region"
+      properties:
+        id:
+          type: string
+          description: "Unique identifier for the region."
+        display_name:
+          type: string
+          description: "Display name of the region."
+        geo_data:
+          type: object
+          description: "Geographical data for the region."
+          properties:
+            latitude:
+              type: number
+              description: "Latitude of the centre point of the region."
+            longitude:
+              type: number
+              description: "Longitude of the centre point of the region."
+            bbox:
+              type: array
+              description: "Bounding box coordinates."
+              items:
+                type: number
+        country_id:
+          type: string
+          description: "The associated country ID."
+
+    Country:
+      type: object
+      description: "Represents a country"
+      properties:
+        id:
+          type: string
+          description: "Unique identifier for the country."
+        display_name:
+          type: string
+          description: "Display name of the country."
+        geo_data:
+          type: object
+          description: "Geographical data for the country."
+          properties:
+            latitude:
+              type: number
+              description: "Latitude of the centre point of the country."
+            longitude:
+              type: number
+              description: "Longitude of the centre point of the country."
+            bbox:
+              type: array
+              description: "Bounding box coordinates."
+              items:
+                type: number
+
+    Postcode:
+      type: object
+      description: "Geo details for postcode"
+      properties:
+        sanitised_postcode:
+          type: string
+          description: "Clean postcode with no whitespace used to seach DB"
+        display_postcode:
+          type: string
+          description: "Properly formatted postcode for display"
+        latitude:
+          type: number
+          description: "The postcode latitude."
+        longitude:
+          type: number
+          description: "The postcode longitude."
+        la_code:
+          type: string
+          description: "Local authority code."
+        la_name:
+          type: string
+          description: "Local authority name."
+          
