@@ -1,0 +1,18 @@
+# Testing docker compose for the frontend
+# (only used for cypress e2e tests at the moment)
+services:
+    app:
+        container_name: gascd_frontend_testing
+        image: gascd_frontend_image_testing
+        build:
+            context: .
+            args:
+                - NEXT_PUBLIC_GASCD_GIT_HASH=xxxtest
+                - NEXT_PUBLIC_GASCD_GIT_TAG=0.0.0
+        ports:
+            - 3000:80
+        environment:
+            - PORT=80
+            - NEXTAUTH_SECRET=notagoodsecret
+            - LOCAL_AUTH=true
+            - LOCAL_AUTH_PASSWORD=${LOCAL_AUTH_PASSWORD}

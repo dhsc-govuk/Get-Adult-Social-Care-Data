@@ -17,8 +17,10 @@ node_modules: package.json package-lock.json
 test: node_modules
 	${NPM_COMMAND} run test
 
-test-e2e: node_modules
+test-e2e: 
+	docker-compose -f ./docker-compose-e2e-tests.yml up --build --force-recreate -d
 	CYPRESS_BASE_URL=http://localhost:3000/ ${NPM_COMMAND} run cypress:headless
+	docker-compose -f ./docker-compose-e2e-tests.yml down
 
 # Pre-commit hooks
 setup-husky: node_modules

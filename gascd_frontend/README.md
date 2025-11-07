@@ -144,15 +144,12 @@ You can log raw SQL queries to the terminal by running the app as follows:
 
 ### E2E tests
 
-There are some basic end-to-end tests written with cypress, which you can run against a local docker build.
-
-First ensure you have local auth and a local db set up and configured in your .env (see above). Then run:
+There are some basic end-to-end tests written with cypress. These can be run manually during development, 
+or with a self-contained makefile task which uses docker:
 
 ```bash
-# In one terminal
-make docker-up # or docker-up-rebuild
-# In a second terminal
-make test-e2e
+# this builds a separate test docker app and runs cypress tests against it
+LOCAL_AUTH_PASSWORD=<dummy-password-for-the-test-user> make test-e2e 
 ```
 
 ### CI/CD
