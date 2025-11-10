@@ -1,0 +1,28 @@
+using api.Logging;
+
+namespace api.Configuration;
+
+public static class LoggingConfiguration
+{
+    public static ILoggingBuilder RegisterLoggingConfiguration(this ILoggingBuilder bld)
+    {
+        bld.ClearProviders()
+            .AddJsonConsole(o =>
+                {
+                    o.TimestampFormat = "[HH:mm:ss] ";
+                    o.IncludeScopes = true;
+                    o.UseUtcTimestamp = true;
+                }
+            )
+            .AddDebug()
+            .SetMinimumLevel(LogLevel.Information);
+        return bld;
+    }
+
+    public static IServiceCollection RegisterLoggingServices(this IServiceCollection services)
+    {
+        services.AddHttpContextAccessor()
+            .AddTransient(typeof(ApiLogger<>));
+        return services;
+    }
+}
