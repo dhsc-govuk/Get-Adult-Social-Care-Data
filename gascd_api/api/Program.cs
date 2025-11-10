@@ -26,7 +26,7 @@ bld.Services
     .AddFastEndpoints()
     .AddSingleton<PostcodeMapper>()
     .AddHttpContextAccessor()
-    .AddTransient( typeof(AppLogging<>))
+    .AddTransient(typeof(ApiLogger<>))
     .SwaggerDocument(o =>
     {
         o.EnableJWTBearerAuth = false;
