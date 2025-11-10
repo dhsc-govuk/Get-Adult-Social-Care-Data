@@ -1,5 +1,7 @@
+'use client';
+
 import { Session } from 'next-auth';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 type Props = {
   session?: Session | null;
@@ -7,6 +9,17 @@ type Props = {
 
 const Navbar: React.FC<Props> = ({ session }) => {
 
+  const [selectedLocation, setSelectedLocation] =
+    useState<string>();
+
+  useEffect(() => {
+    if(localStorage.selectedValue) {
+      setSelectedLocation(localStorage.selectedValue);
+    } else {
+      setSelectedLocation("no location");
+    }
+  }, []);
+  
   const toggleNav = () => {
     const nav = document.getElementById('navigation');
     if (nav) {
@@ -72,7 +85,7 @@ const Navbar: React.FC<Props> = ({ session }) => {
             </span>
               <ul className="govuk-service-navigation__list">
                 <li className="govuk-service-navigation__item govuk-service-navigation__item--active govuk-service-navigation__item-start">
-                  {localStorage.selectedValue} <a className="govuk-service-navigation__link govuk-service-navigation__link-change" href="/select-location">Change</a>
+                  {selectedLocation} <a className="govuk-service-navigation__link govuk-service-navigation__link-change" href="/select-location">Change</a>
                 </li>
                 <li className="govuk-service-navigation__item govuk-service-navigation__item-start">
                   <button aria-controls="super-navigation-menu" aria-label="Show navigation menu" className="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" type="button" onClick={() => toggleNav()}>
