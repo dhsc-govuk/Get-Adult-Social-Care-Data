@@ -1,0 +1,30 @@
+amends "package://github.com/jdx/hk/releases/download/v1.20.0/hk@1.20.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.20.0/hk@1.20.0#/Builtins.pkl"
+
+local linters = new Mapping<String, Step> {
+    ["dotnet_lint_fixer"] {
+        glob = List ("*.cs")
+        check = "cd gascd_api && dotnet format"
+    }
+ 
+}
+
+local checkers = new Mapping<String, Step> {
+   ["dotnet_linter"] {
+        glob = List ("*.cs")
+        check = "cd gascd_api && mise run lint"
+    }
+      ["dotnet_test"] {
+        check = "cd gascd_api && dotnet test"
+    }
+}
+
+hooks {
+    ["fix"] {
+        fix = true
+        steps = linters
+    }
+    ["check"] {
+        steps = checkers
+    }
+}
