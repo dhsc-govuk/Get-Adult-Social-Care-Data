@@ -1,15 +1,16 @@
 amends "package://github.com/jdx/hk/releases/download/v1.20.0/hk@1.20.0#/Config.pkl"
 import "package://github.com/jdx/hk/releases/download/v1.20.0/hk@1.20.0#/Builtins.pkl"
 
-local backend_files = List("*.cs")
+local CS_FILES = List("*.cs")
+local FE_FILES = List("*.js", "*.ts")
 
 local api = new Group {
     steps {
         ["dotnet_lint"] {
-            glob = backend_files
-            fix = "cd gascd_api && dotnet format"
+            glob = FE_FILES 
+            fix = "cd gascd_api && dotnet format" 
             check = "cd gascd_api && mise run lint"
-            stage = backend_files
+            stage = FE_FILES
         }
     }
 }
@@ -17,7 +18,7 @@ local api = new Group {
 local tests = new Group {
     steps { 
         ["dotnet_test"] {
-            glob = List ("*.cs")
+            glob = CS_FILES
             check = "cd gascd_api && dotnet test"
         }
     }
@@ -26,8 +27,9 @@ local tests = new Group {
 local frontend = new Group {
     steps {
         ["linter-prettier"] {
-            glob = List("*.js", "*.ts")
+            glob = FE_FILES
             fix = "cd gascd_frontend && npx lint-staged"
+            stage = FE_FILES
         }
     }
 }
