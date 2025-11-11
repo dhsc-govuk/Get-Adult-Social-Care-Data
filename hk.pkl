@@ -7,10 +7,10 @@ local FE_FILES = List("*.js", "*.ts")
 local api = new Group {
     steps {
         ["dotnet_lint"] {
-            glob = FE_FILES 
+            glob = CS_FILES 
             fix = "cd gascd_api && dotnet format" 
             check = "cd gascd_api && mise run lint"
-            stage = FE_FILES
+            stage = CS_FILES
         }
     }
 }
