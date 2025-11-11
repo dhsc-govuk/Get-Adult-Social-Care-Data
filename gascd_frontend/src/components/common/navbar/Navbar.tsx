@@ -73,22 +73,20 @@ const Navbar: React.FC<Props> = ({ session }) => {
     },
   ]
 
-
-
   return (
     <>
       <section aria-label="Service information" className="govuk-service-navigation" data-module="govuk-service-navigation" data-govuk-service-navigation-init="">
         <div className="govuk-width-container">
           <div className="govuk-service-navigation__container">      
             <span className="govuk-service-navigation__service-name">
-              <a href="/v7/signed-in/home" className="govuk-service-navigation__link">Get adult social care data</a>
+              <a href="/home" className="govuk-service-navigation__link">Get adult social care data</a>
             </span>
               <ul className="govuk-service-navigation__list">
                 <li className="govuk-service-navigation__item govuk-service-navigation__item--active govuk-service-navigation__item-start">
                   {selectedLocation} <a className="govuk-service-navigation__link govuk-service-navigation__link-change" href="/select-location">Change</a>
                 </li>
                 <li className="govuk-service-navigation__item govuk-service-navigation__item-start">
-                  <button aria-controls="super-navigation-menu" aria-label="Show navigation menu" className="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" type="button" onClick={() => toggleNav()}>
+                  <button aria-label="Show navigation menu" className="govuk-service-navigation__toggle" type="button" onClick={() => toggleNav()}>
                     Menu
                   </button>
                 </li>
