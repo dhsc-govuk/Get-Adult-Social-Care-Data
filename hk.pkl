@@ -1,30 +1,55 @@
 amends "package://github.com/jdx/hk/releases/download/v1.20.0/hk@1.20.0#/Config.pkl"
 import "package://github.com/jdx/hk/releases/download/v1.20.0/hk@1.20.0#/Builtins.pkl"
 
-local linters = new Mapping<String, Step> {
-    ["dotnet_lint_fixer"] {
-        glob = List ("*.cs")
-        check = "cd gascd_api && dotnet format"
+local api = new Group {
+    steps {
+        ["dotnet_lint_fixer"] {
+            glob = List ("*.cs")
+            check = "cd gascd_api && dotnet format"
+        }
+         
+        ["dotnet_linter"] {
+            glob = List ("*.cs")
+            check = "cd gascd_api && mise run lint"
+        }
+
+        ["dotnet_test"] {
+            glob = List ("*.cs")
+            check = "cd gascd_api && dotnet test"
+        }
     }
- 
 }
 
-local checkers = new Mapping<String, Step> {
-   ["dotnet_linter"] {
-        glob = List ("*.cs")
-        check = "cd gascd_api && mise run lint"
+local frontend = new Group {
+    steps {
+        ["linter-prettier"] {
+            glob = List("*.js", "*.ts")
+            check = "cd gascd_frontend && npx lint-staged"
+        }
     }
-      ["dotnet_test"] {
-        check = "cd gascd_api && dotnet test"
+}
+
+local shared = new Mapping<String, Step>{
+    ["gitleaks"] {
+        check = "gitleaks detect --source . --verbose --no-git"
     }
 }
 
 hooks {
-    ["fix"] {
-        fix = true
-        steps = linters
+  ["pre-commit"] {
+    fix = true
+    stash = "git"
+    steps {
+      ["frontend"] = frontend
+      ["api"] = api
+      ...shared
     }
-    ["check"] {
-        steps = checkers
+  }
+  ["check"] {
+    steps {
+      ["frontend"] = frontend
+      ["api"] = api
+      ...shared
     }
+  }
 }
