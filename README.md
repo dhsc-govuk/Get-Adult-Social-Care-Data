@@ -25,3 +25,18 @@ For more details about the separate parts of this app, please see the relevant s
 
 - `gascd_frontend` - NextJS web frontend
 - `gascd_api` - .net internal data API which serves metrics to the frontend
+
+## Running git commit hooks
+
+This project uses [hk](https://hk.jdx.dev/) to implement git hooks. Set this up with the following commands (in the root of the folder).
+
+`brew install hk`
+`hk install`
+
+Run linting checks for frontend and backend repos by running
+
+`hk run check`
+
+These checks will also be run upon committing.
+
+N.B. Changes to these hooks can be made to the `hk.pkl` file, make sure to run `hk install` after any changes to the file.
