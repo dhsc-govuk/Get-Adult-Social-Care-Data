@@ -31,8 +31,13 @@ Official App Insights Properties
   * For server-side telemetry, this appears as 'User Id' (Azure's opentelemetry integration has no support for Authenticated User Id)
 
 Custom properties
-* userOrganisationId
-* userOrganisationType
+* primaryLocationId (taken from the user profile)
+* primaryLocationType (taken from the user profile)
+
+Custom events
+* location_metrics_view (only available in browser-based analytics)
+  * Triggered when metrics are viewed for a particular user location
+  * These events have a custom property `activeLocationId` which is the currently selected user location
 
 ## Unhandled exceptions
 

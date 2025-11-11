@@ -44,7 +44,7 @@ const BedsPer100000AdultPopulation: React.FC = () => {
               <tbody className="govuk-table__body">
                 <tr className="govuk-table__row">
                   <th scope="row" className="govuk-table__header">
-                    Source
+                    Sources
                   </th>
                   <td className="govuk-table__cell">
                     <Link
@@ -53,6 +53,14 @@ const BedsPer100000AdultPopulation: React.FC = () => {
                       target="_blank"
                     >
                       Capacity Tracker (opens in new tab)
+                    </Link>
+                    <span>, </span>
+                    <Link
+                      href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/populationestimatesforenglandandwales/mid2023"
+                      className="govuk-link"
+                      target="_blank"
+                    >
+                      Office for National Statistics (opens in new tab)
                     </Link>
                   </td>
                 </tr>

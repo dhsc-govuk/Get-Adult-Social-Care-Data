@@ -4,6 +4,7 @@ import { auth } from '@/utils/auth';
 import { trace } from '@opentelemetry/api';
 import { ATTR_ENDUSER_ID } from '@opentelemetry/semantic-conventions/incubating';
 import { headers } from 'next/headers';
+import { PRIMARY_LOCATION_ID, PRIMARY_LOCATION_TYPE } from '@/constants';
 
 // Server side helper to add user details to the current trace
 export const addUserTelemetry = async () => {
@@ -14,15 +15,14 @@ export const addUserTelemetry = async () => {
   if (session?.user?.id) {
     let activeSpan = trace.getActiveSpan();
     if (activeSpan) {
-      console.log('Adding user telemetry for ' + session.user.id);
       // Note - this would be better handled in middleware to apply to all telemetry
       activeSpan.setAttribute(ATTR_ENDUSER_ID, session.user.id);
       if (session.user.locationId) {
-        activeSpan.setAttribute('userOrganisationId', session.user.locationId);
+        activeSpan.setAttribute(PRIMARY_LOCATION_ID, session.user.locationId);
       }
       if (session.user.locationType) {
         activeSpan.setAttribute(
-          'userOrganisationType',
+          PRIMARY_LOCATION_TYPE,
           session.user.locationType
         );
       }
