@@ -49,3 +49,34 @@ export const B2CPlugin = () => {
     ],
   });
 };
+
+function generateNonce() {
+  // XXX this needs storing in the session and validating
+  return 'nonsense';
+}
+
+export const OneLoginPlugin = () => {
+  return genericOAuth({
+    config: [
+      {
+        providerId: 'govuk-one-login',
+        clientId: process.env.ONELOGIN_CLIENT_ID as string,
+        clientSecret: process.env.ONELOGIN_CLIENT_SECRET as string,
+        discoveryUrl: `${process.env.ONELOGIN_URL}/.well-known/openid-configuration`,
+        scopes: ["openid", "email",],
+        pkce: true,
+        authorizationUrlParams: {
+            nonce: generateNonce(),
+            vtr: JSON.stringify(["Cl.Cm.P2"]),
+          },
+        // No manual signup support, but users are implicitly created on login
+        disableImplicitSignUp: false,
+        mapProfileToUser: (profile) => {
+          return {
+            name: profile.email,
+          };
+        },
+      }
+    ],
+  });
+};
