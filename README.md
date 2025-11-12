@@ -26,11 +26,28 @@ For more details about the separate parts of this app, please see the relevant s
 - `gascd_frontend` - NextJS web frontend
 - `gascd_api` - .net internal data API which serves metrics to the frontend
 
+
+## Setup
+
+### Requirements
+
+This project requires the following pre-requisites:
+
+1. [Mise](https://mise.jdx.dev/getting-started.html)
+2. [Make](https://makefiletutorial.com/)
+3. [Docker](https://www.docker.com/)
+4. [GitLeaks](https://github.com/gitleaks/gitleaks)
+
+#### Installing project dependencies
+
+1. Clone the repo to your chosen directory
+2. Run `mise install` to install the correct version of node (you may need to [activate](https://mise.jdx.dev/cli/activate.html) mise)
+3. Run `make` to build the NodeJS app
+
 ## Running git commit hooks
 
-This project uses [hk](https://hk.jdx.dev/) to implement git hooks. Set this up with the following commands (in the root of the folder).
+This project uses [hk](https://hk.jdx.dev/) to implement git hooks, outlined in the `hk.pkl` file. You will need to run the following command to initialise this:
 
-`brew install hk`
 `hk install`
 
 Run linting checks for frontend and backend repos by running
