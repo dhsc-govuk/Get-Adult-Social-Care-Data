@@ -41,8 +41,8 @@ This project requires the following pre-requisites:
 #### Installing project dependencies
 
 1. Clone the repo to your chosen directory
-2. Run `mise install` to install the correct version of node (you may need to [activate](https://mise.jdx.dev/cli/activate.html) mise)
-3. Run `make` to build the NodeJS app
+2. Run `mise install` to install the correct dependency versions (you may need to [activate](https://mise.jdx.dev/cli/activate.html) mise)
+3. From the `gascd_frontend` folder you can run `make` to build the NodeJS app
 
 ## Running git commit hooks
 
@@ -54,6 +54,6 @@ Run linting checks for frontend and backend repos by running
 
 `hk run check`
 
-These checks will also be run upon committing.
+These will only run against the front/backend if there are staged changes. These checks will also be run upon committing.
 
 N.B. Changes to these hooks can be made to the `hk.pkl` file, make sure to run `hk install` after any changes to the file.
