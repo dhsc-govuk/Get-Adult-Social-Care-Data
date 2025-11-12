@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import LocationSelectPage from '../../app/(authentication)/location-select/page';
+import LocationSelectPage from '../../app/(protected)/location-select/page';
 
 describe('LocationSelectPage', () => {
   it('should render the heading and some body text', () => {
