@@ -15,11 +15,11 @@ This ASP.NET project is written in C# and utilises the following tech stack:
 
 ## Setup
 
-If you would like to run this API locally, there is a script in `gascd_api.Tests/TestData/test-seed.sql` which can be used to create and populate a local database. 
+If you would like to run this API locally, there is a script in `gascd_api.Tests/TestData/test-seed.sql` which can be used to create and populate a local database. Add `\c gascd_data` to the start of the file to select and populate that database. 
 
 Requirements:
 - PostgreSQL (We are using version 17.6), use a container or set up locally.
-- Add your connection string in an `appsettings.Local.json` file at the root of the API project (copy and adapt the given `.example` file).
+- Add your connection string in an `appsettings.Local.json` file at the root of the API project (copy and adapt the given `.example` file). Your connection string maybe in the format `"Host=localhost;Port=5432;Database=gascd_data;Username=<username>;Password=<password>"`.
 - Choose your API key, requests will need to have this in the header on the key of `x-api-key`.
 ```json
 {
