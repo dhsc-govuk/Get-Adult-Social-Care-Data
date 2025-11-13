@@ -4,7 +4,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <OutputType>Exe</OutputType>
-        <RootNamespace>gascd_api.Test</RootNamespace>
+        <RootNamespace>api.Tests</RootNamespace>
         <TargetFramework>net9.0</TargetFramework>
         <!--
         This template uses native xUnit.net command line options when using 'dotnet run' and
@@ -17,15 +17,29 @@
     <ItemGroup>
         <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
-
+    
     <ItemGroup>
         <Using Include="Xunit"/>
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="FastEndpoints.Testing" Version="7.1.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0"/>
+        <PackageReference Include="Shouldly" Version="4.3.0" />
+        <PackageReference Include="Testcontainers.PostgreSql" Version="4.8.1" />
         <PackageReference Include="xunit.v3" Version="3.1.0"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\api\api.csproj" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <None Update="TestData\test-seed.sql">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>
