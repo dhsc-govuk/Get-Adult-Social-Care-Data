@@ -1,4 +1,5 @@
 using api.Logging;
+using FastEndpoints;
 
 namespace api.Configuration;
 
@@ -17,12 +18,5 @@ public static class LoggingConfiguration
             .AddDebug()
             .SetMinimumLevel(LogLevel.Information);
         return bld;
-    }
-
-    public static IServiceCollection RegisterLoggingServices(this IServiceCollection services)
-    {
-        services.AddHttpContextAccessor()
-            .AddTransient(typeof(ApiLogger<>));
-        return services;
     }
 }

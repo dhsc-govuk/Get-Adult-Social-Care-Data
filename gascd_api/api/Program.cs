@@ -1,5 +1,6 @@
 using api.Configuration;
 using api.Data.Mappers;
+using api.Logging;
 using FastEndpoints.Swagger;
 
 var bld = WebApplication.CreateBuilder();
@@ -10,12 +11,11 @@ bld.Services
     .RegisterDatabase(bld.Configuration)
     .RegisterFastEndpoints()
     .AddSingleton<PostcodeMapper>()
-    .RegisterLoggingServices()
     .RegisterSwaggerConfiguration()
     .RegisterAuth();
 
 var app = bld.Build();
-app
+app.UseMiddleware<LogContextMiddleware>()
     .RegisterFastEndpoints()
     .RegisterAuth()
     .UseSwaggerGen();

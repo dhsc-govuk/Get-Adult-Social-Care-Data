@@ -12,10 +12,6 @@ public static class FastEndpointsConfiguration
 
     public static IApplicationBuilder RegisterFastEndpoints(this IApplicationBuilder app)
     {
-        return app.UseFastEndpoints(c =>
-        {
-            c.Errors.UseProblemDetails();
-            c.Endpoints.Configurator = ep => ep.PreProcessor<LogPreProcessor>(Order.Before);
-        });
+        return app.UseFastEndpoints(c => c.Errors.UseProblemDetails());
     }
 }
