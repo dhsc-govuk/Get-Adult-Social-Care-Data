@@ -32,6 +32,27 @@ paths:
         '404':
           description: "No details found for postcode"
 
+  /users/me/locations:
+    get:
+      summary: "Get locations available to the current user"
+      description: "Retrieves the list of Care Provider (CP) locations that the currently authenticated user has access to. This replaces the old `/get_available_locations` endpoint."
+      responses:
+        '200':
+          description: "A list of location summaries accessible by the user."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    location_id:
+                      type: string
+                      description: "The unique ID of the location."
+                    location_name:
+                      type: string
+                      description: "The display name of the location."
+
   /metric_locations/cp_locations/{code}:
     get:
       summary: "Get a care provider location"
@@ -138,7 +159,57 @@ paths:
         '404':
           description: "Region not found."
 
+  /metrics/{metricId}:
+    get:
+      summary: "Get metadata for a specific metric"
+      description: "Retrieves all metadata for a single metric, including its name, numerator, and denominator definitions. "
+      parameters:
+        - $ref: '#/components/parameters/MetricId'
+      responses:
+        '200':
+          description: "The metadata for the requested metric."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricMetadata'
+        '404':
+          description: "Metric not found."
+
+  /metrics/{metricId}/filters:
+    get:
+      summary: "Get available filters for a metric"
+      description: "Retrieves the available filter options for a specific metric or metric group."
+      parameters:
+        - $ref: '#/components/parameters/MetricId'
+      responses:
+        '200':
+          description: "A list of available filter options."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MetricFilter'
+
+  /metrics/{metricId}/dataPoint:
+    get:
+      summary: "Get the most recent data for a single metric"
+      description: "Retrieves the most recent data point for a single specified metric across one or more locations."
+
+
+
 # Reusable components
+components:
+  parameters:
+    MetricId:
+      name: metricId
+      in: path
+      required: true
+      description: "The unique identifier for the metric."
+      schema:
+        type: string
+        example: "bedcount_per_100000_adults"
+
   schemas:
     CareProviderLocation:
       type: object
@@ -316,4 +387,75 @@ paths:
         la_name:
           type: string
           description: "Local authority name."
-          
+    
+    MetricMetadata:
+      type: object
+      description: "Defines the properties and context of a metric."
+      properties:
+        metric_id:
+          type: string
+          description: "The unique identifier for the metric."
+        metric_name:
+          type: string
+          description: "The display name for the metric."
+        data_type:
+          type: string
+          description: "The format of the metric's data, e.g., 'Percentage', 'Currency'."
+        data_source:
+          type: string
+          description: "The source of the data for this metric."
+        numerator:
+          type: string
+          description: "A description of the numerator."
+        denominator:
+          type: string
+          description: "A description of the denominator."
+
+    MetricFilter:
+      type: object
+      description: "An available filter for a metric, such as bed type."
+      properties:
+        metric_id:
+          type: string
+          description: "The specific metric ID this filter applies to."
+        filter_name:
+          type: string
+          description: "The name of the filter category (e.g., 'bed_type')."
+        filter_value:
+          type: string
+          description: "The value of the filter (e.g., 'nursing', 'residential')."
+        display_name:
+          type: string
+          description: "A user-friendly name for the filter value."
+
+    MetricDataPoint:
+      type: object
+      description: "A single data point for a metric at a specific time and location."
+      properties:
+        metric_id:
+          type: string
+          description: "The unique identifier for the metric."
+        location_id:
+          type: string
+          description: "The unique identifier for the location."
+        metric_date:
+          type: string
+          format: date
+          description: "The date the metric applies to."
+        value:
+          type: number
+          format: float
+          description: "The calculated data point."
+        numerator:
+          type: number
+          description: "The numerator value for the data point."
+        denominator:
+          type: number
+          description: "The denominator value for the data point."
+        multiplier:
+          type: number
+          description: "The multiplier used in the calculation."
+        load_date_time:
+          type: string
+          format: date-time
+          description: "The timestamp when the data was loaded into the system."
