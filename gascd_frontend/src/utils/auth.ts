@@ -4,9 +4,14 @@ import Database from 'better-sqlite3';
 import { B2CPlugin } from './authPlugins';
 import { nextCookies } from 'better-auth/next-js';
 import logger from '@/utils/logger';
+import { msdialect } from './authDatabase';
 
 export const auth = betterAuth({
-  database: new Database('./gascd_users_sqlite.db'),
+  //database: new Database('./gascd_users_sqlite.db'),
+  database: {
+    dialect: msdialect,
+    type: "mssql",
+  },
   emailAndPassword: {
     enabled: process.env.LOCAL_AUTH == 'true',
   },
