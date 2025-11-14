@@ -1,5 +1,6 @@
 import { genericOAuth } from 'better-auth/plugins';
 import { decodeJwt } from 'jose';
+import logger from './logger';
 
 export const B2CPlugin = () => {
   return genericOAuth({
@@ -67,7 +68,7 @@ export const OneLoginPlugin = () => {
         pkce: true,
         authorizationUrlParams: {
             nonce: generateNonce(),
-            vtr: JSON.stringify(["Cl.Cm.P2"]),
+            vtr: JSON.stringify(["Cl.Cm.P0"]),
           },
         // No manual signup support, but users are implicitly created on login
         disableImplicitSignUp: false,
