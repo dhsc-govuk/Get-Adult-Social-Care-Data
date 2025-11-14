@@ -191,10 +191,56 @@ paths:
                 items:
                   $ref: '#/components/schemas/MetricFilter'
 
-  /metrics/{metricId}/dataPoint:
+  /metrics/{metricId}/data:
     get:
-      summary: "Get the most recent data for a single metric"
-      description: "Retrieves the most recent data point for a single specified metric across one or more locations."
+      summary: "Get time-series or most recent data for a single metric"
+      description: "Retrieves data points for a single specified metric across one or more locations. Omit date parameters to get the most recent data point. Provide a startDate to get a time-series."
+      parameters:
+        - $ref: '#/components/parameters/MetricId'
+        - name: locationId
+          in: query
+          description: "Comma-separated list of location IDs to retrieve data for."
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+            example: ["1-12345678", "E09000001"]
+        - name: startDate
+          in: query
+          description: "The start date for the time series (YYYY-MM-DD). If omitted, only the most recent data point is returned."
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2024-01-01"
+        - name: endDate
+          in: query
+          description: "The end date for the time series (YYYY-MM-DD). Defaults to the current date if startDate is provided."
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2024-12-31"
+        - name: frequency
+          in: query
+          description: "The frequency of data points for the time series. Only applicable when startDate is provided."
+          required: false
+          schema:
+            type: string
+            enum: [daily, monthly, yearly]
+            default: monthly
+      responses:
+        '200':
+          description: "A list of matching metric data points for the specified metric."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MetricDataPoint'
 
 
 
