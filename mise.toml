@@ -1,11 +1,11 @@
 [tools]
 gitleaks = "8.29.0"
 hk = "1.20.0"
+pkl = '0.30.0'
 node = "24.4.1"
 uv = "0.8.0"
 
-#Local database tasks
-
+# Local database tasks
 [tasks.docker-db]
 description = "Run a local database with docker"
 run = "docker-compose -f ./dbtools/docker-compose-db.yml up -d"
