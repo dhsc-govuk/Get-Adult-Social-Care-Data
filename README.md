@@ -36,7 +36,6 @@ This project requires the following pre-requisites:
 1. [Mise](https://mise.jdx.dev/getting-started.html)
 2. [Make](https://makefiletutorial.com/)
 3. [Docker](https://www.docker.com/)
-4. [GitLeaks](https://github.com/gitleaks/gitleaks)
 
 #### Installing project dependencies
 
