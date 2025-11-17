@@ -32,13 +32,21 @@ paths:
         '404':
           description: "No details found for postcode"
 
-  /users/me/locations:
+  /organisation/care_provider/{code}:
     get:
-      summary: "Get locations available to the current user"
-      description: "Retrieves the list of Care Provider (CP) locations that the currently authenticated user has access to. This replaces the old `/get_available_locations` endpoint."
+      summary: "Get the care provider locations linked to a care provider organisation."
+      description: "Retrieves the list of Care Provider (CP) locations that the currently linked to a Care Provider Organisation."
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: "The unique identifier for the care provider."
+          schema:
+            type: string
+            example: "1-12345678"
       responses:
         '200':
-          description: "A list of location summaries accessible by the user."
+          description: "A list of care provider locations"
           content:
             application/json:
               schema:
@@ -81,10 +89,11 @@ paths:
                 $ref: '#/components/schemas/CareProviderLocation'
         '404':
           description: "Care provider location not found."
+
   /metric_locations/districts/{code}:
     get:
-      summary: "Get a discrict"
-      description: "Retrieves detailed information for a district by its ID."
+      summary: "Get a district"
+      description: "Retrieves detailed information for a district by its ID. TBC This endpoint may not be required"
       parameters:
         - name: code
           in: path
@@ -159,7 +168,23 @@ paths:
         '404':
           description: "Region not found."
 
-  /metrics/{metricId}:
+  /metric_filters/{metricGroupId}:
+    get:
+      summary: "Get available filters for a group of metrics"
+      description: "Retrieves the available filter options for a metric group."
+      parameters:
+        - $ref: '#/components/parameters/MetricGroupId'
+      responses:
+        '200':
+          description: "A list of available filter options."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MetricFilter'
+
+  /metrics/{metricId}/metadata:
     get:
       summary: "Get metadata for a specific metric"
       description: "Retrieves all metadata for a single metric, including its name, numerator, and denominator definitions. "
@@ -174,22 +199,6 @@ paths:
                 $ref: '#/components/schemas/MetricMetadata'
         '404':
           description: "Metric not found."
-
-  /metrics/{metricId}/filters:
-    get:
-      summary: "Get available filters for a metric"
-      description: "Retrieves the available filter options for a specific metric or metric group."
-      parameters:
-        - $ref: '#/components/parameters/MetricId'
-      responses:
-        '200':
-          description: "A list of available filter options."
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MetricFilter'
 
   /metrics/{metricId}/data:
     get:
@@ -226,23 +235,21 @@ paths:
             example: "2024-12-31"
         - name: frequency
           in: query
-          description: "The frequency of data points for the time series. Only applicable when startDate is provided."
+          description: "The frequency of data points for the time series. To get just the most recent data point, use 'latest'"
           required: false
           schema:
             type: string
-            enum: [daily, monthly, yearly]
-            default: monthly
+            enum: [latest, daily, monthly, yearly]
+            default: latest
       responses:
         '200':
-          description: "A list of matching metric data points for the specified metric."
+          description: "A list of matching metric series for the specified metric."
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/MetricDataPoint'
-
-
+                  $ref: '#/components/schemas/MetricSeries'
 
 # Reusable components
 components:
@@ -252,6 +259,14 @@ components:
       in: path
       required: true
       description: "The unique identifier for the metric."
+      schema:
+        type: string
+        example: "bedcount_per_100000_adults_total"
+    MetricGroupId:
+      name: metricGroupId
+      in: path
+      required: true
+      description: "The unique identifier for the metric group."
       schema:
         type: string
         example: "bedcount_per_100000_adults"
@@ -297,6 +312,14 @@ components:
         local_authority_id:
           type: string
           description: "The associated local authority ID."
+        region_id:
+          type: string
+          nullable: true
+          description: "The associated region ID."
+        country_id:
+          type: string
+          nullable: true
+          description: "The associated country ID."
 
     District:
       type: object
@@ -326,6 +349,14 @@ components:
         local_authority_id:
           type: string
           description: "The associated local authority ID."
+        region_id:
+          type: string
+          nullable: true
+          description: "The associated region ID."
+        country_id:
+          type: string
+          nullable: true
+          description: "The associated country ID."
     
     LocalAuthority:
       type: object
@@ -355,6 +386,10 @@ components:
         region_id:
           type: string
           description: "The associated region ID."
+        country_id:
+          type: string
+          nullable: true
+          description: "The associated country ID."
     
     Region:
       type: object
@@ -461,22 +496,22 @@ components:
       type: object
       description: "An available filter for a metric, such as bed type."
       properties:
+        metric_group_id:
+          type: string
+          description: "The specific metric group ID this filter applies to."
+          example: "bedcount_per_100000_adults"
         metric_id:
           type: string
           description: "The specific metric ID this filter applies to."
-        filter_name:
-          type: string
-          description: "The name of the filter category (e.g., 'bed_type')."
-        filter_value:
-          type: string
-          description: "The value of the filter (e.g., 'nursing', 'residential')."
+          example: "bedcount_per_100000_adults_total_general_nursing"
         display_name:
           type: string
           description: "A user-friendly name for the filter value."
+          example: "General nursing"
 
-    MetricDataPoint:
+    MetricSeries:
       type: object
-      description: "A single data point for a metric at a specific time and location."
+      description: "A series of data points at a specific time and location specified in the call for the metric."
       properties:
         metric_id:
           type: string
@@ -484,27 +519,21 @@ components:
         location_id:
           type: string
           description: "The unique identifier for the location."
-        metric_date:
+        series_start_date:
           type: string
           format: date
-          description: "The date the metric applies to."
-        value:
-          type: number
-          format: float
-          description: "The calculated data point."
-        numerator:
-          type: number
-          description: "The numerator value for the data point."
-        denominator:
-          type: number
-          description: "The denominator value for the data point."
-        multiplier:
-          type: number
-          description: "The multiplier used in the calculation."
-        load_date_time:
+          description: "The start date of the metric series."
+        series_frequency:
           type: string
-          format: date-time
-          description: "The timestamp when the data was loaded into the system."
+          description: "The frequency of data points for the time series."
+          enum: [latest, daily, monthly, yearly]
+          default: latest
+        values:
+          type: array
+          description: "The calculated data points at the specified frequency. If frequency is 'latest' this array will have one data point"
+          items:
+            type: number
+            format: float
           
   securitySchemes:
     bearerAuth:
