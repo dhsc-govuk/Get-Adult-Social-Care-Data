@@ -4,7 +4,7 @@ info:
   description: "A RESTful API for accessing health and care provider metric data, metadata, and insights."
   version: "0.0.1"
 servers:
-  - url: "http://gascd.internal/api/"
+  - url: "http://gascd.internal/api"
 
 security:
   - bearerAuth: []
