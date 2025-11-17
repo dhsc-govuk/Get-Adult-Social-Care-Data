@@ -167,6 +167,27 @@ paths:
                 $ref: '#/components/schemas/Region'
         '404':
           description: "Region not found."
+  /metric_locations/countries/{code}:
+    get:
+      summary: "Get a country"
+      description: "Retrieves detailed information for a country by its ID."
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: "The unique identifier for the country."
+          schema:
+            type: string
+            example: "1-12345678"
+      responses:
+        '200':
+          description: "Detailed information for the requested location."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+        '404':
+          description: "Country not found."
 
   /metric_filters/{metricGroupId}:
     get:
