@@ -505,3 +505,9 @@ components:
           type: string
           format: date-time
           description: "The timestamp when the data was loaded into the system."
+          
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
