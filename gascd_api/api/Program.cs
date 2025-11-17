@@ -1,40 +1,23 @@
-using api.Auth;
-using api.Data;
+using api.Configuration;
 using api.Data.Mappers;
-using FastEndpoints;
+using api.Logging;
 using FastEndpoints.Swagger;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
-using NSwag;
 
 var bld = WebApplication.CreateBuilder();
 
+bld.Logging.RegisterLoggingConfiguration();
+
 bld.Services
-    .AddDbContext<GascdDataContext>(o => o.UseNpgsql(bld.Configuration.GetConnectionString("DefaultConnection")))
-    .AddFastEndpoints()
+    .RegisterDatabase(bld.Configuration)
+    .RegisterFastEndpoints()
     .AddSingleton<PostcodeMapper>()
-    .SwaggerDocument(o =>
-    {
-        o.EnableJWTBearerAuth = false;
-        o.DocumentSettings = s =>
-        {
-            s.AddAuth(ApiKeyAuth.SchemeName, new()
-            {
-                Name = ApiKeyAuth.HeaderName,
-                In = OpenApiSecurityApiKeyLocation.Header,
-                Type = OpenApiSecuritySchemeType.ApiKey
-            });
-        };
-    })
-    .AddAuthorization()
-    .AddAuthentication(ApiKeyAuth.SchemeName)
-    .AddScheme<AuthenticationSchemeOptions, ApiKeyAuth>(ApiKeyAuth.SchemeName, null);
+    .RegisterSwaggerConfiguration()
+    .RegisterAuth();
 
 var app = bld.Build();
-app
-    .UseFastEndpoints(c => c.Errors.UseProblemDetails())
-    .UseAuthentication()
-    .UseAuthorization()
+app.UseMiddleware<LogContextMiddleware>()
+    .RegisterFastEndpoints()
+    .RegisterAuth()
     .UseSwaggerGen();
 
 app.Run();
