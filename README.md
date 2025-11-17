@@ -47,7 +47,11 @@ This project requires the following pre-requisites:
 
 This project uses [hk](https://hk.jdx.dev/) to implement git hooks, outlined in the `hk.pkl` file. You will need to run the following command to initialise this:
 
-`hk install`
+```bash
+  hk install
+  # If you used previous git hooks set up in this repo you may need to run this as well:
+  git config unset core.hooksPath
+```
 
 Run linting checks for frontend and backend repos by running
 
