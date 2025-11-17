@@ -1,27 +1,5 @@
 # GASCD frontend app
 
-## Setup
-
-### Requirements
-
-This project requires the following pre-requisites:
-
-1. [Mise](https://mise.jdx.dev/getting-started.html)
-2. [Make](https://makefiletutorial.com/)
-3. [Docker](https://www.docker.com/)
-4. [GitLeaks](https://github.com/gitleaks/gitleaks)
-
-#### Installing project dependencies
-
-1. Clone the repo to your chosen directory
-2. Run `mise install` to install the correct version of node
-3. Run `make` to build the NodeJS app
-
-### Installing development commit hooks
-
-`make setup-husky`
-
-This will use husky (https://typicode.github.io/husky/) to install pre-commit hooks for linting and secret checking.
 
 ## Setting up environment variables
 

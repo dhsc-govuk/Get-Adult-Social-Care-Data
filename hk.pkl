@@ -1,0 +1,66 @@
+amends "package://github.com/jdx/hk/releases/download/v1.20.0/hk@1.20.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.20.0/hk@1.20.0#/Builtins.pkl"
+
+local CS_FILES = List("*.cs")
+local FE_FILES = List("*.js", "*.jsx", "*.ts", "*.tsx", "*.json", "*.css", "*.md")
+
+local api = new Group {
+    steps {
+        ["dotnet_lint"] {
+            glob = CS_FILES 
+            fix = "cd gascd_api && dotnet format" 
+            check = "cd gascd_api && mise run lint"
+            stage = CS_FILES
+        }
+    }
+}
+
+local tests = new Group {
+    steps { 
+        ["dotnet_test"] {
+            glob = CS_FILES
+            check = "cd gascd_api && dotnet test"
+        }
+    }
+}
+
+local frontend = new Group {
+    steps {
+        ["linter-prettier"] {
+            glob = FE_FILES
+            fix = "cd gascd_frontend && npx lint-staged"
+            stage = FE_FILES
+        }
+    }
+}
+
+local shared = new Mapping<String, Step>{
+    ["gitleaks"] {
+        check = "gitleaks detect --source . --verbose --no-git"
+    }
+}
+
+hooks {
+  ["pre-commit"] {
+    fix = true
+    stash = "git"
+    steps {
+      ["frontend"] = frontend
+      ["api"] = api
+      ...shared
+    }
+  }
+  ["check"] {
+    steps {
+      ["frontend"] = frontend
+      ["api"] = api
+      ...shared
+    }
+  }
+  ["test"] {
+      steps {
+          ["tests"] = tests
+      }
+  }
+
+}
