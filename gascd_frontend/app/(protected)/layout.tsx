@@ -1,23 +1,17 @@
 import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../api/auth/authOptions';
 import { verifyAuthToken } from '../../src/helpers/auth/verifyAuthToken';
 import logger from '@/utils/logger';
-import { trace } from '@opentelemetry/api';
-import { ATTR_ENDUSER_ID } from '@opentelemetry/semantic-conventions/incubating';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '../api/auth/authOptions';
+import { addUserTelemetry } from '@/helpers/telemetry/usertelemetry';
 
 export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  addUserTelemetry();
   const session = await getServerSession(authOptions);
-  if (session?.user?.id) {
-    let activeSpan = trace.getActiveSpan();
-    if (activeSpan) {
-      activeSpan.setAttribute(ATTR_ENDUSER_ID, session.user.id);
-    }
-  }
 
   if (process.env.LOCAL_AUTH == 'true') {
     if (session?.user) {

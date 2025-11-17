@@ -10,17 +10,15 @@ import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
-import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import SmartInsightsFetchService from '@/services/smart-insights/SmartInsightsFetchService';
-import { parseMarkdownBlocks } from '@/utils/parseMarkdown';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import TableService from '@/services/Table/TableService';
 import SmartInsights from '@/components/indicator-components/SmartInsights';
 import { Locations } from '@/data/interfaces/Locations';
 import Feedback from '@/components/common/feedback/Feedback';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 const TotalBedsPage: React.FC = () => {
   const router = useRouter();
@@ -129,6 +127,9 @@ const TotalBedsPage: React.FC = () => {
         locationId = localStorage.getItem('selectedValue')!;
       }
       setlocationId(locationId);
+      if (locationId) {
+        AnalyticsService.trackMetricLocationView(locationId);
+      }
       setlocationType(session.user.locationType);
     }
   }, [session]);

@@ -1,9 +1,13 @@
 // Support for in-browser app insights integration
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import {
+  ApplicationInsights,
+  ITelemetryItem,
+} from '@microsoft/applicationinsights-web';
 import { createBrowserHistory } from 'history';
 import { ReactPlugin } from '@microsoft/applicationinsights-react-js';
 import LogService from '@/services/logger/logService';
 import { Session } from 'next-auth';
+import { PRIMARY_LOCATION_ID, PRIMARY_LOCATION_TYPE } from '@/constants';
 
 let appInsights: ApplicationInsights | null = null;
 let browserHistory: any;
@@ -28,6 +32,14 @@ export const initializeAppInsights = (
       appInsights.loadAppInsights();
       if (session?.user?.id) {
         appInsights.setAuthenticatedUserContext(session.user.id);
+        // Custom telemetry method to add user properties to all analytics
+        var telemetryInitializer = (envelope: ITelemetryItem) => {
+          if (envelope.data) {
+            envelope.data[PRIMARY_LOCATION_ID] = session.user.locationId;
+            envelope.data[PRIMARY_LOCATION_TYPE] = session.user.locationType;
+          }
+        };
+        appInsights.addTelemetryInitializer(telemetryInitializer);
       }
     } catch (err) {
       // Most likely a connection string issue. Clear the app insights setup and re-throw
