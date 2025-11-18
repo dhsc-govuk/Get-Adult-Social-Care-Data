@@ -1,4 +1,4 @@
-import { getAuthOptions } from '@/utils/authDatabase';
+import { getAuthOptions } from '@/lib/authDatabase';
 
 describe('getAuthOptions', () => {
   afterEach(() => {

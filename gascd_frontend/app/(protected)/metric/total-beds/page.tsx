@@ -10,7 +10,7 @@ import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
-import { authClient } from '@/utils/auth-client';
+import { authClient } from '@/lib/auth-client';
 import SmartInsightsFetchService from '@/services/smart-insights/SmartInsightsFetchService';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import { useRouter } from 'next/navigation';

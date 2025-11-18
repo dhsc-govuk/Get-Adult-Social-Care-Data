@@ -5,19 +5,19 @@ import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
 import { LAGeoData } from '@/helpers/maps/la_geo_data';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import { mockSession } from '@/test-utils/test-utils';
-import { authClient } from '@/utils/auth-client';
+import { authClient } from '@/lib/auth-client';
 
 // Mock out things we don't need to prevent them making api requests
 vi.mock('@/components/common/buttons/logoutButton');
 vi.mock('@/services/logger/logService');
 
-vi.mock('@/utils/auth-client', () => ({
+vi.mock('@/lib/auth-client', () => ({
   authClient: {
-    useSession: vi.fn(), 
+    useSession: vi.fn(),
   },
 }));
 const mockUseSession = vi.mocked(authClient.useSession);
-mockUseSession.mockReturnValue({data: mockSession} as any);
+mockUseSession.mockReturnValue({ data: mockSession } as any);
 
 beforeEach(() => {
   // Stop localstorage usage interfering with other tests

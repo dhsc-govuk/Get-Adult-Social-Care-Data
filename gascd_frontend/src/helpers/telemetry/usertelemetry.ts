@@ -1,6 +1,6 @@
 'use server';
 
-import { auth } from '@/utils/auth';
+import { auth } from '@/lib/auth';
 import { trace } from '@opentelemetry/api';
 import { ATTR_ENDUSER_ID } from '@opentelemetry/semantic-conventions/incubating';
 import { headers } from 'next/headers';

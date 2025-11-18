@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Layout from '@/components/common/layout/Layout';
-import { authClient } from '@/utils/auth-client';
+import { authClient } from '@/lib/auth-client';
 import '../../../src/styles/population-age.scss';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import { Locations } from '@/data/interfaces/Locations';

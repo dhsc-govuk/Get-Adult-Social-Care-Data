@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import LogService from '@/services/logger/logService';
-import { authClient } from '@/utils/auth-client';
+import { authClient } from '@/lib/auth-client';
 
 const LogoutButton: React.FC = () => {
   const [logoutUrl, setLogoutUrl] = useState('');

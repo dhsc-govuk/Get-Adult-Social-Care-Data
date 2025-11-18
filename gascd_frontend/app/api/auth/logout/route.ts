@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import logger from '@/utils/logger';
-import { auth } from '@/utils/auth';
+import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 
 export async function POST(req: NextRequest) {

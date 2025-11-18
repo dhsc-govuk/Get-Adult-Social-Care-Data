@@ -9,7 +9,7 @@ import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import TableService from '@/services/Table/TableService';
 import DataTable from '@/components/tables/table';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
-import { authClient } from '@/utils/auth-client';
+import { authClient } from '@/lib/auth-client';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import { MetaData } from '@/data/interfaces/MetaData';
 import { Locations } from '@/data/interfaces/Locations';

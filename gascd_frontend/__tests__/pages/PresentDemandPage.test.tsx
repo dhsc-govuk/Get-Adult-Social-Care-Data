@@ -3,20 +3,20 @@ import { Locations } from '@/data/interfaces/Locations';
 import { mockSession } from '@/test-utils/test-utils';
 import PresentDemandPage from '../../app/(protected)/present-demand/page';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
-import { authClient } from '@/utils/auth-client';
+import { authClient } from '@/lib/auth-client';
 
 // Mock out things we are not testing at the moment to prevent them making api requests
 vi.mock('@/components/common/buttons/logoutButton');
 vi.mock('@/services/logger/logService');
 vi.mock('@/services/indicator/IndicatorFetchService');
 
-vi.mock('@/utils/auth-client', () => ({
+vi.mock('@/lib/auth-client', () => ({
   authClient: {
-    useSession: vi.fn(), 
+    useSession: vi.fn(),
   },
 }));
 const mockUseSession = vi.mocked(authClient.useSession);
-mockUseSession.mockReturnValue({data: mockSession} as any);
+mockUseSession.mockReturnValue({ data: mockSession } as any);
 
 beforeEach(() => {
   // Stop localstorage usage interfering with other tests
@@ -142,9 +142,9 @@ describe('PresentDemandPage', () => {
       country_name: '',
       load_date_time: '',
     };
-    const locationSpy = vi.spyOn(PresentDemandService, 'getLocations').mockResolvedValue(
-      supportedLACode as any
-    );
+    const locationSpy = vi
+      .spyOn(PresentDemandService, 'getLocations')
+      .mockResolvedValue(supportedLACode as any);
     //vi.spyOn(authClient, 'useSession').mockReturnValue(mockSession);
 
     render(<PresentDemandPage />);

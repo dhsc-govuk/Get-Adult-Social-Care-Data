@@ -3,16 +3,16 @@ import { redirect } from 'next/navigation';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { headers } from 'next/headers';
-import { auth } from '@/utils/auth';
+import { auth } from '@/lib/auth';
 import { mockSession } from '@/test-utils/test-utils';
 
 vi.mock('next/headers', () => ({
   headers: vi.fn(),
 }));
 const mockHeaders = vi.mocked(headers);
-mockHeaders.mockResolvedValue(new Headers()); 
+mockHeaders.mockResolvedValue(new Headers());
 
-vi.mock('@/utils/auth', () => ({
+vi.mock('@/lib/auth', () => ({
   auth: {
     api: {
       getSession: vi.fn(),
@@ -47,5 +47,4 @@ describe('Root Layout', () => {
     const renderedMarkup = renderToStaticMarkup(response);
     expect(renderedMarkup).toContain('Mock Component');
   });
-
 });

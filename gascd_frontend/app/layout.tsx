@@ -2,7 +2,7 @@ import '../src/styles/globals.scss';
 import Axe from '../src/utils/axe';
 import { Viewport } from 'next';
 import { AppInsightsInitializer } from '@/components/analytics/AppInsightsInitializer';
-import { auth } from '@/utils/auth';
+import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 
 export const viewport: Viewport = {

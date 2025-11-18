@@ -3,7 +3,7 @@ import { dbPool } from '../../../src/data/dbModule';
 import { Indicator } from '@/data/interfaces/Indicator';
 import QueryBuilderService from '@/services/query-builder/QueryBuilderService';
 import logger from '@/utils/logger';
-import { auth } from '@/utils/auth';
+import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { addUserTelemetry } from '@/helpers/telemetry/usertelemetry';
 

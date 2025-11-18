@@ -3,7 +3,7 @@
 import React, { useCallback, useState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
 import ButtonWithArrow from '../../../src/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
-import { authClient } from '@/utils/auth-client';
+import { authClient } from '@/lib/auth-client';
 
 const LoginPage: React.FC = () => {
   const handleSubmit = async () => {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbPool } from '../../../src/data/dbModule';
 import { Locations } from '@/data/interfaces/Locations';
-import { auth } from '@/utils/auth';
+import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import logger from '@/utils/logger';
 

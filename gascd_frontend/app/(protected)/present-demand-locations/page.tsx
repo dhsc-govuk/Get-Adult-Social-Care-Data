@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
-import { authClient } from '@/utils/auth-client';
+import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
 
 const PresentDemandLocations: React.FC = () => {
