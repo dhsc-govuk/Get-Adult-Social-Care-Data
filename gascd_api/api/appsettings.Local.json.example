@@ -1,0 +1,6 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": <connection string>
+  },
+  "Auth:ApiKey": <api-key>
+}
