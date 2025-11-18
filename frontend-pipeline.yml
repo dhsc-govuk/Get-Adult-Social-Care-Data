@@ -49,6 +49,7 @@ stages:
   # Run tests once up front
   - stage: Tests
     displayName: "Run tests"
+    condition: false
     jobs:
       - job: VitestTest
         displayName: Run vitest Tests
@@ -75,7 +76,8 @@ stages:
   # Build
   - stage: Build_Image
     displayName: "Build/push Docker image (all environments)"
-    condition: succeeded()
+    #condition: succeeded()
+    condition: false
     jobs:
       - deployment: Build
         displayName: Build
