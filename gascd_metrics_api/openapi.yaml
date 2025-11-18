@@ -477,12 +477,21 @@ components:
         display_postcode:
           type: string
           description: "Properly formatted postcode for display"
-        latitude:
-          type: number
-          description: "The postcode latitude."
-        longitude:
-          type: number
-          description: "The postcode longitude."
+        geo_data:
+          type: object
+          description: "Geographical data for the postcode."
+          properties:
+            latitude:
+              type: number
+              description: "Latitude of the center point for the postcode."
+            longitude:
+              type: number
+              description: "Longitude of the center point for the postcode."
+            bbox:
+              type: array
+              description: "Bounding box coordinates."
+              items:
+                type: number
         la_code:
           type: string
           description: "Local authority code."
