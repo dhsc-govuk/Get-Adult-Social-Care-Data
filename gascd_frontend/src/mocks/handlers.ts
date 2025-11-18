@@ -1,25 +1,13 @@
 import { http, HttpResponse } from 'msw';
-import * as fs from 'fs';
 import { metric_metadata } from '@/data/mockResponses/metric_metadata';
 import { locations_data } from '@/data/mockResponses/locations_data';
+import { organisation_data } from '@/data/mockResponses/organisation_data';
 
 const api_root = process.env.DATA_API_ROOT;
 
 export const handlers = [
-  http.get(api_root + '/providers/:providerid', () => {
-    return HttpResponse.json({
-      provider_location_id: 'testcpl1',
-      provider_location_name: 'Mock Care Provider Location',
-      provider_id: 'testcp2',
-      provider_name: 'Mock Care Provider',
-      la_code: 'E08000024',
-      la_name: 'Sunderland',
-      region_code: 'E12000001',
-      region_name: 'North East',
-      country_code: 'E92000001',
-      country_name: 'England',
-      load_date_time: '2025-03-04T14:36:18.510Z',
-    });
+  http.get(api_root + '/organisation/care_provider/:code', () => {
+    return HttpResponse.json(organisation_data);
   }),
 
   http.get(api_root + '/metadata/metrics', () => {
@@ -30,16 +18,16 @@ export const handlers = [
   }),
 
   http.get(api_root + '/locations', () => {
-      const locations = {
-        metric_type: 'Capacity Tracker',
-        metric_location_type: 'Care provider location',
-        user_access_location_type: 'Care provider location',
-        user_access_restricted_flag: 1,
-        metric_location_id: 'testcpl1',
-        metric_location_name: 'Test Care Provider Location 2',
-        user_access_location_id: 'testcpl2',
-        load_date_time: '2025-08-29T09:20:27.190Z',
-      };
+    const locations = {
+      metric_type: 'Capacity Tracker',
+      metric_location_type: 'Care provider location',
+      user_access_location_type: 'Care provider location',
+      user_access_restricted_flag: 1,
+      metric_location_id: 'testcpl1',
+      metric_location_name: 'Test Care Provider Location 2',
+      user_access_location_id: 'testcpl2',
+      load_date_time: '2025-08-29T09:20:27.190Z',
+    };
     return HttpResponse.json(locations);
   }),
 
