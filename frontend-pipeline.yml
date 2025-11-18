@@ -121,8 +121,7 @@ stages:
         condition: succeeded()
         jobs:
           - job: Migrate
-            displayName: Migrate
-            environment: "${{environment.name}}"
+            displayName: Migrate database
             pool:
               vmImage: "ubuntu-latest"
             steps:
@@ -135,7 +134,6 @@ stages:
               workingDirectory: gascd_frontend
             - task: AzureCLI@2
               displayName: 'Run Migrations with Managed Identity'
-              workingDirectory: gascd_frontend
               inputs:
                 azureSubscription: ${{environment.arm_connection}}
                 scriptType: 'bash'
@@ -158,7 +156,7 @@ stages:
                   export DB_NAME="${{environment.user_db_name}}"
                   
                   # Run the Better Auth migration
-                  npm run db:migrate      
+                  cd gascd_frontend && npm run db:migrate      
       - stage: Deploy_${{environment.name}}
         displayName: "${{environment.name}}: Deploy to Azure Web App"
         condition: succeeded()
