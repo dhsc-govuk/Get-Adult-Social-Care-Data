@@ -57,8 +57,4 @@ export const msdialect = new MssqlDialect({
         server: process.env.USER_DB_SERVER as string,
       }),
   },
-  TYPES: {
-    ...Tedious.TYPES,
-    DateTime: Tedious.TYPES.DateTime2,
-  },
 });
