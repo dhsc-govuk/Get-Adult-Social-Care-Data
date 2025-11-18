@@ -1,16 +1,14 @@
 import { betterAuth, boolean } from 'better-auth';
-import { createAuthMiddleware } from "better-auth/api";
-import Database from 'better-sqlite3';
+import { createAuthMiddleware } from 'better-auth/api';
 import { B2CPlugin } from './authPlugins';
 import { nextCookies } from 'better-auth/next-js';
 import logger from '@/utils/logger';
 import { msdialect } from './authDatabase';
 
 export const auth = betterAuth({
-  //database: new Database('./gascd_users_sqlite.db'),
   database: {
     dialect: msdialect,
-    type: "mssql",
+    type: 'mssql',
   },
   emailAndPassword: {
     enabled: process.env.LOCAL_AUTH == 'true',
@@ -41,9 +39,9 @@ export const auth = betterAuth({
   ],
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
-      if(ctx.context.newSession) {
+      if (ctx.context.newSession) {
         logger.info('User logged in success', {
-          userid: ctx.context.newSession.user.id
+          userid: ctx.context.newSession.user.id,
         });
       }
     }),
