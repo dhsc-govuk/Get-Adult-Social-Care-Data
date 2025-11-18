@@ -6,6 +6,12 @@ import logger from '@/utils/logger';
 import { msdialect } from './authDatabase';
 
 export const auth = betterAuth({
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60,
+    },
+  },
   database: {
     dialect: msdialect,
     type: 'mssql',
