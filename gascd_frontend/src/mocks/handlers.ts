@@ -2,6 +2,7 @@ import { http, HttpResponse } from 'msw';
 import { metric_metadata } from '@/data/mockResponses/metric_metadata';
 import { locations_data } from '@/data/mockResponses/locations_data';
 import { organisation_data } from '@/data/mockResponses/organisation_data';
+import { metric_filters_data } from '@/data/mockResponses/metric_filters_data';
 
 const api_root = process.env.DATA_API_ROOT;
 
@@ -10,42 +11,13 @@ export const handlers = [
     return HttpResponse.json(organisation_data);
   }),
 
-  http.get(api_root + '/metadata/metrics', () => {
-    const percentage_metrics = metric_metadata.filter(
-      (item) => item.metric_data_type === 'Percentage'
-    );
-    return HttpResponse.json(percentage_metrics);
+  http.get(api_root + '/metrics/:metricId/metadata', () => {
+    return HttpResponse.json(metric_metadata);
   }),
 
-  http.get(api_root + '/locations', () => {
-    const locations = {
-      metric_type: 'Capacity Tracker',
-      metric_location_type: 'Care provider location',
-      user_access_location_type: 'Care provider location',
-      user_access_restricted_flag: 1,
-      metric_location_id: 'testcpl1',
-      metric_location_name: 'Test Care Provider Location 2',
-      user_access_location_id: 'testcpl2',
-      load_date_time: '2025-08-29T09:20:27.190Z',
-    };
-    return HttpResponse.json(locations);
+  http.get(api_root + '/metric_filters/:metricGroupId', () => {
+    return HttpResponse.json(metric_filters_data);
   }),
-
-  http.get<{ la_code: string }>(
-    api_root + '/localauthorities/:la_code',
-    ({ params }) => {
-      const la_code = params.la_code;
-      const la_data = {
-        la_code: la_code,
-        la_name: 'Mock LA',
-        region_code: 'E12000001',
-        region_name: 'North East',
-        country_code: 'E92000001',
-        country_name: 'England',
-      };
-      return HttpResponse.json(la_data);
-    }
-  ),
 
   http.get<{ metric_id: string }>(
     api_root + '/metrics/:metric_id',
@@ -102,5 +74,9 @@ export const handlers = [
 
   http.get(api_root + '/metric_location/regions/:code', () => {
     return HttpResponse.json(locations_data.region);
+  }),
+
+  http.get(api_root + '/metric_location/countries/:code', () => {
+    return HttpResponse.json(locations_data.country);
   }),
 ];
