@@ -116,6 +116,49 @@ stages:
                       displayName: Push image to ${{environment.acr_name}} ACR
   # Deploy across environments
   - ${{ each environment in parameters.environments}}:
+      - stage: Migrate_UserDB_${{environment.name}}
+        displayName: "${{environment.name}}: Migrate user database"
+        condition: succeeded()
+        jobs:
+          - job: Migrate
+            displayName: Migrate
+            environment: "${{environment.name}}"
+            pool:
+              vmImage: "ubuntu-latest"
+            steps:
+            - checkout: self
+            - task: NodeTool@0
+              inputs:
+                versionSpec: "24.4.1"
+            - script: npm ci
+              displayName: install dependencies
+              workingDirectory: gascd_frontend
+            - task: AzureCLI@2
+              displayName: 'Run Migrations with Managed Identity'
+              workingDirectory: gascd_frontend
+              inputs:
+                azureSubscription: ${{environment.arm_connection}}
+                scriptType: 'bash'
+                scriptLocation: 'inlineScript'
+                inlineScript: |
+                  # 1. Get an Access Token for Azure SQL (resource ID is fixed)
+                  # We verify the token is fetched before proceeding
+                  TOKEN=$(az account get-access-token --resource https://database.windows.net/ --query accessToken -o tsv)
+
+                  if [ -z "$TOKEN" ]; then
+                    echo "Error: Failed to obtain access token"
+                    exit 1
+                  fi
+
+                  echo "Access token obtained successfully."
+
+                  # 2. Run the migration, passing the token as an env var
+                  export AZURE_SQL_ACCESS_TOKEN=$TOKEN
+                  export DB_SERVER="${{environment.user_db_server}}"
+                  export DB_NAME="${{environment.user_db_name}}"
+                  
+                  # Run the Better Auth migration
+                  npm run db:migrate      
       - stage: Deploy_${{environment.name}}
         displayName: "${{environment.name}}: Deploy to Azure Web App"
         condition: succeeded()
