@@ -43,17 +43,22 @@ parameters:
         arm_connection: "$(uat_arm_service_connections)"
         acr_connection: "$(uat_acr_connection)"
         acr_name: "$(uat_acr_name)"
+        user_db_name: "$(uat_user_db_name)"
+        user_db_server: "$(uat_user_db_server)"
+        user_db_port: "$(uat_user_db_port)"
       - name: prod
         environment_name: "Webapp - prod"
         arm_connection: "$(prod_arm_service_connections)"
         acr_connection: "$(prod_acr_connection)"
         acr_name: "$(prod_acr_name)"
+        user_db_name: "$(prod_user_db_name)"
+        user_db_server: "$(prod_user_db_server)"
+        user_db_port: "$(prod_user_db_port)"
 
 stages:
   # Run tests once up front
   - stage: Tests
     displayName: "Run tests"
-    condition: false
     jobs:
       - job: VitestTest
         displayName: Run vitest Tests
@@ -80,8 +85,7 @@ stages:
   # Build
   - stage: Build_Image
     displayName: "Build/push Docker image (all environments)"
-    #condition: succeeded()
-    condition: false
+    condition: succeeded()
     jobs:
       - deployment: Build
         displayName: Build
@@ -124,7 +128,7 @@ stages:
   - ${{ each environment in parameters.environments}}:
       - stage: Migrate_UserDB_${{environment.name}}
         displayName: "${{environment.name}}: Migrate user database"
-        condition: true
+        condition: succeeded()
         jobs:
           - job: Migrate
             displayName: Migrate database
@@ -139,7 +143,7 @@ stages:
               displayName: install dependencies
               workingDirectory: gascd_frontend
             - task: AzureCLI@2
-              displayName: 'Run Migrations with Managed Identity'
+              displayName: 'Run Migrations with access token'
               inputs:
                 azureSubscription: ${{environment.arm_connection}}
                 scriptType: 'bash'
