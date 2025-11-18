@@ -2,7 +2,7 @@ import { MssqlDialect } from 'kysely';
 import * as Tedious from 'tedious';
 import * as Tarn from 'tarn';
 
-const getAuthOptions = () => {
+export const getAuthOptions = () => {
   let authOptions: Tedious.ConnectionAuthentication;
   if (process.env.USER_DB_ACCESS_TOKEN) {
     // Used by deployment pipeline
