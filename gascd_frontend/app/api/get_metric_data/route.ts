@@ -6,6 +6,8 @@ import logger from '@/utils/logger';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { addUserTelemetry } from '@/helpers/telemetry/usertelemetry';
+import type { paths } from '@/metrics-api-schema';
+import createClient from 'openapi-fetch';
 
 export async function POST(req: NextRequest) {
   const queryParams = await req.json();
@@ -18,17 +20,23 @@ export async function POST(req: NextRequest) {
   }
 
   if (process.env.DATA_API_ROOT) {
+    const client = createClient<paths>({ baseUrl: process.env.DATA_API_ROOT });
     const metric_ids = queryParams.metric_ids;
     let all_metrics: any[] = [];
     for (let metric_id of metric_ids) {
-      const metric_url =
-        process.env.DATA_API_ROOT +
-        `/metrics/${metric_id}` +
-        '?location_ids=' +
-        queryParams.location_ids;
-      const response = await fetch(metric_url);
-      const data = await response.json();
-      all_metrics.push(...data);
+      const { data, error } = await client.GET('/metrics/{metricId}/data', {
+        params: {
+          path: {
+            metricId: metric_id,
+          },
+          query: {
+            locationId: queryParams.location_ids,
+          },
+        },
+      });
+      if (data) {
+        all_metrics.push(data);
+      }
     }
     return NextResponse.json(all_metrics, { status: 200 });
   }
