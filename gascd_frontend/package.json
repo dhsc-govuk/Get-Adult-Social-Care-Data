@@ -15,7 +15,7 @@
     "test:nocov": "vitest run",
     "test:watch": "vitest",
     "cypress": "cypress open --e2e",
-    "openapi:lint": "redocly lint --extends spec ../gascd_metrics_api/openapi.yaml",
+    "openapi:lint": "redocly lint --extends recommended ../gascd_metrics_api/openapi.yaml",
     "cypress:headless": "cypress run --e2e"
   },
   "lint-staged": {
