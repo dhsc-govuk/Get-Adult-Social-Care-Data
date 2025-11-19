@@ -7,7 +7,7 @@ servers:
   - url: "http://gascd.internal/api"
 
 security:
-  - bearerAuth: []
+  - ApiKey: []
 
 paths:
   /geo/postcode:
@@ -504,7 +504,7 @@ components:
             format: float
           
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    ApiKey:
+      type: apiKey
+      name: x-api-key
+      in: header
