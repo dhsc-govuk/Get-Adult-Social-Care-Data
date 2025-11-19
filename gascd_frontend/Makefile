@@ -20,10 +20,6 @@ test: node_modules
 test-e2e: node_modules
 	CYPRESS_BASE_URL=http://localhost:3000/ ${NPM_COMMAND} run cypress:headless
 
-# Pre-commit hooks
-setup-husky: node_modules
-	${NPM_COMMAND} run husky:init
-
 # Docker utilities
 
 docker-rebuild-no-cache:	
@@ -45,4 +41,4 @@ clean:
 	rm -rf node_modules
 
 
-.PHONY: format-staged run-dev dev test setup-husky
+.PHONY: format-staged run-dev dev test
