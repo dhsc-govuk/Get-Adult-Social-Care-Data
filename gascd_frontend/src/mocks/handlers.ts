@@ -43,15 +43,10 @@ export const handlers = [
 
         let fake_metric = {
           metric_id: metric_id,
-          metric_date_type: 'Daily',
-          metric_date: '01/01/2024',
-          location_type: location_type,
           location_id: location_id,
-          numerator: 'numerator',
-          denominator: 'denominator',
-          multiplier: 'multiplier',
-          data_point: '100',
-          load_date_time: '2025-08-29T09:20:26.193Z',
+          series_start_date: '01/01/2024',
+          series_frequency: 'Daily',
+          values: ['100'],
         };
         metrics.push(fake_metric);
       }
