@@ -15,3 +15,21 @@ services:
             - .env
         environment:
             - PORT=80
+    userdb:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: gascd_frontend_userdb
+        environment:
+            ACCEPT_EULA: "Y"
+            MSSQL_SA_PASSWORD: "${DB_PASSWORD}"
+            MSSQL_PID: "Evaluation"
+        ports:
+            - "1444:1433"
+        volumes:
+            - gascd_userdb_data:/var/opt/mssql
+        restart: always 
+
+# Define named volumes so that data persists
+volumes:
+  gascd_userdb_data:
+    driver: local
+
