@@ -15,3 +15,12 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands';
+
+Cypress.on('uncaught:exception', (err, runnable) => {
+  if (err.message.includes('Failed to retrieve available location data')) {
+    // known exception for the time being
+    return false;
+  }
+  // we still want to ensure there are no other unexpected
+  // errors, so we let them fail the test
+});

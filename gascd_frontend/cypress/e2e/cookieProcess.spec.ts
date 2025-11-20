@@ -7,11 +7,9 @@ describe('User can set cookies', () => {
     cy.url().should('include', '/login');
 
     // Login with dummy auth
-    cy.get('.govuk-button').contains('Agree and sign in').click();
-    cy.get('input[type="email"]').type('example@example.com');
-    cy.get('input[type="password"]').type(Cypress.env('APPLICATION_PASSWORD'));
-    cy.get('button').contains('Sign in with dummy-creds').click();
+    cy.request('/api/auth/local');
     cy.wait(1000);
+    cy.visit('');
 
     // Load the homepage
     cy.url().should('include', '/home');
@@ -37,11 +35,9 @@ describe('User can set cookies', () => {
     cy.url().should('include', '/login');
 
     // Login with dummy auth
-    cy.get('.govuk-button').contains('Agree and sign in').click();
-    cy.get('input[type="email"]').type('example@example.com');
-    cy.get('input[type="password"]').type(Cypress.env('APPLICATION_PASSWORD'));
-    cy.get('button').contains('Sign in with dummy-creds').click();
+    cy.request('/api/auth/local');
     cy.wait(1000);
+    cy.visit('');
 
     // Load the homepage
     cy.url().should('include', '/home');
@@ -67,11 +63,10 @@ describe('User can set cookies', () => {
     cy.url().should('include', '/login');
 
     // Login with dummy auth
-    cy.get('.govuk-button').contains('Agree and sign in').click();
-    cy.get('input[type="email"]').type('example@example.com');
-    cy.get('input[type="password"]').type(Cypress.env('APPLICATION_PASSWORD'));
-    cy.get('button').contains('Sign in with dummy-creds').click();
+    // Login with dummy auth
+    cy.request('/api/auth/local');
     cy.wait(1000);
+    cy.visit('');
 
     // Load the homepage
     cy.url().should('include', '/home');
@@ -89,10 +84,9 @@ describe('User can set cookies', () => {
     cy.url().should('include', '/login');
 
     // Login with dummy auth
-    cy.get('.govuk-button').contains('Agree and sign in').click();
-    cy.get('input[type="email"]').type('example@example.com');
-    cy.get('input[type="password"]').type(Cypress.env('APPLICATION_PASSWORD'));
-    cy.get('button').contains('Sign in with dummy-creds').click();
+    cy.request('/api/auth/local');
+    cy.wait(1000);
+    cy.visit('');
 
     // Load the homepage
     cy.url().should('include', '/home');
