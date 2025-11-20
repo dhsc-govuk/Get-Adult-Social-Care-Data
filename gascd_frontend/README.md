@@ -1,6 +1,5 @@
 # GASCD frontend app
 
-
 ## Setting up environment variables
 
 Create an initial environment file as follows:
@@ -28,31 +27,50 @@ NEXT_PUBLIC_GASCD_GIT_TAG=$(git describe --tags --abbrev=0 --always) \
 make run-dev
 ```
 
-### Skipping Azure auth whilst in development
+### Setting up a development/testing User Database
 
-The default auth provider is Azure B2C, which can be a hassle to set up if you're just making frontend changes. There is a local auth setup for development and testing, which you can use as follows:
+There is a local auth setup for development and testing, which you can use as follows:
 
 - Add the following to your `.env` file
 
 ```bash
-  LOCAL_AUTH=true
-  LOCAL_AUTH_PASSWORD=<my-ace-password>
-  LOCAL_AUTH_LOCATION_TYPE=Care provider location
-  LOCAL_AUTH_LOCATION_ID=testcpl1
+  # Set up a user for testing
+  LOCAL_AUTH = true
+  LOCAL_AUTH_EMAIL = "test@gascd.local"
+  LOCAL_AUTH_PASSWORD = <my-ace-password>
+  LOCAL_AUTH_LOCATION_TYPE = Care provider location
+  LOCAL_AUTH_LOCATION_ID = testcpl1
+
+  # Local user database
+  USER_DATABASE = User_DB
+  # User database uses non-default mssql port in development
+  USER_DB_PORT = 1444
+  USER_DB_SERVER = localhost
+  USER_DB_USERNAME = sa
+  # See below for password complexity requirements
+  USER_DB_PASSWORD = <a-password-for-the-db>
 ```
 
-- Remove any existing AZURE*AD*\* variables from your .env file
-- Start the app and sign in
-- The dummy auth provider will appear as an alternative when the default (Azure) auth method fails
-- Enter any email address in the 'dummy-creds' login box, along with the password you set above
+- Then run the following commands to build the sql server and bootstrap it with your test user:
 
-### Development database setup
+```bash
+  docker compose up userdb -d
+  npm run db:migrate
+  npm run db:test:seed
+```
 
-You can spin up a local SQL server as follows:
+- Start the app and load the following URL (only available if `LOCAL_AUTH=true`):
+  - http://localhost:3000/api/auth/local
+- This will log you in automatically using the credentials you set up above.
+
+### Development Metrics database setup
+
+You can spin up a local Metrics SQL server as follows:
 
 - Set the following in `.env`
 
 ```bash
+  # Metrics database
   DB_DATABASE=Analytical_Datastore
   DB_SERVER=localhost
   DB_PORT=1433
