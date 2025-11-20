@@ -22,7 +22,20 @@ export async function GET(req: NextRequest) {
     asResponse: true,
   });
 
+  // If running in docker in development we need to rewrite the host
+  const requestedHost = req.headers.get('X-Forwarded-Host');
   const redirectUrl = new URL('/home', req.url);
+  if (requestedHost && requestedHost.match(/localhost/)) {
+    const requestedPort = req.headers.get('X-Forwarded-Port');
+    const requestedProto = req.headers.get('X-Forwarded-Proto');
+
+    redirectUrl.host = requestedHost;
+    redirectUrl.protocol = requestedProto || redirectUrl.protocol;
+    if (requestedPort !== '80') {
+      redirectUrl.port = requestedPort || redirectUrl.port;
+    }
+  }
+
   const redirectResponse = NextResponse.redirect(redirectUrl);
 
   // Grab the set cookie headers from the auth API so that the redirect actually sets them
