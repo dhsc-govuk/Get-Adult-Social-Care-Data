@@ -29,7 +29,7 @@ make run-dev
 
 ### Setting up a development/testing User Database
 
-There is a local auth setup for development and testing, which you can use as follows:
+For Authentication we are using 'Better Auth' which requires a user database. There is a local auth setup for development and testing, which you can use as follows:
 
 - Add the following to your `.env` file
 
@@ -54,8 +54,11 @@ There is a local auth setup for development and testing, which you can use as fo
 - Then run the following commands to build the sql server and bootstrap it with your test user:
 
 ```bash
+  # Build and run the sql server (and create the database)
   docker compose up userdb -d
+  # Set up the Better Auth tables
   npm run db:migrate
+  # Add the test user to the database
   npm run db:test:seed
 ```
 
