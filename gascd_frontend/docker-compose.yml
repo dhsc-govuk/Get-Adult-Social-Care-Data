@@ -16,12 +16,18 @@ services:
         environment:
             - PORT=80
     userdb:
-        image: mcr.microsoft.com/mssql/server:2022-latest
         container_name: gascd_frontend_userdb
+        image: gascd_userdb_image
+        build:
+            context: ./TestData/testing_userdb
+            dockerfile: Dockerfile_userdb
+        env_file: 
+            - .env
         environment:
             ACCEPT_EULA: "Y"
-            MSSQL_SA_PASSWORD: "${DB_PASSWORD}"
+            MSSQL_SA_PASSWORD: "${USER_DB_PASSWORD}"
             MSSQL_PID: "Evaluation"
+            DB_NAME: "${USER_DATABASE}"
         ports:
             - "1444:1433"
         volumes:
