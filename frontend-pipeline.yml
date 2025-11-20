@@ -60,8 +60,8 @@ stages:
   - stage: Tests
     displayName: "Run tests"
     jobs:
-      - job: VitestTest
-        displayName: Run vitest Tests
+      - job: Tests
+        displayName: Run automated Tests
         pool:
           vmImage: "ubuntu-latest"
         steps:
@@ -71,6 +71,9 @@ stages:
               versionSpec: "24.4.1"
           - script: npm ci
             displayName: install dependencies
+            workingDirectory: gascd_frontend
+          - script: npm run openapi:lint
+            displayName: Check OpenAPI config
             workingDirectory: gascd_frontend
           - script: npm run test -- --reporter=default --reporter=junit --outputFile=junit.xml
             displayName: Run vitest Tests
