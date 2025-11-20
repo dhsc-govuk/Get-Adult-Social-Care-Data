@@ -149,7 +149,8 @@ First ensure you have local auth and a local db set up and configured in your .e
 
 ```bash
 # In one terminal
-make docker-up # or docker-up-rebuild
+docker compose up userdb -d
+make docker-up-rebuild
 # In a second terminal
 make test-e2e
 ```
