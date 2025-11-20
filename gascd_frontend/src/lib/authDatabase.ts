@@ -52,7 +52,7 @@ export const msdialect = new MssqlDialect({
         options: {
           database: process.env.USER_DATABASE,
           port: Number(process.env.USER_DB_PORT),
-          trustServerCertificate: process.env.USER_DB_SERVER === 'localhost',
+          trustServerCertificate: process.env.LOCAL_AUTH === 'true',
         },
         server: process.env.USER_DB_SERVER as string,
       }),
