@@ -485,4 +485,4 @@ $RECYCLE.BIN/
 
 
 # local project config
-appsettings.Local.json
+appsettings.*.json

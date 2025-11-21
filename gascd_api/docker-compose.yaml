@@ -7,4 +7,4 @@
     ports:
       - 5050:5050
     environment:
-      - ASPNETCORE_ENVIRONMENT=Local
+      - ASPNETCORE_ENVIRONMENT=Docker
