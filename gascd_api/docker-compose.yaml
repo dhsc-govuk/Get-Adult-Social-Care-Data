@@ -1,0 +1,10 @@
+﻿services:
+  api:
+    image: gascd-api-image
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    ports:
+      - 5050:5050
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Local
