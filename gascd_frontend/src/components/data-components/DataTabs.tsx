@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import {
   Tabs,
   createAll,
-} from '../../../../public/govuk-frontend/js/govuk-frontend.min.js';
+} from '../../../public/govuk-frontend/js/govuk-frontend.min.js';
 
 type Props = {
   id: string;

@@ -3,8 +3,10 @@
 import Breadcrumbs from '@/components/common/breadcrumbs/Breadcrumbs';
 import Layout from '@/components/common/layout/Layout';
 import React from 'react';
-import DataBox from '@/components/common/data-box/DataBox';
-import DataTabs from '@/components/common/data-box/DataTabs';
+import DataBox from '@/components/data-components/DataBox';
+import DataTabs from '@/components/data-components/DataTabs';
+import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
+import DataIndicatorDetail from '@/components/data-components/DataIndicatorDetail';
 
 export default function ProvisionAndOccupancyPage() {
   const breadcrumbs = [
@@ -179,6 +181,29 @@ export default function ProvisionAndOccupancyPage() {
           />
         </DataBox>
         {/* data indicator detains component */}
+        <DataIndicatorDetailsList>
+          <DataIndicatorDetail
+            label="Adult social care beds per 100,000 adult population"
+            sources="Capacity Tracker, Office for National Statistics"
+            updateFrequency="Daily"
+            limitations={true}
+            url="/help/beds-per-100000-adult-population"
+          />
+          <DataIndicatorDetail
+            label="Number of adult social care beds in a care provider location"
+            sources="Capacity Tracker"
+            updateFrequency="Daily"
+            limitations={true}
+            url="/help/beds-care-provider-location"
+          />
+          <DataIndicatorDetail
+            label="Occupancy level percentages for adult social care beds"
+            sources="Capacity Tracker"
+            updateFrequency="Daily"
+            limitations={true}
+            url="/help/percentage-beds-occupied"
+          />
+        </DataIndicatorDetailsList>
         {/* local market info component */}
         {/* back to top link */}
       </main>
