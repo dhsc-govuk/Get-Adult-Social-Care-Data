@@ -7,7 +7,7 @@ type Props = {
 const DataIndicatorDetailsList: React.FC<Props> = ({ children }) => {
   return (
     <div className="govuk-grid-row">
-      <div className="govuk-grid-column-two-thirds">
+      <div className="gem-c-cards govuk-grid-column-two-thirds">
         <h2 className="govuk-heading-l govuk-!-margin-top-9">
           Data indicator details
         </h2>
@@ -15,7 +15,9 @@ const DataIndicatorDetailsList: React.FC<Props> = ({ children }) => {
           Use the links to view details on the data source, how the data was
           collected and any limitations to consider when using the data.
         </p>
-        <ul className="govuk-list">{children}</ul>
+        <ul className="gem-c-cards__list gem-c-cards__list--one-column">
+          {children}
+        </ul>
       </div>
     </div>
   );

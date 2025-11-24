@@ -180,7 +180,7 @@ export default function ProvisionAndOccupancyPage() {
             }
           />
         </DataBox>
-        {/* data indicator detains component */}
+        {/* data indicator details component */}
         <DataIndicatorDetailsList>
           <DataIndicatorDetail
             label="Adult social care beds per 100,000 adult population"

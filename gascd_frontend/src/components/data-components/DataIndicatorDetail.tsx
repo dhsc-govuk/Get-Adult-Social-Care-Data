@@ -1,4 +1,5 @@
 import React from 'react';
+import '../../../src/styles/cards.scss';
 
 type Props = {
   label: string;
@@ -17,25 +18,24 @@ const DataIndicatorDetail: React.FC<Props> = ({
 }) => {
   return (
     <>
-      <li className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds govuk-!-margin-top-4">
-          <h2 className="govuk-heading-s">
-            <a className="govuk-link" href={url}>
+      <li className="gem-c-cards__list-item">
+        <div className="gem-c-cards__list-item-wrapper">
+          <h2 className="gem-c-cards__sub-heading govuk-heading-s">
+            <a
+              className="govuk-link gem-c-cards__link gem-c-force-print-link-styles"
+              href={url}
+            >
               {label}
             </a>
           </h2>
-          <p className="govuk-body govuk-!-margin-bottom-0">
+          <p className="govuk-body gem-c-cards__description">
             Sources: {sources}.
           </p>
-          <p className="govuk-body">
+          <p className="govuk-body gem-c-cards__description">
             {updateFrequency} updates{limitations && ', limitations apply'}.
           </p>
         </div>
-        <div className="govuk-grid-column-one-third govuk-align-right govuk-!-margin-top-4">
-          doop
-        </div>
       </li>
-      <hr className="govuk-section-break govuk-section-break--visible" />
     </>
   );
 };
