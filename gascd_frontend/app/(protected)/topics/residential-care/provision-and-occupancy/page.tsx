@@ -2,12 +2,9 @@
 
 import Breadcrumbs from '@/components/common/breadcrumbs/Breadcrumbs';
 import Layout from '@/components/common/layout/Layout';
-import React, { useEffect } from 'react';
-import {
-  Tabs,
-  createAll,
-} from '../../../../../../gascd_frontend/public/govuk-frontend/js/govuk-frontend.min.js';
+import React from 'react';
 import DataBox from '@/components/common/data-box/DataBox';
+import DataTabs from '@/components/common/data-box/DataTabs';
 
 export default function ProvisionAndOccupancyPage() {
   const breadcrumbs = [
@@ -20,10 +17,6 @@ export default function ProvisionAndOccupancyPage() {
       url: '', //todo: update when care homes landing page is created
     },
   ];
-
-  useEffect(() => {
-    createAll(Tabs);
-  });
 
   return (
     <Layout
@@ -64,60 +57,40 @@ export default function ProvisionAndOccupancyPage() {
             </>
           }
         >
-          <ul className="govuk-tabs__list">
-            <li className="govuk-tabs__list-item govuk-tabs__list-item--selected">
-              <a className="govuk-tabs__tab" href="#chart1">
-                Chart
-              </a>
-            </li>
-            <li className="govuk-tabs__list-item">
-              <a className="govuk-tabs__tab" href="#table1">
-                Table
-              </a>
-            </li>
-            <li className="govuk-tabs__list-item">
-              <a className="govuk-tabs__tab" href="#download1">
-                Download
-              </a>
-            </li>
-          </ul>
-          <div
-            className="govuk-tabs__panel"
-            id="chart1"
-            style={{ backgroundColor: 'white' }}
-          >
-            <h4 className="govuk-heading-s">
-              Figure 1: chart of care home beds per 100,000 adult population –
-              local authorities in the East of England, October 2025
-            </h4>
-            <p className="govuk-body-m">
-              Sources: Capacity Tracker from the Department of Health and Social
-              Care (DHSC), population estimates from the Office for National
-              Statistics (ONS)
-            </p>
-          </div>
-          <div
-            className="govuk-tabs__panel govuk-tabs__panel--hidden"
-            id="table1"
-            style={{ backgroundColor: 'white' }}
-          >
-            <h4 className="govuk-heading-s">
-              Table 1: care home beds per 100,000 adult population for regional
-              local authorities – East of England, October 2025
-            </h4>
-            <p className="govuk-body-m">
-              Sources: Capacity Tracker from the Department of Health and Social
-              Care (DHSC), population estimates from the Office for National
-              Statistics (ONS)
-            </p>
-          </div>
-          <div
-            className="govuk-tabs__panel govuk-tabs__panel--hidden"
-            id="download1"
-            style={{ backgroundColor: 'white' }}
-          >
-            <h4 className="govuk-heading-s">Download</h4>
-          </div>
+          <DataTabs
+            id="1"
+            chart={
+              <>
+                <h4 className="govuk-heading-s">
+                  Figure 1: chart of care home beds per 100,000 adult population
+                  – local authorities in the East of England, October 2025
+                </h4>
+                <p className="govuk-body-m">
+                  Sources: Capacity Tracker from the Department of Health and
+                  Social Care (DHSC), population estimates from the Office for
+                  National Statistics (ONS)
+                </p>
+              </>
+            }
+            table={
+              <>
+                <h4 className="govuk-heading-s">
+                  Table 1: care home beds per 100,000 adult population for
+                  regional local authorities – East of England, October 2025
+                </h4>
+                <p className="govuk-body-m">
+                  Sources: Capacity Tracker from the Department of Health and
+                  Social Care (DHSC), population estimates from the Office for
+                  National Statistics (ONS)
+                </p>
+              </>
+            }
+            download={
+              <>
+                <h4 className="govuk-heading-s">Download</h4>
+              </>
+            }
+          />
         </DataBox>
         {/* occupancy level data block */}
         <DataBox
@@ -140,43 +113,71 @@ export default function ProvisionAndOccupancyPage() {
             </>
           }
         >
-          <ul className="govuk-tabs__list">
-            <li className="govuk-tabs__list-item">
-              <a className="govuk-tabs__tab" href="#table2">
-                Table
-              </a>
-            </li>
-            <li className="govuk-tabs__list-item">
-              <a className="govuk-tabs__tab" href="#download2">
-                Download
-              </a>
-            </li>
-          </ul>
-          <div
-            className="govuk-tabs__panel govuk-tabs__panel--hidden"
-            id="table2"
-            style={{ backgroundColor: 'white' }}
-          >
-            <h4 className="govuk-heading-s">
-              Table 2: care home bed numbers per 100,000 adult population and
-              occupancy levels – Suffolk local authority, East of England region
-              and England, October 2025
-            </h4>
-            <p className="govuk-body-m">
-              Sources: Capacity Tracker from the Department of Health and Social
-              Care (DHSC), population estimates from the Office for National
-              Statistics (ONS)
-            </p>
-          </div>
-          <div
-            className="govuk-tabs__panel govuk-tabs__panel--hidden"
-            id="download2"
-            style={{ backgroundColor: 'white' }}
-          >
-            <h4 className="govuk-heading-s">Download</h4>
-          </div>
+          <DataTabs
+            id="2"
+            table={
+              <>
+                <h4 className="govuk-heading-s">
+                  Table 2: care home bed numbers per 100,000 adult population
+                  and occupancy levels – Suffolk local authority, East of
+                  England region and England, October 2025
+                </h4>
+                <p className="govuk-body-m">
+                  Sources: Capacity Tracker from the Department of Health and
+                  Social Care (DHSC), population estimates from the Office for
+                  National Statistics (ONS)
+                </p>
+              </>
+            }
+            download={
+              <>
+                <h4 className="govuk-heading-s">Download</h4>
+              </>
+            }
+          />
         </DataBox>
         {/* beds per care home and occupancy level data block */}
+        <DataBox
+          dataTitle="Beds per care home and occupancy levels"
+          dataInfo={
+            <>
+              Find out how{' '}
+              <a href="/help/percentage-beds-occupied" className="govuk-link">
+                occupancy level percentages
+              </a>{' '}
+              and{' '}
+              <a
+                href="/help/beds-care-provider-location"
+                className="govuk-link"
+              >
+                number of adult social care beds in a care provider location
+              </a>{' '}
+              are calculated.
+            </>
+          }
+        >
+          <DataTabs
+            id="3"
+            table={
+              <>
+                <h4 className="govuk-heading-s">
+                  Table 3: care home bed numbers and occupancy levels – Shoggins
+                  Care Services (Sudbury), Suffolk local authority, East of
+                  England region and England, October 2025
+                </h4>
+                <p className="govuk-body-m">
+                  Sources: Capacity Tracker from the Department of Health and
+                  Social Care (DHSC)
+                </p>
+              </>
+            }
+            download={
+              <>
+                <h4 className="govuk-heading-s">Download</h4>
+              </>
+            }
+          />
+        </DataBox>
         {/* data indicator detains component */}
         {/* local market info component */}
         {/* back to top link */}
