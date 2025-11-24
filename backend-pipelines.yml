@@ -35,7 +35,7 @@ stages:
             inputs:
               command: 'build'
               projects: '**/*.csproj'
-              arguments: '--configuration $(buildConfiguration)'
+              arguments: '--configuration Release'
 
           - task: DotNetCoreCLI@2
             displayName: 'Run Unit Tests'
@@ -43,5 +43,5 @@ stages:
               command: 'test'
               # Assumes unit test projects end with *Tests.csproj
               projects: '**/*Tests.csproj'
-              arguments: '--configuration $(buildConfiguration) --collect "Code Coverage"'
+              arguments: '--configuration Release --collect "Code Coverage"'
               publishTestResults: true
