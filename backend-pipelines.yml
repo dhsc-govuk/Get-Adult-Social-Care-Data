@@ -1,0 +1,47 @@
+
+trigger:
+  - main
+
+resources:
+  - repo: self
+    
+variables:
+  - name: dockerfilePath
+    value: "$(Build.SourcesDirectory)/gascd_api/Dockerfile"
+    
+stages:
+  - stage: Build
+    displayName: 'Build and Test .NET 9 App'
+    jobs:
+      - job: BuildJob
+        pool:
+          vmImage: 'ubuntu-latest'
+        
+        steps:
+          - task: UseDotNet@2
+            displayName: 'Install .NET 9 SDK'
+            inputs:
+              version: '9.0.109'
+              packageType: 'sdk'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Restore Dependencies'
+            inputs:
+              command: 'restore'
+              projects: '**/*.csproj'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Build Application'
+            inputs:
+              command: 'build'
+              projects: '**/*.csproj'
+              arguments: '--configuration $(buildConfiguration)'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Run Unit Tests'
+            inputs:
+              command: 'test'
+              # Assumes unit test projects end with *Tests.csproj
+              projects: '**/*Tests.csproj'
+              arguments: '--configuration $(buildConfiguration) --collect "Code Coverage"'
+              publishTestResults: true
