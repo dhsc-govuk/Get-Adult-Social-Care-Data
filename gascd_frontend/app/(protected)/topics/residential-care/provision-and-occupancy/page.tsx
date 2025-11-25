@@ -142,7 +142,7 @@ export default function ProvisionAndOccupancyPage() {
             <>
               <h4 className="govuk-heading-s">
                 Figure 1: chart of care home beds per 100,000 adult population –
-                local authorities in the East of England, October 2025
+                local authorities in the {locationNames[2]}, October 2025
               </h4>
               <p className="govuk-body-m">
                 Sources: Capacity Tracker from the Department of Health and
@@ -155,7 +155,7 @@ export default function ProvisionAndOccupancyPage() {
             <>
               <h4 className="govuk-heading-s">
                 Table 1: care home beds per 100,000 adult population for
-                regional local authorities – East of England, October 2025
+                regional local authorities – {locationNames[2]}, October 2025
               </h4>
               <p className="govuk-body-m">
                 Sources: Capacity Tracker from the Department of Health and
@@ -193,8 +193,9 @@ export default function ProvisionAndOccupancyPage() {
             <>
               <h4 className="govuk-heading-s">
                 Table 2: care home bed numbers per 100,000 adult population and
-                occupancy levels – Suffolk local authority, East of England
-                region and England, October 2025
+                occupancy levels – {locationNames[1]} local authority,{' '}
+                {locationNames[2]}
+                region and {locationNames[3]}, October 2025
               </h4>
               <p className="govuk-body-m">
                 Sources: Capacity Tracker from the Department of Health and
@@ -232,8 +233,9 @@ export default function ProvisionAndOccupancyPage() {
             <>
               <h4 className="govuk-heading-s">
                 Table 3: care home bed numbers and occupancy levels – Shoggins
-                Care Services (Sudbury), Suffolk local authority, East of
-                England region and England, October 2025
+                Care Services (Sudbury), {locationNames[1]} local authority,{' '}
+                {locationNames[2]}
+                region and {locationNames[3]}, October 2025
               </h4>
               <p className="govuk-body-m">
                 Sources: Capacity Tracker from the Department of Health and
