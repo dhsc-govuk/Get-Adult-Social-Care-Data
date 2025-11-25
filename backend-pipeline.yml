@@ -87,7 +87,7 @@ stages:
                   fetchTags: true
 
                 - script: |
-                    docker build -f $(dockerfilePath) -t $(imageName):$(tag)-${{environment.name}} gascd_api/api/.
+                    docker build -f $(dockerfilePath) -t $(imageName):$(tag) gascd_api/api/.
                   displayName: Build Image
 
                 - ${{ each environment in parameters.environments}}:
@@ -98,7 +98,7 @@ stages:
                         containerRegistry: ${{environment.acr_connection}}
 
                     - script: |
-                        docker tag $(imageName):$(tag)-${{environment.name}} ${{environment.acr_name}}.azurecr.io/$(imageName):$(tag)-${{environment.name}}
+                        docker tag $(imageName):$(tag) ${{environment.acr_name}}.azurecr.io/$(imageName):$(tag)-${{environment.name}}
                       displayName: Tag image for ${{environment.acr_name}} ACR
 
                     - script: |
