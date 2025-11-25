@@ -8,11 +8,19 @@ type Props = {
   id: string;
   chart?: React.ReactNode;
   table?: React.ReactNode;
+  textSummary?: React.ReactNode;
   map?: React.ReactNode;
   download?: React.ReactNode;
 };
 
-const DataTabs: React.FC<Props> = ({ id, chart, table, map, download }) => {
+const DataTabs: React.FC<Props> = ({
+  id,
+  chart,
+  table,
+  map,
+  download,
+  textSummary,
+}) => {
   useEffect(() => {
     createAll(Tabs);
   }, []);
@@ -47,9 +55,18 @@ const DataTabs: React.FC<Props> = ({ id, chart, table, map, download }) => {
             </a>
           </li>
         )}
+        {textSummary && (
+          <li
+            className={`govuk-tabs__list-item${!map && !chart && !table && textSummary ? ' govuk-tabs__list-item--selected' : ''}`}
+          >
+            <a className="govuk-tabs__tab" href={`#textSummary-${id}`}>
+              Text Summary
+            </a>
+          </li>
+        )}
         {download && (
           <li
-            className={`govuk-tabs__list-item${!map && !chart && !table && download ? ' govuk-tabs__list-item--selected' : ''}`}
+            className={`govuk-tabs__list-item${!map && !chart && !table && !textSummary && download ? ' govuk-tabs__list-item--selected' : ''}`}
           >
             <a className="govuk-tabs__tab" href={`#download-${id}`}>
               Download
@@ -82,6 +99,15 @@ const DataTabs: React.FC<Props> = ({ id, chart, table, map, download }) => {
           style={{ backgroundColor: 'white' }}
         >
           {table}
+        </div>
+      )}
+      {textSummary && (
+        <div
+          className="govuk-tabs__panel govuk-tabs__panel--hidden"
+          id={`textSummary-${id}`}
+          style={{ backgroundColor: 'white' }}
+        >
+          {textSummary}
         </div>
       )}
       {download && (
