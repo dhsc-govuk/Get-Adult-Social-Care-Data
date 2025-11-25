@@ -8,6 +8,7 @@ import DataTabs from '@/components/data-components/DataTabs';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
 import DataLinkCard from '@/components/data-components/DataLinkCard';
 import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
+import BackToTop from '@/components/data-components/BackToTop';
 
 export default function ProvisionAndOccupancyPage() {
   const breadcrumbs = [
@@ -208,6 +209,7 @@ export default function ProvisionAndOccupancyPage() {
         {/* local market info component */}
         <LocalMarketInformation localAuthority="Suffolk" url="" />
         {/* back to top link */}
+        <BackToTop />
       </main>
     </Layout>
   );
