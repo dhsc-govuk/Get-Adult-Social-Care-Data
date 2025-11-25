@@ -9,7 +9,7 @@ type Props = {
   url: string;
 };
 
-const DataIndicatorDetail: React.FC<Props> = ({
+const DataLinkCard: React.FC<Props> = ({
   label,
   sources,
   updateFrequency,
@@ -40,4 +40,4 @@ const DataIndicatorDetail: React.FC<Props> = ({
   );
 };
 
-export default DataIndicatorDetail;
+export default DataLinkCard;
