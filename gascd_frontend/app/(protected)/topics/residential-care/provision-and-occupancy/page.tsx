@@ -45,7 +45,6 @@ export default function ProvisionAndOccupancyPage() {
             </h2>
           </div>
         </div>
-        {/* carehome bed numbers data block */}
         <DataBox
           dataTitle="Care home bed numbers"
           dataInfo={
@@ -96,7 +95,6 @@ export default function ProvisionAndOccupancyPage() {
             }
           />
         </DataBox>
-        {/* occupancy level data block */}
         <DataBox
           dataTitle="Occupancy levels"
           dataInfo={
@@ -140,7 +138,6 @@ export default function ProvisionAndOccupancyPage() {
             }
           />
         </DataBox>
-        {/* beds per care home and occupancy level data block */}
         <DataBox
           dataTitle="Beds per care home and occupancy levels"
           dataInfo={
@@ -182,7 +179,6 @@ export default function ProvisionAndOccupancyPage() {
             }
           />
         </DataBox>
-        {/* data indicator details component */}
         <DataIndicatorDetailsList>
           <DataLinkCard
             label="Adult social care beds per 100,000 adult population"
@@ -206,9 +202,7 @@ export default function ProvisionAndOccupancyPage() {
             url="/help/percentage-beds-occupied"
           />
         </DataIndicatorDetailsList>
-        {/* local market info component */}
         <LocalMarketInformation localAuthority="Suffolk" url="" />
-        {/* back to top link */}
         <BackToTop />
       </main>
     </Layout>
