@@ -194,8 +194,7 @@ export default function ProvisionAndOccupancyPage() {
               <h4 className="govuk-heading-s">
                 Table 2: care home bed numbers per 100,000 adult population and
                 occupancy levels – {locationNames[1]} local authority,{' '}
-                {locationNames[2]}
-                region and {locationNames[3]}, October 2025
+                {locationNames[2]} region and {locationNames[3]}, October 2025
               </h4>
               <p className="govuk-body-m">
                 Sources: Capacity Tracker from the Department of Health and
@@ -234,8 +233,7 @@ export default function ProvisionAndOccupancyPage() {
               <h4 className="govuk-heading-s">
                 Table 3: care home bed numbers and occupancy levels – Shoggins
                 Care Services (Sudbury), {locationNames[1]} local authority,{' '}
-                {locationNames[2]}
-                region and {locationNames[3]}, October 2025
+                {locationNames[2]} region and {locationNames[3]}, October 2025
               </h4>
               <p className="govuk-body-m">
                 Sources: Capacity Tracker from the Department of Health and
