@@ -6,6 +6,9 @@ resources:
   - repo: self
     
 variables:
+  - group: acr_service_connection
+  - group: arm_service_connection
+  - group: docker_build_arguments
   - name: dockerfilePath
     value: "$(Build.SourcesDirectory)/gascd_api/Dockerfile"
   - name: vmImageName
