@@ -17,8 +17,8 @@ variables:
     value: "$(Build.BuildId)"
   - name: dockerfilePath
     value: "$(Build.SourcesDirectory)/gascd_api/api/Dockerfile"
-  - name: imageRepository
-    value: "dapalpha"
+  - name: imageName
+    value: "dapalpha-api"
     
 parameters:
   - name: environments
@@ -87,7 +87,7 @@ stages:
                   fetchTags: true
 
                 - script: |
-                    docker build -f $(dockerfilePath) -t $(imageRepository):$(tag) -t $(imageRepository):latest gascd_api/api/.
+                    docker build -f $(dockerfilePath) -t $(imageName):$(tag)-${{environment.name}} gascd_api/api/.
                   displayName: Build Image
 
                 - ${{ each environment in parameters.environments}}:
@@ -98,11 +98,9 @@ stages:
                         containerRegistry: ${{environment.acr_connection}}
 
                     - script: |
-                        docker tag $(imageRepository):$(tag) ${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)
-                        docker tag $(imageRepository):latest ${{environment.acr_name}}.azurecr.io/$(imageRepository):latest
+                        docker tag $(imageName):$(tag)-${{environment.name}} ${{environment.acr_name}}.azurecr.io/$(imageName):$(tag)-${{environment.name}}
                       displayName: Tag image for ${{environment.acr_name}} ACR
 
                     - script: |
-                        docker push ${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)
-                        docker push ${{environment.acr_name}}.azurecr.io/$(imageRepository):latest
+                        docker push ${{environment.acr_name}}.azurecr.io/$(imageName):$(tag)-${{environment.name}}
                       displayName: Push image to ${{environment.acr_name}} ACR
