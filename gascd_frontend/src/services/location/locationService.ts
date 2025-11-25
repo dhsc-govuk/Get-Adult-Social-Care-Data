@@ -47,7 +47,6 @@ class LocationService {
       const response = await fetch(
         `http://localhost:3000/api/get_available_locations?provider_location_id=${query}`
       );
-      console.log(response);
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
