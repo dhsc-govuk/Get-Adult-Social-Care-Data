@@ -8,6 +8,24 @@ resources:
 variables:
   - name: dockerfilePath
     value: "$(Build.SourcesDirectory)/gascd_api/Dockerfile"
+  - name: vmImageName
+    value: "ubuntu-latest"
+  - name: tag
+    value: "$(Build.BuildId)"
+  - name: dockerfilePath
+    value: "$(Build.SourcesDirectory)/gascd_api/api/Dockerfile"
+  - name: imageRepository
+    value: "dapalpha"
+    
+parameters:
+  - name: environments
+    type: object
+    default:
+      - name: dev
+        environment_name: "Webapp - dev"
+        arm_connection: "$(dev_arm_service_connections)"
+        acr_connection: "$(dev_acr_connection)"
+        acr_name: "$(dev_acr_name)"
     
 stages:
   - stage: Build
@@ -15,7 +33,7 @@ stages:
     jobs:
       - job: BuildJob
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: $(vmImageName)
         
         steps:
           - task: UseDotNet@2
@@ -45,3 +63,43 @@ stages:
               projects: '**/*Tests.csproj'
               arguments: '--configuration Release --collect "Code Coverage"'
               publishTestResults: true
+              
+  - stage: Build_Image
+    displayName: "Build/push Docker image (all environments)"
+    condition: succeeded()
+    jobs:
+      - deployment: Build
+        displayName: Build
+        environment: "dev"
+        pool:
+          vmImage: $(vmImageName)
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                # This step fetches the last 50 commits and all tags.
+                # (performance optimization over fetchDepth: 0)
+                - checkout: self
+                  fetchDepth: 50
+                  fetchTags: true
+
+                - script: |
+                    docker build -f $(dockerfilePath) -t $(imageRepository):$(tag) -t $(imageRepository):latest gascd_api/api/.
+                  displayName: Build Image
+
+                - ${{ each environment in parameters.environments}}:
+                    - task: Docker@2
+                      displayName: Login to ${{environment.acr_connection}} ACR
+                      inputs:
+                        command: login
+                        containerRegistry: ${{environment.acr_connection}}
+
+                    - script: |
+                        docker tag $(imageRepository):$(tag) ${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)
+                        docker tag $(imageRepository):latest ${{environment.acr_name}}.azurecr.io/$(imageRepository):latest
+                      displayName: Tag image for ${{environment.acr_name}} ACR
+
+                    - script: |
+                        docker push ${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)
+                        docker push ${{environment.acr_name}}.azurecr.io/$(imageRepository):latest
+                      displayName: Push image to ${{environment.acr_name}} ACR
