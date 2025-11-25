@@ -6,7 +6,8 @@ import React from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
-import DataIndicatorDetail from '@/components/data-components/DataIndicatorDetail';
+import DataLinkCard from '@/components/data-components/DataLinkCard';
+import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
 
 export default function ProvisionAndOccupancyPage() {
   const breadcrumbs = [
@@ -182,21 +183,21 @@ export default function ProvisionAndOccupancyPage() {
         </DataBox>
         {/* data indicator details component */}
         <DataIndicatorDetailsList>
-          <DataIndicatorDetail
+          <DataLinkCard
             label="Adult social care beds per 100,000 adult population"
             sources="Capacity Tracker, Office for National Statistics"
             updateFrequency="Daily"
             limitations={true}
             url="/help/beds-per-100000-adult-population"
           />
-          <DataIndicatorDetail
+          <DataLinkCard
             label="Number of adult social care beds in a care provider location"
             sources="Capacity Tracker"
             updateFrequency="Daily"
             limitations={true}
             url="/help/beds-care-provider-location"
           />
-          <DataIndicatorDetail
+          <DataLinkCard
             label="Occupancy level percentages for adult social care beds"
             sources="Capacity Tracker"
             updateFrequency="Daily"
@@ -205,6 +206,7 @@ export default function ProvisionAndOccupancyPage() {
           />
         </DataIndicatorDetailsList>
         {/* local market info component */}
+        <LocalMarketInformation localAuthority="Suffolk" url="" />
         {/* back to top link */}
       </main>
     </Layout>
