@@ -5,7 +5,7 @@
 Create an initial environment file as follows:
 
 - Copy `.env.template` to `.env`
-- Enter a random string for `NEXTAUTH_SECRET` in `.env`
+- Enter a random string for `BETTER_AUTH_SECRET` in `.env`
 
 ## Usage
 
