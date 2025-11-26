@@ -40,6 +40,8 @@ const seedDevelopmentUser = async () => {
   }
 
   // Now update the user properties
+  // This updates the db directly, because the location properties are
+  // protected from being updated through the Better Auth client API
   const db = new Kysely<any>({ dialect: msdialect });
   const rows = await db
     .updateTable('user')
