@@ -13,15 +13,7 @@ export default async function AuthLayout({
   });
   addUserTelemetry();
 
-  if (process.env.LOCAL_AUTH == 'true') {
-    if (session?.user) {
-      // Skip jwt validation if doing local auth
-      return <>{children}</>;
-    }
-  }
-
   if (!session || !session.user) {
-    // XXX does this need extra validation here?
     redirect('/login');
   }
 
