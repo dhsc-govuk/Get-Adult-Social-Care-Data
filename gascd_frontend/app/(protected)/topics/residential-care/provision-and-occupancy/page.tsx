@@ -16,27 +16,52 @@ import { Indicator } from '@/data/interfaces/Indicator';
 import TableService from '@/services/Table/TableService';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { MetaData } from '@/data/interfaces/MetaData';
+import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 export default function ProvisionAndOccupancyPage() {
   const [locationNames, setLocationNames] = useState<string[]>([]);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [locationNamesCP, setLocationNamesCP] = useState<string[]>([]);
+  const [finalCpData, setFinalCpData] = useState<Indicator[]>([]);
+  const [filteredBedData, setFilteredBedData] = useState<Indicator[]>([]);
+  const [metricDateType, setMetricDataType] = useState<MetaData[]>([]);
   const [bedsQuery, setBedsQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
   });
-  const [filteredBedData, setFilteredBedData] = useState<Indicator[]>([]);
-  const [metricDateType, setMetricDataType] = useState<MetaData[]>([]);
+  const [careProviderDataQuery1, setCareProviderData1Query] =
+    useState<IndicatorQuery>({
+      metric_ids: [],
+      location_ids: [],
+    });
+  const [careProviderDataQuery2, setCareProviderData2Query] =
+    useState<IndicatorQuery>({
+      metric_ids: [],
+      location_ids: [],
+    });
 
   const bedsMetricIds = [
     'bedcount_per_100000_adults_total',
     'median_occupancy_total',
   ];
+  const careProviderMetricIds1 = ['bedcount_total', 'occupancy_rate_total'];
+  const careProviderMetricIds2 = [
+    'median_bed_count_total',
+    'median_occupancy_total',
+  ];
+  const careProviderMedianMetrics: Record<string, string> = {
+    median_bed_count_total: 'bedcount_total',
+    median_occupancy_total: 'occupancy_rate_total',
+  };
 
   const bedRowHeaders = {
     bedcount_per_100000_adults_total:
       'Care home beds per 100,000 adult population	',
+    median_occupancy_total: 'Occupancy level',
+  };
+  const careProviderRowHeaders = {
+    median_bed_count_total: 'Beds per care home	',
     median_occupancy_total: 'Occupancy level',
   };
 
@@ -125,12 +150,22 @@ export default function ProvisionAndOccupancyPage() {
           await IndicatorFetchService.getData(bedsQuery);
         const filteredBedData = TableService.filterDate(bedData);
         setFilteredBedData(filteredBedData);
+
+        const CPData: Indicator[] = await IndicatorFetchService.getData(
+          careProviderDataQuery1
+        );
+        const CPData2: Indicator[] = await IndicatorFetchService.getData(
+          careProviderDataQuery2
+        );
+        const comboData: Indicator[] = [...CPData, ...CPData2];
+        const filteredCPData = TableService.filterDate(comboData);
+        setFinalCpData(filteredCPData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchAllData();
-  }, [bedsQuery]);
+  }, [bedsQuery, careProviderDataQuery1, careProviderDataQuery2]);
 
   useEffect(() => {
     const fetchLocationIds = async () => {
@@ -161,6 +196,21 @@ export default function ProvisionAndOccupancyPage() {
       }));
     }
   }, [locationIds]);
+
+  useEffect(() => {
+    if (CPLocationId) {
+      setCareProviderData1Query(() => ({
+        metric_ids: careProviderMetricIds1,
+        location_ids: [CPLocationId],
+      }));
+    }
+    if (locationIds.length) {
+      setCareProviderData2Query(() => ({
+        metric_ids: careProviderMetricIds2,
+        location_ids: cleanupLocationIDs(locationIds),
+      }));
+    }
+  }, [CPLocationId, locationIds]);
 
   useEffect(() => {
     const fetchMetadataByType = async () => {
@@ -272,22 +322,20 @@ export default function ProvisionAndOccupancyPage() {
         <DataTabs
           id="2"
           table={
-            <>
-              <DataTable
-                caption={`Table 2: care home bed numbers per 100,000 adult population and
+            <DataTable
+              caption={`Table 2: care home bed numbers per 100,000 adult population and
                 occupancy levels – ${locationNamesCP[2]} local authority, 
                 ${locationNamesCP[3]} region and ${locationNamesCP[4]}, October
                 2025`}
-                source={`Sources: Capacity Tracker from the Department of Health and
+              source={`Sources: Capacity Tracker from the Department of Health and
                 Social Care (DHSC), population estimates from the Office for
                 National Statistics (ONS)`}
-                columnHeaders={locationNames}
-                rowHeaders={bedRowHeaders}
-                data={filteredBedData}
-                showCareProvider={false}
-                percentageRows={metricDateType}
-              ></DataTable>
-            </>
+              columnHeaders={locationNames}
+              rowHeaders={bedRowHeaders}
+              data={filteredBedData}
+              showCareProvider={false}
+              percentageRows={metricDateType}
+            ></DataTable>
           }
           download={
             <>
@@ -315,18 +363,21 @@ export default function ProvisionAndOccupancyPage() {
         <DataTabs
           id="3"
           table={
-            <>
-              <h4 className="govuk-heading-s">
-                Table 3: care home bed numbers and occupancy levels –{' '}
-                {locationNamesCP[1]}, {locationNamesCP[2]} local authority,{' '}
-                {locationNamesCP[3]} region and {locationNamesCP[4]}, October
-                2025
-              </h4>
-              <p className="govuk-body-m">
-                Sources: Capacity Tracker from the Department of Health and
-                Social Care (DHSC)
-              </p>
-            </>
+            <DataTable
+              caption={`Table 3: care home bed numbers and occupancy levels – 
+                ${locationNamesCP[1]}, ${locationNamesCP[2]} local authority, 
+                ${locationNamesCP[3]} region and ${locationNamesCP[4]}, October
+                2025`}
+              source={
+                'Source: Capacity Tracker from the Department of Health and Social Care (DHSC)'
+              }
+              columnHeaders={locationNamesCP}
+              rowHeaders={careProviderRowHeaders}
+              data={finalCpData}
+              showCareProvider={true}
+              careProviderMedianMetrics={careProviderMedianMetrics}
+              percentageRows={metricDateType}
+            ></DataTable>
           }
           download={
             <>
