@@ -6,7 +6,7 @@ class LocationService {
   public static async getLocations(query: string): Promise<Locations> {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/get_location_data?provider_location_id=${query}`
+        `/api/get_location_data?provider_location_id=${query}`
       );
 
       if (!response.ok) {
@@ -25,7 +25,7 @@ class LocationService {
   public static async getLaLocations(query: string): Promise<Locations> {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/get_la_location_data?la_code=${query}`
+        `/api/get_la_location_data?la_code=${query}`
       );
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
@@ -45,7 +45,7 @@ class LocationService {
   ): Promise<Indicator[]> {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/get_available_locations?provider_location_id=${query}`
+        `/api/get_available_locations?provider_location_id=${query}`
       );
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
@@ -80,7 +80,7 @@ class LocationService {
   ): Promise<any> {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/get_available_locations?provider_location_id=${encodeURIComponent(providerLocationId)}&location_type=${encodeURIComponent(locationType)}`
+        `/api/get_available_locations?provider_location_id=${encodeURIComponent(providerLocationId)}&location_type=${encodeURIComponent(locationType)}`
       );
 
       if (!response.ok) {
