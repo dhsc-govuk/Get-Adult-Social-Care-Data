@@ -23,16 +23,16 @@ test-e2e: node_modules
 # Docker utilities
 
 docker-rebuild-no-cache:	
-	docker-compose -f ./docker-compose.yml build --no-cache 
+	docker compose build --no-cache app
 
 docker-up:
-	docker-compose -f ./docker-compose.yml up
+	docker compose up app
 
 docker-up-rebuild:	
-	docker-compose -f ./docker-compose.yml up --build --force-recreate
+	docker compose up --build --force-recreate app
 
 docker-down:
-	docker-compose -f ./docker-compose.yml down
+	docker compose down app
 
 format-staged:
 	${NPX_COMMAND} lint-staged
