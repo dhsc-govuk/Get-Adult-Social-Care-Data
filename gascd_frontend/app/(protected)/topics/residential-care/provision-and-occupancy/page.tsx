@@ -168,6 +168,7 @@ export default function ProvisionAndOccupancyPage() {
         const comboData: Indicator[] = [...CPData, ...CPData2];
         const filteredCPData = TableService.filterDate(comboData);
         setFinalCpData(filteredCPData);
+        console.log('Final CP Data:', filteredCPData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -339,6 +340,34 @@ export default function ProvisionAndOccupancyPage() {
               percentageRows={metricDateType}
               showAverageLabel={false}
             ></DataTable>
+          }
+          textSummary={
+            <>
+              <h4 className="govuk-heading-s">Text summary</h4>
+              <p className="govuk-body">
+                The number of adult social care beds per 100,000 adult
+                population provides an indicator of current care capacity. A
+                higher number suggests more sufficient capacity.
+              </p>
+              <p className="govuk-body">
+                Care homes in {locationNamesCP[2]} have{' '}
+                <strong>
+                  {finalCpData.find(
+                    (metric) =>
+                      metric.metric_id === 'median_bed_count_total' &&
+                      metric.location_type === 'LA'
+                  )?.data_point ?? 'Loading...'}{' '}
+                  beds per 100,000 adult population
+                </strong>
+                , compared to the {locationNamesCP[3]} regional average of{' '}
+                {finalCpData.find(
+                  (metric) =>
+                    metric.metric_id === 'median_bed_count_total' &&
+                    metric.location_type === 'Regional'
+                )?.data_point ?? 'Loading...'}{' '}
+                per 100,000.
+              </p>
+            </>
           }
           download={
             <>
