@@ -71,7 +71,7 @@ class IndicatorFetchService {
 
   public static async getMetadateByType(query: string): Promise<MetaData[]> {
     const response = await fetch(
-      `api/get_metadata_by_data_types?metric_data_type=${query}`
+      `/api/get_metadata_by_data_types?metric_data_type=${query}`
     );
     if (!response.ok) {
       throw new Error(`Failed to fetch data: ${response.statusText}`);
