@@ -16,10 +16,11 @@ import { Indicator } from '@/data/interfaces/Indicator';
 import TableService from '@/services/Table/TableService';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { MetaData } from '@/data/interfaces/MetaData';
-import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 export default function ProvisionAndOccupancyPage() {
   const [locationNames, setLocationNames] = useState<string[]>([]);
+  const [locationNamesWithAverageLabels, setLocationNamesWithAverageLabels] =
+    useState<string[]>([]);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [locationNamesCP, setLocationNamesCP] = useState<string[]>([]);
@@ -134,6 +135,12 @@ export default function ProvisionAndOccupancyPage() {
           );
           setLocationNames(locationNames);
           setLocationNamesCP(locationNamesCP);
+          setLocationNamesWithAverageLabels([
+            locationNames[0],
+            locationNames[1],
+            `${locationNames[2]} (regional average)`,
+            `${locationNames[3]} (national average)`,
+          ]);
         } catch (error) {
           console.error('Error fetching location names:', error);
         }
@@ -174,10 +181,6 @@ export default function ProvisionAndOccupancyPage() {
           const locationids = await LocationService.getLocationIds(
             CPLocationId,
             false
-          );
-          const locationIdsCP = await LocationService.getLocationIds(
-            CPLocationId,
-            true
           );
           setLocationIds(locationids);
         } catch (error) {
@@ -273,8 +276,9 @@ export default function ProvisionAndOccupancyPage() {
           chart={
             <>
               <h4 className="govuk-heading-s">
-                Figure 1: chart of care home beds per 100,000 adult population –
-                local authorities in the {locationNamesCP[3]}, October 2025
+                Figure 1: chart of care home beds per 100,000 adult population
+                &ndash; local authorities in the {locationNamesCP[3]}, October
+                2025
               </h4>
               <p className="govuk-body-m">
                 Sources: Capacity Tracker from the Department of Health and
@@ -287,7 +291,8 @@ export default function ProvisionAndOccupancyPage() {
             <>
               <h4 className="govuk-heading-s">
                 Table 1: care home beds per 100,000 adult population for
-                regional local authorities – {locationNamesCP[3]}, October 2025
+                regional local authorities &ndash; {locationNamesCP[3]}, October
+                2025
               </h4>
               <p className="govuk-body-m">
                 Sources: Capacity Tracker from the Department of Health and
@@ -330,11 +335,12 @@ export default function ProvisionAndOccupancyPage() {
               source={`Sources: Capacity Tracker from the Department of Health and
                 Social Care (DHSC), population estimates from the Office for
                 National Statistics (ONS)`}
-              columnHeaders={locationNames}
+              columnHeaders={locationNamesWithAverageLabels}
               rowHeaders={bedRowHeaders}
               data={filteredBedData}
               showCareProvider={false}
               percentageRows={metricDateType}
+              showAverageLabel={false}
             ></DataTable>
           }
           download={
@@ -360,6 +366,23 @@ export default function ProvisionAndOccupancyPage() {
           </>
         }
       >
+        <details className="govuk-details">
+          <summary className="govuk-details__summary">
+            <span className="govuk-details__summary-text">
+              Definition of a &lsquo;median&rsquo; number
+            </span>
+          </summary>
+          <div className="govuk-details__text">
+            <p>
+              If you place a set of numbers in order, the middle one of the set
+              is the median number.
+            </p>
+            <p>
+              When there are two middle numbers, the median is the average of
+              those two numbers.
+            </p>
+          </div>
+        </details>
         <DataTabs
           id="3"
           table={
@@ -377,6 +400,7 @@ export default function ProvisionAndOccupancyPage() {
               showCareProvider={true}
               careProviderMedianMetrics={careProviderMedianMetrics}
               percentageRows={metricDateType}
+              showAverageLabel={true}
             ></DataTable>
           }
           download={
