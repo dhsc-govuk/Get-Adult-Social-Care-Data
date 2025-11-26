@@ -13,6 +13,7 @@ type DataTableProps = {
   source?: string;
   last_updated?: string;
   children?: React.ReactNode;
+  showAverageLabel?: boolean;
 };
 
 const getCareProviderKey = (
@@ -26,7 +27,8 @@ const getFormattedDataPoint = (
   data: Indicator[],
   metricId: string,
   locationType: string,
-  isPercentage: boolean = false
+  isPercentage: boolean = false,
+  showAverageLabel?: boolean
 ): string => {
   const foundMetric = data.find(
     (metric) =>
@@ -38,8 +40,11 @@ const getFormattedDataPoint = (
     foundMetric.data_point !== null &&
     !isNaN(Number(foundMetric.data_point))
   ) {
-    let formattedDataPoint = Number(foundMetric.data_point).toLocaleString();
-    return isPercentage ? `${formattedDataPoint}%` : formattedDataPoint;
+    let formatted = Number(foundMetric.data_point).toLocaleString();
+    if (isPercentage) formatted += '%';
+    if (showAverageLabel)
+      formatted += isPercentage ? ' (average)' : ' (median)';
+    return formatted;
   }
   return 'Loading...';
 };
@@ -54,6 +59,7 @@ const DataTable: React.FC<DataTableProps> = ({
   percentageRows,
   children,
   source,
+  showAverageLabel = false,
 }) => {
   const tableref = useRef<HTMLTableElement>(null);
   const columnClass = (columnIndex: number) => {
@@ -110,7 +116,8 @@ const DataTable: React.FC<DataTableProps> = ({
                   key,
                   'LA',
                   percentageRows?.some((item) => item.metric_id === key) ??
-                    false
+                    false,
+                  showAverageLabel
                 )}
               </td>
               <td className="govuk-table__cell govuk-table__cell--numeric">
@@ -119,7 +126,8 @@ const DataTable: React.FC<DataTableProps> = ({
                   key,
                   'Regional',
                   percentageRows?.some((item) => item.metric_id === key) ??
-                    false
+                    false,
+                  showAverageLabel
                 )}
               </td>
               <td className="govuk-table__cell govuk-table__cell--numeric">
@@ -128,7 +136,8 @@ const DataTable: React.FC<DataTableProps> = ({
                   key,
                   'National',
                   percentageRows?.some((item) => item.metric_id === key) ??
-                    false
+                    false,
+                  showAverageLabel
                 )}
               </td>
             </tr>
