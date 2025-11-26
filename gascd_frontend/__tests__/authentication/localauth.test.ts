@@ -44,7 +44,8 @@ describe('Local auth handler', () => {
       })
     );
     expect(errorLogSpy).toHaveBeenCalledWith(
-      'Could not log in with local auth'
+      'Could not log in with local auth',
+      { response_code: 400 }
     );
   });
 
