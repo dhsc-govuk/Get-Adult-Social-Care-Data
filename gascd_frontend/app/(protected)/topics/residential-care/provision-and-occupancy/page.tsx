@@ -168,7 +168,6 @@ export default function ProvisionAndOccupancyPage() {
         const comboData: Indicator[] = [...CPData, ...CPData2];
         const filteredCPData = TableService.filterDate(comboData);
         setFinalCpData(filteredCPData);
-        console.log('Final CP Data:', filteredCPData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -258,124 +257,6 @@ export default function ProvisionAndOccupancyPage() {
           </h2>
         </div>
       </div>
-      <DataBox
-        dataTitle="Care home bed numbers"
-        dataInfo={
-          <>
-            Find out{' '}
-            <a
-              href="/help/beds-per-100000-adult-population"
-              className="govuk-link"
-            >
-              how the number of adult social care beds per 100,000 adult
-              population is calculated
-            </a>
-          </>
-        }
-      >
-        <DataTabs
-          id="1"
-          chart={
-            <>
-              <h4 className="govuk-heading-s">
-                Figure 1: chart of care home beds per 100,000 adult population
-                &ndash; local authorities in the {locationNamesCP[3]}, October
-                2025
-              </h4>
-              <p className="govuk-body-m">
-                Sources: Capacity Tracker from the Department of Health and
-                Social Care (DHSC), population estimates from the Office for
-                National Statistics (ONS)
-              </p>
-            </>
-          }
-          table={
-            <>
-              <h4 className="govuk-heading-s">
-                Table 1: care home beds per 100,000 adult population for
-                regional local authorities &ndash; {locationNamesCP[3]}, October
-                2025
-              </h4>
-              <p className="govuk-body-m">
-                Sources: Capacity Tracker from the Department of Health and
-                Social Care (DHSC), population estimates from the Office for
-                National Statistics (ONS)
-              </p>
-            </>
-          }
-          download={
-            <>
-              <h4 className="govuk-heading-s">Download</h4>
-            </>
-          }
-        />
-      </DataBox>
-      <DataBox
-        dataTitle="Care home bed types"
-        dataInfo={
-          <>
-            Find out how{' '}
-            <a href="/help/beds-care-provider-location" className="govuk-link">
-              the number of adult social care beds per 100,000 adult population
-            </a>{' '}
-            are calculated.
-          </>
-        }
-      >
-        <DataTabs
-          id="2"
-          table={
-            <DataTable
-              caption={`Table 2: care home bed numbers per 100,000 adult population and
-                occupancy levels – ${locationNamesCP[2]} local authority, 
-                ${locationNamesCP[3]} region and ${locationNamesCP[4]}, October
-                2025`}
-              source={`Sources: Capacity Tracker from the Department of Health and
-                Social Care (DHSC), population estimates from the Office for
-                National Statistics (ONS)`}
-              columnHeaders={locationNamesWithAverageLabels}
-              rowHeaders={bedRowHeaders}
-              data={filteredBedData}
-              showCareProvider={false}
-              percentageRows={metricDateType}
-              showAverageLabel={false}
-            ></DataTable>
-          }
-          textSummary={
-            <>
-              <h4 className="govuk-heading-s">Text summary</h4>
-              <p className="govuk-body">
-                The number of adult social care beds per 100,000 adult
-                population provides an indicator of current care capacity. A
-                higher number suggests more sufficient capacity.
-              </p>
-              <p className="govuk-body">
-                Care homes in {locationNamesCP[2]} have{' '}
-                <strong>
-                  {finalCpData.find(
-                    (metric) =>
-                      metric.metric_id === 'median_bed_count_total' &&
-                      metric.location_type === 'LA'
-                  )?.data_point ?? 'Loading...'}{' '}
-                  beds per 100,000 adult population
-                </strong>
-                , compared to the {locationNamesCP[3]} regional average of{' '}
-                {finalCpData.find(
-                  (metric) =>
-                    metric.metric_id === 'median_bed_count_total' &&
-                    metric.location_type === 'Regional'
-                )?.data_point ?? 'Loading...'}{' '}
-                per 100,000.
-              </p>
-            </>
-          }
-          download={
-            <>
-              <h4 className="govuk-heading-s">Download</h4>
-            </>
-          }
-        />
-      </DataBox>
       <DataBox
         dataTitle="Beds per care home and occupancy levels"
         dataInfo={
