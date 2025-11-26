@@ -98,7 +98,7 @@ stages:
                 - script: |
                     NEXT_PUBLIC_GASCD_GIT_HASH=$(git rev-parse --short HEAD) \
                     NEXT_PUBLIC_GASCD_GIT_TAG=$(git describe --tags --abbrev=0 --always) \
-                    docker build -f $(dockerfilePath) -t $(imageRepository):$(tag) -t $(imageRepository):latest gascd_frontend/. --build-arg NEXT_PUBLIC_GASCD_GIT_HASH --build-arg NEXT_PUBLIC_GASCD_GIT_TAG
+                    docker build -f $(dockerfilePath) -t $(imageRepository):$(tag) gascd_frontend/. --build-arg NEXT_PUBLIC_GASCD_GIT_HASH --build-arg NEXT_PUBLIC_GASCD_GIT_TAG
                   displayName: Build Image
 
                 - ${{ each environment in parameters.environments}}:
@@ -110,12 +110,10 @@ stages:
 
                     - script: |
                         docker tag $(imageRepository):$(tag) ${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)
-                        docker tag $(imageRepository):latest ${{environment.acr_name}}.azurecr.io/$(imageRepository):latest
                       displayName: Tag image for ${{environment.acr_name}} ACR
 
                     - script: |
                         docker push ${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)
-                        docker push ${{environment.acr_name}}.azurecr.io/$(imageRepository):latest
                       displayName: Push image to ${{environment.acr_name}} ACR
   # Deploy across environments
   - ${{ each environment in parameters.environments}}:
@@ -132,6 +130,18 @@ stages:
               runOnce:
                 deploy:
                   steps:
+                    - task: Docker@2
+                      displayName: Login to ${{environment.acr_connection}} ACR
+                      inputs:
+                        command: login
+                        containerRegistry: ${{environment.acr_connection}}
+                    # Ensure 'latest' is only updated when this deployment step actually runs.
+                    - script: |
+                        echo "Updating 'latest' tag for ${{environment.name}}..."
+                        docker pull ${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)
+                        docker tag ${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag) ${{environment.acr_name}}.azurecr.io/$(imageRepository):latest
+                        docker push ${{environment.acr_name}}.azurecr.io/$(imageRepository):latest
+                      displayName: Update 'latest' tag on ${{environment.acr_name}}
                     - task: AzureWebAppContainer@1
                       inputs:
                         appType: "webAppLinux"
