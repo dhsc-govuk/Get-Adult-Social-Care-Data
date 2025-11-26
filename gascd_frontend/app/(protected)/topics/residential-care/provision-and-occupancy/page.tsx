@@ -16,6 +16,7 @@ import { Indicator } from '@/data/interfaces/Indicator';
 import TableService from '@/services/Table/TableService';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { MetaData } from '@/data/interfaces/MetaData';
+import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 
 export default function ProvisionAndOccupancyPage() {
   const [locationNames, setLocationNames] = useState<string[]>([]);
@@ -309,14 +310,10 @@ export default function ProvisionAndOccupancyPage() {
         />
       </DataBox>
       <DataBox
-        dataTitle="Occupancy levels"
+        dataTitle="Care home bed types"
         dataInfo={
           <>
             Find out how{' '}
-            <a href="/help/percentage-beds-occupied" className="govuk-link">
-              occupancy level percentages
-            </a>{' '}
-            and{' '}
             <a href="/help/beds-care-provider-location" className="govuk-link">
               the number of adult social care beds per 100,000 adult population
             </a>{' '}
@@ -402,6 +399,42 @@ export default function ProvisionAndOccupancyPage() {
               percentageRows={metricDateType}
               showAverageLabel={true}
             ></DataTable>
+          }
+          textSummary={
+            <>
+              <h4 className="govuk-heading-s">Text summary</h4>
+              <p className="govuk-body">
+                {locationNamesCP[1]} is a provider with{' '}
+                <strong>
+                  {finalCpData.find(
+                    (metric) =>
+                      metric.metric_id === 'bedcount_total' &&
+                      metric.location_type === 'Care provider location'
+                  )?.data_point ?? 'Loading...'}{' '}
+                </strong>
+                total beds, compared to the median (
+                {finalCpData.find(
+                  (metric) =>
+                    metric.metric_id === 'median_bed_count_total' &&
+                    metric.location_type === 'Regional'
+                )?.data_point ?? 'Loading...'}{' '}
+                beds) in {locationNamesCP[2]}.
+              </p>
+              <ConditionalText
+                data={finalCpData}
+                ColumnHeaders={locationNamesCP}
+                section="CapacityCareProvider"
+                locations={locationNamesCP}
+                metric_Id="median_occupancy_total"
+              ></ConditionalText>
+              <ConditionalText
+                data={filteredBedData}
+                ColumnHeaders={locationNames}
+                section="CapacityLA"
+                locations={locationNames}
+                metric_Id="median_occupancy_total"
+              ></ConditionalText>
+            </>
           }
           download={
             <>
