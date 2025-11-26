@@ -6,10 +6,7 @@ describe('User can set cookies', () => {
     cy.visit('');
     cy.url().should('include', '/login');
 
-    // Login with dummy auth
-    cy.request('/api/auth/local');
-    cy.wait(1000);
-    cy.visit('');
+    cy.login();
 
     // Load the homepage
     cy.url().should('include', '/home');
@@ -35,9 +32,7 @@ describe('User can set cookies', () => {
     cy.url().should('include', '/login');
 
     // Login with dummy auth
-    cy.request('/api/auth/local');
-    cy.wait(1000);
-    cy.visit('');
+    cy.login();
 
     // Load the homepage
     cy.url().should('include', '/home');
@@ -62,11 +57,7 @@ describe('User can set cookies', () => {
     cy.visit('');
     cy.url().should('include', '/login');
 
-    // Login with dummy auth
-    // Login with dummy auth
-    cy.request('/api/auth/local');
-    cy.wait(1000);
-    cy.visit('');
+    cy.login();
 
     // Load the homepage
     cy.url().should('include', '/home');
@@ -84,9 +75,7 @@ describe('User can set cookies', () => {
     cy.url().should('include', '/login');
 
     // Login with dummy auth
-    cy.request('/api/auth/local');
-    cy.wait(1000);
-    cy.visit('');
+    cy.login();
 
     // Load the homepage
     cy.url().should('include', '/home');

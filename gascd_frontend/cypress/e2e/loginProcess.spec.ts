@@ -4,11 +4,9 @@ describe('User can navigate the key parts of the site', () => {
     cy.visit('');
     cy.url().should('include', '/login');
 
-    // Login with dummy auth
-    cy.request('/api/auth/local');
+    cy.login();
 
     // Load the homepage
-    cy.visit('');
     cy.url().should('include', '/home');
     cy.get('h1').should('contains.text', 'Get adult social care data');
 
