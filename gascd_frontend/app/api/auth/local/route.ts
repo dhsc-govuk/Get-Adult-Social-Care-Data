@@ -22,6 +22,13 @@ export async function GET(req: NextRequest) {
     asResponse: true,
   });
 
+  if (authResponse.status != 200) {
+    logger.error('Could not log in with local auth', {
+      response_code: authResponse.status,
+    });
+    return redirect('/');
+  }
+
   // If running in docker in development we need to rewrite the host
   const requestedHost = req.headers.get('X-Forwarded-Host');
   const redirectUrl = new URL('/home', req.url);
