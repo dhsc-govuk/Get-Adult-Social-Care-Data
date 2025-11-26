@@ -11,14 +11,33 @@ import LocalMarketInformation from '@/components/data-components/LocalMarketInfo
 import BackToTop from '@/components/data-components/BackToTop';
 import LocationService from '@/services/location/locationService';
 import { Locations } from '@/data/interfaces/Locations';
+import DataTable from '@/components/tables/table';
+import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
+import { Indicator } from '@/data/interfaces/Indicator';
+import TableService from '@/services/Table/TableService';
+import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
+import { MetaData } from '@/data/interfaces/MetaData';
 
 export default function ProvisionAndOccupancyPage() {
   const [locationNames, setLocationNames] = useState<string[]>([]);
+  const [locationIds, setLocationIds] = useState<string[]>([]);
+  const [locationIdsCP, setLocationIdsCP] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [locationNamesCP, setLocationNamesCP] = useState<string[]>([]);
   const [localAuthorityData, setLocalAuthorityData] = useState<Locations>();
+  const [bedsQuery, setBedsQuery] = useState<IndicatorQuery>({
+    metric_ids: [],
+    location_ids: [],
+  });
+  const [filteredBedData, setFilteredBedData] = useState<Indicator[]>([]);
+  const [metricDateType, setMetricDataType] = useState<MetaData[]>([]);
 
-  const { data: session, status } = useSession();
+  const bedsMetricIds = [
+    'bedcount_per_100000_adults_total',
+    'median_occupancy_total',
+  ];
+
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchCareProviderLocationName = async () => {
@@ -88,6 +107,71 @@ export default function ProvisionAndOccupancyPage() {
     fetchLocationNames();
   }, [CPLocationId]);
 
+  useEffect(() => {
+    const fetchAllData = async () => {
+      if (!CPLocationId) return;
+      try {
+        const bedData: Indicator[] =
+          await IndicatorFetchService.getData(bedsQuery);
+        const filteredBedData = TableService.filterDate(bedData);
+        setFilteredBedData(filteredBedData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchAllData();
+  }, [bedsQuery]);
+
+  useEffect(() => {
+    const fetchLocationIds = async () => {
+      if (CPLocationId) {
+        try {
+          const locationids = await LocationService.getLocationIds(
+            CPLocationId,
+            false
+          );
+          const locationIdsCP = await LocationService.getLocationIds(
+            CPLocationId,
+            true
+          );
+          setLocationIds(locationids);
+          setLocationIdsCP(locationIdsCP);
+        } catch (error) {
+          console.error('Error fetching location ids:', error);
+        }
+      }
+    };
+    fetchLocationIds();
+  }, [CPLocationId]);
+
+  useEffect(() => {
+    if (locationIds.length > 0) {
+      setBedsQuery(() => ({
+        metric_ids: bedsMetricIds,
+        location_ids: cleanupLocationIDs(locationIds),
+      }));
+    }
+  }, [locationIds]);
+
+  useEffect(() => {
+    const fetchMetadataByType = async () => {
+      try {
+        setMetricDataType(
+          await IndicatorFetchService.getMetadateByType('Percentage')
+        );
+      } catch (error) {
+        console.error('Error fetching metadata types:', error);
+      }
+    };
+    fetchMetadataByType();
+  }, []);
+
+  const cleanupLocationIDs = (location_ids_to_clean: string[]) => {
+    // XXX Ideally the functions using this would use a different list of location IDs which didn't have
+    // the 'Filter' word crowbarred into it from the Present Demand service.
+    return location_ids_to_clean.filter((item) => item !== 'Indicator');
+  };
+
   const breadcrumbs = [
     {
       text: 'Home',
@@ -98,6 +182,12 @@ export default function ProvisionAndOccupancyPage() {
       url: '', //todo: update when care homes landing page is created
     },
   ];
+
+  const bedRowHeaders = {
+    bedcount_per_100000_adults_total:
+      'Care home beds per 100,000 adult population	',
+    median_occupancy_total: 'Occupancy level',
+  };
 
   return (
     <Layout
@@ -191,17 +281,20 @@ export default function ProvisionAndOccupancyPage() {
           id="2"
           table={
             <>
-              <h4 className="govuk-heading-s">
-                Table 2: care home bed numbers per 100,000 adult population and
-                occupancy levels – {locationNamesCP[2]} local authority,{' '}
-                {locationNamesCP[3]} region and {locationNamesCP[4]}, October
-                2025
-              </h4>
-              <p className="govuk-body-m">
-                Sources: Capacity Tracker from the Department of Health and
+              <DataTable
+                caption={`Table 2: care home bed numbers per 100,000 adult population and
+                occupancy levels – ${locationNamesCP[2]} local authority, 
+                ${locationNamesCP[3]} region and ${locationNamesCP[4]}, October
+                2025`}
+                source={`Sources: Capacity Tracker from the Department of Health and
                 Social Care (DHSC), population estimates from the Office for
-                National Statistics (ONS)
-              </p>
+                National Statistics (ONS)`}
+                columnHeaders={locationNames}
+                rowHeaders={bedRowHeaders}
+                data={filteredBedData}
+                showCareProvider={false}
+                percentageRows={metricDateType}
+              ></DataTable>
             </>
           }
           download={
