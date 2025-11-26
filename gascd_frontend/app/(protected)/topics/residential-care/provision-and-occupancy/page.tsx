@@ -10,7 +10,6 @@ import DataLinkCard from '@/components/data-components/DataLinkCard';
 import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
 import BackToTop from '@/components/data-components/BackToTop';
 import LocationService from '@/services/location/locationService';
-import { Locations } from '@/data/interfaces/Locations';
 import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { Indicator } from '@/data/interfaces/Indicator';
@@ -21,10 +20,8 @@ import { MetaData } from '@/data/interfaces/MetaData';
 export default function ProvisionAndOccupancyPage() {
   const [locationNames, setLocationNames] = useState<string[]>([]);
   const [locationIds, setLocationIds] = useState<string[]>([]);
-  const [locationIdsCP, setLocationIdsCP] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [locationNamesCP, setLocationNamesCP] = useState<string[]>([]);
-  const [localAuthorityData, setLocalAuthorityData] = useState<Locations>();
   const [bedsQuery, setBedsQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
@@ -37,7 +34,24 @@ export default function ProvisionAndOccupancyPage() {
     'median_occupancy_total',
   ];
 
+  const bedRowHeaders = {
+    bedcount_per_100000_adults_total:
+      'Care home beds per 100,000 adult population	',
+    median_occupancy_total: 'Occupancy level',
+  };
+
   const { data: session } = useSession();
+
+  const breadcrumbs = [
+    {
+      text: 'Home',
+      url: '/home',
+    },
+    {
+      text: 'Care homes',
+      url: '', //todo: update when care homes landing page is created
+    },
+  ];
 
   useEffect(() => {
     const fetchCareProviderLocationName = async () => {
@@ -95,10 +109,6 @@ export default function ProvisionAndOccupancyPage() {
           );
           setLocationNames(locationNames);
           setLocationNamesCP(locationNamesCP);
-
-          // XXX why do we need to call this quite so many times?
-          const laData = await LocationService.getLocations(CPLocationId);
-          setLocalAuthorityData(laData);
         } catch (error) {
           console.error('Error fetching location names:', error);
         }
@@ -135,7 +145,6 @@ export default function ProvisionAndOccupancyPage() {
             true
           );
           setLocationIds(locationids);
-          setLocationIdsCP(locationIdsCP);
         } catch (error) {
           console.error('Error fetching location ids:', error);
         }
@@ -170,23 +179,6 @@ export default function ProvisionAndOccupancyPage() {
     // XXX Ideally the functions using this would use a different list of location IDs which didn't have
     // the 'Filter' word crowbarred into it from the Present Demand service.
     return location_ids_to_clean.filter((item) => item !== 'Indicator');
-  };
-
-  const breadcrumbs = [
-    {
-      text: 'Home',
-      url: '/home',
-    },
-    {
-      text: 'Care homes',
-      url: '', //todo: update when care homes landing page is created
-    },
-  ];
-
-  const bedRowHeaders = {
-    bedcount_per_100000_adults_total:
-      'Care home beds per 100,000 adult population	',
-    median_occupancy_total: 'Occupancy level',
   };
 
   return (
