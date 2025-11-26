@@ -1,8 +1,6 @@
 import React, { useRef } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { MetaData } from '@/data/interfaces/MetaData';
-import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
-import PresentDemandService from '@/services/present-demand/presentDemandService';
 
 type DataTableProps = {
   caption?: string;
@@ -14,7 +12,6 @@ type DataTableProps = {
   percentageRows?: MetaData[];
   source?: string;
   last_updated?: string;
-  csv_download?: boolean;
   children?: React.ReactNode;
 };
 
@@ -55,7 +52,6 @@ const DataTable: React.FC<DataTableProps> = ({
   showCareProvider,
   careProviderMedianMetrics,
   percentageRows,
-  csv_download = true,
   children,
   source,
 }) => {
@@ -71,7 +67,7 @@ const DataTable: React.FC<DataTableProps> = ({
     <div>
       <table className="govuk-table" ref={tableref}>
         {caption && (
-          <caption className="govuk-table__caption govuk-table__caption--s govuk-!-margin-top-7">
+          <caption className="govuk-table__caption govuk-table__caption--s">
             {caption}
           </caption>
         )}
@@ -93,7 +89,7 @@ const DataTable: React.FC<DataTableProps> = ({
             <tr key={key}>
               <th
                 scope="row"
-                className="govuk-table__cell govuk-table__cell--header"
+                className="govuk-table__cell govuk-!-font-weight-regular"
               >
                 {value}
               </th>
@@ -140,24 +136,7 @@ const DataTable: React.FC<DataTableProps> = ({
         </tbody>
       </table>
       {children}
-      {csv_download && (
-        <p className="govuk-body">
-          <DownloadTableDataCSVLink tableref={tableref} xLabel="" />
-        </p>
-      )}
-      <p className="govuk-body">
-        {source}
-        <br />
-        {data.length > 0 && (
-          <span>
-            Data correct as of{' '}
-            {PresentDemandService.getMostRecentDate(
-              data,
-              Object.keys(rowHeaders)
-            )}
-          </span>
-        )}
-      </p>
+      <p className="govuk-body">{source}</p>
     </div>
   );
 };

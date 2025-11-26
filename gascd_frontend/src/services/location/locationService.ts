@@ -109,7 +109,7 @@ class LocationService {
       : await this.getLaLocations(query);
 
     let locationNames = [
-      presentDemand ? 'Filter' : 'Location',
+      presentDemand ? 'Indicator' : 'Location',
       data.la_name,
       data.region_name,
       data.country_name,
