@@ -8,6 +8,14 @@ describe('getAuthOptions', () => {
   it('should return default auth options if no matching env vars provided', () => {
     const options = getAuthOptions();
     expect(options.type).toEqual('azure-active-directory-default');
+    expect(options.options).toEqual({ clientId: undefined });
+  });
+
+  it('should return default auth options with client id', () => {
+    vi.stubEnv('SQL_MANAGED_IDENTITY_CLIENT_ID', 'test-clientid');
+    const options = getAuthOptions();
+    expect(options.type).toEqual('azure-active-directory-default');
+    expect(options.options).toEqual({ clientId: 'test-clientid' });
   });
 
   it('should return access token auth if provided', () => {
@@ -26,5 +34,15 @@ describe('getAuthOptions', () => {
       userName: 'test-user',
       password: 'mypassword',
     });
+  });
+
+  it('should raise an error if username but no password provided', () => {
+    vi.stubEnv('USER_DB_USERNAME', 'test-user');
+    const options_method = () => {
+      getAuthOptions();
+    };
+    expect(options_method).toThrow(
+      'USER_DB_USERNAME supplied with no corresponding USER_DB_PASSWORD'
+    );
   });
 });

@@ -14,6 +14,11 @@ export const getAuthOptions = () => {
     };
   } else if (process.env.USER_DB_USERNAME) {
     // Used in development
+    if (!process.env.USER_DB_PASSWORD) {
+      throw new Error(
+        'USER_DB_USERNAME supplied with no corresponding USER_DB_PASSWORD'
+      );
+    }
     authOptions = {
       options: {
         userName: process.env.USER_DB_USERNAME,
