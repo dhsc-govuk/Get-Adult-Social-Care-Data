@@ -28,7 +28,7 @@ local frontend = new Group {
     steps {
         ["linter-prettier"] {
             glob = FE_FILES
-            fix = "cd gascd_frontend && npx lint-staged"
+            fix = "cd gascd_frontend && npm run lint-staged"
             stage = FE_FILES
         }
     }
