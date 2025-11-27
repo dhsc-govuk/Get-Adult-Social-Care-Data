@@ -132,7 +132,7 @@ class LocationService {
       : await this.getLaLocations(query);
 
     const locationIds = [
-      presentDemand ? 'Filter' : 'Location',
+      presentDemand ? 'Indicator' : 'Location',
       data.la_code,
       data.region_code,
       data.country_code,

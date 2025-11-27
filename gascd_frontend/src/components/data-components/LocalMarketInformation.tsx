@@ -11,11 +11,13 @@ const LocalMarketInformation: React.FC<Props> = ({ localAuthority, url }) => {
         <h2 className="govuk-heading-l govuk-!-margin-top-9">
           Information on the local care market
         </h2>
-        <p className="govuk-body">
-          <a href={url} className="govuk-link">
-            Market Position Statement for {localAuthority} (opens in new tab)
-          </a>
-        </p>
+        {url && (
+          <p className="govuk-body">
+            <a href={url} className="govuk-link">
+              Market Position Statement for {localAuthority} (opens in new tab)
+            </a>
+          </p>
+        )}
         <p className="govuk-body">
           Most local authorities in England publish Market Position Statements
           (MPS) to help care providers understand the local care market.
