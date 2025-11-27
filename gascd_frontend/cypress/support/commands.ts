@@ -5,3 +5,7 @@ Cypress.Commands.add('login', () => {
   cy.visit('/api/auth/local');
   cy.wait(500);
 });
+
+Cypress.Commands.add('metatag', (name: string) => {
+  return cy.get(`head > meta[name="${name}"]`);
+});

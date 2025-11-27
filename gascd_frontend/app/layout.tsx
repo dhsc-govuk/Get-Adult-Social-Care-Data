@@ -4,9 +4,17 @@ import { Viewport } from 'next';
 import { AppInsightsInitializer } from '@/components/analytics/AppInsightsInitializer';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
+import type { Metadata } from 'next';
 
 export const viewport: Viewport = {
   themeColor: '#1d70b8',
+};
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default async function RootLayout({
