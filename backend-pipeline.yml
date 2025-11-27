@@ -9,8 +9,6 @@ variables:
   - group: acr_service_connection
   - group: arm_service_connection
   - group: docker_build_arguments
-  - name: dockerfilePath
-    value: "$(Build.SourcesDirectory)/gascd_api/Dockerfile"
   - name: vmImageName
     value: "ubuntu-latest"
   - name: tag
@@ -18,20 +16,27 @@ variables:
   - name: dockerfilePath
     value: "$(Build.SourcesDirectory)/gascd_api/api/Dockerfile"
   - name: imageName
-    value: "dapalpha-api"
+    value: "dapalpha-backend-api"
     
 parameters:
   - name: environments
     type: object
     default:
       - name: dev
-        environment_name: "Webapp - dev"
         arm_connection: "$(dev_arm_service_connections)"
         acr_connection: "$(dev_acr_connection)"
         acr_name: "$(dev_acr_name)"
+      - name: uat
+        arm_connection: "$(uat_arm_service_connections)"
+        acr_connection: "$(uat_acr_connection)"
+        acr_name: "$(uat_acr_name)"
+      - name: prod
+        arm_connection: "$(prod_arm_service_connections)"
+        acr_connection: "$(prod_acr_connection)"
+        acr_name: "$(prod_acr_name)"
     
 stages:
-  - stage: Build
+  - stage: Build_and_Test
     displayName: 'Build and Test .NET 9 App'
     jobs:
       - job: BuildJob
@@ -104,3 +109,38 @@ stages:
                     - script: |
                         docker push ${{environment.acr_name}}.azurecr.io/$(imageName):$(tag)-${{environment.name}}
                       displayName: Push image to ${{environment.acr_name}} ACR
+                      
+  # Deploy across environments
+  - ${{ each environment in parameters.environments}}:
+      - stage: Deploy_${{environment.name}}
+        displayName: "${{environment.name}}: Deploy backend API"
+        condition: succeeded()
+        jobs:
+          - deployment: Deploy
+            displayName: Deploy
+            environment: "${{environment.name}}"
+            pool:
+              vmImage: "ubuntu-latest"
+            strategy:
+              runOnce:
+                deploy:
+                  steps:
+                    - task: Docker@2
+                      displayName: Login to ${{environment.acr_connection}} ACR
+                      inputs:
+                        command: login
+                        containerRegistry: ${{environment.acr_connection}}
+                    # Ensure 'latest' is only updated when this deployment step actually runs.
+                    - script: |
+                        echo "Updating Backend API 'latest' tag for ${{environment.name}}..."
+                        docker pull ${{environment.acr_name}}.azurecr.io/$(imageName):$(tag)-${{environment.name}}
+                        docker tag ${{environment.acr_name}}.azurecr.io/$(imageName):$(tag)-${{environment.name}} ${{environment.acr_name}}.azurecr.io/$(imageName):latest
+                        docker push ${{environment.acr_name}}.azurecr.io/$(imageName):latest
+                      displayName: Update 'latest' tag on ${{environment.acr_name}}
+                    - task: AzureWebAppContainer@1
+                      inputs:
+                        appType: "webAppLinux"
+                        appName: "dapalpha-${{environment.name}}-backend-api"
+                        azureSubscription: ${{environment.arm_connection}}
+                        containers: "${{environment.acr_name}}.azurecr.io/$(imageName):$(tag)-${{environment.name}}"
+      
