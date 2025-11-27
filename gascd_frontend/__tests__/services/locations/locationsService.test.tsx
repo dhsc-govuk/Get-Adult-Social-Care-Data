@@ -177,25 +177,26 @@ describe('LocationService', () => {
       const result = await LocationService.getLocationNames(query, false, true);
 
       expect(LocationService.getLocations).toHaveBeenCalledWith(query);
-      expect(result).toEqual([
-        'Indicator',
-        'Suffolk',
-        'East of England',
-        'United Kingdom',
-      ]);
+      expect(result).toEqual({
+        CPLabel: 'N/A',
+        CountryLabel: 'United Kingdom',
+        IndicatorLabel: 'Indicator',
+        LALabel: 'Suffolk',
+        RegionLabel: 'East of England',
+      });
     });
 
     it('returns location names for present demand with care provider', async () => {
       const result = await LocationService.getLocationNames(query, true, true);
 
       expect(LocationService.getLocations).toHaveBeenCalledWith(query);
-      expect(result).toEqual([
-        'Indicator',
-        'Care Provider A',
-        'Suffolk',
-        'East of England',
-        'United Kingdom',
-      ]);
+      expect(result).toEqual({
+        CPLabel: 'Care Provider A',
+        CountryLabel: 'United Kingdom',
+        IndicatorLabel: 'Indicator',
+        LALabel: 'Suffolk',
+        RegionLabel: 'East of England',
+      });
     });
 
     it('returns location names for LA demand without care provider', async () => {
@@ -206,25 +207,26 @@ describe('LocationService', () => {
       );
 
       expect(LocationService.getLaLocations).toHaveBeenCalledWith(query);
-      expect(result).toEqual([
-        'Location',
-        'Suffolk',
-        'East of England',
-        'United Kingdom',
-      ]);
+      expect(result).toEqual({
+        CPLabel: 'N/A',
+        CountryLabel: 'United Kingdom',
+        IndicatorLabel: 'Location',
+        LALabel: 'Suffolk',
+        RegionLabel: 'East of England',
+      });
     });
 
     it('returns location names for LA demand with care provider', async () => {
       const result = await LocationService.getLocationNames(query, true, false);
 
       expect(LocationService.getLaLocations).toHaveBeenCalledWith(query);
-      expect(result).toEqual([
-        'Location',
-        'Care Provider A',
-        'Suffolk',
-        'East of England',
-        'United Kingdom',
-      ]);
+      expect(result).toEqual({
+        CPLabel: 'Care Provider A',
+        CountryLabel: 'United Kingdom',
+        IndicatorLabel: 'Location',
+        LALabel: 'Suffolk',
+        RegionLabel: 'East of England',
+      });
     });
   });
   describe('getLocationIds', () => {
