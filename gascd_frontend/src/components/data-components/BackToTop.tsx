@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../../src/styles/styles.scss';
 
 const BackToTop: React.FC = () => {
   return (
