@@ -1,6 +1,12 @@
-describe('Site should have a robots.txt file in the root', () => {
-  it('Should find the robots.txt file', () => {
+describe('Site should have a robots in the meta tags on different pages', () => {
+  it('Should find the robots meta tags', () => {
+    cy.visit('');
+    cy.metatag('robots').should('have.attr', 'content', 'noindex, nofollow');
 
-    cy.request('/robots.txt').its('body').should('include', 'User-Agent: *\nUser-agent: AdsBot-Google\nDisallow: /')
+    cy.visit('/present-demand');
+    cy.metatag('robots').should('have.attr', 'content', 'noindex, nofollow');
+
+    cy.visit('/cookies');
+    cy.metatag('robots').should('have.attr', 'content', 'noindex, nofollow');
   });
 });
