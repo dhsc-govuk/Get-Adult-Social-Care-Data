@@ -11,6 +11,8 @@ export const auth = betterAuth({
       enabled: true,
       maxAge: 5 * 60,
     },
+    expiresIn: 60 * 60, // 1 hour
+    updateAge: 60 * 15, // 15 mins (every 15 mins the session expiration is updated)
   },
   database: {
     dialect: msdialect,
