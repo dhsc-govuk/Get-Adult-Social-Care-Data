@@ -80,3 +80,7 @@ Cypress.Commands.add('login', () => {
     window.localStorage.setItem('auth', authValue);
   });
 });
+
+Cypress.Commands.add('metatag', (name: string) => {
+  return cy.get(`head > meta[name="${name}"]`);
+});
