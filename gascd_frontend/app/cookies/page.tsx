@@ -127,37 +127,36 @@ const CookiesPage = () => {
                       <td className="govuk-table__cell">1 Year</td>
                     </tr>
                     <tr className="govuk-table__row">
+                      <td className="govuk-table__cell">better-auth.state</td>
                       <td className="govuk-table__cell">
-                        __Host-next-auth.csrf-token
+                        Manages your login session and ensures the sign-in
+                        process functions correctly
+                      </td>
+                      <td className="govuk-table__cell">3 days</td>
+                    </tr>
+                    <tr className="govuk-table__row">
+                      <td className="govuk-table__cell">
+                        better-auth.session-data
                       </td>
                       <td className="govuk-table__cell">
                         Manages your login session and ensures the sign-in
                         process functions correctly
                       </td>
                       <td className="govuk-table__cell">
-                        End of browser session
+                        5 minutes from last use
                       </td>
                     </tr>
                     <tr className="govuk-table__row">
                       <td className="govuk-table__cell">
-                        __Secure-next-auth.callback-url{' '}
+                        better-auth.session-token
                       </td>
                       <td className="govuk-table__cell">
                         Manages your login session and ensures the sign-in
                         process functions correctly
                       </td>
                       <td className="govuk-table__cell">
-                        End of browser session
+                        1 hour from last use
                       </td>
-                    </tr>
-                    <tr className="govuk-table__row">
-                      <td className="govuk-table__cell">
-                        __Secure-next-auth.session-token
-                      </td>
-                      <td className="govuk-table__cell">
-                        Manages your login session
-                      </td>
-                      <td className="govuk-table__cell">1 month</td>
                     </tr>
                   </tbody>
                 </table>
