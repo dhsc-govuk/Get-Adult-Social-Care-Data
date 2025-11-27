@@ -1,6 +1,7 @@
 import LogService from '../logger/logService';
 import { Locations } from '@/data/interfaces/Locations';
 import { Indicator } from '@/data/interfaces/Indicator';
+import { LocationNames } from '@/data/interfaces/LocationNames';
 
 class LocationService {
   public static async getLocations(query: string): Promise<Locations> {
@@ -103,21 +104,21 @@ class LocationService {
     query: string,
     careProvider: boolean,
     presentDemand: boolean = true
-  ): Promise<string[]> {
+  ): Promise<LocationNames> {
     const data = presentDemand
       ? await this.getLocations(query)
       : await this.getLaLocations(query);
 
-    let locationNames = [
-      presentDemand ? 'Indicator' : 'Location',
-      data.la_name,
-      data.region_name,
-      data.country_name,
-    ];
-
-    if (careProvider) {
-      locationNames.splice(1, 0, data.provider_location_name);
-    }
+    const locationNames: LocationNames = {
+      IndicatorLabel: presentDemand ? 'Indicator' : 'Location',
+      CPLabel:
+        careProvider && data.provider_location_name
+          ? data.provider_location_name
+          : 'N/A',
+      LALabel: data.la_name,
+      RegionLabel: data.region_name,
+      CountryLabel: data.country_name,
+    };
 
     return locationNames;
   }

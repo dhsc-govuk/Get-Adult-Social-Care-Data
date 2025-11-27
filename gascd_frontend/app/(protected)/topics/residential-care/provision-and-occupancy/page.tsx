@@ -17,14 +17,20 @@ import TableService from '@/services/Table/TableService';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { MetaData } from '@/data/interfaces/MetaData';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
+import { LocationNames } from '@/data/interfaces/LocationNames';
 
 export default function ProvisionAndOccupancyPage() {
-  const [locationNames, setLocationNames] = useState<string[]>([]);
+  const [locationNamesCP, setLocationNamesCP] = useState<LocationNames>({
+    IndicatorLabel: 'Indicator',
+    CPLabel: 'Loading...',
+    LALabel: 'Loading...',
+    RegionLabel: 'Loading...',
+    CountryLabel: 'Loading...',
+  } as LocationNames);
   const [locationNamesWithAverageLabels, setLocationNamesWithAverageLabels] =
     useState<string[]>([]);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
-  const [locationNamesCP, setLocationNamesCP] = useState<string[]>([]);
   const [finalCpData, setFinalCpData] = useState<Indicator[]>([]);
   const [filteredBedData, setFilteredBedData] = useState<Indicator[]>([]);
   const [metricDateType, setMetricDataType] = useState<MetaData[]>([]);
@@ -126,21 +132,16 @@ export default function ProvisionAndOccupancyPage() {
     const fetchLocationNames = async () => {
       if (CPLocationId) {
         try {
-          const locationNames = await LocationService.getLocationNames(
-            CPLocationId,
-            false
-          );
           const locationNamesCP = await LocationService.getLocationNames(
             CPLocationId,
             true
           );
-          setLocationNames(locationNames);
           setLocationNamesCP(locationNamesCP);
           setLocationNamesWithAverageLabels([
-            locationNames[0],
-            locationNames[1],
-            `${locationNames[2]} (regional average)`,
-            `${locationNames[3]} (national average)`,
+            locationNamesCP.CPLabel!,
+            locationNamesCP.LALabel,
+            `${locationNamesCP.RegionLabel} (regional average)`,
+            `${locationNamesCP.CountryLabel} (national average)`,
           ]);
         } catch (error) {
           console.error('Error fetching location names:', error);
@@ -295,8 +296,8 @@ export default function ProvisionAndOccupancyPage() {
           table={
             <DataTable
               caption={`Table 3: care home bed numbers and occupancy levels – 
-                ${locationNamesCP[1]}, ${locationNamesCP[2]} local authority, 
-                ${locationNamesCP[3]} region and ${locationNamesCP[4]}, October
+                ${locationNamesCP.CPLabel}, ${locationNamesCP.LALabel} local authority, 
+                ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, October
                 2025`}
               source={
                 'Source: Capacity Tracker from the Department of Health and Social Care (DHSC)'
@@ -314,7 +315,7 @@ export default function ProvisionAndOccupancyPage() {
             <>
               <h4 className="govuk-heading-s">Text summary</h4>
               <p className="govuk-body">
-                {locationNamesCP[1]} is a provider with{' '}
+                {locationNamesCP.CPLabel} is a provider with{' '}
                 <strong>
                   {finalCpData.find(
                     (metric) =>
@@ -328,20 +329,18 @@ export default function ProvisionAndOccupancyPage() {
                     metric.metric_id === 'median_bed_count_total' &&
                     metric.location_type === 'Regional'
                 )?.data_point ?? 'Loading...'}{' '}
-                beds) in {locationNamesCP[2]}.
+                beds) in {locationNamesCP.LALabel}.
               </p>
               <ConditionalText
                 data={finalCpData}
                 ColumnHeaders={locationNamesCP}
                 section="CapacityCareProvider"
-                locations={locationNamesCP}
                 metric_Id="median_occupancy_total"
               ></ConditionalText>
               <ConditionalText
                 data={filteredBedData}
-                ColumnHeaders={locationNames}
+                ColumnHeaders={locationNamesCP}
                 section="CapacityLA"
-                locations={locationNames}
                 metric_Id="median_occupancy_total"
               ></ConditionalText>
             </>
@@ -376,7 +375,7 @@ export default function ProvisionAndOccupancyPage() {
           url="/help/percentage-beds-occupied"
         />
       </DataIndicatorDetailsList>
-      <LocalMarketInformation localAuthority={locationNamesCP[2]} url="" />
+      <LocalMarketInformation localAuthority={locationNamesCP.LALabel} url="" />
       <BackToTop />
     </Layout>
   );

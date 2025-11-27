@@ -4,7 +4,7 @@ import { MetaData } from '@/data/interfaces/MetaData';
 
 type DataTableProps = {
   caption?: string;
-  columnHeaders: string[];
+  columnHeaders: Object;
   rowHeaders: Object;
   data: Indicator[];
   showCareProvider: boolean;
@@ -79,15 +79,19 @@ const DataTable: React.FC<DataTableProps> = ({
         )}
         <thead className="govuk-table__head">
           <tr className="govuk-table__row">
-            {columnHeaders.map((columnHeader, columnIndex) => (
-              <th
-                key={columnIndex}
-                scope="col"
-                className={columnClass(columnIndex)}
-              >
-                {columnHeader}
-              </th>
-            ))}
+            {Object.entries(columnHeaders)
+              .filter(
+                ([columnKey]) => !(columnKey === 'CPLabel' && !showCareProvider)
+              )
+              .map(([columnKey, columnLabel], columnIndex) => (
+                <th
+                  key={columnKey}
+                  scope="col"
+                  className={columnClass(columnIndex)}
+                >
+                  {columnLabel}
+                </th>
+              ))}
           </tr>
         </thead>
         <tbody className="govuk-table__body">
