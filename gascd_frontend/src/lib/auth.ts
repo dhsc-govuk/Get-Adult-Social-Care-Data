@@ -18,6 +18,12 @@ export const auth = betterAuth({
     dialect: msdialect,
     type: 'mssql',
   },
+  logger: {
+    log: (level, message, ...args) => {
+      // Send logs to our winston logger
+      logger.log(level, '(Better Auth): ' + message, ...args);
+    },
+  },
   emailAndPassword: {
     enabled: process.env.LOCAL_AUTH == 'true',
   },
