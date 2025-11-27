@@ -3,21 +3,21 @@ import { render, screen } from '@testing-library/react';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import * as mockData from '../../../TestData/ConditionalTextMockData';
 import { mock } from 'node:test';
+import { LocationNames } from '@/data/interfaces/LocationNames';
 
 describe('Tests for the conditional text component', () => {
-  const locationNamesWithCareProvider = [
-    'Filter',
-    'Test Care Provider',
-    'Northumberland',
-    'North East',
-    'England',
-  ];
+  const locationNamesWithCareProvider = {
+    IndicatorLabel: 'Indicator',
+    CPLabel: 'Test Care Provider',
+    LALabel: 'Northumberland',
+    RegionLabel: 'North East',
+    CountryLabel: 'England',
+  } as LocationNames;
 
   const defaultProps = {
-    ColumnHeaders: ['Filter', 'Test LA', 'Test Region', 'Test Country'],
+    ColumnHeaders: locationNamesWithCareProvider,
     section: 'Drivers',
     data: mockData.mockConditionalTextDataHigher,
-    locations: ['Filter', 'Northumberland', 'North East', 'England'],
     metric_Id: 'metric_1',
   };
 
@@ -31,7 +31,7 @@ describe('Tests for the conditional text component', () => {
     );
 
     expect(screen.getByRole('paragraph')).toHaveTextContent(
-      'Test LA has a larger proportion of people aged 65 and over (35%) compared to the national average (30%). This suggests the need for care services adjusted by population size in this local authority may be higher than average.'
+      'Northumberland has a larger proportion of people aged 65 and over (35%) compared to the national average (30%). This suggests the need for care services adjusted by population size in this local authority may be higher than average'
     );
   });
 
@@ -44,7 +44,7 @@ describe('Tests for the conditional text component', () => {
       ></ConditionalText>
     );
     expect(screen.getByRole('paragraph')).toHaveTextContent(
-      'Test LA has a smaller proportion of people aged 65 and over (20%) compared to the national average (30%). This suggests the need for care services adjusted by population size in this local authority may be lower than average.'
+      'Northumberland has a smaller proportion of people aged 65 and over (20%) compared to the national average (30%). This suggests the need for care services adjusted by population size in this local authority may be lower than average'
     );
   });
 
@@ -57,7 +57,7 @@ describe('Tests for the conditional text component', () => {
       ></ConditionalText>
     );
     expect(screen.getByRole('paragraph')).toHaveTextContent(
-      'Test LA has a similar proportion of people aged 65 and over (20%) compared to the national average (20%). This suggests the need for care services adjusted by population size in this local authority may be in line with the national average.'
+      'Northumberland has a similar proportion of people aged 65 and over (20%) compared to the national average (20%). This suggests the need for care services adjusted by population size in this local authority may be in line with the national average.'
     );
   });
 
@@ -118,14 +118,13 @@ describe('Tests for the conditional text component', () => {
         {...defaultProps}
         section="CapacityCareProvider"
         ColumnHeaders={locationNamesWithCareProvider}
-        locations={locationNamesWithCareProvider}
         data={mockData.mockConditionalTextDataHigher}
         metric_Id="median_occupancy_total"
       />
     );
 
     expect(screen.getByRole('paragraph')).toHaveTextContent(
-      'Test Care Provider has 40% occupancy for all adult social care beds compared to the median occupancy of all care homes in Northumberland (25%), suggesting limited availability for new admissions.'
+      'Test Care Provider has 40% occupancy for all adult social care beds compared to the median occupancy of all care homes in North East (25%), suggesting limited availability for new admissions.'
     );
   });
 
@@ -135,14 +134,13 @@ describe('Tests for the conditional text component', () => {
         {...defaultProps}
         section="CapacityCareProvider"
         ColumnHeaders={locationNamesWithCareProvider}
-        locations={locationNamesWithCareProvider}
         data={mockData.mockConditionalTextDataLower}
         metric_Id="median_occupancy_total"
       />
     );
 
     expect(screen.getByRole('paragraph')).toHaveTextContent(
-      'Test Care Provider has 20% occupancy for all adult social care beds compared to the median occupancy of all care homes in Northumberland (25%), suggesting greater availability for new admissions.'
+      'Test Care Provider has 20% occupancy for all adult social care beds compared to the median occupancy of all care homes in North East (25%), suggesting greater availability for new admissions.'
     );
   });
 
@@ -152,14 +150,13 @@ describe('Tests for the conditional text component', () => {
         {...defaultProps}
         section="CapacityCareProvider"
         ColumnHeaders={locationNamesWithCareProvider}
-        locations={locationNamesWithCareProvider}
         data={mockData.mockConditionalTextDataSimilar}
         metric_Id="median_occupancy_total"
       />
     );
 
     expect(screen.getByRole('paragraph')).toHaveTextContent(
-      'Test Care Provider has 20% occupancy for all adult social care beds compared to the median occupancy of all care homes in Northumberland (20%), suggesting a similar level of availability for new admissions.'
+      'Test Care Provider has 20% occupancy for all adult social care beds compared to the median occupancy of all care homes in North East (20%), suggesting a similar level of availability for new admissions.'
     );
   });
 });
