@@ -163,7 +163,7 @@ stages:
                     END
                     ALTER ROLE db_datareader ADD MEMBER [$GROUP_NAME_READERS];
                   "@
-
+                  Write-Host "$query"
                   # 5. Run it
                   # The -AccessToken parameter is supported in this module
                   # Invoke-Sqlcmd -ServerInstance $env.SQL_SERVER -Database $env.DB_NAME -AccessToken $token -Query $query
