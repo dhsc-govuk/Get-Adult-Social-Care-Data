@@ -49,11 +49,39 @@ const Layout: React.FC<Props> = ({
         </a>
         <Header useCookieBanner={useCookieBanner} />
         <ServiceName session={session} />
-        <div className="govuk-width-container">
-          <div role="region" aria-label="Phasebar">
-            <PhaseBanner />
+        <div
+          style={currentPage === 'home' ? { backgroundColor: '#d2e2f1' } : {}}
+        >
+          <div className="govuk-width-container">
+            <div role="region" aria-label="Phasebar">
+              <PhaseBanner />
+            </div>
           </div>
         </div>
+
+        {currentPage === 'home' && (
+          <div
+            className="govuk-grid-row govuk-!-padding-bottom-4"
+            style={{ backgroundColor: '#d2e2f1' }}
+          >
+            <div className="govuk-width-container">
+              <div className="govuk-grid-column-two-thirds govuk-!-padding-left-0">
+                <h1 className="govuk-heading-xl govuk-!-margin-bottom-6 govuk-!-margin-top-6">
+                  Get adult social care data
+                </h1>
+                <p className="govuk-body-l">
+                  Find data on adult social care and related population needs in
+                  England.
+                </p>
+                <p className="govuk-body-l">
+                  This service shows local and regional statistics based on your
+                  selected location.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="govuk-width-container">
           <div className="govuk-grid-row">
             <div className="govuk-grid-column-one-third">

@@ -2,11 +2,68 @@
 
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import Feedback from '../../../src/components/common/feedback/Feedback';
 import { useSession } from 'next-auth/react';
 
 const HomePage: React.FC = () => {
   const { data: session, status } = useSession();
+
+  type Subtopic = {
+    title: string;
+    description: string;
+    url: string;
+  };
+
+  type Topic = {
+    title: string;
+    url: string;
+    subtopics: Subtopic[];
+  };
+
+  const topics: Topic[] = [
+    {
+      title: 'Care homes',
+      url: 'topics/residential-care/subtopics',
+      subtopics: [
+        {
+          title: 'Care home beds and occupancy levels',
+          description:
+            'Provision and capacity data for care homes, including local, regional and national statistics.',
+          url: 'topics/residential-care/provision-and-occupancy/data',
+        },
+      ],
+    },
+    {
+      title: 'Population needs',
+      url: 'topics/population-needs/subtopics',
+      subtopics: [
+        {
+          title: 'Population size and age group percentages',
+          description:
+            'Population data at district, local authority, regional and national levels for England.',
+          url: 'topics/population-needs/population-age-and-size/data',
+        },
+        {
+          title: 'Economic factors and household composition',
+          description:
+            'Data on household deprivation, property ownership and older people living alone.',
+          url: 'topics/population-needs/household-composition-and-economic-factors/data',
+        },
+        {
+          title: 'General health, disability and learning disability',
+          description:
+            'Data on disability prevalence, learning disability diagnoses and reasons for accessing care.',
+          url: 'topics/population-needs/disability-prevalence/data',
+        },
+        {
+          title: 'Dementia prevalence and estimated diagnosis rate',
+          description:
+            'Data on registered dementia diagnoses with estimates for undiagnosed dementia.',
+          url: 'topics/population-needs/dementia-prevalence/data',
+        },
+      ],
+    },
+  ];
+
   return (
     <>
       <Layout
@@ -16,49 +73,35 @@ const HomePage: React.FC = () => {
         currentPage="home"
         session={session}
       >
-        <div className="govuk-grid-row">
-          <div className="govuk-grid-column-full">
-            <h1 className="govuk-heading-xl">Get adult social care data</h1>
-            <p className="govuk-body-l govuk-!-margin-bottom-9">
-              Access the latest data on population needs and adult social care
-              capacity at national, regional and local levels in England.
-            </p>
-          </div>
-        </div>
-
-        <div className="govuk-grid-row">
-          <div className="govuk-grid-column-one-half">
-            <a href="/present-demand" className="app-card">
-              <h2 className="govuk-heading-m app-card__heading">
-                Current population needs and capacity
+        {...topics.map((topic: Topic) => (
+          <div className="govuk-grid-row" key={topic.title}>
+            <div className="govuk-grid-column-full">
+              <h2 className="govuk-heading-l">
+                <a href={topic.url} className="govuk-link">
+                  {topic.title}
+                </a>
               </h2>
-              <p className="govuk-body">
-                Find and compare data indicators for current population needs
-                and adult social care capacity.
-              </p>
-            </a>
-          </div>
+            </div>
 
-          <div className="govuk-grid-column-one-half">
-            <a href="/population-age" className="app-card">
-              <h2 className="govuk-heading-m app-card__heading">
-                Map of population age percentages
-              </h2>
-              <p className="govuk-body">
-                Use the map to view population percentages for older age groups
-                at local levels in England.
-              </p>
-            </a>
+            <div className="govuk-grid-row">
+              <div className="govuk-grid-column-full">
+                {topic.subtopics.map((subtopic: Subtopic) => (
+                  <div
+                    className="govuk-grid-column-one-half"
+                    key={subtopic.title}
+                  >
+                    <a href={subtopic.url} className="app-card">
+                      <h3 className="govuk-heading-m app-card__heading">
+                        {subtopic.title}
+                      </h3>
+                      <p className="govuk-body">{subtopic.description}</p>
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-
-        <hr className="govuk-section-break govuk-section-break--xl govuk-section-break--visible"></hr>
-
-        <div className="govuk-grid-row">
-          <div className="govuk-grid-column-two-thirds">
-            <Feedback highlight={false} />
-          </div>
-        </div>
+        ))}
       </Layout>
     </>
   );
