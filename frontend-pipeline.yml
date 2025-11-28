@@ -144,6 +144,8 @@ stages:
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
+                  set -e # Fail script on any error
+
                   # Variables
                   ENV_NAME_UPPER=`echo "${{environment.name}}" | awk '{print toupper($0)}'`
                   SERVER="${{environment.user_db_server}}"
@@ -151,11 +153,15 @@ stages:
                   GROUP_NAME_READERS="DAP Beta - User DB Readers - $ENV_NAME_UPPER"
                   GROUP_NAME_WRITERS="DAP Beta - User DB Writers - $ENV_NAME_UPPER"
 
-                  # 1. Get Token using Azure CLI
+                  # Install sqlcmd
+                  dotnet tool install -g Microsoft.SqlClient.Sqlcmd
+                  export PATH="$PATH:$HOME/.dotnet/tools"
+
+                  # Get Token using Azure CLI
                   # This gets a token for the Service Principal running the pipeline
                   ACCESS_TOKEN=$(az account get-access-token --resource https://database.windows.net/ --query "accessToken" -o tsv)
 
-                  # 2. Create SQL Script to set permissions
+                  # Create SQL Script to set permissions
                   echo "
                     IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = '$GROUP_NAME_READERS')
                     BEGIN
@@ -171,7 +177,7 @@ stages:
                   # Log the contents of the script
                   cat create_user.sql
 
-                  # 3. Run sqlcmd
+                  # Run sqlcmd
                   # Passing Access Token via -P
                   /opt/mssql-tools/bin/sqlcmd -S $SERVER -d $DB -U "ServicePrincipalName" -P "$ACCESS_TOKEN" -i create_user.sql
             - checkout: self
