@@ -18,7 +18,7 @@ describe('HomePage', () => {
     // 2. Check for some body text
     // getByText is a straightforward way to find non-interactive text content.
     const bodyTextElement = screen.getByText(
-      /Access the latest data on population needs and adult social care capacity at national, regional and local levels in England./i
+      /This service shows local and regional statistics based on your selected location./i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
@@ -26,14 +26,17 @@ describe('HomePage', () => {
     // We find the link by its role and accessible name (the text it displays).
     // This is generally more robust than checking the href directly at first.
     const linkElement = screen.getByRole('link', {
-      name: /Current population needs and capacity/i,
+      name: /Care home beds and occupancy levels/i,
     });
     expect(linkElement).toBeInTheDocument();
 
     const linkElement2 = screen.getByRole('link', {
-      name: /Population age/i,
+      name: /Population needs/i,
     });
     expect(linkElement2).toBeInTheDocument();
-    expect(linkElement2).toHaveAttribute('href', '/population-age');
+    expect(linkElement2).toHaveAttribute(
+      'href',
+      'topics/population-needs/subtopics'
+    );
   });
 });
