@@ -169,10 +169,10 @@ stages:
                   # Invoke-Sqlcmd -ServerInstance $env.SQL_SERVER -Database $env.DB_NAME -AccessToken $token -Query $query
                 azurePowerShellVersion: 'LatestVersion'
                 pwsh: true # PowerShell Core (required for Linux)
-                env:
-                  SQL_SERVER: "${{environment.user_db_server}}"
-                  DB_NAME: "${{environment.user_db_name}}"
-                  ENV_NAME: "${{environment.name}}"
+              env:
+                SQL_SERVER: "${{environment.user_db_server}}"
+                DB_NAME: "${{environment.user_db_name}}"
+                ENV_NAME: "${{environment.name}}"
             - checkout: self
             - task: NodeTool@0
               inputs:
