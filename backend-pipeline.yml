@@ -26,14 +26,15 @@ parameters:
         arm_connection: "$(dev_arm_service_connections)"
         acr_connection: "$(dev_acr_connection)"
         acr_name: "$(dev_acr_name)"
-      - name: uat
-        arm_connection: "$(uat_arm_service_connections)"
-        acr_connection: "$(uat_acr_connection)"
-        acr_name: "$(uat_acr_name)"
-      - name: prod
-        arm_connection: "$(prod_arm_service_connections)"
-        acr_connection: "$(prod_acr_connection)"
-        acr_name: "$(prod_acr_name)"
+        # Temporarily commented out as we're not ready to deploy in these environments yet
+#      - name: uat
+#        arm_connection: "$(uat_arm_service_connections)"
+#        acr_connection: "$(uat_acr_connection)"
+#        acr_name: "$(uat_acr_name)"
+#      - name: prod
+#        arm_connection: "$(prod_arm_service_connections)"
+#        acr_connection: "$(prod_acr_connection)"
+#        acr_name: "$(prod_acr_name)"
     
 stages:
   - stage: Build_and_Test
