@@ -3,7 +3,6 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
 import { useSession } from 'next-auth/react';
-import { title } from 'process';
 
 const HomePage: React.FC = () => {
   const { data: session, status } = useSession();
@@ -85,19 +84,21 @@ const HomePage: React.FC = () => {
             </div>
 
             <div className="govuk-grid-row">
-              {topic.subtopics.map((subtopic: Subtopic) => (
-                <div
-                  className="govuk-grid-column-one-half"
-                  key={subtopic.title}
-                >
-                  <a href={subtopic.url} className="app-card">
-                    <h3 className="govuk-heading-m app-card__heading">
-                      {subtopic.title}
-                    </h3>
-                    <p className="govuk-body">{subtopic.description}</p>
-                  </a>
-                </div>
-              ))}
+              <div className="govuk-grid-column-full">
+                {topic.subtopics.map((subtopic: Subtopic) => (
+                  <div
+                    className="govuk-grid-column-one-half"
+                    key={subtopic.title}
+                  >
+                    <a href={subtopic.url} className="app-card">
+                      <h3 className="govuk-heading-m app-card__heading">
+                        {subtopic.title}
+                      </h3>
+                      <p className="govuk-body">{subtopic.description}</p>
+                    </a>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         ))}
