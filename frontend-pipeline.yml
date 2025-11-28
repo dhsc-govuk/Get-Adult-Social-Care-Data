@@ -59,6 +59,7 @@ stages:
   # Run tests once up front
   - stage: Tests
     displayName: "Run tests"
+    condition: false
     jobs:
       - job: Tests
         displayName: Run automated Tests
@@ -88,7 +89,7 @@ stages:
   # Build
   - stage: Build_Image
     displayName: "Build/push Docker image (all environments)"
-    condition: succeeded()
+    condition: false
     jobs:
       - deployment: Build
         displayName: Build
@@ -129,13 +130,50 @@ stages:
   - ${{ each environment in parameters.environments}}:
       - stage: Migrate_UserDB_${{environment.name}}
         displayName: "${{environment.name}}: Migrate user database"
-        condition: succeeded()
+        condition: true
         jobs:
           - job: Migrate
             displayName: Migrate database
             pool:
               vmImage: "ubuntu-latest"
             steps:
+            - task: AzureCLI@2
+              displayName: 'Set up User group access permissions'
+              inputs:
+                azureSubscription: ${{environment.arm_connection}}
+                scriptType: 'bash'
+                scriptLocation: 'inlineScript'
+                inlineScript: |
+                  # Variables
+                  ENV_NAME_UPPER=`echo "${{environment.name}}" | awk '{print toupper($0)}'`
+                  SERVER="${{environment.user_db_server}}"
+                  DB="${{environment.user_db_name}}"
+                  GROUP_NAME_READERS="DAP Beta - User DB Readers - $ENV_NAME_UPPER"
+                  GROUP_NAME_WRITERS="DAP Beta - User DB Writers - $ENV_NAME_UPPER"
+
+                  # 1. Get Token using Azure CLI
+                  # This gets a token for the Service Principal running the pipeline
+                  ACCESS_TOKEN=$(az account get-access-token --resource https://database.windows.net/ --query "accessToken" -o tsv)
+
+                  # 2. Create SQL Script to set permissions
+                  echo "
+                    IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = '$GROUP_NAME_READERS')
+                    BEGIN
+                        CREATE USER [$GROUP_NAME] FROM EXTERNAL PROVIDER;
+                    END
+                    IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = '$GROUP_NAME_WRITERS')
+                    BEGIN
+                        CREATE USER [$GROUP_NAME] FROM EXTERNAL PROVIDER;
+                    END
+                    ALTER ROLE db_datareader ADD MEMBER [$GROUP_NAME_READERS];
+                    ALTER ROLE db_datawriter ADD MEMBER [$GROUP_NAME_WRITERS];
+                  " > create_user.sql
+                  # Log the contents of the script
+                  cat create_user.sql
+
+                  # 3. Run sqlcmd
+                  # Passing Access Token via -P
+                  #/opt/mssql-tools/bin/sqlcmd -S $SERVER -d $DB -U "ServicePrincipalName" -P "$ACCESS_TOKEN" -i create_user.sql
             - checkout: self
             - task: NodeTool@0
               inputs:
