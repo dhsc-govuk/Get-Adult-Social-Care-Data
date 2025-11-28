@@ -1,6 +1,7 @@
 import { MssqlDialect } from 'kysely';
 import * as Tedious from 'tedious';
 import * as Tarn from 'tarn';
+import logger from '@/utils/logger';
 
 export const getAuthOptions = () => {
   let authOptions: Tedious.ConnectionAuthentication;
@@ -47,19 +48,30 @@ export const msdialect = new MssqlDialect({
     options: {
       min: 0,
       max: 10,
+      propagateCreateError: true,
     },
   },
   tedious: {
     ...Tedious,
-    connectionFactory: () =>
-      new Tedious.Connection({
-        authentication: getAuthOptions(),
+    connectionFactory: () => {
+      const authOptions = getAuthOptions();
+      const connection = new Tedious.Connection({
+        authentication: authOptions,
         options: {
+          encrypt: true,
+          enableArithAbort: true,
           database: process.env.USER_DATABASE,
           port: Number(process.env.USER_DB_PORT),
           trustServerCertificate: process.env.LOCAL_AUTH === 'true',
         },
         server: process.env.USER_DB_SERVER as string,
-      }),
+      });
+      connection.on('error', (error) => {
+        logger.error('User DB error from Tedious: ' + error.message, {
+          authType: authOptions.type,
+        });
+      });
+      return connection;
+    },
   },
 });
