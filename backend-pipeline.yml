@@ -1,6 +1,11 @@
 
 trigger:
-  - main
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - gascd_api
 
 resources:
   - repo: self
