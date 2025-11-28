@@ -166,7 +166,7 @@ stages:
                   Write-Host "$query"
                   # 5. Run it
                   # The -AccessToken parameter is supported in this module
-                  Invoke-Sqlcmd -ServerInstance $env.SQL_SERVER -Database $env.DB_NAME -AccessToken $token -Query $query
+                  Invoke-Sqlcmd -ServerInstance $env:SQL_SERVER -Database $env:DB_NAME -AccessToken $token -Query $query
                 azurePowerShellVersion: 'LatestVersion'
                 pwsh: true # PowerShell Core (required for Linux)
               env:
