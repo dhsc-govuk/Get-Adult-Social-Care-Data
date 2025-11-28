@@ -1,4 +1,4 @@
-import React, { RefObject, useState } from 'react';
+import React, { RefObject } from 'react';
 import {
   downloadCSV,
   extractTableCellText,
