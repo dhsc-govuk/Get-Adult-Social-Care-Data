@@ -25,4 +25,7 @@ public partial class Postcode
     [Column("la_code")]
     [StringLength(9)]
     public string? LaCode { get; init; }
+
+    [Column("loaded_datetime"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    public DateTime LoadedDateTime { get; init; }
 }
