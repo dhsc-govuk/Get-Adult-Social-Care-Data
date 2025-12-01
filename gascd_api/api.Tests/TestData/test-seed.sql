@@ -1,15 +1,22 @@
-DROP TABLE IF EXISTS postcode_data;
+DROP TABLE IF EXISTS postcodes;
 
-CREATE TABLE IF NOT EXISTS postcode_data (
-    sanitised_postcode VARCHAR(255) primary key NOT NULL,
-    display_postcode VARCHAR(255),
-    latitude DECIMAL,
-    longitude DECIMAL,
-    la_code VARCHAR(255)
+CREATE TABLE care_providers (
+                                id text NOT NULL,
+                                name text,
+                                loaded_datetime timestamp with time zone NOT NULL,
+                                CONSTRAINT "PK_care_providers" PRIMARY KEY (id)
 );
 
+CREATE TABLE postcodes (
+                           sanitised_postcode character varying(7) NOT NULL,
+                           display_postcode character varying(8) NOT NULL,
+                           latitude numeric,
+                           longitude numeric,
+                           la_code character varying(9),
+                           CONSTRAINT "PK_postcodes" PRIMARY KEY (sanitised_postcode)
+);
 
-INSERT INTO postcode_data (sanitised_postcode, display_postcode, latitude, longitude, la_code)
+INSERT INTO postcodes (sanitised_postcode, display_postcode, latitude, longitude, la_code)
 VALUES ('KT220UF', 'KT22 0UF', 51.33954856349381, -0.349629386, 'E07000207'),
        ('ME101QX', 'ME10 1QX', 51.32988801568501, 0.7260691453143282, 'E07000113'),
        ('ME101QY', 'ME10 1QY', 51.32954649874547, 0.7283745919593453, 'E07000113'),
