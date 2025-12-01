@@ -1,10 +1,12 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Data.Models;
 
-[Table("care_providers")]
-public class CareProvider
+[Table("countries")]
+public class Country
 {
+    [Key]
     [Column("id")]
     public string? Id { get; init; }
     [Column("name")]
