@@ -14,7 +14,7 @@ public partial class GascdDataContext : DbContext
     {
     }
 
-    public virtual DbSet<PostcodeDatum> PostcodeData { get; set; } = null!;
+    public virtual DbSet<Postcode> PostcodeData { get; set; } = null!;
     public virtual DbSet<CareProvider> CareProviders { get; set; } = null!;
 
 }

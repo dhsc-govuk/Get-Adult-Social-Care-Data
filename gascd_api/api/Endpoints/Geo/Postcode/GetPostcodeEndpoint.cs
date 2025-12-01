@@ -24,7 +24,7 @@ public class GetPostcodeEndpoint(GascdDataContext context, PostcodeMapper mapper
             return;
         }
 
-        GetPostcodeResponse response = mapper.PostCodeDatumToGetPostcodeResponse(datum);
+        GetPostcodeResponse response = mapper.PostcodeToGetPostcodeResponse(datum);
         logger.LogInformation("Finished processing postcode: {postcode}", req.Postcode);
         await Send.OkAsync(response, ct);
     }
