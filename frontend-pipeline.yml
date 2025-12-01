@@ -168,7 +168,7 @@ stages:
                         CREATE USER [$GROUP_NAME_WRITERS] FROM EXTERNAL PROVIDER;
                         PRINT 'User ($GROUP_NAME_WRITERS) created.';
                     END
-                    ALTER ROLE db_datareader ADD MEMBER [$GROUP_NAME_WRITERS];
+                    ALTER ROLE db_datawriter ADD MEMBER [$GROUP_NAME_WRITERS];
                   "@
                   Write-Host "$query"
                   # 5. Run it
