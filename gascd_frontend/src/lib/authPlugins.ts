@@ -41,6 +41,8 @@ export const B2CPlugin = () => {
             locationId: profile.extension_Location_ID,
             locationType: profile.extension_Location_Type,
             smartInsights: profile.extension_Smart_Insights,
+            // B2C users are always members
+            role: 'member',
           };
         },
       },

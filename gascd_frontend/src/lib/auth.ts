@@ -4,6 +4,7 @@ import { B2CPlugin } from './authPlugins';
 import { nextCookies } from 'better-auth/next-js';
 import logger from '@/utils/logger';
 import { msdialect } from './authDatabase';
+import { admin } from 'better-auth/plugins';
 
 export const auth = betterAuth({
   session: {
@@ -47,6 +48,7 @@ export const auth = betterAuth({
     },
   },
   plugins: [
+    admin(),
     B2CPlugin(),
     // https://www.better-auth.com/docs/integrations/next#server-action-cookies
     nextCookies(), // make sure this is the last plugin in the array
