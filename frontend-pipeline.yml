@@ -136,6 +136,51 @@ stages:
             pool:
               vmImage: "ubuntu-latest"
             steps:
+            # Ensure service principals have access to the DB
+            - task: AzurePowerShell@5
+              displayName: 'Set User DB permissions'
+              inputs:
+                azureSubscription: ${{environment.arm_connection}}
+                ScriptType: 'InlineScript'
+                Inline: |
+                  # Install the SQLServer module (Required on Linux agents)
+                  Install-Module -Name SqlServer -Force -Scope CurrentUser -AllowClobber
+
+                  # Configuration
+                  $ENV_NAME_UPPER = $env:ENV_NAME.ToUpper()
+                  $GROUP_NAME_READERS="DAP Beta - User DB Readers - $ENV_NAME_UPPER"
+                  $GROUP_NAME_WRITERS="DAP Beta - User DB Writers - $ENV_NAME_UPPER"
+
+                  # Get Access Token
+                  $token = (Get-AzAccessToken -ResourceUrl https://database.windows.net).Token
+
+                  # Build SQL query to give the correct groups access to the DB
+                  $query = @"
+                    IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = '$GROUP_NAME_READERS')
+                    BEGIN
+                        CREATE USER [$GROUP_NAME_READERS] FROM EXTERNAL PROVIDER;
+                        PRINT 'User ($GROUP_NAME_READERS) created.';
+                    END
+                    ALTER ROLE db_datareader ADD MEMBER [$GROUP_NAME_READERS];
+                    IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = '$GROUP_NAME_WRITERS')
+                    BEGIN
+                        CREATE USER [$GROUP_NAME_WRITERS] FROM EXTERNAL PROVIDER;
+                        PRINT 'User ($GROUP_NAME_WRITERS) created.';
+                    END
+                    ALTER ROLE db_datawriter ADD MEMBER [$GROUP_NAME_WRITERS];
+                  "@
+                  # Output the query for logs
+                  Write-Host "$query"
+
+                  # Run the query
+                  Invoke-Sqlcmd -ServerInstance $env:SQL_SERVER -Database $env:DB_NAME -AccessToken $token -Query $query
+                azurePowerShellVersion: 'LatestVersion'
+                pwsh: true # PowerShell Core (required for Linux)
+              env:
+                SQL_SERVER: "${{environment.user_db_server}}"
+                DB_NAME: "${{environment.user_db_name}}"
+                ENV_NAME: "${{environment.name}}"
+            # Run any db migrations
             - checkout: self
             - task: NodeTool@0
               inputs:
