@@ -6,11 +6,10 @@ namespace api.Data.Models;
 [Table("care_provider_locations")]
 public class CareProviderLocation
 {
-    [Key]
-    [Column("id")]
+    [Key, Column("id"), StringLength(15)]
     public string? Id { get; init; }
 
-    [Column("name")]
+    [Column("name"), StringLength(100)]
     public string? Name { get; init; }
 
     [Column("care_provider_fk")]
@@ -25,14 +24,17 @@ public class CareProviderLocation
     [ForeignKey("SanitisedPostcodeFk")]
     public virtual Postcode? Postcode { get; init; }
 
-    [Column("address")]
+    [Column("address"), StringLength(255)]
     public string? Address { get; init; }
 
-    [Column("nominated_individual")]
+    [Column("nominated_individual"), StringLength(255)]
     public string? NominatedIndividual { get; init; }
 
-    [Column("local_authority_id")]
-    public string? LocalAuthorityId { get; init; }
+    [Column("local_authority_fk")]
+    public string? LocalAuthorityFk { get; init; }
+
+    [ForeignKey("LocalAuthorityFk")]
+    public virtual LocalAuthority? LocalAuthority { get; init; }
 
     [Column("loaded_datetime"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime LoadedDateTime { get; init; }
