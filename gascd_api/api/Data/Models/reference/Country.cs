@@ -7,5 +7,5 @@ namespace api.Data.Models.reference;
 public class Country : EntityBase
 {
     [Column("name"), StringLength(50)]
-    public string? Name { get; init; }
+    public required string Name { get; init; }
 }

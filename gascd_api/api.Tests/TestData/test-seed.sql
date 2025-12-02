@@ -15,63 +15,62 @@ DROP TABLE IF EXISTS care_providers;
 
 
 
-
 CREATE TABLE care_providers (
                                 id character varying(15) NOT NULL,
-                                name character varying(100),
+                                name character varying(100) NOT NULL,
                                 loaded_datetime timestamp with time zone NOT NULL,
                                 CONSTRAINT "PK_care_providers" PRIMARY KEY (id)
 );
 
 CREATE TABLE countries (
                            id character varying(15) NOT NULL,
-                           name character varying(50),
+                           name character varying(50) NOT NULL,
                            loaded_datetime timestamp with time zone NOT NULL,
                            CONSTRAINT "PK_countries" PRIMARY KEY (id)
 );
 
 CREATE TABLE regions (
                          id character varying(15) NOT NULL,
-                         name character varying(50),
-                         country_fk character varying(15),
+                         name character varying(50) NOT NULL,
+                         country_fk character varying(15) NOT NULL,
                          loaded_datetime timestamp with time zone NOT NULL,
                          CONSTRAINT "PK_regions" PRIMARY KEY (id),
-                         CONSTRAINT "FK_regions_countries_country_fk" FOREIGN KEY (country_fk) REFERENCES countries (id)
+                         CONSTRAINT "FK_regions_countries_country_fk" FOREIGN KEY (country_fk) REFERENCES countries (id) ON DELETE CASCADE
 );
 
 CREATE TABLE local_authorities (
                                    id character varying(15) NOT NULL,
-                                   name character varying(50),
-                                   region_fk character varying(15),
+                                   name character varying(50) NOT NULL,
+                                   region_fk character varying(15) NOT NULL,
                                    loaded_datetime timestamp with time zone NOT NULL,
                                    CONSTRAINT "PK_local_authorities" PRIMARY KEY (id),
-                                   CONSTRAINT "FK_local_authorities_regions_region_fk" FOREIGN KEY (region_fk) REFERENCES regions (id)
+                                   CONSTRAINT "FK_local_authorities_regions_region_fk" FOREIGN KEY (region_fk) REFERENCES regions (id) ON DELETE CASCADE
 );
 
 CREATE TABLE postcodes (
                            id character varying(15) NOT NULL,
                            display_postcode character varying(8) NOT NULL,
-                           latitude numeric,
-                           longitude numeric,
-                           local_authority_fk character varying(15),
+                           latitude numeric NOT NULL,
+                           longitude numeric NOT NULL,
+                           local_authority_fk character varying(15) NOT NULL,
                            loaded_datetime timestamp with time zone NOT NULL,
                            CONSTRAINT "PK_postcodes" PRIMARY KEY (id),
-                           CONSTRAINT "FK_postcodes_local_authorities_local_authority_fk" FOREIGN KEY (local_authority_fk) REFERENCES local_authorities (id)
+                           CONSTRAINT "FK_postcodes_local_authorities_local_authority_fk" FOREIGN KEY (local_authority_fk) REFERENCES local_authorities (id) ON DELETE CASCADE
 );
 
 CREATE TABLE care_provider_locations (
                                          id character varying(15) NOT NULL,
-                                         name character varying(100),
-                                         care_provider_fk character varying(15),
-                                         sanitised_postcode_fk character varying(15),
-                                         address character varying(255),
-                                         nominated_individual character varying(255),
-                                         local_authority_fk character varying(15),
+                                         name character varying(100) NOT NULL,
+                                         care_provider_fk character varying(15) NOT NULL,
+                                         sanitised_postcode_fk character varying(15) NOT NULL,
+                                         address character varying(255) NOT NULL,
+                                         nominated_individual character varying(255) NOT NULL,
+                                         local_authority_fk character varying(15) NOT NULL,
                                          loaded_datetime timestamp with time zone NOT NULL,
                                          CONSTRAINT "PK_care_provider_locations" PRIMARY KEY (id),
-                                         CONSTRAINT "FK_care_provider_locations_care_providers_care_provider_fk" FOREIGN KEY (care_provider_fk) REFERENCES care_providers (id),
-                                         CONSTRAINT "FK_care_provider_locations_local_authorities_local_authority_fk" FOREIGN KEY (local_authority_fk) REFERENCES local_authorities (id),
-                                         CONSTRAINT "FK_care_provider_locations_postcodes_sanitised_postcode_fk" FOREIGN KEY (sanitised_postcode_fk) REFERENCES postcodes (id)
+                                         CONSTRAINT "FK_care_provider_locations_care_providers_care_provider_fk" FOREIGN KEY (care_provider_fk) REFERENCES care_providers (id) ON DELETE CASCADE,
+                                         CONSTRAINT "FK_care_provider_locations_local_authorities_local_authority_fk" FOREIGN KEY (local_authority_fk) REFERENCES local_authorities (id) ON DELETE CASCADE,
+                                         CONSTRAINT "FK_care_provider_locations_postcodes_sanitised_postcode_fk" FOREIGN KEY (sanitised_postcode_fk) REFERENCES postcodes (id) ON DELETE CASCADE
 );
 
 CREATE INDEX "IX_care_provider_locations_care_provider_fk" ON care_provider_locations (care_provider_fk);

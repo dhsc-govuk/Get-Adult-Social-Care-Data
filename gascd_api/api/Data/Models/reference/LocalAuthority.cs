@@ -7,11 +7,11 @@ namespace api.Data.Models.reference;
 public class LocalAuthority : EntityBase
 {
     [Column("name"), StringLength(50)]
-    public string? Name { get; init; }
+    public required string Name { get; init; }
 
     [Column("region_fk")]
-    public string? RegionFk { get; init; }
+    public required string RegionFk { get; init; }
 
     [ForeignKey("RegionFk")]
-    public virtual Region? Region { get; init; }
+    public virtual Region Region { get; init; } = null!;
 }
