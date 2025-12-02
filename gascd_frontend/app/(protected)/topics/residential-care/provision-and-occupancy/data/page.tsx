@@ -361,11 +361,11 @@ export default function ProvisionAndOccupancyPage() {
           url="/help/beds-per-100000-adult-population"
         />
         <DataLinkCard
-          label="Number of adult social care beds in a care provider location"
-          sources="Capacity Tracker"
+          label="Adult social care beds per 100,000 adult population - over time"
+          sources="Capacity Tracker, Office for National Statistics"
           updateFrequency="Daily"
           limitations={true}
-          url="/help/beds-care-provider-location"
+          url="/help/beds-per-100000-adult-population-over-time"
         />
         <DataLinkCard
           label="Occupancy level percentages for adult social care beds"
