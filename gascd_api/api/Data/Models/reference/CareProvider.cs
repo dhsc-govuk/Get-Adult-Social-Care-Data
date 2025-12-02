@@ -7,5 +7,5 @@ namespace api.Data.Models.reference;
 public class CareProvider : EntityBase
 {
     [Column("name"), StringLength(100)]
-    public string? Name { get; init; }
+    public required string Name { get; init; }
 }

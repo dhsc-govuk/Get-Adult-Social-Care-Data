@@ -7,11 +7,11 @@ namespace api.Data.Models.reference;
 public class Region : EntityBase
 {
     [Column("name"), StringLength(50)]
-    public string? Name { get; init; }
+    public required string Name { get; init; }
 
     [Column("country_fk")]
-    public string? CountryFk { get; init; }
+    public required string CountryFk { get; init; }
 
     [ForeignKey("CountryFk")]
-    public virtual Country? Country { get; init; }
+    public virtual Country Country { get; init; } = null!;
 }
