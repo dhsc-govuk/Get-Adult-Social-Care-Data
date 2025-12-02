@@ -3,9 +3,9 @@ import CookiesPage from '../../app/cookies/page';
 
 const EXPECTED_COOKIES = [
   'GASCDConsentGDPR',
-  'better-auth.state',
-  'better-auth.session-data',
-  'better-auth.session-token',
+  '__Secure-better-auth.state',
+  '__Secure-better-auth.session-data',
+  '__Secure-better-auth.session-token',
 ];
 
 describe('CookiesPage', () => {

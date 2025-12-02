@@ -127,7 +127,9 @@ const CookiesPage = () => {
                       <td className="govuk-table__cell">1 Year</td>
                     </tr>
                     <tr className="govuk-table__row">
-                      <td className="govuk-table__cell">better-auth.state</td>
+                      <td className="govuk-table__cell">
+                        __Secure-better-auth.state
+                      </td>
                       <td className="govuk-table__cell">
                         Manages your login session and ensures the sign-in
                         process functions correctly
@@ -136,7 +138,7 @@ const CookiesPage = () => {
                     </tr>
                     <tr className="govuk-table__row">
                       <td className="govuk-table__cell">
-                        better-auth.session-data
+                        __Secure-better-auth.session-data
                       </td>
                       <td className="govuk-table__cell">
                         Manages your login session and ensures the sign-in
@@ -148,7 +150,7 @@ const CookiesPage = () => {
                     </tr>
                     <tr className="govuk-table__row">
                       <td className="govuk-table__cell">
-                        better-auth.session-token
+                        __Secure-better-auth.session-token
                       </td>
                       <td className="govuk-table__cell">
                         Manages your login session and ensures the sign-in
