@@ -13,7 +13,8 @@ public class PostcodeMapper
             DisplayPostcode = postcode.DisplayPostcode,
             Latitude = postcode.Latitude,
             Longitude = postcode.Longitude,
-            LaCode = postcode.LocalAuthorityFk
+            LaCode = postcode.LocalAuthorityFk,
+            LaName = postcode.LocalAuthority!.Name
         };
     }
 }
