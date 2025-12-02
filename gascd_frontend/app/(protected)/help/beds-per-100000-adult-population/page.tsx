@@ -54,16 +54,16 @@ const BedsPer100000AdultPopulation: React.FC = () => {
                 categories:
               </p>
               <ul className="govuk-list govuk-list--bullet">
-                <li>dementia nursing</li>
                 <li>general residential</li>
-                <li>learning disability residential</li>
-                <li>YPD - young physically disabled</li>
-                <li>mental health nursing</li>
-                <li>learning disability nursing</li>
-                <li>dementia residential</li>
-                <li>transitional</li>
-                <li>mental health residential</li>
                 <li>general nursing</li>
+                <li>dementia residential</li>
+                <li>dementia nursing</li>
+                <li>mental health residential</li>
+                <li>mental health nursing</li>
+                <li>learning disability residential</li>
+                <li>learning disability nursing</li>
+                <li>transitional care</li>
+                <li>young physically disabled</li>
               </ul>
               <p>
                 The data covers both self-funded and local authority-funded
@@ -77,11 +77,8 @@ const BedsPer100000AdultPopulation: React.FC = () => {
                 on a weekend or holiday.
               </p>
               <p>
-                Small number suppression is applied. If fewer than 3 care
-                provider locations offer a given bed type within a local
-                authority, region, or country, the value for that area will be
-                shown as 0. Care provider locations in the Isles of Scilly are
-                excluded from all aggregated values.
+                Small number suppression is applied. All bed counts in the local
+                authority are rounded to the nearest 5.
               </p>
             </>
           }
@@ -96,7 +93,9 @@ const BedsPer100000AdultPopulation: React.FC = () => {
                 providers at the same time. It reflects the most recent
                 information available when the data was retrieved.
               </p>
-              <p>The data is self-reported and not independently verified.</p>
+              <p>
+                The data is self&#45;reported and not independently verified.
+              </p>
               <p>
                 When adult social care beds are vacant, they can be used
                 flexibly across a range of bed types. We are exploring ways to
