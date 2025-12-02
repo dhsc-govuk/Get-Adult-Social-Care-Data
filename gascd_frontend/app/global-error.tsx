@@ -15,7 +15,7 @@ export default function GlobalError({
 
   return (
     <html lang="en" className="govuk-template--rebranded">
-      <title>Error - Get adult social care data</title>
+      <title>Sorry, there is a problem with this service</title>
       <div tabIndex={-1} id="layout">
         <Header useCookieBanner={false} />
         <div className="govuk-width-container">
