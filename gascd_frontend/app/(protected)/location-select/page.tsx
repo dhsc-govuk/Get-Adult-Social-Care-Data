@@ -13,15 +13,6 @@ const LocationSelectPage: React.FC = () => {
     AvailableLocation[]
   >([]);
 
-  const dummyLocations = [
-    'Shoggins Care Services (Brighton)',
-    'Shoggins Care Services (Ipswich)',
-    'Shoggins Care Services (Newcastle)',
-    'Shoggins Care Services (Reading)',
-    'Shoggins Care Services (Shrewsbury)',
-    'Shoggins Care Services (Sudbury)',
-  ];
-
   useEffect(() => {
     const fetchAvailableLocations = async () => {
       let availableLocations = await LocationService.getAvailableLocations();
@@ -37,9 +28,7 @@ const LocationSelectPage: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    if (selectedLocation) {
-      console.log('Selected location:', selectedLocation);
-    }
+    LocationService.setSelectedLocation(selectedLocation);
   };
 
   return (
@@ -95,15 +84,13 @@ const LocationSelectPage: React.FC = () => {
                   className="govuk-button-group"
                   style={{ alignItems: 'center' }}
                 >
-                  <Link href="/">
-                    <button
-                      type="button"
-                      className="govuk-button"
-                      onClick={() => handleSubmit()}
-                    >
-                      Apply changes
-                    </button>
-                  </Link>
+                  <button
+                    type="button"
+                    className="govuk-button"
+                    onClick={() => handleSubmit()}
+                  >
+                    Apply changes
+                  </button>
                   <Link href="/" className="govuk-link">
                     Cancel and go back
                   </Link>

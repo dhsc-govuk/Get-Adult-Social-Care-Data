@@ -86,9 +86,7 @@ class LocationService {
     // Verify that the user can actually view the given cpLocation
     // XXX - this should ideally be handled by a completely different permissions setup
     const valid_locations = await this.getAvailableLocations(userLocationId);
-    const valid_location_ids = valid_locations.map(
-      (item: any) => item.metric_location_id
-    );
+    const valid_location_ids = valid_locations.map((item) => item.location_id);
     return valid_location_ids.includes(cpLocationID);
   }
 
@@ -160,6 +158,38 @@ class LocationService {
       locationIds.splice(1, 0, data.provider_location_id);
     }
     return locationIds;
+  }
+
+  public static async getSelectedLocation(): Promise<string> {
+    try {
+      const session = await authClient.getSession();
+      if (!session?.data?.user) {
+        throw new Error('No user session found');
+      }
+      return session.data.user.selectedLocationId;
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      LogService.logEvent(`Error in getSelectedLocation: ${errorMessage}`);
+      throw new Error(`Failed to get selected location: ${errorMessage}`);
+    }
+  }
+
+  public static async setSelectedLocation(locationId: string) {
+    try {
+      const session = await authClient.getSession();
+      if (!session?.data?.user) {
+        throw new Error('No user session found');
+      }
+      authClient.updateUser({
+        selectedLocationId: locationId,
+      });
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      LogService.logEvent(`Error in setSelectedLocation: ${errorMessage}`);
+      throw new Error(`Failed to set selected location: ${errorMessage}`);
+    }
   }
 }
 
