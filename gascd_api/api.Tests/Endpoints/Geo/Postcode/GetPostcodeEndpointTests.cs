@@ -44,6 +44,7 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
         response.Latitude.ShouldBe(51.33954856349381m);
         response.Longitude.ShouldBe(-0.349629386m);
         response.LaCode.ShouldBe("E08000014");
+        response.LaName.ShouldBe("Liverpool");
     }
 
     [Theory]
