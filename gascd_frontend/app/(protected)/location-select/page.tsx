@@ -1,11 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
 import Link from 'next/link';
+import LocationService, {
+  AvailableLocation,
+} from '@/services/location/locationService';
 
 const LocationSelectPage: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('');
+  const [availableLocations, setAvailableLocations] = useState<
+    AvailableLocation[]
+  >([]);
 
   const dummyLocations = [
     'Shoggins Care Services (Brighton)',
@@ -15,6 +21,16 @@ const LocationSelectPage: React.FC = () => {
     'Shoggins Care Services (Shrewsbury)',
     'Shoggins Care Services (Sudbury)',
   ];
+
+  useEffect(() => {
+    const fetchAvailableLocations = async () => {
+      let availableLocations = await LocationService.getAvailableLocations();
+      setAvailableLocations(availableLocations);
+      console.log('Available locations:', availableLocations);
+    };
+
+    fetchAvailableLocations();
+  }, []);
 
   const handleChange = (location: string) => {
     setSelectedLocation(location);
@@ -47,7 +63,8 @@ const LocationSelectPage: React.FC = () => {
               <li>local and regional data based on that location</li>
             </ul>
             <p className="govuk-body">
-              You can change to another location in your care provider group at any time.
+              You can change to another location in your care provider group at
+              any time.
             </p>
             <div className="govuk-form-group">
               <form>
@@ -64,15 +81,20 @@ const LocationSelectPage: React.FC = () => {
                       handleChange((e.target as HTMLSelectElement).value)
                     }
                   >
-                    <option value="" disabled>Select an option</option>
-                    {dummyLocations.map((location, index) => (
-                      <option key={index} value={location}>
-                        {location}
+                    <option value="" disabled>
+                      Select an option
+                    </option>
+                    {availableLocations.map((location, index) => (
+                      <option key={index} value={location.location_id}>
+                        {location.location_name}
                       </option>
                     ))}
                   </select>
                 </fieldset>
-                <div className="govuk-button-group" style={{ alignItems: 'center' }}>
+                <div
+                  className="govuk-button-group"
+                  style={{ alignItems: 'center' }}
+                >
                   <Link href="/">
                     <button
                       type="button"

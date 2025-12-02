@@ -1,7 +1,12 @@
 import LogService from '../logger/logService';
 import { Locations } from '@/data/interfaces/Locations';
-import { Indicator } from '@/data/interfaces/Indicator';
 import { LocationNames } from '@/data/interfaces/LocationNames';
+import { authClient } from '@/lib/auth-client';
+
+export interface AvailableLocation {
+  location_id: string;
+  location_name: string;
+}
 
 class LocationService {
   public static async getLocations(query: string): Promise<Locations> {
@@ -42,16 +47,28 @@ class LocationService {
   }
 
   public static async getAvailableLocations(
-    query: string
-  ): Promise<Indicator[]> {
+    provider_location_id?: string
+  ): Promise<AvailableLocation[]> {
+    if (!provider_location_id) {
+      const session = await authClient.getSession();
+      provider_location_id = session?.data?.user?.locationId || '';
+    }
     try {
       const response = await fetch(
-        `/api/get_available_locations?provider_location_id=${query}`
+        `/api/get_available_locations?provider_location_id=${provider_location_id}`
       );
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
-      return await response.json();
+
+      let results = await response.json();
+      let availableLocations = results.map((item: any) => {
+        return {
+          location_id: item.metric_location_id,
+          location_name: item.metric_location_name,
+        };
+      });
+      return availableLocations;
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
