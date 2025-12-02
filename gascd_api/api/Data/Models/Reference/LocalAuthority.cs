@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace api.Data.Models.reference;
+namespace api.Data.Models.Reference;
 
 [Table("local_authorities")]
 public class LocalAuthority : EntityBase

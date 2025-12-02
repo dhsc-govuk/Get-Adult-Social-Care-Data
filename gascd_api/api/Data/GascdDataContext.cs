@@ -1,4 +1,4 @@
-﻿using api.Data.Models.reference;
+﻿using api.Data.Models.Reference;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data;
