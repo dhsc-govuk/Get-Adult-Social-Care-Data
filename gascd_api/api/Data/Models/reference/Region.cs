@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace api.Data.Models;
+namespace api.Data.Models.reference;
 
 [Table("regions")]
 public class Region : EntityBase
