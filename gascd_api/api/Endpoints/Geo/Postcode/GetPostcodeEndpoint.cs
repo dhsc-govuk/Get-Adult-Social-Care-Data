@@ -16,7 +16,7 @@ public class GetPostcodeEndpoint(GascdDataContext context, PostcodeMapper mapper
     public override async Task HandleAsync(GetPostcodeRequest req, CancellationToken ct)
     {
         logger.LogDebug("Received request for postcode: {postcode}", req.Postcode);
-        var datum = context.PostcodeData.SingleOrDefault(p => p.SanitisedPostcode == req.Postcode);
+        var datum = context.PostcodeData.SingleOrDefault(p => p.Id == req.Postcode);
         if (datum == null)
         {
             logger.LogInformation("Postcode not found: {postcode}", req.Postcode);

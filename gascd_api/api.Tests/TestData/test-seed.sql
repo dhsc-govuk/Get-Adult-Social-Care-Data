@@ -14,6 +14,8 @@ DROP TABLE IF EXISTS care_providers;
 -- Start script
 
 
+
+
 CREATE TABLE care_providers (
                                 id character varying(15) NOT NULL,
                                 name character varying(100),
@@ -47,13 +49,13 @@ CREATE TABLE local_authorities (
 );
 
 CREATE TABLE postcodes (
-                           sanitised_postcode character varying(7) NOT NULL,
+                           id character varying(15) NOT NULL,
                            display_postcode character varying(8) NOT NULL,
                            latitude numeric,
                            longitude numeric,
                            local_authority_fk character varying(15),
                            loaded_datetime timestamp with time zone NOT NULL,
-                           CONSTRAINT "PK_postcodes" PRIMARY KEY (sanitised_postcode),
+                           CONSTRAINT "PK_postcodes" PRIMARY KEY (id),
                            CONSTRAINT "FK_postcodes_local_authorities_local_authority_fk" FOREIGN KEY (local_authority_fk) REFERENCES local_authorities (id)
 );
 
@@ -61,7 +63,7 @@ CREATE TABLE care_provider_locations (
                                          id character varying(15) NOT NULL,
                                          name character varying(100),
                                          care_provider_fk character varying(15),
-                                         sanitised_postcode_fk character varying(7),
+                                         sanitised_postcode_fk character varying(15),
                                          address character varying(255),
                                          nominated_individual character varying(255),
                                          local_authority_fk character varying(15),
@@ -69,7 +71,7 @@ CREATE TABLE care_provider_locations (
                                          CONSTRAINT "PK_care_provider_locations" PRIMARY KEY (id),
                                          CONSTRAINT "FK_care_provider_locations_care_providers_care_provider_fk" FOREIGN KEY (care_provider_fk) REFERENCES care_providers (id),
                                          CONSTRAINT "FK_care_provider_locations_local_authorities_local_authority_fk" FOREIGN KEY (local_authority_fk) REFERENCES local_authorities (id),
-                                         CONSTRAINT "FK_care_provider_locations_postcodes_sanitised_postcode_fk" FOREIGN KEY (sanitised_postcode_fk) REFERENCES postcodes (sanitised_postcode)
+                                         CONSTRAINT "FK_care_provider_locations_postcodes_sanitised_postcode_fk" FOREIGN KEY (sanitised_postcode_fk) REFERENCES postcodes (id)
 );
 
 CREATE INDEX "IX_care_provider_locations_care_provider_fk" ON care_provider_locations (care_provider_fk);
@@ -86,6 +88,9 @@ CREATE INDEX "IX_regions_country_fk" ON regions (country_fk);
 
 
 
+
+
+
 -- insert test data
 
 
@@ -99,7 +104,7 @@ INSERT INTO local_authorities (id, name, region_fk, loaded_datetime)
 VALUES ('E08000014', 'Liverpool', 'E12000002', CURRENT_TIMESTAMP);
             
 
-INSERT INTO postcodes (sanitised_postcode, display_postcode, latitude, longitude, local_authority_fk, loaded_datetime)
+INSERT INTO postcodes (id, display_postcode, latitude, longitude, local_authority_fk, loaded_datetime)
 VALUES ('KT220UF', 'KT22 0UF', 51.33954856349381, -0.349629386, 'E08000014', CURRENT_TIMESTAMP),
        ('ME101QX', 'ME10 1QX', 51.32988801568501, 0.7260691453143282, 'E08000014', CURRENT_TIMESTAMP),
        ('ME101QY', 'ME10 1QY', 51.32954649874547, 0.7283745919593453, 'E08000014', CURRENT_TIMESTAMP),
