@@ -9,20 +9,17 @@ const BedsPer100000AdultPopulation: React.FC = () => {
   return (
     <>
       <Layout
-        title="Adult social care beds per 100,000 adult population"
+        title="Adult social care beds per 100,000 adult population - over time"
         showLoginInformation={false}
         backURL="/topics/residential-care/provision-and-occupancy/data"
-        currentPage={'beds per 100,000 adult population'}
+        currentPage={'beds per 100,000 adult population - over time'}
       >
         <DataIndicatorDetails
-          title="Adult social care beds per 100,000 adult population"
+          title="Adult social care beds per 100,000 adult population - over time"
           whatThisMeasures={
             <p>
-              The total number of adult social care beds recorded by care
-              providers across health and adult social care, adjusted to a rate
-              of 100,000 adults (aged 18 and over) in the local authority,
-              regional or national population, published by Office for National
-              Statistics.
+              The total number of adult social care beds in a specific care
+              provider&apos;s local authority area by type, over time.
             </p>
           }
           source={
