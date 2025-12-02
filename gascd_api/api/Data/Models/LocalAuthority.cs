@@ -6,11 +6,10 @@ namespace api.Data.Models;
 [Table("local_authorities")]
 public class LocalAuthority
 {
-    [Key]
-    [Column("id")]
-    public string? LaCode { get; init; }
+    [Key, Column("id"), StringLength(15)]
+    public string? Id { get; init; }
 
-    [Column("name")]
+    [Column("name"), StringLength(50)]
     public string? Name { get; init; }
 
     [Column("region_fk")]
@@ -21,5 +20,4 @@ public class LocalAuthority
 
     [Column("loaded_datetime"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime LoadedDateTime { get; init; }
-
 }

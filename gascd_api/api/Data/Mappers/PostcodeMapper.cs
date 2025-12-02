@@ -1,12 +1,19 @@
 using api.Data.Models;
 using api.Endpoints.Geo.Postcode;
-using Riok.Mapperly.Abstractions;
 
 namespace api.Data.Mappers;
 
-[Mapper]
-public partial class PostcodeMapper
+public class PostcodeMapper
 {
-    [MapperIgnoreTarget(nameof(GetPostcodeResponse.LaName))]
-    public partial GetPostcodeResponse PostcodeToGetPostcodeResponse(Postcode postcode);
+    public GetPostcodeResponse PostcodeToGetPostcodeResponse(Postcode postcode)
+    {
+        return new GetPostcodeResponse()
+        {
+            SanitisedPostcode = postcode.SanitisedPostcode,
+            DisplayPostcode = postcode.DisplayPostcode,
+            Latitude = postcode.Latitude,
+            Longitude = postcode.Longitude,
+            LaCode = postcode.LocalAuthorityFk
+        };
+    }
 }
