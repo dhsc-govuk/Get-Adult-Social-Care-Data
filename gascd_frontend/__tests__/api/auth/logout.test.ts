@@ -73,6 +73,7 @@ describe('Logout API Route', () => {
     process.env.AZURE_AD_TENANT_NAME = 'MOCK_TENANT_NAME';
     process.env.AZURE_AD_B2C_USER_SIGN_IN = 'MOCK_B2C_FLOW';
     process.env.AZURE_AD_B2C_LOGOUT_URL = 'MOCK_REDIRECT_URL';
+    process.env.AZURE_AD_CLIENT_ID = '1234';
     mockGetSession.mockResolvedValue(mockSession);
 
     const mockRequest = new NextRequest(
@@ -87,7 +88,7 @@ describe('Logout API Route', () => {
 
     expect(response.status).toBe(200);
     expect(json).toEqual({
-      logoutUrl: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/${process.env.AZURE_AD_B2C_USER_SIGN_IN}/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(process.env.AZURE_AD_B2C_LOGOUT_URL)}`,
+      logoutUrl: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/${process.env.AZURE_AD_B2C_USER_SIGN_IN}/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(process.env.AZURE_AD_B2C_LOGOUT_URL)}&client_id=1234`,
     });
   });
 });
