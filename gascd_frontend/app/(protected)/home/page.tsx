@@ -2,10 +2,10 @@
 
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import { useSession } from 'next-auth/react';
+import { authClient } from '@/lib/auth-client';
 
 const HomePage: React.FC = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = authClient.useSession();
 
   type Subtopic = {
     title: string;

@@ -15,8 +15,11 @@
     "test:nocov": "vitest run",
     "test:watch": "vitest",
     "cypress": "cypress open --e2e",
-    "openapi:lint": "redocly lint --extends recommended ../gascd_metrics_api/openapi.yaml",
-    "cypress:headless": "cypress run --e2e"
+    "cypress:headless": "cypress run --e2e",
+    "db:test:seed": "tsx ./TestData/seed-test-database.ts",
+    "db:generate": " ./node_modules/@better-auth/cli/dist/index.mjs generate",
+    "db:migrate": " ./node_modules/@better-auth/cli/dist/index.mjs migrate",
+    "openapi:lint": "redocly lint --extends recommended ../gascd_metrics_api/openapi.yaml"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": "eslint --config eslint.config.js",
@@ -24,11 +27,13 @@
   },
   "dependencies": {
     "@azure/monitor-opentelemetry": "^1.11.1",
+    "@better-auth/cli": "^1.4.3",
     "@microsoft/applicationinsights-react-js": "^19.3.7",
     "@microsoft/applicationinsights-web": "^3.3.9",
     "@next/eslint-plugin-next": "15.5.2",
     "@opentelemetry/auto-instrumentations-node": "^0.62.0",
     "@types/d3": "^7.4.3",
+    "better-auth": "^1.4.3",
     "d3": "^7.9.0",
     "govuk-frontend": "^5.11.2",
     "history": "^5.3.0",
@@ -39,7 +44,6 @@
     "mssql": "^11.0.1",
     "msw": "^2.7.3",
     "next": "15.5.2",
-    "next-auth": "^4.24.12",
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "winston": "^3.17.0"
@@ -62,7 +66,6 @@
     "@vitejs/plugin-react": "^5.0.4",
     "@vitest/coverage-v8": "^3.2.4",
     "axe-html-reporter": "^2.2.11",
-    "cypress": "^13.17.0",
     "dotenv": "^16.4.7",
     "eslint": "^9.23.0",
     "eslint-plugin-react": "^7.37.2",
@@ -75,10 +78,14 @@
     "prettier": "^3.4.2",
     "sass": "^1.89.2",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
     "typescript": "5.7.2",
     "typescript-eslint": "^8.0.1",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"
+  },
+  "optionalDependencies": {
+    "cypress": "^13.17.0"
   },
   "overrides": {
     "@types/react": "19.1.12",

@@ -4,11 +4,7 @@ describe('User can navigate the key parts of the site', () => {
     cy.visit('');
     cy.url().should('include', '/login');
 
-    // Login with dummy auth
-    cy.get('.govuk-button').contains('Agree and sign in').click();
-    cy.get('input[type="email"]').type('example@example.com');
-    cy.get('input[type="password"]').type(Cypress.env('APPLICATION_PASSWORD'));
-    cy.get('button').contains('Sign in with dummy-creds').click();
+    cy.login();
 
     // Load the homepage
     cy.url().should('include', '/home');

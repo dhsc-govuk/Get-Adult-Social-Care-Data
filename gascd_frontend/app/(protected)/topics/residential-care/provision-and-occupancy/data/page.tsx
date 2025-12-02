@@ -2,7 +2,7 @@
 
 import Layout from '@/components/common/layout/Layout';
 import React, { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { authClient } from '@/lib/auth-client';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
@@ -73,7 +73,7 @@ export default function ProvisionAndOccupancyPage() {
     median_occupancy_total: 'Occupancy level',
   };
 
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
 
   const breadcrumbs = [
     {

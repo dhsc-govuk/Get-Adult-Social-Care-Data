@@ -1,0 +1,18 @@
+FROM mcr.microsoft.com/mssql/server:2022-latest
+
+# Switch to root to change permissions
+USER root
+
+# Create a working directory
+WORKDIR /usr/src/app
+
+# Copy the scripts into the container
+COPY setup.sql entrypoint.sh ./
+
+# Grant execute permissions to the entrypoint script
+RUN chmod +x entrypoint.sh
+
+# Switch back to the mssql user 
+USER mssql
+
+ENTRYPOINT ["./entrypoint.sh"]

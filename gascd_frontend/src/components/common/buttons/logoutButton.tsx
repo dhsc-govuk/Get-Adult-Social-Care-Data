@@ -1,8 +1,8 @@
 'use client';
 
-import { signOut } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import LogService from '@/services/logger/logService';
+import { authClient } from '@/lib/auth-client';
 
 const LogoutButton: React.FC = () => {
   const [logoutUrl, setLogoutUrl] = useState('');
@@ -28,14 +28,19 @@ const LogoutButton: React.FC = () => {
   }, []);
 
   const handleSignOut = async () => {
-    LogService.logEvent('User logged out');
+    await LogService.logEvent('User logged out');
     localStorage.clear();
-    await signOut({ redirect: false });
-    if (logoutUrl) {
-      window.location.href = logoutUrl;
-    } else {
-      window.location.href = '/login';
-    }
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          if (logoutUrl) {
+            window.location.href = logoutUrl;
+          } else {
+            window.location.href = '/login';
+          }
+        },
+      },
+    });
   };
 
   return (

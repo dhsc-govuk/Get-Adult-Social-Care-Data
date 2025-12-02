@@ -1,17 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbPool } from '../../../src/data/dbModule';
-import { Indicator } from '@/data/interfaces/Indicator';
-import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
-import { authOptions } from '../auth/authOptions';
-import { getServerSession } from 'next-auth';
 import { Locations } from '@/data/interfaces/Locations';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 import logger from '@/utils/logger';
 
-// Handler for HTTP GET request
 export async function POST(req: NextRequest) {
   const reqBody = await req.json();
   const provider_location_id = reqBody['provider_location_id'];
-  const session = await getServerSession(authOptions);
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   try {
     const query = `

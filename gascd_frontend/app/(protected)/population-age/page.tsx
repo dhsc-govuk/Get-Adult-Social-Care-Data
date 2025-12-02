@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Layout from '@/components/common/layout/Layout';
-import { useSession } from 'next-auth/react';
+import { authClient } from '@/lib/auth-client';
 import '../../../src/styles/population-age.scss';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import { Locations } from '@/data/interfaces/Locations';
@@ -12,7 +12,7 @@ import Feedback from '@/components/common/feedback/Feedback';
 import AnalyticsService from '@/services/analytics/analyticsService';
 
 export default function PopulationAgePage() {
-  const { data: session, status } = useSession();
+  const { data: session } = authClient.useSession();
   const [selectedAge, setSelectedAge] = useState('aged-85-years-and-over');
   const [CPLocationId, setCPLocationId] = useState('');
   const [mapAvailable, setMapAvailable] = useState(true);
