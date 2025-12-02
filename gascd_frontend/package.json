@@ -19,6 +19,7 @@
     "db:test:seed": "tsx ./TestData/seed-test-database.ts",
     "db:generate": " ./node_modules/@better-auth/cli/dist/index.mjs generate",
     "db:migrate": " ./node_modules/@better-auth/cli/dist/index.mjs migrate",
+    "db:migrate:ci": " ./node_modules/@better-auth/cli/dist/index.mjs migrate --yes",
     "openapi:lint": "redocly lint --extends recommended ../gascd_metrics_api/openapi.yaml"
   },
   "lint-staged": {

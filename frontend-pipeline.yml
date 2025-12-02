@@ -213,7 +213,7 @@ stages:
                   export USER_DATABASE="${{environment.user_db_name}}"
                   
                   # Run the Better Auth migration
-                  cd gascd_frontend && npm run db:migrate -y
+                  cd gascd_frontend && npm run db:migrate:ci
       - stage: Deploy_${{environment.name}}
         displayName: "${{environment.name}}: Deploy to Azure Web App"
         condition: succeeded()
