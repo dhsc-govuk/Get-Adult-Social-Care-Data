@@ -4,11 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace api.Data.Models;
 
 [Table("regions")]
-public class Region
+public class Region : EntityBase
 {
-    [Key, Column("id"), StringLength(15)]
-    public string? Id { get; init; }
-
     [Column("name"), StringLength(50)]
     public string? Name { get; init; }
 
@@ -17,7 +14,4 @@ public class Region
 
     [ForeignKey("CountryFk")]
     public virtual Country? Country { get; init; }
-
-    [Column("loaded_datetime"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public DateTime LoadedDateTime { get; init; }
 }

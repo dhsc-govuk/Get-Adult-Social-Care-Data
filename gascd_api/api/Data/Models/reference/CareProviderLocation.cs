@@ -4,11 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace api.Data.Models;
 
 [Table("care_provider_locations")]
-public class CareProviderLocation
+public class CareProviderLocation : EntityBase
 {
-    [Key, Column("id"), StringLength(15)]
-    public string? Id { get; init; }
-
     [Column("name"), StringLength(100)]
     public string? Name { get; init; }
 
@@ -35,8 +32,4 @@ public class CareProviderLocation
 
     [ForeignKey("LocalAuthorityFk")]
     public virtual LocalAuthority? LocalAuthority { get; init; }
-
-    [Column("loaded_datetime"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public DateTime LoadedDateTime { get; init; }
-
 }

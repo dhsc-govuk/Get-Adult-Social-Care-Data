@@ -9,7 +9,7 @@ public class PostcodeMapper
     {
         return new GetPostcodeResponse()
         {
-            SanitisedPostcode = postcode.SanitisedPostcode,
+            SanitisedPostcode = postcode.Id,
             DisplayPostcode = postcode.DisplayPostcode,
             Latitude = postcode.Latitude,
             Longitude = postcode.Longitude,

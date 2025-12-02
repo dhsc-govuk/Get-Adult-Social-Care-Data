@@ -7,11 +7,11 @@ namespace api.Data.Models;
 public class Country
 {
     [Key, Column("id"), StringLength(15)]
-    public string? Id { get; init; }
+    public new string? Id { get; init; }
 
     [Column("name"), StringLength(50)]
     public string? Name { get; init; }
 
     [Column("loaded_datetime"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public DateTime LoadedDateTime { get; init; }
+    public new DateTime LoadedDateTime { get; init; }
 }
