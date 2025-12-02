@@ -1,4 +1,4 @@
-using api.Data.Models;
+using api.Data.Models.reference;
 using api.Endpoints.Geo.Postcode;
 
 namespace api.Data.Mappers;
