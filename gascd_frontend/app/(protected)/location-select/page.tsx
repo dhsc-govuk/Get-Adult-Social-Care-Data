@@ -15,9 +15,13 @@ const LocationSelectPage: React.FC = () => {
 
   useEffect(() => {
     const fetchAvailableLocations = async () => {
-      let availableLocations = await LocationService.getAvailableLocations();
+      const availableLocations = await LocationService.getAvailableLocations();
       setAvailableLocations(availableLocations);
-      console.log('Available locations:', availableLocations);
+
+      const currentSelectedLocation = LocationService.getSelectedLocation();
+      if (currentSelectedLocation) {
+        setSelectedLocation(String(currentSelectedLocation));
+      }
     };
 
     fetchAvailableLocations();
@@ -55,48 +59,47 @@ const LocationSelectPage: React.FC = () => {
               You can change to another location in your care provider group at
               any time.
             </p>
-            <div className="govuk-form-group">
-              <form>
-                <fieldset className="govuk-fieldset govuk-!-margin-bottom-6">
-                  <div id="location-hint" className="govuk-hint">
-                    Start typing for suggestions.
-                  </div>
-                  <select
-                    className="govuk-select"
-                    name="location_list"
-                    id="location_list"
-                    value={selectedLocation}
-                    onChange={(e) =>
-                      handleChange((e.target as HTMLSelectElement).value)
-                    }
-                  >
-                    <option value="" disabled>
-                      Select an option
-                    </option>
+            <form>
+              <div className="govuk-form-group">
+                <fieldset className="govuk-fieldset">
+                  <div className="govuk-radios" data-module="govuk-radios">
                     {availableLocations.map((location, index) => (
-                      <option key={index} value={location.location_id}>
-                        {location.location_name}
-                      </option>
+                      <div
+                        className="govuk-radios__item"
+                        key={`location-${index}`}
+                      >
+                        <input
+                          id={`location-${index}`}
+                          name="availableLocation"
+                          className="govuk-radios__input"
+                          type="radio"
+                          value={String(location.location_id)}
+                          checked={
+                            selectedLocation === String(location.location_id)
+                          }
+                          onChange={() =>
+                            handleChange(String(location.location_id))
+                          }
+                        />
+                        <label className="govuk-label govuk-radios__label">
+                          {location.location_name}
+                        </label>
+                      </div>
                     ))}
-                  </select>
+                  </div>
                 </fieldset>
-                <div
-                  className="govuk-button-group"
-                  style={{ alignItems: 'center' }}
-                >
-                  <button
-                    type="button"
-                    className="govuk-button"
-                    onClick={() => handleSubmit()}
-                  >
-                    Apply changes
-                  </button>
-                  <Link href="/" className="govuk-link">
-                    Cancel and go back
-                  </Link>
-                </div>
-              </form>
-            </div>
+              </div>
+              <button
+                type="button"
+                className="govuk-button"
+                onClick={() => handleSubmit()}
+              >
+                Apply changes
+              </button>
+              <Link href="/" className="govuk-link">
+                Cancel and go back
+              </Link>
+            </form>
           </div>
         </div>
       </Layout>
