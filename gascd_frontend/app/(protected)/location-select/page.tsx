@@ -62,12 +62,9 @@ const LocationSelectPage: React.FC = () => {
               You can change to another location in your care provider group at
               any time.
             </p>
-            <form>
+            <form aria-label="Select a location from your care provider group">
               <div className="govuk-form-group">
                 <fieldset className="govuk-fieldset">
-                  <legend className="govuk-label govuk-label--m govuk-fieldset__legend hidden">
-                    Select a location from your care provider group
-                  </legend>
                   <div className="govuk-radios" data-module="govuk-radios">
                     {availableLocations.map((location, index) => (
                       <div
