@@ -166,7 +166,7 @@ class LocationService {
       if (!session?.data?.user) {
         throw new Error('No user session found');
       }
-      return session.data.user.selectedLocationId;
+      return session.data.user.selectedLocationId ?? '';
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
