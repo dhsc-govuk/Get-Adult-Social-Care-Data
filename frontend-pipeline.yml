@@ -133,12 +133,10 @@ stages:
         jobs:
           - job: Migrate
             displayName: Migrate database
+            environment: "${{environment.name}}"
             pool:
               vmImage: "ubuntu-latest"
             steps:
-            - task: ManualValidation@0
-              inputs:
-                notifyUsers: ''
             # Ensure service principals have access to the DB
             - task: AzurePowerShell@5
               displayName: 'Set User DB permissions'
