@@ -7,7 +7,7 @@ const HouseholdsPropertyOwned = () => {
     <>
       <Layout
         title="Households where the property is owned outright"
-        backURL="/present-demand"
+        backURL="/topics/population-needs/household-composition-and-economic-factors/data"
       >
         <DataIndicatorDetails
           title="Households where the property is owned outright"
