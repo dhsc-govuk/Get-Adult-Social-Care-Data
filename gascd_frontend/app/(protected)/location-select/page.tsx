@@ -65,9 +65,9 @@ const LocationSelectPage: React.FC = () => {
             <form>
               <div className="govuk-form-group">
                 <fieldset className="govuk-fieldset">
-                  <label className="govuk-label govuk-label--m govuk-fieldset__legend">
-                    Select a location
-                  </label>
+                  <legend className="govuk-label govuk-label--m govuk-fieldset__legend hidden">
+                    Select a location from your care provider group
+                  </legend>
                   <div className="govuk-radios" data-module="govuk-radios">
                     {availableLocations.map((location, index) => (
                       <div
@@ -91,16 +91,18 @@ const LocationSelectPage: React.FC = () => {
                   </div>
                 </fieldset>
               </div>
-              <button
-                type="button"
-                className="govuk-button"
-                onClick={() => handleSubmit()}
-              >
-                Apply changes
-              </button>
-              <Link href="/" className="govuk-link">
-                Cancel and go back
-              </Link>
+              <div className="govuk-button-group">
+                <button
+                  type="button"
+                  className="govuk-button"
+                  onClick={() => handleSubmit()}
+                >
+                  Apply changes
+                </button>
+                <Link href="/" className="govuk-link govuk-body-m">
+                  Cancel and go back
+                </Link>
+              </div>
             </form>
           </div>
         </div>
