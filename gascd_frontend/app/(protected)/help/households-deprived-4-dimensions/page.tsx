@@ -32,7 +32,7 @@ const HouseholdsDeprived = () => {
               tab)
             </Link>
           }
-          dataCorrectAsOf={'[Add Data]'}
+          dataCorrectAsOf="21 March 2021"
           updateFrequency="Census cadence"
           methodology={
             <p>

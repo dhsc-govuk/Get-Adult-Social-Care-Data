@@ -28,7 +28,7 @@ const DementiaPrevalence = () => {
               new tab)
             </Link>
           }
-          dataCorrectAsOf={'[Add Data]'}
+          dataCorrectAsOf="3 December 2025"
           updateFrequency="Yearly"
           methodology={
             <p>
