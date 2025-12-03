@@ -1,10 +1,12 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../authOptions';
 import { NextRequest, NextResponse } from 'next/server';
 import logger from '@/utils/logger';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   if (!session) {
     return NextResponse.json(
@@ -16,7 +18,6 @@ export async function POST(req: NextRequest) {
   const tenant = process.env.AZURE_AD_TENANT_NAME;
   const userFlow = process.env.AZURE_AD_B2C_USER_SIGN_IN;
   const logoutRedirectUrl = process.env.AZURE_AD_B2C_LOGOUT_URL;
-  const idToken = session?.idToken as string;
 
   if (!tenant || !userFlow || !logoutRedirectUrl) {
     logger.warn('Missing environment variables for azure logout URL');
@@ -28,6 +29,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const logoutUrl = `https://${tenant}.b2clogin.com/${tenant}.onmicrosoft.com/${userFlow}/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(logoutRedirectUrl)}&id_token_hint=${idToken}`;
+  const logoutUrl = `https://${tenant}.b2clogin.com/${tenant}.onmicrosoft.com/${userFlow}/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(logoutRedirectUrl)}&client_id=${process.env.AZURE_AD_CLIENT_ID}`;
   return NextResponse.json({ logoutUrl });
 }

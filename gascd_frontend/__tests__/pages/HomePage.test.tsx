@@ -1,10 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import HomePage from '../../app/(protected)/home/page';
-import { renderWithSession } from '@/test-utils/test-utils';
 
 describe('HomePage', () => {
   it('should render the heading, body text, and a link', () => {
-    renderWithSession(<HomePage />);
+    render(<HomePage />);
 
     // 1. Check for the main heading
     // We use getByRole to find the heading element. The 'name' option is an
