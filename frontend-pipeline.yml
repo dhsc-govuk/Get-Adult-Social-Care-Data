@@ -185,7 +185,7 @@ stages:
             - task: NodeTool@0
               inputs:
                 versionSpec: "24.4.1"
-            - script: npm ci
+            - script: npm ci --omit=optional
               displayName: install dependencies
               workingDirectory: gascd_frontend
             - task: AzureCLI@2
