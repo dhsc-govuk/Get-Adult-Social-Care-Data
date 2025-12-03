@@ -10,7 +10,7 @@ type Props = {
   updateFrequency: React.ReactNode;
   methodology: React.ReactNode;
   limitations: React.ReactNode;
-  dataDefinitions: React.ReactNode;
+  dataDefinitions?: React.ReactNode;
 };
 
 const DataIndicatorDetails: React.FC<Props> = ({
@@ -21,7 +21,7 @@ const DataIndicatorDetails: React.FC<Props> = ({
   updateFrequency,
   methodology,
   limitations,
-  dataDefinitions,
+  dataDefinitions = null,
 }) => {
   return (
     <>
@@ -61,10 +61,12 @@ const DataIndicatorDetails: React.FC<Props> = ({
               <dd className="govuk-summary-list__value">{limitations}</dd>
             </div>
 
-            <div className="govuk-summary-list__row">
-              <dt className="govuk-summary-list__key">Data definitions</dt>
-              <dd className="govuk-summary-list__value">{dataDefinitions}</dd>
-            </div>
+            {dataDefinitions && (
+              <div className="govuk-summary-list__row">
+                <dt className="govuk-summary-list__key">Data definitions</dt>
+                <dd className="govuk-summary-list__value">{dataDefinitions}</dd>
+              </div>
+            )}
           </dl>
         </div>
       </div>
