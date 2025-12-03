@@ -16,11 +16,14 @@ const LocationSelectPage: React.FC = () => {
   useEffect(() => {
     const fetchAvailableLocations = async () => {
       const availableLocations = await LocationService.getAvailableLocations();
-      setAvailableLocations(availableLocations);
+      const sortedLocations = availableLocations.sort((a, b) =>
+        a.location_name.localeCompare(b.location_name)
+      );
+      setAvailableLocations(sortedLocations);
 
       const currentSelectedLocation = LocationService.getSelectedLocation();
       if (currentSelectedLocation) {
-        setSelectedLocation(String(currentSelectedLocation));
+        setSelectedLocation(await currentSelectedLocation);
       }
     };
 
@@ -62,6 +65,9 @@ const LocationSelectPage: React.FC = () => {
             <form>
               <div className="govuk-form-group">
                 <fieldset className="govuk-fieldset">
+                  <label className="govuk-label govuk-label--m govuk-fieldset__legend">
+                    Select a location
+                  </label>
                   <div className="govuk-radios" data-module="govuk-radios">
                     {availableLocations.map((location, index) => (
                       <div
@@ -73,13 +79,9 @@ const LocationSelectPage: React.FC = () => {
                           name="availableLocation"
                           className="govuk-radios__input"
                           type="radio"
-                          value={String(location.location_id)}
-                          checked={
-                            selectedLocation === String(location.location_id)
-                          }
-                          onChange={() =>
-                            handleChange(String(location.location_id))
-                          }
+                          value={location.location_id}
+                          checked={selectedLocation === location.location_id}
+                          onChange={() => handleChange(location.location_id)}
                         />
                         <label className="govuk-label govuk-radios__label">
                           {location.location_name}
