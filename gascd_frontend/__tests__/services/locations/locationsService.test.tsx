@@ -1,7 +1,23 @@
-import LocationService from '@/services/location/locationService';
-import { Indicator } from '@/data/interfaces/Indicator';
+import { authClient } from '@/lib/auth-client';
+import LocationService, {
+  AvailableLocation,
+} from '@/services/location/locationService';
+import { mockSession } from '@/test-utils/test-utils';
 
 global.fetch = vi.fn();
+
+vi.mock('@/lib/auth-client', () => ({
+  authClient: {
+    useSession: vi.fn(),
+    getSession: vi.fn(),
+  },
+}));
+
+const mockUseSession = vi.mocked(authClient.useSession);
+const mockGetSession = vi.mocked(authClient.getSession);
+
+mockUseSession.mockReturnValue({ data: mockSession } as any);
+mockGetSession.mockResolvedValue({ data: mockSession } as any);
 
 describe('LocationService', () => {
   beforeEach(() => {
@@ -67,42 +83,41 @@ describe('LocationService', () => {
       );
     });
   });
+
   describe('getAvailableLocations', () => {
-    const mockLocations: Indicator[] = [
+    const mockLocations: AvailableLocation[] = [
       {
-        metric_id: '1',
         location_id: '1',
-        metric_date: new Date(2024, 3, 1),
-        data_point: 100,
-        metric_date_type: '',
-        location_type: '',
-        numerator: 0,
-        multiplier: 0,
-        denominator: 0,
-        load_date_time: new Date(2024, 3, 1),
+        location_name: 'Location A',
       },
       {
-        metric_id: '1',
         location_id: '2',
-        metric_date: new Date(2024, 4, 1),
-        data_point: 100,
-        metric_date_type: '',
-        location_type: '',
-        numerator: 0,
-        multiplier: 0,
-        denominator: 0,
-        load_date_time: new Date(2024, 4, 1),
+        location_name: 'Location B',
       },
     ];
-    const query = '123';
+    const query = 'testlocation1';
 
-    it('fetches and returns available locations successfully', async () => {
+    it('fetches and returns available locations successfully with a provider id', async () => {
       (fetch as vi.Mock).mockResolvedValue({
         ok: true,
         json: vi.fn().mockResolvedValue(mockLocations),
       });
 
       const result = await LocationService.getAvailableLocations(query);
+
+      expect(fetch).toHaveBeenCalledWith(
+        `/api/get_available_locations?provider_location_id=${query}`
+      );
+      expect(result).toEqual(mockLocations);
+    });
+
+    it('fetches and returns available locations successfully without a provider id', async () => {
+      (fetch as vi.Mock).mockResolvedValue({
+        ok: true,
+        json: vi.fn().mockResolvedValue(mockLocations),
+      });
+
+      const result = await LocationService.getAvailableLocations();
 
       expect(fetch).toHaveBeenCalledWith(
         `/api/get_available_locations?provider_location_id=${query}`
@@ -121,6 +136,7 @@ describe('LocationService', () => {
       ).rejects.toThrow('Error fetching data: Not Found');
     });
   });
+
   describe('getDefaultCPLocation', () => {
     const providerLocationId: string = '1';
     const locationType: string = 'LA';
@@ -154,6 +170,7 @@ describe('LocationService', () => {
       ).rejects.toThrow('Error fetching data: Not Found');
     });
   });
+
   describe('getLocationNames', () => {
     const mockLocationData = {
       la_name: 'Suffolk',
@@ -229,6 +246,7 @@ describe('LocationService', () => {
       });
     });
   });
+
   describe('getLocationIds', () => {
     const mockLocationData = {
       la_code: 'Suffolk',

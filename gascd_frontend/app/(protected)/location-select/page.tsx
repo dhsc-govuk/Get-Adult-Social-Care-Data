@@ -62,9 +62,12 @@ const LocationSelectPage: React.FC = () => {
               You can change to another location in your care provider group at
               any time.
             </p>
-            <form aria-label="Select a location from your care provider group">
+            <form>
               <div className="govuk-form-group">
                 <fieldset className="govuk-fieldset">
+                  <legend className="govuk-visually-hidden">
+                    Select a location from your care provider group
+                  </legend>
                   <div className="govuk-radios" data-module="govuk-radios">
                     {availableLocations.map((location, index) => (
                       <div
@@ -80,7 +83,10 @@ const LocationSelectPage: React.FC = () => {
                           checked={selectedLocation === location.location_id}
                           onChange={() => handleChange(location.location_id)}
                         />
-                        <label className="govuk-label govuk-radios__label">
+                        <label
+                          htmlFor={`location-${index}`}
+                          className="govuk-label govuk-radios__label"
+                        >
                           {location.location_name}
                         </label>
                       </div>
