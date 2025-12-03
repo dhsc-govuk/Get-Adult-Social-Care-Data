@@ -136,6 +136,7 @@ stages:
             pool:
               vmImage: "ubuntu-latest"
             steps:
+            - task: ManualValidation@0
             # Ensure service principals have access to the DB
             - task: AzurePowerShell@5
               displayName: 'Set User DB permissions'
