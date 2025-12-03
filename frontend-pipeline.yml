@@ -131,7 +131,7 @@ stages:
         displayName: "${{environment.name}}: Migrate user database"
         condition: succeeded()
         jobs:
-          - job: Migrate
+          - deployment: Deploy
             displayName: Migrate database
             environment: "${{environment.name}}"
             pool:
