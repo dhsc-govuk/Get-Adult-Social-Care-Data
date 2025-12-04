@@ -65,7 +65,7 @@ export default function ProvisionAndOccupancyPage() {
 
   const bedRowHeaders = {
     bedcount_per_100000_adults_total:
-      'Care home beds per 100,000 adult population	',
+      'Care home beds per 100,000 adult population',
     median_occupancy_total: 'Occupancy level',
   };
   const careProviderRowHeaders = {
