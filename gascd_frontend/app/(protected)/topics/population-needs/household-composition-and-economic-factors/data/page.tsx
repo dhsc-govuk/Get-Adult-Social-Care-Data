@@ -12,18 +12,13 @@ import BackToTop from '@/components/data-components/BackToTop';
 import LocationService from '@/services/location/locationService';
 import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
-import { Indicator } from '@/data/interfaces/Indicator';
-import TableService from '@/services/Table/TableService';
-import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { MetaData } from '@/data/interfaces/MetaData';
-import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import Link from 'next/link';
 
 export default function ProvisionAndOccupancyPage() {
   const [locationNamesCP, setLocationNamesCP] = useState<LocationNames>({
     IndicatorLabel: 'Indicator',
-    CPLabel: 'Loading...',
     LALabel: 'Loading...',
     RegionLabel: 'Loading...',
     CountryLabel: 'Loading...',
@@ -41,7 +36,7 @@ export default function ProvisionAndOccupancyPage() {
     },
     {
       text: 'Population needs',
-      url: '', //todo: update when care homes landing page is created
+      url: '/topics/population-needs/subtopics',
     },
   ];
 
@@ -177,11 +172,9 @@ export default function ProvisionAndOccupancyPage() {
         dataTitle="Household deprivation"
         dataInfo={
           <>
-            <p>
-              In Census 2021, households were classified by 4 dimensions of
-              deprivation: education, employment, health and disability, and
-              household overcrowding.
-            </p>
+            In Census 2021, households were classified by 4 dimensions of
+            deprivation: education, employment, health and disability, and
+            household overcrowding.
           </>
         }
       >
@@ -234,12 +227,15 @@ export default function ProvisionAndOccupancyPage() {
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
               columnHeaders={locationNamesCP}
-              rowHeaders={''}
+              rowHeaders={{
+                percent_of_deprived_households:
+                  'Percentage of households deprived in 4 dimensions: education, employment, health and housing',
+              }}
               data={''}
-              showCareProvider={true}
+              showCareProvider={false}
               careProviderMedianMetrics={''}
               percentageRows={metricDateType}
-              showAverageLabel={true}
+              showAverageLabel={false}
             ></DataTable>
           }
           download={
@@ -279,12 +275,15 @@ export default function ProvisionAndOccupancyPage() {
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
               columnHeaders={locationNamesCP}
-              rowHeaders={''}
+              rowHeaders={{
+                percent_property_owned_outright:
+                  'Percentage of households where the property is owned outright',
+              }}
               data={''}
-              showCareProvider={true}
+              showCareProvider={false}
               careProviderMedianMetrics={''}
               percentageRows={metricDateType}
-              showAverageLabel={true}
+              showAverageLabel={false}
             ></DataTable>
           }
           download={
@@ -321,12 +320,15 @@ export default function ProvisionAndOccupancyPage() {
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
               columnHeaders={locationNamesCP}
-              rowHeaders={''}
+              rowHeaders={{
+                percent_one_person_households_over_65:
+                  'Percentage of one-person households where the person is aged 65 or over',
+              }}
               data={''}
-              showCareProvider={true}
+              showCareProvider={false}
               careProviderMedianMetrics={''}
               percentageRows={metricDateType}
-              showAverageLabel={true}
+              showAverageLabel={false}
             ></DataTable>
           }
           download={
