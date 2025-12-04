@@ -74,7 +74,6 @@ export default function ProvisionAndOccupancyPage() {
   };
 
   const { data: session } = authClient.useSession();
-
   const breadcrumbs = [
     {
       text: 'Home',
