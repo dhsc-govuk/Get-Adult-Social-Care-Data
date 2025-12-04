@@ -4,7 +4,13 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-  - main
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - gascd_frontend/*
+      - frontend-pipeline.yml
 
 resources:
   - repo: self
