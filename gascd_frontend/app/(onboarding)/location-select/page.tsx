@@ -6,8 +6,11 @@ import Link from 'next/link';
 import LocationService, {
   AvailableLocation,
 } from '@/services/location/locationService';
+import { useRouter } from 'next/navigation';
+import { router } from 'better-auth/api';
 
 const LocationSelectPage: React.FC = () => {
+  const router = useRouter();
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [availableLocations, setAvailableLocations] = useState<
     AvailableLocation[]
@@ -34,8 +37,9 @@ const LocationSelectPage: React.FC = () => {
     setSelectedLocation(location);
   };
 
-  const handleSubmit = () => {
-    LocationService.setSelectedLocation(selectedLocation);
+  const handleSubmit = async () => {
+    await LocationService.setSelectedLocation(selectedLocation);
+    router.push('/home');
   };
 
   return (

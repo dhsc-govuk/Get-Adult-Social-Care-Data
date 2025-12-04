@@ -181,7 +181,7 @@ class LocationService {
       if (!session?.data?.user) {
         throw new Error('No user session found');
       }
-      authClient.updateUser({
+      await authClient.updateUser({
         selectedLocationId: locationId,
       });
     } catch (error: unknown) {

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import LocationSelectPage from '../../app/(protected)/location-select/page';
+import LocationSelectPage from '../../app/(onboarding)/location-select/page';
 import { authClient } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
 
