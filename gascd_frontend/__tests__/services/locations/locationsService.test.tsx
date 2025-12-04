@@ -136,7 +136,6 @@ describe('LocationService', () => {
       ).rejects.toThrow('Error fetching data: Not Found');
     });
   });
-
   describe('getDefaultCPLocation', () => {
     const providerLocationId: string = '1';
     const locationType: string = 'LA';
@@ -170,7 +169,6 @@ describe('LocationService', () => {
       ).rejects.toThrow('Error fetching data: Not Found');
     });
   });
-
   describe('getLocationNames', () => {
     const mockLocationData = {
       la_name: 'Suffolk',
@@ -246,7 +244,6 @@ describe('LocationService', () => {
       });
     });
   });
-
   describe('getLocationIds', () => {
     const mockLocationData = {
       la_code: 'Suffolk',

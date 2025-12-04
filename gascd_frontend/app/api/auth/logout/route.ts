@@ -29,6 +29,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const logoutUrl = `https://${tenant}.b2clogin.com/${tenant}.onmicrosoft.com/${userFlow}/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(logoutRedirectUrl)}`;
+  const logoutUrl = `https://${tenant}.b2clogin.com/${tenant}.onmicrosoft.com/${userFlow}/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(logoutRedirectUrl)}&client_id=${process.env.AZURE_AD_CLIENT_ID}`;
   return NextResponse.json({ logoutUrl });
 }
