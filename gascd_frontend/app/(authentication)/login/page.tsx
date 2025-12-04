@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useActionState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
-import ButtonWithArrow from '../../../src/components/common/buttons/navigation/button-with-arrow/ButtonWithArrow';
 import { authClient } from '@/lib/auth-client';
 
 const LoginPage: React.FC = () => {
@@ -11,7 +10,15 @@ const LoginPage: React.FC = () => {
       providerId: 'azure-ad-b2c-signin', // required
       callbackURL: '/home',
     });
+    if (error) {
+      return {
+        error:
+          'Sorry, there is a problem with the service. Please try again later.',
+      };
+    }
   };
+
+  const [state, formAction, isPending] = useActionState(handleSubmit, null);
 
   return (
     <>
@@ -100,11 +107,33 @@ const LoginPage: React.FC = () => {
               for further details.
             </p>
 
-            <ButtonWithArrow
-              buttonString="Agree and sign in"
-              buttonUrl="#"
-              onClick={handleSubmit}
-            ></ButtonWithArrow>
+            <form action={formAction}>
+              <button
+                type="submit"
+                className="govuk-button govuk-button--start"
+                data-module="govuk-button"
+                disabled={isPending}
+              >
+                {isPending ? 'Signing in...' : 'Agree and sign in'}
+                {!isPending && (
+                  <svg
+                    className="govuk-button__start-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="17.5"
+                    height="19"
+                    viewBox="0 0 33 40"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M0 0h13l20 20-20 20H0l20-20z"
+                    />
+                  </svg>
+                )}
+              </button>
+              {state && <p className="govuk-error-message">{state.error}</p>}
+            </form>
           </div>
         </div>
       </Layout>
