@@ -2,7 +2,11 @@ import { render, screen } from '@testing-library/react';
 import LocationSelectPage from '../../app/(onboarding)/location-select/page';
 import { authClient } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
+import { useRouter } from 'next/router';
 
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(),
+}));
 vi.mock('@/services/logger/logService');
 vi.mock('@/lib/auth-client', () => ({
   authClient: {
