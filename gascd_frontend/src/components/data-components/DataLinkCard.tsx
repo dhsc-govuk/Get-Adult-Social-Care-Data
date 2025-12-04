@@ -32,7 +32,8 @@ const DataLinkCard: React.FC<Props> = ({
             Sources: {sources}.
           </p>
           <p className="govuk-body gem-c-cards__description">
-            {updateFrequency} updates{limitations && ', limitations apply'}.
+            {updateFrequency}
+            {limitations && ', limitations apply'}.
           </p>
         </div>
       </li>
