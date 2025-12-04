@@ -2,6 +2,7 @@ import { authClient } from '@/lib/auth-client';
 import LocationService, {
   AvailableLocation,
 } from '@/services/location/locationService';
+import LogService from '@/services/logger/logService';
 import { mockSession } from '@/test-utils/test-utils';
 
 global.fetch = vi.fn();
@@ -144,6 +145,24 @@ describe('LocationService', () => {
       await expect(
         LocationService.getAvailableLocations(query)
       ).rejects.toThrow('Error fetching data: Not Found');
+    });
+
+    it('throws an error when the request fails', async () => {
+      (fetch as vi.Mock).mockResolvedValue(new Error('Network error'));
+
+      await expect(LocationService.getAvailableLocations()).rejects.toThrow(
+        'Failed to retrieve available location data: Error fetching data: undefined'
+      );
+    });
+
+    it('should handle unknown error type in catch block', async () => {
+      (fetch as vi.Mock).mockRejectedValueOnce('String error');
+
+      await expect(
+        LocationService.getAvailableLocations('provider123')
+      ).rejects.toThrow(
+        'Failed to retrieve available location data: Unknown error occurred'
+      );
     });
   });
   describe('getDefaultCPLocation', () => {
