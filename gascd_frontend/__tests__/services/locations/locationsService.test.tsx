@@ -1,7 +1,23 @@
-import LocationService from '@/services/location/locationService';
-import { Indicator } from '@/data/interfaces/Indicator';
+import { authClient } from '@/lib/auth-client';
+import LocationService, {
+  AvailableLocation,
+} from '@/services/location/locationService';
+import { mockSession } from '@/test-utils/test-utils';
 
 global.fetch = vi.fn();
+
+vi.mock('@/lib/auth-client', () => ({
+  authClient: {
+    useSession: vi.fn(),
+    getSession: vi.fn(),
+  },
+}));
+
+const mockUseSession = vi.mocked(authClient.useSession);
+const mockGetSession = vi.mocked(authClient.getSession);
+
+mockUseSession.mockReturnValue({ data: mockSession } as any);
+mockGetSession.mockResolvedValue({ data: mockSession } as any);
 
 describe('LocationService', () => {
   beforeEach(() => {
@@ -67,42 +83,51 @@ describe('LocationService', () => {
       );
     });
   });
+
   describe('getAvailableLocations', () => {
-    const mockLocations: Indicator[] = [
+    const mockJsonResponse = [
       {
-        metric_id: '1',
-        location_id: '1',
-        metric_date: new Date(2024, 3, 1),
-        data_point: 100,
-        metric_date_type: '',
-        location_type: '',
-        numerator: 0,
-        multiplier: 0,
-        denominator: 0,
-        load_date_time: new Date(2024, 3, 1),
+        metric_location_id: '1',
+        metric_location_name: 'Location A',
       },
       {
-        metric_id: '1',
-        location_id: '2',
-        metric_date: new Date(2024, 4, 1),
-        data_point: 100,
-        metric_date_type: '',
-        location_type: '',
-        numerator: 0,
-        multiplier: 0,
-        denominator: 0,
-        load_date_time: new Date(2024, 4, 1),
+        metric_location_id: '2',
+        metric_location_name: 'Location B',
       },
     ];
-    const query = '123';
+    const mockLocations: AvailableLocation[] = [
+      {
+        location_id: '1',
+        location_name: 'Location A',
+      },
+      {
+        location_id: '2',
+        location_name: 'Location B',
+      },
+    ];
+    const query = 'testlocation1';
 
-    it('fetches and returns available locations successfully', async () => {
+    it('fetches and returns available locations successfully with a provider id', async () => {
       (fetch as vi.Mock).mockResolvedValue({
         ok: true,
-        json: vi.fn().mockResolvedValue(mockLocations),
+        json: vi.fn().mockResolvedValue(mockJsonResponse),
       });
 
       const result = await LocationService.getAvailableLocations(query);
+
+      expect(fetch).toHaveBeenCalledWith(
+        `/api/get_available_locations?provider_location_id=${query}`
+      );
+      expect(result).toEqual(mockLocations);
+    });
+
+    it('fetches and returns available locations successfully without a provider id', async () => {
+      (fetch as vi.Mock).mockResolvedValue({
+        ok: true,
+        json: vi.fn().mockResolvedValue(mockJsonResponse),
+      });
+
+      const result = await LocationService.getAvailableLocations();
 
       expect(fetch).toHaveBeenCalledWith(
         `/api/get_available_locations?provider_location_id=${query}`
@@ -119,6 +144,22 @@ describe('LocationService', () => {
       await expect(
         LocationService.getAvailableLocations(query)
       ).rejects.toThrow('Error fetching data: Not Found');
+    });
+
+    it('throws an error when the request fails', async () => {
+      (fetch as vi.Mock).mockResolvedValue(new Error('Network error'));
+
+      await expect(LocationService.getAvailableLocations()).rejects.toThrow(
+        'Failed to retrieve available location data: Error fetching data: undefined'
+      );
+    });
+
+    it('should handle unknown error type in catch block', async () => {
+      (fetch as vi.Mock).mockRejectedValueOnce('String error');
+
+      await expect(LocationService.getAvailableLocations()).rejects.toThrow(
+        'Failed to retrieve available location data: Unknown error occurred'
+      );
     });
   });
   describe('getDefaultCPLocation', () => {
