@@ -22,6 +22,10 @@ variables:
     value: "$(Build.SourcesDirectory)/gascd_api/api/Dockerfile"
   - name: imageName
     value: "dapalpha-backend-api"
+  - name: acrConnection
+    value: "$(acr_connection)"
+  - name: acrName
+    value: "$(acr_name)"
     
 parameters:
   - name: environments
@@ -29,17 +33,11 @@ parameters:
     default:
       - name: dev
         arm_connection: "$(dev_arm_service_connections)"
-        acr_connection: "$(dev_acr_connection)"
-        acr_name: "$(dev_acr_name)"
         # Temporarily commented out as we're not ready to deploy in these environments yet
 #      - name: uat
 #        arm_connection: "$(uat_arm_service_connections)"
-#        acr_connection: "$(uat_acr_connection)"
-#        acr_name: "$(uat_acr_name)"
 #      - name: prod
 #        arm_connection: "$(prod_arm_service_connections)"
-#        acr_connection: "$(prod_acr_connection)"
-#        acr_name: "$(prod_acr_name)"
     
 stages:
   - stage: Build_and_Test
@@ -101,20 +99,9 @@ stages:
                     docker build -f $(dockerfilePath) -t $(imageName):$(tag) gascd_api/api/.
                   displayName: Build Image
 
-                - ${{ each environment in parameters.environments}}:
-                    - task: Docker@2
-                      displayName: Login to ${{environment.acr_connection}} ACR
-                      inputs:
-                        command: login
-                        containerRegistry: ${{environment.acr_connection}}
-
-                    - script: |
-                        docker tag $(imageName):$(tag) ${{environment.acr_name}}.azurecr.io/$(imageName):$(tag)-${{environment.name}}
-                      displayName: Tag image for ${{environment.acr_name}} ACR
-
-                    - script: |
-                        docker push ${{environment.acr_name}}.azurecr.io/$(imageName):$(tag)-${{environment.name}}
-                      displayName: Push image to ${{environment.acr_name}} ACR
+                - script: |
+                    docker push $(acr_name).azurecr.io/$(imageName):$(tag)
+                  displayName: Push image to $(acr_name) ACR
                       
   # Deploy across environments
   - ${{ each environment in parameters.environments}}:
@@ -137,16 +124,16 @@ stages:
                         command: login
                         containerRegistry: ${{environment.acr_connection}}
                     # Ensure 'latest' is only updated when this deployment step actually runs.
-                    - script: |
-                        echo "Updating Backend API 'latest' tag for ${{environment.name}}..."
-                        docker pull ${{environment.acr_name}}.azurecr.io/$(imageName):$(tag)-${{environment.name}}
-                        docker tag ${{environment.acr_name}}.azurecr.io/$(imageName):$(tag)-${{environment.name}} ${{environment.acr_name}}.azurecr.io/$(imageName):latest
-                        docker push ${{environment.acr_name}}.azurecr.io/$(imageName):latest
-                      displayName: Update 'latest' tag on ${{environment.acr_name}}
+#                    - script: |
+#                        echo "Updating Backend API 'latest' tag for ${{environment.name}}..."
+#                        docker pull $(acr_name).azurecr.io/$(imageName):$(tag)
+#                        docker tag $(acr_name).azurecr.io/$(imageName):$(tag) $(acr_name).azurecr.io/$(imageName):latest
+#                        docker push $(acr_name).azurecr.io/$(imageName):latest
+#                      displayName: Update 'latest' tag on ${{environment.acr_name}}
                     - task: AzureWebAppContainer@1
                       inputs:
                         appType: "webAppLinux"
                         appName: "dapalpha-${{environment.name}}-backend-api"
                         azureSubscription: ${{environment.arm_connection}}
-                        containers: "${{environment.acr_name}}.azurecr.io/$(imageName):$(tag)-${{environment.name}}"
+                        containers: "$(acr_name).azurecr.io/$(imageName):$(tag)"
       
