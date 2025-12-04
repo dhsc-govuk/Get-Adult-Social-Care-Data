@@ -149,7 +149,7 @@ const DataTable: React.FC<DataTableProps> = ({
         </tbody>
       </table>
       {children}
-      <p className="govuk-body">{source}</p>
+      <p className="govuk-body">Source: {source}</p>
     </div>
   );
 };

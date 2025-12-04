@@ -270,7 +270,7 @@ export default function ProvisionAndOccupancyPage() {
                 ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, October
                 2025`}
               source={
-                'Source: Capacity Tracker from the Department of Health and Social Care (DHSC)'
+                'Capacity Tracker from the Department of Health and Social Care (DHSC)'
               }
               columnHeaders={locationNamesCP}
               rowHeaders={careProviderRowHeaders}
@@ -326,7 +326,7 @@ export default function ProvisionAndOccupancyPage() {
         <DataLinkCard
           label="Adult social care beds per 100,000 adult population"
           sources="Capacity Tracker, Office for National Statistics"
-          updateFrequency="Daily"
+          updateFrequency="Daily updates"
           limitations={true}
           url="/help/beds-per-100000-adult-population"
         />
@@ -340,7 +340,7 @@ export default function ProvisionAndOccupancyPage() {
         <DataLinkCard
           label="Occupancy level percentages for adult social care beds"
           sources="Capacity Tracker"
-          updateFrequency="Daily"
+          updateFrequency="Daily updates"
           limitations={true}
           url="/help/percentage-beds-occupied"
         />
