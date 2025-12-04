@@ -9,7 +9,8 @@ trigger:
       - main
   paths:
     include:
-      - gascd_frontend
+      - gascd_frontend/*
+      - frontend-pipeline.yml
 
 resources:
   - repo: self
