@@ -3,13 +3,14 @@ import LocationSelectPage from '../../app/(protected)/location-select/page';
 import { authClient } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
 
+vi.mock('@/services/logger/logService');
 vi.mock('@/lib/auth-client', () => ({
   authClient: {
-    useSession: vi.fn(),
+    getSession: vi.fn(),
   },
 }));
-const mockUseSession = vi.mocked(authClient.useSession);
-mockUseSession.mockReturnValue({ data: mockSession } as any);
+const mockGetSession = vi.mocked(authClient.getSession);
+mockGetSession.mockReturnValue({ data: mockSession } as any);
 
 describe('LocationSelectPage', () => {
   it('should render the heading and some body text', () => {

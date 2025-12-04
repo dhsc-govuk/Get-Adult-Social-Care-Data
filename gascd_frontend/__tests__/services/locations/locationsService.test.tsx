@@ -85,6 +85,16 @@ describe('LocationService', () => {
   });
 
   describe('getAvailableLocations', () => {
+    const mockJsonResponse = [
+      {
+        metric_location_id: '1',
+        metric_location_name: 'Location A',
+      },
+      {
+        metric_location_id: '2',
+        metric_location_name: 'Location B',
+      },
+    ];
     const mockLocations: AvailableLocation[] = [
       {
         location_id: '1',
@@ -100,7 +110,7 @@ describe('LocationService', () => {
     it('fetches and returns available locations successfully with a provider id', async () => {
       (fetch as vi.Mock).mockResolvedValue({
         ok: true,
-        json: vi.fn().mockResolvedValue(mockLocations),
+        json: vi.fn().mockResolvedValue(mockJsonResponse),
       });
 
       const result = await LocationService.getAvailableLocations(query);
@@ -114,7 +124,7 @@ describe('LocationService', () => {
     it('fetches and returns available locations successfully without a provider id', async () => {
       (fetch as vi.Mock).mockResolvedValue({
         ok: true,
-        json: vi.fn().mockResolvedValue(mockLocations),
+        json: vi.fn().mockResolvedValue(mockJsonResponse),
       });
 
       const result = await LocationService.getAvailableLocations();
