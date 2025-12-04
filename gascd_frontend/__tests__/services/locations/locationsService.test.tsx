@@ -2,7 +2,6 @@ import { authClient } from '@/lib/auth-client';
 import LocationService, {
   AvailableLocation,
 } from '@/services/location/locationService';
-import LogService from '@/services/logger/logService';
 import { mockSession } from '@/test-utils/test-utils';
 
 global.fetch = vi.fn();
@@ -158,9 +157,7 @@ describe('LocationService', () => {
     it('should handle unknown error type in catch block', async () => {
       (fetch as vi.Mock).mockRejectedValueOnce('String error');
 
-      await expect(
-        LocationService.getAvailableLocations('provider123')
-      ).rejects.toThrow(
+      await expect(LocationService.getAvailableLocations()).rejects.toThrow(
         'Failed to retrieve available location data: Unknown error occurred'
       );
     });

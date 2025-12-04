@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import LocationSelectPage from '../../app/(onboarding)/location-select/page';
 import { authClient } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
-import { useRouter } from 'next/router';
 
+global.fetch = vi.fn();
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
 }));
@@ -18,6 +18,21 @@ mockGetSession.mockReturnValue({ data: mockSession } as any);
 
 describe('LocationSelectPage', () => {
   it('should render the heading and some body text', () => {
+    const mockJsonResponse = [
+      {
+        metric_location_id: '1',
+        metric_location_name: 'Location A',
+      },
+      {
+        metric_location_id: '2',
+        metric_location_name: 'Location B',
+      },
+    ];
+    (fetch as vi.Mock).mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue(mockJsonResponse),
+    });
+
     render(<LocationSelectPage />);
 
     const headingElement = screen.getByRole('heading', {
