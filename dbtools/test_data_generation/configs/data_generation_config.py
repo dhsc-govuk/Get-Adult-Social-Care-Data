@@ -37,6 +37,21 @@ METRIC_DEFINITIONS = {
             'metric_date_type': 'Census',
             'location_types': ['LA', 'National', 'Regional'],
             'data_point_range': (8, 18)
+        },
+        'perc_households_deprivation_deprived_total': {
+            'metric_date_type': 'Census',
+            'location_types': ['LA', 'National', 'Regional'],
+            'data_point_range': (8, 18)
+        },
+        'perc_household_ownership_total': {
+            'metric_date_type': 'Census',
+            'location_types': ['LA', 'National', 'Regional'],
+            'data_point_range': (8, 18)
+        },
+        'perc_households_one_person_total': {
+            'metric_date_type': 'Census',
+            'location_types': ['LA', 'National', 'Regional'],
+            'data_point_range': (8, 18)
         }
     },
     
