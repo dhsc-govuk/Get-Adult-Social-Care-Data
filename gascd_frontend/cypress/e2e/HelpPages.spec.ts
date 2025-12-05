@@ -61,6 +61,7 @@ describe('Help pages exist and contain data', () => {
       cy.visit(page.url);
       cy.url().should('include', page.url);
       cy.get('h1').should('contains.text', page.heading);
+      cy.get('title').should('contains.text', page.heading);
     });
   });
 });
