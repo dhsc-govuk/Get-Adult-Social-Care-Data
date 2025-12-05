@@ -14,7 +14,6 @@ import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { MetaData } from '@/data/interfaces/MetaData';
 import { LocationNames } from '@/data/interfaces/LocationNames';
-import Link from 'next/link';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
@@ -235,8 +234,7 @@ export default function DisabilityPrevalence() {
           id="2"
           table={
             <DataTable
-              caption={`
-Table 2: learning disability prevalence – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
+              caption={`Table 2: learning disability prevalence – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
               }
