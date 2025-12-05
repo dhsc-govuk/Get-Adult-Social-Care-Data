@@ -23,7 +23,7 @@ variables:
   - group: user_db_connection
   # Hardcoded variables
   - name: imageRepository
-    value: "dapalpha"
+    value: "gascd-frontend"
   - name: dockerfilePath
     value: "$(Build.SourcesDirectory)/gascd_frontend/Dockerfile"
   - name: tag
@@ -39,24 +39,18 @@ parameters:
       - name: dev
         environment_name: "Webapp - dev"
         arm_connection: "$(dev_arm_service_connections)"
-        acr_connection: "$(dev_acr_connection)"
-        acr_name: "$(dev_acr_name)"
         user_db_name: "$(dev_user_db_name)"
         user_db_server: "$(dev_user_db_server)"
         user_db_port: "$(dev_user_db_port)"
       - name: uat
         environment_name: "Webapp - UAT"
         arm_connection: "$(uat_arm_service_connections)"
-        acr_connection: "$(uat_acr_connection)"
-        acr_name: "$(uat_acr_name)"
         user_db_name: "$(uat_user_db_name)"
         user_db_server: "$(uat_user_db_server)"
         user_db_port: "$(uat_user_db_port)"
       - name: prod
         environment_name: "Webapp - prod"
         arm_connection: "$(prod_arm_service_connections)"
-        acr_connection: "$(prod_acr_connection)"
-        acr_name: "$(prod_acr_name)"
         user_db_name: "$(prod_user_db_name)"
         user_db_server: "$(prod_user_db_server)"
         user_db_port: "$(prod_user_db_port)"
@@ -93,7 +87,7 @@ stages:
               failTaskOnFailedTests: true
   # Build
   - stage: Build_Image
-    displayName: "Build/push Docker image (all environments)"
+    displayName: "Build/push Docker image (uses PROD container registry)"
     condition: succeeded()
     jobs:
       - deployment: Build
@@ -117,20 +111,20 @@ stages:
                     docker build -f $(dockerfilePath) -t $(imageRepository):$(tag) gascd_frontend/. --build-arg NEXT_PUBLIC_GASCD_GIT_HASH --build-arg NEXT_PUBLIC_GASCD_GIT_TAG
                   displayName: Build Image
 
-                - ${{ each environment in parameters.environments}}:
-                    - task: Docker@2
-                      displayName: Login to ${{environment.acr_connection}} ACR
-                      inputs:
-                        command: login
-                        containerRegistry: ${{environment.acr_connection}}
+                - task: Docker@2
+                  displayName: Login to $(acr_connection) ACR
+                  inputs:
+                    command: login
+                    containerRegistry: "$(acr_connection)"
 
-                    - script: |
-                        docker tag $(imageRepository):$(tag) ${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)
-                      displayName: Tag image for ${{environment.acr_name}} ACR
+                - script: |
+                    docker tag $(imageRepository):$(tag) $(acr_name).azurecr.io/$(imageRepository):$(tag)
+                  displayName: Tag image for $(acr_name) ACR
 
-                    - script: |
-                        docker push ${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)
-                      displayName: Push image to ${{environment.acr_name}} ACR
+                - script: |
+                    docker push $(acr_name).azurecr.io/$(imageRepository):$(tag)
+                  displayName: Push image to $(acr_name) ACR
+
   # Deploy across environments
   - ${{ each environment in parameters.environments}}:
       - stage: Migrate_UserDB_${{environment.name}}
@@ -238,20 +232,13 @@ stages:
                 deploy:
                   steps:
                     - task: Docker@2
-                      displayName: Login to ${{environment.acr_connection}} ACR
+                      displayName: Login to $(acr_connection) ACR
                       inputs:
                         command: login
-                        containerRegistry: ${{environment.acr_connection}}
-                    # Ensure 'latest' is only updated when this deployment step actually runs.
-                    - script: |
-                        echo "Updating 'latest' tag for ${{environment.name}}..."
-                        docker pull ${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)
-                        docker tag ${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag) ${{environment.acr_name}}.azurecr.io/$(imageRepository):latest
-                        docker push ${{environment.acr_name}}.azurecr.io/$(imageRepository):latest
-                      displayName: Update 'latest' tag on ${{environment.acr_name}}
+                        containerRegistry: "$(acr_connection)"
                     - task: AzureWebAppContainer@1
                       inputs:
                         appType: "webAppLinux"
                         appName: "dapalpha-${{environment.name}}-app"
                         azureSubscription: ${{environment.arm_connection}}
-                        containers: "${{environment.acr_name}}.azurecr.io/$(imageRepository):$(tag)"
+                        containers: "$(acr_name).azurecr.io/$(imageRepository):$(tag)"
