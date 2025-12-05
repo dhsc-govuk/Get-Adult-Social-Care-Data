@@ -1,7 +1,12 @@
 import LogService from '../logger/logService';
 import { Locations } from '@/data/interfaces/Locations';
-import { Indicator } from '@/data/interfaces/Indicator';
 import { LocationNames } from '@/data/interfaces/LocationNames';
+import { authClient } from '@/lib/auth-client';
+
+export interface AvailableLocation {
+  location_id: string;
+  location_name: string;
+}
 
 class LocationService {
   public static async getLocations(query: string): Promise<Locations> {
@@ -42,16 +47,28 @@ class LocationService {
   }
 
   public static async getAvailableLocations(
-    query: string
-  ): Promise<Indicator[]> {
+    provider_location_id?: string
+  ): Promise<AvailableLocation[]> {
+    if (!provider_location_id) {
+      const session = await authClient.getSession();
+      provider_location_id = session?.data?.user?.locationId || '';
+    }
     try {
       const response = await fetch(
-        `/api/get_available_locations?provider_location_id=${query}`
+        `/api/get_available_locations?provider_location_id=${provider_location_id}`
       );
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
-      return await response.json();
+
+      let results = await response.json();
+      let availableLocations = results.map((item: any) => {
+        return {
+          location_id: item.metric_location_id,
+          location_name: item.metric_location_name,
+        };
+      });
+      return availableLocations;
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
@@ -69,9 +86,7 @@ class LocationService {
     // Verify that the user can actually view the given cpLocation
     // XXX - this should ideally be handled by a completely different permissions setup
     const valid_locations = await this.getAvailableLocations(userLocationId);
-    const valid_location_ids = valid_locations.map(
-      (item: any) => item.metric_location_id
-    );
+    const valid_location_ids = valid_locations.map((item) => item.location_id);
     return valid_location_ids.includes(cpLocationID);
   }
 
@@ -143,6 +158,38 @@ class LocationService {
       locationIds.splice(1, 0, data.provider_location_id);
     }
     return locationIds;
+  }
+
+  public static async getSelectedLocation(): Promise<string> {
+    try {
+      const session = await authClient.getSession();
+      if (!session?.data?.user) {
+        throw new Error('No user session found');
+      }
+      return session.data.user.selectedLocationId ?? '';
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      LogService.logEvent(`Error in getSelectedLocation: ${errorMessage}`);
+      throw new Error(`Failed to get selected location: ${errorMessage}`);
+    }
+  }
+
+  public static async setSelectedLocation(locationId: string) {
+    try {
+      const session = await authClient.getSession();
+      if (!session?.data?.user) {
+        throw new Error('No user session found');
+      }
+      await authClient.updateUser({
+        selectedLocationId: locationId,
+      });
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      LogService.logEvent(`Error in setSelectedLocation: ${errorMessage}`);
+      throw new Error(`Failed to set selected location: ${errorMessage}`);
+    }
   }
 }
 

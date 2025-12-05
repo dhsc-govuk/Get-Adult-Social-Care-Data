@@ -74,6 +74,7 @@ export default function ProvisionAndOccupancyPage() {
   };
 
   const { data: session } = authClient.useSession();
+
   const breadcrumbs = [
     {
       text: 'Home',
@@ -86,45 +87,15 @@ export default function ProvisionAndOccupancyPage() {
   ];
 
   useEffect(() => {
-    const fetchCareProviderLocationName = async () => {
-      const userLocationId = session?.user.locationId;
+    const fetchSelectedLocation = async () => {
+      const userLocationId = await LocationService.getSelectedLocation();
       if (!userLocationId) {
         // Can't load any data without a valid user location
         return;
       }
-      let foundLocationId;
-      const storedLocationId = localStorage.getItem('selectedValue');
-      if (storedLocationId) {
-        // Check the stored value is actually valid
-        if (
-          await LocationService.checkCPLocation(
-            storedLocationId,
-            userLocationId
-          )
-        ) {
-          foundLocationId = storedLocationId;
-        } else {
-          // Clear the local value if not valid
-          console.warn('Invalid stored CP value found. Removing.');
-          localStorage.removeItem('selectedValue');
-        }
-      } else {
-        // get it from the user
-        if (session.user.locationType == 'Care provider') {
-          foundLocationId = await LocationService.getDefaultCPLocation(
-            userLocationId,
-            session.user.locationType
-          );
-        } else {
-          foundLocationId = userLocationId;
-        }
-      }
-      if (foundLocationId) {
-        localStorage.setItem('selectedValue', foundLocationId);
-        setCPLocationId(foundLocationId);
-      }
+      setCPLocationId(userLocationId);
     };
-    fetchCareProviderLocationName();
+    fetchSelectedLocation();
   }, [session]);
 
   useEffect(() => {
@@ -173,7 +144,7 @@ export default function ProvisionAndOccupancyPage() {
       }
     };
     fetchAllData();
-  }, [bedsQuery, careProviderDataQuery1, careProviderDataQuery2]);
+  }, [bedsQuery, careProviderDataQuery1, careProviderDataQuery2, CPLocationId]);
 
   useEffect(() => {
     const fetchLocationIds = async () => {
