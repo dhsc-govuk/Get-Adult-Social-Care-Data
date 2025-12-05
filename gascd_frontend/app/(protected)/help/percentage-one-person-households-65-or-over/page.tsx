@@ -10,7 +10,7 @@ const OnePersonHouseholds = () => {
         backURL="/topics/population-needs/household-composition-and-economic-factors/data"
       >
         <DataIndicatorDetails
-          title="Households where the property is owned outright"
+          title="One-person households where the person is aged 65 or over"
           whatThisMeasures={
             <p>
               The proportion of all one-person households within the selected

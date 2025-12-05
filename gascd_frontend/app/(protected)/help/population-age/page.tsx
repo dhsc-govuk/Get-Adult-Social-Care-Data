@@ -15,7 +15,7 @@ const PopulationAge: React.FC = () => {
         backURL="/topics/population-needs/population-age-and-size/data"
       >
         <DataIndicatorDetails
-          title="Population size"
+          title="Age group percentages"
           whatThisMeasures={
             <p>
               The estimated percentage of individuals within the specified age

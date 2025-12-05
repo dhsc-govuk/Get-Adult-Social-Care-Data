@@ -6,11 +6,11 @@ const LearningDisabilityPrevalence = () => {
   return (
     <>
       <Layout
-        title="Indicator definition and supporting information: learning disability prevalence"
+        title="Learning disability prevalence"
         backURL="/topics/population-needs/disability-prevalence/data"
       >
         <DataIndicatorDetails
-          title="Disability prevalence"
+          title="Learning disability prevalence"
           whatThisMeasures={
             <p>
               The percentage of people registered with a GP within the selected
