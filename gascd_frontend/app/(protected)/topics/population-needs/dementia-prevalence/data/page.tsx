@@ -215,9 +215,9 @@ export default function DementaPrevalencePage() {
           id="1"
           table={
             <DataTable
-              caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
+              caption={`Table 1: dementia prevalence and the dementia diagnosis rate – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, August 2025`}
               source={
-                'Census 2021 from the Office for National Statistics (ONS)'
+                'Fingertips from the Department of Health and Social Care (DHSC)'
               }
               columnHeaders={locationNames}
               rowHeaders={{
