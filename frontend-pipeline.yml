@@ -23,7 +23,7 @@ variables:
   - group: user_db_connection
   # Hardcoded variables
   - name: imageRepository
-    value: "dapalpha-frontend"
+    value: "gascd-frontend"
   - name: dockerfilePath
     value: "$(Build.SourcesDirectory)/gascd_frontend/Dockerfile"
   - name: tag
