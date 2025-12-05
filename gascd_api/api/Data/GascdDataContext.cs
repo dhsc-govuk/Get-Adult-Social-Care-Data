@@ -1,4 +1,6 @@
-﻿using api.Data.Models.Reference;
+﻿using api.Data.Models.Metrics;
+using api.Data.Models.Metrics.Groups;
+using api.Data.Models.Reference;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data;
@@ -20,4 +22,13 @@ public partial class GascdDataContext : DbContext
     public virtual DbSet<Region> Regions { get; set; } = null!;
     public virtual DbSet<Country> Countries { get; set; } = null!;
     public virtual DbSet<LocalAuthority> LocalAuthorities { get; set; } = null!;
+
+
+    public virtual DbSet<MetricGroup> MetricGroups { get; set; } = null!;
+    public virtual DbSet<ExampleGroup> ExampleGroupMetrics { get; set; } = null!;
+    public virtual DbSet<ExampleGroup2> ExampleGroup2Metrics { get; set; } = null!;
+    // public virtual DbSet<Metric> Metrics { get; set; } = null!;
+
+
+
 }
