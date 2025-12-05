@@ -28,7 +28,6 @@ const LearningDisabilityPrevalence = () => {
               new tab)
             </Link>
           }
-          dataCorrectAsOf="1 October 2024"
           updateFrequency="Yearly"
           methodology={
             <p>

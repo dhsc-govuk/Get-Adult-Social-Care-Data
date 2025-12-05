@@ -44,7 +44,6 @@ const BedsPer100000AdultPopulation: React.FC = () => {
               </Link>
             </>
           }
-          dataCorrectAsOf="3 December 2025"
           updateFrequency="Daily"
           methodology={
             <>

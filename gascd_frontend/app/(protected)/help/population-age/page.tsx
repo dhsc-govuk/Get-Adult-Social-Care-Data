@@ -33,7 +33,6 @@ const PopulationAge: React.FC = () => {
               and Wales (opens in new tab)
             </Link>
           }
-          dataCorrectAsOf="3 December 2025"
           updateFrequency="Yearly"
           methodology={
             <p>

@@ -6,7 +6,6 @@ type Props = {
   title: string;
   whatThisMeasures: React.ReactNode;
   source: React.ReactNode;
-  dataCorrectAsOf: React.ReactNode;
   updateFrequency: React.ReactNode;
   methodology: React.ReactNode;
   limitations: React.ReactNode;
@@ -17,7 +16,6 @@ const DataIndicatorDetails: React.FC<Props> = ({
   title,
   whatThisMeasures,
   source,
-  dataCorrectAsOf,
   updateFrequency,
   methodology,
   limitations,
@@ -39,11 +37,6 @@ const DataIndicatorDetails: React.FC<Props> = ({
             <div className="govuk-summary-list__row">
               <dt className="govuk-summary-list__key">Source</dt>
               <dd className="govuk-summary-list__value">{source}</dd>
-            </div>
-
-            <div className="govuk-summary-list__row">
-              <dt className="govuk-summary-list__key">Data correct as of</dt>
-              <dd className="govuk-summary-list__value">{dataCorrectAsOf}</dd>
             </div>
 
             <div className="govuk-summary-list__row">
