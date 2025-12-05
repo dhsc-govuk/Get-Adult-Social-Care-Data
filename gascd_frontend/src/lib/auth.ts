@@ -45,6 +45,11 @@ export const auth = betterAuth({
         required: false,
         input: false,
       },
+      selectedLocationId: {
+        type: 'string',
+        required: false,
+        input: true,
+      },
     },
   },
   plugins: [

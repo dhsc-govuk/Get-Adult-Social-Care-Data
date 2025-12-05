@@ -1,10 +1,11 @@
 import AuthLayout from '../../app/(protected)/layout';
+import OnboardingLayout from '../../app/(onboarding)/layout';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
-import { mockSession } from '@/test-utils/test-utils';
+import { mockSession, mockSessionWithLocation } from '@/test-utils/test-utils';
 
 vi.mock('next/headers', () => ({
   headers: vi.fn(),
@@ -25,10 +26,9 @@ vi.mock('next/navigation', () => ({
   redirect: vi.fn(),
 }));
 const mockedRedirect = vi.mocked(redirect);
+const mockChildren = React.createElement('div', null, 'Mock Component');
 
-describe('Root Layout', () => {
-  const mockChildren = React.createElement('div', null, 'Mock Component');
-
+describe('Auth Layout', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -39,12 +39,30 @@ describe('Root Layout', () => {
     expect(mockedRedirect).toHaveBeenCalledWith('/login');
   });
 
-  test('layout is rendered if valid session', async () => {
+  test('location picker is rendered if valid session', async () => {
     mockGetSession.mockResolvedValue(mockSession);
     const response = await AuthLayout({ children: mockChildren });
-    expect(mockedRedirect).not.toHaveBeenCalled();
+    expect(mockedRedirect).toHaveBeenCalledWith('/location-select');
+  });
 
+  test('content is rendered if valid session and picked location', async () => {
+    mockGetSession.mockResolvedValue(mockSessionWithLocation);
+    const response = await AuthLayout({ children: mockChildren });
+
+    expect(mockedRedirect).not.toHaveBeenCalled();
     const renderedMarkup = renderToStaticMarkup(response);
     expect(renderedMarkup).toContain('Mock Component');
+  });
+});
+
+describe('Onboarding Layout', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  test('redirects to login page if no session', async () => {
+    mockGetSession.mockResolvedValue(null);
+    await OnboardingLayout({ children: mockChildren });
+    expect(mockedRedirect).toHaveBeenCalledWith('/login');
   });
 });
