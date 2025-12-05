@@ -38,7 +38,12 @@ METRIC_DEFINITIONS = {
             'location_types': ['LA', 'National', 'Regional'],
             'data_point_range': (8, 18)
         },
-        'perc_households_deprivation_deprived_total': {
+        'learning_disabilty_prevalence': {
+            'metric_date_type': 'Yearly',
+            'location_types': ['LA', 'National', 'Regional'],
+            'data_point_range': (8, 18)
+        },
+        'perc_general_health_total': {
             'metric_date_type': 'Census',
             'location_types': ['LA', 'National', 'Regional'],
             'data_point_range': (8, 18)
