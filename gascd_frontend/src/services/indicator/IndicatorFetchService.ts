@@ -55,12 +55,16 @@ class IndicatorFetchService {
   }
 
   public static async getData(query: IndicatorQuery): Promise<Indicator[]> {
+    const filteredQuery = {
+      metric_ids: query.metric_ids,
+      location_ids: query.location_ids.filter((item) => item !== 'Indicator'),
+    };
     const response = await fetch('/api/get_metric_data', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(query),
+      body: JSON.stringify(filteredQuery),
     });
 
     if (!response.ok) {

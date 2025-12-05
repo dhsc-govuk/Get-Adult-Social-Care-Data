@@ -15,9 +15,12 @@ import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { MetaData } from '@/data/interfaces/MetaData';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import Link from 'next/link';
+import { Indicator } from '@/data/interfaces/Indicator';
+import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
+import TableService from '@/services/Table/TableService';
 
 export default function ProvisionAndOccupancyPage() {
-  const [locationNamesCP, setLocationNamesCP] = useState<LocationNames>({
+  const [locationNames, setLocationNames] = useState<LocationNames>({
     IndicatorLabel: 'Indicator',
     LALabel: 'Loading...',
     RegionLabel: 'Loading...',
@@ -26,6 +29,13 @@ export default function ProvisionAndOccupancyPage() {
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [metricDateType, setMetricDataType] = useState<MetaData[]>([]);
+  const [filteredDemographicData, setFilteredDemographicData] = useState<
+    Indicator[]
+  >([]);
+  const [demographicQuery, setDemographicQuery] = useState<IndicatorQuery>({
+    metric_ids: [],
+    location_ids: [],
+  });
 
   const { data: session } = authClient.useSession();
 
@@ -40,57 +50,33 @@ export default function ProvisionAndOccupancyPage() {
     },
   ];
 
+  const demographicMetricIds = [
+    'perc_households_deprivation_deprived_total',
+    'perc_household_ownership_total',
+    'perc_households_one_person_total',
+  ];
+
   useEffect(() => {
-    const fetchCareProviderLocationName = async () => {
-      const userLocationId = session?.user.locationId;
+    const fetchSelectedLocation = async () => {
+      const userLocationId = await LocationService.getSelectedLocation();
       if (!userLocationId) {
         // Can't load any data without a valid user location
         return;
       }
-      let foundLocationId;
-      const storedLocationId = localStorage.getItem('selectedValue');
-      if (storedLocationId) {
-        // Check the stored value is actually valid
-        if (
-          await LocationService.checkCPLocation(
-            storedLocationId,
-            userLocationId
-          )
-        ) {
-          foundLocationId = storedLocationId;
-        } else {
-          // Clear the local value if not valid
-          console.warn('Invalid stored CP value found. Removing.');
-          localStorage.removeItem('selectedValue');
-        }
-      } else {
-        // get it from the user
-        if (session.user.locationType == 'Care provider') {
-          foundLocationId = await LocationService.getDefaultCPLocation(
-            userLocationId,
-            session.user.locationType
-          );
-        } else {
-          foundLocationId = userLocationId;
-        }
-      }
-      if (foundLocationId) {
-        localStorage.setItem('selectedValue', foundLocationId);
-        setCPLocationId(foundLocationId);
-      }
+      setCPLocationId(userLocationId);
     };
-    fetchCareProviderLocationName();
+    fetchSelectedLocation();
   }, [session]);
 
   useEffect(() => {
     const fetchLocationNames = async () => {
       if (CPLocationId) {
         try {
-          const locationNamesCP = await LocationService.getLocationNames(
+          const locationNames = await LocationService.getLocationNames(
             CPLocationId,
-            true
+            false
           );
-          setLocationNamesCP(locationNamesCP);
+          setLocationNames(locationNames);
         } catch (error) {
           console.error('Error fetching location names:', error);
         }
@@ -100,15 +86,29 @@ export default function ProvisionAndOccupancyPage() {
   }, [CPLocationId]);
 
   useEffect(() => {
+    if (locationIds.length > 0) {
+      setDemographicQuery(() => ({
+        metric_ids: demographicMetricIds,
+        location_ids: locationIds,
+      }));
+    }
+  }, [locationIds]);
+
+  useEffect(() => {
     const fetchAllData = async () => {
       if (!CPLocationId) return;
       try {
+        const demographicData: Indicator[] =
+          await IndicatorFetchService.getData(demographicQuery);
+        const filteredDemographicData =
+          TableService.filterDate(demographicData);
+        setFilteredDemographicData(filteredDemographicData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchAllData();
-  }, []);
+  }, [demographicQuery]);
 
   useEffect(() => {
     const fetchLocationIds = async () => {
@@ -140,12 +140,6 @@ export default function ProvisionAndOccupancyPage() {
     fetchMetadataByType();
   }, []);
 
-  const cleanupLocationIDs = (location_ids_to_clean: string[]) => {
-    // XXX Ideally the functions using this would use a different list of location IDs which didn't have
-    // the 'Filter' word crowbarred into it from the Present Demand service.
-    return location_ids_to_clean.filter((item) => item !== 'Indicator');
-  };
-
   return (
     <Layout
       title="Economic factors and household composition"
@@ -171,11 +165,11 @@ export default function ProvisionAndOccupancyPage() {
       <DataBox
         dataTitle="Household deprivation"
         dataInfo={
-          <>
+          <p className="govuk-body-m">
             In Census 2021, households were classified by 4 dimensions of
             deprivation: education, employment, health and disability, and
             household overcrowding.
-          </>
+          </p>
         }
       >
         <details className="govuk-details">
@@ -221,19 +215,17 @@ export default function ProvisionAndOccupancyPage() {
           id="1"
           table={
             <DataTable
-              caption={`
-                Table 1: percentage of households classified as ‘deprived in 4 dimensions’ – ${locationNamesCP.LALabel} local authority, ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, March 2021`}
+              caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
-              columnHeaders={locationNamesCP}
+              columnHeaders={locationNames}
               rowHeaders={{
-                percent_of_deprived_households:
+                perc_households_deprivation_deprived_total:
                   'Percentage of households deprived in 4 dimensions: education, employment, health and housing',
               }}
-              data={''}
+              data={filteredDemographicData}
               showCareProvider={false}
-              careProviderMedianMetrics={''}
               percentageRows={metricDateType}
               showAverageLabel={false}
             ></DataTable>
@@ -249,11 +241,11 @@ export default function ProvisionAndOccupancyPage() {
         dataTitle="Households where the property is owned outright"
         dataInfo={
           <>
-            <p>
+            <p className="govuk-body-m">
               This is when the property does not have an outstanding mortgage or
               any other type of loan attached to it.
             </p>
-            <p>
+            <p className="govuk-body-m">
               Find out{' '}
               <a
                 href="/help/households-where-property-is-owned-outright"
@@ -269,19 +261,17 @@ export default function ProvisionAndOccupancyPage() {
           id="2"
           table={
             <DataTable
-              caption={`
-                                Table 2: percentage of households where the property is owned outright – ${locationNamesCP.LALabel} local authority, ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, March 2021`}
+              caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
-              columnHeaders={locationNamesCP}
+              columnHeaders={locationNames}
               rowHeaders={{
-                percent_property_owned_outright:
+                perc_household_ownership_total:
                   'Percentage of households where the property is owned outright',
               }}
-              data={''}
+              data={filteredDemographicData}
               showCareProvider={false}
-              careProviderMedianMetrics={''}
               percentageRows={metricDateType}
               showAverageLabel={false}
             ></DataTable>
@@ -297,7 +287,7 @@ export default function ProvisionAndOccupancyPage() {
         dataTitle="One-person households where the person is aged 65 or over"
         dataInfo={
           <>
-            <p>
+            <p className="govuk-body-m">
               Find out{' '}
               <a
                 href="/help/one-person-households-where-person-aged-65-or-over"
@@ -311,22 +301,20 @@ export default function ProvisionAndOccupancyPage() {
         }
       >
         <DataTabs
-          id="2"
+          id="3"
           table={
             <DataTable
-              caption={`
-                                Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNamesCP.LALabel} local authority, ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, March 2021`}
+              caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
-              columnHeaders={locationNamesCP}
+              columnHeaders={locationNames}
               rowHeaders={{
-                percent_one_person_households_over_65:
+                perc_households_one_person_total:
                   'Percentage of one-person households where the person is aged 65 or over',
               }}
-              data={''}
+              data={filteredDemographicData}
               showCareProvider={false}
-              careProviderMedianMetrics={''}
               percentageRows={metricDateType}
               showAverageLabel={false}
             ></DataTable>
@@ -361,7 +349,7 @@ export default function ProvisionAndOccupancyPage() {
           url="/help/one-person-households-where-person-aged-65-or-over"
         />
       </DataIndicatorDetailsList>
-      <LocalMarketInformation localAuthority={locationNamesCP.LALabel} url="" />
+      <LocalMarketInformation localAuthority={locationNames.LALabel} url="" />
       <BackToTop />
     </Layout>
   );

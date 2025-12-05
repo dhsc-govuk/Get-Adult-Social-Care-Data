@@ -19,7 +19,7 @@ const DataBox: React.FC<Props> = ({ dataTitle, dataInfo, children }) => {
             data-module="govuk-tabs"
           >
             <h3 className="govuk-heading-m">{dataTitle}</h3>
-            <p className="govuk-body-m">{dataInfo}</p>
+            {dataInfo}
             {children}
           </div>
         </div>
