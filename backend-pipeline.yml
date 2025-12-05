@@ -100,6 +100,10 @@ stages:
                   displayName: Build Image
 
                 - script: |
+                    docker tag $(imageName):$(tag) $(acr_name).azurecr.io/$(imageName):$(tag)
+                  displayName: Tag image for $(acr_name) ACR
+
+                - script: |
                     docker push $(acr_name).azurecr.io/$(imageName):$(tag)
                   displayName: Push image to $(acr_name) ACR
                       
