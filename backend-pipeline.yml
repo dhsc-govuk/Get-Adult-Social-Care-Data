@@ -21,7 +21,7 @@ variables:
   - name: dockerfilePath
     value: "$(Build.SourcesDirectory)/gascd_api/api/Dockerfile"
   - name: imageName
-    value: "dapalpha-backend-api"
+    value: "gascd-backend"
   - name: acrConnection
     value: "$(acr_connection)"
   - name: acrName
