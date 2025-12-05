@@ -68,10 +68,6 @@ export default function ProvisionAndOccupancyPage() {
       'Care home beds per 100,000 adult population',
     median_occupancy_total: 'Occupancy level',
   };
-  const careProviderRowHeaders = {
-    median_bed_count_total: 'Beds per care home	',
-    median_occupancy_total: 'Occupancy level',
-  };
 
   const { data: session } = authClient.useSession();
 
@@ -82,7 +78,7 @@ export default function ProvisionAndOccupancyPage() {
     },
     {
       text: 'Care homes',
-      url: '', //todo: update when care homes landing page is created
+      url: '/topics/residential-care/subtopics',
     },
   ];
 
@@ -167,7 +163,7 @@ export default function ProvisionAndOccupancyPage() {
     if (locationIds.length > 0) {
       setBedsQuery(() => ({
         metric_ids: bedsMetricIds,
-        location_ids: cleanupLocationIDs(locationIds),
+        location_ids: locationIds,
       }));
     }
   }, [locationIds]);
@@ -182,7 +178,7 @@ export default function ProvisionAndOccupancyPage() {
     if (locationIds.length) {
       setCareProviderData2Query(() => ({
         metric_ids: careProviderMetricIds2,
-        location_ids: cleanupLocationIDs(locationIds),
+        location_ids: locationIds,
       }));
     }
   }, [CPLocationId, locationIds]);
@@ -199,12 +195,6 @@ export default function ProvisionAndOccupancyPage() {
     };
     fetchMetadataByType();
   }, []);
-
-  const cleanupLocationIDs = (location_ids_to_clean: string[]) => {
-    // XXX Ideally the functions using this would use a different list of location IDs which didn't have
-    // the 'Filter' word crowbarred into it from the Present Demand service.
-    return location_ids_to_clean.filter((item) => item !== 'Indicator');
-  };
 
   return (
     <Layout
@@ -231,7 +221,7 @@ export default function ProvisionAndOccupancyPage() {
       <DataBox
         dataTitle="Beds per care home and occupancy levels"
         dataInfo={
-          <>
+          <p className="govuk-body-m">
             Find out how{' '}
             <a href="/help/percentage-beds-occupied" className="govuk-link">
               occupancy level percentages
@@ -241,7 +231,7 @@ export default function ProvisionAndOccupancyPage() {
               number of adult social care beds in a care provider location
             </a>{' '}
             are calculated.
-          </>
+          </p>
         }
       >
         <details className="govuk-details">
@@ -273,7 +263,10 @@ export default function ProvisionAndOccupancyPage() {
                 'Capacity Tracker from the Department of Health and Social Care (DHSC)'
               }
               columnHeaders={locationNamesCP}
-              rowHeaders={careProviderRowHeaders}
+              rowHeaders={{
+                median_bed_count_total: 'Beds per care home',
+                median_occupancy_total: 'Occupancy level',
+              }}
               data={finalCpData}
               showCareProvider={true}
               careProviderMedianMetrics={careProviderMedianMetrics}

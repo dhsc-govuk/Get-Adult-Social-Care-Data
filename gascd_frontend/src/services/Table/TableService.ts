@@ -23,6 +23,21 @@ class TableService {
   ): Omit<Indicator, 'load_date_time'>[] {
     return data.map(({ load_date_time, ...rest }) => rest);
   }
+
+  public static sortData(data: Indicator[]): Record<string, Indicator[]> {
+    const filteredData = this.filterDate(data);
+    return filteredData.reduce(
+      (sortedData, entry) => {
+        const { metric_id } = entry;
+        if (!sortedData[metric_id]) {
+          sortedData[metric_id] = [];
+        }
+        sortedData[metric_id].push(entry);
+        return sortedData;
+      },
+      {} as Record<string, Indicator[]>
+    );
+  }
 }
 
 export default TableService;
