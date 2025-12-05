@@ -102,6 +102,12 @@ stages:
                 - script: |
                     docker tag $(imageName):$(tag) $(acr_name).azurecr.io/$(imageName):$(tag)
                   displayName: Tag image for $(acr_name) ACR
+                  
+                - task: Docker@2
+                  inputs:
+                    command: login
+                    containerRegistry: $(acr_connection)
+                  displayName: Login to $(acr_connection) ACR
 
                 - script: |
                     docker push $(acr_name).azurecr.io/$(imageName):$(tag)
