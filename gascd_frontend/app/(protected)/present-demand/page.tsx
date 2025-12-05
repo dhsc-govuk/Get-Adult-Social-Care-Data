@@ -410,13 +410,13 @@ const PresentDemandPage: React.FC = () => {
                 disabilities or rates of dementia diagnosis typically experience
                 greater pressure on services.
               </p>
-              <ConditionalText
+              {/* <ConditionalText
                 data={filteredDemographicData}
                 ColumnHeaders={locationNames}
                 section="Drivers"
                 locations={locationNames}
                 metric_Id="perc_65over"
-              ></ConditionalText>
+              ></ConditionalText> */}
             </div>
             <div>
               <DemoGraphicTable
@@ -584,13 +584,13 @@ const PresentDemandPage: React.FC = () => {
                 )?.data_point ?? 'Loading...'}{' '}
                 per 100,000.
               </p>
-              <ConditionalText
+              {/* <ConditionalText
                 data={filteredBedData}
                 ColumnHeaders={locationNames}
                 section="CapacityLA"
                 locations={locationNames}
                 metric_Id="median_occupancy_total"
-              ></ConditionalText>
+              ></ConditionalText> */}
             </div>
             <div className="govuk-!-margin-bottom-9">
               <p className="govuk-body">
@@ -645,13 +645,13 @@ const PresentDemandPage: React.FC = () => {
                 )?.data_point ?? 'Loading...'}{' '}
                 beds) in {locationNamesCP[2]}.
               </p>
-              <ConditionalText
+              {/* <ConditionalText
                 data={finalCpData}
                 ColumnHeaders={locationNamesCP}
                 section="CapacityCareProvider"
                 locations={locationNamesCP}
                 metric_Id="median_occupancy_total"
-              ></ConditionalText>
+              ></ConditionalText> */}
               <p className="govuk-body">
                 <strong>Note: </strong>If a care provider location has fewer
                 than 6 beds, the number of beds is shown as 0. If a care
