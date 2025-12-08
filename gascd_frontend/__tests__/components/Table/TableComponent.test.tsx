@@ -1,14 +1,12 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import DataTable from '@/components/tables/table';
-import PresentDemandService from '@/services/present-demand/presentDemandService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
-import userEvent from '@testing-library/user-event';
 import {
   mockTableData,
   mockTableDataWithCareProvider,
   mockTableColumnHeaders,
   mockTableRowHeaders,
-  percentageMetricMock,
+  percentageMock,
   mockTableColumnHeadersCareProvider,
   mockTableRowHeadersCareProvider,
   mockCareProviderMedianMetrics,
@@ -71,14 +69,18 @@ describe('Table component tests', () => {
         rowHeaders={mockTableRowHeaders}
         data={mockTableData}
         showCareProvider={false}
-        percentageRows={percentageMetricMock}
+        percentageRows={[
+          'perc_18_64',
+          'perc_65over',
+          'perc_population_disability_disabled_total',
+        ]}
       ></DataTable>
     );
 
     await waitFor(() => {
       mockTableData.forEach((item) => {
-        const shouldBePercentage = percentageMetricMock.some(
-          (percentageRow) => percentageRow.metric_id === item.metric_id
+        const shouldBePercentage = percentageMock.some(
+          (percentageRow: String) => percentageRow === item.metric_id
         );
 
         const expectedDataPoint = shouldBePercentage
@@ -102,13 +104,17 @@ describe('Table component tests', () => {
         data={mockTableDataWithCareProvider}
         careProviderMedianMetrics={mockCareProviderMedianMetrics}
         showCareProvider={true}
-        percentageRows={percentageMetricMock}
+        percentageRows={[
+          'perc_18_64',
+          'perc_65over',
+          'perc_population_disability_disabled_total',
+        ]}
       ></DataTable>
     );
     await waitFor(() => {
       mockTableDataWithCareProvider.forEach((item) => {
-        const shouldBePercentage = percentageMetricMock.some(
-          (percentageRow) => percentageRow.metric_id === item.metric_id
+        const shouldBePercentage = percentageMock.some(
+          (percentageRow: String) => percentageRow === item.metric_id
         );
 
         const expectedDataPoint = shouldBePercentage
