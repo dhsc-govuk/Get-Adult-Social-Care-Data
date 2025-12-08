@@ -69,18 +69,14 @@ describe('Table component tests', () => {
         rowHeaders={mockTableRowHeaders}
         data={mockTableData}
         showCareProvider={false}
-        percentageRows={[
-          'perc_18_64',
-          'perc_65over',
-          'perc_population_disability_disabled_total',
-        ]}
+        percentageRows={percentageMock}
       ></DataTable>
     );
 
     await waitFor(() => {
       mockTableData.forEach((item) => {
         const shouldBePercentage = percentageMock.some(
-          (percentageRow: String) => percentageRow === item.metric_id
+          (percentageRow: string) => percentageRow === item.metric_id
         );
 
         const expectedDataPoint = shouldBePercentage
@@ -104,17 +100,13 @@ describe('Table component tests', () => {
         data={mockTableDataWithCareProvider}
         careProviderMedianMetrics={mockCareProviderMedianMetrics}
         showCareProvider={true}
-        percentageRows={[
-          'perc_18_64',
-          'perc_65over',
-          'perc_population_disability_disabled_total',
-        ]}
+        percentageRows={percentageMock}
       ></DataTable>
     );
     await waitFor(() => {
       mockTableDataWithCareProvider.forEach((item) => {
         const shouldBePercentage = percentageMock.some(
-          (percentageRow: String) => percentageRow === item.metric_id
+          (percentageRow: string) => percentageRow === item.metric_id
         );
 
         const expectedDataPoint = shouldBePercentage
