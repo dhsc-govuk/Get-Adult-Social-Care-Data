@@ -127,19 +127,6 @@ export default function ProvisionAndOccupancyPage() {
     fetchLocationIds();
   }, [CPLocationId]);
 
-  useEffect(() => {
-    const fetchMetadataByType = async () => {
-      try {
-        setMetricDataType(
-          await IndicatorFetchService.getMetadateByType('Percentage')
-        );
-      } catch (error) {
-        console.error('Error fetching metadata types:', error);
-      }
-    };
-    fetchMetadataByType();
-  }, []);
-
   return (
     <Layout
       title="Economic factors and household composition"
@@ -226,7 +213,7 @@ export default function ProvisionAndOccupancyPage() {
               }}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={metricDateType}
+              percentageRows={['perc_households_deprivation_deprived_total']}
               showAverageLabel={false}
             ></DataTable>
           }
@@ -272,7 +259,7 @@ export default function ProvisionAndOccupancyPage() {
               }}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={metricDateType}
+              percentageRows={['perc_household_ownership_total']}
               showAverageLabel={false}
             ></DataTable>
           }
@@ -315,7 +302,7 @@ export default function ProvisionAndOccupancyPage() {
               }}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={metricDateType}
+              percentageRows={['perc_households_one_person_total']}
               showAverageLabel={false}
             ></DataTable>
           }
