@@ -13,8 +13,6 @@ DROP TABLE IF EXISTS care_providers;
 
 -- Start script
 
-
-
 CREATE TABLE care_providers (
                                 id character varying(15) NOT NULL,
                                 name character varying(100) NOT NULL,
@@ -29,6 +27,13 @@ CREATE TABLE countries (
                            CONSTRAINT "PK_countries" PRIMARY KEY (id)
 );
 
+CREATE TABLE metric_groups (
+                               id character varying(15) NOT NULL,
+                               name character varying(100) NOT NULL,
+                               loaded_datetime timestamp with time zone NOT NULL,
+                               CONSTRAINT "PK_metric_groups" PRIMARY KEY (id)
+);
+
 CREATE TABLE regions (
                          id character varying(15) NOT NULL,
                          name character varying(50) NOT NULL,
@@ -36,6 +41,21 @@ CREATE TABLE regions (
                          loaded_datetime timestamp with time zone NOT NULL,
                          CONSTRAINT "PK_regions" PRIMARY KEY (id),
                          CONSTRAINT "FK_regions_countries_country_fk" FOREIGN KEY (country_fk) REFERENCES countries (id) ON DELETE CASCADE
+);
+
+CREATE TABLE metrics (
+                         id character varying(15) NOT NULL,
+                         name character varying(100) NOT NULL,
+                         metric_group_fk character varying(15) NOT NULL,
+                         display_name character varying(255) NOT NULL,
+                         numerator_description character varying(255) NOT NULL,
+                         denominator_description character varying(255) NOT NULL,
+                         data_source character varying(40) NOT NULL,
+                         data_type character varying(50) NOT NULL,
+                         frequency character varying(25) NOT NULL,
+                         loaded_datetime timestamp with time zone NOT NULL,
+                         CONSTRAINT "PK_metrics" PRIMARY KEY (id),
+                         CONSTRAINT "FK_metrics_metric_groups_metric_group_fk" FOREIGN KEY (metric_group_fk) REFERENCES metric_groups (id) ON DELETE CASCADE
 );
 
 CREATE TABLE local_authorities (
@@ -81,14 +101,11 @@ CREATE INDEX "IX_care_provider_locations_sanitised_postcode_fk" ON care_provider
 
 CREATE INDEX "IX_local_authorities_region_fk" ON local_authorities (region_fk);
 
+CREATE INDEX "IX_metrics_metric_group_fk" ON metrics (metric_group_fk);
+
 CREATE INDEX "IX_postcodes_local_authority_fk" ON postcodes (local_authority_fk);
 
 CREATE INDEX "IX_regions_country_fk" ON regions (country_fk);
-
-
-
-
-
 
 -- insert test data
 
