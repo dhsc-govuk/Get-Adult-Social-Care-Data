@@ -17,6 +17,10 @@ import TableService from '@/services/Table/TableService';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import { LocationNames } from '@/data/interfaces/LocationNames';
+import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
+import { Locations } from '@/data/interfaces/Locations';
+import LogService from '@/services/logger/logService';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 export default function ProvisionAndOccupancyPage() {
   const [locationNames, setLocationNames] = useState<LocationNames>({
@@ -34,6 +38,14 @@ export default function ProvisionAndOccupancyPage() {
   const [filteredDemographicData, setFilteredDemographicData] = useState<
     Indicator[]
   >([]);
+
+  const [selectedAge, setSelectedAge] = useState('aged-85-years-and-over');
+  const [mapAvailable, setMapAvailable] = useState(true);
+  const [mapStateKey, setMapStateKey] = useState(1);
+  const [locationData, setLocationData] = useState<Locations | null>(null);
+  const [mapUrl, setMapUrl] = useState('');
+  const mapAlternative =
+    'https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a/aged-85-years-and-over';
 
   const { data: session } = authClient.useSession();
 
@@ -56,6 +68,55 @@ export default function ProvisionAndOccupancyPage() {
     },
   ];
 
+  const handleAgeChange = (event: any) => {
+    setSelectedAge(event.target.value);
+  };
+
+  const handleReset = (event: any) => {
+    event.preventDefault();
+    setMapStateKey(mapStateKey + 1);
+  };
+
+  const handleUpdateClick = (event: any) => {
+    event.preventDefault();
+    updateMap();
+  };
+
+  const updateMap = () => {
+    if (locationData) {
+      const newUrl = generatePopulationMapURL('E10000029', selectedAge);
+      if (newUrl) {
+        setMapUrl(newUrl);
+        setMapAvailable(true);
+      } else {
+        setMapAvailable(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      if (CPLocationId) {
+        try {
+          const location_data =
+            await LocationService.getLocations(CPLocationId);
+          setLocationData(location_data);
+        } catch (error) {
+          LogService.logEvent(
+            'Error fetching location ids: ' + (error as Error).message
+          );
+        }
+      }
+    };
+    fetchLocation();
+  }, [CPLocationId]);
+
+  useEffect(() => {
+    if (locationData) {
+      updateMap();
+    }
+  }, [locationData]);
+
   useEffect(() => {
     const fetchSelectedLocation = async () => {
       const userLocationId = await LocationService.getSelectedLocation();
@@ -64,6 +125,7 @@ export default function ProvisionAndOccupancyPage() {
         return;
       }
       setCPLocationId(userLocationId);
+      AnalyticsService.trackMetricLocationView(userLocationId);
     };
     fetchSelectedLocation();
   }, [session]);
@@ -166,7 +228,7 @@ export default function ProvisionAndOccupancyPage() {
         }
       >
         <DataTabs
-          id="3"
+          id="1"
           table={
             <DataTable
               caption={`Table 1: population size and age group percentages – 
@@ -211,6 +273,144 @@ export default function ProvisionAndOccupancyPage() {
             </>
           }
         />
+      </DataBox>
+      <DataBox
+        dataTitle="Age group percentages at district and Middle Layer Super Output Area (MSOA) level"
+        dataInfo={
+          <>
+            Find out how{' '}
+            <a href="/help/population-age" className="govuk-link">
+              how age group percentages are calculated
+            </a>
+            .
+          </>
+        }
+      >
+        {mapAvailable && (
+          <form action="population-age#map" method="post">
+            <div className="govuk-form-block">
+              <fieldset className="govuk-fieldset">
+                <legend className="govuk-fieldset__legend govuk-fieldset__legend--s">
+                  <h3 className="govuk-fieldset__heading">Select age group</h3>
+                </legend>
+
+                <div
+                  className="govuk-radios govuk-radios--inline govuk-radios--small"
+                  data-module="govuk-radios"
+                  data-govuk-radios-init=""
+                >
+                  <div className="govuk-radios__item">
+                    <input
+                      className="govuk-radios__input"
+                      id="mapAgeGroup-2"
+                      name="mapAgeGroup"
+                      type="radio"
+                      onChange={handleAgeChange}
+                      checked={selectedAge === 'aged-65-to-74-years'}
+                      value="aged-65-to-74-years"
+                    />
+                    <label
+                      className="govuk-label govuk-radios__label"
+                      htmlFor="mapAgeGroup-2"
+                    >
+                      Aged 65 to 74
+                    </label>
+                  </div>
+
+                  <div className="govuk-radios__item">
+                    <input
+                      className="govuk-radios__input"
+                      id="mapAgeGroup-3"
+                      name="mapAgeGroup"
+                      type="radio"
+                      onChange={handleAgeChange}
+                      checked={selectedAge === 'aged-75-to-84-years'}
+                      value="aged-75-to-84-years"
+                    />
+                    <label
+                      className="govuk-label govuk-radios__label"
+                      htmlFor="mapAgeGroup-3"
+                    >
+                      Aged 75 to 84
+                    </label>
+                  </div>
+
+                  <div className="govuk-radios__item">
+                    <input
+                      className="govuk-radios__input"
+                      id="mapAgeGroup-4"
+                      name="mapAgeGroup"
+                      type="radio"
+                      onChange={handleAgeChange}
+                      checked={selectedAge === 'aged-85-years-and-over'}
+                      value="aged-85-years-and-over"
+                    />
+                    <label
+                      className="govuk-label govuk-radios__label"
+                      htmlFor="mapAgeGroup-4"
+                    >
+                      Aged 85 and over
+                    </label>
+                  </div>
+                </div>
+
+                <button
+                  className="govuk-button govuk-!-margin-top-2"
+                  onClick={handleUpdateClick}
+                >
+                  Apply age group filter
+                </button>
+              </fieldset>
+            </div>
+          </form>
+        )}
+
+        {!mapAvailable && (
+          <div>
+            <p className="govuk-body">
+              Map data is not currently available for your care home location.
+            </p>
+            <p className="govuk-body">
+              <a
+                href={mapAlternative}
+                target="_blank"
+                rel="noreferrer"
+                className="govuk-link"
+              >
+                View the map on the Office for National Statistics website
+                (opens in new tab)
+              </a>
+            </p>
+          </div>
+        )}
+
+        {mapUrl && (
+          <div className="govuk-form-group">
+            <h3 className="govuk-heading-s">
+              Figure 1: map of age group percentages for older age groups –
+              local authority districts and MSOAs in England, mid-2024
+            </h3>
+            <iframe
+              key={mapStateKey}
+              data-testid="map-frame"
+              width="100%"
+              height="600px"
+              title="ONS Census Maps"
+              src={mapUrl}
+            ></iframe>
+          </div>
+        )}
+
+        {mapAvailable && !mapUrl && (
+          <p className="govuk-body">Loading map...</p>
+        )}
+
+        {mapAvailable && (
+          <p className="govuk-body govuk-!-margin-top-4">
+            Source: Population estimates from the Office for National Statistics
+            (ONS)
+          </p>
+        )}
       </DataBox>
       <DataIndicatorDetailsList>
         <DataLinkCard
