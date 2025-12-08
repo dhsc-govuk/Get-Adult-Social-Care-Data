@@ -35,14 +35,16 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Care provider ID is required."]);
     }
 
-    // [Fact]
-    // public async Task Invalid_Empty_User_Input()
-    // {
-    //     var (httpResponse, problemDetails) = await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
-    //         new GetCareProviderRequest { CareProviderId = " " });
-    //     httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-    //     problemDetails.Errors.Count().ShouldBe(1);
-    //     problemDetails.Errors.Select(e => e.Name).ShouldBe(["careProviderId"]);
-    //     problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Care provider ID is required."]);
-    // }
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    public async Task Invalid_Empty_User_Input(string careProviderId)
+    {
+        var (httpResponse, problemDetails) = await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
+            new GetCareProviderRequest { CareProviderId = careProviderId });
+        httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        problemDetails.Errors.Count().ShouldBe(1);
+        problemDetails.Errors.Select(e => e.Name).ShouldBe(["careProviderId"]);
+        problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Care provider ID is required."]);
+    }
 }

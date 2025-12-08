@@ -3,15 +3,15 @@ using FastEndpoints;
 
 namespace api.Endpoints.Organisation.CareProvider;
 
-public class GetCareProviderEndpoint(GascdDataContext context) : Endpoint<GetCareProviderRequest, GetCareProviderResponse>
+public class GetCareProviderEndpoint() : Endpoint<GetCareProviderRequest, GetCareProviderResponse>
 {
     public override void Configure()
     {
-        Get("/organisation/care_provider/{CareProviderId}");
+        Get("/api/organisation/care_provider/{CareProviderId}");
     }
 
-    public override Task HandleAsync(GetCareProviderRequest req, CancellationToken ct)
+    public override async Task HandleAsync(GetCareProviderRequest req, CancellationToken ct)
     {
-        return Send.OkAsync();
+        await Send.OkAsync(new GetCareProviderResponse(), ct);
     }
 }
