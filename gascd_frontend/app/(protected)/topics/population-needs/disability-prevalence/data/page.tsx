@@ -126,19 +126,6 @@ export default function DisabilityPrevalence() {
     fetchLocationIds();
   }, [CPLocationId]);
 
-  useEffect(() => {
-    const fetchMetadataByType = async () => {
-      try {
-        setMetricDataType(
-          await IndicatorFetchService.getMetadateByType('Percentage')
-        );
-      } catch (error) {
-        console.error('Error fetching metadata types:', error);
-      }
-    };
-    fetchMetadataByType();
-  }, []);
-
   return (
     <Layout
       title="General health, disability and learning disability"
@@ -199,7 +186,10 @@ export default function DisabilityPrevalence() {
               }}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={metricDateType}
+              percentageRows={[
+                'perc_general_health_total',
+                'perc_population_disability_disabled_total',
+              ]}
             ></DataTable>
           }
           download={
@@ -244,7 +234,7 @@ export default function DisabilityPrevalence() {
               }}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={metricDateType}
+              percentageRows={['learning_disabilty_prevalence']}
             ></DataTable>
           }
           download={
