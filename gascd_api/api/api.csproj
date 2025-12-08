@@ -29,9 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+      <Folder Include="Data\Models\Metrics\Groups\" />
     </ItemGroup>
 
 </Project>
