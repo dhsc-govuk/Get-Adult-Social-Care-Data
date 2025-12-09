@@ -386,6 +386,22 @@ METRIC_METADATA = {
         "is_live": 1,
         "deep_dive": 0
     },
+    "perc_households_deprivation_deprived_total": {
+        "group_id": "perc_household_ownership_total",
+        "group_name": "Percentage of households that are deprived in 4 dimensions",
+        "description": "Percentage of households that are deprived in 4 dimensions",
+        "numerator_description": None,
+        "denominator_description": None,
+        "data_source": "ONS",
+        "filter_bedtype": None,
+        "metric_data_type": "Percentage",
+        "methodology": None,
+        "limitations": None,
+        "access_category": None,
+        "metric_type": "Metric",
+        "is_live": 1,
+        "deep_dive": 0
+    },
     "perc_household_ownership_total": {
         "group_id": "perc_household_ownership_total",
         "group_name": "Percentage of households where the property is owned outright",

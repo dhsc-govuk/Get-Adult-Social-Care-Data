@@ -33,7 +33,6 @@ export default function ProvisionAndOccupancyPage() {
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [finalCpData, setFinalCpData] = useState<Indicator[]>([]);
   const [filteredBedData, setFilteredBedData] = useState<Indicator[]>([]);
-  const [metricDateType, setMetricDataType] = useState<MetaData[]>([]);
   const [bedsQuery, setBedsQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
@@ -183,19 +182,6 @@ export default function ProvisionAndOccupancyPage() {
     }
   }, [CPLocationId, locationIds]);
 
-  useEffect(() => {
-    const fetchMetadataByType = async () => {
-      try {
-        setMetricDataType(
-          await IndicatorFetchService.getMetadateByType('Percentage')
-        );
-      } catch (error) {
-        console.error('Error fetching metadata types:', error);
-      }
-    };
-    fetchMetadataByType();
-  }, []);
-
   return (
     <Layout
       title="Provision and occupancy"
@@ -270,7 +256,7 @@ export default function ProvisionAndOccupancyPage() {
               data={finalCpData}
               showCareProvider={true}
               careProviderMedianMetrics={careProviderMedianMetrics}
-              percentageRows={metricDateType}
+              percentageRows={['median_occupancy_total']}
               showAverageLabel={true}
             ></DataTable>
           }

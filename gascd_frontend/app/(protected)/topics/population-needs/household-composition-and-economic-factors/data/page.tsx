@@ -28,7 +28,6 @@ export default function ProvisionAndOccupancyPage() {
   } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
-  const [metricDateType, setMetricDataType] = useState<MetaData[]>([]);
   const [filteredDemographicData, setFilteredDemographicData] = useState<
     Indicator[]
   >([]);

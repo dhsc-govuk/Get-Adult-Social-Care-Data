@@ -9,7 +9,7 @@ type DataTableProps = {
   data: Indicator[];
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
-  percentageRows?: MetaData[];
+  percentageRows?: string[];
   source?: string;
   last_updated?: string;
   children?: React.ReactNode;
@@ -109,8 +109,7 @@ const DataTable: React.FC<DataTableProps> = ({
                     data,
                     getCareProviderKey(key, careProviderMedianMetrics),
                     'Care provider location',
-                    percentageRows?.some((item) => item.metric_id === key) ??
-                      false
+                    percentageRows?.some((item) => item === key) ?? false
                   )}
                 </td>
               )}
@@ -119,8 +118,7 @@ const DataTable: React.FC<DataTableProps> = ({
                   data,
                   key,
                   'LA',
-                  percentageRows?.some((item) => item.metric_id === key) ??
-                    false,
+                  percentageRows?.some((item) => item === key) ?? false,
                   showAverageLabel
                 )}
               </td>
@@ -129,8 +127,7 @@ const DataTable: React.FC<DataTableProps> = ({
                   data,
                   key,
                   'Regional',
-                  percentageRows?.some((item) => item.metric_id === key) ??
-                    false,
+                  percentageRows?.some((item) => item === key) ?? false,
                   showAverageLabel
                 )}
               </td>
@@ -139,8 +136,7 @@ const DataTable: React.FC<DataTableProps> = ({
                   data,
                   key,
                   'National',
-                  percentageRows?.some((item) => item.metric_id === key) ??
-                    false,
+                  percentageRows?.some((item) => item === key) ?? false,
                   showAverageLabel
                 )}
               </td>
