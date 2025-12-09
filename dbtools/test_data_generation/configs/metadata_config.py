@@ -1,3 +1,4 @@
+# Note - the dict keys are used for the metric_id, so this should *not* be defined inside the metadata dictionary itself
 METRIC_METADATA = {
     "occupancy_rate_total": {
         "group_id": "occupancy_rate",
@@ -384,6 +385,22 @@ METRIC_METADATA = {
         "is_live": 1,
         "deep_dive": 0
     },
+    "perc_population_disability_disabled_total": {
+        "group_id": "perc_population_disability",
+        "group_name": "Percentage of disabled adult population",
+        "description": "The percentage of individuals who report having any physical or mental health conditions of illnesses lasting or expected to last 12 months or more.",
+        "numerator_description": "Adults reporting any physical or mental health condition or illnesses lasting or expected to last 12 months or more",
+        "denominator_description": "Total population",
+        "data_source": "ONS",
+        "filter_bedtype": None,
+        "metric_data_type": "Percentage",
+        "methodology": None,
+        "limitations": None,
+        "access_category": None,
+        "metric_type": "Metric",
+        "is_live": 1,
+        "deep_dive": 0
+    },
     "perc_households_deprivation_deprived_total": {
         "group_id": "perc_household_ownership_total",
         "group_name": "Percentage of households that are deprived in 4 dimensions",
@@ -416,6 +433,22 @@ METRIC_METADATA = {
         "is_live": 1,
         "deep_dive": 0
     },
+    "perc_general_health_total": {
+        "group_id": "perc_general_health",
+        "group_name": "Percentage of people with bad or very bad health conditions",
+        "description": "Percentage of people with bad or very bad health conditions",
+        "numerator_description": None,
+        "denominator_description": "Total population",
+        "data_source": "ONS",
+        "filter_bedtype": None,
+        "metric_data_type": "Percentage",
+        "methodology": None,
+        "limitations": None,
+        "access_category": None,
+        "metric_type": "Metric",
+        "is_live": 1,
+        "deep_dive": 0
+    },
     "perc_households_one_person_total": {
         "group_id": "perc_households_one_person",
         "group_name": "Percentage of one person households where the person is aged 65 and over",
@@ -432,4 +465,20 @@ METRIC_METADATA = {
         "is_live": 1,
         "deep_dive": 0
     },
+    "learning_disabilty_prevalence": {
+        "group_id": "learning_disabilty_prevalence",
+        "group_name": "Learning Disability: QOF prevalence (all ages)",
+        "description": "Learning Disability: QOF prevalence (all ages)",
+        "numerator_description": "Total number of patients with learning disabilities, as recorded on the practice disease register.",
+        "denominator_description": "Total number of patients registered with the practice.",
+        "data_source": "Fingertips",
+        "filter_bedtype": None,
+        "metric_data_type": "Percentage",
+        "methodology": None,
+        "limitations": None,
+        "access_category": None,
+        "metric_type": "Metric",
+        "is_live": 1,
+        "deep_dive": 0
+    }
 }
