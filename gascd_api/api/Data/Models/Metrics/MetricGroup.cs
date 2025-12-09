@@ -8,5 +8,4 @@ public class MetricGroup : EntityBase
 {
     [Column("name"), StringLength(100)]
     public required string Name { get; init; }
-
 }
