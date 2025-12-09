@@ -21,13 +21,15 @@ public class GetCareProviderValidatorTests : IDisposable
     }
 
     [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
-    public void InvalidCareProviderId(string careProviderId)
+    [InlineData("", "Care provider ID is required")]
+    [InlineData(" ", "Care provider ID is required")]
+    [InlineData("1-", "Care provider ID has a minimum length of 3")]
+    public void InvalidCareProviderId(string careProviderId, string expectedErrorMessage)
     {
         var request = new GetCareProviderRequest { CareProviderId = careProviderId };
         var result = _validator.TestValidate(request);
-        result.ShouldHaveValidationErrorFor(r => r.CareProviderId);
+        result.ShouldHaveValidationErrorFor(r => r.CareProviderId)
+            .WithErrorMessage(expectedErrorMessage);
     }
 
     public void Dispose()

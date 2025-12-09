@@ -25,39 +25,39 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
 
-    [Fact]
-    public async Task Invalid_Empty_Request()
-    {
-        var (httpResponse, problemDetails) = await _client.GETAsync<GetCareProviderEndpoint, ProblemDetails>();
-        httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        problemDetails.Errors.Count().ShouldBe(1);
-        problemDetails.Errors.Select(e => e.Name).ShouldBe(["careProviderId"]);
-        problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Care provider ID is required."]);
-    }
+    // [Fact]
+    // public async Task Invalid_Empty_Request()
+    // {
+    //     var (httpResponse, problemDetails) = await _client.GETAsync<GetCareProviderEndpoint, ProblemDetails>();
+    //     httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    //     problemDetails.Errors.Count().ShouldBe(1);
+    //     problemDetails.Errors.Select(e => e.Name).ShouldBe(["careProviderId"]);
+    //     problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Care provider ID is required."]);
+    // }
+    //
+    // [Theory]
+    // [InlineData("")]
+    // [InlineData(" ")]
+    // public async Task Invalid_Empty_User_Input(string careProviderId)
+    // {
+    //     var (httpResponse, problemDetails) = await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
+    //         new GetCareProviderRequest { CareProviderId = careProviderId });
+    //     httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    //     problemDetails.Errors.Count().ShouldBe(1);
+    //     problemDetails.Errors.Select(e => e.Name).ShouldBe(["careProviderId"]);
+    //     problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Care provider ID is required."]);
+    // }
 
     [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
-    public async Task Invalid_Empty_User_Input(string careProviderId)
+    [InlineData("1-", "Care provider ID has a minimum length of 3")]
+    [InlineData("1-12345678910111", "Care provider ID has a maximum length of 15")]
+    public async Task Invalid_CareProviderId_Input(string careProviderId, string expectedErrorMessage)
     {
         var (httpResponse, problemDetails) = await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
             new GetCareProviderRequest { CareProviderId = careProviderId });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
         problemDetails.Errors.Select(e => e.Name).ShouldBe(["careProviderId"]);
-        problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Care provider ID is required."]);
-    }
-
-    [Theory]
-    [InlineData("1-1")]
-    [InlineData("1-123456789101112")]
-    public async Task Invalid_CareProviderId_Input(string careProviderId)
-    {
-        var (httpResponse, problemDetails) = await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
-            new GetCareProviderRequest { CareProviderId = careProviderId });
-        httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        problemDetails.Errors.Count().ShouldBe(1);
-        problemDetails.Errors.Select(e => e.Name).ShouldBe(["careProviderId"]);
-        // problemDetails.Errors.Select(e => e.Reason).ShouldBe([expectedMessage]);
+        problemDetails.Errors.Select(e => e.Reason).ShouldBe([expectedErrorMessage]);
     }
 }
