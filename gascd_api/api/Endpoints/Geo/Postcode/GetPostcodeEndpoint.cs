@@ -1,6 +1,5 @@
 using api.Data;
 using api.Data.Mappers;
-using api.Logging;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
