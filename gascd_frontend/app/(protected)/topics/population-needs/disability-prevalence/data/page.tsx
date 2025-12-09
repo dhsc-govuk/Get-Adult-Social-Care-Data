@@ -27,7 +27,6 @@ export default function DisabilityPrevalence() {
   } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
-  const [metricDateType, setMetricDataType] = useState<MetaData[]>([]);
   const [filteredDemographicData, setFilteredDemographicData] = useState<
     Indicator[]
   >([]);
@@ -247,23 +246,23 @@ export default function DisabilityPrevalence() {
       <DataIndicatorDetailsList>
         <DataLinkCard
           label="Disability prevalence"
-          sources="Office for National Statistics."
+          sources="Office for National Statistics"
           updateFrequency="Updated every 10 years"
-          limitations={true}
+          limitations={false}
           url="/help/disability-prevalence"
         />
         <DataLinkCard
           label="Learning disability prevalence"
-          sources="Department of Health and Social Care."
+          sources="Department of Health and Social Care"
           updateFrequency="Yearly updates"
           limitations={true}
           url="/help/learning-disability-prevalence"
         />
         <DataLinkCard
           label="People who reported bad or very bad health"
-          sources="Office for National Statistics."
+          sources="Office for National Statistics"
           updateFrequency="Updated every 10 years"
-          limitations={true}
+          limitations={false}
           url="/help/people-who-reported-bad-or-very-bad-health"
         />
       </DataIndicatorDetailsList>

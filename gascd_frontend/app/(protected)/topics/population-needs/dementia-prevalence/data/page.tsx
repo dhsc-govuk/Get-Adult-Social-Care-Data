@@ -244,14 +244,14 @@ export default function DementaPrevalencePage() {
       <DataIndicatorDetailsList>
         <DataLinkCard
           label="Dementia prevalence"
-          sources="Department of Health and Social Care."
+          sources="Department of Health and Social Care"
           updateFrequency="Yearly updates"
           limitations={true}
           url="/help/dementia-prevalence"
         />
         <DataLinkCard
           label="Estimated dementia diagnosis rate for people aged 65 and over"
-          sources="Department of Health and Social Care."
+          sources="Department of Health and Social Care"
           updateFrequency="Yearly updates"
           limitations={true}
           url="/help/estimated-dementia-diagnosis-rate-aged-65-and-over"
