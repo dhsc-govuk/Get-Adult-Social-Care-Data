@@ -314,24 +314,24 @@ export default function ProvisionAndOccupancyPage() {
       </DataBox>
       <DataIndicatorDetailsList>
         <DataLinkCard
-          label="Adult social care beds per 100,000 adult population"
+          label="Households &lsquo;deprived in 4 dimensions&rsquo;"
           sources="Office for National Statistics"
           updateFrequency="Updates every 10 years"
-          limitations={true}
+          limitations={false}
           url="/help/household-deprivation"
         />
         <DataLinkCard
           label="Households where the property is owned outright"
           sources="Office for National Statistics"
           updateFrequency="Updates every 10 years"
-          limitations={true}
+          limitations={false}
           url="/help/households-where-property-is-owned-outright"
         />
         <DataLinkCard
           label="One-person households where the person is aged 65 or over"
           sources="Office for National Statistics"
           updateFrequency="Updates every 10 years"
-          limitations={true}
+          limitations={false}
           url="/help/one-person-households-where-person-aged-65-or-over"
         />
       </DataIndicatorDetailsList>

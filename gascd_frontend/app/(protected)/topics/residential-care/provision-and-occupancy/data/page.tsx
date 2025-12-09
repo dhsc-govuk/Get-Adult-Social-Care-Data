@@ -15,7 +15,6 @@ import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { Indicator } from '@/data/interfaces/Indicator';
 import TableService from '@/services/Table/TableService';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
-import { MetaData } from '@/data/interfaces/MetaData';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 
@@ -312,7 +311,7 @@ export default function ProvisionAndOccupancyPage() {
         <DataLinkCard
           label="Adult social care beds per 100,000 adult population - over time"
           sources="Capacity Tracker, Office for National Statistics"
-          updateFrequency="Daily"
+          updateFrequency="Daily updates"
           limitations={true}
           url="/help/beds-per-100000-adult-population-over-time"
         />
