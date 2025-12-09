@@ -3,7 +3,7 @@ using FastEndpoints;
 
 namespace api.Endpoints.Organisation.CareProvider;
 
-public class GetCareProviderEndpoint() : Endpoint<GetCareProviderRequest, GetCareProviderResponse>
+public class GetCareProviderEndpoint(GascdDataContext context) : Endpoint<GetCareProviderRequest, List<GetCareProviderResponse>>
 {
     public override void Configure()
     {
@@ -12,6 +12,18 @@ public class GetCareProviderEndpoint() : Endpoint<GetCareProviderRequest, GetCar
 
     public override async Task HandleAsync(GetCareProviderRequest req, CancellationToken ct)
     {
-        await Send.OkAsync(new GetCareProviderResponse(), ct);
+        var locations = context.CareProviderLocations
+            .Where(cpl => cpl.CareProvider.Code == req.CareProviderId);
+
+        List<GetCareProviderResponse> response = new();
+        foreach (var location in locations)
+        {
+            response.Add(new GetCareProviderResponse
+            {
+                LocationName = location.Name,
+                LocationId = location.Code
+            });
+        }
+        await Send.OkAsync(response, ct);
     }
 }

@@ -480,6 +480,11 @@ DECLARE
     country_id uuid = uuid_generate_v4();
     region_id uuid = uuid_generate_v4();
     la_id uuid = uuid_generate_v4();
+    care_provider_id uuid = uuid_generate_v4();
+    care_provider_id_2 uuid = uuid_generate_v4();
+    care_provider_location_id uuid = uuid_generate_v4();
+    care_provider_location_id_2 uuid = uuid_generate_v4();
+    care_provider_location_id_3 uuid = uuid_generate_v4();
 BEGIN
     INSERT INTO countries (id, code, name, loaded_datetime)
     VALUES (country_id, 'E92000001','England', CURRENT_TIMESTAMP);
@@ -495,5 +500,14 @@ BEGIN
            (uuid_generate_v4(), 'ME101QX', 'ME10 1QX', 51.32988801568501, 0.7260691453143282, la_id, CURRENT_TIMESTAMP),
            (uuid_generate_v4(), 'ME101QY', 'ME10 1QY', 51.32954649874547, 0.7283745919593453, la_id, CURRENT_TIMESTAMP),
            (uuid_generate_v4(), 'CV22TN', 'CV2 2TN', 52.43602168912626, -1.445481473, la_id, CURRENT_TIMESTAMP);
+
+    INSERT INTO care_providers (id, name, code, loaded_datetime)
+    VALUES (care_provider_id, 'Bupa', '1-123456789', CURRENT_TIMESTAMP),
+           (care_provider_id_2, 'Katherine', '1-123456777', CURRENT_TIMESTAMP);
+
+    INSERT INTO care_provider_locations (id, name, care_provider_fk, sanitised_postcode, address, nominated_individual, local_authority_fk, code, loaded_datetime)
+    VALUES (care_provider_location_id, 'Bupa Liverpool', care_provider_id, 'CV22TN', 'Bupa Liverpool, CV2 2TN', 'Mr. Ice Cool', la_id, '1-222222222', CURRENT_TIMESTAMP),
+           (care_provider_location_id_2, 'Katherines Teeth', care_provider_id_2, 'ME101QX', 'Katherines Teeth, Liverpool, ME10 1QX', 'Katherine', la_id, '1-222222223', CURRENT_TIMESTAMP),
+           (care_provider_location_id_3, 'Katherines Eyes', care_provider_id_2, 'ME101QY', 'Katherines Eyes, Liverpool, ME10 1QY', 'Katherine', la_id, '1-222222224', CURRENT_TIMESTAMP);
 END $$;
 

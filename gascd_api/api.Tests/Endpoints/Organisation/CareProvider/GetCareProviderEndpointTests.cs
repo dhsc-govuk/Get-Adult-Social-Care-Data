@@ -19,34 +19,39 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     [Fact]
     public async Task GetCareProvider_ReturnsOk()
     {
-        var (httpCode, _) = await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, GetCareProviderResponse>(
+        var (httpCode, _) = await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
             new GetCareProviderRequest { CareProviderId = "1-123456789" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
 
-    // [Fact]
-    // public async Task Invalid_Empty_Request()
-    // {
-    //     var (httpResponse, problemDetails) = await _client.GETAsync<GetCareProviderEndpoint, ProblemDetails>();
-    //     httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-    //     problemDetails.Errors.Count().ShouldBe(1);
-    //     problemDetails.Errors.Select(e => e.Name).ShouldBe(["careProviderId"]);
-    //     problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Care provider ID is required."]);
-    // }
-    //
-    // [Theory]
-    // [InlineData("")]
-    // [InlineData(" ")]
-    // public async Task Invalid_Empty_User_Input(string careProviderId)
-    // {
-    //     var (httpResponse, problemDetails) = await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
-    //         new GetCareProviderRequest { CareProviderId = careProviderId });
-    //     httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-    //     problemDetails.Errors.Count().ShouldBe(1);
-    //     problemDetails.Errors.Select(e => e.Name).ShouldBe(["careProviderId"]);
-    //     problemDetails.Errors.Select(e => e.Reason).ShouldBe(["Care provider ID is required."]);
-    // }
+    [Fact]
+    public async Task GetCareProvider_ReturnsExpectedCareProviderData()
+    {
+        var (httpCode, response) =
+            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
+                new GetCareProviderRequest { CareProviderId = "1-123456789" });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.ShouldNotBeEmpty();
+        response.Count.ShouldBe(1);
+        response[0].LocationName.ShouldBe("Bupa Liverpool");
+        response[0].LocationId.ShouldBe("1-222222222");
+    }
+
+    [Fact]
+    public async Task GetCareProvider_ReturnsMultipleCareProviderLocations()
+    {
+        var (httpCode, response) =
+            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
+                new GetCareProviderRequest { CareProviderId = "1-123456777" });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.ShouldNotBeEmpty();
+        response.Count.ShouldBe(2);
+        response.ShouldContain(o => o.LocationName == "Katherines Teeth" && o.LocationId == "1-222222223");
+        response.ShouldContain(o => o.LocationName == "Katherines Eyes" && o.LocationId == "1-222222224");
+    }
 
     [Theory]
     [InlineData("1-", "Care provider ID has a minimum length of 3")]
