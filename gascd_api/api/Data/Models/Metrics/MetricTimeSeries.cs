@@ -1,4 +1,3 @@
-using api.Data.Models.Reference;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Data.Models.Metrics;
@@ -18,10 +17,10 @@ public class MetricTimeSeries : EntityBase
     public required string LocationType { get; init; }
 
     [Column("metric_fk")]
-    public required string MetricFk { get; init; }
+    public required Guid MetricFk { get; init; }
 
     [ForeignKey("MetricFk")]
-    public virtual Metric? Metric { get; init; }
+    public virtual Metric Metric { get; init; } = null!;
 
     [Column("time_series")]
     public required decimal[] TimeSeries { get; init; }
