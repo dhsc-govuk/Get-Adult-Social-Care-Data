@@ -5,8 +5,11 @@ namespace api.Data.Models;
 
 public class EntityBase
 {
-    [Column("id"), StringLength(15)]
-    public string Id { get; init; } = null!;
+    [Key, Column("id")]
+    public Guid Id { get; set; }
+
+    [Column("code"), StringLength(15)]
+    public string Code { get; init; } = null!;
 
     [Column("loaded_datetime"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime LoadedDateTime { get; init; }

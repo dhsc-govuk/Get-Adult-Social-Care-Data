@@ -10,10 +10,10 @@ public class Metric : EntityBase
     public required string Name { get; init; }
 
     [Column("metric_group_fk")]
-    public required string MetricGroupFk { get; init; }
+    public required Guid MetricGroupFk { get; init; }
 
     [ForeignKey("MetricGroupFk")]
-    public virtual MetricGroup? MetricGroup { get; set; }
+    public virtual MetricGroup MetricGroup { get; set; } = null!;
 
     [Column("display_name"), StringLength(255)]
     public required string DisplayName { get; init; }
@@ -32,5 +32,4 @@ public class Metric : EntityBase
 
     [Column("frequency"), StringLength(25)]
     public required string Frequency { get; init; }
-
 }

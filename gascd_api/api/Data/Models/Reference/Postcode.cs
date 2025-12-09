@@ -17,7 +17,7 @@ public partial class Postcode : EntityBase
     public required decimal Longitude { get; init; }
 
     [Column("local_authority_fk")]
-    public required string LocalAuthorityFk { get; init; }
+    public required Guid LocalAuthorityFk { get; init; }
 
     [ForeignKey("LocalAuthorityFk")]
     public virtual LocalAuthority LocalAuthority { get; init; } = null!;
