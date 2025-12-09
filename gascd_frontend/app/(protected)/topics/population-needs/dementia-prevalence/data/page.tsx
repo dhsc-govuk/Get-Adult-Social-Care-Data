@@ -166,11 +166,11 @@ export default function DementaPrevalencePage() {
         dataInfo={
           <>
             <p className="govuk-body-m">
-              Find out{' '}
+              Find out how{' '}
               <a href="/help/dementia-prevalence" className="govuk-link">
-                demetial prevalence
+                dementia prevalence
               </a>{' '}
-              and{' '}
+              and the{' '}
               <a
                 href="/help/estimated-dementia-diagnosis-rate-aged-65-and-over"
                 className="govuk-link"
