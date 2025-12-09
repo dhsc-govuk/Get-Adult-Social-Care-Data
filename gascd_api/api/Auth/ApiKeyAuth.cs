@@ -15,7 +15,7 @@ sealed class ApiKeyAuth(IOptionsMonitor<AuthenticationSchemeOptions> options,
 {
     internal const string SchemeName = "ApiKey";
     internal const string HeaderName = "x-api-key";
-    readonly string _apiKey = config["Auth:ApiKey"] ?? throw new InvalidOperationException("Api key not set in appsettings.json");
+    readonly string _apiKey = config["AuthApiKey"] ?? throw new InvalidOperationException("Api key not set in appsettings.json");
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
