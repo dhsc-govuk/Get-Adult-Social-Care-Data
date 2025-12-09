@@ -62,8 +62,8 @@ const Layout: React.FC<Props> = ({
         {currentPage === 'home' && (
           <div className="x-govuk-masthead">
             <div className="govuk-width-container">
-              <div className="govuk-grid-row govuk-!-padding-bottom-4">
-                <div className="govuk-grid-column-two-thirds govuk-!-padding-left-0">
+              <div className="govuk-grid-row">
+                <div className="govuk-grid-column-two-thirds">
                   <h1 className="x-govuk-masthead__title">
                     Get adult social care data
                   </h1>
