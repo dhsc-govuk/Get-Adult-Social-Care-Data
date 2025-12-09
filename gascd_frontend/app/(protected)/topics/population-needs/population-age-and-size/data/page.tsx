@@ -84,7 +84,10 @@ export default function ProvisionAndOccupancyPage() {
 
   const updateMap = () => {
     if (locationData) {
-      const newUrl = generatePopulationMapURL('E10000029', selectedAge);
+      const newUrl = generatePopulationMapURL(
+        locationData.la_code,
+        selectedAge
+      );
       if (newUrl) {
         setMapUrl(newUrl);
         setMapAvailable(true);
@@ -214,7 +217,7 @@ export default function ProvisionAndOccupancyPage() {
       <DataBox
         dataTitle="Adult population size with age group percentages"
         dataInfo={
-          <>
+          <p>
             Find out how{' '}
             <a href="/help/population-size" className="govuk-link">
               population size
@@ -224,7 +227,7 @@ export default function ProvisionAndOccupancyPage() {
               age group percentages
             </a>{' '}
             are calculated.
-          </>
+          </p>
         }
       >
         <DataTabs
@@ -391,9 +394,9 @@ export default function ProvisionAndOccupancyPage() {
               local authority districts and MSOAs in England, mid-2024
             </h3>
             <iframe
+              style={{ border: 0, width: '100%' }}
               key={mapStateKey}
               data-testid="map-frame"
-              width="100%"
               height="600px"
               title="ONS Census Maps"
               src={mapUrl}
