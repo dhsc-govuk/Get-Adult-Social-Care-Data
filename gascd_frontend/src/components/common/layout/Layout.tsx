@@ -60,18 +60,18 @@ const Layout: React.FC<Props> = ({
         </div>
 
         {currentPage === 'home' && (
-          <div style={{ backgroundColor: '#d2e2f1' }}>
+          <div className="x-govuk-masthead">
             <div className="govuk-width-container">
               <div className="govuk-grid-row govuk-!-padding-bottom-4">
                 <div className="govuk-grid-column-two-thirds govuk-!-padding-left-0">
-                  <h1 className="govuk-heading-xl govuk-!-margin-bottom-6 govuk-!-margin-top-6">
+                  <h1 className="x-govuk-masthead__title">
                     Get adult social care data
                   </h1>
-                  <p className="govuk-body-l">
+                  <p className="x-govuk-masthead__description">
                     Find data on adult social care and related population needs
                     in England.
                   </p>
-                  <p className="govuk-body-l">
+                  <p className="x-govuk-masthead__description">
                     This service shows local and regional statistics based on
                     your selected location.
                   </p>
