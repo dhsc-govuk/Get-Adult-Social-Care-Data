@@ -1,19 +1,10 @@
 import { betterAuth, boolean } from 'better-auth';
 import { createAuthMiddleware } from 'better-auth/api';
-import { B2CPlugin, OneLoginPlugin } from './authPlugins';
+import { getOAuthConfig } from './authPlugins';
 import { nextCookies } from 'better-auth/next-js';
 import logger from '@/utils/logger';
 import { msdialect } from './authDatabase';
 import { admin } from 'better-auth/plugins';
-
-let authPlugin;
-if (process.env.ONELOGIN_URL) {
-  logger.info("Setting up One Login auth");
-  authPlugin = OneLoginPlugin();
-} else {
-  logger.info("Setting up B2C Auth");
-  authPlugin = B2CPlugin();
-}
 
 export const auth = betterAuth({
   session: {
@@ -63,7 +54,7 @@ export const auth = betterAuth({
   },
   plugins: [
     admin(),
-    authPlugin,
+    getOAuthConfig(),
     // https://www.better-auth.com/docs/integrations/next#server-action-cookies
     nextCookies(), // make sure this is the last plugin in the array
   ],
@@ -75,7 +66,10 @@ export const auth = betterAuth({
         });
       }
       if (ctx.path == '/error') {
-        logger.error("Auth error", { 'error': ctx.query?.error, 'description': ctx.query?.error_description })
+        logger.error('Auth error', {
+          error: ctx.query?.error,
+          description: ctx.query?.error_description,
+        });
       }
     }),
   },
