@@ -18,7 +18,7 @@ describe('Footer', () => {
   it('renders disclaimer link', () => {
     render(<Footer />);
     const disclaimer = screen.getByRole('link', {
-      name: /Disclaimer/i,
+      name: 'Disclaimer',
     });
     expect(disclaimer).toHaveAttribute('href', '/disclaimer');
   });
@@ -33,7 +33,7 @@ describe('Footer', () => {
   it('renders privacy link', () => {
     render(<Footer />);
     const disclaimer = screen.getByRole('link', {
-      name: /Privacy/i,
+      name: 'Privacy',
     });
     expect(disclaimer).toHaveAttribute('href', '/privacy-policy');
   });
@@ -41,7 +41,7 @@ describe('Footer', () => {
   it('renders feedback link', () => {
     render(<Footer />);
     const feedback = screen.getByRole('link', {
-      name: /Feedback/i,
+      name: 'Feedback',
     });
     expect(feedback).toBeInTheDocument();
     expect(feedback).toHaveAttribute('href', 'http://feedback.form.local/');
@@ -51,7 +51,7 @@ describe('Footer', () => {
   it('renders help link', () => {
     render(<Footer />);
     const disclaimer = screen.getByRole('link', {
-      name: /Help/i,
+      name: 'Help',
     });
     expect(disclaimer).toHaveAttribute('href', '/help');
   });
