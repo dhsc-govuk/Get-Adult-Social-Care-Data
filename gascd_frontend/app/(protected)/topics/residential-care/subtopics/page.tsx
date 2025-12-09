@@ -21,7 +21,7 @@ export default function ResidentialCarePage() {
       title: 'Care home beds and occupancy levels',
       description:
         'Provision and capacity data for care homes, including local, regional and national statistics.',
-      url: 'topics/residential-care/provision-and-occupancy/data',
+      url: '/topics/residential-care/provision-and-occupancy/data',
     },
   ];
 

@@ -21,25 +21,25 @@ export default function PopulationNeedsPage() {
       title: 'Dementia prevalence and estimated diagnosis rate',
       description:
         'Data on registered dementia diagnoses with estimates for undiagnosed dementia.',
-      url: 'topics/population-needs/dementia-prevalence/data',
+      url: '/topics/population-needs/dementia-prevalence/data',
     },
     {
       title: 'Economic factors and household composition',
       description:
         'Data on household deprivation, property ownership and older people living alone.',
-      url: 'topics/population-needs/household-composition-and-economic-factors/data',
+      url: '/topics/population-needs/household-composition-and-economic-factors/data',
     },
     {
       title: 'General health, disability and learning disability',
       description:
         'Data on disability prevalence, learning disability diagnoses and reasons for accessing care.',
-      url: 'topics/population-needs/disability-prevalence/data',
+      url: '/topics/population-needs/disability-prevalence/data',
     },
     {
       title: 'Population size and age group percentages',
       description:
         'Population data at district, local authority, regional and national levels for England.',
-      url: 'topics/population-needs/population-age-and-size/data',
+      url: '/topics/population-needs/population-age-and-size/data',
     },
   ];
 
