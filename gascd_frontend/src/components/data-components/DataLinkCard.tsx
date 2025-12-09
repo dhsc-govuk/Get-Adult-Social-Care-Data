@@ -3,17 +3,19 @@ import '../../../src/styles/cards.scss';
 
 type Props = {
   label: string;
-  sources: String;
-  updateFrequency: string;
-  limitations: boolean;
+  description?: string;
+  sources?: String;
+  updateFrequency?: string;
+  limitations?: boolean;
   url: string;
 };
 
 const DataLinkCard: React.FC<Props> = ({
   label,
-  sources,
-  updateFrequency,
-  limitations,
+  description = null,
+  sources = null,
+  updateFrequency = null,
+  limitations = null,
   url,
 }) => {
   return (
@@ -28,12 +30,19 @@ const DataLinkCard: React.FC<Props> = ({
               {label}
             </a>
           </h2>
-          <p className="govuk-body gem-c-cards__description">
-            Sources: {sources}.
-          </p>
-          <p className="govuk-body gem-c-cards__description">
-            {updateFrequency} updates{limitations && ', limitations apply'}.
-          </p>
+          {description && (
+            <p className="govuk-body gem-c-cards__description">{description}</p>
+          )}
+          {sources && (
+            <p className="govuk-body gem-c-cards__description">
+              Sources: {sources}.
+            </p>
+          )}
+          {updateFrequency && (
+            <p className="govuk-body gem-c-cards__description">
+              {updateFrequency}, limitations {!limitations && 'might'} apply.
+            </p>
+          )}
         </div>
       </li>
     </>

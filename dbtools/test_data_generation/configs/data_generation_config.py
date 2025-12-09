@@ -3,10 +3,15 @@ from datetime import date
 # Define metrics
 METRIC_DEFINITIONS = {
     'Public': {
-        'dementia_register_65over_per100k': {
-            'metric_date_type': 'Monthly',
+        'dementia_qof_prevalence': {
+            'metric_date_type': 'Yearly',
             'location_types': ['LA', 'National', 'Regional'],
-            'data_point_range': (1200, 2800)
+            'data_point_range': (0, 50)
+        },
+        'dementia_estimated_diagnosis_rate_65over': {
+            'metric_date_type': 'Yearly',
+            'location_types': ['LA', 'National', 'Regional'],
+            'data_point_range': (0, 50)
         },
         'perc_18_64': {
             'metric_date_type': 'Yearly', 
@@ -34,6 +39,26 @@ METRIC_DEFINITIONS = {
             'data_point_range': (50000, 10000000)
         },
         'perc_population_disability_disabled_total': {
+            'metric_date_type': 'Census',
+            'location_types': ['LA', 'National', 'Regional'],
+            'data_point_range': (8, 18)
+        },
+        'learning_disabilty_prevalence': {
+            'metric_date_type': 'Yearly',
+            'location_types': ['LA', 'National', 'Regional'],
+            'data_point_range': (8, 18)
+        },
+        'perc_general_health_total': {
+            'metric_date_type': 'Census',
+            'location_types': ['LA', 'National', 'Regional'],
+            'data_point_range': (8, 18)
+        },
+        'perc_household_ownership_total': {
+            'metric_date_type': 'Census',
+            'location_types': ['LA', 'National', 'Regional'],
+            'data_point_range': (8, 18)
+        },
+        'perc_households_one_person_total': {
             'metric_date_type': 'Census',
             'location_types': ['LA', 'National', 'Regional'],
             'data_point_range': (8, 18)

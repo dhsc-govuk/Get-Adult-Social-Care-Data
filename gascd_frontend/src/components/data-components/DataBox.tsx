@@ -9,7 +9,7 @@ type Props = {
 const DataBox: React.FC<Props> = ({ dataTitle, dataInfo, children }) => {
   return (
     <div
-      className="govuk-grid-row govuk-!-padding-4 govuk-!-margin-bottom-6"
+      className="govuk-grid-row govuk-!-padding-4 govuk-!-margin-bottom-6 govuk-!-margin-left-0"
       style={{ backgroundColor: ' #f3f2f1' }}
     >
       <div className="govuk-grid-column-full govuk-!-padding-0">
@@ -19,7 +19,7 @@ const DataBox: React.FC<Props> = ({ dataTitle, dataInfo, children }) => {
             data-module="govuk-tabs"
           >
             <h3 className="govuk-heading-m">{dataTitle}</h3>
-            <p className="govuk-body-m">{dataInfo}</p>
+            {dataInfo}
             {children}
           </div>
         </div>
