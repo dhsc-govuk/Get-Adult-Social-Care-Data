@@ -337,7 +337,6 @@ METRIC_METADATA = {
     },
     "dementia_estimated_diagnosis_rate_65over": {
         "group_id": "dementia_estimated_diagnosis_rate_65over",
-        "metric_id": "dementia_estimated_diagnosis_rate_65over",
         "group_name": "Estimated dementia diagnosis rate (aged 65 and older)",
         "description": "Estimated dementia diagnosis rate (aged 65 and older)",
         "numerator_description": "\tPatients aged 65 and older registered for General Medical Services with an unresolved diagnosis of\ndementia, counts by 5 year age and sex band from GP Clinical Systems via the General\nPractice Extraction Service (GPES) extracted on the reporting period end date (the last day\nof the month).\n\nFor administrative geographies, the registered population is attributed to local authority boundaries based on the postcode of the primary care practice.",
@@ -354,7 +353,6 @@ METRIC_METADATA = {
     },
     "dementia_qof_prevalence": {
         "group_id": "dementia_qof_prevalence",
-        "metric_id": "dementia_qof_prevalence",
         "group_name": "Dementia: QOF prevalence",
         "description": "Dementia: QOF prevalence",
         "numerator_description": "The number of patients registered with dementia, as recorded on practice disease registers.",
