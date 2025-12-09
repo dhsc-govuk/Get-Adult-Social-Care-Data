@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import PopulationNeedsPage from '../../../app/(protected)/topics/population-needs/subtopics/page';
 
 describe('PopulationNeedsPage', () => {
-  it('should render the heading, body text, and a link', () => {
+  it('should render the heading, body text, and topic links', () => {
     render(<PopulationNeedsPage />);
 
     const headingElement = screen.getByRole('heading', {
