@@ -228,7 +228,10 @@ export default function DementaPrevalencePage() {
               }}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={metricDateType}
+              percentageRows={[
+                'dementia_qof_prevalence',
+                'dementia_estimated_diagnosis_rate_65over',
+              ]}
             ></DataTable>
           }
           download={
