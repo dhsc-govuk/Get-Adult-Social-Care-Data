@@ -1,3 +1,4 @@
+# Note - the dict keys are used for the metric_id, so this should *not* be defined inside the metadata dictionary itself
 METRIC_METADATA = {
     "occupancy_rate_total": {
         "group_id": "occupancy_rate",
