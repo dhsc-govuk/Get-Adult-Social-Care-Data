@@ -55,6 +55,7 @@ export default function ProvisionAndOccupancyPage() {
   //     metric_ids: [],
   //     location_ids: [],
   //   });
+  const [selectedChartFilters, setSelectedChartFilters] = useState<string[]>();
 
   const bedsMetricIds = [
     'bedcount_per_100000_adults_total',
@@ -283,7 +284,30 @@ export default function ProvisionAndOccupancyPage() {
           </>
         }
       >
-        {/* filters go here */}
+        <table className="govuk-table">
+          <tbody className="govuk-table__body">
+            <tr className="govuk-table__row">
+              <th scope="row" className="govuk-table__header">
+                Filter
+              </th>
+              <td className="govuk-table__cell">
+                {/* <ul className="govuk-!-margin-top-0 nobullet">
+                    {selectedChartFilters.map((filter, index) => (
+                      <li key={index}>{filter}</li>
+                    ))}
+                  </ul> */}
+              </td>
+              <td className="govuk-table__cell">
+                <a
+                  href="/topics/residential-care/provision-and-occupancy/filters"
+                  className="govuk-link"
+                >
+                  Change
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
         <DataTabs
           id="2"
           table={

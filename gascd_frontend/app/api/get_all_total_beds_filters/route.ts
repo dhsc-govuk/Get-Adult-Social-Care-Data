@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     const resultSet = await pool
       .request()
       .query(
-        "SELECT metric_id, filter_bedtype FROM metrics.metadata WHERE group_id = 'bedcount_per_100000_adults'"
+        "SELECT DISTINCT metric_id, filter_bedtype FROM metrics.metadata WHERE group_id = 'bedcount_per_100000_adults'"
       );
     const rows: TotalBedsFilters[] = resultSet.recordset.map(
       (row: TotalBedsFilters) => ({
