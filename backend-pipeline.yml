@@ -155,7 +155,7 @@ stages:
               runOnce:
                 deploy:
                   steps:
-                    - task: DownloadBuildArtifacts@2
+                    - task: DownloadPipelineArtifact@2
                       displayName: 'Download Migration Bundle Artifact'
                       inputs:
                         buildType: 'current'
