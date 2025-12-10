@@ -12,11 +12,11 @@ import BackToTop from '@/components/data-components/BackToTop';
 import LocationService from '@/services/location/locationService';
 import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
-import { MetaData } from '@/data/interfaces/MetaData';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
+import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 export default function DisabilityPrevalence() {
   const [locationNames, setLocationNames] = useState<LocationNames>({
@@ -101,6 +101,8 @@ export default function DisabilityPrevalence() {
         const filteredDemographicData =
           TableService.filterDate(demographicData);
         setFilteredDemographicData(filteredDemographicData);
+
+        console.log(filteredDemographicData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -194,6 +196,15 @@ export default function DisabilityPrevalence() {
           download={
             <>
               <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                rawdata={filteredDemographicData}
+                metricTypes={[
+                  'perc_general_health_total',
+                  'perc_population_disability_disabled_total',
+                ]}
+                filename="general_health_and_disability.csv"
+                xLabel=""
+              />
             </>
           }
         />
@@ -239,6 +250,12 @@ export default function DisabilityPrevalence() {
           download={
             <>
               <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                rawdata={filteredDemographicData}
+                metricTypes={['learning_disabilty_prevalence']}
+                filename="learning_disabilty_prevalence.csv"
+                xLabel=""
+              />
             </>
           }
         />

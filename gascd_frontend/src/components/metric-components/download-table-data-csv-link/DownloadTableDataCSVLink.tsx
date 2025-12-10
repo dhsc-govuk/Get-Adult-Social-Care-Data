@@ -10,6 +10,7 @@ type Props = {
   rawdata?: any[];
   filename?: string;
   xLabel: string;
+  metricTypes?: string[];
 };
 
 const DownloadTableDataCSVLink: React.FC<Props> = ({
@@ -17,15 +18,24 @@ const DownloadTableDataCSVLink: React.FC<Props> = ({
   rawdata,
   filename = 'data.csv',
   xLabel,
+  metricTypes = null,
 }) => {
+  let downloadData = rawdata;
+
+  if (metricTypes && rawdata) {
+    downloadData = rawdata.filter((metric) =>
+      metricTypes.includes(metric.metric_id)
+    );
+  }
+
   const handleDownloadClick = (e: React.MouseEvent) => {
     e.preventDefault();
 
     if (tableref?.current) {
       const csv_data = extractTableCellText(tableref.current);
       downloadCSV(csv_data, filename, xLabel);
-    } else if (rawdata?.length) {
-      downloadCSV(rawdata, filename, xLabel);
+    } else if (downloadData?.length) {
+      downloadCSV(downloadData, filename, xLabel);
     } else {
       console.error('No exportable table data found');
     }
@@ -38,7 +48,7 @@ const DownloadTableDataCSVLink: React.FC<Props> = ({
         className="govuk-link govuk-body"
         onClick={handleDownloadClick}
       >
-        Download table data (CSV)
+        Export table data (CSV)
       </Link>
     </>
   );

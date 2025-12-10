@@ -12,12 +12,12 @@ import BackToTop from '@/components/data-components/BackToTop';
 import LocationService from '@/services/location/locationService';
 import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
-import { MetaData } from '@/data/interfaces/MetaData';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import Link from 'next/link';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
+import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 export default function ProvisionAndOccupancyPage() {
   const [locationNames, setLocationNames] = useState<LocationNames>({
@@ -219,6 +219,12 @@ export default function ProvisionAndOccupancyPage() {
           download={
             <>
               <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                rawdata={filteredDemographicData}
+                metricTypes={['perc_households_deprivation_deprived_total']}
+                filename="households_deprived_in_4_dimensions.csv"
+                xLabel=""
+              />
             </>
           }
         />
@@ -265,6 +271,12 @@ export default function ProvisionAndOccupancyPage() {
           download={
             <>
               <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                rawdata={filteredDemographicData}
+                metricTypes={['perc_household_ownership_total']}
+                filename="property_owned_outright.csv"
+                xLabel=""
+              />
             </>
           }
         />
@@ -308,6 +320,12 @@ export default function ProvisionAndOccupancyPage() {
           download={
             <>
               <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                rawdata={filteredDemographicData}
+                metricTypes={['perc_households_one_person_total']}
+                filename="one_person_households_over_65.csv"
+                xLabel=""
+              />
             </>
           }
         />

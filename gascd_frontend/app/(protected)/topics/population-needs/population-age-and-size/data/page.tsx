@@ -21,6 +21,7 @@ import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
 import { Locations } from '@/data/interfaces/Locations';
 import LogService from '@/services/logger/logService';
 import AnalyticsService from '@/services/analytics/analyticsService';
+import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 export default function ProvisionAndOccupancyPage() {
   const [locationNames, setLocationNames] = useState<LocationNames>({
@@ -273,6 +274,17 @@ export default function ProvisionAndOccupancyPage() {
           download={
             <>
               <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                rawdata={filteredDemographicData}
+                metricTypes={[
+                  'perc_18_64',
+                  'perc_65over',
+                  'perc_75over',
+                  'perc_85over',
+                ]}
+                filename="population_size_and_age.csv"
+                xLabel=""
+              />
             </>
           }
         />
