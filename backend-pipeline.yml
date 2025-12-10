@@ -5,7 +5,8 @@ trigger:
       - main
   paths:
     include:
-      - gascd_api
+      - gascd_api/*
+      - backend-pipeline.yml
 
 resources:
   - repo: self
@@ -33,6 +34,7 @@ parameters:
     default:
       - name: dev
         arm_connection: "$(dev_arm_service_connections)"
+        db_connection: "Host=$(dev_db_server);Port=$(dev_db_port);Database=gascd_data;Username=$(dev_db_username);Password=$(dev_db_password)""
         # Temporarily commented out as we're not ready to deploy in these environments yet
 #      - name: uat
 #        arm_connection: "$(uat_arm_service_connections)"
@@ -94,6 +96,14 @@ stages:
                 - checkout: self
                   fetchDepth: 50
                   fetchTags: true
+                  
+                # create migration bundle
+                - task: DotNetCoreCLI@2
+                  displayName: 'Create EF migration bundle'
+                  inputs:
+                    command: 'custom'
+                    custom: 'ef migrations bundle'
+                    arguments: '--output db-bundle --self-contained'
 
                 - script: |
                     docker build -f $(dockerfilePath) -t $(acr_name).azurecr.io/$(imageName):$(tag) gascd_api/api/.
@@ -116,6 +126,19 @@ stages:
         condition: succeeded()
         jobs:
           - deployment: Deploy
+            displayName: Migrate database
+            environment: "${{environment.name}}"
+            pool:
+              vmImage: "ubuntu-latest"
+            strategy:
+              runOnce:
+                deploy:
+                  steps:
+                    - task: CmdLine@2
+                      displayName: 'Apply EF migrations'
+                      inputs:
+                        script: 'db-bundle.exe --connection "$(db_connection)"'
+          - deployment: Deploy
             displayName: Deploy
             environment: "${{environment.name}}"
             pool:
@@ -129,13 +152,7 @@ stages:
                       inputs:
                         command: login
                         containerRegistry: ${{environment.acr_connection}}
-                    # Ensure 'latest' is only updated when this deployment step actually runs.
-#                    - script: |
-#                        echo "Updating Backend API 'latest' tag for ${{environment.name}}..."
-#                        docker pull $(acr_name).azurecr.io/$(imageName):$(tag)
-#                        docker tag $(acr_name).azurecr.io/$(imageName):$(tag) $(acr_name).azurecr.io/$(imageName):latest
-#                        docker push $(acr_name).azurecr.io/$(imageName):latest
-#                      displayName: Update 'latest' tag on ${{environment.acr_name}}
+
                     - task: AzureWebAppContainer@1
                       inputs:
                         appType: "webAppLinux"
