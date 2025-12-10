@@ -11,10 +11,13 @@ vi.mock('@/services/location/LocationService');
 
 vi.mock('@/lib/auth-client', () => ({
   authClient: {
+    getSession: vi.fn(),
     useSession: vi.fn(),
   },
 }));
+const mockGetSession = vi.mocked(authClient.getSession);
 const mockUseSession = vi.mocked(authClient.useSession);
+mockGetSession.mockReturnValue({ data: mockSession } as any);
 mockUseSession.mockReturnValue({ data: mockSession } as any);
 
 describe('DementiaPrevalencePage', () => {
