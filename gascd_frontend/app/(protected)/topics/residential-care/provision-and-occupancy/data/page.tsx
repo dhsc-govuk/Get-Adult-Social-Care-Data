@@ -1,7 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -20,6 +20,7 @@ import { LocationNames } from '@/data/interfaces/LocationNames';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 export default function ProvisionAndOccupancyPage() {
+  const tableref3 = useRef<HTMLTableElement>(null);
   const [locationNamesCP, setLocationNamesCP] = useState<LocationNames>({
     IndicatorLabel: 'Indicator',
     CPLabel: 'Loading...',
@@ -241,6 +242,7 @@ export default function ProvisionAndOccupancyPage() {
           id="3"
           table={
             <DataTable
+              tableref={tableref3}
               caption={`Table 3: care home bed numbers and occupancy levels – 
                 ${locationNamesCP.CPLabel}, ${locationNamesCP.LALabel} local authority, 
                 ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, October
@@ -298,11 +300,7 @@ export default function ProvisionAndOccupancyPage() {
             <>
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
-                rawdata={finalCpData}
-                metricTypes={[
-                  'median_bed_count_total',
-                  'median_occupancy_total',
-                ]}
+                tableref={tableref3}
                 filename="care_home_bed_numbers_and_occupancy.csv"
                 xLabel=""
               />
