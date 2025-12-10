@@ -139,7 +139,8 @@ stages:
                   displayName: Push image to $(acr_name) ACR
                   inputs:
                     command: push
-                    tags: $(acr_name).azurecr.io/$(imageName):$(tag)
+                    containerRegistry: $(acr_name).azurecr.io/$(imageName)
+                    tags: $(tag)
                     
 #                - script: |
 #                    docker push $(acr_name).azurecr.io/$(imageName):$(tag)
