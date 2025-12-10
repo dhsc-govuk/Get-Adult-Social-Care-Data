@@ -139,7 +139,7 @@ stages:
                   displayName: Push image to $(acr_name) ACR
                   inputs:
                     command: push
-                    containerRegistry: $(acr_name).azurecr.io
+                    containerRegistry: $(acr_connection)
                     tags: $(acr_name).azurecr.io/$(imageName)$(tag)
                     
 #                - script: |
