@@ -34,7 +34,7 @@ parameters:
     default:
       - name: dev
         arm_connection: "$(dev_arm_service_connections)"
-        db_connection: "Host=$(dev_db_server);Port=$(dev_db_port);Database=gascd_data;Username=$(dev_db_username);Password=$(dev_db_password)""
+        db_connection: "Host=$(dev_db_server);Port=$(dev_db_port);Database=gascd_data;Username=$(dev_db_username);Password=$(dev_db_password)"
         # Temporarily commented out as we're not ready to deploy in these environments yet
 #      - name: uat
 #        arm_connection: "$(uat_arm_service_connections)"
