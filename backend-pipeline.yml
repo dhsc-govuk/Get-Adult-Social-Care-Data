@@ -118,19 +118,31 @@ stages:
                     ArtifactName: 'migration-bundle'
                     publishLocation: 'Container'
 
-                - script: |
-                    docker build -f $(dockerfilePath) -t $(acr_name).azurecr.io/$(imageName):$(tag) gascd_api/api/.
-                  displayName: Build Image
+                - task: Docker@2
+                  displayName: Build docker image
+                  inputs:
+                    command: build
+                    Dockerfile: $(dockerfilePath)
+                    tags: $(acr_name).azurecr.io/$(imageName):$(tag)
+#                - script: |
+#                    docker build -f $(dockerfilePath) -t $(acr_name).azurecr.io/$(imageName):$(tag) gascd_api/api/.
+#                  displayName: Build Image
                   
                 - task: Docker@2
+                  displayName: Login to $(acr_connection) ACR
                   inputs:
                     command: login
                     containerRegistry: $(acr_connection)
-                  displayName: Login to $(acr_connection) ACR
 
-                - script: |
-                    docker push $(acr_name).azurecr.io/$(imageName):$(tag)
+                - task: Docker@2
                   displayName: Push image to $(acr_name) ACR
+                  inputs:
+                    command: push
+                    tags: $(acr_name).azurecr.io/$(imageName):$(tag)
+                    
+#                - script: |
+#                    docker push $(acr_name).azurecr.io/$(imageName):$(tag)
+#                  displayName: Push image to $(acr_name) ACR
                       
   # Deploy across environments
   - ${{ each environment in parameters.environments}}:
@@ -158,7 +170,7 @@ stages:
                     - task: CmdLine@2
                       displayName: 'Apply EF migrations'
                       inputs:
-                        script: './efbundle/efbundle --connection "${{environment.db_connection}}"'
+                        script: './efbundle --connection "${{environment.db_connection}}"'
       - stage: Deploy_${{environment.name}}
         displayName: "${{environment.name}}: Deploy backend API"
         condition: succeeded()
