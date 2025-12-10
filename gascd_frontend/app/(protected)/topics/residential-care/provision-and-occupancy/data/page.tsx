@@ -17,6 +17,7 @@ import TableService from '@/services/Table/TableService';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import { LocationNames } from '@/data/interfaces/LocationNames';
+import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 export default function ProvisionAndOccupancyPage() {
   const [locationNamesCP, setLocationNamesCP] = useState<LocationNames>({
@@ -296,6 +297,15 @@ export default function ProvisionAndOccupancyPage() {
           download={
             <>
               <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                rawdata={finalCpData}
+                metricTypes={[
+                  'median_bed_count_total',
+                  'median_occupancy_total',
+                ]}
+                filename="care_home_bed_numbers_and_occupancy.csv"
+                xLabel=""
+              />
             </>
           }
         />

@@ -225,6 +225,10 @@ export default function DementaPrevalencePage() {
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 rawdata={filteredDemographicData}
+                metricTypes={[
+                  'dementia_qof_prevalence',
+                  'dementia_estimated_diagnosis_rate_65over',
+                ]}
                 filename="dementia_prevalence_and_diagnosis_rate.csv"
                 xLabel=""
               />
