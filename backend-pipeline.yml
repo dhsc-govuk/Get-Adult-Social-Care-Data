@@ -103,15 +103,15 @@ stages:
                     version: '9.0.109'
                     packageType: 'sdk'
                     
-                - task: UseDotNet@2
-                  displayName: 'Install EF tool'
+                - task: DotNetCoreCLI@2
+                  displayName: Install dotnet-ef
                   inputs:
                     command: 'custom'
                     custom: 'tool'
                     arguments: 'install --global dotnet-ef'
                 
                 # create migration bundle
-                - task: UseDotnet@2
+                - task: DotNetCoreCLI@2
                   displayName: 'Create EF migration bundle'
                   inputs:
                     command: 'custom'
