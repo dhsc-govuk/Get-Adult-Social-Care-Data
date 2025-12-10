@@ -6,10 +6,6 @@ describe('Service Component', () => {
     render(<ServiceName />);
     const titleText = screen.getByText('Get adult social care data');
     expect(titleText).toBeInTheDocument();
-    expect(titleText).toHaveClass(
-      'govuk-service-navigation__link'
-    );
-    //const accountManage = screen.getByText('Sign out');
-    //expect(accountManage).toBeInTheDocument();
+    expect(titleText).toHaveClass('govuk-service-navigation__link');
   });
 });
