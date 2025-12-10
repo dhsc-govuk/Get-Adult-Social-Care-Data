@@ -140,7 +140,8 @@ stages:
                   inputs:
                     command: push
                     containerRegistry: $(acr_connection)
-                    tags: $(acr_name).azurecr.io/$(imageName)$(tag)
+                    repository: $(imageName)
+                    tags: $(acr_name).azurecr.io/$(imageName):$(tag)
                     
 #                - script: |
 #                    docker push $(acr_name).azurecr.io/$(imageName):$(tag)
