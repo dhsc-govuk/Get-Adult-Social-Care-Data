@@ -96,12 +96,6 @@ stages:
                 - checkout: self
                   fetchDepth: 50
                   fetchTags: true
-                  
-                - task: UseDotNet@2
-                  displayName: 'Install .NET 9 SDK'
-                  inputs:
-                    version: '9.0.109'
-                    packageType: 'sdk'
                     
                 - task: DotNetCoreCLI@2
                   displayName: Install dotnet-ef
@@ -111,9 +105,11 @@ stages:
                     arguments: 'install --global dotnet-ef --version 9.0.*'
                 
                 # create migration bundle
-                - script: |
-                    dotnet-ef migrations bundle --output $(Build.ArtifactStagingDirectory)/efbundle --self-contained --project gascd_api/api
+                - task: CmdLine@2
                   displayName: Create migration bundle
+                  inputs:
+                    workingDirectory: '$(Build.SourcesDirectory)/gascd_api/api'
+                    script: 'dotnet-ef migrations bundle --output $(Build.ArtifactStagingDirectory)/efbundle --self-contained'
                     
                 - task: PublishBuildArtifacts@1
                   displayName: 'Publish Migration Bundle Artifact'
@@ -162,7 +158,7 @@ stages:
                     - task: CmdLine@2
                       displayName: 'Apply EF migrations'
                       inputs:
-                        script: './efbundle/efbundle --connection "$(db_connection)"'
+                        script: './efbundle/efbundle --connection "${{environment.db_connection}}"'
       - stage: Deploy_${{environment.name}}
         displayName: "${{environment.name}}: Deploy backend API"
         condition: succeeded()
