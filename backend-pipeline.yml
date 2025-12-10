@@ -97,6 +97,18 @@ stages:
                   fetchDepth: 50
                   fetchTags: true
                   
+                - task: UseDotNet@2
+                  displayName: 'Install .NET 9 SDK'
+                  inputs:
+                    version: '9.0.109'
+                    packageType: 'sdk'
+
+                - task: DotNetCoreCLI@2
+                  displayName: 'Restore Dependencies'
+                  inputs:
+                    command: 'restore'
+                    projects: '**/*.csproj'
+                  
                 # create migration bundle
                 - task: DotNetCoreCLI@2
                   displayName: 'Create EF migration bundle'
