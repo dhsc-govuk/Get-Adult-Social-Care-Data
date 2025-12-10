@@ -124,6 +124,7 @@ stages:
                     command: build
                     Dockerfile: $(dockerfilePath)
                     tags: $(acr_name).azurecr.io/$(imageName):$(tag)
+                    buildContext: gascd_api/api/.
 #                - script: |
 #                    docker build -f $(dockerfilePath) -t $(acr_name).azurecr.io/$(imageName):$(tag) gascd_api/api/.
 #                  displayName: Build Image
