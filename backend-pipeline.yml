@@ -102,19 +102,14 @@ stages:
                   inputs:
                     version: '9.0.109'
                     packageType: 'sdk'
-
-                - task: DotNetCoreCLI@2
-                  displayName: 'Restore Dependencies'
-                  inputs:
-                    command: 'restore'
-                    projects: '**/*.csproj'
                     
                 - task: DotNetCoreCLI@2
                   displayName: 'Install EF tool'
                   inputs:
                     command: 'custom'
-                    custom: 'tool install --global dotnet-ef --version 9.0.109'
-                  
+                    custom: 'tool'
+                    arguments: 'update --global dotnet-ef'
+                
                 # create migration bundle
                 - task: DotNetCoreCLI@2
                   displayName: 'Create EF migration bundle'
