@@ -189,10 +189,7 @@ export default function ProvisionAndOccupancyPage() {
                 shared dwelling, or has no central heating.
               </li>
             </ol>
-            <Link
-              className="govuk-link"
-              href="https://gascd-prototype.azurewebsites.net/private-beta/2025/december/signed-in/help/household-deprivation"
-            >
+            <Link className="govuk-link" href="/help/household-deprivation">
               More details on household deprivation data.
             </Link>
           </div>

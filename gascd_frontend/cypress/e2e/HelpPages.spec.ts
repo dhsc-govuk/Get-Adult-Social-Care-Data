@@ -19,16 +19,16 @@ describe('Help pages exist and contain data', () => {
         heading: 'Disability prevalence',
       },
       {
-        url: '/help/estimated-dementia-diagnosis-rate-65-and-over',
+        url: '/help/estimated-dementia-diagnosis-rate-aged-65-and-over',
         heading:
           'Estimated dementia diagnosis rate for people aged 65 and over',
       },
       {
-        url: '/help/households-deprived-4-dimensions',
+        url: '/help/household-deprivation',
         heading: 'Households deprived in 4 dimensions',
       },
       {
-        url: '/help/households-property-owned-outright',
+        url: '/help/households-where-property-is-owned-outright',
         heading: 'Households where the property is owned outright',
       },
       {
@@ -40,7 +40,7 @@ describe('Help pages exist and contain data', () => {
         heading: 'Percentage of adult social care beds occupied',
       },
       {
-        url: '/help/percentage-one-person-households-65-or-over',
+        url: '/help/one-person-households-where-person-aged-65-or-over',
         heading: 'One-person households where the person is aged 65 or over',
       },
       {
@@ -50,6 +50,15 @@ describe('Help pages exist and contain data', () => {
       {
         url: '/help/population-size',
         heading: 'Population size',
+      },
+      {
+        url: '/help/people-who-reported-bad-or-very-bad-health',
+        heading: 'People who reported bad or very bad health',
+      },
+      {
+        url: '/help/primary-reason-for-accessing-long-term-adult-social-care',
+        heading:
+          'Primary reason for people to access long-term adult social care',
       },
     ];
     cy.visit('');

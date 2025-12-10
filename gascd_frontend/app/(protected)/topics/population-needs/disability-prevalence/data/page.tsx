@@ -210,22 +210,18 @@ export default function DisabilityPrevalence() {
         />
       </DataBox>
       <DataBox
-        dataTitle="Disability prevalence"
+        dataTitle="Learning disability prevalence"
         dataInfo={
           <>
             <p className="govuk-body-m">
               Find out how{' '}
               <a
-                href="/help/people-who-reported-bad-or-very-bad-health"
+                href="/help/learning-disability-prevalence"
                 className="govuk-link"
               >
-                people who reported bad or very bad health
-              </a>{' '}
-              and{' '}
-              <a href="/help/disability-prevalence" className="govuk-link">
-                disability prevalence
-              </a>{' '}
-              are calculated.
+                how learning disability prevalence is calculated
+              </a>
+              .
             </p>
           </>
         }
