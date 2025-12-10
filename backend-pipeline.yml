@@ -116,7 +116,14 @@ stages:
                   inputs:
                     command: 'custom'
                     custom: 'ef migrations bundle'
-                    arguments: '--output db-bundle --self-contained'
+                    arguments: '--output $(Build.ArtifactStagingDirectory)/efbundle --self-contained'
+                    
+                - task: PublishBuildArtifacts@1
+                  displayName: 'Publish Migration Bundle Artifact'
+                  inputs:
+                    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+                    ArtifactName: 'migration-bundle'
+                    publishLocation: 'Container'
 
                 - script: |
                     docker build -f $(dockerfilePath) -t $(acr_name).azurecr.io/$(imageName):$(tag) gascd_api/api/.
@@ -137,6 +144,7 @@ stages:
       - stage: Migrate_${{environment.name}}
         displayName: "${{environment.name}}: Migrate Postgres DB"
         condition: succeeded()
+        trigger: manual
         jobs:
           - deployment: Deploy
             displayName: Migrate database
@@ -147,10 +155,17 @@ stages:
               runOnce:
                 deploy:
                   steps:
+                    - task: DownloadBuildArtifacts@2
+                      displayName: 'Download Migration Bundle Artifact'
+                      inputs:
+                        buildType: 'current'
+                        artifactName: 'migration-bundle'
+                        downloadPath: '$(System.DefaultWorkingDirectory)'
+                      
                     - task: CmdLine@2
                       displayName: 'Apply EF migrations'
                       inputs:
-                        script: 'db-bundle.exe --connection "$(db_connection)"'
+                        script: './efbundle/efbundle --connection "$(db_connection)"'
       - stage: Deploy_${{environment.name}}
         displayName: "${{environment.name}}: Deploy backend API"
         condition: succeeded()
