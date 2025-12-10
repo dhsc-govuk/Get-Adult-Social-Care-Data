@@ -4,7 +4,9 @@ import NotFound from '../../app/not-found';
 describe('NotFound Page', () => {
   it('renders the layout header', () => {
     render(<NotFound />);
-    expect(document.querySelector('.govuk-header')).toBeInTheDocument();
+    expect(
+      document.querySelector('.rebranded-cross-service-header')
+    ).toBeInTheDocument();
   });
 
   it('should have the link to the homepage', () => {
