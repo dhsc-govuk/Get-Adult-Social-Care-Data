@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import DisabilityPrevalencePage from '../../../app/(protected)/topics/population-needs/disability-prevalence/data/page';
+import ProvisionAndOccuplancyPage from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/data/page';
 import { authClient } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
 
@@ -17,12 +17,12 @@ vi.mock('@/lib/auth-client', () => ({
 const mockUseSession = vi.mocked(authClient.useSession);
 mockUseSession.mockReturnValue({ data: mockSession } as any);
 
-describe('DisabilityPrevalencePage', () => {
+describe('ProvisionAndOccuplancyPage', () => {
   it('should render the heading, body text, and data tables', () => {
-    render(<DisabilityPrevalencePage />);
+    render(<ProvisionAndOccuplancyPage />);
 
     const mainHeading = screen.getByRole('heading', {
-      name: /General health, disability and learning disability/i,
+      name: /Care home beds and occupancy levels/i,
       level: 1,
     });
     expect(mainHeading).toBeInTheDocument();
@@ -38,10 +38,7 @@ describe('DisabilityPrevalencePage', () => {
       ).toBeInTheDocument();
     }
 
-    const dataBoxHeadings = [
-      'Disability prevalence',
-      'Learning disability prevalence',
-    ];
+    const dataBoxHeadings = ['Beds per care home and occupancy levels'];
     for (let dataBoxHeadingText of dataBoxHeadings) {
       expect(
         screen.getByRole('heading', {
@@ -52,20 +49,20 @@ describe('DisabilityPrevalencePage', () => {
     }
 
     const bodyTextElement = screen.getByText(
-      /Data on disability prevalence, learning disability diagnoses and reasons for accessing care./i
+      /Provision and capacity data for care homes, including local, regional and national statistics./i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
     const helpLink = screen.getAllByRole('link', {
-      name: /disability prevalence/,
+      name: /Adult social care beds per 100,000 adult population/,
     });
     expect(helpLink[0]).toBeInTheDocument();
-    expect(helpLink[0]).toHaveAttribute('href', '/help/disability-prevalence');
+    expect(helpLink[0]).toHaveAttribute(
+      'href',
+      '/help/beds-per-100000-adult-population'
+    );
 
-    const tables = [
-      /Table 1: self-reporting on general health and disability – /i,
-      /Table 2: learning disability prevalence – /i,
-    ];
+    const tables = [/Table 3: care home bed numbers and occupancy levels/i];
     for (let table of tables) {
       expect(screen.getByRole('table', { name: table })).toBeInTheDocument();
     }
