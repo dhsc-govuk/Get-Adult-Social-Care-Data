@@ -108,7 +108,7 @@ stages:
                   inputs:
                     command: 'custom'
                     custom: 'tool'
-                    arguments: 'install --global dotnet-ef'
+                    arguments: 'install --global dotnet-ef --version 9.0.*'
                 
                 # create migration bundle
                 - task: DotNetCoreCLI@2
