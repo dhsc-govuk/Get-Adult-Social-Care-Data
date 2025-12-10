@@ -108,6 +108,12 @@ stages:
                   inputs:
                     command: 'restore'
                     projects: '**/*.csproj'
+                    
+                - task: DotNetCoreCLI@2
+                  displayName: 'Install EF tool'
+                  inputs:
+                    command: 'custom'
+                    custom: 'tool install --global dotnet-ef --version 9.0.109'
                   
                 # create migration bundle
                 - task: DotNetCoreCLI@2
