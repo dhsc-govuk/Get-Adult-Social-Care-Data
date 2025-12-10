@@ -111,12 +111,9 @@ stages:
                     arguments: 'install --global dotnet-ef --version 9.0.*'
                 
                 # create migration bundle
-                - task: DotNetCoreCLI@2
-                  displayName: 'Create EF migration bundle'
-                  inputs:
-                    command: 'custom'
-                    custom: 'ef migrations bundle'
-                    arguments: '--output $(Build.ArtifactStagingDirectory)/efbundle --self-contained'
+                - script: |
+                    dotnet-ef migrations bundle --output $(Build.ArtifactStagingDirectory)/efbundle --self-contained'
+                  displayName: Create migration bundle
                     
                 - task: PublishBuildArtifacts@1
                   displayName: 'Publish Migration Bundle Artifact'
