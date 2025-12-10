@@ -32,6 +32,8 @@ export default function ProvisionAndOccupancyPage() {
     useState<string[]>([]);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
+  // const [laNamesForRegion, setLaNamesForRegion] = useState<string[]>();
+  // const [laIdsForRegion, setLaIdsForRegion] = useState<string[]>();
   const [finalCpData, setFinalCpData] = useState<Indicator[]>([]);
   const [filteredBedData, setFilteredBedData] = useState<Indicator[]>([]);
   const [bedsQuery, setBedsQuery] = useState<IndicatorQuery>({
@@ -48,6 +50,11 @@ export default function ProvisionAndOccupancyPage() {
       metric_ids: [],
       location_ids: [],
     });
+  // const [careHomeBedNumbersDataQuery, setCareHomeBedNumbersDataQuery] =
+  //   useState<IndicatorQuery>({
+  //     metric_ids: [],
+  //     location_ids: [],
+  //   });
 
   const bedsMetricIds = [
     'bedcount_per_100000_adults_total',
@@ -126,6 +133,8 @@ export default function ProvisionAndOccupancyPage() {
         const CPData2: Indicator[] = await IndicatorFetchService.getData(
           careProviderDataQuery2
         );
+        // const bedNumberData: Indicator[] = await IndicatorFetchService.getData(careHomeBedNumbersDataQuery);
+
         const comboData: Indicator[] = [...CPData, ...CPData2];
         const filteredCPData = TableService.filterDate(comboData);
         setFinalCpData(filteredCPData);
@@ -153,6 +162,28 @@ export default function ProvisionAndOccupancyPage() {
     fetchLocationIds();
   }, [CPLocationId]);
 
+  // useEffect(() => {
+  //   const fetchLasForRegion = async () => {
+  //     if (locationIds[2]) {
+  //       const las = await LocationService.getLasForRegion(locationIds[2]);
+  //       let nameArray: string[] = []
+  //       let idArray: string[] = []
+
+  //       las.forEach((la: any) => {
+  //         nameArray.push(la.la_name);
+  //         idArray.push(la.la_code);
+  //       });
+
+  //       setLaNamesForRegion(nameArray);
+  //       setLaIdsForRegion(idArray);
+
+  //       console.log(nameArray);
+  //       console.log(idArray);
+  //     };
+  //   };
+  //   fetchLasForRegion();
+  // }, [locationIds])
+
   useEffect(() => {
     if (CPLocationId) {
       setCareProviderData1Query(() => ({
@@ -170,6 +201,12 @@ export default function ProvisionAndOccupancyPage() {
         location_ids: locationIds,
       }));
     }
+    // if(laIdsForRegion) {
+    //   setCareHomeBedNumbersDataQuery(() => ({
+    //     metric_ids: ['bedcount_per_100000_adults_total'],
+    //     location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
+    //   }));
+    // }
   }, [CPLocationId, locationIds]);
 
   return (
@@ -194,6 +231,43 @@ export default function ProvisionAndOccupancyPage() {
           </h2>
         </div>
       </div>
+      {/* <DataBox
+        dataTitle="Care home bed numbers"
+        dataInfo={
+          <>
+            Find out how{' '}
+            <a
+              href="/help/beds-per-100000-adult-population"
+              className="govuk-link"
+            >
+              the number of adult social care beds per 100,000 adult population is calculated.
+            </a>
+          </>
+        }
+      >
+        <DataTabs
+          id="1"
+          table={
+            <DataTable
+              caption={`Table 1: care home bed numbers per 100,000 adult population for regional local authorities -
+                ${locationNamesCP.RegionLabel}, October 2025`}
+              source={
+                'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
+              }
+              columnHeaders={['Area', 'Care home beds per 100,000 adult population']}
+              rowHeaders={[]}
+              data={finalCpData}
+              showCareProvider={false}
+              percentageRows={[]}
+            ></DataTable>
+          }
+          download={
+            <>
+              <h4 className="govuk-heading-s">Download</h4>
+            </>
+          }
+        />
+      </DataBox> */}
       <DataBox
         dataTitle="Care home bed types"
         dataInfo={

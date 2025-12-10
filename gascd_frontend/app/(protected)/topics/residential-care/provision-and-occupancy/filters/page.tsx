@@ -1,0 +1,102 @@
+'use client';
+
+import Layout from "@/components/common/layout/Layout";
+import Link from "next/link";
+import React, { useEffect, useState } from 'react';
+import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
+import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
+
+export default function ProvisionAndOccupancyFiltersPage() {
+    const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
+
+    useEffect(() => {
+        const getFilters = async () => {
+            const filters: TotalBedsFilters[] =
+                await IndicatorFetchService.getFilters('');
+            setFilters(filters);
+        };
+        getFilters();
+    }, []);
+
+    const handleCheckboxChange = (metric_id: string, checked: boolean) => {
+        const newFilters = [...filters];
+        let newItem = newFilters.findIndex((item) => item.metric_id === metric_id);
+        newFilters[newItem].checked = checked;
+        setFilters(newFilters);
+    };
+
+    const selectedFilters = filters
+        .filter((filter) => filter.checked)
+        .map((filter) => ({
+            metric_id: filter.metric_id,
+            filter_bedtype: filter.filter_bedtype,
+        }));
+
+    const handleSubmit = () => {
+        if (selectedFilters) {
+            localStorage.setItem('table-metrics', JSON.stringify(selectedFilters));
+        }
+    };
+
+
+    const breadcrumbs = [
+        {
+            text: 'Home',
+            url: '/home',
+        },
+        {
+            text: 'Care homes',
+            url: '/topics/residential-care/subtopics',
+        },
+        {
+            text: 'Care home beds and occupancy levels',
+            url: '/topics/residential-care/provision-and-occupancy/data',
+        },
+    ];
+
+    return (
+        <Layout
+            title="Edit filters - Get adult social care data"
+            autoSpaceMainContent={false}
+            showLoginInformation={true}
+            currentPage="care-home-bed-types-filters"
+            breadcrumbs={breadcrumbs}
+        >
+            <div className="govuk-grid-row">
+                <div className="govuk-grid-column-two-thirds">
+                    <span className="govuk-caption-l">Care home bed types</span>
+                    <h1 className="govuk-heading-l">Edit filters</h1>
+
+                </div>
+            </div>
+            <p className="govuk-body">
+                Select filters to refine the data displayed.
+            </p>
+            <div className="govuk-form-group">
+                {filters && filters.map((filter: any, index) => (<div className="govuk-checkboxes__item">
+                    <input
+                        className="govuk-checkboxes__input"
+                        id={filter.id}
+                        name="Table filter"
+                        type="checkbox"
+                        value="bedcount_per_100000_adults_total"
+                        onChange={(e) =>
+                            handleCheckboxChange(e.target.value, e.target.checked)
+                        }
+                    />
+                    <label
+                        className="govuk-label govuk-checkboxes__label"
+                        htmlFor={filter.id}
+                    >
+                        {filter.filter_bedtype}
+                    </label>
+                </div>))}
+            </div>
+            <Link href="/metric/total-beds#table" onClick={handleSubmit}>
+                <button type="button" className="govuk-button">
+                    Apply changes
+                </button>
+            </Link>
+        </Layout >
+    )
+}
