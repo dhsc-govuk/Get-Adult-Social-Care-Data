@@ -47,8 +47,8 @@ const Layout: React.FC<Props> = ({
         <a href="#main-content" className="govuk-skip-link">
           Skip to main content
         </a>
-        <Header useCookieBanner={useCookieBanner} />
-        <ServiceName session={session} />
+        <Header useCookieBanner={useCookieBanner} session={session} />
+        <ServiceName />
         <div
           style={currentPage === 'home' ? { backgroundColor: '#d2e2f1' } : {}}
         >

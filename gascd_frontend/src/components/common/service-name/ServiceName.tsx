@@ -1,13 +1,7 @@
 import React from 'react';
-import { Session } from '@/lib/auth-client';
-import LogoutButton from '../buttons/logoutButton';
 import Link from 'next/link';
 
-type Props = {
-  session?: Session | null;
-};
-
-const ServiceName: React.FC<Props> = ({ session }) => {
+const ServiceName: React.FC = () => {
   return (
     <section
       aria-label="Service information"
@@ -21,20 +15,6 @@ const ServiceName: React.FC<Props> = ({ session }) => {
               Get adult social care data
             </Link>
           </span>
-          {!session ? (
-            <>&nbsp;</>
-          ) : (
-            <nav
-              aria-label="Menu"
-              className="govuk-service-navigation__wrapper"
-            >
-              <ul className="govuk-service-navigation__list" id="navigation">
-                <li className="govuk-service-navigation__item app-sign-out">
-                  <LogoutButton />
-                </li>
-              </ul>
-            </nav>
-          )}
         </div>
       </div>
     </section>

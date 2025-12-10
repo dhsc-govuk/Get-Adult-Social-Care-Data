@@ -4,6 +4,8 @@ $govuk-fonts-path: "/govuk-frontend/fonts/";
 @import "govuk-frontend/dist/govuk/index";
 @import "node_modules/@x-govuk/govuk-prototype-components/src/x-govuk";
 @import "./styles.scss";
+// Service header pulled from https://github.com/govuk-one-login/service-header/tree/main/dist/styles
+@import "./service-header-no-imports.scss";
 
 html, body {
     margin: 0;
