@@ -1,6 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import CookiesPage from '../../app/cookies/page';
 
+const EXPECTED_COOKIES = [
+  'GASCDConsentGDPR',
+  '__Secure-better-auth.state',
+  '__Secure-better-auth.session-data',
+  '__Secure-better-auth.session-token',
+];
+
 describe('CookiesPage', () => {
   it('should render the heading, and some body text', () => {
     render(<CookiesPage />);
@@ -26,6 +33,13 @@ describe('CookiesPage', () => {
       name: /Yes/i,
     });
     expect(radio).toBeInTheDocument();
+
+    for (let cookiename of EXPECTED_COOKIES) {
+      // Check there is a table cell matching each expected cookie
+      const cookierow = screen.getByText(cookiename);
+      expect(cookierow).toBeInTheDocument();
+      expect(cookierow.tagName).toBe('TD');
+    }
   });
 
   it('should not render the cookie banner', () => {

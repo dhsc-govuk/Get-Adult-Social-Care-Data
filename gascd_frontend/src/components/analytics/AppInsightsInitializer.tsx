@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { initializeAppInsights } from './appInsights';
 import Cookies from 'js-cookie';
 import { COOKIE_CONSENT_NAME } from '@/constants';
-import { Session } from 'next-auth';
+import { Session } from '@/lib/auth-client';
 interface AppInsightsInitializerProps {
   connectionString: string;
   session?: Session | null;
