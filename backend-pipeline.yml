@@ -112,7 +112,7 @@ stages:
                 
                 # create migration bundle
                 - script: |
-                    dotnet-ef migrations bundle --output $(Build.ArtifactStagingDirectory)/efbundle --self-contained'
+                    dotnet-ef migrations bundle --output $(Build.ArtifactStagingDirectory)/efbundle --self-contained
                   displayName: Create migration bundle
                     
                 - task: PublishBuildArtifacts@1
