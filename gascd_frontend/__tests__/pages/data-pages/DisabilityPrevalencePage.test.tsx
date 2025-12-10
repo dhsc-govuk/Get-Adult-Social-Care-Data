@@ -11,11 +11,11 @@ vi.mock('@/services/location/LocationService');
 
 vi.mock('@/lib/auth-client', () => ({
   authClient: {
-    useSession: vi.fn(),
+    getSession: vi.fn(),
   },
 }));
-const mockUseSession = vi.mocked(authClient.useSession);
-mockUseSession.mockReturnValue({ data: mockSession } as any);
+const mockGetSession = vi.mocked(authClient.getSession);
+mockGetSession.mockReturnValue({ data: mockSession } as any);
 
 describe('DisabilityPrevalencePage', () => {
   it('should render the heading, body text, and data tables', () => {
