@@ -1,7 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -19,6 +19,9 @@ import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 export default function DisabilityPrevalence() {
+  const tableref1 = useRef<HTMLTableElement>(null);
+  const tableref2 = useRef<HTMLTableElement>(null);
+
   const [locationNames, setLocationNames] = useState<LocationNames>({
     IndicatorLabel: 'Indicator',
     LALabel: 'Loading...',
@@ -174,6 +177,7 @@ export default function DisabilityPrevalence() {
           id="1"
           table={
             <DataTable
+              tableref={tableref1}
               caption={`Table 1: self-reporting on general health and disability – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
@@ -197,11 +201,7 @@ export default function DisabilityPrevalence() {
             <>
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
-                rawdata={filteredDemographicData}
-                metricTypes={[
-                  'perc_general_health_total',
-                  'perc_population_disability_disabled_total',
-                ]}
+                tableref={tableref1}
                 filename="general_health_and_disability.csv"
                 xLabel=""
               />
@@ -230,6 +230,7 @@ export default function DisabilityPrevalence() {
           id="2"
           table={
             <DataTable
+              tableref={tableref2}
               caption={`Table 2: learning disability prevalence – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
@@ -247,8 +248,7 @@ export default function DisabilityPrevalence() {
             <>
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
-                rawdata={filteredDemographicData}
-                metricTypes={['learning_disabilty_prevalence']}
+                tableref={tableref2}
                 filename="learning_disabilty_prevalence.csv"
                 xLabel=""
               />

@@ -1,7 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -20,6 +20,8 @@ import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 export default function DementaPrevalencePage() {
+  const tableref1 = useRef<HTMLTableElement>(null);
+
   const [locationNames, setLocationNames] = useState<LocationNames>({
     IndicatorLabel: 'Indicator',
     LALabel: 'Loading...',
@@ -201,6 +203,7 @@ export default function DementaPrevalencePage() {
           id="1"
           table={
             <DataTable
+              tableref={tableref1}
               caption={`Table 1: dementia prevalence and the dementia diagnosis rate – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, August 2025`}
               source={
                 'Fingertips from the Department of Health and Social Care (DHSC)'
@@ -224,11 +227,7 @@ export default function DementaPrevalencePage() {
             <>
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
-                rawdata={filteredDemographicData}
-                metricTypes={[
-                  'dementia_qof_prevalence',
-                  'dementia_estimated_diagnosis_rate_65over',
-                ]}
+                tableref={tableref1}
                 filename="dementia_prevalence_and_diagnosis_rate.csv"
                 xLabel=""
               />

@@ -1,7 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -24,6 +24,8 @@ import AnalyticsService from '@/services/analytics/analyticsService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 export default function ProvisionAndOccupancyPage() {
+  const tableref1 = useRef<HTMLTableElement>(null);
+
   const [locationNames, setLocationNames] = useState<LocationNames>({
     IndicatorLabel: 'Indicator',
     LALabel: 'Loading...',
@@ -235,6 +237,7 @@ export default function ProvisionAndOccupancyPage() {
           id="1"
           table={
             <DataTable
+              tableref={tableref1}
               caption={`Table 1: population size and age group percentages – 
                 ${locationNames.LALabel} local authority, 
                 ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, mid-2024`}
@@ -275,13 +278,7 @@ export default function ProvisionAndOccupancyPage() {
             <>
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
-                rawdata={filteredDemographicData}
-                metricTypes={[
-                  'perc_18_64',
-                  'perc_65over',
-                  'perc_75over',
-                  'perc_85over',
-                ]}
+                tableref={tableref1}
                 filename="population_size_and_age.csv"
                 xLabel=""
               />
