@@ -19,8 +19,9 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     [Fact]
     public async Task GetCareProvider_ReturnsOk()
     {
-        var (httpCode, _) = await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
-            new GetCareProviderRequest { CareProviderCode = "1-123456789" });
+        var (httpCode, _) =
+            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
+                new GetCareProviderRequest { CareProviderCode = "1-123456789" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -58,8 +59,9 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     [InlineData("1-12345678910111", "Care provider code has a maximum length of 15")]
     public async Task Invalid_CareProviderCode_Input(string careProviderCode, string expectedErrorMessage)
     {
-        var (httpResponse, problemDetails) = await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
-            new GetCareProviderRequest { CareProviderCode = careProviderCode });
+        var (httpResponse, problemDetails) =
+            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
+                new GetCareProviderRequest { CareProviderCode = careProviderCode });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
         problemDetails.Errors.Select(e => e.Name).ShouldBe(["care_provider_code"]);
@@ -69,8 +71,22 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     [Fact]
     public async Task NonExistent_CareProviderCode_Input()
     {
-        var (httpResponse, problemDetails) = await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
-            new GetCareProviderRequest { CareProviderCode = "1-123456" });
+        var (httpResponse, problemDetails) =
+            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
+                new GetCareProviderRequest { CareProviderCode = "1-123456" });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
+
+    [Fact]
+    public async Task Existant_CareProviderCode_WithNoLocations()
+    {
+        var codeForCareProviderWithNoLocations = "1-123456712";
+        var (httpCode, response) =
+            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
+                new GetCareProviderRequest { CareProviderCode = codeForCareProviderWithNoLocations });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Count.ShouldBe(0);
+    }
+
 }
