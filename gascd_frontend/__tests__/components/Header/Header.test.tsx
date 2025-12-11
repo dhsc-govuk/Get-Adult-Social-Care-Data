@@ -11,6 +11,11 @@ describe('Header Component', () => {
       'rebranded-one-login-header__logotype'
     );
 
+    const skiplink = screen.getByRole('link', {
+      name: 'Skip to main content',
+    });
+    expect(skiplink).toBeInTheDocument();
+
     const signout = screen.queryByRole('link', {
       name: 'Sign out',
     });

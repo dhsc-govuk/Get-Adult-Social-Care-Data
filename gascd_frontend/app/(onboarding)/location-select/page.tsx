@@ -7,7 +7,6 @@ import LocationService, {
   AvailableLocation,
 } from '@/services/location/locationService';
 import { useRouter } from 'next/navigation';
-import { router } from 'better-auth/api';
 
 const LocationSelectPage: React.FC = () => {
   const router = useRouter();
@@ -49,6 +48,8 @@ const LocationSelectPage: React.FC = () => {
       selectedLocationName
     );
     router.push('/home#top');
+    // Ensure changes to saved name are displayed
+    router.refresh();
   };
 
   return (

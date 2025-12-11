@@ -6,6 +6,7 @@ import { mockSession } from '@/test-utils/test-utils';
 global.fetch = vi.fn();
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
+  usePathname: vi.fn(),
 }));
 vi.mock('@/services/logger/logService');
 vi.mock('@/lib/auth-client', () => ({

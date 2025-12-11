@@ -4,8 +4,10 @@ import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { COOKIE_CONSENT_NAME } from '@/constants';
 import CookiesService from '@/services/cookies/CookiesService';
+import { usePathname } from 'next/navigation';
 
 const CookieBanner: React.FC = () => {
+  const pathname = usePathname();
   const [showCookieBanner, setShowCookieBanner] = useState<boolean>(false);
   const [showCookiesAcceptedMessage, setShowCookiesAcceptedMessage] =
     useState<boolean>(false);
@@ -13,7 +15,10 @@ const CookieBanner: React.FC = () => {
     useState<boolean>(false);
 
   useEffect(() => {
-    if (Cookies.get(COOKIE_CONSENT_NAME) === undefined) {
+    // never show on the cookies page
+    if (pathname === '/cookies') {
+      setShowCookieBanner(false);
+    } else if (Cookies.get(COOKIE_CONSENT_NAME) === undefined) {
       setShowCookieBanner(true);
     }
   }, []);

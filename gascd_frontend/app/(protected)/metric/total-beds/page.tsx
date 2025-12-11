@@ -286,7 +286,6 @@ const TotalBedsPage: React.FC = () => {
         currentPage="total-beds"
         showNavBar={false}
         backURL="/present-demand"
-        session={session}
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-one-third">
