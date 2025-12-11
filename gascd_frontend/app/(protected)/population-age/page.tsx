@@ -98,7 +98,6 @@ export default function PopulationAgePage() {
         showLoginInformation={true}
         backURL="/home"
         currentPage="population-age"
-        session={session}
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">

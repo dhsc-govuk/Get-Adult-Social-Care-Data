@@ -1,5 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import CookiesPage from '../../app/cookies/page';
+import { usePathname } from 'next/navigation';
+vi.mock('next/navigation', () => ({
+  usePathname: vi.fn(),
+}));
+const mockUsedPathname = vi.mocked(usePathname);
 
 const EXPECTED_COOKIES = [
   'GASCDConsentGDPR',
@@ -9,6 +14,10 @@ const EXPECTED_COOKIES = [
 ];
 
 describe('CookiesPage', () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('should render the heading, and some body text', () => {
     render(<CookiesPage />);
 
@@ -43,6 +52,7 @@ describe('CookiesPage', () => {
   });
 
   it('should not render the cookie banner', () => {
+    mockUsedPathname.mockReturnValue('/cookies');
     render(<CookiesPage />);
 
     const bannerElement = screen.queryByRole('region', {

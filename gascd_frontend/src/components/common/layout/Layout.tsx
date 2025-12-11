@@ -1,11 +1,8 @@
 import React, { ReactNode } from 'react';
-import Header from '../header/Header';
-import ServiceName from '../service-name/ServiceName';
 import Footer from '../footer/Footer';
 import PhaseBanner from '../phase-banner/PhaseBanner';
 import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
 import { Breadcrumb } from '../../../data/interfaces/Breadcrumb';
-import { Session } from '@/lib/auth-client';
 
 type Props = {
   title: string;
@@ -16,8 +13,6 @@ type Props = {
   currentPage?: string;
   backURL?: string;
   showNavBar?: boolean;
-  session?: Session | null;
-  useCookieBanner?: boolean;
 };
 
 const Layout: React.FC<Props> = ({
@@ -29,8 +24,6 @@ const Layout: React.FC<Props> = ({
   showNavBar = false,
   currentPage,
   backURL,
-  session,
-  useCookieBanner = true,
 }) => {
   const title_suffix = 'Get adult social care data - GOV.UK';
   const full_title = title + ' - ' + title_suffix;
@@ -43,11 +36,6 @@ const Layout: React.FC<Props> = ({
   return (
     <>
       <title>{full_title}</title>
-      <a href="#main-content" className="govuk-skip-link">
-        Skip to main content
-      </a>
-      <Header useCookieBanner={useCookieBanner} session={session} />
-      <ServiceName session={session} />
 
       {currentPage !== 'home' && (
         <div

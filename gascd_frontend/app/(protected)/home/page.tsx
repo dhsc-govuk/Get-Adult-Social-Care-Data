@@ -1,12 +1,7 @@
-'use client';
-
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import { authClient } from '@/lib/auth-client';
 
 const HomePage: React.FC = () => {
-  const { data: session } = authClient.useSession();
-
   type Subtopic = {
     title: string;
     description: string;
@@ -71,7 +66,6 @@ const HomePage: React.FC = () => {
         autoSpaceMainContent={false}
         showLoginInformation={true}
         currentPage="home"
-        session={session}
       >
         {...topics.map((topic: Topic) => (
           <div className="govuk-grid-row" key={topic.title}>

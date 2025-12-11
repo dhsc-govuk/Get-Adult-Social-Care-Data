@@ -44,7 +44,7 @@ describe('User can navigate the key parts of the site', () => {
     cy.url().should('include', '/home');
 
     // Sign out
-    cy.get('button').contains('Sign out').click();
+    cy.logout();
     cy.url().should('include', '/login');
 
     // Going home forces redirect

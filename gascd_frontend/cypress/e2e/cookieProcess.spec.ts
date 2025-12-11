@@ -12,6 +12,7 @@ describe('User can set cookies', () => {
     cy.url().should('include', '/home');
     cy.get('h1').should('contains.text', 'Get adult social care data');
     cy.get('h2').should('contains.text', 'Cookies');
+    cy.get('header').should('contains.text', 'Accept analytics cookies');
 
     // Reject cookies
     cy.get('button').contains('Reject analytics cookies').click();
@@ -63,6 +64,7 @@ describe('User can set cookies', () => {
     cy.url().should('include', '/home');
     cy.get('h1').should('contains.text', 'Get adult social care data');
     cy.get('h2').should('contains.text', 'Cookies');
+    cy.get('header').should('contains.text', 'Accept analytics cookies');
 
     // Click cookies link
     cy.get('a').contains('View cookies').click();
@@ -82,9 +84,12 @@ describe('User can set cookies', () => {
     cy.get('h1').should('contains.text', 'Get adult social care data');
     cy.get('h2').should('contains.text', 'Cookies');
 
-    // Click cookies link
-    cy.get('a').contains('View cookies').click();
+    // Click cookies link in footer
+    cy.get('footer a').contains('Cookies').click();
     cy.url().should('include', '/cookies');
+
+    // Banner does not show on cookies page
+    cy.get('header').should('not.contains.text', 'Accept analytics cookies');
 
     // Set cookies to accept
     cy.get('input#radio-yes').check();

@@ -5,6 +5,8 @@ import { AppInsightsInitializer } from '@/components/analytics/AppInsightsInitia
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import type { Metadata } from 'next';
+import Header from '@/components/common/header/Header';
+import ServiceName from '@/components/common/service-name/ServiceName';
 
 export const viewport: Viewport = {
   themeColor: '#1d70b8',
@@ -35,6 +37,8 @@ export default async function RootLayout({
           connectionString={browserInsightsConnectionString}
           session={session}
         />
+        <Header session={session} />
+        <ServiceName session={session} />
         {children}
       </body>
     </html>
