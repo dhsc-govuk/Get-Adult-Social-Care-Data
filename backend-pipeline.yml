@@ -1,0 +1,145 @@
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - gascd_api
+
+resources:
+  - repo: self
+    
+variables:
+  - group: acr_service_connection
+  - group: arm_service_connection
+  - group: docker_build_arguments
+  - name: vmImageName
+    value: "ubuntu-latest"
+  - name: tag
+    value: "$(Build.BuildId)"
+  - name: dockerfilePath
+    value: "$(Build.SourcesDirectory)/gascd_api/api/Dockerfile"
+  - name: imageName
+    value: "gascd-backend"
+  - name: acrConnection
+    value: "$(acr_connection)"
+  - name: acrName
+    value: "$(acr_name)"
+    
+parameters:
+  - name: environments
+    type: object
+    default:
+      - name: dev
+        arm_connection: "$(dev_arm_service_connections)"
+        # Temporarily commented out as we're not ready to deploy in these environments yet
+#      - name: uat
+#        arm_connection: "$(uat_arm_service_connections)"
+#      - name: prod
+#        arm_connection: "$(prod_arm_service_connections)"
+    
+stages:
+  - stage: Build_and_Test
+    displayName: 'Build and Test .NET 9 App'
+    jobs:
+      - job: BuildJob
+        pool:
+          vmImage: $(vmImageName)
+        
+        steps:
+          - task: UseDotNet@2
+            displayName: 'Install .NET 9 SDK'
+            inputs:
+              version: '9.0.109'
+              packageType: 'sdk'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Restore Dependencies'
+            inputs:
+              command: 'restore'
+              projects: '**/*.csproj'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Build Application'
+            inputs:
+              command: 'build'
+              projects: '**/*.csproj'
+              arguments: '--configuration Release'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Run Unit Tests'
+            inputs:
+              command: 'test'
+              # Assumes unit test projects end with *Tests.csproj
+              projects: '**/*Tests.csproj'
+              arguments: '--configuration Release --collect "Code Coverage"'
+              publishTestResults: true
+              
+  - stage: Build_Image
+    displayName: "Build/push Docker image (all environments)"
+    condition: succeeded()
+    jobs:
+      - deployment: Build
+        displayName: Build
+        environment: "dev"
+        pool:
+          vmImage: $(vmImageName)
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                # This step fetches the last 50 commits and all tags.
+                # (performance optimization over fetchDepth: 0)
+                - checkout: self
+                  fetchDepth: 50
+                  fetchTags: true
+
+                - script: |
+                    docker build -f $(dockerfilePath) -t $(acr_name).azurecr.io/$(imageName):$(tag) gascd_api/api/.
+                  displayName: Build Image
+                  
+                - task: Docker@2
+                  inputs:
+                    command: login
+                    containerRegistry: $(acr_connection)
+                  displayName: Login to $(acr_connection) ACR
+
+                - script: |
+                    docker push $(acr_name).azurecr.io/$(imageName):$(tag)
+                  displayName: Push image to $(acr_name) ACR
+                      
+  # Deploy across environments
+  - ${{ each environment in parameters.environments}}:
+      - stage: Deploy_${{environment.name}}
+        displayName: "${{environment.name}}: Deploy backend API"
+        condition: succeeded()
+        jobs:
+          - deployment: Deploy
+            displayName: Deploy
+            environment: "${{environment.name}}"
+            pool:
+              vmImage: "ubuntu-latest"
+            strategy:
+              runOnce:
+                deploy:
+                  steps:
+                    - task: Docker@2
+                      displayName: Login to ${{environment.acr_connection}} ACR
+                      inputs:
+                        command: login
+                        containerRegistry: ${{environment.acr_connection}}
+                    # Ensure 'latest' is only updated when this deployment step actually runs.
+#                    - script: |
+#                        echo "Updating Backend API 'latest' tag for ${{environment.name}}..."
+#                        docker pull $(acr_name).azurecr.io/$(imageName):$(tag)
+#                        docker tag $(acr_name).azurecr.io/$(imageName):$(tag) $(acr_name).azurecr.io/$(imageName):latest
+#                        docker push $(acr_name).azurecr.io/$(imageName):latest
+#                      displayName: Update 'latest' tag on ${{environment.acr_name}}
+                    - task: AzureWebAppContainer@1
+                      inputs:
+                        appType: "webAppLinux"
+                        appName: "dapalpha-${{environment.name}}-backend-api"
+                        azureSubscription: ${{environment.arm_connection}}
+                        containers: "$(acr_name).azurecr.io/$(imageName):$(tag)"
+      

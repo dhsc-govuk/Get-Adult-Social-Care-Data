@@ -80,7 +80,7 @@ def audit_packages(lockfile_path, packages_to_check_path):
         for pkg_path, details in lock_data['packages'].items():
             # Skip the root project entry and packages without a version
             if pkg_path.startswith('node_modules/') and 'version' in details:
-                pkg_name = pkg_path.split('/')[-1]
+                pkg_name = pkg_path.split('node_modules/')[-1]
                 pkg_key = f"{pkg_name}@{details['version']}"
                 if pkg_name in packages_to_check and pkg_key not in found_packages:
                     found_packages[pkg_key] = ((pkg_name, details['version']))

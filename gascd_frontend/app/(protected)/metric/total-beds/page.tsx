@@ -10,7 +10,7 @@ import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
-import { useSession } from 'next-auth/react';
+import { authClient } from '@/lib/auth-client';
 import SmartInsightsFetchService from '@/services/smart-insights/SmartInsightsFetchService';
 import PresentDemandService from '@/services/present-demand/presentDemandService';
 import { useRouter } from 'next/navigation';
@@ -26,7 +26,7 @@ const TotalBedsPage: React.FC = () => {
   const [indicatorService, setIndicatorService] =
     useState<IndicatorService | null>(null);
 
-  const { data: session, status } = useSession();
+  const { data: session } = authClient.useSession();
   const [smartInsights, setSmartInsights] = useState<string[]>(['']);
 
   const [locationId, setlocationId] = useState<string>();
@@ -126,11 +126,13 @@ const TotalBedsPage: React.FC = () => {
       if (locationType == 'Care provider') {
         locationId = localStorage.getItem('selectedValue')!;
       }
-      setlocationId(locationId);
       if (locationId) {
+        setlocationId(locationId);
         AnalyticsService.trackMetricLocationView(locationId);
       }
-      setlocationType(session.user.locationType);
+      if (session.user.locationType) {
+        setlocationType(session.user.locationType);
+      }
     }
   }, [session]);
 
