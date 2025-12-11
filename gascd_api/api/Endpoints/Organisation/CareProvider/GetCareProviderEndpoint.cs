@@ -1,9 +1,10 @@
 using api.Data;
+using api.Data.Mappers;
 using FastEndpoints;
 
 namespace api.Endpoints.Organisation.CareProvider;
 
-public class GetCareProviderEndpoint(GascdDataContext context) : Endpoint<GetCareProviderRequest, List<GetCareProviderResponse>>
+public class GetCareProviderEndpoint(GascdDataContext context, ReferenceMapper mapper) : Endpoint<GetCareProviderRequest, List<GetCareProviderResponse>>
 {
     public override void Configure()
     {
@@ -21,15 +22,9 @@ public class GetCareProviderEndpoint(GascdDataContext context) : Endpoint<GetCar
             return;
         }
 
-        List<GetCareProviderResponse> response = new();
-        foreach (var location in locations)
-        {
-            response.Add(new GetCareProviderResponse
-            {
-                LocationName = location.Name,
-                LocationId = location.Code
-            });
-        }
+        List<GetCareProviderResponse> response =
+            locations.Select(l => mapper.CareProviderLocationToCareProviderLocationResponse(l)).ToList();
+
         await Send.OkAsync(response, ct);
     }
 }

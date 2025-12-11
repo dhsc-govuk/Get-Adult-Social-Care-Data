@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.Geo.Postcode;
 
-public class GetPostcodeEndpoint(GascdDataContext context, PostcodeMapper mapper, ILogger<GetPostcodeEndpoint> logger)
+public class GetPostcodeEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetPostcodeEndpoint> logger)
     : Endpoint<GetPostcodeRequest, GetPostcodeResponse>
 {
     public override void Configure()

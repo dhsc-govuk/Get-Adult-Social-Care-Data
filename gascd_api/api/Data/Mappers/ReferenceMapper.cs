@@ -1,9 +1,10 @@
 using api.Data.Models.Reference;
 using api.Endpoints.Geo.Postcode;
+using api.Endpoints.Organisation.CareProvider;
 
 namespace api.Data.Mappers;
 
-public class PostcodeMapper
+public class ReferenceMapper
 {
     public GetPostcodeResponse PostcodeToGetPostcodeResponse(Postcode postcode)
     {
@@ -15,6 +16,16 @@ public class PostcodeMapper
             Longitude = postcode.Longitude,
             LaCode = postcode.LocalAuthority.Code,
             LaName = postcode.LocalAuthority.Name
+        };
+    }
+
+    public GetCareProviderResponse CareProviderLocationToCareProviderLocationResponse(
+        CareProviderLocation careProviderLocation)
+    {
+        return new GetCareProviderResponse
+        {
+            LocationName = careProviderLocation.Name,
+            LocationId = careProviderLocation.Code
         };
     }
 }
