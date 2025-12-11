@@ -18,6 +18,7 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
+import BarChart from '@/components/charts/BarChart';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref3 = useRef<HTMLTableElement>(null);
@@ -81,6 +82,35 @@ export default function ProvisionAndOccupancyPage() {
       url: '/topics/residential-care/subtopics',
     },
   ];
+
+  const [chartData, setChartData] = useState<{
+    categories: string[];
+    values: number[];
+  }>({ categories: [], values: [] });
+  // Simulating fetching API data
+  useEffect(() => {
+    // Replace this with your actual API fetch
+    const mockApiData = [
+      { label: 'England (national average)', val: 1350 },
+      { label: 'East of England (regional average)', val: 1550 },
+      { label: 'Cambridgeshire', val: 2050 },
+      { label: 'Peterborough', val: 1700 },
+      { label: 'Luton', val: 1700 },
+      { label: 'Southend-on-Sea', val: 1680 },
+      { label: 'Suffolk', val: 1650 },
+      { label: 'Bedford', val: 1450 },
+      { label: 'Central Bedfordshire', val: 1300 },
+      { label: 'Thurrock', val: 1200 },
+      { label: 'Hertfordshire', val: 900 },
+      { label: 'Essex', val: 850 },
+      { label: 'Norfolk', val: 750 },
+    ];
+
+    setChartData({
+      categories: mockApiData.map((d) => d.label),
+      values: mockApiData.map((d) => d.val),
+    });
+  }, []);
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -205,6 +235,16 @@ export default function ProvisionAndOccupancyPage() {
           </h2>
         </div>
       </div>
+      <DataBox dataTitle="Test Chart" dataInfo={'Some info here'}>
+        <div style={{ height: '800px' }}>
+          <BarChart
+            categories={chartData.categories}
+            values={chartData.values}
+            highlightCategory="Suffolk"
+            darkBlueCount={2}
+          />
+        </div>
+      </DataBox>
       <DataBox
         dataTitle="Beds per care home and occupancy levels"
         dataInfo={
