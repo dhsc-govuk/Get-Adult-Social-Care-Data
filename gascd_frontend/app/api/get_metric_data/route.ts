@@ -2,14 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { dbPool } from '../../../src/data/dbModule';
 import { Indicator } from '@/data/interfaces/Indicator';
 import QueryBuilderService from '@/services/query-builder/QueryBuilderService';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/authOptions';
 import logger from '@/utils/logger';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 import { addUserTelemetry } from '@/helpers/telemetry/usertelemetry';
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
     const pool = await dbPool;
     const queryParams = await req.json();
 

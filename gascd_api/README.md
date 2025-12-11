@@ -15,7 +15,13 @@ This ASP.NET project is written in C# and utilises the following tech stack:
 
 ## Setup
 
-If you would like to run this API locally, there is a script in `gascd_api.Tests/TestData/test-seed.sql` which can be used to create and populate a local database. Add `\c gascd_data` to the start of the file to select and populate that database. 
+To build and run this api locally execute `docker compose up`. This will build and start the service in a container and start a PostGres container with test data.
+
+Navigate to http://localhost:5050/swagger to view the endpoint documentation. Enter the api key `secret-key` to send an authorised request (click the green Authorize button in the top right of the swagger UI). Configuration can be changed in the `appsettings.Docker.json` file.
+
+## Development setup
+
+If you would like to run this API locally without having to build a docker image, there is a script in `gascd_api.Tests/TestData/test-seed.sql` which can be used to create and populate a local database. Add `\c gascd_data` to the start of the file to select and populate that database. 
 
 Requirements:
 - PostgreSQL (We are using version 17.6), use a container or set up locally.

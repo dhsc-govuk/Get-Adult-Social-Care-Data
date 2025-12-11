@@ -1,5 +1,5 @@
 import React from 'react';
-import { Session } from 'next-auth';
+import { Session } from '@/lib/auth-client';
 import LogoutButton from '../buttons/logoutButton';
 import Link from 'next/link';
 
