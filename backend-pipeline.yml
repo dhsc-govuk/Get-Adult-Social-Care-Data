@@ -179,7 +179,7 @@ stages:
 
                           echo "Access token obtained successfully."
                           
-                          CONNECTION_STRING="Host=$(dev_db_server);Port=$(dev_db_port);Database=gascd_data;Username=$(dev_db_username);Password=$(dev_db_password)"
+                          CONNECTION_STRING="Host=$(dev_db_server);Port=$(dev_db_port);Database=gascd_data;Username=$(dev_db_username);Password=$(TOKEN)"
 
                           # Run the Better Auth migration
                           ./efbundle --connection "$CONNECTION_STRING"
