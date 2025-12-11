@@ -54,6 +54,17 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     }
 
     [Fact]
+    public async Task GetCareProvider_ReturnsErrorWhenProvidedEmptyCode()
+    {
+        var response = await _client.GetAsync($"api/organisation/care_provider/ ", TestContext.Current.CancellationToken);
+        var rawJsonError = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        JArray? jsonArray = (JArray?)JsonConvert.DeserializeObject(rawJsonError);
+        jsonArray?[0]["status"]?.Value<string>().ShouldBe("400");
+        jsonArray?[0]["detail"]?.Value<string>().ShouldBe("Care provider code is required");
+        jsonArray?[0]["errors"]?["reason"]?.Value<string>().ShouldBe("Care provider code is required");
+    }
+
+    [Fact]
     public async Task GetCareProvider_ReturnsMultipleCareProviderLocations()
     {
         var (httpCode, response) =
