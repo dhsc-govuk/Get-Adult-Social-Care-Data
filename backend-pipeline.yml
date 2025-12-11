@@ -34,7 +34,9 @@ parameters:
     default:
       - name: dev
         arm_connection: "$(dev_arm_service_connections)"
-        db_connection: "Host=$(dev_db_server);Port=$(dev_db_port);Database=gascd_data;Username=$(dev_db_username);Password=$(dev_db_password)"
+        db_server: "$(dev_db_server)"
+        db_port: "$(dev_db_port)"
+        db_user: "$(dev_db_user)"
         # Temporarily commented out as we're not ready to deploy in these environments yet
 #      - name: uat
 #        arm_connection: "$(uat_arm_service_connections)"
@@ -117,23 +119,12 @@ stages:
                     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
                     ArtifactName: 'migration-bundle'
                     publishLocation: 'Container'
-
-                - task: Docker@2
-                  displayName: Build docker image
-                  inputs:
-                    command: build
-                    Dockerfile: $(dockerfilePath)
-                    tags: $(acr_name).azurecr.io/$(imageName):$(tag)
-                    buildContext: gascd_api/api/.
                     
                 - task: CmdLine@2
                   displayName: Build docker image
                   inputs:
                     workingDirectory: '$(Build.SourcesDirectory)/gascd_api/api'
                     script: 'docker build -f $(dockerfilePath) -t $(acr_name).azurecr.io/$(imageName):$(tag) .'
-#                - script: |
-#                    docker build -f $(dockerfilePath) -t $(acr_name).azurecr.io/$(imageName):$(tag) gascd_api/api/.
-#                  displayName: Build Image
                   
                 - task: Docker@2
                   displayName: Login to $(acr_connection) ACR
@@ -146,9 +137,6 @@ stages:
                   inputs:
                     workingDirectory: '$(Build.SourcesDirectory)/gascd_api/api'
                     script: 'docker push $(acr_name).azurecr.io/$(imageName):$(tag)'
-#                - script: |
-#                    docker push $(acr_name).azurecr.io/$(imageName):$(tag)
-#                  displayName: Push image to $(acr_name) ACR
                       
   # Deploy across environments
   - ${{ each environment in parameters.environments}}:
@@ -172,11 +160,29 @@ stages:
                         buildType: 'current'
                         artifactName: 'migration-bundle'
                         downloadPath: '$(System.DefaultWorkingDirectory)'
-                      
-                    - task: CmdLine@2
-                      displayName: 'Apply EF migrations'
+                        
+                    - task: AzureCLI@2
+                      displayName: 'Apply migrations with access token'
                       inputs:
-                        script: './efbundle --connection "${{environment.db_connection}}"'
+                        azureSubscription: ${{environment.arm_connection}}
+                        scriptType: 'bash'
+                        scriptLocation: 'inlineScript'
+                        inlineScript: |
+                          # 1. Get an Access Token for Azure SQL (resource ID is fixed)
+                          # We verify the token is fetched before proceeding
+                          TOKEN=$(az account get-access-token --resource-type oss-rdbms --query accessToken -o tsv)
+
+                          if [ -z "$TOKEN" ]; then
+                            echo "Error: Failed to obtain access token"
+                            exit 1
+                          fi
+
+                          echo "Access token obtained successfully."
+                          
+                          CONNECTION_STRING="Host=$(dev_db_server);Port=$(dev_db_port);Database=gascd_data;Username=$(dev_db_username);Password=$(dev_db_password)"
+
+                          # Run the Better Auth migration
+                          ./efbundle --connection "$CONNECTION_STRING"
       - stage: Deploy_${{environment.name}}
         displayName: "${{environment.name}}: Deploy backend API"
         condition: succeeded()
