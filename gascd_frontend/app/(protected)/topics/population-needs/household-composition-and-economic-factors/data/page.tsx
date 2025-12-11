@@ -1,7 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -12,14 +12,18 @@ import BackToTop from '@/components/data-components/BackToTop';
 import LocationService from '@/services/location/locationService';
 import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
-import { MetaData } from '@/data/interfaces/MetaData';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import Link from 'next/link';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
+import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 export default function ProvisionAndOccupancyPage() {
+  const tableref1 = useRef<HTMLTableElement>(null);
+  const tableref2 = useRef<HTMLTableElement>(null);
+  const tableref3 = useRef<HTMLTableElement>(null);
+
   const [locationNames, setLocationNames] = useState<LocationNames>({
     IndicatorLabel: 'Indicator',
     LALabel: 'Loading...',
@@ -198,6 +202,7 @@ export default function ProvisionAndOccupancyPage() {
           id="1"
           table={
             <DataTable
+              tableref={tableref1}
               caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
@@ -216,6 +221,11 @@ export default function ProvisionAndOccupancyPage() {
           download={
             <>
               <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref1}
+                filename="households_deprived_in_4_dimensions.csv"
+                xLabel=""
+              />
             </>
           }
         />
@@ -244,6 +254,7 @@ export default function ProvisionAndOccupancyPage() {
           id="2"
           table={
             <DataTable
+              tableref={tableref2}
               caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
@@ -262,6 +273,11 @@ export default function ProvisionAndOccupancyPage() {
           download={
             <>
               <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref2}
+                filename="property_owned_outright.csv"
+                xLabel=""
+              />
             </>
           }
         />
@@ -287,6 +303,7 @@ export default function ProvisionAndOccupancyPage() {
           id="3"
           table={
             <DataTable
+              tableref={tableref3}
               caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
@@ -305,6 +322,11 @@ export default function ProvisionAndOccupancyPage() {
           download={
             <>
               <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref3}
+                filename="one_person_households_over_65.csv"
+                xLabel=""
+              />
             </>
           }
         />

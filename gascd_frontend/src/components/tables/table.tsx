@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { Ref, useRef } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { MetaData } from '@/data/interfaces/MetaData';
 
@@ -14,6 +14,7 @@ type DataTableProps = {
   last_updated?: string;
   children?: React.ReactNode;
   showAverageLabel?: boolean;
+  tableref?: Ref<HTMLTableElement>;
 };
 
 const getCareProviderKey = (
@@ -60,8 +61,8 @@ const DataTable: React.FC<DataTableProps> = ({
   children,
   source,
   showAverageLabel = false,
+  tableref = undefined,
 }) => {
-  const tableref = useRef<HTMLTableElement>(null);
   const columnClass = (columnIndex: number) => {
     if (columnIndex === 0) {
       return 'govuk-table__header govuk-!-width-one-third';

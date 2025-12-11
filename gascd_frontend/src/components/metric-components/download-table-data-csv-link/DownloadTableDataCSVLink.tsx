@@ -38,7 +38,7 @@ const DownloadTableDataCSVLink: React.FC<Props> = ({
         className="govuk-link govuk-body"
         onClick={handleDownloadClick}
       >
-        Download table data (CSV)
+        Export table data (CSV)
       </Link>
     </>
   );
