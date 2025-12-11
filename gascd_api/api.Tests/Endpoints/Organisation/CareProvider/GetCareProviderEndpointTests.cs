@@ -62,7 +62,7 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
             new GetCareProviderRequest { CareProviderId = careProviderId });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
-        problemDetails.Errors.Select(e => e.Name).ShouldBe(["careProviderId"]);
+        problemDetails.Errors.Select(e => e.Name).ShouldBe(["care_provider_id"]);
         problemDetails.Errors.Select(e => e.Reason).ShouldBe([expectedErrorMessage]);
     }
 }
