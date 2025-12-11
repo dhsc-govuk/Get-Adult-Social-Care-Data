@@ -1,6 +1,8 @@
 using api.Endpoints.Organisation.CareProvider;
 using api.Tests.Fixtures;
 using FastEndpoints;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
 
@@ -38,6 +40,17 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         response.Count.ShouldBe(1);
         response[0].LocationName.ShouldBe("Bupa Liverpool");
         response[0].LocationId.ShouldBe("1-222222222");
+
+    }
+
+    [Fact]
+    public async Task GetCareProvider_ReturnsExpectedCareProviderJsonObject()
+    {
+        var response = await _client.GetAsync($"api/organisation/care_provider/1-123456789", TestContext.Current.CancellationToken);
+        var rawJson = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        JArray? jsonArray = (JArray?)JsonConvert.DeserializeObject(rawJson);
+        jsonArray?[0]["location_name"]?.Value<string>().ShouldBe("Bupa Liverpool");
+        jsonArray?[0]["location_id"]?.Value<string>().ShouldBe("1-222222222");
     }
 
     [Fact]
