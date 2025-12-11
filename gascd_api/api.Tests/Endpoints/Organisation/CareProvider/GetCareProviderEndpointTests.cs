@@ -62,7 +62,15 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
             new GetCareProviderRequest { CareProviderCode = careProviderCode });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
-        problemDetails.Errors.Select(e => e.Name).ShouldBe(["care_provider_id"]);
+        problemDetails.Errors.Select(e => e.Name).ShouldBe(["care_provider_code"]);
         problemDetails.Errors.Select(e => e.Reason).ShouldBe([expectedErrorMessage]);
+    }
+
+    [Fact]
+    public async Task NonExistent_CareProviderCode_Input()
+    {
+        var (httpResponse, problemDetails) = await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
+            new GetCareProviderRequest { CareProviderCode = "1-123456" });
+        httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 }

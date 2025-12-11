@@ -15,6 +15,12 @@ public class GetCareProviderEndpoint(GascdDataContext context) : Endpoint<GetCar
         var locations = context.CareProviderLocations
             .Where(cpl => cpl.CareProvider.Code == req.CareProviderCode);
 
+        if (!locations.Any())
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
         List<GetCareProviderResponse> response = new();
         foreach (var location in locations)
         {
