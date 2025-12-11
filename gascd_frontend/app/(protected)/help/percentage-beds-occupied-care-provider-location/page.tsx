@@ -1,11 +1,7 @@
-'use client';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import Layout from '@/components/common/layout/Layout';
 
 const PercentageBedsOccupiedCareProviders: React.FC = () => {
-  const router = useRouter();
-
   return (
     <>
       <Layout
