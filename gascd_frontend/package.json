@@ -37,7 +37,7 @@
     "@x-govuk/govuk-prototype-components": "^5.0.2",
     "better-auth": "^1.4.3",
     "d3": "^7.9.0",
-    "govuk-frontend": "^5.11.2",
+    "govuk-frontend": "^5.13.0",
     "history": "^5.3.0",
     "js-cookie": "^3.0.5",
     "jsdom": "^27.1.0",

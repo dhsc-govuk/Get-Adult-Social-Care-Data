@@ -43,70 +43,70 @@ const Layout: React.FC<Props> = ({
   return (
     <>
       <title>{full_title}</title>
-      <div tabIndex={-1} id="layout">
-        <a href="#main-content" className="govuk-skip-link">
-          Skip to main content
-        </a>
-        <Header useCookieBanner={useCookieBanner} />
-        <ServiceName session={session} />
+      <a href="#main-content" className="govuk-skip-link">
+        Skip to main content
+      </a>
+      <Header useCookieBanner={useCookieBanner} session={session} />
+      <ServiceName session={session} />
+
+      {currentPage !== 'home' && (
         <div
           style={currentPage === 'home' ? { backgroundColor: '#d2e2f1' } : {}}
         >
           <div className="govuk-width-container">
-            <div role="region" aria-label="Phasebar">
-              <PhaseBanner />
-            </div>
+            <PhaseBanner />
           </div>
         </div>
+      )}
 
-        {currentPage === 'home' && (
-          <div className="x-govuk-masthead">
-            <div className="govuk-width-container">
-              <div className="govuk-grid-row">
-                <div className="govuk-grid-column-two-thirds">
-                  <h1 className="x-govuk-masthead__title">
-                    Get adult social care data
-                  </h1>
-                  <p className="x-govuk-masthead__description">
-                    Find data on adult social care and related population needs
-                    in England.
-                  </p>
-                  <p className="x-govuk-masthead__description">
-                    This service shows local and regional statistics based on
-                    your selected location.
-                  </p>
-                </div>
+      {currentPage === 'home' && (
+        <div className="x-govuk-masthead">
+          <div className="govuk-width-container">
+            <PhaseBanner />
+            <div className="govuk-grid-row">
+              <div className="govuk-grid-column-two-thirds">
+                <h1 className="x-govuk-masthead__title">
+                  Get adult social care data
+                </h1>
+                <p className="x-govuk-masthead__description">
+                  Find data on adult social care and related population needs in
+                  England.
+                </p>
+                <p className="x-govuk-masthead__description">
+                  This service shows local and regional statistics based on your
+                  selected location.
+                </p>
               </div>
             </div>
           </div>
-        )}
-
-        <div className="govuk-width-container">
-          <div className="govuk-grid-row">
-            <div className="govuk-grid-column-one-third">
-              {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
-            </div>
-          </div>
-          <main
-            id="main-content"
-            className={
-              autoSpaceMainContent
-                ? 'govuk-main-wrapper govuk-main-wrapper--auto-spacing'
-                : 'govuk-main-wrapper'
-            }
-          >
-            {backURL && (
-              <div className="backlink-wrapper">
-                <a href={backURL} className="govuk-back-link">
-                  Back
-                </a>
-              </div>
-            )}
-            {children}
-          </main>
         </div>
-        <Footer version_tag={tag} version_hash={hash} />
+      )}
+
+      <div className="govuk-width-container">
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-one-third">
+            {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
+          </div>
+        </div>
+        <main
+          id="main-content"
+          className={
+            autoSpaceMainContent
+              ? 'govuk-main-wrapper govuk-main-wrapper--auto-spacing'
+              : 'govuk-main-wrapper'
+          }
+        >
+          {backURL && (
+            <div className="backlink-wrapper">
+              <a href={backURL} className="govuk-back-link">
+                Back
+              </a>
+            </div>
+          )}
+          {children}
+        </main>
       </div>
+      <Footer version_tag={tag} version_hash={hash} />
     </>
   );
 };

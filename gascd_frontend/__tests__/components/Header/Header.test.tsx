@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import Header from '@/components/common/header/Header';
+import { mockSession } from '@/test-utils/test-utils';
 
 describe('Header Component', () => {
   it('Renders the component correctly', () => {
@@ -7,7 +8,20 @@ describe('Header Component', () => {
     const titleText = screen.getByText('GOV.UK');
     expect(titleText).toBeInTheDocument();
     expect(titleText.parentNode).toHaveClass(
-      'govuk-header__logotype'
+      'rebranded-one-login-header__logotype'
     );
+
+    const signout = screen.queryByRole('link', {
+      name: 'Sign out',
+    });
+    expect(signout).not.toBeInTheDocument();
+  });
+
+  it('Renders sign out if logged in', () => {
+    render(<Header session={mockSession} />);
+    const signout = screen.queryByRole('link', {
+      name: 'Sign out',
+    });
+    expect(signout).toBeInTheDocument();
   });
 });

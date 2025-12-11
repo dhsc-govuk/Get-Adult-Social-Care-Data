@@ -3,46 +3,238 @@
   * Global service pages (Get adult social care data)
 *****/
 
-/* Expansion on the GOV.UK Design System service navigation component https://design-system.service.gov.uk/components/service-navigation) to include the recommended 'Sign out' button (https://govuk-frontend-review.herokuapp.com/full-page-examples/companies-you-follow-slot) */
+/* Expansion on the GOV.UK Design System service navigation component https://design-system.service.gov.uk/components/service-navigation) to make it work in our custom service header */
 
-/* When the 'Sign out' link is with other items */
-.app-sign-out-grouped {
-  margin-left: auto;
-  padding: 15px 0 10px;
-}
-
-.govuk-template--rebranded .app-sign-out-grouped {
-  padding: 10px 0;
-}
-
-.app-sign-out-grouped .govuk-button {
-  margin: 0;
-  width: auto;
-}
-
-/* When the 'Sign out' link is the only item */
-.app-sign-out {
-  margin-left: auto;
-  padding: 0;
-}
+/* Navigation links */
 @media (min-width: 40.0625em) {
-  .app-sign-out {
-    padding: 15px 0 10px;
+  .govuk-service-navigation__item-start {
+    margin-left: auto;
   }
 }
 
-.govuk-template--rebranded .app-sign-out {
+.govuk-service-navigation__link-change {
+  margin-left: 10px;
+}
+
+.govuk-service-navigation__item-end {
+  margin-right: 15px;
+}
+
+/* The 'Menu' component used on GOV.UK (https://www.gov.uk) */
+
+/* Button */
+.gem-c-layout-super-navigation-header__navigation-top-toggle-button {
+  font-family: "GDS Transport", arial, sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  color: #1a65a6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-decoration: none;
+  text-decoration-thickness: max(1px, .0625rem);
+  text-underline-offset: 0.1578em;
+  background: none;
+  background-color: #f4f8fb;
+  border: none;
+  text-size-adjust: 100%;
+  outline: inherit;
+  text-align: -webkit-match-parent;
+  list-style: none;
+  cursor: pointer;
   padding: 0;
 }
 @media (min-width: 40.0625em) {
-  .govuk-template--rebranded .app-sign-out {
-    padding: 10px 0;
+  .gem-c-layout-super-navigation-header__navigation-top-toggle-button {
+    line-height: 1.5263157895;
+    font-size: 1.1875rem;
   }
 }
 
-.app-sign-out .govuk-button {
+/* Button (closed) */
+.gem-c-layout-super-navigation-header__navigation-top-toggle-button .gem-c-layout-super-navigation-header__navigation-top-toggle-button-inner {
+  padding: 0;
+}
+@media (min-width: 22.5em) {
+  .gem-c-layout-super-navigation-header__navigation-top-toggle-button .gem-c-layout-super-navigation-header__navigation-top-toggle-button-inner {
+    padding: 0;
+  }
+
+  .gem-c-layout-super-navigation-header__navigation-top-toggle-button .gem-c-layout-super-navigation-header__navigation-top-toggle-button-inner::before {
+    color: #1a65a6;
+    -webkit-transform: translateY(-35%) rotate(45deg) scale(1);
+    -ms-transform: translateY(-35%) rotate(45deg) scale(1);
+    transform: translateY(-35%) rotate(45deg) scale(1);
+    border-bottom: 2px solid #1a65a6;
+    border-right: 2px solid #1a65a6;
+    content: "";
+    display: inline-block;
+    height: 8px;
+    margin: 0 10px 0 2px;
+    vertical-align: middle;
+    width: 8px;
+  }
+}
+
+/* Button (open) */
+@media (min-width: 22.5em) {
+  .gem-c-layout-super-navigation-header__navigation-top-toggle-button.gem-c-layout-super-navigation-header__open-button .gem-c-layout-super-navigation-header__navigation-top-toggle-button-inner::before {
+    border-bottom-color: #1d70b8;
+    border-right-color: #1d70b8;
+    -webkit-transform: translateY(1px) rotate(225deg) scale(1);
+    -ms-transform: translateY(1px) rotate(225deg) scale(1);
+    transform: translateY(1px) rotate(225deg) scale(1);
+  }
+}
+
+@media (min-width: 22.5em) {
+  .gem-c-layout-super-navigation-header__navigation-top-toggle-button.gem-c-layout-super-navigation-header__open-button:focus:not(:focus-visible) .gem-c-layout-super-navigation-header__navigation-top-toggle-button-inner::before {
+    border-bottom-color: #1d70b8;
+    border-right-color: #1d70b8;
+    -webkit-transform: translateY(1px) rotate(225deg) scale(1);
+    -ms-transform: translateY(1px) rotate(225deg) scale(1);
+    transform: translateY(1px) rotate(225deg) scale(1);
+  }
+}
+
+/* Main service 'Menu' section  */
+.gem-c-layout-super-navigation-header__navigation-dropdown-menu {
+  background: #f4f8fb;
+  border-bottom: 1px #b1b4b6 solid;
+  padding-top: 30px;
+}
+@media (max-width: 18.75em) {
+  .gem-c-layout-super-navigation-header__navigation-dropdown-menu {
+    padding-top: 80px;
+  }
+}
+@media (min-width: 48.0625em) {
+  .gem-c-layout-super-navigation-header__navigation-dropdown-menu {
+    padding-top: 50px;
+  }
+}
+
+.gem-c-layout-super-navigation-header__column-header {
+  font-size: 24px;
+}
+
+.gem-c-layout-super-navigation-header__navigation-second-items {
+  list-style: none;
   margin: 0;
-  width: auto;
+  padding: 15px 25px 10px 0;
+}
+@media (min-width: 48.0625em) {
+  .gem-c-layout-super-navigation-header__navigation-second-items {
+    margin: 0 -15px 40px;
+    padding: 10px 0 0 0;
+  }
+}
+
+@media (max-width: 48.0525em) {
+  .gem-c-layout-super-navigation-header__navigation-second-items--topics {
+    border-bottom: 1px solid #b1b4b6;
+  }
+}
+@media (min-width: 48.0625em) {
+  .gem-c-layout-super-navigation-header__navigation-second-items--topics {
+    display:-ms-grid;
+    display: grid;
+    grid-auto-flow: column;
+    -ms-grid-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    -ms-grid-rows: 1fr;
+    grid-template-rows: 1fr;
+  }
+  .gem-c-layout-super-navigation-header__navigation-second-items--topics>li:nth-child(1) {
+    -ms-grid-column: 1;
+    -ms-grid-row: 1;
+  }
+  .gem-c-layout-super-navigation-header__navigation-second-items--topics>li:nth-child(2) {
+    -ms-grid-column: 2;
+    -ms-grid-row: 1;
+  }
+}
+
+.gem-c-layout-super-navigation-header__dropdown-list-item {
+  box-sizing: border-box;
+  padding: 0 0 15px 0;
+  position: relative;
+  margin: 0 0 10px 0;
+}
+@media (min-width: 48.0625em) {
+  .gem-c-layout-super-navigation-header__dropdown-list-item {
+    padding: 0 0 15px 0;
+    margin: 0 15px 5px 15px;
+  }
+}
+
+.gem-c-layout-super-navigation-header__navigation-second-item-link {
+  font-size: 16px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+@media (min-width: 48.0625em) {
+  .gem-c-layout-super-navigation-header__navigation-second-item-link {
+    padding: 0;
+  }
+
+  .gem-c-layout-super-navigation-header__navigation-second-item-link::after {
+    background: none;
+    bottom: 0;
+    content: "";
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}
+.gem-c-layout-super-navigation-header__navigation-second-item-link::after {
+  background: none;
+  bottom: 0;
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.gem-c-layout-super-navigation-header__navigation-second-item-link--with-description {
+  font-size: 16px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.gem-c-layout-super-navigation-header__navigation-second-item-link--with-description::after {
+  background: none;
+  bottom: 0;
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: calc(100% - 20px);
+}
+
+.gem-c-layout-super-navigation-header__navigation-second-item-description {
+  font-size: 16px;
+  font-size: 1rem;
+  font-weight: normal;
+  margin: 5px 0 0 0;
+  font-family: "GDS Transport",arial,sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+@media print {
+  .gem-c-layout-super-navigation-header__navigation-second-item-description {
+    font-family: sans-serif;
+  }
+}
+
+.gem-c-layout-super-navigation-header__column--government-activity {
+  position: relative;
+}
+@media(max-width: 48.0525em) {
+  .gem-c-layout-super-navigation-header__column--government-activity {
+    margin-top: 30px;
+  }
 }
 
 /* Card component taken from the HMRC Design System landing page (https://design.tax.service.gov.uk) */
@@ -78,41 +270,25 @@
   color: #005ea5;
 }
 
-/* Hide the Open Government Licence (OGL) icon, content and link in the footer */
-.govuk-footer__inline-list {
-  margin-bottom: 0;
+/* Data visualisation component box styling */
+.data-box {
+  background-color: #ffffff;
+  padding: 0;
+}
+@media (min-width: 40.0625em) {
+  .data-box {
+    background-color: #f3f2f1;
+    padding: 20px;
+  }
 }
 
-.govuk-footer__inline-list-item {
-  margin-bottom: 0;
+/* Expansion on the GOV.UK Design System tabs component https://design-system.service.gov.uk/components/tabs) to make it work in our service */
+.govuk-tabs {
+  margin: 0;
 }
-
-.govuk-footer__licence-logo {
-  display: none;
-}
-
-.govuk-footer__licence-description {
-  display: none;
-}
-
-/* Expansion on the GOV.UK Design System radio component https://design-system.service.gov.uk/components/radio) to stop inline radio buttons labels wrapping */
-.govuk-radios--inline {
-  text-wrap-mode: nowrap;
-}
-
-/* Component used on GOV.UK to distinguish a section needing focus (e.g. feedback) */
-.call-to-action {
-  margin: 0 0 20px 0;
-  background-color: #f3f2f1;
-  padding: 30px;
-  padding-bottom: 10px;
-}
-@media print {
-  .call-to-action {
-    background: none;
-    border: 1pt solid #b1b4b6;
-    padding: 15px;
-    margin: 15px 0;
+@media (min-width: 40.0625em) {
+  .govuk-tabs__panel {
+    background-color: #ffffff;
   }
 }
 
@@ -211,4 +387,349 @@
   margin-right: .3em;
   width: .8em;
   height: .968em;
+}
+
+/* Data visualisation styles */
+.data-visualisation-image {
+  width: 100%;
+  height: auto;
+}
+
+.data-source {
+  margin-bottom: 0;
+}
+
+/* Expansion on the GOV.UK Design System table component (https://design-system.service.gov.uk/components/table) to make all tables responsive across smaller devices */
+.responsive-table-data {
+  width: 100%;
+}
+
+.responsive-table-data .govuk-table__caption {
+  margin-bottom: 15px;
+}
+@media (min-width: 531px) {
+  .responsive-table-data .govuk-table__caption {
+    margin-bottom: initial;
+  }
+}
+
+@media (max-width: 530px) {
+  .responsive-table-data thead {
+    border: 0;
+    clip: rect(1px, 1px, 1px, 1px);
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+}
+
+.responsive-table-data tbody tr:last-child {
+  border-bottom: 1px solid #b1b4b6;
+  margin-bottom: 0;
+  padding-bottom: 1em;
+}
+@media (max-width: 530px) {
+  .responsive-table-data tbody tr {
+    display: block;
+    margin-bottom: 1em;
+    padding-top: 1em;
+    border-top: 1px solid #b1b4b6;
+  }
+}
+
+.responsive-table-data tbody tr th.table-heading {
+  display: inline;
+  width: 100%;
+}
+@media (max-width: 530px) {
+  .responsive-table-data tbody tr th {
+    text-align: right;
+  }
+}
+@media (max-width: 530px) {
+  .responsive-table-data tbody tr td, .responsive-table-data tbody tr th {
+    min-width: 1px;
+    text-align: right;
+    border-width: 0;
+  }
+}
+
+.responsive-table-data tbody th {
+  font-weight: normal;
+}
+@media (max-width: 530px) {
+  .responsive-table-data tbody th {
+    display: block;
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+    font-weight: normal;
+    padding: 5px 0px;
+  }
+}
+
+@media (max-width: 530px) {
+  .responsive-table-data tbody td {
+    display: block;
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+    padding: 5px 0px;
+  }
+}
+
+.responsive-table-data tbody .table-heading {
+  display: block;
+  text-align: left;
+  font-weight: 700;
+  padding-right: 1em;
+}
+@media (min-width: 531px) {
+  .responsive-table-data tbody .table-heading {
+    display: none;
+  }
+}
+
+/* Styles for the searchable radio buttons so users can select a location */
+
+/* Search input */
+.search-field {
+  position: relative;
+  margin-bottom: 1em;
+}
+
+.search-field-darker .search-input input {
+  border-top-color: rgb(111, 119, 123);
+  border-right-color: rgb(111, 119, 123);
+  border-bottom-color: rgb(111, 119, 123);
+  border-left-color: rgb(111, 119, 123);
+}
+
+.search-input {
+  position: static;
+  margin: 0;
+  padding: 0;
+}
+
+.search-input input {
+  -webkit-appearance: none;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  font-family: nta, Arial, sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 19px;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding-left: 10px;
+  display: block;
+  height: 50px;
+  border-top-color: rgb(191, 193, 195);
+  border-right-color: rgb(191, 193, 195);
+  border-bottom-color: rgb(191, 193, 195);
+  border-left-color: rgb(191, 193, 195);
+  line-height: 48px;
+}
+
+.search-input-with-button {
+  padding-right: 50px;
+}
+
+.search-input-with-button input {
+  border-right-width: initial;
+  border-right-style: none;
+  border-right-color: initial;
+}
+
+.search-submit {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  height: 50px;
+  width: 50px;
+  overflow-x: visible;
+  overflow-y: visible;
+}
+
+.search-submit button {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  box-shadow: none;
+  position: absolute;
+  z-index: 4;
+  right: 0px;
+  top: 0px;
+  width: 50px;
+  height: 50px;
+  border-width: initial;
+  border-style: none;
+  border-color: initial;
+  border-image-source: initial;
+  border-image-slice: initial;
+  border-image-width: initial;
+  border-image-outset: initial;
+  border-image-repeat: initial;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  text-indent: -5000px;
+  color: rgb(255, 255, 255);
+  background-color: #005ea5;
+  background-image: url("/public/images/search-button.png");
+  background-repeat: repeat-x;
+  background-repeat: repeat-y;
+  background-position-x: -12.5%;
+  background-position-y: 50%;
+}
+.search-submit button:hover, .search-submit button:focus {
+  background-color: #267daf;
+}
+
+/* Hide the Open Government Licence (OGL) icon, content and link in the footer */
+.govuk-footer__inline-list {
+  margin-bottom: 0;
+}
+
+.govuk-footer__inline-list-item {
+  margin-bottom: 0;
+}
+
+.govuk-footer__licence-logo {
+  display: none;
+}
+
+.govuk-footer__licence-description {
+  display: none;
+}
+
+/* Expansion on the GOV.UK Design System radio component https://design-system.service.gov.uk/components/radio) to stop inline radio buttons labels wrapping */
+.govuk-radios--inline {
+  text-wrap-mode: nowrap;
+}
+
+/* TEMPORARY - hiding of the 'GOV.UK One Login' link within the service header - while GASCD does not use GOV.UK One Login */
+/*
+.rebranded-one-login-header__nav__list-item:first-child {
+  display: none;
+}
+  */
+
+.rebranded-one-login-header__nav__link-content--sign-out {
+  border: none;
+}
+
+/* Styling for the 'Care home bed numbers - trends over time' chart */
+
+.data-chart {
+  width: 100%;
+  overflow-x: visible;
+}
+
+/* To make the SVG itself responsive */
+.svg {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+
+/* GOV.UK typography for SVG text */
+#svg1 text {
+  font-family: "GDS Transport", Arial, sans-serif;
+  font-size: clamp(0.8rem, 0.9rem, 1rem);
+  fill: #0b0c0c;
+}
+
+/* Axis labels (slightly smaller, still auto-scaling) */
+#svg1 text.axis-text {
+  fill: #0b0c0c;
+  font-size: clamp(0.8rem, 0.9rem, 1rem);
+}
+
+/* Lines & grid */
+#svg1 .axis-line {
+  stroke: #666;
+  stroke-width: 2;
+}
+
+#svg1 .grid-line {
+  fill: none;
+  stroke: #e1e1e1;
+  stroke-width: 2;
+}
+
+/* Data series colours */
+#svg1 .series-all {
+  stroke: #f39431;
+  stroke-width: 3;
+  fill: none;
+}
+
+#svg1 .series-dementia-nursing {
+  stroke: #003c57;
+  stroke-width: 3;
+  fill: none;
+}
+
+#svg1 .series-dementia-residential {
+  stroke: #27a0cc;
+  stroke-width: 3;
+  fill: none;
+}
+
+/* Styling for the 'Care home bed numbers chart */
+
+/* Make SVG scale with container */
+#svg2 {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Typography */
+#svg2 text {
+  font-family: "GDS Transport", Arial, sans-serif;
+  font-size: clamp(0.8rem, 0.9rem, 1rem);
+  fill: #0b0c0c;
+}
+
+#svg2 text.label-bold {
+  font-weight: bold;
+}
+
+#svg2 text.axis-text {
+  fill: #0b0c0c;
+  font-size: clamp(0.8rem, 0.9rem, 1rem);
+}
+
+/* Bars */
+#svg2 .bar {
+  stroke-width: 20;
+  stroke-linecap: unset;
+}
+
+#svg2 .bar-blue {
+  stroke: #003c57;
+}
+
+#svg2 .bar-purple {
+  stroke: #746cb1;
+}
+
+#svg2 .bar-orange {
+  stroke: #f39431;
+}
+
+/* Highlight bbox (Suffolk) */
+#svg2 rect.highlight {
+  stroke: black;
+  stroke-width: 2;
+  stroke-dasharray: 3,3;
+  fill: none;
 }
