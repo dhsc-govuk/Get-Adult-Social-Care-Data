@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 
-export default function ProvisionAndOccupancyFiltersPage() {
+export default function ProvisionAndOccupancyTypeFiltersPage() {
   const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function ProvisionAndOccupancyFiltersPage() {
     }));
 
   const handleSubmit = () => {
-    localStorage.setItem('table-metrics', JSON.stringify(selectedFilters));
+    localStorage.setItem('type-table-metrics', JSON.stringify(selectedFilters));
   };
 
   const breadcrumbs = [
