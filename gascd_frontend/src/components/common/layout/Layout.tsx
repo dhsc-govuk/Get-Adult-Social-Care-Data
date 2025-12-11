@@ -47,7 +47,7 @@ const Layout: React.FC<Props> = ({
         Skip to main content
       </a>
       <Header useCookieBanner={useCookieBanner} session={session} />
-      <ServiceName />
+      <ServiceName session={session} />
 
       {currentPage !== 'home' && (
         <div

@@ -12,6 +12,7 @@ import { router } from 'better-auth/api';
 const LocationSelectPage: React.FC = () => {
   const router = useRouter();
   const [selectedLocation, setSelectedLocation] = useState<string>('');
+  const [selectedLocationName, setSelectedLocationName] = useState<string>('');
   const [availableLocations, setAvailableLocations] = useState<
     AvailableLocation[]
   >([]);
@@ -24,22 +25,30 @@ const LocationSelectPage: React.FC = () => {
       );
       setAvailableLocations(sortedLocations);
 
-      const currentSelectedLocation = LocationService.getSelectedLocation();
+      const currentSelectedLocation =
+        await LocationService.getSelectedLocation();
+      const currentSelectedLocationName =
+        await LocationService.getSelectedLocationDisplayName();
       if (currentSelectedLocation) {
-        setSelectedLocation(await currentSelectedLocation);
+        setSelectedLocation(currentSelectedLocation);
+        setSelectedLocation(currentSelectedLocationName);
       }
     };
 
     fetchAvailableLocations();
   }, []);
 
-  const handleChange = (location: string) => {
+  const handleChange = (location: string, location_name: string) => {
     setSelectedLocation(location);
+    setSelectedLocationName(location_name);
   };
 
   const handleSubmit = async () => {
-    await LocationService.setSelectedLocation(selectedLocation);
-    router.push('/home');
+    await LocationService.setSelectedLocation(
+      selectedLocation,
+      selectedLocationName
+    );
+    router.push('/home#top');
   };
 
   return (
@@ -85,7 +94,12 @@ const LocationSelectPage: React.FC = () => {
                           type="radio"
                           value={location.location_id}
                           checked={selectedLocation === location.location_id}
-                          onChange={() => handleChange(location.location_id)}
+                          onChange={() =>
+                            handleChange(
+                              location.location_id,
+                              location.location_name
+                            )
+                          }
                         />
                         <label
                           htmlFor={`location-${index}`}

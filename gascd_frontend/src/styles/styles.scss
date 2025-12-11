@@ -614,9 +614,11 @@
 }
 
 /* TEMPORARY - hiding of the 'GOV.UK One Login' link within the service header - while GASCD does not use GOV.UK One Login */
+/*
 .rebranded-one-login-header__nav__list-item:first-child {
   display: none;
 }
+  */
 
 .rebranded-one-login-header__nav__link-content--sign-out {
   border: none;

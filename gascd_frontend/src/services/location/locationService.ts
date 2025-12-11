@@ -161,21 +161,25 @@ class LocationService {
   }
 
   public static async getSelectedLocation(): Promise<string> {
-    try {
-      const session = await authClient.getSession();
-      if (!session?.data?.user) {
-        throw new Error('No user session found');
-      }
-      return session.data.user.selectedLocationId ?? '';
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error occurred';
-      LogService.logEvent(`Error in getSelectedLocation: ${errorMessage}`);
-      throw new Error(`Failed to get selected location: ${errorMessage}`);
+    const session = await authClient.getSession();
+    if (!session?.data?.user) {
+      throw new Error('No user session found');
     }
+    return session.data.user.selectedLocationId ?? '';
   }
 
-  public static async setSelectedLocation(locationId: string) {
+  public static async getSelectedLocationDisplayName(): Promise<string> {
+    const session = await authClient.getSession();
+    if (!session?.data?.user) {
+      throw new Error('No user session found');
+    }
+    return session.data.user.selectedLocationDisplayName ?? '';
+  }
+
+  public static async setSelectedLocation(
+    locationId: string,
+    locationName: string
+  ) {
     try {
       const session = await authClient.getSession();
       if (!session?.data?.user) {
@@ -183,6 +187,7 @@ class LocationService {
       }
       await authClient.updateUser({
         selectedLocationId: locationId,
+        selectedLocationDisplayName: locationName,
       });
     } catch (error: unknown) {
       const errorMessage =
