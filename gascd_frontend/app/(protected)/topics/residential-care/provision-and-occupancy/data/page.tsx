@@ -182,12 +182,7 @@ export default function ProvisionAndOccupancyPage() {
         const filteredBedNumbersData = TableService.filterDate(bedNumberData);
         setFilteredBedNumbersData(filteredBedNumbersData);
 
-        const comboData: Indicator[] = [
-          ...CPData,
-          ...CPData2,
-          ...filteredBedTypeData,
-          ...filteredBedNumbersData,
-        ];
+        const comboData: Indicator[] = [...CPData, ...CPData2];
         const filteredCPData = TableService.filterDate(comboData);
         setFinalCpData(filteredCPData);
       } catch (error) {
@@ -235,7 +230,10 @@ export default function ProvisionAndOccupancyPage() {
         setLaIdsForRegion(idArray);
 
         const map: any = {};
+        map[locationIds[3]] = locationNamesCP.CountryLabel;
+        map[locationIds[2]] = locationNamesCP.RegionLabel;
         las.map((item: any) => (map[item.la_code] = item.la_name));
+
         setBedNumberRowHeaders(map);
       }
     };
@@ -461,7 +459,7 @@ export default function ProvisionAndOccupancyPage() {
               }
               columnHeaders={locationNamesWithAverageLabels}
               rowHeaders={bedTypeRowHeaders}
-              data={finalCpData}
+              data={filteredBedTypeData}
               showCareProvider={false}
               percentageRows={[]}
             ></DataTable>
@@ -477,7 +475,7 @@ export default function ProvisionAndOccupancyPage() {
               <p className="govuk-body">
                 Care homes in {locationNamesCP.LALabel} have{' '}
                 <strong>
-                  {finalCpData.find(
+                  {filteredBedTypeData.find(
                     (metric) =>
                       metric.metric_id === 'bedcount_per_100000_adults_total' &&
                       metric.location_type === 'LA'
@@ -486,7 +484,7 @@ export default function ProvisionAndOccupancyPage() {
                 </strong>
                 , compared to the {locationNamesCP.RegionLabel} regional average
                 of{' '}
-                {finalCpData.find(
+                {filteredBedTypeData.find(
                   (metric) =>
                     metric.metric_id === 'bedcount_per_100000_adults_total' &&
                     metric.location_type === 'Regional'
