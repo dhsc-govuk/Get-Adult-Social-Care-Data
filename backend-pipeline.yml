@@ -125,6 +125,12 @@ stages:
                     Dockerfile: $(dockerfilePath)
                     tags: $(acr_name).azurecr.io/$(imageName):$(tag)
                     buildContext: gascd_api/api/.
+                    
+                - task: CmdLine@2
+                  displayName: Build docker image
+                  inputs:
+                    workingDirectory: '$(Build.SourcesDirectory)/gascd_api/api'
+                    script: 'docker build -f $(dockerfilePath) -t $(acr_name).azurecr.io/$(imageName):$(tag) .'
 #                - script: |
 #                    docker build -f $(dockerfilePath) -t $(acr_name).azurecr.io/$(imageName):$(tag) gascd_api/api/.
 #                  displayName: Build Image
@@ -134,15 +140,12 @@ stages:
                   inputs:
                     command: login
                     containerRegistry: $(acr_connection)
-
-                - task: Docker@2
+                    
+                - task: CmdLine@2
                   displayName: Push image to $(acr_name) ACR
                   inputs:
-                    command: push
-                    containerRegistry: $(acr_connection)
-                    repository: $(imageName)
-                    tags: $(acr_name).azurecr.io/$(imageName):$(tag)
-                    
+                    workingDirectory: '$(Build.SourcesDirectory)/gascd_api/api'
+                    script: 'docker push $(acr_name).azurecr.io/$(imageName):$(tag)'
 #                - script: |
 #                    docker push $(acr_name).azurecr.io/$(imageName):$(tag)
 #                  displayName: Push image to $(acr_name) ACR
