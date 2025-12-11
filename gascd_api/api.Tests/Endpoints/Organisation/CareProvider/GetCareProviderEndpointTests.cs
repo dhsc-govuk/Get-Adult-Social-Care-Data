@@ -20,7 +20,7 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     public async Task GetCareProvider_ReturnsOk()
     {
         var (httpCode, _) = await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
-            new GetCareProviderRequest { CareProviderId = "1-123456789" });
+            new GetCareProviderRequest { CareProviderCode = "1-123456789" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -30,7 +30,7 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     {
         var (httpCode, response) =
             await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
-                new GetCareProviderRequest { CareProviderId = "1-123456789" });
+                new GetCareProviderRequest { CareProviderCode = "1-123456789" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.ShouldNotBeEmpty();
@@ -44,7 +44,7 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     {
         var (httpCode, response) =
             await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
-                new GetCareProviderRequest { CareProviderId = "1-123456777" });
+                new GetCareProviderRequest { CareProviderCode = "1-123456777" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.ShouldNotBeEmpty();
@@ -54,15 +54,15 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     }
 
     [Theory]
-    [InlineData("1-", "Care provider ID has a minimum length of 3")]
-    [InlineData("1-12345678910111", "Care provider ID has a maximum length of 15")]
-    public async Task Invalid_CareProviderId_Input(string careProviderId, string expectedErrorMessage)
+    [InlineData("1-", "Care provider code has a minimum length of 3")]
+    [InlineData("1-12345678910111", "Care provider code has a maximum length of 15")]
+    public async Task Invalid_CareProviderId_Input(string careProviderCode, string expectedErrorMessage)
     {
         var (httpResponse, problemDetails) = await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
-            new GetCareProviderRequest { CareProviderId = careProviderId });
+            new GetCareProviderRequest { CareProviderCode = careProviderCode });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
-        problemDetails.Errors.Select(e => e.Name).ShouldBe(["care_provider_id"]);
+        problemDetails.Errors.Select(e => e.Name).ShouldBe(["care_provider_code"]);
         problemDetails.Errors.Select(e => e.Reason).ShouldBe([expectedErrorMessage]);
     }
 }

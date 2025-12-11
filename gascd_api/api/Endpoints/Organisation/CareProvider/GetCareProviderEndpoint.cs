@@ -7,13 +7,13 @@ public class GetCareProviderEndpoint(GascdDataContext context) : Endpoint<GetCar
 {
     public override void Configure()
     {
-        Get("/api/organisation/care_provider/{CareProviderId}");
+        Get("/api/organisation/care_provider/{CareProviderCode}");
     }
 
     public override async Task HandleAsync(GetCareProviderRequest req, CancellationToken ct)
     {
         var locations = context.CareProviderLocations
-            .Where(cpl => cpl.CareProvider.Code == req.CareProviderId);
+            .Where(cpl => cpl.CareProvider.Code == req.CareProviderCode);
 
         List<GetCareProviderResponse> response = new();
         foreach (var location in locations)

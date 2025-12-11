@@ -15,20 +15,20 @@ public class GetCareProviderValidatorTests : IDisposable
     [Fact]
     public void ValidCareProviderId()
     {
-        var request = new GetCareProviderRequest { CareProviderId = "1-123456789" };
+        var request = new GetCareProviderRequest { CareProviderCode = "1-123456789" };
         var result = _validator.TestValidate(request);
         result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Theory]
-    [InlineData("", "Care provider ID is required")]
-    [InlineData(" ", "Care provider ID is required")]
-    [InlineData("1-", "Care provider ID has a minimum length of 3")]
-    public void InvalidCareProviderId(string careProviderId, string expectedErrorMessage)
+    [InlineData("", "Care provider code is required")]
+    [InlineData(" ", "Care provider code is required")]
+    [InlineData("1-", "Care provider code has a minimum length of 3")]
+    public void InvalidCareProviderId(string careProviderCode, string expectedErrorMessage)
     {
-        var request = new GetCareProviderRequest { CareProviderId = careProviderId };
+        var request = new GetCareProviderRequest { CareProviderCode = careProviderCode };
         var result = _validator.TestValidate(request);
-        result.ShouldHaveValidationErrorFor(r => r.CareProviderId)
+        result.ShouldHaveValidationErrorFor(r => r.CareProviderCode)
             .WithErrorMessage(expectedErrorMessage);
     }
 

@@ -7,9 +7,9 @@ public class GetCareProviderValidator : Validator<GetCareProviderRequest>
 {
     public GetCareProviderValidator()
     {
-        RuleFor(x => x.CareProviderId)
-            .NotEmpty().WithMessage("Care provider ID is required")
-            .MinimumLength(3).WithMessage("Care provider ID has a minimum length of 3")
-            .MaximumLength(15).WithMessage("Care provider ID has a maximum length of 15");
+        RuleFor(x => x.CareProviderCode)
+            .NotEmpty().WithMessage("Care provider code is required")
+            .MinimumLength(3).WithMessage("Care provider code has a minimum length of 3")
+            .MaximumLength(15).WithMessage("Care provider code has a maximum length of 15");
     }
 }
