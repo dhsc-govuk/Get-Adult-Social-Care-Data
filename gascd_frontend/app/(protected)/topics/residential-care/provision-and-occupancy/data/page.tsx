@@ -85,7 +85,7 @@ export default function ProvisionAndOccupancyPage() {
     useState<string[]>(['Total Beds']);
 
   const [bedTypeRowHeaders, setBedTypeRowHeaders] = useState<any>({
-    nationa: 'Total Beds',
+    bedcount_per_100000_adults_total: 'Total Beds',
     bedcount_per_100000_adults_total_dementia_nursing: 'Dementia Nursing',
     bedcount_per_100000_adults_total_dementia_residential:
       'Dementia Residential',
@@ -164,33 +164,46 @@ export default function ProvisionAndOccupancyPage() {
     const fetchAllData = async () => {
       if (!CPLocationId || !locationIds) return;
       try {
-        const bedTypeData: Indicator[] = await IndicatorFetchService.getData(
-          careHomeBedTypesDataQuery
-        );
-        const filteredBedTypeData = TableService.filterDate(bedTypeData);
-        setFilteredBedTypeData(filteredBedTypeData);
+        if (careHomeBedTypesDataQuery.location_ids.length) {
+          const bedTypeData: Indicator[] = await IndicatorFetchService.getData(
+            careHomeBedTypesDataQuery
+          );
+          const filteredBedTypeData = TableService.filterDate(bedTypeData);
+          setFilteredBedTypeData(filteredBedTypeData);
+        }
 
-        const CPData: Indicator[] = await IndicatorFetchService.getData(
-          careProviderDataQuery1
-        );
-        const CPData2: Indicator[] = await IndicatorFetchService.getData(
-          careProviderDataQuery2
-        );
-        const bedNumberData: Indicator[] = await IndicatorFetchService.getData(
-          careHomeBedNumbersDataQuery
-        );
-        const filteredBedNumbersData = TableService.filterDate(bedNumberData);
-        setFilteredBedNumbersData(filteredBedNumbersData);
+        if (careHomeBedNumbersDataQuery.location_ids.length) {
+          const bedNumberData: Indicator[] =
+            await IndicatorFetchService.getData(careHomeBedNumbersDataQuery);
+          const filteredBedNumbersData = TableService.filterDate(bedNumberData);
+          setFilteredBedNumbersData(filteredBedNumbersData);
+        }
 
-        const comboData: Indicator[] = [...CPData, ...CPData2];
-        const filteredCPData = TableService.filterDate(comboData);
-        setFinalCpData(filteredCPData);
+        if (
+          careProviderDataQuery1.location_ids.length &&
+          careProviderDataQuery2.location_ids.length
+        ) {
+          const CPData: Indicator[] = await IndicatorFetchService.getData(
+            careProviderDataQuery1
+          );
+          const CPData2: Indicator[] = await IndicatorFetchService.getData(
+            careProviderDataQuery2
+          );
+          const comboData: Indicator[] = [...CPData, ...CPData2];
+          const filteredCPData = TableService.filterDate(comboData);
+          setFinalCpData(filteredCPData);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchAllData();
-  }, [careHomeBedTypesDataQuery]);
+  }, [
+    careHomeBedTypesDataQuery,
+    careHomeBedNumbersDataQuery,
+    careProviderDataQuery1,
+    careProviderDataQuery2,
+  ]);
 
   useEffect(() => {
     const fetchLocationIds = async () => {
@@ -283,7 +296,7 @@ export default function ProvisionAndOccupancyPage() {
 
   useEffect(() => {
     const storedData = localStorage.getItem('numbers-table-metrics');
-    if (storedData && laIdsForRegion && lasForRegion) {
+    if (storedData && locationIds && laIdsForRegion && lasForRegion) {
       try {
         const parsedData = JSON.parse(storedData);
         if (Array.isArray(parsedData)) {
@@ -303,10 +316,10 @@ export default function ProvisionAndOccupancyPage() {
       } catch (error) {
         console.error(error);
       }
-    } else {
+    } else if (locationIds && laIdsForRegion) {
       setCareHomeBedNumbersDataQuery({
         metric_ids: bedNumberMetricIds,
-        location_ids: locationIds,
+        location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
       });
     }
   }, [locationIds, laIdsForRegion, lasForRegion]);
@@ -583,7 +596,7 @@ export default function ProvisionAndOccupancyPage() {
                 metric_Id="median_occupancy_total"
               ></ConditionalText>
               <ConditionalText
-                data={filteredBedTypeData}
+                data={finalCpData}
                 ColumnHeaders={locationNamesCP}
                 section="CapacityLA"
                 metric_Id="median_occupancy_total"
