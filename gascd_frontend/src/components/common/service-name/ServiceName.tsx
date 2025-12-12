@@ -42,13 +42,13 @@ const ServiceName: React.FC<Props> = ({ session }) => {
     {
       name: 'Care Homes',
       description:
-        'Data on residential care homes and nursing homes, including capacity data.',
+        'Find data on residential care homes and nursing homes across England.',
       url: '/topics/residential-care/subtopics',
     },
     {
       name: 'Population needs',
       description:
-        'Data on a range of care need indicators, including disability prevalence.',
+        'Find data on a range of care need indicators, such as household economic factors and disability prevalence.',
       url: '/topics/population-needs/subtopics',
     },
   ];
