@@ -1,7 +1,6 @@
 using api.Endpoints.Organisation.CareProvider;
 using api.Tests.Fixtures;
 using FastEndpoints;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
@@ -46,22 +45,23 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     [Fact]
     public async Task GetCareProvider_ReturnsExpectedCareProviderJsonObject()
     {
-        var response = await _client.GetAsync($"api/organisation/care_provider/1-123456789", TestContext.Current.CancellationToken);
-        var rawJson = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-        JArray? jsonArray = (JArray?)JsonConvert.DeserializeObject(rawJson);
+        var response = await _client.GetAsync("api/organisation/care_provider/1-123456789", TestContext.Current.CancellationToken);
+        var jsonArray = await TestUtils.ParseJsonResponse<JArray>(response);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+
         jsonArray?[0]["location_name"]?.Value<string>().ShouldBe("Bupa Liverpool");
         jsonArray?[0]["location_id"]?.Value<string>().ShouldBe("1-222222222");
     }
 
     [Fact]
-    public async Task GetCareProvider_ReturnsErrorWhenProvidedEmptyCode()
+    public async Task GetCareProvider_ReturnsErrorWhenProvidedWhiteSpace()
     {
-        var response = await _client.GetAsync($"api/organisation/care_provider/ ", TestContext.Current.CancellationToken);
-        var rawJsonError = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-        JArray? jsonArray = (JArray?)JsonConvert.DeserializeObject(rawJsonError);
-        jsonArray?[0]["status"]?.Value<string>().ShouldBe("400");
-        jsonArray?[0]["detail"]?.Value<string>().ShouldBe("Care provider code is required");
-        jsonArray?[0]["errors"]?["reason"]?.Value<string>().ShouldBe("Care provider code is required");
+        var response = await _client.GetAsync("api/organisation/care_provider/ /", TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        var jsonObject = await TestUtils.ParseJsonResponse<JObject>(response);
+        jsonObject?["errors.[0].reason"]?.Value<string>().ShouldBe("Care provider code is required");
+        jsonObject?["errors.[0].name"]?.Value<string>().ShouldBe("care_provider_code");
+
     }
 
     [Fact]
@@ -102,7 +102,7 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     }
 
     [Fact]
-    public async Task Existant_CareProviderCode_WithNoLocations()
+    public async Task Existent_CareProviderCode_WithNoLocations()
     {
         var codeForCareProviderWithNoLocations = "1-123456712";
         var (httpCode, response) =
