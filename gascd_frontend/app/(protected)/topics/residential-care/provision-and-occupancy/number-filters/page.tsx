@@ -5,8 +5,10 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
+import { useRouter } from 'next/navigation';
 
 export default function ProvisionAndOccupancyNumbersFiltersPage() {
+  const router = useRouter();
   const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
 
   useEffect(() => {
@@ -36,6 +38,9 @@ export default function ProvisionAndOccupancyNumbersFiltersPage() {
     localStorage.setItem(
       'numbers-table-metrics',
       JSON.stringify(selectedFilters)
+    );
+    router.push(
+      '/topics/residential-care/provision-and-occupancy/data#table-1'
     );
   };
 
@@ -71,37 +76,46 @@ export default function ProvisionAndOccupancyNumbersFiltersPage() {
       <p className="govuk-body">
         Select the filter to refine the data displayed.
       </p>
-      <div className="govuk-form-group">
-        {filters &&
-          filters.map((filter: any, index) => (
-            <div className="govuk-radios__item" key={index}>
-              <input
-                className="govuk-radios__input"
-                id={filter.metric_id}
-                name="Table filter"
-                type="radio"
-                value={filter.metric_id}
-                onChange={(e) =>
-                  handleCheckboxChange(e.target.value, e.target.checked)
-                }
-              />
-              <label
-                className="govuk-label govuk-radios__label"
-                htmlFor={filter.metric_id}
-              >
-                {filter.filter_bedtype}
-              </label>
-            </div>
-          ))}
-      </div>
-      <Link
-        href="/topics/residential-care/provision-and-occupancy/data#table-1"
-        onClick={handleSubmit}
-      >
-        <button type="button" className="govuk-button">
-          Apply changes
-        </button>
-      </Link>
+      <form>
+        <div className="govuk-form-group">
+          {filters &&
+            filters.map((filter: any, index) => (
+              <div className="govuk-radios__item" key={index}>
+                <input
+                  className="govuk-radios__input"
+                  id={filter.metric_id}
+                  name="Table filter"
+                  type="radio"
+                  value={filter.metric_id}
+                  onChange={(e) =>
+                    handleCheckboxChange(e.target.value, e.target.checked)
+                  }
+                />
+                <label
+                  className="govuk-label govuk-radios__label"
+                  htmlFor={filter.metric_id}
+                >
+                  {filter.filter_bedtype}
+                </label>
+              </div>
+            ))}
+        </div>
+        <div className="govuk-button-group">
+          <button
+            type="button"
+            className="govuk-button"
+            onClick={() => handleSubmit()}
+          >
+            Apply changes
+          </button>
+          <Link
+            href="/topics/residential-care/provision-and-occupancy/data#table-1"
+            className="govuk-link govuk-body-m"
+          >
+            Cancel and go back
+          </Link>
+        </div>
+      </form>
     </Layout>
   );
 }
