@@ -3,10 +3,16 @@ trigger:
   branches:
     include:
       - main
+
+pr:
+  branches:
+    include:
+      - '*'  
   paths:
     include:
       - gascd_api
-
+      - backend-pipeline.yml
+      
 resources:
   - repo: self
     

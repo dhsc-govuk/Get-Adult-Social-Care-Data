@@ -1,4 +1,6 @@
-﻿using api.Data.Models;
+﻿using api.Data.Models.Metrics;
+using api.Data.Models.Metrics.TimeSeries;
+using api.Data.Models.Reference;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data;
@@ -14,31 +16,36 @@ public partial class GascdDataContext : DbContext
     {
     }
 
-    public virtual DbSet<PostcodeDatum> PostcodeData { get; set; } = null!;
+    public virtual DbSet<Postcode> PostcodeData { get; set; } = null!;
+    public virtual DbSet<CareProvider> CareProviders { get; set; } = null!;
+    public virtual DbSet<CareProviderLocation> CareProviderLocations { get; set; } = null!;
+    public virtual DbSet<Region> Regions { get; set; } = null!;
+    public virtual DbSet<Country> Countries { get; set; } = null!;
+    public virtual DbSet<LocalAuthority> LocalAuthorities { get; set; } = null!;
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<PostcodeDatum>(entity =>
-        {
-            entity.HasKey(e => e.SanitisedPostcode).HasName("postcode_data_pkey");
+    public virtual DbSet<MetricGroup> MetricGroups { get; set; } = null!;
+    public virtual DbSet<Metric> Metrics { get; set; } = null!;
 
-            entity.ToTable("postcode_data");
+    public virtual DbSet<Bedcount> BedcountSet { get; set; } = null!;
+    public virtual DbSet<BedcountPerHundredThousandAdults> BedcountPerHundredThousandAdultsSet { get; set; } = null!;
+    public virtual DbSet<DementiaEstimatedDiagnosisRate65Over> DementiaEstimatedDiagnosisRate65OverSet { get; set; } = null!;
+    public virtual DbSet<DementiaPrevalence65Over> DementiaPrevalence65OverSet { get; set; } = null!;
+    public virtual DbSet<DementiaQOFPrevalence> DementiaQOFPrevalenceSet { get; set; } = null!;
+    public virtual DbSet<DementiaRegister65OverPer100k> DementiaRegister65OverPer100kSet { get; set; } = null!;
+    public virtual DbSet<LearningDisabilityPrevalence> LearningDisabilityPrevalenceSet { get; set; } = null!;
+    public virtual DbSet<MedianBedCount> MedianBedCountSet { get; set; } = null!;
+    public virtual DbSet<MedianOccupancy> MedianOccupancySet { get; set; } = null!;
+    public virtual DbSet<OccupancyRate> OccupancyRateSet { get; set; } = null!;
+    public virtual DbSet<Perc65Over> Perc65OverSet { get; set; } = null!;
+    public virtual DbSet<Perc75Over> Perc75OverSet { get; set; } = null!;
+    public virtual DbSet<Perc85Over> Perc85OverSet { get; set; } = null!;
+    public virtual DbSet<Perc1864> Perc1864Set { get; set; } = null!;
+    public virtual DbSet<PercGeneralHealth> PercGeneralHealthSet { get; set; } = null!;
+    public virtual DbSet<PercHouseholdOwnership> PercHouseholdOwnershipSet { get; set; } = null!;
+    public virtual DbSet<PercHouseholdsDeprivationDeprived> PercHouseholdsDeprivationDeprivedSet { get; set; } = null!;
+    public virtual DbSet<PercHouseholdsOnePerson> PercHouseholdsOnePersonSet { get; set; } = null!;
+    public virtual DbSet<PercPopulationDisability> PercPopulationDisabilitySet { get; set; } = null!;
+    public virtual DbSet<PercUnpaidCareProvider> PercUnpaidCareProviderSet { get; set; } = null!;
+    public virtual DbSet<TotalPopulation> TotalPopulationSet { get; set; } = null!;
 
-            entity.Property(e => e.SanitisedPostcode)
-                .HasMaxLength(255)
-                .HasColumnName("sanitised_postcode");
-            entity.Property(e => e.DisplayPostcode)
-                .HasMaxLength(255)
-                .HasColumnName("display_postcode");
-            entity.Property(e => e.LaCode)
-                .HasMaxLength(255)
-                .HasColumnName("la_code");
-            entity.Property(e => e.Latitude).HasColumnName("latitude");
-            entity.Property(e => e.Longitude).HasColumnName("longitude");
-        });
-
-        OnModelCreatingPartial(modelBuilder);
-    }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
