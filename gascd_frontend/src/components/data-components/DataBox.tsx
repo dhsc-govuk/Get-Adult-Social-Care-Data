@@ -11,10 +11,7 @@ const DataBox: React.FC<Props> = ({ dataTitle, dataInfo, children }) => {
     <div className="govuk-grid-row">
       <div className="govuk-grid-column-full">
         <div className="data-box govuk-form-group">
-          <div
-            className="govuk-tabs govuk-!-margin-bottom-0"
-            data-module="govuk-tabs"
-          >
+          <div className="govuk-tabs" data-module="govuk-tabs">
             <h3 className="govuk-heading-m">{dataTitle}</h3>
             {dataInfo}
             {children}
