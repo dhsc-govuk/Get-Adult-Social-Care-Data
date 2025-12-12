@@ -162,7 +162,7 @@ export default function ProvisionAndOccupancyPage() {
 
   useEffect(() => {
     const fetchAllData = async () => {
-      if (!CPLocationId) return;
+      if (!CPLocationId || !locationIds) return;
       try {
         const bedTypeData: Indicator[] = await IndicatorFetchService.getData(
           careHomeBedTypesDataQuery
@@ -190,14 +190,7 @@ export default function ProvisionAndOccupancyPage() {
       }
     };
     fetchAllData();
-  }, [
-    careHomeBedNumbersDataQuery,
-    careProviderDataQuery1,
-    careProviderDataQuery2,
-    CPLocationId,
-    careHomeBedTypesDataQuery,
-    locationIds,
-  ]);
+  }, [careHomeBedTypesDataQuery]);
 
   useEffect(() => {
     const fetchLocationIds = async () => {
