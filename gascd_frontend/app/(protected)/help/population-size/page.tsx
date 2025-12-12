@@ -1,11 +1,8 @@
-'use client';
 import Layout from '@/components/common/layout/Layout';
 import DataIndicatorDetails from '@/components/data-components/DataIndicatorDetails';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 const PopulationSize: React.FC = () => {
-  const router = useRouter();
   return (
     <>
       <Layout
