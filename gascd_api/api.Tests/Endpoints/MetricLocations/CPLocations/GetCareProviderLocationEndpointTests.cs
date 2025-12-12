@@ -61,6 +61,20 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
 
     }
 
+    [Theory]
+    [InlineData("1-", "Care provider location code has a minimum length of 3")]
+    [InlineData("1-1234232323232344233324324", "Care provider location code has a maximum length of 15")]
+    public async Task Invalid_CareProviderLocationCode_Input(string careProviderLocationCode, string expectedErrorMessage)
+    {
+        var (httpResponse, problemDetails) =
+            await _client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, ProblemDetails>(
+                new GetCareProviderLocationRequest { CareProviderLocationCode = careProviderLocationCode });
+        httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        problemDetails.Errors.Count().ShouldBe(1);
+        problemDetails.Errors.Select(e => e.Name).ShouldBe(["care_provider_location_code"]);
+        problemDetails.Errors.Select(e => e.Reason).ShouldBe([expectedErrorMessage]);
+    }
+
 
 
 
