@@ -39,6 +39,7 @@ const Layout: React.FC<Props> = ({
 
       {currentPage !== 'home' && (
         <div
+          className="phasebanner-tmp-bg"
           style={currentPage === 'home' ? { backgroundColor: '#d2e2f1' } : {}}
         >
           <div className="govuk-width-container">
