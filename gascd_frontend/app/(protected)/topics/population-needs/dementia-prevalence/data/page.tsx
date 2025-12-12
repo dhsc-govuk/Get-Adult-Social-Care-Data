@@ -1,7 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -12,14 +12,16 @@ import BackToTop from '@/components/data-components/BackToTop';
 import LocationService from '@/services/location/locationService';
 import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
-import { MetaData } from '@/data/interfaces/MetaData';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import Link from 'next/link';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
+import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 export default function DementaPrevalencePage() {
+  const tableref1 = useRef<HTMLTableElement>(null);
+
   const [locationNames, setLocationNames] = useState<LocationNames>({
     IndicatorLabel: 'Indicator',
     LALabel: 'Loading...',
@@ -28,7 +30,6 @@ export default function DementaPrevalencePage() {
   } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
-  const [metricDateType, setMetricDataType] = useState<MetaData[]>([]);
   const [filteredDemographicData, setFilteredDemographicData] = useState<
     Indicator[]
   >([]);
@@ -126,19 +127,6 @@ export default function DementaPrevalencePage() {
     fetchLocationIds();
   }, [CPLocationId]);
 
-  useEffect(() => {
-    const fetchMetadataByType = async () => {
-      try {
-        setMetricDataType(
-          await IndicatorFetchService.getMetadateByType('Percentage')
-        );
-      } catch (error) {
-        console.error('Error fetching metadata types:', error);
-      }
-    };
-    fetchMetadataByType();
-  }, []);
-
   return (
     <Layout
       title="Dementia prevalence and estimated diagnosis rate"
@@ -215,6 +203,7 @@ export default function DementaPrevalencePage() {
           id="1"
           table={
             <DataTable
+              tableref={tableref1}
               caption={`Table 1: dementia prevalence and the dementia diagnosis rate – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, August 2025`}
               source={
                 'Fingertips from the Department of Health and Social Care (DHSC)'
@@ -237,6 +226,11 @@ export default function DementaPrevalencePage() {
           download={
             <>
               <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref1}
+                filename="dementia_prevalence_and_diagnosis_rate.csv"
+                xLabel=""
+              />
             </>
           }
         />

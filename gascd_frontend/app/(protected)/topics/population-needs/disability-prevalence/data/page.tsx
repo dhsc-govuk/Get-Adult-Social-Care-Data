@@ -1,7 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -12,13 +12,16 @@ import BackToTop from '@/components/data-components/BackToTop';
 import LocationService from '@/services/location/locationService';
 import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
-import { MetaData } from '@/data/interfaces/MetaData';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
+import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 
 export default function DisabilityPrevalence() {
+  const tableref1 = useRef<HTMLTableElement>(null);
+  const tableref2 = useRef<HTMLTableElement>(null);
+
   const [locationNames, setLocationNames] = useState<LocationNames>({
     IndicatorLabel: 'Indicator',
     LALabel: 'Loading...',
@@ -101,6 +104,8 @@ export default function DisabilityPrevalence() {
         const filteredDemographicData =
           TableService.filterDate(demographicData);
         setFilteredDemographicData(filteredDemographicData);
+
+        console.log(filteredDemographicData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -172,6 +177,7 @@ export default function DisabilityPrevalence() {
           id="1"
           table={
             <DataTable
+              tableref={tableref1}
               caption={`Table 1: self-reporting on general health and disability – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
@@ -194,27 +200,28 @@ export default function DisabilityPrevalence() {
           download={
             <>
               <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref1}
+                filename="general_health_and_disability.csv"
+                xLabel=""
+              />
             </>
           }
         />
       </DataBox>
       <DataBox
-        dataTitle="Disability prevalence"
+        dataTitle="Learning disability prevalence"
         dataInfo={
           <>
             <p className="govuk-body-m">
               Find out how{' '}
               <a
-                href="/help/people-who-reported-bad-or-very-bad-health"
+                href="/help/learning-disability-prevalence"
                 className="govuk-link"
               >
-                people who reported bad or very bad health
-              </a>{' '}
-              and{' '}
-              <a href="/help/disability-prevalence" className="govuk-link">
-                disability prevalence
-              </a>{' '}
-              are calculated.
+                how learning disability prevalence is calculated
+              </a>
+              .
             </p>
           </>
         }
@@ -223,6 +230,7 @@ export default function DisabilityPrevalence() {
           id="2"
           table={
             <DataTable
+              tableref={tableref2}
               caption={`Table 2: learning disability prevalence – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
@@ -239,6 +247,11 @@ export default function DisabilityPrevalence() {
           download={
             <>
               <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref2}
+                filename="learning_disabilty_prevalence.csv"
+                xLabel=""
+              />
             </>
           }
         />

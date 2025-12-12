@@ -50,6 +50,11 @@ export const auth = betterAuth({
         required: false,
         input: true,
       },
+      selectedLocationDisplayName: {
+        type: 'string',
+        required: false,
+        input: true,
+      },
     },
   },
   plugins: [

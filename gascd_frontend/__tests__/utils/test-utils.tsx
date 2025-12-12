@@ -18,6 +18,7 @@ export const mockSessionWithLocation: any = {
     locationType: 'Care provider location',
     locationId: 'testlocation1',
     selectedLocationId: 'testlocation1',
+    selectedLocationDisplayName: 'My test location',
     smartInsights: false,
   },
 };

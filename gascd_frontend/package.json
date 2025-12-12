@@ -35,8 +35,9 @@
     "@opentelemetry/auto-instrumentations-node": "^0.62.0",
     "@types/d3": "^7.4.3",
     "better-auth": "^1.4.6",
+    "@x-govuk/govuk-prototype-components": "^5.0.2",
     "d3": "^7.9.0",
-    "govuk-frontend": "^5.11.2",
+    "govuk-frontend": "^5.13.0",
     "history": "^5.3.0",
     "js-cookie": "^3.0.5",
     "jsdom": "^27.1.0",
@@ -44,9 +45,9 @@
     "jwks-rsa": "^3.1.0",
     "mssql": "^11.0.1",
     "msw": "^2.7.3",
-    "next": "15.5.7",
-    "react": "19.1.1",
-    "react-dom": "19.1.1",
+    "next": "15.5.8",
+    "react": "19.1.3",
+    "react-dom": "19.1.3",
     "winston": "^3.17.0"
   },
   "devDependencies": {
