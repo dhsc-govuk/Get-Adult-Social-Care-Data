@@ -1,7 +1,7 @@
 import React, { Ref } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
 
-type DataTableProps = {
+type VerticalLocationTableProps = {
   caption?: string;
   columnHeaders: Object;
   rowHeaders: Object;
@@ -15,7 +15,7 @@ type DataTableProps = {
   userLa: string;
 };
 
-const DataTable: React.FC<DataTableProps> = ({
+const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
   caption,
   columnHeaders,
   rowHeaders,
@@ -114,4 +114,4 @@ const DataTable: React.FC<DataTableProps> = ({
   );
 };
 
-export default DataTable;
+export default VerticalLocationTable;
