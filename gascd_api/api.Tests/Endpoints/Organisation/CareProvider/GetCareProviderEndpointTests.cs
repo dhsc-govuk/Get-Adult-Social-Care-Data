@@ -46,22 +46,22 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     public async Task GetCareProvider_ReturnsExpectedCareProviderJsonObject()
     {
         var response = await _client.GetAsync("api/organisation/care_provider/1-123456789", TestContext.Current.CancellationToken);
-        var jsonArray = await TestUtils.ParseJsonResponse<JArray>(response);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        jsonArray?[0]["location_name"]?.Value<string>().ShouldBe("Bupa Liverpool");
-        jsonArray?[0]["location_id"]?.Value<string>().ShouldBe("1-222222222");
+        var jsonArray = await TestUtils.ParseJsonResponse<JArray>(response);
+        TestUtils.GetFromJson(jsonArray, "[0].location_name").ShouldBe("Bupa Liverpool");
+        TestUtils.GetFromJson(jsonArray, "[0].location_id").ShouldBe("1-222222222");
     }
 
     [Fact]
     public async Task GetCareProvider_ReturnsErrorWhenProvidedWhiteSpace()
     {
-        var response = await _client.GetAsync("api/organisation/care_provider/ /", TestContext.Current.CancellationToken);
+        HttpResponseMessage response = await _client.GetAsync("api/organisation/care_provider/ /", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        var jsonObject = await TestUtils.ParseJsonResponse<JObject>(response);
-        jsonObject?["errors.[0].reason"]?.Value<string>().ShouldBe("Care provider code is required");
-        jsonObject?["errors.[0].name"]?.Value<string>().ShouldBe("care_provider_code");
 
+        JObject? json = await TestUtils.ParseJsonResponse<JObject>(response);
+        TestUtils.GetFromJson(json, "errors[0].name").ShouldBe("care_provider_code");
+        TestUtils.GetFromJson(json, "errors[0].reason").ShouldBe("Care provider code is required");
     }
 
     [Fact]

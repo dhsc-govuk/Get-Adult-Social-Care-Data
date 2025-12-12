@@ -7,8 +7,12 @@ public static class TestUtils
 {
     public static async Task<T?> ParseJsonResponse<T>(HttpResponseMessage response)
     {
-        var rawJson = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        string rawJson = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         return JsonConvert.DeserializeObject<T>(rawJson);
     }
 
+    public static string? GetFromJson(JToken? json, string key)
+    {
+        return json?.SelectToken(key)?.Value<string>();
+    }
 }
