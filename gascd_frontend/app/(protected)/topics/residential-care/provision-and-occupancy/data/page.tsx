@@ -239,12 +239,11 @@ export default function ProvisionAndOccupancyPage() {
         map[locationIds[3]] = locationNamesCP.CountryLabel;
         map[locationIds[2]] = locationNamesCP.RegionLabel;
         las.map((item: any) => (map[item.la_code] = item.la_name));
-
         setBedNumberRowHeaders(map);
       }
     };
     fetchLasForRegion();
-  }, [locationIds]);
+  }, [locationIds, locationNamesCP]);
 
   useEffect(() => {
     if (CPLocationId) {
