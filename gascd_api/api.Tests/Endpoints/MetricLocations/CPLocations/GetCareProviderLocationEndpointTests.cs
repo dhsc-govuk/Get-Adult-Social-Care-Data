@@ -75,6 +75,16 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         problemDetails.Errors.Select(e => e.Reason).ShouldBe([expectedErrorMessage]);
     }
 
+    [Fact]
+    public async Task NonExistent_CareProviderLocationCode_Input()
+    {
+        var (httpResponse, problemDetails) =
+            await _client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, ProblemDetails>(
+                new GetCareProviderLocationRequest { CareProviderLocationCode = "1-1234567" });
+        httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
+
 
 
 

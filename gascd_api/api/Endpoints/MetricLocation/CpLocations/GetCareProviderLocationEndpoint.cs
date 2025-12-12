@@ -1,10 +1,11 @@
 using api.Data;
+using api.Data.Mappers;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.MetricLocation.CpLocations;
 
-public class GetCareProviderLocationEndpoint(GascdDataContext context) : Endpoint<GetCareProviderLocationRequest, GetCareProviderLocationResponse>
+public class GetCareProviderLocationEndpoint(GascdDataContext context, ReferenceMapper mapper) : Endpoint<GetCareProviderLocationRequest, GetCareProviderLocationResponse>
 {
     public override void Configure()
     {
@@ -16,18 +17,16 @@ public class GetCareProviderLocationEndpoint(GascdDataContext context) : Endpoin
         var cpl = context.CareProviderLocations
             .Include(cpl => cpl.CareProvider)
             .Include(cpl => cpl.LocalAuthority)
-            .First(x => x.Code == req.CareProviderLocationCode);
+            .FirstOrDefault(x => x.Code == req.CareProviderLocationCode);
 
-        var response = new GetCareProviderLocationResponse
+        if (cpl == null)
         {
-            Id = cpl.Code,
-            DisplayName = cpl.Name,
-            Address = cpl.Address,
-            ProviderId = cpl.CareProvider.Code,
-            ProviderName = cpl.CareProvider.Name,
-            NominatedIndividual = cpl.NominatedIndividual,
-            LocalAuthorityId = cpl.LocalAuthority.Code,
-        };
-        await Send.OkAsync(response, ct);
+            await Send.NotFoundAsync(ct);
+        }
+        else
+        {
+            var response = mapper.CareProviderLocationToCareProviderLocationByIdResponse(cpl);
+            await Send.OkAsync(response, ct);
+        }
     }
 }
