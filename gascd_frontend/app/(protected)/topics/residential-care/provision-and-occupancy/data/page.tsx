@@ -18,7 +18,7 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
-import LocationComparisonTable from '@/components/tables/LocationComparisonTable';
+import VerticalLocationTable from '@/components/tables/VerticalLocationTable';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -380,7 +380,7 @@ export default function ProvisionAndOccupancyPage() {
         <DataTabs
           id="1"
           table={
-            <LocationComparisonTable
+            <VerticalLocationTable
               tableref={tableref1}
               caption={`Table 1: care home bed numbers per 100,000 adult population for regional local authorities -
                 ${locationNamesCP.RegionLabel}, October 2025`}
@@ -393,7 +393,8 @@ export default function ProvisionAndOccupancyPage() {
               ]}
               rowHeaders={bedNumberRowHeaders}
               data={filteredBedNumbersData}
-            ></LocationComparisonTable>
+              userLa={locationNamesCP.LALabel}
+            ></VerticalLocationTable>
           }
           download={
             <>

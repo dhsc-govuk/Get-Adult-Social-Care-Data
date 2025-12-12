@@ -12,6 +12,7 @@ type DataTableProps = {
   children?: React.ReactNode;
   showAverageLabel?: boolean;
   tableref?: Ref<HTMLTableElement>;
+  userLa: string;
 };
 
 const DataTable: React.FC<DataTableProps> = ({
@@ -22,10 +23,11 @@ const DataTable: React.FC<DataTableProps> = ({
   children,
   source,
   tableref = undefined,
+  userLa,
 }) => {
   const columnClass = (columnIndex: number) => {
     if (columnIndex === 0) {
-      return 'govuk-table__header govuk-!-width-one-third';
+      return 'govuk-table__header';
     } else {
       return 'govuk-table__header govuk-table__cell--numeric';
     }
@@ -55,6 +57,18 @@ const DataTable: React.FC<DataTableProps> = ({
     return 'Loading...';
   };
 
+  const getFormattedLocationLabel = (location: string, index: number): any => {
+    if (index === 0) {
+      return <strong>{location} (National average)</strong>;
+    } else if (index === 1) {
+      return <strong>{location} (Regional average)</strong>;
+    } else if (location === userLa) {
+      return <strong>{location}</strong>;
+    }
+
+    return location;
+  };
+
   return (
     <div>
       <table className="govuk-table" ref={tableref}>
@@ -79,13 +93,13 @@ const DataTable: React.FC<DataTableProps> = ({
           </tr>
         </thead>
         <tbody className="govuk-table__body">
-          {Object.entries(rowHeaders).map(([key, value]) => (
+          {Object.entries(rowHeaders).map(([key, value], index) => (
             <tr key={key}>
               <th
                 scope="row"
                 className="govuk-table__cell govuk-!-font-weight-regular"
               >
-                {value}
+                {getFormattedLocationLabel(value, index)}
               </th>
               <td className="govuk-table__cell govuk-table__cell--numeric">
                 {getFormattedDataPoint(data, key)}
