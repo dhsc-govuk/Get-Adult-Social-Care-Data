@@ -4,6 +4,7 @@ using FastEndpoints;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
+using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.Organisation.CareProvider;
 
@@ -48,9 +49,9 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         var response = await _client.GetAsync("api/organisation/care_provider/1-123456789", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var jsonArray = await TestUtils.ParseJsonResponse<JArray>(response);
-        TestUtils.GetFromJson(jsonArray, "[0].location_name").ShouldBe("Bupa Liverpool");
-        TestUtils.GetFromJson(jsonArray, "[0].location_id").ShouldBe("1-222222222");
+        var jsonArray = await ParseJsonResponse<JArray>(response);
+        GetFromJson(jsonArray, "[0].location_name").ShouldBe("Bupa Liverpool");
+        GetFromJson(jsonArray, "[0].location_id").ShouldBe("1-222222222");
     }
 
     [Fact]
@@ -59,9 +60,9 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         HttpResponseMessage response = await _client.GetAsync("api/organisation/care_provider/ /", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
-        JObject? json = await TestUtils.ParseJsonResponse<JObject>(response);
-        TestUtils.GetFromJson(json, "errors[0].name").ShouldBe("care_provider_code");
-        TestUtils.GetFromJson(json, "errors[0].reason").ShouldBe("Care provider code is required");
+        JObject? json = await ParseJsonResponse<JObject>(response);
+        GetFromJson(json, "errors[0].name").ShouldBe("care_provider_code");
+        GetFromJson(json, "errors[0].reason").ShouldBe("Care provider code is required");
     }
 
     [Fact]
