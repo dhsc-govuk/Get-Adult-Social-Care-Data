@@ -10,12 +10,30 @@ type Props = {
 
 const ServiceName: React.FC<Props> = ({ session }) => {
   const toggleNav = () => {
-    const nav = document.getElementById('navigation');
+    const nav = document.getElementById('super-navigation-menu');
+    const navLastChild = document.querySelector<HTMLElement>(
+      '#navigation li:last-child'
+    );
+    const menuButton = document.querySelector<HTMLElement>(
+      '#super-navigation-menu-toggle'
+    );
     if (nav) {
       if (nav.style.display === 'block') {
         nav.style.display = 'none';
+        nav.ariaExpanded = 'false';
+        navLastChild?.classList.remove(
+          'govuk-service-navigation__item--active'
+        );
+        menuButton?.classList.remove(
+          'gem-c-layout-super-navigation-header__open-button'
+        );
       } else {
         nav.style.display = 'block';
+        nav.ariaExpanded = 'true';
+        navLastChild?.classList.add('govuk-service-navigation__item--active');
+        menuButton?.classList.add(
+          'gem-c-layout-super-navigation-header__open-button'
+        );
       }
     }
   };
@@ -80,14 +98,16 @@ const ServiceName: React.FC<Props> = ({ session }) => {
                     </a>
                   </li>
                 )}
-                <li className="govuk-service-navigation__item govuk-service-navigation__item-start">
+                <li className="govuk-service-navigation__item govuk-service-navigation__item-end">
                   <button
                     aria-label="Show navigation menu"
-                    className="govuk-service-navigation__toggle"
-                    type="button"
+                    id="super-navigation-menu-toggle"
+                    className="gem-c-layout-super-navigation-header__navigation-top-toggle-button"
                     onClick={() => toggleNav()}
                   >
-                    Menu
+                    <span className="gem-c-layout-super-navigation-header__navigation-top-toggle-button-inner">
+                      Menu
+                    </span>
                   </button>
                 </li>
               </ul>
@@ -96,45 +116,60 @@ const ServiceName: React.FC<Props> = ({ session }) => {
         </div>
       </section>
 
-      <nav
-        id="navigation-menu"
-        className="govuk-service-navigation govuk-!-padding-top-8 govuk-!-padding-bottom-4"
+      <div
+        id="super-navigation-menu"
+        className="gem-c-layout-super-navigation-header__navigation-dropdown-menu"
+        aria-hidden="true"
+        style={{ display: 'none' }}
       >
         <div className="govuk-width-container">
-          <div className="govuk-service-navigation__container">
-            <div className="govuk-grid-row">
-              <div className="govuk-grid-column-two-thirds">
-                <h3 className="govuk-heading-m">Topics</h3>
-                <ul className="govuk-list">
-                  {topicLinks.map((link, index) => (
-                    <li
-                      className="govuk-grid-column-one-half govuk-!-padding-left-0"
-                      key={index}
+          <div className="govuk-grid-row gem-c-layout-super-navigation-header__navigation-items">
+            <div className="govuk-grid-column-two-thirds-from-desktop">
+              <h3 className="govuk-heading-m gem-c-layout-super-navigation-header__column-header">
+                Topics
+              </h3>
+              <ul className="gem-c-layout-super-navigation-header__navigation-second-items gem-c-layout-super-navigation-header__navigation-second-items--topics">
+                {topicLinks.map((link, index) => (
+                  <li
+                    className="gem-c-layout-super-navigation-header__dropdown-list-item"
+                    key={index}
+                  >
+                    <a
+                      className="govuk-link gem-c-layout-super-navigation-header__navigation-second-item-link gem-c-layout-super-navigation-header__navigation-second-item-link--with-description"
+                      href={link.url}
                     >
-                      <a className="govuk-link govuk-body-s" href={link.url}>
-                        <strong>{link.name}</strong>
-                      </a>
-                      <p className="govuk-body-s">{link.description}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="govuk-grid-column-one-third">
-                <h3 className="govuk-heading-m">Service Information</h3>
-                <ul className="govuk-list">
-                  {serviceInformationLinks.map((link, index) => (
-                    <li className="govuk-!-padding-bottom-3" key={index}>
-                      <a className="govuk-link govuk-body-s" href={link.url}>
-                        <strong>{link.name}</strong>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                      {link.name}
+                    </a>
+                    <p className="govuk-body-s gem-c-layout-super-navigation-header__navigation-second-item-description">
+                      {link.description}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="govuk-grid-column-one-third-from-desktop gem-c-layout-super-navigation-header__column--government-activity">
+              <h3 className="govuk-heading-m gem-c-layout-super-navigation-header__column-header">
+                Service information
+              </h3>
+              <ul className="gem-c-layout-super-navigation-header__navigation-second-items gem-c-layout-super-navigation-header__navigation-second-items--government-activity">
+                {serviceInformationLinks.map((link, index) => (
+                  <li
+                    className="gem-c-layout-super-navigation-header__dropdown-list-item"
+                    key={index}
+                  >
+                    <a
+                      className="govuk-link gem-c-layout-super-navigation-header__navigation-second-item-link gem-c-layout-super-navigation-header__navigation-second-item-link--with-description"
+                      href={link.url}
+                    >
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
-      </nav>
+      </div>
     </>
   );
 };
