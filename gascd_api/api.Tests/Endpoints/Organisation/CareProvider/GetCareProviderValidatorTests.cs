@@ -24,6 +24,7 @@ public class GetCareProviderValidatorTests : IDisposable
     [InlineData("", "Care provider code is required")]
     [InlineData(" ", "Care provider code is required")]
     [InlineData("1-", "Care provider code has a minimum length of 3")]
+    [InlineData("1-09398234098320948320984032984093284093284098", "Care provider code has a maximum length of 15")]
     public void InvalidCareProviderId(string careProviderCode, string expectedErrorMessage)
     {
         var request = new GetCareProviderRequest { CareProviderCode = careProviderCode };
