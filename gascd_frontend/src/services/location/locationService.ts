@@ -196,6 +196,28 @@ class LocationService {
       throw new Error(`Failed to set selected location: ${errorMessage}`);
     }
   }
+
+  public static async getLasForRegion(regionCode: string): Promise<any> {
+    try {
+      const response = await fetch(
+        `/api/get_las_for_region?region_code=${encodeURIComponent(regionCode)}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      LogService.logEvent(`Error in getLasForRegion: ${errorMessage}`);
+      throw new Error(
+        `Failed to retrieve local authorities in region: ${errorMessage}`
+      );
+    }
+  }
 }
 
 export default LocationService;

@@ -162,6 +162,7 @@ describe('LocationService', () => {
       );
     });
   });
+
   describe('getDefaultCPLocation', () => {
     const providerLocationId: string = '1';
     const locationType: string = 'LA';
@@ -195,6 +196,7 @@ describe('LocationService', () => {
       ).rejects.toThrow('Error fetching data: Not Found');
     });
   });
+
   describe('getLocationNames', () => {
     const mockLocationData = {
       la_name: 'Suffolk',
@@ -270,6 +272,7 @@ describe('LocationService', () => {
       });
     });
   });
+
   describe('getLocationIds', () => {
     const mockLocationData = {
       la_code: 'Suffolk',
@@ -337,6 +340,28 @@ describe('LocationService', () => {
         'East of England',
         'United Kingdom',
       ]);
+    });
+  });
+
+  describe('getLasForRegion', () => {
+    const mockLocations: {} = [
+      { la_name: 'Suffolk', la_code: '1' },
+      { la_name: 'Manchester', la_code: '2' },
+    ];
+    const query = '123';
+
+    it('fetches and returns las successfully', async () => {
+      (fetch as vi.Mock).mockResolvedValue({
+        ok: true,
+        json: vi.fn().mockResolvedValue(mockLocations),
+      });
+
+      const result = await LocationService.getLasForRegion(query);
+
+      expect(fetch).toHaveBeenCalledWith(
+        `/api/get_las_for_region?region_code=${query}`
+      );
+      expect(result).toEqual(mockLocations);
     });
   });
 });

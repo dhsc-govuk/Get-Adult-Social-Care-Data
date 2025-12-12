@@ -104,8 +104,6 @@ export default function DisabilityPrevalence() {
         const filteredDemographicData =
           TableService.filterDate(demographicData);
         setFilteredDemographicData(filteredDemographicData);
-
-        console.log(filteredDemographicData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
