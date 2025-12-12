@@ -72,7 +72,7 @@ const Layout: React.FC<Props> = ({
 
       <div className="govuk-width-container">
         <div className="govuk-grid-row">
-          <div className="govuk-grid-column-one-third">
+          <div className="govuk-grid-column-full">
             {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
           </div>
         </div>
