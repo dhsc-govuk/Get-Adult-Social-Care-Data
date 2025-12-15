@@ -7,6 +7,7 @@ import {
 type Props = {
   id: string;
   chart?: React.ReactNode;
+  graph?: React.ReactNode;
   table?: React.ReactNode;
   textSummary?: React.ReactNode;
   map?: React.ReactNode;
@@ -16,6 +17,7 @@ type Props = {
 const DataTabs: React.FC<Props> = ({
   id,
   chart,
+  graph,
   table,
   map,
   download,
@@ -46,9 +48,18 @@ const DataTabs: React.FC<Props> = ({
             </a>
           </li>
         )}
+        {graph && (
+          <li
+            className={`govuk-tabs__list-item${!map && !chart && graph ? ' govuk-tabs__list-item--selected' : ''}`}
+          >
+            <a className="govuk-tabs__tab" href={`#graph-${id}`}>
+              Graph
+            </a>
+          </li>
+        )}
         {table && (
           <li
-            className={`govuk-tabs__list-item${!map && !chart && table ? ' govuk-tabs__list-item--selected' : ''}`}
+            className={`govuk-tabs__list-item${!map && !chart && !graph && table ? ' govuk-tabs__list-item--selected' : ''}`}
           >
             <a className="govuk-tabs__tab" href={`#table-${id}`}>
               Table
@@ -92,6 +103,15 @@ const DataTabs: React.FC<Props> = ({
           {chart}
         </div>
       )}
+      {graph && (
+        <div
+          className="govuk-tabs__panel"
+          id={`graph-${id}`}
+          style={{ backgroundColor: 'white' }}
+        >
+          {graph}
+        </div>
+      )}{' '}
       {table && (
         <div
           className="govuk-tabs__panel govuk-tabs__panel--hidden"

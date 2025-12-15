@@ -20,6 +20,11 @@ import { LocationNames } from '@/data/interfaces/LocationNames';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import BarChart from '@/components/charts/BarChart';
 import VerticalLocationTable from '@/components/tables/VerticalLocationTable';
+import TimeSeriesChart, {
+  DataPoint,
+  Series,
+} from '@/components/charts/TimeSeriesChart';
+import IndicatorService from '@/services/indicator/IndicatorService';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -48,6 +53,7 @@ export default function ProvisionAndOccupancyPage() {
   const [filteredBedTypeData, setFilteredBedTypeData] = useState<Indicator[]>(
     []
   );
+  const [allBedTypeData, setAllBedTypeData] = useState<Indicator[]>([]);
   const [filteredBedNumbersData, setFilteredBedNumbersData] = useState<
     Indicator[]
   >([]);
@@ -196,6 +202,7 @@ export default function ProvisionAndOccupancyPage() {
           const bedTypeData: Indicator[] = await IndicatorFetchService.getData(
             careHomeBedTypesDataQuery
           );
+          setAllBedTypeData(bedTypeData);
           const filteredBedTypeData = TableService.filterDate(bedTypeData);
           setFilteredBedTypeData(filteredBedTypeData);
         }
@@ -355,6 +362,43 @@ export default function ProvisionAndOccupancyPage() {
       });
     }
   }, [locationIds, laIdsForRegion, lasForRegion]);
+
+  // Generate time series chart data
+  const [timeData, setTimedata] = useState<Series[]>([]);
+  useEffect(() => {
+    if (!allBedTypeData.length) return;
+    let series: Series[] = [];
+    const la_code = locationIds[1];
+    // Make some time series data based on the bed type row headers
+    Object.entries(bedTypeRowHeaders).forEach((header: any) => {
+      const metric_id = header[0];
+      const name = header[1];
+      // Filter to the current metric ID, for the LA only
+      const metric_items = allBedTypeData.filter(
+        (item) => item.metric_id === metric_id && item.location_id === la_code
+      );
+      // Turn into the correct time series format
+      const values: DataPoint[] = metric_items.map((item) => {
+        return {
+          date: IndicatorService.parseDate(item).toISOString(),
+          value: item.data_point,
+        };
+      });
+      // Sort by date
+      values.sort((a, b) => {
+        if (a.date > b.date) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+      series.push({
+        name: name,
+        data: values,
+      });
+    });
+    setTimedata(series);
+  }, [allBedTypeData]);
 
   return (
     <Layout
@@ -659,6 +703,47 @@ export default function ProvisionAndOccupancyPage() {
           }
         />
       </DataBox>
+
+      <div className="govuk-grid-row">
+        <div className="govuk-grid-column-two-thirds">
+          <h2 className="govuk-heading-l govuk-!-margin-top-9">Trends</h2>
+        </div>
+      </div>
+
+      <DataBox
+        dataTitle="Care home bed numbers - trends over time"
+        dataInfo={
+          <p className="govuk-body">
+            Find out{' '}
+            <a
+              href="/help/beds-per-100000-adult-population-over-time"
+              className="govuk-link"
+            >
+              how the total number of adult social care beds per 100,000 adults
+              in the local authority area over time is calculated
+            </a>
+            .
+          </p>
+        }
+      >
+        <DataTabs
+          id="4"
+          graph={
+            <>
+              <h3 className="govuk-heading-s">
+                Figure 2: graph of care home bed numbers per 100,000 adult
+                population &mdash; {locationNamesCP.LALabel} local authority
+              </h3>
+              {(timeData.length > 0 && (
+                <div style={{ width: '100%', height: `500px` }}>
+                  <TimeSeriesChart series={timeData} />
+                </div>
+              )) || <p>Loading graph</p>}
+            </>
+          }
+        />
+      </DataBox>
+
       <DataIndicatorDetailsList>
         <DataLinkCard
           label="Adult social care beds per 100,000 adult population"
