@@ -25,7 +25,7 @@ public class GetCareProviderEndpoint(GascdDataContext context, ReferenceMapper m
         }
 
         List<GetCareProviderResponse> response =
-            locations.Select(l => mapper.CareProviderLocationToCareProviderLocationResponse(l)).ToList();
+            locations.Select(l => mapper.CareProviderLocationToGetCareProviderResponse(l)).ToList();
         logger.LogInformation("Finished processing care provider code: {code}", req.CareProviderCode);
         await Send.OkAsync(response, ct);
     }

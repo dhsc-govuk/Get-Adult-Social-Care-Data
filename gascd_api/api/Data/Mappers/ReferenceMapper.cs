@@ -20,7 +20,7 @@ public class ReferenceMapper
         };
     }
 
-    public GetCareProviderResponse CareProviderLocationToCareProviderLocationResponse(
+    public GetCareProviderResponse CareProviderLocationToGetCareProviderResponse(
         CareProviderLocation careProviderLocation)
     {
         return new GetCareProviderResponse
@@ -30,7 +30,7 @@ public class ReferenceMapper
         };
     }
 
-    public GetCareProviderLocationResponse CareProviderLocationToCareProviderLocationByIdResponse(CareProviderLocation cpl)
+    public GetCareProviderLocationResponse CareProviderLocationToGetCareProviderLocationResponse(CareProviderLocation cpl)
     {
         return new GetCareProviderLocationResponse
         {

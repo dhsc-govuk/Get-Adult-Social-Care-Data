@@ -25,7 +25,7 @@ public class GetCareProviderLocationEndpoint(GascdDataContext context, Reference
             return;
         }
 
-        var response = mapper.CareProviderLocationToCareProviderLocationByIdResponse(cpl);
+        var response = mapper.CareProviderLocationToGetCareProviderLocationResponse(cpl);
         await Send.OkAsync(response, ct);
 
     }
