@@ -1,6 +1,10 @@
+'use client';
 import React, { useMemo } from 'react';
-import Plot from 'react-plotly.js';
 import { Layout, Data, Shape } from 'plotly.js';
+import dynamic from 'next/dynamic';
+
+// Skip any SSR compilation for plotly
+export const Plotly = dynamic(() => import('react-plotly.js'), { ssr: false });
 
 interface BarChartProps {
   categories: string[];
@@ -114,9 +118,8 @@ const BarChart: React.FC<BarChartProps> = ({
   };
 
   return (
-    <Plot
+    <Plotly
       style={{ width: '100%', height: '100%' }}
-      useResizeHandler={true}
       data={chartData}
       layout={layout}
       config={{ displayModeBar: false, responsive: true }}

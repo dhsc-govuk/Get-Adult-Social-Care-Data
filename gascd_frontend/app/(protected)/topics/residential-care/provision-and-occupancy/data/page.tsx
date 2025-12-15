@@ -379,7 +379,7 @@ export default function ProvisionAndOccupancyPage() {
         </div>
       </div>
       <DataBox dataTitle="Test Chart" dataInfo={'Some info here'}>
-        {(chartData.categories.length && (
+        {(chartData.categories.length && chartData.values.length && (
           <div style={{ height: '800px' }}>
             <BarChart
               categories={chartData.categories}
