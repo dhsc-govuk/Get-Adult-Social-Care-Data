@@ -17,16 +17,16 @@ public class GetCareProviderLocationEndpoint(GascdDataContext context, Reference
         var cpl = context.CareProviderLocations
             .Include(cpl => cpl.CareProvider)
             .Include(cpl => cpl.LocalAuthority)
-            .FirstOrDefault(x => x.Code == req.CareProviderLocationCode);
+            .SingleOrDefault(x => x.Code == req.CareProviderLocationCode);
 
         if (cpl == null)
         {
             await Send.NotFoundAsync(ct);
+            return;
         }
-        else
-        {
-            var response = mapper.CareProviderLocationToCareProviderLocationByIdResponse(cpl);
-            await Send.OkAsync(response, ct);
-        }
+
+        var response = mapper.CareProviderLocationToCareProviderLocationByIdResponse(cpl);
+        await Send.OkAsync(response, ct);
+
     }
 }

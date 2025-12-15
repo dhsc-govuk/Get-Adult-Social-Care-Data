@@ -59,6 +59,10 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         GetFromJson(jsonArray, "nominated_individual").ShouldBe("Mr. Ice Cool");
         GetFromJson(jsonArray, "local_authority_id").ShouldBe("E08000014");
 
+        //Latitude and longitude of the location's postcode
+        // GetFromJson(jsonArray, "geo_data.latitude").ShouldBe("52.43602168912626");
+        // GetFromJson(jsonArray, "geo_data.longitude").ShouldBe("-1.445481473");
+
     }
 
     [Theory]
