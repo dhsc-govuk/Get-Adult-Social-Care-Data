@@ -18,6 +18,7 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
+import BarChart from '@/components/charts/BarChart';
 import VerticalLocationTable from '@/components/tables/VerticalLocationTable';
 
 export default function ProvisionAndOccupancyPage() {
@@ -124,7 +125,32 @@ export default function ProvisionAndOccupancyPage() {
     },
   ];
 
+  const [chartData, setChartData] = useState<{
+    categories: string[];
+    values: number[];
+  }>({ categories: [], values: [] });
   useEffect(() => {
+    let categories: string[] = [];
+    let values: number[] = [];
+    Object.entries(bedNumberRowHeaders).map((header: any) => {
+      categories.push(header[1]);
+      const datapoints = filteredBedNumbersData.filter(
+        (item) => item.location_id === header[0]
+      );
+      if (datapoints.length) {
+        values.push(datapoints[0].data_point);
+      } else {
+        values.push(0);
+      }
+    });
+    setChartData({
+      categories: categories,
+      values: values,
+    });
+  }, [bedNumberRowHeaders, filteredBedNumbersData]);
+
+  useEffect(() => {
+    // Get Selected location from user
     const fetchSelectedLocation = async () => {
       const userLocationId = await LocationService.getSelectedLocation();
       if (!userLocationId) {
@@ -137,6 +163,7 @@ export default function ProvisionAndOccupancyPage() {
   }, [session]);
 
   useEffect(() => {
+    // Look up the related names for the current location
     const fetchLocationNames = async () => {
       if (CPLocationId) {
         try {
@@ -161,6 +188,7 @@ export default function ProvisionAndOccupancyPage() {
   }, [CPLocationId]);
 
   useEffect(() => {
+    // Fetch all metric data based on set queries
     const fetchAllData = async () => {
       if (!CPLocationId || !locationIds) return;
       try {
@@ -206,6 +234,7 @@ export default function ProvisionAndOccupancyPage() {
   ]);
 
   useEffect(() => {
+    // Get location IDs for the selected location
     const fetchLocationIds = async () => {
       if (CPLocationId) {
         try {
@@ -223,6 +252,7 @@ export default function ProvisionAndOccupancyPage() {
   }, [CPLocationId]);
 
   useEffect(() => {
+    // Get LA data for the current region
     const fetchLasForRegion = async () => {
       if (locationIds[2]) {
         const las = await LocationService.getLasForRegion(locationIds[2]);
@@ -236,8 +266,8 @@ export default function ProvisionAndOccupancyPage() {
         setLaIdsForRegion(idArray);
 
         const map: any = {};
-        map[locationIds[3]] = locationNamesCP.CountryLabel;
-        map[locationIds[2]] = locationNamesCP.RegionLabel;
+        map[locationIds[3]] = locationNamesWithAverageLabels.CountryLabel;
+        map[locationIds[2]] = locationNamesWithAverageLabels.RegionLabel;
         las.map((item: any) => (map[item.la_code] = item.la_name));
         setBedNumberRowHeaders(map);
       }
@@ -246,6 +276,7 @@ export default function ProvisionAndOccupancyPage() {
   }, [locationIds, locationNamesCP]);
 
   useEffect(() => {
+    // Set up the basic metric queries
     if (CPLocationId) {
       setCareProviderData1Query(() => ({
         metric_ids: careProviderMetricIds1,
@@ -265,6 +296,7 @@ export default function ProvisionAndOccupancyPage() {
   }, [CPLocationId, locationIds]);
 
   useEffect(() => {
+    // Set up filterable metric queries for the types table
     const storedData = localStorage.getItem('type-table-metrics');
     if (storedData) {
       try {
@@ -294,6 +326,7 @@ export default function ProvisionAndOccupancyPage() {
   }, [locationIds]);
 
   useEffect(() => {
+    // Set up filterable metric queries for the numbers table
     const storedData = localStorage.getItem('numbers-table-metrics');
     if (storedData && locationIds && laIdsForRegion && lasForRegion) {
       try {
@@ -384,6 +417,18 @@ export default function ProvisionAndOccupancyPage() {
         </table>
         <DataTabs
           id="1"
+          chart={
+            (chartData.categories.length && chartData.values.length && (
+              <div style={{ height: '800px' }}>
+                <BarChart
+                  categories={chartData.categories}
+                  values={chartData.values}
+                  highlightCategory={locationNamesCP.LALabel}
+                  darkBlueCount={2}
+                />
+              </div>
+            )) || <p>Loading chart...</p>
+          }
           table={
             <VerticalLocationTable
               tableref={tableref1}

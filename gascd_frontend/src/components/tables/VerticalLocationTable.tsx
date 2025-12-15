@@ -59,9 +59,9 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
 
   const getFormattedLocationLabel = (location: string, index: number): any => {
     if (index === 0) {
-      return <strong>{location} (National average)</strong>;
+      return <strong>{location}</strong>;
     } else if (index === 1) {
-      return <strong>{location} (Regional average)</strong>;
+      return <strong>{location}</strong>;
     } else if (location === userLa) {
       return <strong>{location}</strong>;
     }
