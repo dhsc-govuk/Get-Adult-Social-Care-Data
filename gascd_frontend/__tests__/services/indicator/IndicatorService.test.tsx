@@ -87,7 +87,7 @@ describe('parseDate', () => {
       load_date_time: new Date(2024, 3, 10),
     };
     const result: Date = IndicatorService.parseDate(entry_with_string);
-    expect(result).toEqual(new Date(2020, 4, 23));
+    expect(result).toEqual(new Date(2020, 3, 23));
 
     const entry_with_iso_string: Indicator = {
       metric_id: '1',
