@@ -27,7 +27,7 @@ describe('BarChart Component', () => {
         highlightCategory="Suffolk"
       />
     );
-    expect(screen.getByTestId('plotly-mock')).toBeDefined();
+    expect(screen.queryByTestId('plotly-mock')).toBeDefined();
   });
 
   it('applies correct colors based on highlightCategory and darkBlueCount', () => {

@@ -4,7 +4,7 @@ import { Layout, Data, Shape } from 'plotly.js';
 import dynamic from 'next/dynamic';
 
 // Skip any SSR compilation for plotly
-export const Plotly = dynamic(() => import('react-plotly.js'), { ssr: false });
+const Plotly = dynamic(() => import('react-plotly.js'), { ssr: false });
 
 interface BarChartProps {
   categories: string[];
