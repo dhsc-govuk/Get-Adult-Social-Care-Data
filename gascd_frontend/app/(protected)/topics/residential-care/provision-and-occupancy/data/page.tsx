@@ -129,32 +129,28 @@ export default function ProvisionAndOccupancyPage() {
     categories: string[];
     values: number[];
   }>({ categories: [], values: [] });
-  // Simulating fetching API data
   useEffect(() => {
-    // Replace this with your actual API fetch
-    const mockApiData = [
-      { label: 'England (national average)', val: 1350 },
-      { label: 'East of England (regional average)', val: 1550 },
-      { label: 'Cambridgeshire', val: 2050 },
-      { label: 'Peterborough', val: 1700 },
-      { label: 'Luton', val: 1700 },
-      { label: 'Southend-on-Sea', val: 1680 },
-      { label: 'Suffolk', val: 1650 },
-      { label: 'Bedford', val: 1450 },
-      { label: 'Central Bedfordshire', val: 1300 },
-      { label: 'Thurrock', val: 1200 },
-      { label: 'Hertfordshire', val: 900 },
-      { label: 'Essex', val: 850 },
-      { label: 'Norfolk', val: 750 },
-    ];
-
-    setChartData({
-      categories: mockApiData.map((d) => d.label),
-      values: mockApiData.map((d) => d.val),
+    let categories: string[] = [];
+    let values: number[] = [];
+    Object.entries(bedNumberRowHeaders).map((header: any) => {
+      categories.push(header[1]);
+      const datapoints = filteredBedNumbersData.filter(
+        (item) => item.location_id === header[0]
+      );
+      if (datapoints.length) {
+        values.push(datapoints[0].data_point);
+      } else {
+        values.push(0);
+      }
     });
-  }, []);
+    setChartData({
+      categories: categories,
+      values: values,
+    });
+  }, [bedNumberRowHeaders, filteredBedNumbersData]);
 
   useEffect(() => {
+    // Get Selected location from user
     const fetchSelectedLocation = async () => {
       const userLocationId = await LocationService.getSelectedLocation();
       if (!userLocationId) {
@@ -167,6 +163,7 @@ export default function ProvisionAndOccupancyPage() {
   }, [session]);
 
   useEffect(() => {
+    // Look up the related names for the current location
     const fetchLocationNames = async () => {
       if (CPLocationId) {
         try {
@@ -191,6 +188,7 @@ export default function ProvisionAndOccupancyPage() {
   }, [CPLocationId]);
 
   useEffect(() => {
+    // Fetch all metric data based on set queries
     const fetchAllData = async () => {
       if (!CPLocationId || !locationIds) return;
       try {
@@ -236,6 +234,7 @@ export default function ProvisionAndOccupancyPage() {
   ]);
 
   useEffect(() => {
+    // Get location IDs for the selected location
     const fetchLocationIds = async () => {
       if (CPLocationId) {
         try {
@@ -253,6 +252,7 @@ export default function ProvisionAndOccupancyPage() {
   }, [CPLocationId]);
 
   useEffect(() => {
+    // Get LA data for the current region
     const fetchLasForRegion = async () => {
       if (locationIds[2]) {
         const las = await LocationService.getLasForRegion(locationIds[2]);
@@ -276,6 +276,7 @@ export default function ProvisionAndOccupancyPage() {
   }, [locationIds, locationNamesCP]);
 
   useEffect(() => {
+    // Set up the basic metric queries
     if (CPLocationId) {
       setCareProviderData1Query(() => ({
         metric_ids: careProviderMetricIds1,
@@ -295,6 +296,7 @@ export default function ProvisionAndOccupancyPage() {
   }, [CPLocationId, locationIds]);
 
   useEffect(() => {
+    // Set up filterable metric queries for the types table
     const storedData = localStorage.getItem('type-table-metrics');
     if (storedData) {
       try {
@@ -324,6 +326,7 @@ export default function ProvisionAndOccupancyPage() {
   }, [locationIds]);
 
   useEffect(() => {
+    // Set up filterable metric queries for the numbers table
     const storedData = localStorage.getItem('numbers-table-metrics');
     if (storedData && locationIds && laIdsForRegion && lasForRegion) {
       try {
@@ -376,14 +379,16 @@ export default function ProvisionAndOccupancyPage() {
         </div>
       </div>
       <DataBox dataTitle="Test Chart" dataInfo={'Some info here'}>
-        <div style={{ height: '800px' }}>
-          <BarChart
-            categories={chartData.categories}
-            values={chartData.values}
-            highlightCategory="Suffolk"
-            darkBlueCount={2}
-          />
-        </div>
+        {(chartData.categories.length && (
+          <div style={{ height: '800px' }}>
+            <BarChart
+              categories={chartData.categories}
+              values={chartData.values}
+              highlightCategory={locationNamesCP.LALabel}
+              darkBlueCount={2}
+            />
+          </div>
+        )) || <p>Loading chart...</p>}
       </DataBox>
       <DataBox
         dataTitle="Care home bed numbers"
