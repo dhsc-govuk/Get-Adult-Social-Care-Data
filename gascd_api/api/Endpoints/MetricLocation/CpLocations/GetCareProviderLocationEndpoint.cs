@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.MetricLocation.CpLocations;
 
-public class GetCareProviderLocationEndpoint(GascdDataContext context, ReferenceMapper mapper) : Endpoint<GetCareProviderLocationRequest, GetCareProviderLocationResponse>
+public class GetCareProviderLocationEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetCareProviderLocationEndpoint> logger) : Endpoint<GetCareProviderLocationRequest, GetCareProviderLocationResponse>
 {
     public override void Configure()
     {
@@ -14,6 +14,7 @@ public class GetCareProviderLocationEndpoint(GascdDataContext context, Reference
 
     public override async Task HandleAsync(GetCareProviderLocationRequest req, CancellationToken ct)
     {
+        logger.LogDebug("Received request for care provider location: {cpl}", req.CareProviderLocationCode);
         var cpl = context.CareProviderLocations
             .Include(cpl => cpl.CareProvider)
             .Include(cpl => cpl.LocalAuthority)
@@ -21,11 +22,13 @@ public class GetCareProviderLocationEndpoint(GascdDataContext context, Reference
 
         if (cpl == null)
         {
+            logger.LogInformation("Care provider location not found: {cpl}", req.CareProviderLocationCode);
             await Send.NotFoundAsync(ct);
             return;
         }
 
         var response = mapper.CareProviderLocationToGetCareProviderLocationResponse(cpl);
+        logger.LogInformation("Finished processing care provider location: {cpl}", req.CareProviderLocationCode);
         await Send.OkAsync(response, ct);
 
     }
