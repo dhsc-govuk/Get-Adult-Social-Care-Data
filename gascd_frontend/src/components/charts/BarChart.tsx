@@ -122,6 +122,7 @@ const BarChart: React.FC<BarChartProps> = ({
       style={{ width: '100%', height: '100%' }}
       data={chartData}
       layout={layout}
+      useResizeHandler={true}
       config={{ displayModeBar: false, responsive: true }}
     />
   );

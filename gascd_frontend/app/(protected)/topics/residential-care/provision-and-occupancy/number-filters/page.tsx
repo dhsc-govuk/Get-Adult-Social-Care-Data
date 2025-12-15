@@ -40,7 +40,7 @@ export default function ProvisionAndOccupancyNumbersFiltersPage() {
       JSON.stringify(selectedFilters)
     );
     router.push(
-      '/topics/residential-care/provision-and-occupancy/data#table-1'
+      '/topics/residential-care/provision-and-occupancy/data#chart-1'
     );
   };
 

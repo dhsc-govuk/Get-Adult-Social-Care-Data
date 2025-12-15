@@ -266,8 +266,8 @@ export default function ProvisionAndOccupancyPage() {
         setLaIdsForRegion(idArray);
 
         const map: any = {};
-        map[locationIds[3]] = locationNamesCP.CountryLabel;
-        map[locationIds[2]] = locationNamesCP.RegionLabel;
+        map[locationIds[3]] = locationNamesWithAverageLabels.CountryLabel;
+        map[locationIds[2]] = locationNamesWithAverageLabels.RegionLabel;
         las.map((item: any) => (map[item.la_code] = item.la_name));
         setBedNumberRowHeaders(map);
       }
@@ -378,18 +378,6 @@ export default function ProvisionAndOccupancyPage() {
           </h2>
         </div>
       </div>
-      <DataBox dataTitle="Test Chart" dataInfo={'Some info here'}>
-        {(chartData.categories.length && chartData.values.length && (
-          <div style={{ height: '800px' }}>
-            <BarChart
-              categories={chartData.categories}
-              values={chartData.values}
-              highlightCategory={locationNamesCP.LALabel}
-              darkBlueCount={2}
-            />
-          </div>
-        )) || <p>Loading chart...</p>}
-      </DataBox>
       <DataBox
         dataTitle="Care home bed numbers"
         dataInfo={
@@ -429,6 +417,18 @@ export default function ProvisionAndOccupancyPage() {
         </table>
         <DataTabs
           id="1"
+          chart={
+            (chartData.categories.length && chartData.values.length && (
+              <div style={{ height: '800px' }}>
+                <BarChart
+                  categories={chartData.categories}
+                  values={chartData.values}
+                  highlightCategory={locationNamesCP.LALabel}
+                  darkBlueCount={2}
+                />
+              </div>
+            )) || <p>Loading chart...</p>
+          }
           table={
             <VerticalLocationTable
               tableref={tableref1}
