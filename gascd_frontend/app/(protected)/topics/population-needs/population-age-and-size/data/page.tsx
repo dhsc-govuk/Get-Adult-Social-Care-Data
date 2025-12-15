@@ -440,7 +440,10 @@ export default function ProvisionAndOccupancyPage() {
           url="/help/population-size"
         />
       </DataIndicatorDetailsList>
-      <LocalMarketInformation localAuthority={locationNames.LALabel} url="" />
+      <LocalMarketInformation
+        localAuthority={locationNames.LALabel}
+        localAuthorityId={locationIds[1]}
+      />
       <BackToTop />
     </Layout>
   );

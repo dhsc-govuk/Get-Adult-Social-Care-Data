@@ -277,7 +277,10 @@ export default function DisabilityPrevalence() {
           url="/help/people-who-reported-bad-or-very-bad-health"
         />
       </DataIndicatorDetailsList>
-      <LocalMarketInformation localAuthority={locationNames.LALabel} url="" />
+      <LocalMarketInformation
+        localAuthority={locationNames.LALabel}
+        localAuthorityId={locationIds[1]}
+      />
       <BackToTop />
     </Layout>
   );

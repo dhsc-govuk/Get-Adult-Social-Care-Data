@@ -682,7 +682,10 @@ export default function ProvisionAndOccupancyPage() {
           url="/help/percentage-beds-occupied"
         />
       </DataIndicatorDetailsList>
-      <LocalMarketInformation localAuthority={locationNamesCP.LALabel} url="" />
+      <LocalMarketInformation
+        localAuthority={locationNamesCP.LALabel}
+        localAuthorityId={locationIds[1]}
+      />
       <BackToTop />
     </Layout>
   );

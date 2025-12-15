@@ -354,7 +354,10 @@ export default function ProvisionAndOccupancyPage() {
           url="/help/one-person-households-where-person-aged-65-or-over"
         />
       </DataIndicatorDetailsList>
-      <LocalMarketInformation localAuthority={locationNames.LALabel} url="" />
+      <LocalMarketInformation
+        localAuthority={locationNames.LALabel}
+        localAuthorityId={locationIds[1]}
+      />
       <BackToTop />
     </Layout>
   );
