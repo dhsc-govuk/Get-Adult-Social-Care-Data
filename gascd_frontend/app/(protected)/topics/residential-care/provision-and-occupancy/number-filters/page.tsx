@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 export default function ProvisionAndOccupancyNumbersFiltersPage() {
   const router = useRouter();
   const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
-  const [selectedFilter, setSelectedFilter] = useState<TotalBedsFilters[]>([]);
+  const [selectedFilter, setSelectedFilter] = useState<TotalBedsFilters>();
 
   useEffect(() => {
     const getFilters = async () => {
@@ -21,25 +21,18 @@ export default function ProvisionAndOccupancyNumbersFiltersPage() {
       const storedData = localStorage.getItem('numbers-table-metrics');
       if (storedData) {
         setSelectedFilter(JSON.parse(storedData));
+      } else {
+        setSelectedFilter({
+          metric_id: 'bedcount_per_100000_adults_total',
+          filter_bedtype: 'All bed types',
+        });
       }
     };
     getFilters();
   }, []);
 
-  const handleChange = (metric_id: string, checked: boolean) => {
-    const newFilters = [...filters];
-    let newItem = newFilters.findIndex((item) => item.metric_id === metric_id);
-    newFilters[newItem].checked = checked;
-    setFilters(newFilters);
-
-    setSelectedFilter(
-      filters
-        .filter((filter) => filter.checked)
-        .map((filter) => ({
-          metric_id: filter.metric_id,
-          filter_bedtype: filter.filter_bedtype,
-        }))
-    );
+  const handleChange = (filter: TotalBedsFilters) => {
+    setSelectedFilter(filter);
   };
 
   const handleSubmit = () => {
@@ -96,11 +89,9 @@ export default function ProvisionAndOccupancyNumbersFiltersPage() {
                   type="radio"
                   value={filter.metric_id}
                   defaultChecked={
-                    selectedFilter[0].metric_id === filter.metric_id
+                    selectedFilter?.metric_id === filter.metric_id
                   }
-                  onChange={(e) =>
-                    handleChange(e.target.value, e.target.checked)
-                  }
+                  onChange={() => handleChange(filter)}
                 />
                 <label
                   className="govuk-label govuk-radios__label"
