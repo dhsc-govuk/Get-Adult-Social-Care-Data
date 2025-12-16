@@ -88,7 +88,7 @@ describe('Logout API Route', () => {
 
     expect(response.status).toBe(200);
     expect(json).toEqual({
-      logoutUrl: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/${process.env.AZURE_AD_B2C_USER_SIGN_IN}/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(process.env.AZURE_AD_B2C_LOGOUT_URL)}&client_id=1234`,
+      logoutUrl: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/${process.env.AZURE_AD_B2C_USER_SIGN_IN}/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(process.env.AZURE_AD_B2C_LOGOUT_URL + '/signed-out')}&client_id=1234`,
     });
   });
 });
