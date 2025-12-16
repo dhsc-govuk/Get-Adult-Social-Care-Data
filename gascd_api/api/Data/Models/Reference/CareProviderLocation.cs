@@ -15,9 +15,6 @@ public class CareProviderLocation : EntityBase
     [ForeignKey("CareProviderFk")]
     public virtual CareProvider CareProvider { get; init; } = null!;
 
-    [Column("sanitised_postcode"), StringLength(7)]
-    public required string SanitisedPostcode { get; init; }
-
     [Column("address"), StringLength(255)]
     public required string Address { get; init; }
 
@@ -29,4 +26,10 @@ public class CareProviderLocation : EntityBase
 
     [ForeignKey("LocalAuthorityFk")]
     public virtual LocalAuthority LocalAuthority { get; init; } = null!;
+
+    [Column("geo_data_fk")]
+    public required int GeoDataFk { get; init; }
+
+    [ForeignKey("GeoDataFk")]
+    public virtual GeoData GeoData { get; init; } = null!;
 }
