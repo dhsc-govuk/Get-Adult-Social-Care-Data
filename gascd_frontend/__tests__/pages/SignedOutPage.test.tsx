@@ -13,7 +13,7 @@ describe('SignedOutPage', () => {
     expect(headingElement).toBeInTheDocument();
 
     const bodyTextElement = screen.getByText(
-      /We're keen to hear about your experience/i
+      /keen to hear about your experience/i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
