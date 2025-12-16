@@ -24,6 +24,7 @@ import TimeSeriesChart, {
   Series,
 } from '@/components/charts/TimeSeriesChart';
 import IndicatorService from '@/services/indicator/IndicatorService';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -283,16 +284,26 @@ export default function ProvisionAndOccupancyPage() {
         metric_ids: careProviderMetricIds1,
         location_ids: [CPLocationId],
       }));
+      // Track all metrics on this page
+      careProviderMetricIds1.forEach((metric_id) => {
+        AnalyticsService.trackMetricView(metric_id);
+      });
     }
     if (locationIds.length) {
       setCareProviderData2Query(() => ({
         metric_ids: careProviderMetricIds2,
         location_ids: locationIds,
       }));
+      careProviderMetricIds2.forEach((metric_id) => {
+        AnalyticsService.trackMetricView(metric_id);
+      });
       setCareHomeBedTypesDataQuery(() => ({
         metric_ids: bedTypeMetricIds,
         location_ids: locationIds,
       }));
+      bedTypeMetricIds.forEach((metric_id) => {
+        AnalyticsService.trackMetricView(metric_id);
+      });
     }
   }, [CPLocationId, locationIds]);
 
@@ -309,6 +320,7 @@ export default function ProvisionAndOccupancyPage() {
             location_ids: locationIds,
             most_recent: true,
           }));
+          AnalyticsService.trackMetricView('bedcount_per_100000_adults_total');
           const map: any = {};
           parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
           setBedTypeRowHeaders(map);
@@ -323,6 +335,9 @@ export default function ProvisionAndOccupancyPage() {
         metric_ids: bedTypeMetricIds,
         location_ids: locationIds,
       });
+      bedTypeMetricIds.forEach((metric_id) => {
+        AnalyticsService.trackMetricView(metric_id);
+      });
     }
   }, [locationIds]);
 
@@ -332,13 +347,16 @@ export default function ProvisionAndOccupancyPage() {
     if (storedData && locationIds && laIdsForRegion && lasForRegion) {
       try {
         const parsedData = JSON.parse(storedData);
-        if (parsedData) {
-          const id = parsedData.metric_id;
-          const name = parsedData.filter_bedtype;
+        if (Array.isArray(parsedData)) {
+          const ids = parsedData.map((item) => item.metric_id);
+          const name = parsedData.map((item) => item.filter_bedtype);
           setCareHomeBedNumbersDataQuery({
-            metric_ids: [id],
+            metric_ids: ids,
             location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
             most_recent: true,
+          });
+          ids.forEach((metric_id) => {
+            AnalyticsService.trackMetricView(metric_id);
           });
           if (parsedData) {
             setSelectedBedNumberTableFilter(name);
@@ -353,6 +371,9 @@ export default function ProvisionAndOccupancyPage() {
       setCareHomeBedNumbersDataQuery({
         metric_ids: bedNumberMetricIds,
         location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
+      });
+      bedNumberMetricIds.forEach((metric_id) => {
+        AnalyticsService.trackMetricView(metric_id);
       });
     }
   }, [locationIds, laIdsForRegion, lasForRegion]);

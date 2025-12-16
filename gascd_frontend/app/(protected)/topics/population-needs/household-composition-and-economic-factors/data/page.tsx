@@ -2,7 +2,6 @@
 
 import Layout from '@/components/common/layout/Layout';
 import React, { useEffect, useRef, useState } from 'react';
-import { authClient } from '@/lib/auth-client';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
@@ -18,6 +17,7 @@ import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -39,8 +39,6 @@ export default function ProvisionAndOccupancyPage() {
     metric_ids: [],
     location_ids: [],
   });
-
-  const { data: session } = authClient.useSession();
 
   const breadcrumbs = [
     {
@@ -69,7 +67,11 @@ export default function ProvisionAndOccupancyPage() {
       setCPLocationId(userLocationId);
     };
     fetchSelectedLocation();
-  }, [session]);
+    // Track all metrics on this page
+    demographicMetricIds.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+  }, []);
 
   useEffect(() => {
     const fetchLocationNames = async () => {
