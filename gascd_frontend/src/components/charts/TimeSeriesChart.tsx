@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useMemo } from 'react';
 import { Layout, Data, ScatterData } from 'plotly.js';
 import dynamic from 'next/dynamic';
@@ -16,7 +16,7 @@ export interface DataPoint {
 export interface Series {
   name: string;
   data: DataPoint[];
-  color?: string; 
+  color?: string;
 }
 
 interface TimeSeriesChartProps {
@@ -25,25 +25,22 @@ interface TimeSeriesChartProps {
 
 // --- Component ---
 
-const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ 
-  series = [], 
-}) => {
-
+const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ series = [] }) => {
   const DEFAULT_COLORS = [
-    "#F29F41", // Orange 
-    "#12344D", // Dark Navy 
-    "#56B4E9", // Light Blue
-    "#009E73", // Green (Extra)
-    "#CC79A7"  // Pink (Extra)
+    '#F29F41', // Orange
+    '#12344D', // Dark Navy
+    '#56B4E9', // Light Blue
+    '#009E73', // Green (Extra)
+    '#CC79A7', // Pink (Extra)
   ];
 
   // 1. Transform props into Plotly Data Traces
   const chartData: Data[] = useMemo(() => {
     return series.map((s, index) => {
       // Create separate arrays for X and Y as Plotly expects
-      const xValues = s.data.map(d => d.date);
-      const yValues = s.data.map(d => d.value);
-      
+      const xValues = s.data.map((d) => d.date);
+      const yValues = s.data.map((d) => d.value);
+
       const trace: Partial<ScatterData> = {
         type: 'scatter',
         mode: 'lines',
@@ -55,7 +52,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
           color: s.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
           width: 5,
         },
-        hovertemplate: '<b>%{y:,.0f}</b><br>%{x|%d %b %Y}<extra></extra>', 
+        hovertemplate: '<b>%{y:,.0f}</b><br>%{x|%d %b %Y}<extra></extra>',
       };
 
       return trace as Data;
@@ -64,6 +61,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
 
   const layout: Partial<Layout> = {
     // Legend positioned above the chart, horizontal
+    showlegend: true,
     legend: {
       orientation: 'v',
       yanchor: 'bottom',
@@ -79,22 +77,24 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
     xaxis: {
       type: 'date',
       tickformat: '%b %y', // Shows "Jan", "Feb", etc.
-      showgrid: false,  // No vertical grid lines
-      tickfont: { 
+      showgrid: false, // No vertical grid lines
+      tickfont: {
         family: '"GDS Transport", Arial, sans-serif',
-        size: 14, color: '#000' 
+        size: 14,
+        color: '#000',
       },
       fixedrange: true, // prevents zooming
     },
     yaxis: {
-      showgrid: true,   // Keep horizontal grid lines
+      showgrid: true, // Keep horizontal grid lines
       gridcolor: '#e1e1e1',
-      zeroline: true,  // We use the X-axis zeroline instead
+      zeroline: true, // We use the X-axis zeroline instead
       zerolinecolor: '#333',
       zerolinewidth: 2,
-      tickfont: { 
+      tickfont: {
         family: '"GDS Transport", Arial, sans-serif',
-        size: 14, color: '#000' 
+        size: 14,
+        color: '#000',
       },
       rangemode: 'tozero', // Ensures 0 is always visible
       fixedrange: true, // prevents zooming
