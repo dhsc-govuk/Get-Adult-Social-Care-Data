@@ -87,6 +87,7 @@ export default function ProvisionAndOccupancyNumbersFiltersPage() {
                   name="Table filter"
                   type="radio"
                   value={filter.metric_id}
+                  defaultChecked={index === 0 ? true : false}
                   onChange={(e) =>
                     handleCheckboxChange(e.target.value, e.target.checked)
                   }
