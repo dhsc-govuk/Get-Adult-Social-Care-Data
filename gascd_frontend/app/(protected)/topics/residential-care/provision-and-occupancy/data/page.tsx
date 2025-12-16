@@ -25,6 +25,7 @@ import TimeSeriesChart, {
   Series,
 } from '@/components/charts/TimeSeriesChart';
 import IndicatorService from '@/services/indicator/IndicatorService';
+import PresentDemandService from '@/services/present-demand/presentDemandService';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -462,22 +463,32 @@ export default function ProvisionAndOccupancyPage() {
         <DataTabs
           id="1"
           chart={
-            (chartData.categories.length && chartData.values.length && (
-              <div style={{ height: '800px' }}>
-                <BarChart
-                  categories={chartData.categories}
-                  values={chartData.values}
-                  highlightCategory={locationNamesCP.LALabel}
-                  darkBlueCount={2}
-                />
-              </div>
-            )) || <p>Loading chart...</p>
+            <>
+              <h3 className="govuk-heading-s">
+                Figure 1: chart of care home beds per 100,000 adult population -
+                local authorities in {locationNamesCP.RegionLabel},{' '}
+                {PresentDemandService.getMostRecentDate(filteredBedNumbersData)}
+              </h3>
+              {(chartData.categories.length && chartData.values.length && (
+                <div style={{ height: '800px' }}>
+                  <BarChart
+                    categories={chartData.categories}
+                    values={chartData.values}
+                    highlightCategory={locationNamesCP.LALabel}
+                    darkBlueCount={2}
+                  />
+                </div>
+              )) || <p>Loading chart...</p>}
+            </>
           }
           table={
             <VerticalLocationTable
               tableref={tableref1}
-              caption={`Table 1: care home bed numbers per 100,000 adult population for regional local authorities -
-                ${locationNamesCP.RegionLabel}, October 2025`}
+              caption={
+                `Table 1: care home bed numbers per 100,000 adult population for regional local authorities -
+                ${locationNamesCP.RegionLabel}, ` +
+                PresentDemandService.getMostRecentDate(filteredBedNumbersData)
+              }
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
               }
@@ -546,9 +557,11 @@ export default function ProvisionAndOccupancyPage() {
           table={
             <DataTable
               tableref={tableref2}
-              caption={`Table 2: care home bed numbers per 100,000 adult population – ${locationNamesCP.LALabel} local authority, 
-                ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, October
-                2025`}
+              caption={
+                `Table 2: care home bed numbers per 100,000 adult population – ${locationNamesCP.LALabel} local authority, 
+                ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, ` +
+                PresentDemandService.getMostRecentDate(filteredBedTypeData)
+              }
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
               }
@@ -638,10 +651,12 @@ export default function ProvisionAndOccupancyPage() {
           table={
             <DataTable
               tableref={tableref3}
-              caption={`Table 3: care home bed numbers and occupancy levels – 
+              caption={
+                `Table 3: care home bed numbers and occupancy levels – 
                 ${locationNamesCP.CPLabel}, ${locationNamesCP.LALabel} local authority, 
-                ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, October
-                2025`}
+                ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, ` +
+                PresentDemandService.getMostRecentDate(finalCpData)
+              }
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC)'
               }
