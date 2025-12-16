@@ -434,28 +434,21 @@ export default function ProvisionAndOccupancyPage() {
           </>
         }
       >
-        <table className="govuk-table govuk-!-margin-top-3">
-          <tbody className="govuk-table__body">
-            <tr className="govuk-table__row">
-              <th scope="row" className="govuk-table__header">
-                Filter
-              </th>
-              <td className="govuk-table__cell">
-                <p className="govuk-!-margin-top-0">
-                  {selectedBedNumberTableFilter}
-                </p>
-              </td>
-              <td className="govuk-table__cell">
-                <a
-                  href="/topics/residential-care/provision-and-occupancy/number-filters"
-                  className="govuk-link"
-                >
-                  Change
+        <div className="govuk-form-group govuk-!-padding-top-3">
+          <dl className="govuk-summary-list">
+            <div className="govuk-summary-list__row">
+              <dt className="govuk-summary-list__key">Filter</dt>
+              <dd className="govuk-summary-list__value">
+                {selectedBedNumberTableFilter}
+              </dd>
+              <dd className="govuk-summary-list__actions">
+                <a href="filters/_4-filters" className="govuk-link">
+                  Change<span className="govuk-visually-hidden"> filters</span>
                 </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </dd>
+            </div>
+          </dl>
+        </div>
         <DataTabs
           id="1"
           chart={
@@ -524,30 +517,25 @@ export default function ProvisionAndOccupancyPage() {
           </>
         }
       >
-        <table className="govuk-table govuk-!-margin-top-3">
-          <tbody className="govuk-table__body">
-            <tr className="govuk-table__row">
-              <th scope="row" className="govuk-table__header">
-                Filter
-              </th>
-              <td className="govuk-table__cell">
+        <div className="govuk-form-group govuk-!-padding-top-3">
+          <dl className="govuk-summary-list">
+            <div className="govuk-summary-list__row">
+              <dt className="govuk-summary-list__key">Filters</dt>
+              <dd className="govuk-summary-list__value">
                 <ul className="govuk-!-margin-top-0 nobullet">
                   {selectedBedTypeTableFilters.map((filter, index) => (
                     <li key={index}>{filter}</li>
                   ))}
                 </ul>
-              </td>
-              <td className="govuk-table__cell">
-                <a
-                  href="/topics/residential-care/provision-and-occupancy/type-filters"
-                  className="govuk-link"
-                >
-                  Change
+              </dd>
+              <dd className="govuk-summary-list__actions">
+                <a href="filters/_4-filters" className="govuk-link">
+                  Change<span className="govuk-visually-hidden"> filters</span>
                 </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </dd>
+            </div>
+          </dl>
+        </div>
         <DataTabs
           id="2"
           table={
