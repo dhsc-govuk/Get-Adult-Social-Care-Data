@@ -168,9 +168,9 @@ class IndicatorService {
         // expects dd/mm/yyyy
         const dateparts = entry.metric_date.split('/');
         return new Date(
-          parseInt(dateparts[2]),
-          parseInt(dateparts[1]),
-          parseInt(dateparts[0])
+          parseInt(dateparts[2]), // year,
+          parseInt(dateparts[1]) - 1, // month index (zero-based)
+          parseInt(dateparts[0]) // dom
         );
       } else {
         // Assume it is a parseable date

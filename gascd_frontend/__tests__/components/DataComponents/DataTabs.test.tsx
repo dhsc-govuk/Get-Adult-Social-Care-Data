@@ -8,6 +8,7 @@ describe('DataTabs', () => {
         id="1"
         map={<p>Test map</p>}
         chart={<p>Test chart</p>}
+        graph={<p>Test graph</p>}
         table={<p>Test table</p>}
         textSummary={<p>Test textSummary</p>}
         download={<p>Test download</p>}
@@ -21,6 +22,10 @@ describe('DataTabs', () => {
     const chartElement = screen.getByText('Chart');
     expect(chartElement).toBeInTheDocument();
     expect(chartElement).toHaveAttribute('href', '#chart-1');
+
+    const graphElement = screen.getByText('Graph');
+    expect(graphElement).toBeInTheDocument();
+    expect(graphElement).toHaveAttribute('href', '#graph-1');
 
     const tableElement = screen.getByText('Table');
     expect(tableElement).toBeInTheDocument();
@@ -48,6 +53,9 @@ describe('DataTabs', () => {
 
     const tableElement = screen.queryByText('Table');
     expect(tableElement).not.toBeInTheDocument();
+
+    const graphElement = screen.queryByText('Graph');
+    expect(graphElement).not.toBeInTheDocument();
 
     const textSummaryElement = screen.queryByText('Text Summary');
     expect(textSummaryElement).not.toBeInTheDocument();
