@@ -277,7 +277,7 @@ export default function ProvisionAndOccupancyPage() {
       }
     };
     fetchLasForRegion();
-  }, [locationNamesWithAverageLabels]);
+  }, [locationIds, locationNamesWithAverageLabels]);
 
   useEffect(() => {
     // Set up the basic metric queries
