@@ -11,6 +11,9 @@ export default function ProvisionAndOccupancyTypeFiltersPage() {
   const router = useRouter();
   const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
   const [error, setError] = useState<boolean>(false);
+  const [selectedFilters, setSelectedFilters] = useState<TotalBedsFilters[]>(
+    []
+  );
 
   useEffect(() => {
     const getFilters = async () => {
@@ -26,14 +29,16 @@ export default function ProvisionAndOccupancyTypeFiltersPage() {
     let newItem = newFilters.findIndex((item) => item.metric_id === metric_id);
     newFilters[newItem].checked = checked;
     setFilters(newFilters);
-  };
 
-  const selectedFilters = filters
-    .filter((filter) => filter.checked)
-    .map((filter) => ({
-      metric_id: filter.metric_id,
-      filter_bedtype: filter.filter_bedtype,
-    }));
+    setSelectedFilters(
+      filters
+        .filter((filter) => filter.checked)
+        .map((filter) => ({
+          metric_id: filter.metric_id,
+          filter_bedtype: filter.filter_bedtype,
+        }))
+    );
+  };
 
   const handleSubmit = () => {
     if (selectedFilters.length === 0) {

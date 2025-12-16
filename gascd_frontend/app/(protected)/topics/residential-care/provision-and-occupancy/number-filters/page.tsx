@@ -10,34 +10,42 @@ import { useRouter } from 'next/navigation';
 export default function ProvisionAndOccupancyNumbersFiltersPage() {
   const router = useRouter();
   const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
+  const [selectedFilter, setSelectedFilter] = useState<TotalBedsFilters[]>([]);
 
   useEffect(() => {
     const getFilters = async () => {
       const filters: TotalBedsFilters[] =
         await IndicatorFetchService.getFilters('');
       setFilters(filters);
+
+      const storedData = localStorage.getItem('numbers-table-metrics');
+      if (storedData) {
+        setSelectedFilter(JSON.parse(storedData));
+      }
     };
     getFilters();
   }, []);
 
-  const handleCheckboxChange = (metric_id: string, checked: boolean) => {
+  const handleChange = (metric_id: string, checked: boolean) => {
     const newFilters = [...filters];
     let newItem = newFilters.findIndex((item) => item.metric_id === metric_id);
     newFilters[newItem].checked = checked;
     setFilters(newFilters);
-  };
 
-  const selectedFilters = filters
-    .filter((filter) => filter.checked)
-    .map((filter) => ({
-      metric_id: filter.metric_id,
-      filter_bedtype: filter.filter_bedtype,
-    }));
+    setSelectedFilter(
+      filters
+        .filter((filter) => filter.checked)
+        .map((filter) => ({
+          metric_id: filter.metric_id,
+          filter_bedtype: filter.filter_bedtype,
+        }))
+    );
+  };
 
   const handleSubmit = () => {
     localStorage.setItem(
       'numbers-table-metrics',
-      JSON.stringify(selectedFilters)
+      JSON.stringify(selectedFilter)
     );
     router.push(
       '/topics/residential-care/provision-and-occupancy/data#chart-1'
@@ -87,9 +95,11 @@ export default function ProvisionAndOccupancyNumbersFiltersPage() {
                   name="Table filter"
                   type="radio"
                   value={filter.metric_id}
-                  defaultChecked={index === 0 ? true : false}
+                  defaultChecked={
+                    selectedFilter[0].metric_id === filter.metric_id
+                  }
                   onChange={(e) =>
-                    handleCheckboxChange(e.target.value, e.target.checked)
+                    handleChange(e.target.value, e.target.checked)
                   }
                 />
                 <label
