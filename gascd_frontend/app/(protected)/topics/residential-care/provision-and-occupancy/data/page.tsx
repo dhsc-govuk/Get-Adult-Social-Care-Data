@@ -142,8 +142,6 @@ export default function ProvisionAndOccupancyPage() {
       );
       if (datapoints.length) {
         values.push(datapoints[0].data_point);
-      } else {
-        values.push(0);
       }
     });
     setChartData({
@@ -442,7 +440,10 @@ export default function ProvisionAndOccupancyPage() {
                 {selectedBedNumberTableFilter}
               </dd>
               <dd className="govuk-summary-list__actions">
-                <a href="filters/_4-filters" className="govuk-link">
+                <a
+                  href="/topics/residential-care/provision-and-occupancy/number-filters"
+                  className="govuk-link"
+                >
                   Change<span className="govuk-visually-hidden"> filters</span>
                 </a>
               </dd>
@@ -458,16 +459,17 @@ export default function ProvisionAndOccupancyPage() {
                 local authorities in {locationNamesCP.RegionLabel},{' '}
                 {PresentDemandService.getMostRecentDate(filteredBedNumbersData)}
               </h3>
-              {(chartData.categories.length && chartData.values.length && (
-                <div style={{ height: '800px' }}>
-                  <BarChart
-                    categories={chartData.categories}
-                    values={chartData.values}
-                    highlightCategory={locationNamesCP.LALabel}
-                    darkBlueCount={2}
-                  />
-                </div>
-              )) || <p>Loading chart...</p>}
+              {(chartData.categories.length > 0 &&
+                chartData.values.length > 0 && (
+                  <div style={{ height: '800px' }}>
+                    <BarChart
+                      categories={chartData.categories}
+                      values={chartData.values}
+                      highlightCategory={locationNamesCP.LALabel}
+                      darkBlueCount={2}
+                    />
+                  </div>
+                )) || <p>Loading chart...</p>}
             </>
           }
           table={
@@ -529,7 +531,10 @@ export default function ProvisionAndOccupancyPage() {
                 </ul>
               </dd>
               <dd className="govuk-summary-list__actions">
-                <a href="filters/_4-filters" className="govuk-link">
+                <a
+                  href="/topics/residential-care/provision-and-occupancy/type-filters"
+                  className="govuk-link"
+                >
                   Change<span className="govuk-visually-hidden"> filters</span>
                 </a>
               </dd>
