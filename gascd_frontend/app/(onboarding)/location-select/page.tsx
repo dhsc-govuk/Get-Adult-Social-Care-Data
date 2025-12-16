@@ -80,10 +80,34 @@ const LocationSelectPage: React.FC = () => {
             </p>
             <form>
               <div className="govuk-form-group">
+                {availableLocations.length > 1 && (
+                  <div
+                    className="search-field search-field-darker"
+                    id="data-radio-buttons-search-filter"
+                  >
+                    <div className="search-input">
+                      <label className="govuk-label" htmlFor="search-location">
+                        Search for a location
+                      </label>
+                      <input
+                        className="govuk-input"
+                        id="search-location"
+                        name="searchLocation"
+                        type="text"
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <fieldset className="govuk-fieldset">
                   <legend className="govuk-visually-hidden">
                     Select a location from your care provider group
                   </legend>
+                  {selectedLocation && (
+                    <p className="govuk-heading-m">
+                      You&apos;ve selected &quot;{selectedLocation}&quot;{' '}
+                    </p>
+                  )}
                   <div className="govuk-radios" data-module="govuk-radios">
                     {availableLocations.map((location, index) => (
                       <div
