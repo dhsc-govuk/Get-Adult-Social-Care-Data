@@ -30,7 +30,7 @@ const LocationSelectPage: React.FC = () => {
         await LocationService.getSelectedLocationDisplayName();
       if (currentSelectedLocation) {
         setSelectedLocation(currentSelectedLocation);
-        setSelectedLocation(currentSelectedLocationName);
+        setSelectedLocationName(currentSelectedLocationName);
       }
     };
 

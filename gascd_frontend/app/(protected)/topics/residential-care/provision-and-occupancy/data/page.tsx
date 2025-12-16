@@ -333,11 +333,11 @@ export default function ProvisionAndOccupancyPage() {
     if (storedData && locationIds && laIdsForRegion && lasForRegion) {
       try {
         const parsedData = JSON.parse(storedData);
-        if (Array.isArray(parsedData)) {
-          const id = parsedData.map((item) => item.metric_id);
-          const name = parsedData.map((item) => item.filter_bedtype);
+        if (parsedData) {
+          const id = parsedData.metric_id;
+          const name = parsedData.filter_bedtype;
           setCareHomeBedNumbersDataQuery({
-            metric_ids: id,
+            metric_ids: [id],
             location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
             most_recent: true,
           });

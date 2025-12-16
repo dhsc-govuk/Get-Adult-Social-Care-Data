@@ -10,34 +10,35 @@ import { useRouter } from 'next/navigation';
 export default function ProvisionAndOccupancyNumbersFiltersPage() {
   const router = useRouter();
   const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
+  const [selectedFilter, setSelectedFilter] = useState<TotalBedsFilters>();
 
   useEffect(() => {
     const getFilters = async () => {
       const filters: TotalBedsFilters[] =
         await IndicatorFetchService.getFilters('');
       setFilters(filters);
+
+      const storedData = localStorage.getItem('numbers-table-metrics');
+      if (storedData) {
+        setSelectedFilter(JSON.parse(storedData));
+      } else {
+        setSelectedFilter({
+          metric_id: 'bedcount_per_100000_adults_total',
+          filter_bedtype: 'All bed types',
+        });
+      }
     };
     getFilters();
   }, []);
 
-  const handleCheckboxChange = (metric_id: string, checked: boolean) => {
-    const newFilters = [...filters];
-    let newItem = newFilters.findIndex((item) => item.metric_id === metric_id);
-    newFilters[newItem].checked = checked;
-    setFilters(newFilters);
+  const handleChange = (filter: TotalBedsFilters) => {
+    setSelectedFilter(filter);
   };
-
-  const selectedFilters = filters
-    .filter((filter) => filter.checked)
-    .map((filter) => ({
-      metric_id: filter.metric_id,
-      filter_bedtype: filter.filter_bedtype,
-    }));
 
   const handleSubmit = () => {
     localStorage.setItem(
       'numbers-table-metrics',
-      JSON.stringify(selectedFilters)
+      JSON.stringify(selectedFilter)
     );
     router.push(
       '/topics/residential-care/provision-and-occupancy/data#chart-1'
@@ -87,9 +88,10 @@ export default function ProvisionAndOccupancyNumbersFiltersPage() {
                   name="Table filter"
                   type="radio"
                   value={filter.metric_id}
-                  onChange={(e) =>
-                    handleCheckboxChange(e.target.value, e.target.checked)
+                  defaultChecked={
+                    selectedFilter?.metric_id === filter.metric_id
                   }
+                  onChange={() => handleChange(filter)}
                 />
                 <label
                   className="govuk-label govuk-radios__label"
