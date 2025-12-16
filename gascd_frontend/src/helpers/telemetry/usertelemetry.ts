@@ -4,7 +4,11 @@ import { auth } from '@/lib/auth';
 import { trace } from '@opentelemetry/api';
 import { ATTR_ENDUSER_ID } from '@opentelemetry/semantic-conventions/incubating';
 import { headers } from 'next/headers';
-import { PRIMARY_LOCATION_ID, PRIMARY_LOCATION_TYPE } from '@/constants';
+import {
+  ACTIVE_LOCATION_ID,
+  PRIMARY_LOCATION_ID,
+  PRIMARY_LOCATION_TYPE,
+} from '@/constants';
 
 // Server side helper to add user details to the current trace
 export const addUserTelemetry = async () => {
@@ -24,6 +28,12 @@ export const addUserTelemetry = async () => {
         activeSpan.setAttribute(
           PRIMARY_LOCATION_TYPE,
           session.user.locationType
+        );
+      }
+      if (session.user.selectedLocationId) {
+        activeSpan.setAttribute(
+          ACTIVE_LOCATION_ID,
+          session.user.selectedLocationId
         );
       }
     }
