@@ -142,8 +142,6 @@ export default function ProvisionAndOccupancyPage() {
       );
       if (datapoints.length) {
         values.push(datapoints[0].data_point);
-      } else {
-        values.push(0);
       }
     });
     setChartData({
@@ -434,28 +432,24 @@ export default function ProvisionAndOccupancyPage() {
           </>
         }
       >
-        <table className="govuk-table govuk-!-margin-top-3">
-          <tbody className="govuk-table__body">
-            <tr className="govuk-table__row">
-              <th scope="row" className="govuk-table__header">
-                Filter
-              </th>
-              <td className="govuk-table__cell">
-                <p className="govuk-!-margin-top-0">
-                  {selectedBedNumberTableFilter}
-                </p>
-              </td>
-              <td className="govuk-table__cell">
+        <div className="govuk-form-group govuk-!-padding-top-3">
+          <dl className="govuk-summary-list">
+            <div className="govuk-summary-list__row">
+              <dt className="govuk-summary-list__key">Filter</dt>
+              <dd className="govuk-summary-list__value">
+                {selectedBedNumberTableFilter}
+              </dd>
+              <dd className="govuk-summary-list__actions">
                 <a
                   href="/topics/residential-care/provision-and-occupancy/number-filters"
                   className="govuk-link"
                 >
-                  Change
+                  Change<span className="govuk-visually-hidden"> filters</span>
                 </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </dd>
+            </div>
+          </dl>
+        </div>
         <DataTabs
           id="1"
           chart={
@@ -465,16 +459,17 @@ export default function ProvisionAndOccupancyPage() {
                 local authorities in {locationNamesCP.RegionLabel},{' '}
                 {PresentDemandService.getMostRecentDate(filteredBedNumbersData)}
               </h3>
-              {(chartData.categories.length && chartData.values.length && (
-                <div style={{ height: '800px' }}>
-                  <BarChart
-                    categories={chartData.categories}
-                    values={chartData.values}
-                    highlightCategory={locationNamesCP.LALabel}
-                    darkBlueCount={2}
-                  />
-                </div>
-              )) || <p>Loading chart...</p>}
+              {(chartData.categories.length > 0 &&
+                chartData.values.length > 0 && (
+                  <div style={{ height: '800px' }}>
+                    <BarChart
+                      categories={chartData.categories}
+                      values={chartData.values}
+                      highlightCategory={locationNamesCP.LALabel}
+                      darkBlueCount={2}
+                    />
+                  </div>
+                )) || <p>Loading chart...</p>}
             </>
           }
           table={
@@ -524,30 +519,28 @@ export default function ProvisionAndOccupancyPage() {
           </>
         }
       >
-        <table className="govuk-table govuk-!-margin-top-3">
-          <tbody className="govuk-table__body">
-            <tr className="govuk-table__row">
-              <th scope="row" className="govuk-table__header">
-                Filter
-              </th>
-              <td className="govuk-table__cell">
+        <div className="govuk-form-group govuk-!-padding-top-3">
+          <dl className="govuk-summary-list">
+            <div className="govuk-summary-list__row">
+              <dt className="govuk-summary-list__key">Filters</dt>
+              <dd className="govuk-summary-list__value">
                 <ul className="govuk-!-margin-top-0 nobullet">
                   {selectedBedTypeTableFilters.map((filter, index) => (
                     <li key={index}>{filter}</li>
                   ))}
                 </ul>
-              </td>
-              <td className="govuk-table__cell">
+              </dd>
+              <dd className="govuk-summary-list__actions">
                 <a
                   href="/topics/residential-care/provision-and-occupancy/type-filters"
                   className="govuk-link"
                 >
-                  Change
+                  Change<span className="govuk-visually-hidden"> filters</span>
                 </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </dd>
+            </div>
+          </dl>
+        </div>
         <DataTabs
           id="2"
           table={
