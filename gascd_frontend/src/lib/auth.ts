@@ -68,6 +68,9 @@ export const auth = betterAuth({
       if (ctx.context.newSession) {
         logger.info('User logged in success', {
           userid: ctx.context.newSession.user.id,
+          primaryLocationId: ctx.context.newSession.user.locationId,
+          primaryLocationType: ctx.context.newSession.user.locationType,
+          activeLocationId: ctx.context.newSession.user.selectedLocationId,
         });
       }
     }),
