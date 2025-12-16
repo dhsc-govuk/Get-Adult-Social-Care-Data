@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 export default function ProvisionAndOccupancyTypeFiltersPage() {
   const router = useRouter();
   const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
     const getFilters = async () => {
@@ -35,6 +36,12 @@ export default function ProvisionAndOccupancyTypeFiltersPage() {
     }));
 
   const handleSubmit = () => {
+    if (selectedFilters.length === 0) {
+      setError(true);
+      window.scrollTo({ top: 0 });
+      return;
+    }
+    setError(false);
     localStorage.setItem('type-table-metrics', JSON.stringify(selectedFilters));
     router.push(
       '/topics/residential-care/provision-and-occupancy/data#table-2'
@@ -64,15 +71,41 @@ export default function ProvisionAndOccupancyTypeFiltersPage() {
       currentPage="care-home-bed-types-filters"
       breadcrumbs={breadcrumbs}
     >
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
-          <span className="govuk-caption-l">Care home bed types</span>
-          <h1 className="govuk-heading-l">Edit filters</h1>
+      {error && (
+        <div className="govuk-error-summary" data-module="govuk-error-summary">
+          <div role="alert">
+            <h2 className="govuk-error-summary__title">There is a problem</h2>
+            <div className="govuk-error-summary__body">
+              <ul className="govuk-list govuk-error-summary__list">
+                <li>
+                  <a href="#bedType">Select at least one filter</a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </div>
-      <p className="govuk-body">Select filters to refine the data displayed.</p>
-      <form>
-        <div className="govuk-form-group">
+      )}
+      <div
+        id="filter-list"
+        className={
+          error
+            ? 'govuk-form-group--error govuk-!-padding-bottom-4'
+            : 'govuk-form-group'
+        }
+      >
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <span className="govuk-caption-l">Care home bed types</span>
+            <h1 className="govuk-heading-l">Edit filters</h1>
+          </div>
+        </div>
+        <form>
+          {error && (
+            <p id="passport-issued-error" className="govuk-error-message">
+              <span className="govuk-visually-hidden">Error:</span> Select at
+              least one filter
+            </p>
+          )}
           {filters &&
             filters.map((filter: any, index) => (
               <div className="govuk-checkboxes__item" key={index}>
@@ -94,23 +127,29 @@ export default function ProvisionAndOccupancyTypeFiltersPage() {
                 </label>
               </div>
             ))}
-        </div>
-        <div className="govuk-button-group">
-          <button
-            type="button"
-            className="govuk-button"
-            onClick={() => handleSubmit()}
-          >
-            Apply changes
-          </button>
-          <Link
-            href="/topics/residential-care/provision-and-occupancy/data#table-2"
-            className="govuk-link govuk-body-m"
-          >
-            Cancel and go back
-          </Link>
-        </div>
-      </form>
+        </form>
+      </div>
+      <div
+        className={
+          error
+            ? 'govuk-button-group govuk-!-padding-top-4'
+            : 'govuk-button-group'
+        }
+      >
+        <button
+          type="button"
+          className="govuk-button"
+          onClick={() => handleSubmit()}
+        >
+          Apply changes
+        </button>
+        <Link
+          href="/topics/residential-care/provision-and-occupancy/data#table-2"
+          className="govuk-link govuk-body-m"
+        >
+          Cancel and go back
+        </Link>
+      </div>
     </Layout>
   );
 }
