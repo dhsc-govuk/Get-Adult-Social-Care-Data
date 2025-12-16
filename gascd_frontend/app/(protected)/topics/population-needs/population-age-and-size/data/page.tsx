@@ -2,7 +2,6 @@
 
 import Layout from '@/components/common/layout/Layout';
 import React, { useEffect, useRef, useState } from 'react';
-import { authClient } from '@/lib/auth-client';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
