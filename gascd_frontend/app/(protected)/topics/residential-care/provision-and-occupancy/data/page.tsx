@@ -2,7 +2,6 @@
 
 import Layout from '@/components/common/layout/Layout';
 import React, { useEffect, useRef, useState } from 'react';
-import { authClient } from '@/lib/auth-client';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
@@ -118,9 +117,6 @@ export default function ProvisionAndOccupancyPage() {
   ];
 
   const bedNumberMetricIds = ['bedcount_per_100000_adults_total'];
-
-  const { data: session } = authClient.useSession();
-
   const breadcrumbs = [
     {
       text: 'Home',
@@ -167,7 +163,7 @@ export default function ProvisionAndOccupancyPage() {
       setCPLocationId(userLocationId);
     };
     fetchSelectedLocation();
-  }, [session]);
+  }, []);
 
   useEffect(() => {
     // Look up the related names for the current location
@@ -262,7 +258,7 @@ export default function ProvisionAndOccupancyPage() {
   useEffect(() => {
     // Get LA data for the current region
     const fetchLasForRegion = async () => {
-      if (locationIds[2]) {
+      if (locationIds.length) {
         const las = await LocationService.getLasForRegion(locationIds[2]);
         let idArray: string[] = [];
 
@@ -281,7 +277,7 @@ export default function ProvisionAndOccupancyPage() {
       }
     };
     fetchLasForRegion();
-  }, [locationIds, locationNamesCP]);
+  }, [locationNamesWithAverageLabels]);
 
   useEffect(() => {
     // Set up the basic metric queries
