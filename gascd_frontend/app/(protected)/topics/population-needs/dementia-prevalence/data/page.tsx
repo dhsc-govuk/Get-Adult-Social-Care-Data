@@ -251,7 +251,10 @@ export default function DementaPrevalencePage() {
           url="/help/estimated-dementia-diagnosis-rate-aged-65-and-over"
         />
       </DataIndicatorDetailsList>
-      <LocalMarketInformation localAuthority={locationNames.LALabel} url="" />
+      <LocalMarketInformation
+        localAuthority={locationNames.LALabel}
+        localAuthorityId={locationIds[1]}
+      />
       <BackToTop />
     </Layout>
   );
