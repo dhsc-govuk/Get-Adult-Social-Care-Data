@@ -19,6 +19,7 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import IndicatorService from '@/services/indicator/IndicatorService';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 export default function DementaPrevalencePage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -38,8 +39,6 @@ export default function DementaPrevalencePage() {
     metric_ids: [],
     location_ids: [],
   });
-
-  const { data: session } = authClient.useSession();
 
   const breadcrumbs = [
     {
@@ -67,7 +66,12 @@ export default function DementaPrevalencePage() {
       setCPLocationId(userLocationId);
     };
     fetchSelectedLocation();
-  }, [session]);
+
+    // Track al metrics on this page
+    demographicMetricIds.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+  }, []);
 
   useEffect(() => {
     const fetchLocationNames = async () => {

@@ -1,19 +1,19 @@
-import { getAppInsights } from "@/components/analytics/appInsights";
-import { ACTIVE_LOCATION_ID, LOCATION_METRICS_VIEW_EVENT } from "@/constants";
-import { ICustomProperties } from "@microsoft/applicationinsights-web";
+import { getAppInsights } from '@/components/analytics/appInsights';
+import { METRIC_VIEW_EVENT } from '@/constants';
+import { ICustomProperties } from '@microsoft/applicationinsights-web';
 
 class AnalyticsService {
-
-  public static async trackMetricLocationView(locationId: string) {
-    // Tracks the event of (any) metrics being viewed at a specific location id
+  // Note - user properties are added to all events inside the analytics init method
+  public static async trackMetricView(metric_id: string) {
+    // Tracks the event of (any) metrics being viewed
+    // (location is added via the user's selected location)
     const appInsights = getAppInsights();
     if (appInsights) {
-        let props: ICustomProperties = {};
-        props[ACTIVE_LOCATION_ID] = locationId;
-        appInsights.trackEvent({name: LOCATION_METRICS_VIEW_EVENT, properties: props});
-        console.log(LOCATION_METRICS_VIEW_EVENT);
+      let props: ICustomProperties = {
+        metric_id: metric_id,
+      };
+      appInsights.trackEvent({ name: METRIC_VIEW_EVENT, properties: props });
     }
   }
 }
 export default AnalyticsService;
-
