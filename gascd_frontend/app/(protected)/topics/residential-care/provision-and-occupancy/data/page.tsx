@@ -174,7 +174,7 @@ export default function ProvisionAndOccupancyPage() {
           );
           setLocationNamesCP(locationNamesCP);
           setLocationNamesWithAverageLabels({
-            IndicatorLabel: locationNamesCP.IndicatorLabel!,
+            IndicatorLabel: 'Care home bed type',
             CPLabel: locationNamesCP.CPLabel!,
             LALabel: locationNamesCP.LALabel,
             RegionLabel: `${locationNamesCP.RegionLabel} (regional average)`,
