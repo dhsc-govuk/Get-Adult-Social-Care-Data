@@ -10,8 +10,14 @@ public class Region : EntityBase
     public required string Name { get; init; }
 
     [Column("country_fk")]
-    public required Guid CountryFk { get; init; }
+    public required int CountryFk { get; init; }
 
     [ForeignKey("CountryFk")]
     public virtual Country Country { get; init; } = null!;
+
+    [Column("geo_data_fk")]
+    public required int GeoDataFk { get; init; }
+
+    [ForeignKey("GeoDataFk")]
+    public virtual GeoData GeoData { get; init; } = null!;
 }

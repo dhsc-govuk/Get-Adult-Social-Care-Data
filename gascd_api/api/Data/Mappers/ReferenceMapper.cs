@@ -13,8 +13,8 @@ public class ReferenceMapper
         {
             SanitisedPostcode = postcode.Code,
             DisplayPostcode = postcode.DisplayPostcode,
-            Latitude = postcode.Latitude,
-            Longitude = postcode.Longitude,
+            Latitude = postcode.Coordinate.X,
+            Longitude = postcode.Coordinate.Y,
             LaCode = postcode.LocalAuthority.Code,
             LaName = postcode.LocalAuthority.Name
         };

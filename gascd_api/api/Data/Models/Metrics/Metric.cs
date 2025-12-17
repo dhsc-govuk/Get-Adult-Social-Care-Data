@@ -10,7 +10,7 @@ public class Metric : EntityBase
     public required string Name { get; init; }
 
     [Column("metric_group_fk")]
-    public required Guid MetricGroupFk { get; init; }
+    public required int MetricGroupFk { get; init; }
 
     [ForeignKey("MetricGroupFk")]
     public virtual MetricGroup MetricGroup { get; set; } = null!;
