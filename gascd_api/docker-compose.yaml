@@ -5,14 +5,14 @@
       context: .
       dockerfile: api/Dockerfile
     ports:
-      - 5050:5050
+      - "5050:5050"
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
 
   postgres:
-    image: postgres:17.6-alpine
+    image: imresamu/postgis:18-3.6-bookworm
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - ./api.Tests/TestData/test-seed.sql:/docker-entrypoint-initdb.d/test-seed.sql
     environment:

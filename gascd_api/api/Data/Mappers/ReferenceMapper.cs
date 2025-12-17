@@ -41,12 +41,18 @@ public class ReferenceMapper
             ProviderName = cpl.CareProvider.Name,
             NominatedIndividual = cpl.NominatedIndividual,
             LocalAuthorityId = cpl.LocalAuthority.Code,
-            GeoData = new GeoDataDTO
-            {
-                Latitude = cpl.GeoData.Coordinate.Y,
-                Longitude = cpl.GeoData.Coordinate.X
+            GeoData = GeoDataToGeoDataDto(cpl.GeoData)
+        };
+    }
 
-            }
+    public GeoDataDto GeoDataToGeoDataDto(GeoData geoData)
+    {
+        return new GeoDataDto
+        {
+            Latitude = geoData.Coordinate.Y,
+            Longitude = geoData.Coordinate.X,
+            Polygon = geoData.BoundingPolygon?.Coordinates
+                .Select(c => new GeoDataDto.CoordinateDto { Latitude = c.X, Longitude = c.Y }).ToList()
         };
     }
 }

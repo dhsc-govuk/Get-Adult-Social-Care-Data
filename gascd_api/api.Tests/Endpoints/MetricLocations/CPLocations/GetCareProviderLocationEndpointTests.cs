@@ -45,7 +45,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         response.LocalAuthorityId.ShouldBe("E08000014");
         response.GeoData.Latitude.ShouldBe(53.425);
         response.GeoData.Longitude.ShouldBe(-2.88);
-        // response.GeoData.Polygon.ShouldBe(null);
+        response.GeoData.Polygon.ShouldBe(null);
     }
 
     [Fact]
