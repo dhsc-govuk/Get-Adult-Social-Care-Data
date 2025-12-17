@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace api.Data.Models.Reference;
 
 [Table("regions")]
-public class Region : EntityBase
+public class Region : SearchableEntity
 {
     [Column("name"), StringLength(50)]
     public required string Name { get; init; }
