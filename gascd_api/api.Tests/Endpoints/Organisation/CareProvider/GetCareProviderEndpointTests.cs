@@ -31,9 +31,10 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     [Fact]
     public async Task GetCareProvider_ReturnsExpectedCareProviderData()
     {
+        var validCareProviderCode = "1-123456789";
         var (httpCode, response) =
             await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
-                new GetCareProviderRequest { CareProviderCode = "1-123456789" });
+                new GetCareProviderRequest { CareProviderCode = validCareProviderCode });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.ShouldNotBeEmpty();
@@ -68,9 +69,10 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     [Fact]
     public async Task GetCareProvider_ReturnsMultipleCareProviderLocations()
     {
+        var idForCareProvideWith2Locations = "1-123456777";
         var (httpCode, response) =
             await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
-                new GetCareProviderRequest { CareProviderCode = "1-123456777" });
+                new GetCareProviderRequest { CareProviderCode = idForCareProvideWith2Locations });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.ShouldNotBeEmpty();
