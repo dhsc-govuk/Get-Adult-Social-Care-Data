@@ -101,11 +101,11 @@ export default function ProvisionAndOccupancyTypeFiltersPage() {
         <fieldset className="govuk-fieldset" aria-describedby="bedType-hint">
           <legend className="govuk-fieldset__legend govuk-fieldset__legend--xl">
             <span className="govuk-caption-xl">Care home bed types</span>
-            <h1 className="govuk-fieldset__heading">Edit filter</h1>
+            <h1 className="govuk-fieldset__heading">Edit filters</h1>
           </legend>
 
           <div id="bedType-hint" className="govuk-hint govuk-!-margin-top-6">
-            Select the filter to refine the data displayed.
+            Select the filters to refine the data displayed.
           </div>
           <form>
             {error && (
