@@ -59,6 +59,11 @@ const Header: React.FC<Props> = ({ session }) => {
                 </svg>
               </Link>
             </div>
+            {session && (
+              <div className="tmp-mobile-signout">
+                <LogoutButton />
+              </div>
+            )}
 
             <nav
               aria-label="GOV.UK One Login"
