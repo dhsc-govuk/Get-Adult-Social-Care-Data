@@ -22,7 +22,12 @@ const LocalMarketInformation: React.FC<Props> = ({
         </h2>
         {url && (
           <p className="govuk-body">
-            <a href={url} className="govuk-link">
+            <a
+              href={url}
+              className="govuk-link"
+              target="_blank"
+              rel="noreferrer"
+            >
               Market Position Statement for {localAuthority} (opens in new tab)
             </a>
           </p>
