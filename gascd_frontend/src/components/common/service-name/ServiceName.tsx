@@ -98,7 +98,7 @@ const ServiceName: React.FC<Props> = ({ session }) => {
                     </a>
                   </li>
                 )}
-                {session && (
+                {session && session.user.selectedLocationId && (
                   <li className="govuk-service-navigation__item govuk-service-navigation__item-end">
                     <button
                       aria-label="Show navigation menu"
@@ -118,7 +118,7 @@ const ServiceName: React.FC<Props> = ({ session }) => {
         </div>
       </section>
 
-      {session && (
+      {session && session.user.selectedLocationId && (
         <div
           id="super-navigation-menu"
           className="gem-c-layout-super-navigation-header__navigation-dropdown-menu"
