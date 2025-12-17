@@ -12,7 +12,7 @@ const OnePersonHouseholds = () => {
         <DataIndicatorDetails
           title="One-person households where the person is aged 65 or over"
           whatThisMeasures={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The proportion of all one-person households within the selected
               administrative area within England that consist of a single person
               aged 65 or older.
@@ -30,15 +30,19 @@ const OnePersonHouseholds = () => {
           }
           updateFrequency="Census cadence"
           methodology={
-            <p>
+            <p className="govuk-!-margin-top-0">
               This dataset provides Census 2021 estimates that classify
               households in England and Wales by the relationships between
               household members (household composition). The estimates are as at
               Census Day, 21 March 2021.
             </p>
           }
-          limitations={<p>See data source for details.</p>}
-          dataDefinitions={<p>See data source for details.</p>}
+          limitations={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
+          dataDefinitions={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
         />
       </Layout>
     </>

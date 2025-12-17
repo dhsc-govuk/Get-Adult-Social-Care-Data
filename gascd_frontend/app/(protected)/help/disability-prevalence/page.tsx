@@ -14,7 +14,7 @@ const DisabilyPrevalence: React.FC = () => {
         <DataIndicatorDetails
           title="Disability prevalence"
           whatThisMeasures={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The proportion of people living within the selected administrative
               area within England who assessed their day-to-day activities as
               limited by long-term physical or mental health conditions or
@@ -35,14 +35,18 @@ const DisabilyPrevalence: React.FC = () => {
           }
           updateFrequency="Census cadence"
           methodology={
-            <p>
+            <p className="govuk-!-margin-top-0">
               This dataset provides Census 2021 estimates that classify usual
               residents in England and Wales by long-term health problems or
               disabilities. The estimates are as at Census Day, 21 March 2021.
             </p>
           }
-          limitations={<p>See data source for details.</p>}
-          dataDefinitions={<p>See data source for details.</p>}
+          limitations={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
+          dataDefinitions={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
         />
       </Layout>
     </>

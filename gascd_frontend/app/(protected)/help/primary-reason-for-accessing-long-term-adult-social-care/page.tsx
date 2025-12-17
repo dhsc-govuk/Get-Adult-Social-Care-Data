@@ -14,7 +14,7 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
         <DataIndicatorDetails
           title="Primary reason for people to access long-term adult social care"
           whatThisMeasures={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The number of people accessing long-term adult social care by
               primary support reason. This includes care homes and community
               social care services.
@@ -33,7 +33,7 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
           updateFrequency="Yearly (by financial year)"
           methodology={
             <>
-              <p>
+              <p className="govuk-!-margin-top-0">
                 This is calculated by summing the number of people accessing
                 services over the previous financial year for the following
                 primary support reasons:
@@ -56,7 +56,9 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
               </ul>
             </>
           }
-          limitations={<p>See data source for details.</p>}
+          limitations={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
         />
       </Layout>
     </>

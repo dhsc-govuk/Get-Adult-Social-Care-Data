@@ -12,7 +12,7 @@ const HouseholdsPropertyOwned = () => {
         <DataIndicatorDetails
           title="Households where the property is owned outright"
           whatThisMeasures={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The proportion of households within the selected administrative
               area within England that own their home outright, without a
               mortgage or loan. This includes properties owned entirely by at
@@ -31,14 +31,18 @@ const HouseholdsPropertyOwned = () => {
           }
           updateFrequency="Census cadence"
           methodology={
-            <p>
+            <p className="govuk-!-margin-top-0">
               This dataset provides Census 2021 estimates that classify
               households in England and Wales by tenure. The estimates are as at
               Census Day, 21 March 2021.
             </p>
           }
-          limitations={<p>See data source for details.</p>}
-          dataDefinitions={<p>See data source for details.</p>}
+          limitations={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
+          dataDefinitions={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
         />
       </Layout>
     </>
