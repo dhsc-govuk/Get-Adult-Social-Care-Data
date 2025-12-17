@@ -7,8 +7,10 @@ import LocationService, {
   AvailableLocation,
 } from '@/services/location/locationService';
 import { useRouter } from 'next/navigation';
+import { useSession } from '@/lib/auth-client';
 
 const LocationSelectPage: React.FC = () => {
+  const { data: session } = useSession();
   const router = useRouter();
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [selectedLocationName, setSelectedLocationName] = useState<string>('');
@@ -121,9 +123,11 @@ const LocationSelectPage: React.FC = () => {
                 >
                   Apply changes
                 </button>
-                <Link href="/" className="govuk-link govuk-body-m">
-                  Cancel and go back
-                </Link>
+                {session && session.user?.selectedLocationId && (
+                  <Link href="/" className="govuk-link govuk-body-m">
+                    Cancel and go back
+                  </Link>
+                )}
               </div>
             </form>
           </div>

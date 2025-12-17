@@ -30,7 +30,7 @@ describe('BarChart Component', () => {
     expect(screen.queryByTestId('plotly-mock')).toBeDefined();
   });
 
-  it('applies correct colors based on highlightCategory and darkBlueCount', () => {
+  it('applies correct colors based on highlightCategory and darkBlueCount', async () => {
     // We expect:
     // Index 0 (England): Dark Blue (Top 2 default)
     // Index 1 (Region): Dark Blue (Top 2 default)
@@ -51,7 +51,8 @@ describe('BarChart Component', () => {
     );
 
     // Retrieve the data prop from our mock
-    const dataString = screen.getByTestId('chart-data').textContent;
+    const chart = await screen.findByTestId('chart-data');
+    const dataString = chart.textContent;
     const data = JSON.parse(dataString || '[]');
     const trace = data[0];
 
@@ -62,7 +63,7 @@ describe('BarChart Component', () => {
     expect(trace.marker.color[3]).toBe(COLOR_PURPLE);
   });
 
-  it('bolds the text for Highlighted and Top N categories', () => {
+  it('bolds the text for Highlighted and Top N categories', async () => {
     render(
       <BarChart
         categories={mockCategories}
@@ -72,7 +73,8 @@ describe('BarChart Component', () => {
       />
     );
 
-    const dataString = screen.getByTestId('chart-data').textContent;
+    const chart = await screen.findByTestId('chart-data');
+    const dataString = chart.textContent;
     const data = JSON.parse(dataString || '[]');
     const trace = data[0];
 
@@ -81,7 +83,7 @@ describe('BarChart Component', () => {
     expect(trace.y[3]).toBe('Norfolk'); // Standard
   });
 
-  it('generates the dotted box shape around the highlighted category', () => {
+  it('generates the dotted box shape around the highlighted category', async () => {
     render(
       <BarChart
         categories={mockCategories}
@@ -90,7 +92,8 @@ describe('BarChart Component', () => {
       />
     );
 
-    const layoutString = screen.getByTestId('chart-layout').textContent;
+    const chart = await screen.findByTestId('chart-layout');
+    const layoutString = chart.textContent;
     const layout = JSON.parse(layoutString || '{}');
 
     // Should be one shape
@@ -104,7 +107,7 @@ describe('BarChart Component', () => {
     expect(box.line.dash).toBe('dot');
   });
 
-  it('does not crash or draw a box if the highlight category is missing', () => {
+  it('does not crash or draw a box if the highlight category is missing', async () => {
     render(
       <BarChart
         categories={mockCategories}
@@ -113,7 +116,8 @@ describe('BarChart Component', () => {
       />
     );
 
-    const layoutString = screen.getByTestId('chart-layout').textContent;
+    const chart = await screen.findByTestId('chart-layout');
+    const layoutString = chart.textContent;
     const layout = JSON.parse(layoutString || '{}');
 
     // Shapes array should be empty

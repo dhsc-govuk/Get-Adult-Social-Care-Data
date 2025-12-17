@@ -6,7 +6,7 @@ namespace api.Data.Models;
 public class EntityBase
 {
     [Key, Column("id")]
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
     [Column("code"), StringLength(15)]
     public string Code { get; init; } = null!;
