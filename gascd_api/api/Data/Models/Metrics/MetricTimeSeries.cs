@@ -17,7 +17,7 @@ public class MetricTimeSeries : EntityBase
     public required string LocationType { get; init; }
 
     [Column("metric_fk")]
-    public required Guid MetricFk { get; init; }
+    public required int MetricFk { get; init; }
 
     [ForeignKey("MetricFk")]
     public virtual Metric Metric { get; init; } = null!;

@@ -10,7 +10,7 @@ public class CareProviderLocation : EntityBase
     public required string Name { get; init; }
 
     [Column("care_provider_fk")]
-    public required Guid CareProviderFk { get; init; }
+    public required int CareProviderFk { get; init; }
 
     [ForeignKey("CareProviderFk")]
     public virtual CareProvider CareProvider { get; init; } = null!;
@@ -25,7 +25,7 @@ public class CareProviderLocation : EntityBase
     public required string NominatedIndividual { get; init; }
 
     [Column("local_authority_fk")]
-    public required Guid LocalAuthorityFk { get; init; }
+    public required int LocalAuthorityFk { get; init; }
 
     [ForeignKey("LocalAuthorityFk")]
     public virtual LocalAuthority LocalAuthority { get; init; } = null!;
