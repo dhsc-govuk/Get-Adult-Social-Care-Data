@@ -41,8 +41,8 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
         httpCode.EnsureSuccessStatusCode();
         response.SanitisedPostcode.ShouldBe("KT220UF");
         response.DisplayPostcode.ShouldBe("KT22 0UF");
-        response.Latitude.ShouldBe(51.33954856349381m);
-        response.Longitude.ShouldBe(-0.349629386m);
+        response.Latitude.ShouldBe(-0.349629386d);
+        response.Longitude.ShouldBe(51.33954856349381d);
         response.LaCode.ShouldBe("E08000014");
         response.LaName.ShouldBe("Liverpool");
     }

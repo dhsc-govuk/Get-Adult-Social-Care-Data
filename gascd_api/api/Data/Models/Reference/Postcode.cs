@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NetTopologySuite.Geometries;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,11 +11,8 @@ public partial class Postcode : EntityBase
     [Column("display_postcode"), StringLength(8)]
     public required string DisplayPostcode { get; init; } = null!;
 
-    [Column("latitude")]
-    public required decimal Latitude { get; init; }
-
-    [Column("longitude")]
-    public required decimal Longitude { get; init; }
+    [Column("coordinate", TypeName = "geometry (point)")]
+    public required Point Coordinate { get; set; }
 
     [Column("local_authority_fk")]
     public required int LocalAuthorityFk { get; init; }
