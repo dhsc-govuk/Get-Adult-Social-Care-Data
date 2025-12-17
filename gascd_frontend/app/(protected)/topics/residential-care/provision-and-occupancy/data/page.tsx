@@ -470,6 +470,11 @@ export default function ProvisionAndOccupancyPage() {
                     />
                   </div>
                 )) || <p>Loading chart...</p>}
+              <p className="govuk-body">
+                Source: Capacity Tracker from the Department of Health and
+                Social Care (DHSC), population estimates from the Office for
+                National Statistics (ONS)
+              </p>
             </>
           }
           table={
@@ -743,6 +748,11 @@ export default function ProvisionAndOccupancyPage() {
                   <TimeSeriesChart series={timeData} />
                 </div>
               )) || <p>Loading graph</p>}
+              <p className="govuk-body">
+                Source: Capacity Tracker from the Department of Health and
+                Social Care (DHSC), population estimates from the Office for
+                National Statistics (ONS)
+              </p>
             </>
           }
         />
