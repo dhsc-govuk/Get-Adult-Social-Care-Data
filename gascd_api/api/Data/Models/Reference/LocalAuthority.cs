@@ -14,4 +14,10 @@ public class LocalAuthority : EntityBase
 
     [ForeignKey("RegionFk")]
     public virtual Region Region { get; init; } = null!;
+
+    [Column("geo_data_fk")]
+    public required int GeoDataFk { get; init; }
+
+    [ForeignKey("GeoDataFk")]
+    public virtual GeoData GeoData { get; init; } = null!;
 }
