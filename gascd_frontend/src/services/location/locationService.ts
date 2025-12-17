@@ -187,7 +187,6 @@ class LocationService {
       }
       await authClient.updateUser({
         selectedLocationId: locationId,
-        selectedLocationDisplayName: locationName,
       });
     } catch (error: unknown) {
       const errorMessage =
