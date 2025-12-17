@@ -14,7 +14,7 @@ const PopulationSize: React.FC = () => {
         <DataIndicatorDetails
           title="Population size"
           whatThisMeasures={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The estimated number of individuals living in the selected
               administrative area within England.
             </p>
@@ -31,14 +31,14 @@ const PopulationSize: React.FC = () => {
           }
           updateFrequency="Yearly"
           methodology={
-            <p>
+            <p className="govuk-!-margin-top-0">
               This data is from the Office for National Statistics mid-2023
               population estimates for England and Wales.
             </p>
           }
           limitations={
             <>
-              <p>
+              <p className="govuk-!-margin-top-0">
                 The data are not counts, but estimates produced by combining
                 data from multiple sources. The accuracy of the estimates is
                 subject to the coverage and errors associated with those
@@ -54,7 +54,11 @@ const PopulationSize: React.FC = () => {
               </p>
             </>
           }
-          dataDefinitions={<p>All ages are included in the population size.</p>}
+          dataDefinitions={
+            <p className="govuk-!-margin-top-0">
+              All ages are included in the population size.
+            </p>
+          }
         />
       </Layout>
     </>

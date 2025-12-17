@@ -12,7 +12,7 @@ const LearningDisabilityPrevalence = () => {
         <DataIndicatorDetails
           title="Learning disability prevalence"
           whatThisMeasures={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The percentage of people registered with a GP within the selected
               administrative area within England who have a recorded diagnosis
               of learning disability, covering all ages.
@@ -30,7 +30,7 @@ const LearningDisabilityPrevalence = () => {
           }
           updateFrequency="Yearly"
           methodology={
-            <p>
+            <p className="govuk-!-margin-top-0">
               Based on Quality and Outcomes Framework (QOF) data, this measure
               calculates the proportion of patients recorded on GP practice
               registers as having a learning disability. The data is aggregated
@@ -39,7 +39,7 @@ const LearningDisabilityPrevalence = () => {
             </p>
           }
           limitations={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The measure is intended to show the prevalence of learning
               disabilities among residents of each local authority area.
               However, data by place of residence is not available. Instead, a
@@ -48,7 +48,9 @@ const LearningDisabilityPrevalence = () => {
               rather than their home address.
             </p>
           }
-          dataDefinitions={<p>See data source for details.</p>}
+          dataDefinitions={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
         />
       </Layout>
     </>

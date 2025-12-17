@@ -68,56 +68,57 @@ export default function ProvisionAndOccupancyNumbersFiltersPage() {
       currentPage="care-home-bed-types-filters"
       breadcrumbs={breadcrumbs}
     >
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
-          <span className="govuk-caption-l">Care home bed types</span>
-          <h1 className="govuk-heading-l">Edit filter</h1>
+      <fieldset className="govuk-fieldset" aria-describedby="bedType-hint">
+        <legend className="govuk-fieldset__legend govuk-fieldset__legend--xl">
+          <span className="govuk-caption-xl">Care home bed numbers</span>
+          <h1 className="govuk-fieldset__heading">Edit filter</h1>
+        </legend>
+
+        <div id="bedType-hint" className="govuk-hint govuk-!-margin-top-6">
+          Select the filter to refine the data displayed.
         </div>
-      </div>
-      <p className="govuk-body">
-        Select the filter to refine the data displayed.
-      </p>
-      <form>
-        <div className="govuk-form-group">
-          {filters &&
-            filters.map((filter: any, index) => (
-              <div className="govuk-radios__item" key={index}>
-                <input
-                  className="govuk-radios__input"
-                  id={filter.metric_id}
-                  name="Table filter"
-                  type="radio"
-                  value={filter.metric_id}
-                  defaultChecked={
-                    selectedFilter?.metric_id === filter.metric_id
-                  }
-                  onChange={() => handleChange(filter)}
-                />
-                <label
-                  className="govuk-label govuk-radios__label"
-                  htmlFor={filter.metric_id}
-                >
-                  {filter.filter_bedtype}
-                </label>
-              </div>
-            ))}
-        </div>
-        <div className="govuk-button-group">
-          <button
-            type="button"
-            className="govuk-button"
-            onClick={() => handleSubmit()}
-          >
-            Apply changes
-          </button>
-          <Link
-            href="/topics/residential-care/provision-and-occupancy/data#table-1"
-            className="govuk-link govuk-body-m"
-          >
-            Cancel and go back
-          </Link>
-        </div>
-      </form>
+        <form>
+          <div className="govuk-form-group">
+            {filters &&
+              filters.map((filter: any, index) => (
+                <div className="govuk-radios__item" key={index}>
+                  <input
+                    className="govuk-radios__input"
+                    id={filter.metric_id}
+                    name="Table filter"
+                    type="radio"
+                    value={filter.metric_id}
+                    defaultChecked={
+                      selectedFilter?.metric_id === filter.metric_id
+                    }
+                    onChange={() => handleChange(filter)}
+                  />
+                  <label
+                    className="govuk-label govuk-radios__label"
+                    htmlFor={filter.metric_id}
+                  >
+                    {filter.filter_bedtype}
+                  </label>
+                </div>
+              ))}
+          </div>
+          <div className="govuk-button-group">
+            <button
+              type="button"
+              className="govuk-button"
+              onClick={() => handleSubmit()}
+            >
+              Apply changes
+            </button>
+            <Link
+              href="/topics/residential-care/provision-and-occupancy/data#table-1"
+              className="govuk-link govuk-body-m"
+            >
+              Cancel and go back
+            </Link>
+          </div>
+        </form>
+      </fieldset>
     </Layout>
   );
 }
