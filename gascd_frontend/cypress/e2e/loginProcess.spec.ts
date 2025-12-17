@@ -1,7 +1,9 @@
-describe('User can navigate the key parts of the site', () => {
+describe('User can log in and log out', () => {
   it('Should navigate to the homepage and go through the current log in process', () => {
     // Currently assumes local dev auth setup
     cy.visit('');
+    cy.url().should('include', '/login');
+    cy.visit('/home');
     cy.url().should('include', '/login');
 
     cy.login();
@@ -14,38 +16,10 @@ describe('User can navigate the key parts of the site', () => {
     cy.get('h2').should('contains.text', 'Care homes');
     cy.get('h2').should('contains.text', 'Population needs');
 
-    // Load the current needs page
-    cy.get('a').contains('Care home beds and occupancy levels').click();
-    cy.url().should(
-      'include',
-      '/topics/residential-care/provision-and-occupancy/data'
-    );
-
-    // Check the footer disclaimer
-    cy.get('footer a').contains('Disclaimer').click();
-    cy.url().should('include', '/disclaimer');
-    cy.get('h1').should('contains.text', 'Disclaimer');
-
-    // Home link in header
-    cy.get('section.govuk-service-navigation a')
-      .contains('Get adult social care data')
-      .click();
-    cy.url().should('include', '/home');
-
-    // Check the footer privacy policy
-    cy.get('footer a').contains('Privacy').click();
-    cy.url().should('include', '/privacy-policy');
-    cy.get('h1').should('contains.text', 'Privacy notice');
-
-    // Home link in header
-    cy.get('section.govuk-service-navigation a')
-      .contains('Get adult social care data')
-      .click();
-    cy.url().should('include', '/home');
-
     // Sign out
     cy.logout();
-    cy.url().should('include', '/login');
+    cy.url().should('include', '/signed-out');
+    cy.get('h1').should('contains.text', 'You have signed out');
 
     // Going home forces redirect
     cy.visit('/home');
