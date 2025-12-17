@@ -18,6 +18,7 @@ public class GetCareProviderLocationEndpoint(GascdDataContext context, Reference
         var cpl = context.CareProviderLocations
             .Include(cpl => cpl.CareProvider)
             .Include(cpl => cpl.LocalAuthority)
+            .Include(cpl => cpl.GeoData)
             .SingleOrDefault(x => x.Code == req.CareProviderLocationCode);
 
         if (cpl == null)

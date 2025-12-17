@@ -41,6 +41,12 @@ public class ReferenceMapper
             ProviderName = cpl.CareProvider.Name,
             NominatedIndividual = cpl.NominatedIndividual,
             LocalAuthorityId = cpl.LocalAuthority.Code,
+            GeoData = new GeoDataDTO
+            {
+                Latitude = cpl.GeoData.Coordinate.Y,
+                Longitude = cpl.GeoData.Coordinate.X
+
+            }
         };
     }
 }
