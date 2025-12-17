@@ -83,19 +83,19 @@ export default function ProvisionAndOccupancyPage() {
 
   const [selectedBedTypeTableFilters, setSelectedBedTypeTableFilters] =
     useState<string[]>([
-      'Total Beds',
-      'Dementia Nursing',
-      'Dementia Residential',
+      'All bed types',
+      'Dementia nursing',
+      'Dementia residential',
     ]);
 
   const [selectedBedNumberTableFilter, setSelectedBedNumberTableFilter] =
-    useState<string[]>(['Total Beds']);
+    useState<string[]>(['All bed types']);
 
   const [bedTypeRowHeaders, setBedTypeRowHeaders] = useState<any>({
-    bedcount_per_100000_adults_total: 'Total Beds',
-    bedcount_per_100000_adults_total_dementia_nursing: 'Dementia Nursing',
+    bedcount_per_100000_adults_total: 'All bed types',
+    bedcount_per_100000_adults_total_dementia_nursing: 'Dementia nursing',
     bedcount_per_100000_adults_total_dementia_residential:
-      'Dementia Residential',
+      'Dementia residential',
   });
 
   const [bedNumberRowHeaders, setBedNumberRowHeaders] = useState<Object[]>([]);
