@@ -98,41 +98,45 @@ export default function ProvisionAndOccupancyTypeFiltersPage() {
             : 'govuk-form-group'
         }
       >
-        <div className="govuk-grid-row">
-          <div className="govuk-grid-column-two-thirds">
-            <span className="govuk-caption-l">Care home bed types</span>
-            <h1 className="govuk-heading-l">Edit filters</h1>
+        <fieldset className="govuk-fieldset" aria-describedby="bedType-hint">
+          <legend className="govuk-fieldset__legend govuk-fieldset__legend--xl">
+            <span className="govuk-caption-xl">Care home bed types</span>
+            <h1 className="govuk-fieldset__heading">Edit filters</h1>
+          </legend>
+
+          <div id="bedType-hint" className="govuk-hint govuk-!-margin-top-6">
+            Select the filters to refine the data displayed.
           </div>
-        </div>
-        <form>
-          {error && (
-            <p id="passport-issued-error" className="govuk-error-message">
-              <span className="govuk-visually-hidden">Error:</span> Select at
-              least one filter
-            </p>
-          )}
-          {filters &&
-            filters.map((filter: any, index) => (
-              <div className="govuk-checkboxes__item" key={index}>
-                <input
-                  className="govuk-checkboxes__input"
-                  id={filter.metric_id}
-                  name="Table filter"
-                  type="checkbox"
-                  value={filter.metric_id}
-                  onChange={(e) =>
-                    handleCheckboxChange(e.target.value, e.target.checked)
-                  }
-                />
-                <label
-                  className="govuk-label govuk-checkboxes__label"
-                  htmlFor={filter.metric_id}
-                >
-                  {filter.filter_bedtype}
-                </label>
-              </div>
-            ))}
-        </form>
+          <form>
+            {error && (
+              <p id="passport-issued-error" className="govuk-error-message">
+                <span className="govuk-visually-hidden">Error:</span> Select at
+                least one filter
+              </p>
+            )}
+            {filters &&
+              filters.map((filter: any, index) => (
+                <div className="govuk-checkboxes__item" key={index}>
+                  <input
+                    className="govuk-checkboxes__input"
+                    id={filter.metric_id}
+                    name="Table filter"
+                    type="checkbox"
+                    value={filter.metric_id}
+                    onChange={(e) =>
+                      handleCheckboxChange(e.target.value, e.target.checked)
+                    }
+                  />
+                  <label
+                    className="govuk-label govuk-checkboxes__label"
+                    htmlFor={filter.metric_id}
+                  >
+                    {filter.filter_bedtype}
+                  </label>
+                </div>
+              ))}
+          </form>
+        </fieldset>
       </div>
       <div
         className={

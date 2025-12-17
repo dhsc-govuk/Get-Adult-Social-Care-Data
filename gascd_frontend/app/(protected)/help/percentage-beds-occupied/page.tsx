@@ -14,7 +14,7 @@ const PercentageBedsOccupied: React.FC = () => {
         <DataIndicatorDetails
           title="Percentage of adult social care beds occupied"
           whatThisMeasures={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The percentage of occupied beds, in relevant bed types, in care
               providers registered with the Care Quality Commission (CQC).
             </p>
@@ -33,7 +33,7 @@ const PercentageBedsOccupied: React.FC = () => {
           updateFrequency="Daily"
           methodology={
             <>
-              <p>
+              <p className="govuk-!-margin-top-0">
                 The occupancy rate is calculated by dividing the number of
                 occupied beds by the total number of beds. &lsquo;Beds&rsquo;
                 refers to adult social care beds in care providers and includes
@@ -70,7 +70,7 @@ const PercentageBedsOccupied: React.FC = () => {
           }
           limitations={
             <>
-              <p>
+              <p className="govuk-!-margin-top-0">
                 Care providers may update their Capacity Tracker data at
                 different times outside the reporting period.
               </p>
@@ -96,7 +96,7 @@ const PercentageBedsOccupied: React.FC = () => {
             </>
           }
           dataDefinitions={
-            <p>
+            <p className="govuk-!-margin-top-0">
               Refer to the Limitations section for details about work relating
               to bed type descriptions.
             </p>
