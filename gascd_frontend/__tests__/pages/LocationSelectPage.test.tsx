@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import LocationSelectPage from '../../app/(onboarding)/location-select/page';
-import { authClient } from '@/lib/auth-client';
+import { authClient, useSession } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
 
 global.fetch = vi.fn();
@@ -13,9 +13,12 @@ vi.mock('@/lib/auth-client', () => ({
   authClient: {
     getSession: vi.fn(),
   },
+  useSession: vi.fn(),
 }));
 const mockGetSession = vi.mocked(authClient.getSession);
 mockGetSession.mockReturnValue({ data: mockSession } as any);
+const mockUseSession = vi.mocked(useSession);
+mockUseSession.mockReturnValue({ data: mockSession } as any);
 
 describe('LocationSelectPage', () => {
   it('should render the heading and some body text', () => {
