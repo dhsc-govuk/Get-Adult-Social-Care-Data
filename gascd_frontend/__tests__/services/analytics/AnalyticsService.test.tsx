@@ -4,7 +4,8 @@ import {
   getAppInsights,
 } from '@/components/analytics/appInsights';
 
-const TEST_CONNECTION_STRING = 'InstrumentationKey=fake-connection-string';
+export const TEST_CONNECTION_STRING =
+  'InstrumentationKey=fake-connection-string';
 
 describe('AnalyticsService', () => {
   it('does not fail if no analytics are set up', () => {
@@ -25,5 +26,6 @@ describe('AnalyticsService', () => {
       },
     };
     expect(insightSpy).toHaveBeenCalledExactlyOnceWith(expected_event);
+    vi.resetAllMocks();
   });
 });

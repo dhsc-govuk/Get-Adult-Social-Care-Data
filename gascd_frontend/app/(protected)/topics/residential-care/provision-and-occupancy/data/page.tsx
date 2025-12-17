@@ -128,6 +128,20 @@ export default function ProvisionAndOccupancyPage() {
     },
   ];
 
+  const trackDefaultMetrics = () => {
+    // Track all of the key metrics shown on this page
+    // note - does not include filters, which are tracked as separate events
+    careProviderMetricIds1.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+    careProviderMetricIds2.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+    bedNumberMetricIds.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+  };
+
   const [chartData, setChartData] = useState<{
     categories: string[];
     values: number[];
@@ -161,6 +175,7 @@ export default function ProvisionAndOccupancyPage() {
       setCPLocationId(userLocationId);
     };
     fetchSelectedLocation();
+    trackDefaultMetrics();
   }, []);
 
   useEffect(() => {
@@ -284,26 +299,16 @@ export default function ProvisionAndOccupancyPage() {
         metric_ids: careProviderMetricIds1,
         location_ids: [CPLocationId],
       }));
-      // Track all metrics on this page
-      careProviderMetricIds1.forEach((metric_id) => {
-        AnalyticsService.trackMetricView(metric_id);
-      });
     }
     if (locationIds.length) {
       setCareProviderData2Query(() => ({
         metric_ids: careProviderMetricIds2,
         location_ids: locationIds,
       }));
-      careProviderMetricIds2.forEach((metric_id) => {
-        AnalyticsService.trackMetricView(metric_id);
-      });
       setCareHomeBedTypesDataQuery(() => ({
         metric_ids: bedTypeMetricIds,
         location_ids: locationIds,
       }));
-      bedTypeMetricIds.forEach((metric_id) => {
-        AnalyticsService.trackMetricView(metric_id);
-      });
     }
   }, [CPLocationId, locationIds]);
 
@@ -320,7 +325,6 @@ export default function ProvisionAndOccupancyPage() {
             location_ids: locationIds,
             most_recent: true,
           }));
-          AnalyticsService.trackMetricView('bedcount_per_100000_adults_total');
           const map: any = {};
           parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
           setBedTypeRowHeaders(map);
@@ -334,9 +338,6 @@ export default function ProvisionAndOccupancyPage() {
       setCareHomeBedTypesDataQuery({
         metric_ids: bedTypeMetricIds,
         location_ids: locationIds,
-      });
-      bedTypeMetricIds.forEach((metric_id) => {
-        AnalyticsService.trackMetricView(metric_id);
       });
     }
   }, [locationIds]);
@@ -358,7 +359,7 @@ export default function ProvisionAndOccupancyPage() {
           ids.forEach((metric_id) => {
             AnalyticsService.trackMetricView(metric_id);
           });
-          if (parsedData) {
+          if (name) {
             setSelectedBedNumberTableFilter(name);
           } else {
             setSelectedBedNumberTableFilter(bedNumberMetricIds);
@@ -371,9 +372,6 @@ export default function ProvisionAndOccupancyPage() {
       setCareHomeBedNumbersDataQuery({
         metric_ids: bedNumberMetricIds,
         location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
-      });
-      bedNumberMetricIds.forEach((metric_id) => {
-        AnalyticsService.trackMetricView(metric_id);
       });
     }
   }, [locationIds, laIdsForRegion, lasForRegion]);
