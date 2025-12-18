@@ -24,7 +24,6 @@ import TimeSeriesChart, {
   Series,
 } from '@/components/charts/TimeSeriesChart';
 import IndicatorService from '@/services/indicator/IndicatorService';
-import PresentDemandService from '@/services/present-demand/presentDemandService';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -457,7 +456,7 @@ export default function ProvisionAndOccupancyPage() {
               <h3 className="govuk-heading-s">
                 Figure 1: chart of care home beds per 100,000 adult population -
                 local authorities in {locationNamesCP.RegionLabel},{' '}
-                {PresentDemandService.getMostRecentDate(filteredBedNumbersData)}
+                {IndicatorService.getMostRecentDate(filteredBedNumbersData)}
               </h3>
               {(chartData.categories.length > 0 &&
                 chartData.values.length > 0 && (
@@ -483,7 +482,7 @@ export default function ProvisionAndOccupancyPage() {
               caption={
                 `Table 1: care home bed numbers per 100,000 adult population for regional local authorities -
                 ${locationNamesCP.RegionLabel}, ` +
-                PresentDemandService.getMostRecentDate(filteredBedNumbersData)
+                IndicatorService.getMostRecentDate(filteredBedNumbersData)
               }
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
@@ -554,7 +553,7 @@ export default function ProvisionAndOccupancyPage() {
               caption={
                 `Table 2: care home bed numbers per 100,000 adult population – ${locationNamesCP.LALabel} local authority, 
                 ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, ` +
-                PresentDemandService.getMostRecentDate(filteredBedTypeData)
+                IndicatorService.getMostRecentDate(filteredBedTypeData)
               }
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
@@ -649,7 +648,7 @@ export default function ProvisionAndOccupancyPage() {
                 `Table 3: care home bed numbers and occupancy levels – 
                 ${locationNamesCP.CPLabel}, ${locationNamesCP.LALabel} local authority, 
                 ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, ` +
-                PresentDemandService.getMostRecentDate(finalCpData)
+                IndicatorService.getMostRecentDate(finalCpData)
               }
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC)'

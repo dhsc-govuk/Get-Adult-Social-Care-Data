@@ -17,6 +17,7 @@ import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
+import IndicatorService from '@/services/indicator/IndicatorService';
 
 export default function DisabilityPrevalence() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -229,7 +230,7 @@ export default function DisabilityPrevalence() {
           table={
             <DataTable
               tableref={tableref2}
-              caption={`Table 2: learning disability prevalence – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
+              caption={`Table 2: learning disability prevalence – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
               source={
                 'Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
               }

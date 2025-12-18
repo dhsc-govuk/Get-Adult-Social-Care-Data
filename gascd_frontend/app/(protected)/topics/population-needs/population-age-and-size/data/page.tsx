@@ -22,6 +22,7 @@ import { Locations } from '@/data/interfaces/Locations';
 import LogService from '@/services/logger/logService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
+import IndicatorService from '@/services/indicator/IndicatorService';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -67,7 +68,7 @@ export default function ProvisionAndOccupancyPage() {
     },
     {
       text: 'Population needs',
-      url: '/population-needs/subtopics',
+      url: '/topics/population-needs/subtopics',
     },
   ];
 
@@ -240,7 +241,7 @@ export default function ProvisionAndOccupancyPage() {
               tableref={tableref1}
               caption={`Table 1: population size and age group percentages – 
                 ${locationNames.LALabel} local authority, 
-                ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, mid-2024`}
+                ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
               source={
                 'Population estimates from the Office for National Statistics (ONS)'
               }
