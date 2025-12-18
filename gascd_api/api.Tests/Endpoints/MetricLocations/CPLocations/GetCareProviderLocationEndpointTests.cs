@@ -61,10 +61,8 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         GetFromJson(jObject, "provider_name").ShouldBe("Bupa");
         GetFromJson(jObject, "nominated_individual").ShouldBe("Mr. Ice Cool");
         GetFromJson(jObject, "local_authority_id").ShouldBe("E08000014");
-
         GetFromJson(jObject, "geo_data.latitude").ShouldBe("53.425");
         GetFromJson(jObject, "geo_data.longitude").ShouldBe("-2.88");
-
     }
 
     [Theory]
@@ -90,11 +88,14 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
+    [Fact]
+    public async Task GetCareProviderLocation_ReturnsErrorWhenProvidedWhiteSpace()
+    {
+        HttpResponseMessage response = await _client.GetAsync("api/metric_locations/cp_locations/ /", TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
-
-
-
-
-
-
+        JObject? json = await ParseJsonResponse<JObject>(response);
+        GetFromJson(json, "errors[0].name").ShouldBe("care_provider_location_code");
+        GetFromJson(json, "errors[0].reason").ShouldBe("Care provider location code is required");
+    }
 }
