@@ -71,6 +71,22 @@ describe('IndicatorService', () => {
   });
 });
 
+describe('formatDate', () => {
+  it('formats date correctly', () => {
+    const result = IndicatorService.formatDate('25/12/2023');
+    expect(result).toBe('25 December 2023');
+  });
+
+  it('formats single-digit day and month correctly', () => {
+    const result = IndicatorService.formatDate('05/03/2022');
+    expect(result).toBe('5 March 2022');
+  });
+
+  it('handles invalid date format gracefully', () => {
+    expect(IndicatorService.formatDate('invalid')).toBe('invalid');
+  });
+});
+
 describe('parseDate', () => {
   it('should parse date strings', () => {
     const entry_with_string: Indicator = {
@@ -119,5 +135,154 @@ describe('parseDate', () => {
     };
     const result: Date = IndicatorService.parseDate(entry_with_date);
     expect(result).toEqual(new Date(2021, 6, 5));
+  });
+});
+
+describe('getMostRecentIndicator', () => {
+  const mockIndicators: Indicator[] = [
+    {
+      metric_date: new Date(2023, 3, 1),
+      location_id: '1',
+      metric_id: 'A',
+      data_point: 100,
+      metric_date_type: '',
+      location_type: '',
+      numerator: 0,
+      multiplier: 0,
+      denominator: 0,
+      load_date_time: new Date(2023, 3, 1),
+    },
+    {
+      metric_date: new Date(2023, 4, 15),
+      location_id: '2',
+      metric_id: 'B',
+      data_point: 200,
+      metric_date_type: '',
+      location_type: '',
+      numerator: 0,
+      multiplier: 0,
+      denominator: 0,
+      load_date_time: new Date(2023, 4, 15),
+    },
+    {
+      metric_date: new Date(2023, 5, 30),
+      location_id: '3',
+      metric_id: 'C',
+      data_point: 300,
+      metric_date_type: '',
+      location_type: '',
+      numerator: 0,
+      multiplier: 0,
+      denominator: 0,
+      load_date_time: new Date(2023, 5, 30),
+    },
+  ];
+  it('returns the most recent metric date', () => {
+    const result = IndicatorService.getMostRecentIndicator(mockIndicators);
+    expect(result).toContain('Fri Jun 30 2023 00:00:00');
+  });
+
+  it('returns an empty string when given an empty array', () => {
+    const result = IndicatorService.getMostRecentIndicator([]);
+    expect(result).toBe('');
+  });
+
+  it('handles a single-entry array correctly', () => {
+    const singleEntry = [mockIndicators[1]];
+    const result = IndicatorService.getMostRecentIndicator(singleEntry);
+    expect(result).toContain('Mon May 15 2023 00:00:00');
+  });
+
+  it('handles a limited set of metric ids', () => {
+    const result = IndicatorService.getMostRecentIndicator(mockIndicators, [
+      'A',
+    ]);
+    expect(result).toContain('Apr 01 2023 00:00:00');
+
+    const result2 = IndicatorService.getMostRecentIndicator(mockIndicators, [
+      'A',
+      'C',
+    ]);
+    expect(result2).toContain('Jun 30 2023 00:00:00');
+  });
+
+  it('handles an empty set of metric ids', () => {
+    const result = IndicatorService.getMostRecentIndicator(mockIndicators, []);
+    expect(result).toBe('');
+  });
+});
+
+describe('getMostRecentDate', () => {
+  const mockIndicators: Indicator[] = [
+    {
+      metric_date: new Date(2023, 3, 1),
+      location_id: '1',
+      metric_id: 'A',
+      data_point: 100,
+      metric_date_type: '',
+      location_type: '',
+      numerator: 0,
+      multiplier: 0,
+      denominator: 0,
+      load_date_time: new Date(2023, 3, 1),
+    },
+    {
+      metric_date: new Date(2023, 4, 15),
+      location_id: '2',
+      metric_id: 'B',
+      data_point: 200,
+      metric_date_type: '',
+      location_type: '',
+      numerator: 0,
+      multiplier: 0,
+      denominator: 0,
+      load_date_time: new Date(2023, 4, 15),
+    },
+    {
+      metric_date: new Date(2023, 5, 30),
+      location_id: '3',
+      metric_id: 'C',
+      data_point: 300,
+      metric_date_type: '',
+      location_type: '',
+      numerator: 0,
+      multiplier: 0,
+      denominator: 0,
+      load_date_time: new Date(2023, 5, 30),
+    },
+  ];
+  beforeEach(() => {
+    vi.spyOn(IndicatorService, 'formatDate').mockImplementation(
+      (date) => `Formatted: ${date}`
+    );
+  });
+
+  it('returns the formatted most recent date', () => {
+    const result = IndicatorService.getMostRecentDate(mockIndicators);
+    expect(IndicatorService.formatDate).toHaveBeenCalledWith(
+      expect.stringContaining('Fri Jun 30')
+    );
+    expect(result).toContain('Formatted: Fri Jun 30 2023 00:00:00');
+  });
+
+  it('returns an empty string when given an empty array', () => {
+    const result = IndicatorService.getMostRecentDate([]);
+    expect(result).toBe('');
+  });
+
+  it('handles a limited set of metric ids', () => {
+    const result = IndicatorService.getMostRecentDate(mockIndicators, ['A']);
+    expect(result).toContain('Formatted: Sat Apr 01 2023 00:00:00');
+
+    const result2 = IndicatorService.getMostRecentDate(mockIndicators, [
+      'A',
+      'C',
+    ]);
+    expect(result2).toContain('Formatted: Fri Jun 30 2023 00:00:00');
+  });
+
+  it('handles an empty set of metric ids', () => {
+    const result = IndicatorService.getMostRecentDate(mockIndicators, []);
+    expect(result).toBe('');
   });
 });
