@@ -67,7 +67,7 @@ export default function ProvisionAndOccupancyPage() {
     },
     {
       text: 'Population needs',
-      url: '/population-needs/subtopics',
+      url: '/topics/population-needs/subtopics',
     },
   ];
 
