@@ -53,18 +53,17 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
     {
         var response = await _client.GetAsync("api/metric_locations/cp_locations/1-222222222", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var jsonArray = await ParseJsonResponse<JObject>(response);
-        GetFromJson(jsonArray, "id").ShouldBe("1-222222222");
-        GetFromJson(jsonArray, "display_name").ShouldBe("Bupa Liverpool");
-        GetFromJson(jsonArray, "address").ShouldBe("Bupa Liverpool, CV2 2TN");
-        GetFromJson(jsonArray, "provider_id").ShouldBe("1-123456789");
-        GetFromJson(jsonArray, "provider_name").ShouldBe("Bupa");
-        GetFromJson(jsonArray, "nominated_individual").ShouldBe("Mr. Ice Cool");
-        GetFromJson(jsonArray, "local_authority_id").ShouldBe("E08000014");
+        var jObject = await ParseJsonResponse<JObject>(response);
+        GetFromJson(jObject, "id").ShouldBe("1-222222222");
+        GetFromJson(jObject, "display_name").ShouldBe("Bupa Liverpool");
+        GetFromJson(jObject, "address").ShouldBe("Bupa Liverpool, CV2 2TN");
+        GetFromJson(jObject, "provider_id").ShouldBe("1-123456789");
+        GetFromJson(jObject, "provider_name").ShouldBe("Bupa");
+        GetFromJson(jObject, "nominated_individual").ShouldBe("Mr. Ice Cool");
+        GetFromJson(jObject, "local_authority_id").ShouldBe("E08000014");
 
-        //Latitude and longitude of the location's postcode
-        // GetFromJson(jsonArray, "geo_data.latitude").ShouldBe("52.43602168912626");
-        // GetFromJson(jsonArray, "geo_data.longitude").ShouldBe("-1.445481473");
+        GetFromJson(jObject, "geo_data.latitude").ShouldBe("53.425");
+        GetFromJson(jObject, "geo_data.longitude").ShouldBe("-2.88");
 
     }
 
