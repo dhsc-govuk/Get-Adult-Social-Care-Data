@@ -12,7 +12,7 @@ const DementiaDiagnosis = () => {
         <DataIndicatorDetails
           title="Estimated dementia diagnosis rate for people aged 65 and over"
           whatThisMeasures={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The proportion of people living within the selected administrative
               area within England aged 65 and over who are estimated to have
               dementia and have received a formal diagnosis recorded in their GP
@@ -31,7 +31,7 @@ const DementiaDiagnosis = () => {
           }
           updateFrequency="Yearly"
           methodology={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The estimated dementia diagnosis rate is calculated by comparing
               the number of people aged 65 and older with a recorded dementia
               diagnosis on GP registers to the estimated number of people in
@@ -41,7 +41,7 @@ const DementiaDiagnosis = () => {
             </p>
           }
           limitations={
-            <p>
+            <p className="govuk-!-margin-top-0">
               Organisations with a smaller denominator population than the
               reference population used for calculating estimated rates should
               be interpreted with caution. This is true for City of London and

@@ -104,8 +104,6 @@ export default function DisabilityPrevalence() {
         const filteredDemographicData =
           TableService.filterDate(demographicData);
         setFilteredDemographicData(filteredDemographicData);
-
-        console.log(filteredDemographicData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -279,7 +277,10 @@ export default function DisabilityPrevalence() {
           url="/help/people-who-reported-bad-or-very-bad-health"
         />
       </DataIndicatorDetailsList>
-      <LocalMarketInformation localAuthority={locationNames.LALabel} url="" />
+      <LocalMarketInformation
+        localAuthority={locationNames.LALabel}
+        localAuthorityId={locationIds[1]}
+      />
       <BackToTop />
     </Layout>
   );

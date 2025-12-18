@@ -12,7 +12,7 @@ const BadHealth = () => {
         <DataIndicatorDetails
           title="People who reported bad or very bad health"
           whatThisMeasures={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The proportion of people living within the selected administrative
               area within England whose assessment of the general state of their
               health was bad or very bad. This assessment is not based on a
@@ -31,14 +31,18 @@ const BadHealth = () => {
           }
           updateFrequency="Census cadence"
           methodology={
-            <p>
+            <p className="govuk-!-margin-top-0">
               This dataset provides Census 2021 estimates that classify usual
               residents in England and Wales by the state of their general
               health. The estimates are as at Census Day, 21 March 2021.
             </p>
           }
-          limitations={<p>See data source for details.</p>}
-          dataDefinitions={<p>See data source for details.</p>}
+          limitations={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
+          dataDefinitions={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
         />
       </Layout>
     </>

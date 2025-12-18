@@ -8,6 +8,9 @@ vi.mock('@/components/common/buttons/logoutButton');
 vi.mock('@/services/logger/logService');
 vi.mock('@/services/indicator/IndicatorFetchService');
 vi.mock('@/services/location/LocationService');
+vi.mock('react-plotly.js', () => ({
+  default: vi.fn(),
+}));
 
 vi.mock('@/lib/auth-client', () => ({
   authClient: {

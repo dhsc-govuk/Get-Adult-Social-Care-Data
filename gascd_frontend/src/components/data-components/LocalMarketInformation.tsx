@@ -1,10 +1,19 @@
 import React from 'react';
+
+import { MSPLookup } from '@/helpers/msp/msp-lookup';
+
 type Props = {
   localAuthority: string;
-  url: string;
+  localAuthorityId: string;
 };
 
-const LocalMarketInformation: React.FC<Props> = ({ localAuthority, url }) => {
+const LocalMarketInformation: React.FC<Props> = ({
+  localAuthority,
+  localAuthorityId,
+}) => {
+  const msp = MSPLookup[localAuthorityId];
+  const url = msp && msp.url;
+
   return (
     <div className="govuk-grid-row">
       <div className="govuk-grid-column-two-thirds">
@@ -13,7 +22,12 @@ const LocalMarketInformation: React.FC<Props> = ({ localAuthority, url }) => {
         </h2>
         {url && (
           <p className="govuk-body">
-            <a href={url} className="govuk-link">
+            <a
+              href={url}
+              className="govuk-link"
+              target="_blank"
+              rel="noreferrer"
+            >
               Market Position Statement for {localAuthority} (opens in new tab)
             </a>
           </p>

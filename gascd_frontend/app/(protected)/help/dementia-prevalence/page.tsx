@@ -12,7 +12,7 @@ const DementiaPrevalence = () => {
         <DataIndicatorDetails
           title="Dementia prevalence"
           whatThisMeasures={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The percentage of people registered with a GP within the selected
               administrative area within England who have a recorded diagnosis
               of dementia.
@@ -30,7 +30,7 @@ const DementiaPrevalence = () => {
           }
           updateFrequency="Yearly"
           methodology={
-            <p>
+            <p className="govuk-!-margin-top-0">
               Based on Quality and Outcomes Framework (QOF) data, this measure
               calculates the proportion of patients on GP practice registers
               with a recorded diagnosis of dementia. Figures are aggregated to
@@ -39,7 +39,7 @@ const DementiaPrevalence = () => {
             </p>
           }
           limitations={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The measure is intended to show the prevalence of dementia among
               residents of each local authority area. However, data by place of
               residence is not available. Instead, a proxy is used based on GP
@@ -48,7 +48,9 @@ const DementiaPrevalence = () => {
               home address.
             </p>
           }
-          dataDefinitions={<p>See data source for details.</p>}
+          dataDefinitions={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
         />
       </Layout>
     </>

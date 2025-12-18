@@ -1,11 +1,8 @@
-'use client';
 import Layout from '@/components/common/layout/Layout';
 import DataIndicatorDetails from '@/components/data-components/DataIndicatorDetails';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 const BedsPer100000AdultPopulation: React.FC = () => {
-  const router = useRouter();
   return (
     <>
       <Layout
@@ -17,7 +14,7 @@ const BedsPer100000AdultPopulation: React.FC = () => {
         <DataIndicatorDetails
           title="Adult social care beds per 100,000 adult population"
           whatThisMeasures={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The total number of adult social care beds recorded by care
               providers across health and adult social care, adjusted to a rate
               of 100,000 adults (aged 18 and over) in the local authority,
@@ -47,7 +44,7 @@ const BedsPer100000AdultPopulation: React.FC = () => {
           updateFrequency="Daily"
           methodology={
             <>
-              <p>
+              <p className="govuk-!-margin-top-0">
                 This indicator counts all beds reported by care providers that
                 are related to adult social care, including the following
                 categories:
@@ -83,7 +80,7 @@ const BedsPer100000AdultPopulation: React.FC = () => {
           }
           limitations={
             <>
-              <p>
+              <p className="govuk-!-margin-top-0">
                 Care providers may update their Capacity Tracker data at
                 different times outside the reporting period.
               </p>
@@ -109,7 +106,7 @@ const BedsPer100000AdultPopulation: React.FC = () => {
             </>
           }
           dataDefinitions={
-            <p>
+            <p className="govuk-!-margin-top-0">
               Refer to the Limitations section for details about work relating
               to bed type descriptions.
             </p>

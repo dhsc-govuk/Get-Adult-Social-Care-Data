@@ -29,3 +29,16 @@ html, body {
 ul.nobullet {
   list-style-type: none;
 }
+
+.tmp-mobile-signout {
+  display: none;
+}
+
+@media (max-width: 40.0525em) {
+  .tmp-mobile-signout {
+    display: block;
+    a {
+      color: #fff !important;
+    }
+  }
+}

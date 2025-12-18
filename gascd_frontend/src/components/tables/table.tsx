@@ -1,6 +1,5 @@
-import React, { Ref, useRef } from 'react';
+import React, { Ref } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
-import { MetaData } from '@/data/interfaces/MetaData';
 
 type DataTableProps = {
   caption?: string;
@@ -146,7 +145,7 @@ const DataTable: React.FC<DataTableProps> = ({
         </tbody>
       </table>
       {children}
-      <p className="govuk-body">Source: {source}</p>
+      <p className="govuk-body govuk-!-margin-bottom-0">Source: {source}</p>
     </div>
   );
 };

@@ -12,7 +12,7 @@ const HouseholdsDeprived = () => {
         <DataIndicatorDetails
           title="Households deprived in 4 dimensions"
           whatThisMeasures={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The percentage of households deprived in all four Census-defined
               dimensions: employment (no one in the household in work),
               education (no household member with qualifications and no one aged
@@ -34,15 +34,19 @@ const HouseholdsDeprived = () => {
           }
           updateFrequency="Census cadence"
           methodology={
-            <p>
+            <p className="govuk-!-margin-top-0">
               This dataset provides Census 2021 estimates that classify
               households in England and Wales by four dimensions of deprivation:
               employment, education, health and disability, and household
               overcrowding. The estimates are as at Census Day, 21 March 2021.
             </p>
           }
-          limitations={<p>See data source for details.</p>}
-          dataDefinitions={<p>See data source for details.</p>}
+          limitations={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
+          dataDefinitions={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
         />
       </Layout>
     </>

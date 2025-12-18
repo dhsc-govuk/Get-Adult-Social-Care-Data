@@ -1,11 +1,8 @@
-'use client';
 import Layout from '@/components/common/layout/Layout';
 import DataIndicatorDetails from '@/components/data-components/DataIndicatorDetails';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 const PopulationAge: React.FC = () => {
-  const router = useRouter();
   return (
     <>
       <Layout
@@ -17,7 +14,7 @@ const PopulationAge: React.FC = () => {
         <DataIndicatorDetails
           title="Age group percentages"
           whatThisMeasures={
-            <p>
+            <p className="govuk-!-margin-top-0">
               The estimated percentage of individuals within the specified age
               group (for example, 18 to 64, 65 and over, or 85 and over) living
               in the selected administrative area within England.
@@ -35,14 +32,14 @@ const PopulationAge: React.FC = () => {
           }
           updateFrequency="Yearly"
           methodology={
-            <p>
+            <p className="govuk-!-margin-top-0">
               This data is from the Office for National Statistics mid-2023
               population estimates for England and Wales.
             </p>
           }
           limitations={
             <>
-              <p>
+              <p className="govuk-!-margin-top-0">
                 The data are not counts, but estimates produced by combining
                 data from multiple sources. The accuracy of the estimates is
                 subject to the coverage and errors associated with those
@@ -59,7 +56,9 @@ const PopulationAge: React.FC = () => {
             </>
           }
           dataDefinitions={
-            <p>Include individuals within the specified age group only.</p>
+            <p className="govuk-!-margin-top-0">
+              Include individuals within the specified age group only.
+            </p>
           }
         />
       </Layout>
