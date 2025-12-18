@@ -70,16 +70,17 @@ For Authentication we are using 'Better Auth' which requires a user database. Th
 
 As well as using the magic development login URL above, you can also use the GOV.UK One Login simulator:
 
-- Copy the ONELOGIN\_ env variables from `.env.template` into your `.env` file
-- Enter a development secret in the env var ONELOGIN_CLIENT_SECRET
-- Generate the ONELOGIN_CLIENT_SECRET_HASHED_ESCAPED value using the utility script:
+- Copy the `ONELOGIN_` env variables from `.env.template` into your `.env` file
+- Enter a development secret in the env var `ONELOGIN_CLIENT_SECRET` (can be anything)
+- Generate the `ONELOGIN_CLIENT_SECRET_HASHED_ESCAPED` value using the utility script:
   - `../utils/hash_client_secret.py --interactive --escaped`
   - Enter your development secret and a salt (can be anything) when prompted
 - Run `docker compose up onelogin_simulator`
+- Start the frontend app as normal
 - Head to the temporary "one login" page in the app and click "Sign in":
   - http://localhost:3000/onelogin
-- On the interactive login simulator form, change the "Email" field to match your LOCAL_AUTH_EMAIL value.
-- Click "Continue"
+- On the interactive login simulator form, change the "Email" field to match your `LOCAL_AUTH_EMAIL` value.
+- Click "Continue", and you should be logged in.
 
 ### Development Metrics database setup
 
