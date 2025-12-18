@@ -7,7 +7,7 @@ Cypress.Commands.add('login', () => {
 });
 
 Cypress.Commands.add('logout', () => {
-  cy.get('a').contains('Sign out').click();
+  cy.get('header ul a').contains('Sign out').click();
   cy.wait(500);
 });
 
