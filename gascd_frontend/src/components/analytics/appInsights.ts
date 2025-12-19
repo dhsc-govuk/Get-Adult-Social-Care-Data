@@ -38,15 +38,9 @@ export const initializeAppInsights = (
       appInsights.loadAppInsights();
       if (session?.user?.id) {
         appInsights.setAuthenticatedUserContext(session.user.id);
-        const emailHash = crypto.createHash('sha1');
-        emailHash.update(session.user.email);
-        const emailHashHex = emailHash.digest('hex');
-        console.log(emailHashHex);
-
         // Custom telemetry method to add user properties to all analytics
         var telemetryInitializer = (envelope: ITelemetryItem) => {
           if (envelope.data) {
-            envelope.data[USER_EMAIL_HASH] = emailHashHex;
             envelope.data[PRIMARY_LOCATION_ID] = session.user.locationId;
             envelope.data[PRIMARY_LOCATION_TYPE] = session.user.locationType;
             envelope.data[ACTIVE_LOCATION_ID] = session.user.selectedLocationId;
