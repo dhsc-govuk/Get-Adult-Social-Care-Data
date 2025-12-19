@@ -65,13 +65,18 @@ export const auth = betterAuth({
   ],
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
-      if (ctx.path.startsWith('/sign-in/') && ctx.context.newSession) {
-        logger.info('User logged in success', {
-          userid: ctx.context.newSession.user.id,
-          primaryLocationId: ctx.context.newSession.user.locationId,
-          primaryLocationType: ctx.context.newSession.user.locationType,
-          activeLocationId: ctx.context.newSession.user.selectedLocationId,
-        });
+      if (
+        ctx.path.startsWith('/sign-in/') ||
+        ctx.path.startsWith('/oauth2/callback/')
+      ) {
+        if (ctx.context.newSession) {
+          logger.info('User logged in success', {
+            userid: ctx.context.newSession.user.id,
+            primaryLocationId: ctx.context.newSession.user.locationId,
+            primaryLocationType: ctx.context.newSession.user.locationType,
+            activeLocationId: ctx.context.newSession.user.selectedLocationId,
+          });
+        }
       }
     }),
   },
