@@ -72,9 +72,9 @@ As well as using the magic development login URL above, you can also use the GOV
 
 - Copy the `ONELOGIN_` env variables from `.env.template` into your `.env` file
 - Enter a development secret in the env var `ONELOGIN_CLIENT_SECRET` (can be anything)
-- Generate the `ONELOGIN_CLIENT_SECRET_HASHED_ESCAPED` value using the utility script:
-  - `../utils/hash_client_secret.py --interactive --escaped`
-  - Enter your development secret and a salt (can be anything) when prompted
+- Generate the `ONELOGIN_CLIENT_SECRET_HASH_ESCAPED` value using the utility script:
+  - `../utils/hash_client_secret.py --interactive --escape`
+  - Enter your development secret when prompted
 - Run `docker compose up onelogin_simulator`
 - Start the frontend app as normal
 - Head to the temporary "one login" page in the app and click "Sign in":
