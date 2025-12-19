@@ -9,3 +9,4 @@ export const ACTIVE_LOCATION_ID = 'activeLocationId';
 
 // Analytics events
 export const METRIC_VIEW_EVENT = 'metric-view';
+export const LOCATION_CHANGE_EVENT = 'location-change';

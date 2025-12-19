@@ -1,19 +1,31 @@
 import { getAppInsights } from '@/components/analytics/appInsights';
-import { METRIC_VIEW_EVENT } from '@/constants';
+import { LOCATION_CHANGE_EVENT, METRIC_VIEW_EVENT } from '@/constants';
 import { ICustomProperties } from '@microsoft/applicationinsights-web';
 
 class AnalyticsService {
+  private static _track(event_name: string, props: ICustomProperties) {
+    const appInsights = getAppInsights();
+    if (!appInsights) {
+      // Opted out - ignore
+      return;
+    } else {
+      appInsights.trackEvent({ name: event_name, properties: props });
+    }
+  }
+
   // Note - user properties are added to all events inside the analytics init method
   public static async trackMetricView(metric_id: string) {
     // Tracks the event of (any) metrics being viewed
     // (location is added via the user's selected location)
-    const appInsights = getAppInsights();
-    if (appInsights) {
-      let props: ICustomProperties = {
-        metric_id: metric_id,
-      };
-      appInsights.trackEvent({ name: METRIC_VIEW_EVENT, properties: props });
-    }
+    this._track(METRIC_VIEW_EVENT, {
+      metric_id: metric_id,
+    });
+  }
+
+  public static async trackLocationChange(location_id_new: string) {
+    this._track(LOCATION_CHANGE_EVENT, {
+      location_id: location_id_new,
+    });
   }
 }
 export default AnalyticsService;
