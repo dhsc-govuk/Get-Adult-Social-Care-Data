@@ -227,7 +227,7 @@ paths:
       description: "Retrieves data points for a single specified metric across one or more locations. Omit date parameters to get the most recent data point. Provide a startDate to get a time-series."
       parameters:
         - $ref: '#/components/parameters/MetricId'
-        - name: locationId
+        - name: locations
           in: query
           description: "Comma-separated list of location codes to retrieve data for."
           required: true
@@ -236,32 +236,14 @@ paths:
           schema:
             type: array
             items:
-              type: string
-            example: ["1-12345678", "E09000001"]
-        - name: startDate
+              $ref: "#/components/schemas/Location"
+        - name: timeSeries
           in: query
-          description: "The start date for the time series (YYYY-MM-DD). If omitted, only the most recent data point is returned."
+          description: "Boolean whether to return whole time series. If false or omitted, only the most recent data point is returned."
           required: false
           schema:
-            type: string
-            format: date
-            example: "2024-01-01"
-        - name: endDate
-          in: query
-          description: "The end date for the time series (YYYY-MM-DD). Defaults to the current date if startDate is provided."
-          required: false
-          schema:
-            type: string
-            format: date
-            example: "2024-12-31"
-        - name: frequency
-          in: query
-          description: "The frequency of data points for the time series. To get just the most recent data point, use 'latest'"
-          required: false
-          schema:
-            type: string
-            enum: [latest, daily, monthly, yearly]
-            default: latest
+            type: boolean
+            example: False
       responses:
         '200':
           description: "A list of matching metric series for the specified metric."
@@ -446,6 +428,20 @@ components:
         longitude:
           type: number
           description: "Longitude of the location."
+          
+    Location:
+      type: object
+      description: "A location type and code pair."
+      properties: 
+        location_code:
+          type: string
+          description: "The locations unique code."
+          example: "1-123456789"
+        location_type:
+          type: string
+          description: "The type of this location."
+          enum: [la, national, regional]
+          default: la
     
     MetricMetadata:
       type: object
