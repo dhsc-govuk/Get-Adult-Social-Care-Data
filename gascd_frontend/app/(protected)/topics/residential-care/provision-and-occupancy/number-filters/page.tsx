@@ -7,6 +7,14 @@ import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { useRouter } from 'next/navigation';
 
+// Additional help text for certain metrics
+export const helptext: { [key: string]: string } = {
+  bedcount_per_100000_adults_total_community_care:
+    'For patients leaving hospital who are not ready to go home.',
+  bedcount_per_100000_adults_total_transitional:
+    "For individuals moving from children's services to adult social care.",
+};
+
 export default function ProvisionAndOccupancyNumbersFiltersPage() {
   const router = useRouter();
   const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
@@ -99,6 +107,11 @@ export default function ProvisionAndOccupancyNumbersFiltersPage() {
                   >
                     {filter.filter_bedtype}
                   </label>
+                  {helptext[filter.metric_id] && (
+                    <div className="govuk-hint govuk-radios__hint">
+                      {helptext[filter.metric_id]}
+                    </div>
+                  )}
                 </div>
               ))}
           </div>
