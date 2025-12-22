@@ -88,7 +88,7 @@ stages:
             displayName: 'Cache .next/cache'
             inputs:
               key: next | $(Agent.OS) | gascd_frontend/package-lock.json
-              path: '$(System.DefaultWorkingDirectory)/.next/cache'
+              path: '$(System.DefaultWorkingDirectory)/gascd_frontend/.next/cache'
           - script: npm run build
             displayName: Run a test build
             workingDirectory: gascd_frontend
