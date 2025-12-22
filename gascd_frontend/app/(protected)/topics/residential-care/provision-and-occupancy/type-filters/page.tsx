@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { useRouter } from 'next/navigation';
-import { helptext } from '../number-filters/page';
+import { filter_helptext } from '../helptext';
 
 export default function ProvisionAndOccupancyTypeFiltersPage() {
   const router = useRouter();
@@ -134,9 +134,9 @@ export default function ProvisionAndOccupancyTypeFiltersPage() {
                   >
                     {filter.filter_bedtype}
                   </label>
-                  {helptext[filter.metric_id] && (
+                  {filter_helptext[filter.metric_id] && (
                     <div className="govuk-hint govuk-checkboxes__hint">
-                      {helptext[filter.metric_id]}
+                      {filter_helptext[filter.metric_id]}
                     </div>
                   )}
                 </div>
