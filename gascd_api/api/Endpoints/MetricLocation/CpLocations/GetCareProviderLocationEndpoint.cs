@@ -15,9 +15,13 @@ public class GetCareProviderLocationEndpoint(GascdDataContext context, Reference
     public override async Task HandleAsync(GetCareProviderLocationRequest req, CancellationToken ct)
     {
         logger.LogDebug("Received request for care provider location: {cpl}", req.CareProviderLocationCode);
+
         var cpl = context.CareProviderLocations
             .Include(cpl => cpl.CareProvider)
             .Include(cpl => cpl.GeoData)
+            .Include(cpl => cpl.LocalAuthority)
+            .Include(cpl => cpl.LocalAuthority.Region)
+            .Include(cpl => cpl.LocalAuthority.Region.Country)
             .SingleOrDefault(x => x.Code == req.CareProviderLocationCode);
 
         if (cpl == null)
@@ -27,7 +31,7 @@ public class GetCareProviderLocationEndpoint(GascdDataContext context, Reference
             return;
         }
 
-        var response = mapper.CareProviderLocationToGetCareProviderLocationResponse(cpl);
+        var response = mapper.CareProviderLocationToGetCareProviderLocationResponse(cpl, req.IncludeParents);
         logger.LogInformation("Finished processing care provider location: {cpl}", req.CareProviderLocationCode);
         await Send.OkAsync(response, ct);
 

@@ -63,6 +63,40 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
     }
 
     [Fact]
+    public async Task GetCareProviderLocation_ReturnsExpectedCareProviderDataWithIncludeParents()
+    {
+        var (httpCode, response) =
+            await _client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, GetCareProviderLocationResponse>(
+                new GetCareProviderLocationRequest { CareProviderLocationCode = "1-222222222", IncludeParents = true });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Id.ShouldBe("1-222222222");
+        response.DisplayName.ShouldBe("Bupa Liverpool");
+        response.Address.ShouldBe("Bupa Liverpool, CV2 2TN");
+        response.ProviderId.ShouldBe("1-123456789");
+        response.ProviderName.ShouldBe("Bupa");
+        response.NominatedIndividual.ShouldBe("Mr. Ice Cool");
+        response.GeoData.Latitude.ShouldBe(53.425);
+        response.GeoData.Longitude.ShouldBe(-2.88);
+        List<GeoDataDto.CoordinateDto> expectedPolygon = new()
+        {
+            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 },
+            new GeoDataDto.CoordinateDto { Longitude = -2.55, Latitude = 52.26 },
+            new GeoDataDto.CoordinateDto { Longitude = -2.65, Latitude = 53.73 },
+            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 54.73 },
+            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 }
+        };
+        response.GeoData.Polygon.ShouldBe(expectedPolygon);
+        response.LocalAuthorityId.ShouldBe("E08000014");
+        response.LocalAuthorityName.ShouldBe("Liverpool");
+        response.RegionId.ShouldBe("E12000002");
+        response.RegionName.ShouldBe("North West");
+        response.CountryId.ShouldBe("E92000001");
+        response.CountryName.ShouldBe("England");
+    }
+
+
+    [Fact]
     public async Task GetCareProviderLocation_ReturnsExpectedCareProviderJsonObject()
     {
         var response = await _client.GetAsync("api/metric_locations/cp_locations/1-222222222", TestContext.Current.CancellationToken);

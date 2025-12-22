@@ -6,4 +6,7 @@ public class GetCareProviderLocationRequest
 {
     [RouteParam]
     public required string CareProviderLocationCode { get; set; }
+
+    [QueryParam]
+    public bool IncludeParents { get; set; } = false;
 }

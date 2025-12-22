@@ -30,7 +30,7 @@ public class ReferenceMapper
         };
     }
 
-    public GetCareProviderLocationResponse CareProviderLocationToGetCareProviderLocationResponse(CareProviderLocation cpl)
+    public GetCareProviderLocationResponse CareProviderLocationToGetCareProviderLocationResponse(CareProviderLocation cpl, bool includeParents)
     {
         return new GetCareProviderLocationResponse
         {
@@ -40,7 +40,13 @@ public class ReferenceMapper
             ProviderId = cpl.CareProvider.Code,
             ProviderName = cpl.CareProvider.Name,
             NominatedIndividual = cpl.NominatedIndividual,
-            GeoData = GeoDataToGeoDataDto(cpl.GeoData)
+            GeoData = GeoDataToGeoDataDto(cpl.GeoData),
+            LocalAuthorityId = includeParents ? cpl.LocalAuthority.Code : null,
+            LocalAuthorityName = includeParents ? cpl.LocalAuthority.Name : null,
+            RegionId = includeParents ? cpl.LocalAuthority.Region.Code : null,
+            RegionName = includeParents ? cpl.LocalAuthority.Region.Name : null,
+            CountryId = includeParents ? cpl.LocalAuthority.Region.Country.Code : null,
+            CountryName = includeParents ? cpl.LocalAuthority.Region.Country.Name : null,
         };
     }
 
