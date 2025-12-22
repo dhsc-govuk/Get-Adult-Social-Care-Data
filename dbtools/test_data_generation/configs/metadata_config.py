@@ -160,6 +160,22 @@ METRIC_METADATA = {
         "is_live": 1,
         "deep_dive": 0
     },
+    "bedcount_per_100000_adults_total_community_care": {
+        "group_id": "bedcount_per_100000_adults",
+        "group_name": "Adult social care beds per 100,000 adult population",
+        "description": "The total number of beds recorded by care providers across health and adult social care, adjusted to a rate of 100,000 adults in the local authority population.",
+        "numerator_description": "Number of beds recorded by care providers",
+        "denominator_description": "Adult population",
+        "data_source": "Capacity Tracker, ONS",
+        "filter_bedtype": "Community care",
+        "metric_data_type": "Number",
+        "methodology": "The total number of beds is the number of beds reported by care providers, including those in use and those available for new admissions. Total beds includes mental health, learning disabilities, and end-of-life care beds in residential and nursing care homes.The data covers both self-funded and local authority-funded beds. Care providers update this information daily or whenever changes occur using the Capacity Tracker tool. They report how many beds are available and occupied in care settings such as nursing homes, residential care, and community care. The data is grouped by local areas, regions, and nationally so it is easier to compare.",
+        "limitations": "Capacity Tracker data is self-reported by care providers, who update it at different times throughout the month. This means the data does not provide a snapshot of all providers at the same point in time. Instead, it represents the most recent information available from each provider when the data was retrieved.",
+        "access_category": None,
+        "metric_type": "Metric",
+        "is_live": 1,
+        "deep_dive": 0
+    },
     "bedcount_per_100000_adults_total_ypd_young_physically_disabled": {
         "group_id": "bedcount_per_100000_adults",
         "group_name": "Adult social care beds per 100,000 adult population",
