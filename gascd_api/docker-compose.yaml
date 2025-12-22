@@ -10,12 +10,13 @@
       - ASPNETCORE_ENVIRONMENT=Docker
 
   postgres:
-    image: postgres:17.6-alpine
+    image: imresamu/postgis:18-3.6-bookworm
     ports:
-      - 5432:5432
+      - "5431:5431"
     volumes:
       - ./api.Tests/TestData/test-seed.sql:/docker-entrypoint-initdb.d/test-seed.sql
     environment:
       - POSTGRES_USER=mr-ice-cool
       - POSTGRES_PASSWORD=is-rockin
       - POSTGRES_DB=gascd_data
+      - PGPORT=5431
