@@ -15,8 +15,9 @@ services:
             - .env
         environment:
             - PORT=80
-            # Override user db if running in docker
+            # Override hosts if running in docker
             - USER_DB_SERVER=host.docker.internal
+            - DB_SERVER=host.docker.internal
     userdb:
         container_name: gascd_frontend_userdb
         image: gascd_userdb_image
@@ -34,6 +35,24 @@ services:
             - "1444:1433"
         volumes:
             - gascd_userdb_data:/var/opt/mssql
+        restart: always 
+
+    onelogin_simulator:
+        container_name: gascd_frontend_onelogin_simulator
+        image: ghcr.io/govuk-one-login/simulator:latest
+        environment:
+            PORT: 4000
+            SIMULATOR_URL: "http://localhost:4000"
+            CLIENT_ID: ${ONELOGIN_CLIENT_ID}
+            REDIRECT_URLS: "http://localhost:3000/api/auth/oauth2/callback/govuk-one-login"
+            IDENTITY_VERIFICATION_SUPPORTED: "false"
+            TOKEN_AUTH_METHOD: "client_secret_post"
+            CLIENT_SECRET_HASH: "${ONELOGIN_CLIENT_SECRET_HASH_ESCAPED}"
+            CLIENT_LOCS: "P0"
+            INTERACTIVE_MODE: "true"
+            TEST_USER_EMAIL: "${LOCAL_AUTH_EMAIL}"
+        ports:
+            - "4000:4000"
         restart: always 
 
 # Define named volumes so that data persists

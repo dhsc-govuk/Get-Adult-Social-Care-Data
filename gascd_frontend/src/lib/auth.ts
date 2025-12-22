@@ -1,6 +1,6 @@
 import { betterAuth, boolean } from 'better-auth';
 import { createAuthMiddleware } from 'better-auth/api';
-import { B2CPlugin } from './authPlugins';
+import { getOAuthConfig } from './authPlugins';
 import { nextCookies } from 'better-auth/next-js';
 import logger from '@/utils/logger';
 import { msdialect } from './authDatabase';
@@ -59,7 +59,7 @@ export const auth = betterAuth({
   },
   plugins: [
     admin(),
-    B2CPlugin(),
+    getOAuthConfig(),
     // https://www.better-auth.com/docs/integrations/next#server-action-cookies
     nextCookies(), // make sure this is the last plugin in the array
   ],
@@ -68,6 +68,12 @@ export const auth = betterAuth({
       if (ctx.context.newSession) {
         logger.info('User logged in success', {
           userid: ctx.context.newSession.user.id,
+        });
+      }
+      if (ctx.path == '/error') {
+        logger.error('Auth error', {
+          error: ctx.query?.error,
+          description: ctx.query?.error_description,
         });
       }
     }),
