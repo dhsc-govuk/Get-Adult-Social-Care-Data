@@ -8,5 +8,5 @@ public class GetCareProviderLocationRequest
     public required string CareProviderLocationCode { get; set; }
 
     [QueryParam]
-    public bool IncludeParents { get; set; } = false;
+    public bool IncludeParents { get; set; }
 }
