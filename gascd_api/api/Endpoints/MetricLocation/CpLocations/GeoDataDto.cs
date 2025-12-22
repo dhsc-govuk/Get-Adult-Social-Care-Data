@@ -6,9 +6,12 @@ public class GeoDataDto
     public double Longitude { get; init; }
     public List<CoordinateDto>? Polygon { get; init; }
 
-    public class CoordinateDto
+    public record CoordinateDto
     {
         public double Latitude { get; init; }
         public double Longitude { get; init; }
+
     }
+
+
 }

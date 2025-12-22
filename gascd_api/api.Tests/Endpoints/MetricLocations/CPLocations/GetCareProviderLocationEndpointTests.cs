@@ -45,7 +45,15 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         response.LocalAuthorityId.ShouldBe("E08000014");
         response.GeoData.Latitude.ShouldBe(53.425);
         response.GeoData.Longitude.ShouldBe(-2.88);
-        response.GeoData.Polygon.ShouldBe(null);
+        List<GeoDataDto.CoordinateDto> expectedPolygon = new()
+        {
+            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 },
+            new GeoDataDto.CoordinateDto { Longitude = -2.55, Latitude = 52.26 },
+            new GeoDataDto.CoordinateDto { Longitude = -2.65, Latitude = 53.73 },
+            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 54.73 },
+            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 }
+        };
+        response.GeoData.Polygon.ShouldBe(expectedPolygon);
     }
 
     [Fact]

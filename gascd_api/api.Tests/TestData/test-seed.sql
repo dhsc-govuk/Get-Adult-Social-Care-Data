@@ -515,9 +515,9 @@ DECLARE
 BEGIN
     INSERT INTO geo_data(id, code, coordinate, bounding_polygon, loaded_datetime)
     VALUES (gd_country, 'code', ST_Point(-1.464854, 52.561928), null, CURRENT_TIMESTAMP),
-           (gd_region, 'code', ST_Point(-2.75, 54.075),ST_Polygon('LINESTRING(-3.8 52.9,-1.8 52.9,-1.8 55.25,-3.8 55.25,-3.8 52.9)'::geometry, 4326), CURRENT_TIMESTAMP),
-           (gd_la, 'code', ST_Point(-2.98, 53.405),ST_Polygon('LINESTRING(-3.3 53.26,-2.55 53.26,-2.55 53.73,-3.3 53.73,-3.3 53.26)'::geometry, 4326), CURRENT_TIMESTAMP),
-           (gd_cpl, 'code', ST_Point(-2.88, 53.425), null, CURRENT_TIMESTAMP),
+           (gd_region, 'code', ST_Point(-2.75, 54.075),ST_Polygon('LINESTRING(52.9 -3.8, 52.9 -1.8, 55.25 -1.8, 55.25 -3.8, 52.9 -3.8)'::geometry, 4326), CURRENT_TIMESTAMP),
+           (gd_la, 'code', ST_Point(-2.98, 53.405),ST_Polygon('LINESTRING(53.26 -3.3, 53.26 -2.55, 53.73 -2.55, 53.73 -3.3, 53.26 -3.3)'::geometry, 4326), CURRENT_TIMESTAMP),
+           (gd_cpl, 'code', ST_Point(-2.88, 53.425), ST_Polygon('LINESTRING(55.26 -3.3, 52.26 -2.55, 53.73 -2.65, 54.73 -3.3, 55.26 -3.3)'::geometry, 4326), CURRENT_TIMESTAMP),
            (gd_cpl_2, 'code', ST_Point(-2.38, 52.425), null, CURRENT_TIMESTAMP),
            (gd_cpl_3, 'code', ST_Point(-2.83, 53.425), null, CURRENT_TIMESTAMP);
     
