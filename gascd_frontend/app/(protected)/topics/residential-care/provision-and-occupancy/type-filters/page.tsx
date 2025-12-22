@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { useRouter } from 'next/navigation';
+import { filter_helptext } from '../helptext';
 
 export default function ProvisionAndOccupancyTypeFiltersPage() {
   const router = useRouter();
@@ -134,6 +135,11 @@ export default function ProvisionAndOccupancyTypeFiltersPage() {
                   >
                     {filter.filter_bedtype}
                   </label>
+                  {filter_helptext[filter.metric_id] && (
+                    <div className="govuk-hint govuk-checkboxes__hint">
+                      {filter_helptext[filter.metric_id]}
+                    </div>
+                  )}
                 </div>
               ))}
           </form>
