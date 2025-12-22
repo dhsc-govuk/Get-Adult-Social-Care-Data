@@ -4,13 +4,15 @@ import {
   METRIC_VIEW_EVENT,
   DATA_TAB_CHANGE_EVENT,
   MPS_LINK_EVENT,
+  HELP_EMAIL_EVENT,
 } from '@/constants';
 import { ICustomProperties } from '@microsoft/applicationinsights-web';
 
 class AnalyticsService {
   // Note - user properties are added to all events inside the analytics init method
 
-  private static _track(event_name: string, props: ICustomProperties) {
+  private static _track(event_name: string, props?: ICustomProperties) {
+    console.log(event_name);
     const appInsights = getAppInsights();
     if (!appInsights) {
       // Opted out - ignore
@@ -44,6 +46,10 @@ class AnalyticsService {
     this._track(MPS_LINK_EVENT, {
       local_authority_id: local_authority_id,
     });
+  }
+
+  public static trackHelpEmailClicked() {
+    this._track(HELP_EMAIL_EVENT);
   }
 }
 export default AnalyticsService;
