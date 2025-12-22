@@ -76,6 +76,12 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         GetFromJson(jObject, "geo_data.polygon[0].latitude").ShouldBe("55.26");
         GetFromJson(jObject, "geo_data.polygon[1].longitude").ShouldBe("-2.55");
         GetFromJson(jObject, "geo_data.polygon[1].latitude").ShouldBe("52.26");
+        GetFromJson(jObject, "geo_data.polygon[2].longitude").ShouldBe("-2.65");
+        GetFromJson(jObject, "geo_data.polygon[2].latitude").ShouldBe("53.73");
+        GetFromJson(jObject, "geo_data.polygon[3].longitude").ShouldBe("-3.3");
+        GetFromJson(jObject, "geo_data.polygon[3].latitude").ShouldBe("54.73");
+        GetFromJson(jObject, "geo_data.polygon[4].longitude").ShouldBe("-3.3");
+        GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("55.26");
     }
 
     [Theory]
