@@ -51,6 +51,7 @@ export default function ProvisionAndOccupancyTypeFiltersPage() {
     router.push(
       '/topics/residential-care/provision-and-occupancy/data#table-2'
     );
+    router.refresh();
   };
 
   const breadcrumbs = [

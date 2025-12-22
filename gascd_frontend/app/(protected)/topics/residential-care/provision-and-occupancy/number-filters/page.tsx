@@ -43,6 +43,7 @@ export default function ProvisionAndOccupancyNumbersFiltersPage() {
     router.push(
       '/topics/residential-care/provision-and-occupancy/data#chart-1'
     );
+    router.refresh();
   };
 
   const breadcrumbs = [
