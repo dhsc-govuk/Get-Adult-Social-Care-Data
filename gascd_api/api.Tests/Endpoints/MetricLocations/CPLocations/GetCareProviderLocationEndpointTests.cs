@@ -4,6 +4,7 @@ using FastEndpoints;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
+using Xunit.Internal;
 using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.MetricLocations.CPLocations;
@@ -71,6 +72,10 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         GetFromJson(jObject, "local_authority_id").ShouldBe("E08000014");
         GetFromJson(jObject, "geo_data.latitude").ShouldBe("53.425");
         GetFromJson(jObject, "geo_data.longitude").ShouldBe("-2.88");
+        GetFromJson(jObject, "geo_data.polygon[0].longitude").ShouldBe("-3.3");
+        GetFromJson(jObject, "geo_data.polygon[0].latitude").ShouldBe("55.26");
+        GetFromJson(jObject, "geo_data.polygon[1].longitude").ShouldBe("-2.55");
+        GetFromJson(jObject, "geo_data.polygon[1].latitude").ShouldBe("52.26");
     }
 
     [Theory]
