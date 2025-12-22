@@ -1,4 +1,4 @@
-import React, { RefObject, useState } from 'react';
+import React, { RefObject } from 'react';
 import {
   downloadCSV,
   extractTableCellText,
@@ -38,7 +38,7 @@ const DownloadTableDataCSVLink: React.FC<Props> = ({
         className="govuk-link govuk-body"
         onClick={handleDownloadClick}
       >
-        Download table data (CSV)
+        Export table data (CSV)
       </Link>
     </>
   );

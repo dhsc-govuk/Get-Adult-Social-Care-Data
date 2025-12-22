@@ -55,12 +55,16 @@ class IndicatorFetchService {
   }
 
   public static async getData(query: IndicatorQuery): Promise<Indicator[]> {
+    const filteredQuery = {
+      metric_ids: query.metric_ids,
+      location_ids: query.location_ids.filter((item) => item !== 'Indicator'),
+    };
     const response = await fetch('/api/get_metric_data', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(query),
+      body: JSON.stringify(filteredQuery),
     });
 
     if (!response.ok) {
@@ -71,7 +75,7 @@ class IndicatorFetchService {
 
   public static async getMetadateByType(query: string): Promise<MetaData[]> {
     const response = await fetch(
-      `api/get_metadata_by_data_types?metric_data_type=${query}`
+      `/api/get_metadata_by_data_types?metric_data_type=${query}`
     );
     if (!response.ok) {
       throw new Error(`Failed to fetch data: ${response.statusText}`);

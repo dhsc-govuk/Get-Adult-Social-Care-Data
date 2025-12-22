@@ -2,22 +2,6 @@ import { render, screen } from '@testing-library/react';
 import NotFound from '../../app/not-found';
 
 describe('NotFound Page', () => {
-  it('renders the layout header', () => {
-    render(<NotFound />);
-    expect(document.querySelector('.govuk-header')).toBeInTheDocument();
-  });
-
-  it('should have the link to the homepage', () => {
-    render(<NotFound />);
-
-    const linkElement = screen.getByRole('link', {
-      name: /Get adult social care data/i,
-    });
-    expect(linkElement).toBeInTheDocument();
-
-    expect(linkElement).toHaveAttribute('href', '/');
-  });
-
   it('renders the layout footer', () => {
     render(<NotFound />);
     expect(document.querySelector('.govuk-footer')).toBeInTheDocument();

@@ -20,7 +20,7 @@ export default function GlobalError({
       </head>
       <body>
         <div tabIndex={-1} id="layout">
-          <Header useCookieBanner={false} />
+          <Header />
           <div className="govuk-width-container">
             <div role="region" aria-label="Phasebar">
               <PhaseBanner />
