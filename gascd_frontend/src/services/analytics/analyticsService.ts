@@ -3,6 +3,7 @@ import {
   LOCATION_CHANGE_EVENT,
   METRIC_VIEW_EVENT,
   DATA_TAB_CHANGE_EVENT,
+  MPS_LINK_EVENT,
 } from '@/constants';
 import { ICustomProperties } from '@microsoft/applicationinsights-web';
 
@@ -19,7 +20,7 @@ class AnalyticsService {
     }
   }
 
-  public static async trackMetricView(metric_id: string) {
+  public static trackMetricView(metric_id: string) {
     // Tracks the event of (any) metrics being viewed
     // (location is added via the user's selected location)
     this._track(METRIC_VIEW_EVENT, {
@@ -27,15 +28,21 @@ class AnalyticsService {
     });
   }
 
-  public static async trackLocationChange(location_id_new: string) {
+  public static trackLocationChange(location_id_new: string) {
     this._track(LOCATION_CHANGE_EVENT, {
       location_id: location_id_new,
     });
   }
 
-  public static async trackDataTabChange(tabname: string) {
+  public static trackDataTabChange(tabname: string) {
     this._track(DATA_TAB_CHANGE_EVENT, {
       tabname: tabname,
+    });
+  }
+
+  public static trackMPSClicked(local_authority_id: string) {
+    this._track(MPS_LINK_EVENT, {
+      local_authority_id: local_authority_id,
     });
   }
 }
