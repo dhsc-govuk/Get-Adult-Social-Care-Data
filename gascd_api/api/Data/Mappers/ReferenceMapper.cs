@@ -1,6 +1,5 @@
 using api.Data.Models.Reference;
 using api.Endpoints.Geo.Postcode;
-using api.Endpoints.MetricLocation.CpLocations;
 using api.Endpoints.Organisation.CareProvider;
 using api.Endpoints.Shared;
 

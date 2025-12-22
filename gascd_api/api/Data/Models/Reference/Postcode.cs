@@ -11,9 +11,6 @@ public partial class Postcode : EntityBase
     [Column("display_postcode"), StringLength(8)]
     public required string DisplayPostcode { get; init; } = null!;
 
-    [Column("coordinate", TypeName = "geometry (point)")]
-    public required Point Coordinate { get; set; }
-
     [Column("local_authority_fk")]
     public required int LocalAuthorityFk { get; init; }
 
