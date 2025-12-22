@@ -5,12 +5,12 @@ import {
   DATA_TAB_CHANGE_EVENT,
   MPS_LINK_EVENT,
   HELP_EMAIL_EVENT,
+  DOWNLOAD_CSV_EVENT,
 } from '@/constants';
 import { ICustomProperties } from '@microsoft/applicationinsights-web';
 
 class AnalyticsService {
   // Note - user properties are added to all events inside the analytics init method
-
   private static _track(event_name: string, props?: ICustomProperties) {
     console.log(event_name);
     const appInsights = getAppInsights();
@@ -50,6 +50,12 @@ class AnalyticsService {
 
   public static trackHelpEmailClicked() {
     this._track(HELP_EMAIL_EVENT);
+  }
+
+  public static trackDownloadCSV(filename: string) {
+    this._track(DOWNLOAD_CSV_EVENT, {
+      filename: filename,
+    });
   }
 }
 export default AnalyticsService;

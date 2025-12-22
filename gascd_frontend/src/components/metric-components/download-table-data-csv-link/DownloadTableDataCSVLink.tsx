@@ -4,6 +4,7 @@ import {
   extractTableCellText,
 } from '../../../helpers/downloadToCsvHelpers';
 import Link from 'next/link';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 type Props = {
   tableref?: RefObject<HTMLTableElement | null>;
@@ -20,6 +21,7 @@ const DownloadTableDataCSVLink: React.FC<Props> = ({
 }) => {
   const handleDownloadClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    AnalyticsService.trackDownloadCSV(filename);
 
     if (tableref?.current) {
       const csv_data = extractTableCellText(tableref.current);
