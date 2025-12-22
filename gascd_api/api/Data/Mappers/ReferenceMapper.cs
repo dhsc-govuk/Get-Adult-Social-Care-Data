@@ -19,10 +19,19 @@ public class ReferenceMapper
         };
     }
 
-    public GetCareProviderResponse CareProviderLocationToCareProviderLocationResponse(
-        CareProviderLocation careProviderLocation)
+    public GetCareProviderResponse CareProviderToGetCareProviderResponse(CareProvider careProvider)
     {
         return new GetCareProviderResponse
+        {
+            DisplayName = careProvider.Name,
+            Locations = careProvider.CareProviderLocations
+                .Select(CareProviderLocationToCareProviderLocationResponse).ToList()
+        };
+    }
+
+    public GetCareProviderResponse.CareProviderLocation CareProviderLocationToCareProviderLocationResponse(CareProviderLocation careProviderLocation)
+    {
+        return new GetCareProviderResponse.CareProviderLocation
         {
             LocationName = careProviderLocation.Name,
             LocationId = careProviderLocation.Code

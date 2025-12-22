@@ -50,16 +50,23 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    location_code:
-                      type: string
-                      description: "The unique ID of the location."
-                    location_name:
-                      type: string
-                      description: "The display name of the location."
+                type: object
+                properties:
+                  display_name:
+                    type: string
+                    description: "Display name of the Care Provider"
+                  locations:
+                    type: array
+                    description: "A list of Care provider locations belonging to this Care Provider"
+                    items:
+                      type: object
+                      properties:
+                        location_id:
+                          type: string
+                          description: "The unique ID of the location."
+                        location_name:
+                          type: string
+                          description: "The display name of the location."
 
   /metric_locations/cp_locations/{code}:
     get:
