@@ -40,7 +40,6 @@ public class ReferenceMapper
             ProviderId = cpl.CareProvider.Code,
             ProviderName = cpl.CareProvider.Name,
             NominatedIndividual = cpl.NominatedIndividual,
-            LocalAuthorityId = cpl.LocalAuthority.Code,
             GeoData = GeoDataToGeoDataDto(cpl.GeoData)
         };
     }

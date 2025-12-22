@@ -43,7 +43,6 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         response.ProviderId.ShouldBe("1-123456789");
         response.ProviderName.ShouldBe("Bupa");
         response.NominatedIndividual.ShouldBe("Mr. Ice Cool");
-        response.LocalAuthorityId.ShouldBe("E08000014");
         response.GeoData.Latitude.ShouldBe(53.425);
         response.GeoData.Longitude.ShouldBe(-2.88);
         List<GeoDataDto.CoordinateDto> expectedPolygon = new()
@@ -55,6 +54,12 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 }
         };
         response.GeoData.Polygon.ShouldBe(expectedPolygon);
+        response.LocalAuthorityId.ShouldBe(null);
+        response.LocalAuthorityName.ShouldBe(null);
+        response.RegionId.ShouldBe(null);
+        response.RegionName.ShouldBe(null);
+        response.CountryId.ShouldBe(null);
+        response.CountryName.ShouldBe(null);
     }
 
     [Fact]
@@ -69,7 +74,6 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         GetFromJson(jObject, "provider_id").ShouldBe("1-123456789");
         GetFromJson(jObject, "provider_name").ShouldBe("Bupa");
         GetFromJson(jObject, "nominated_individual").ShouldBe("Mr. Ice Cool");
-        GetFromJson(jObject, "local_authority_id").ShouldBe("E08000014");
         GetFromJson(jObject, "geo_data.latitude").ShouldBe("53.425");
         GetFromJson(jObject, "geo_data.longitude").ShouldBe("-2.88");
         GetFromJson(jObject, "geo_data.polygon[0].longitude").ShouldBe("-3.3");

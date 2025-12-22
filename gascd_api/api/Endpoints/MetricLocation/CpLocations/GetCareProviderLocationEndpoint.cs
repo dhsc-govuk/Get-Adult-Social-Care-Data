@@ -17,7 +17,6 @@ public class GetCareProviderLocationEndpoint(GascdDataContext context, Reference
         logger.LogDebug("Received request for care provider location: {cpl}", req.CareProviderLocationCode);
         var cpl = context.CareProviderLocations
             .Include(cpl => cpl.CareProvider)
-            .Include(cpl => cpl.LocalAuthority)
             .Include(cpl => cpl.GeoData)
             .SingleOrDefault(x => x.Code == req.CareProviderLocationCode);
 
