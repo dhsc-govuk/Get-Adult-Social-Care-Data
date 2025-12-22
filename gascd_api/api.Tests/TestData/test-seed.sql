@@ -526,10 +526,10 @@ BEGIN
            (gd_cpl, 'code', ST_Point(-2.88, 53.425), ST_Polygon('LINESTRING(55.26 -3.3, 52.26 -2.55, 53.73 -2.65, 54.73 -3.3, 55.26 -3.3)'::geometry, 4326), CURRENT_TIMESTAMP),
            (gd_cpl_2, 'code', ST_Point(-2.38, 52.425), null, CURRENT_TIMESTAMP),
            (gd_cpl_3, 'code', ST_Point(-2.83, 53.425), null, CURRENT_TIMESTAMP),
-           (gd_postcode, 'code', ST_Point(51.33954856349381, -0.349629386), null, CURRENT_TIMESTAMP),
-           (gd_postcode_2, 'code', ST_Point( 51.32988801568501, 0.7260691453143282), null, CURRENT_TIMESTAMP),
-           (gd_postcode_3, 'code', ST_Point( 51.32954649874547, 0.7283745919593453), null, CURRENT_TIMESTAMP),
-           (gd_postcode_4, 'code', ST_Point(52.43602168912626, -1.445481473), null, CURRENT_TIMESTAMP);
+           (gd_postcode, 'code', ST_Point(-0.349629386, 51.33954856349381), ST_Polygon('LINESTRING(55.26 -3.3, 59.6 -2.55, 54.73 -2.95, 52.73 -3.1, 55.26 -3.3)'::geometry, 4326), CURRENT_TIMESTAMP),
+           (gd_postcode_2, 'code', ST_Point(0.7260691453143282, 51.32988801568501 ), null, CURRENT_TIMESTAMP),
+           (gd_postcode_3, 'code', ST_Point(0.7283745919593453, 51.32954649874547), null, CURRENT_TIMESTAMP),
+           (gd_postcode_4, 'code', ST_Point(-1.445481473,52.43602168912626), null, CURRENT_TIMESTAMP);
 
 
 INSERT INTO countries (id, code, name, geo_data_fk, loaded_datetime)
