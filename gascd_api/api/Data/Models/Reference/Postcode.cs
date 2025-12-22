@@ -19,4 +19,11 @@ public partial class Postcode : EntityBase
 
     [ForeignKey("LocalAuthorityFk")]
     public virtual LocalAuthority LocalAuthority { get; init; } = null!;
+
+    [Column("geo_data_fk")]
+    public required int GeoDataFk { get; init; }
+
+    [ForeignKey("GeoDataFk")]
+    public virtual GeoData GeoData { get; init; } = null!;
+
 }

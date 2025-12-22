@@ -1,5 +1,6 @@
 using api.Data;
 using api.Data.Mappers;
+using api.Endpoints.Shared;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
