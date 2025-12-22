@@ -131,17 +131,10 @@ stages:
                 deploy:
                   steps:
                     - task: Docker@2
-                      displayName: Login to ${{environment.acr_connection}} ACR
+                      displayName: Login to $(acr_connection) ACR
                       inputs:
                         command: login
-                        containerRegistry: ${{environment.acr_connection}}
-                    # Ensure 'latest' is only updated when this deployment step actually runs.
-#                    - script: |
-#                        echo "Updating Backend API 'latest' tag for ${{environment.name}}..."
-#                        docker pull $(acr_name).azurecr.io/$(imageName):$(tag)
-#                        docker tag $(acr_name).azurecr.io/$(imageName):$(tag) $(acr_name).azurecr.io/$(imageName):latest
-#                        docker push $(acr_name).azurecr.io/$(imageName):latest
-#                      displayName: Update 'latest' tag on ${{environment.acr_name}}
+                        containerRegistry: $(acr_connection)
                     - task: AzureWebAppContainer@1
                       inputs:
                         appType: "webAppLinux"
