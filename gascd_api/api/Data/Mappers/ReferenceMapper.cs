@@ -1,5 +1,6 @@
 using api.Data.Models.Reference;
 using api.Endpoints.Geo.Postcode;
+using api.Endpoints.MetricLocation.LocalAuthorities;
 using api.Endpoints.Organisation.CareProvider;
 using api.Endpoints.Shared;
 
@@ -67,6 +68,16 @@ public class ReferenceMapper
             Longitude = geoData.Coordinate.X,
             Polygon = geoData.BoundingPolygon?.Coordinates
                 .Select(c => new GeoDataDto.CoordinateDto { Latitude = c.X, Longitude = c.Y }).ToList()
+        };
+    }
+
+    public GetLocalAuthorityResponse LocalAuthorityToGetLocalAuthorityResponse(LocalAuthority la)
+    {
+        return new GetLocalAuthorityResponse
+        {
+            Code = la.Code,
+            DisplayName = la.Name,
+            GeoData = GeoDataToGeoDataDto(la.GeoData)
         };
     }
 }
