@@ -122,6 +122,39 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("55.26");
     }
 
+    [Fact]
+    public async Task GetCareProviderLocation_ReturnsExpectedCareProviderJsonObjectIncludeParents()
+    {
+        var response = await _client.GetAsync("api/metric_locations/cp_locations/1-222222222?include_parents=true", TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var jObject = await ParseJsonResponse<JObject>(response);
+        GetFromJson(jObject, "id").ShouldBe("1-222222222");
+        GetFromJson(jObject, "display_name").ShouldBe("Bupa Liverpool");
+        GetFromJson(jObject, "address").ShouldBe("Bupa Liverpool, CV2 2TN");
+        GetFromJson(jObject, "provider_id").ShouldBe("1-123456789");
+        GetFromJson(jObject, "provider_name").ShouldBe("Bupa");
+        GetFromJson(jObject, "nominated_individual").ShouldBe("Mr. Ice Cool");
+        GetFromJson(jObject, "geo_data.latitude").ShouldBe("53.425");
+        GetFromJson(jObject, "geo_data.longitude").ShouldBe("-2.88");
+        GetFromJson(jObject, "geo_data.polygon[0].longitude").ShouldBe("-3.3");
+        GetFromJson(jObject, "geo_data.polygon[0].latitude").ShouldBe("55.26");
+        GetFromJson(jObject, "geo_data.polygon[1].longitude").ShouldBe("-2.55");
+        GetFromJson(jObject, "geo_data.polygon[1].latitude").ShouldBe("52.26");
+        GetFromJson(jObject, "geo_data.polygon[2].longitude").ShouldBe("-2.65");
+        GetFromJson(jObject, "geo_data.polygon[2].latitude").ShouldBe("53.73");
+        GetFromJson(jObject, "geo_data.polygon[3].longitude").ShouldBe("-3.3");
+        GetFromJson(jObject, "geo_data.polygon[3].latitude").ShouldBe("54.73");
+        GetFromJson(jObject, "geo_data.polygon[4].longitude").ShouldBe("-3.3");
+        GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("55.26");
+        GetFromJson(jObject, "local_authority_id").ShouldBe("E08000014");
+        GetFromJson(jObject, "local_authority_name").ShouldBe("Liverpool");
+        GetFromJson(jObject, "region_id").ShouldBe("E12000002");
+        GetFromJson(jObject, "region_name").ShouldBe("North West");
+        GetFromJson(jObject, "country_id").ShouldBe("E92000001");
+        GetFromJson(jObject, "country_name").ShouldBe("England");
+    }
+
+
     [Theory]
     [InlineData("1-", "Care provider location code has a minimum length of 3")]
     [InlineData("1-1234232323232344233324324", "Care provider location code has a maximum length of 15")]

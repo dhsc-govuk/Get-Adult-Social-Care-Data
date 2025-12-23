@@ -73,7 +73,7 @@ paths:
           schema:
             type: string
             example: "1-12345678"
-        - name: includeParents
+        - name: include_parents
           in: query
           required: false
           description: "Whether to include parent location information."
@@ -102,7 +102,7 @@ paths:
           schema:
             type: string
             example: "1-12345678"
-        - name: includeParents
+        - name: include_parents
           in: query
           required: false
           description: "Whether to include parent location information."
@@ -130,7 +130,7 @@ paths:
             schema:
               type: string
               example: "1-12345678"
-          - name: includeParents
+          - name: include_parents
             in: query
             required: false
             description: "Whether to include parent location information."
@@ -227,7 +227,7 @@ paths:
       description: "Retrieves data points for a single specified metric across one or more locations. Omit date parameters to get the most recent data point. Provide a startDate to get a time-series."
       parameters:
         - $ref: '#/components/parameters/MetricId'
-        - name: locationId
+        - name: location_id
           in: query
           description: "Comma-separated list of location IDs to retrieve data for."
           required: true
@@ -276,7 +276,7 @@ paths:
 components:
   parameters:
     MetricId:
-      name: metricId
+      name: metric_id
       in: path
       required: true
       description: "The unique identifier for the metric."
@@ -284,7 +284,7 @@ components:
         type: string
         example: "bedcount_per_100000_adults_total"
     MetricGroupId:
-      name: metricGroupId
+      name: metric_group_id
       in: path
       required: true
       description: "The unique identifier for the metric group."
@@ -319,15 +319,28 @@ components:
           description: "The nominated individual for the care provider location."
         local_authority_id:
           type: string
+          nullable: true
           description: "The associated local authority ID."
+        local_authority_name:
+          type: string
+          nullable: true
+          description: "The associated local authority name."
         region_id:
           type: string
           nullable: true
           description: "The associated region ID."
+        region_name:
+          type: string
+          nullable: true
+          description: "The associated region name."
         country_id:
           type: string
           nullable: true
           description: "The associated country ID."
+        country_name:
+          type: string
+          nullable: true
+          description: "The associated country name."
 
     District:
       type: object

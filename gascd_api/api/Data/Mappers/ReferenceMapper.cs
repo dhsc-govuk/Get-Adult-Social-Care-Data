@@ -41,12 +41,12 @@ public class ReferenceMapper
             ProviderName = cpl.CareProvider.Name,
             NominatedIndividual = cpl.NominatedIndividual,
             GeoData = GeoDataToGeoDataDto(cpl.GeoData),
-            LocalAuthorityId = includeParents ? cpl.LocalAuthority.Code : null,
-            LocalAuthorityName = includeParents ? cpl.LocalAuthority.Name : null,
-            RegionId = includeParents ? cpl.LocalAuthority.Region.Code : null,
-            RegionName = includeParents ? cpl.LocalAuthority.Region.Name : null,
-            CountryId = includeParents ? cpl.LocalAuthority.Region.Country.Code : null,
-            CountryName = includeParents ? cpl.LocalAuthority.Region.Country.Name : null,
+            LocalAuthorityId = cpl.LocalAuthority?.Code,
+            LocalAuthorityName = cpl.LocalAuthority?.Name,
+            RegionId = cpl.LocalAuthority?.Region.Code,
+            RegionName = cpl.LocalAuthority?.Region.Name,
+            CountryId = cpl.LocalAuthority?.Region.Country.Code,
+            CountryName = cpl.LocalAuthority?.Region.Country.Name,
         };
     }
 
