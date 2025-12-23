@@ -37,10 +37,10 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
                 new GetCareProviderLocationRequest { CareProviderLocationCode = "1-222222222" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
-        response.Id.ShouldBe("1-222222222");
+        response.Code.ShouldBe("1-222222222");
         response.DisplayName.ShouldBe("Bupa Liverpool");
         response.Address.ShouldBe("Bupa Liverpool, CV2 2TN");
-        response.ProviderId.ShouldBe("1-123456789");
+        response.ProviderCode.ShouldBe("1-123456789");
         response.ProviderName.ShouldBe("Bupa");
         response.NominatedIndividual.ShouldBe("Mr. Ice Cool");
         response.GeoData.Latitude.ShouldBe(53.425);
@@ -54,11 +54,11 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 }
         };
         response.GeoData.Polygon.ShouldBe(expectedPolygon);
-        response.LocalAuthorityId.ShouldBe(null);
+        response.LocalAuthorityCode.ShouldBe(null);
         response.LocalAuthorityName.ShouldBe(null);
-        response.RegionId.ShouldBe(null);
+        response.RegionCode.ShouldBe(null);
         response.RegionName.ShouldBe(null);
-        response.CountryId.ShouldBe(null);
+        response.CountryCode.ShouldBe(null);
         response.CountryName.ShouldBe(null);
     }
 
@@ -70,10 +70,10 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
                 new GetCareProviderLocationRequest { CareProviderLocationCode = "1-222222222", IncludeParents = true });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
-        response.Id.ShouldBe("1-222222222");
+        response.Code.ShouldBe("1-222222222");
         response.DisplayName.ShouldBe("Bupa Liverpool");
         response.Address.ShouldBe("Bupa Liverpool, CV2 2TN");
-        response.ProviderId.ShouldBe("1-123456789");
+        response.ProviderCode.ShouldBe("1-123456789");
         response.ProviderName.ShouldBe("Bupa");
         response.NominatedIndividual.ShouldBe("Mr. Ice Cool");
         response.GeoData.Latitude.ShouldBe(53.425);
@@ -87,11 +87,11 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 }
         };
         response.GeoData.Polygon.ShouldBe(expectedPolygon);
-        response.LocalAuthorityId.ShouldBe("E08000014");
+        response.LocalAuthorityCode.ShouldBe("E08000014");
         response.LocalAuthorityName.ShouldBe("Liverpool");
-        response.RegionId.ShouldBe("E12000002");
+        response.RegionCode.ShouldBe("E12000002");
         response.RegionName.ShouldBe("North West");
-        response.CountryId.ShouldBe("E92000001");
+        response.CountryCode.ShouldBe("E92000001");
         response.CountryName.ShouldBe("England");
     }
 
@@ -102,10 +102,10 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         var response = await _client.GetAsync("api/metric_locations/cp_locations/1-222222222", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var jObject = await ParseJsonResponse<JObject>(response);
-        GetFromJson(jObject, "id").ShouldBe("1-222222222");
+        GetFromJson(jObject, "code").ShouldBe("1-222222222");
         GetFromJson(jObject, "display_name").ShouldBe("Bupa Liverpool");
         GetFromJson(jObject, "address").ShouldBe("Bupa Liverpool, CV2 2TN");
-        GetFromJson(jObject, "provider_id").ShouldBe("1-123456789");
+        GetFromJson(jObject, "provider_code").ShouldBe("1-123456789");
         GetFromJson(jObject, "provider_name").ShouldBe("Bupa");
         GetFromJson(jObject, "nominated_individual").ShouldBe("Mr. Ice Cool");
         GetFromJson(jObject, "geo_data.latitude").ShouldBe("53.425");
@@ -128,10 +128,10 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         var response = await _client.GetAsync("api/metric_locations/cp_locations/1-222222222?include_parents=true", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var jObject = await ParseJsonResponse<JObject>(response);
-        GetFromJson(jObject, "id").ShouldBe("1-222222222");
+        GetFromJson(jObject, "code").ShouldBe("1-222222222");
         GetFromJson(jObject, "display_name").ShouldBe("Bupa Liverpool");
         GetFromJson(jObject, "address").ShouldBe("Bupa Liverpool, CV2 2TN");
-        GetFromJson(jObject, "provider_id").ShouldBe("1-123456789");
+        GetFromJson(jObject, "provider_code").ShouldBe("1-123456789");
         GetFromJson(jObject, "provider_name").ShouldBe("Bupa");
         GetFromJson(jObject, "nominated_individual").ShouldBe("Mr. Ice Cool");
         GetFromJson(jObject, "geo_data.latitude").ShouldBe("53.425");
@@ -146,11 +146,11 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         GetFromJson(jObject, "geo_data.polygon[3].latitude").ShouldBe("54.73");
         GetFromJson(jObject, "geo_data.polygon[4].longitude").ShouldBe("-3.3");
         GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("55.26");
-        GetFromJson(jObject, "local_authority_id").ShouldBe("E08000014");
+        GetFromJson(jObject, "local_authority_code").ShouldBe("E08000014");
         GetFromJson(jObject, "local_authority_name").ShouldBe("Liverpool");
-        GetFromJson(jObject, "region_id").ShouldBe("E12000002");
+        GetFromJson(jObject, "region_code").ShouldBe("E12000002");
         GetFromJson(jObject, "region_name").ShouldBe("North West");
-        GetFromJson(jObject, "country_id").ShouldBe("E92000001");
+        GetFromJson(jObject, "country_code").ShouldBe("E92000001");
         GetFromJson(jObject, "country_name").ShouldBe("England");
     }
 

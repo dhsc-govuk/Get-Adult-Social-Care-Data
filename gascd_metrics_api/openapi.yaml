@@ -52,6 +52,9 @@ paths:
               schema:
                 type: object
                 properties:
+                  code:
+                    type: string
+                    description: "The unique identifier for this Care Provider"
                   display_name:
                     type: string
                     description: "Display name of the Care Provider"
@@ -61,9 +64,9 @@ paths:
                     items:
                       type: object
                       properties:
-                        location_id:
+                        location_code:
                           type: string
-                          description: "The unique ID of the location."
+                          description: "The unique identifier of the location."
                         location_name:
                           type: string
                           description: "The display name of the location."

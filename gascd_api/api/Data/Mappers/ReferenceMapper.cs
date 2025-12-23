@@ -24,6 +24,7 @@ public class ReferenceMapper
     {
         return new GetCareProviderResponse
         {
+            Code = careProvider.Code,
             DisplayName = careProvider.Name,
             Locations = careProvider.CareProviderLocations
                 .Select(CareProviderLocationToCareProviderLocationResponse).ToList()
@@ -35,7 +36,7 @@ public class ReferenceMapper
         return new GetCareProviderResponse.CareProviderLocation
         {
             LocationName = careProviderLocation.Name,
-            LocationId = careProviderLocation.Code
+            LocationCode = careProviderLocation.Code
         };
     }
 
@@ -43,18 +44,18 @@ public class ReferenceMapper
     {
         return new GetCareProviderLocationResponse
         {
-            Id = cpl.Code,
+            Code = cpl.Code,
             DisplayName = cpl.Name,
             Address = cpl.Address,
-            ProviderId = cpl.CareProvider.Code,
+            ProviderCode = cpl.CareProvider.Code,
             ProviderName = cpl.CareProvider.Name,
             NominatedIndividual = cpl.NominatedIndividual,
             GeoData = GeoDataToGeoDataDto(cpl.GeoData),
-            LocalAuthorityId = cpl.LocalAuthority?.Code,
+            LocalAuthorityCode = cpl.LocalAuthority?.Code,
             LocalAuthorityName = cpl.LocalAuthority?.Name,
-            RegionId = cpl.LocalAuthority?.Region.Code,
+            RegionCode = cpl.LocalAuthority?.Region.Code,
             RegionName = cpl.LocalAuthority?.Region.Name,
-            CountryId = cpl.LocalAuthority?.Region.Country.Code,
+            CountryCode = cpl.LocalAuthority?.Region.Country.Code,
             CountryName = cpl.LocalAuthority?.Region.Country.Name,
         };
     }
