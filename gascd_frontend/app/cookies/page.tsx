@@ -43,7 +43,6 @@ const CookiesPage = () => {
         showLoginInformation={false}
         currentPage="disclaimer"
         showNavBar={false}
-        useCookieBanner={false}
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">

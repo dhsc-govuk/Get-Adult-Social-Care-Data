@@ -15,6 +15,8 @@ export default async function AuthLayout({
 
   if (!session || !session.user) {
     redirect('/login');
+  } else if (!session.user.selectedLocationId) {
+    redirect('/location-select');
   }
 
   return <>{children}</>;

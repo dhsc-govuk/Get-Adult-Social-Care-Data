@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace api.Data.Models.Metrics;
 
 [Table("metric_groups")]
-public class MetricGroup : EntityBase
+public class MetricGroup : SearchableEntity
 {
     [Column("name"), StringLength(100)]
     public required string Name { get; init; }

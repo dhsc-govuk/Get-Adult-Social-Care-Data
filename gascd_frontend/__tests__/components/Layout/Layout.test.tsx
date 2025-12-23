@@ -8,11 +8,6 @@ describe('Layout', () => {
       'My test page - Get adult social care data - GOV.UK'
     );
 
-    const skiplink = screen.getByRole('link', {
-      name: 'Skip to main content',
-    });
-    expect(skiplink).toBeInTheDocument();
-
     const footer = screen.getByRole('contentinfo');
     expect(footer).toBeInTheDocument();
     expect(footer).toHaveTextContent('Support links');

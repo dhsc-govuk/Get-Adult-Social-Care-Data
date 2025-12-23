@@ -1,112 +1,53 @@
-'use client';
 import Layout from '@/components/common/layout/Layout';
+import DataIndicatorDetails from '@/components/data-components/DataIndicatorDetails';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 const DisabilyPrevalence: React.FC = () => {
-  const router = useRouter();
   return (
     <>
       <Layout
-        title="Indicator definition: Disability prevalence"
+        title="Disability prevalence"
         showLoginInformation={false}
         currentPage={'disabilty prevalence'}
-        backURL="/present-demand"
+        backURL="/topics/population-needs/disability-prevalence/data"
       >
-        <div className="govuk-grid-row">
-          <div className="govuk-grid-column-two-thirds">
-            <h1 className="govuk-heading-l">
-              Indicator definition and supporting information: disability
-              prevalence
-            </h1>
-
-            <p className="govuk-body-l">
-              Find detailed information about this indicator.
+        <DataIndicatorDetails
+          title="Disability prevalence"
+          whatThisMeasures={
+            <p className="govuk-!-margin-top-0">
+              The proportion of people living within the selected administrative
+              area within England who assessed their day-to-day activities as
+              limited by long-term physical or mental health conditions or
+              illnesses are considered disabled. This definition of a disabled
+              person meets the harmonised standard for measuring disability and
+              is in line with the Equality Act (2010).
             </p>
-            <table className="govuk-table">
-              <thead className="govuk-table__head">
-                <tr className="govuk-table__row">
-                  <th
-                    scope="row"
-                    className="govuk-table__header govuk-!-width-one-third"
-                  >
-                    What this measures
-                  </th>
-                  <td className="govuk-table__cell">
-                    The percentage of the population in England who are
-                    considered disabled.
-                  </td>
-                </tr>
-              </thead>
-              <tbody className="govuk-table__body">
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
-                    Source
-                  </th>
-                  <td className="govuk-table__cell">
-                    <Link
-                      href="https://www.ons.gov.uk/datasets/TS038/editions/2021/versions/3"
-                      className="govuk-link"
-                      target="_blank"
-                    >
-                      Office for National Statistics Census 2021 Disability
-                      dataset (opens in new tab)
-                    </Link>
-                  </td>
-                </tr>
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
-                    Data correct as of
-                  </th>
-                  <td className="govuk-table__cell">
-                    21 March 2021
-                  </td>
-                </tr>
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
-                    Update frequency
-                  </th>
-                  <td className="govuk-table__cell">Every 10 years</td>
-                </tr>
-
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
-                    Methodology
-                  </th>
-                  <td className="govuk-table__cell">
-                    Disability status from self-reported data from the 2021
-                    Census.
-                  </td>
-                </tr>
-
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
-                    Limitations
-                  </th>
-                  <td className="govuk-table__cell">
-                    The data is based on survey responses, which may be subject
-                    to response bias.
-                    <br></br>
-                    <br></br>
-                    These are disability prevalence estimates for Census Day (21
-                    March 2021), not the present day.
-                  </td>
-                </tr>
-
-                <tr className="govuk-table__row">
-                  <th scope="row" className="govuk-table__header">
-                    Data definitions
-                  </th>
-                  <td className="govuk-table__cell">
-                    &apos;People with disabilities&apos; refers to individuals
-                    who report limitations in daily activities due to long-term
-                    physical or mental illnesses.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+          }
+          source={
+            <Link
+              href="https://www.nomisweb.co.uk/datasets/c2021ts038"
+              className="govuk-link"
+              target="_blank"
+            >
+              Census 2021 from the Office for National Statistics (opens in new
+              tab)
+            </Link>
+          }
+          updateFrequency="Census cadence"
+          methodology={
+            <p className="govuk-!-margin-top-0">
+              This dataset provides Census 2021 estimates that classify usual
+              residents in England and Wales by long-term health problems or
+              disabilities. The estimates are as at Census Day, 21 March 2021.
+            </p>
+          }
+          limitations={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
+          dataDefinitions={
+            <p className="govuk-!-margin-top-0">See data source for details.</p>
+          }
+        />
       </Layout>
     </>
   );

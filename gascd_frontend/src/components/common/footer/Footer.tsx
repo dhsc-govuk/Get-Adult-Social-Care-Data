@@ -51,13 +51,11 @@ const Footer: React.FC<Props> = ({ version_tag, version_hash }) => {
                   Disclaimer
                 </a>
               </li>
-              {feedback_url && (
-                <li className="govuk-footer__inline-list-item">
-                  <a className="govuk-footer__link" href={feedback_url}>
-                    Feedback
-                  </a>
-                </li>
-              )}
+              <li className="govuk-footer__inline-list-item">
+                <a className="govuk-footer__link" href="/help">
+                  Help
+                </a>
+              </li>
               <li className="govuk-footer__inline-list-item">
                 <a className="govuk-footer__link" href="/privacy-policy">
                   Privacy
@@ -68,6 +66,13 @@ const Footer: React.FC<Props> = ({ version_tag, version_hash }) => {
                   Cookies
                 </a>
               </li>
+              {feedback_url && (
+                <li className="govuk-footer__inline-list-item">
+                  <a className="govuk-footer__link" href={feedback_url}>
+                    Feedback
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
           <div className="govuk-footer__meta-item">

@@ -50,21 +50,31 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    location_id:
-                      type: string
-                      description: "The unique ID of the location."
-                    location_name:
-                      type: string
-                      description: "The display name of the location."
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: "The unique identifier for this Care Provider"
+                  display_name:
+                    type: string
+                    description: "Display name of the Care Provider"
+                  locations:
+                    type: array
+                    description: "A list of Care provider locations belonging to this Care Provider"
+                    items:
+                      type: object
+                      properties:
+                        location_code:
+                          type: string
+                          description: "The unique identifier of the location."
+                        location_name:
+                          type: string
+                          description: "The display name of the location."
 
   /metric_locations/cp_locations/{code}:
     get:
       summary: "Get a care provider location"
-      description: "Retrieves detailed information for a single care provider location by its ID."
+      description: "Retrieves detailed information for a single care provider location by its code."
       parameters:
         - name: code
           in: path
@@ -73,7 +83,7 @@ paths:
           schema:
             type: string
             example: "1-12345678"
-        - name: includeParents
+        - name: include_parents
           in: query
           required: false
           description: "Whether to include parent location information."
@@ -93,7 +103,7 @@ paths:
   /metric_locations/districts/{code}:
     get:
       summary: "Get a district"
-      description: "Retrieves detailed information for a district by its ID. TBC This endpoint may not be required"
+      description: "Retrieves detailed information for a district by its code. TBC This endpoint may not be required"
       parameters:
         - name: code
           in: path
@@ -102,7 +112,7 @@ paths:
           schema:
             type: string
             example: "1-12345678"
-        - name: includeParents
+        - name: include_parents
           in: query
           required: false
           description: "Whether to include parent location information."
@@ -121,7 +131,7 @@ paths:
   /metric_locations/local_authorities/{code}:
       get:
         summary: "Get a local authority"
-        description: "Retrieves detailed information for a local authority by its ID."
+        description: "Retrieves detailed information for a local authority by its code."
         parameters:
           - name: code
             in: path
@@ -130,7 +140,7 @@ paths:
             schema:
               type: string
               example: "1-12345678"
-          - name: includeParents
+          - name: include_parents
             in: query
             required: false
             description: "Whether to include parent location information."
@@ -149,7 +159,7 @@ paths:
   /metric_locations/regions/{code}:
     get:
       summary: "Get a region"
-      description: "Retrieves detailed information for a region by its ID."
+      description: "Retrieves detailed information for a region by its code."
       parameters:
         - name: code
           in: path
@@ -170,7 +180,7 @@ paths:
   /metric_locations/countries/{code}:
     get:
       summary: "Get a country"
-      description: "Retrieves detailed information for a country by its ID."
+      description: "Retrieves detailed information for a country by its code."
       parameters:
         - name: code
           in: path
@@ -227,41 +237,23 @@ paths:
       description: "Retrieves data points for a single specified metric across one or more locations. Omit date parameters to get the most recent data point. Provide a startDate to get a time-series."
       parameters:
         - $ref: '#/components/parameters/MetricId'
-        - name: locationId
+        - name: locations
           in: query
-          description: "Comma-separated list of location IDs to retrieve data for."
+          description: "Comma-separated list of location codes to retrieve data for."
           required: true
           style: form
           explode: false
           schema:
             type: array
             items:
-              type: string
-            example: ["1-12345678", "E09000001"]
-        - name: startDate
+              $ref: "#/components/schemas/Location"
+        - name: timeSeries
           in: query
-          description: "The start date for the time series (YYYY-MM-DD). If omitted, only the most recent data point is returned."
+          description: "Boolean whether to return whole time series. If false or omitted, only the most recent data point is returned."
           required: false
           schema:
-            type: string
-            format: date
-            example: "2024-01-01"
-        - name: endDate
-          in: query
-          description: "The end date for the time series (YYYY-MM-DD). Defaults to the current date if startDate is provided."
-          required: false
-          schema:
-            type: string
-            format: date
-            example: "2024-12-31"
-        - name: frequency
-          in: query
-          description: "The frequency of data points for the time series. To get just the most recent data point, use 'latest'"
-          required: false
-          schema:
-            type: string
-            enum: [latest, daily, monthly, yearly]
-            default: latest
+            type: boolean
+            example: False
       responses:
         '200':
           description: "A list of matching metric series for the specified metric."
@@ -276,7 +268,7 @@ paths:
 components:
   parameters:
     MetricId:
-      name: metricId
+      name: metric_id
       in: path
       required: true
       description: "The unique identifier for the metric."
@@ -284,7 +276,7 @@ components:
         type: string
         example: "bedcount_per_100000_adults_total"
     MetricGroupId:
-      name: metricGroupId
+      name: metric_group_id
       in: path
       required: true
       description: "The unique identifier for the metric group."
@@ -297,7 +289,7 @@ components:
       type: object
       description: "Represents a care provider location"
       properties:
-        id:
+        code:
           type: string
           description: "Unique identifier for the care provider location."
         display_name:
@@ -308,32 +300,45 @@ components:
           description: "Address of the care provider location."
         geo_data:
           $ref: '#/components/schemas/GeoData'
-        provider_id:
+        provider_code:
           type: string
-          description: "The parent provider ID."
+          description: "The parent provider code."
         provider_name:
           type: string
           description: "The parent provider name."
         nominated_individual:
           type: string
           description: "The nominated individual for the care provider location."
-        local_authority_id:
+        local_authority_code:
           type: string
+          nullable: true
           description: "The associated local authority ID."
-        region_id:
+        local_authority_name:
           type: string
           nullable: true
-          description: "The associated region ID."
-        country_id:
+          description: "The associated local authority name."
+        region_code:
           type: string
           nullable: true
-          description: "The associated country ID."
+          description: "The associated region code."
+        region_name:
+          type: string
+          nullable: true
+          description: "The associated region name."
+        country_code:
+          type: string
+          nullable: true
+          description: "The associated country code."
+        country_name:
+          type: string
+          nullable: true
+          description: "The associated country name."
 
     District:
       type: object
       description: "Represents a district"
       properties:
-        id:
+        code:
           type: string
           description: "Unique identifier for the district."
         display_name:
@@ -341,23 +346,23 @@ components:
           description: "Display name of the district."
         geo_data:
           $ref: '#/components/schemas/GeoData'
-        local_authority_id:
+        local_authority_code:
           type: string
-          description: "The associated local authority ID."
-        region_id:
-          type: string
-          nullable: true
-          description: "The associated region ID."
-        country_id:
+          description: "The associated local authority code."
+        region_code:
           type: string
           nullable: true
-          description: "The associated country ID."
+          description: "The associated region code."
+        country_code:
+          type: string
+          nullable: true
+          description: "The associated country code."
     
     LocalAuthority:
       type: object
       description: "Represents a local authority"
       properties:
-        id:
+        code:
           type: string
           description: "Unique identifier for the local authority."
         display_name:
@@ -365,19 +370,19 @@ components:
           description: "Display name of the local authority."
         geo_data:
           $ref: '#/components/schemas/GeoData'
-        region_id:
+        region_code:
           type: string
-          description: "The associated region ID."
-        country_id:
+          description: "The associated region code."
+        country_code:
           type: string
           nullable: true
-          description: "The associated country ID."
+          description: "The associated country code."
     
     Region:
       type: object
       description: "Represents a region"
       properties:
-        id:
+        code:
           type: string
           description: "Unique identifier for the region."
         display_name:
@@ -385,15 +390,15 @@ components:
           description: "Display name of the region."
         geo_data:
           $ref: '#/components/schemas/GeoData'
-        country_id:
+        country_code:
           type: string
-          description: "The associated country ID."
+          description: "The associated country code."
 
     Country:
       type: object
       description: "Represents a country"
       properties:
-        id:
+        code:
           type: string
           description: "Unique identifier for the country."
         display_name:
@@ -408,7 +413,7 @@ components:
       properties:
         sanitised_postcode:
           type: string
-          description: "Clean postcode with no whitespace used to seach DB"
+          description: "Clean postcode with no whitespace used to search DB"
         display_postcode:
           type: string
           description: "Properly formatted postcode for display"
@@ -430,12 +435,36 @@ components:
           description: "Latitude of the centre point of the location."
         longitude:
           type: number
-          description: "Longitude of the centre point of the regiolocationn."
-        bbox:
+          description: "Longitude of the centre point of the location."
+        polygon:
           type: array
-          description: "Bounding box coordinates."
-          items:
-            type: number
+          items:          
+            $ref: '#/components/schemas/Coordinate'
+            
+    Coordinate:
+      type: object
+      description: "Pair of coordinates"
+      properties:
+        latitude:
+          type: number
+          description: "Latitude of the location."
+        longitude:
+          type: number
+          description: "Longitude of the location."
+          
+    Location:
+      type: object
+      description: "A location type and code pair."
+      properties: 
+        location_code:
+          type: string
+          description: "The locations unique code."
+          example: "1-123456789"
+        location_type:
+          type: string
+          description: "The type of this location."
+          enum: [la, national, regional]
+          default: la
     
     MetricMetadata:
       type: object
@@ -484,7 +513,7 @@ components:
         metric_id:
           type: string
           description: "The unique identifier for the metric."
-        location_id:
+        location_code:
           type: string
           description: "The unique identifier for the location."
         series_start_date:

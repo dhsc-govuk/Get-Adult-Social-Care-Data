@@ -10,7 +10,8 @@
       - ASPNETCORE_ENVIRONMENT=Docker
 
   postgres:
-    image: imresamu/postgis:18-3.6-bookworm
+    image: postgis/postgis:18-3.6-alpine
+    platform: linux/amd64
     ports:
       - "5431:5431"
     volumes:

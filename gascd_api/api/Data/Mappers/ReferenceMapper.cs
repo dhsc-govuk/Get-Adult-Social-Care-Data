@@ -19,28 +19,43 @@ public class ReferenceMapper
         };
     }
 
-    public GetCareProviderResponse CareProviderLocationToGetCareProviderResponse(
-        CareProviderLocation careProviderLocation)
+    public GetCareProviderResponse CareProviderToGetCareProviderResponse(CareProvider careProvider)
     {
         return new GetCareProviderResponse
         {
-            LocationName = careProviderLocation.Name,
-            LocationId = careProviderLocation.Code
+            Code = careProvider.Code,
+            DisplayName = careProvider.Name,
+            Locations = careProvider.CareProviderLocations
+                .Select(CareProviderLocationToCareProviderLocationResponse).ToList()
         };
     }
 
-    public GetCareProviderLocationResponse CareProviderLocationToGetCareProviderLocationResponse(CareProviderLocation cpl)
+    public GetCareProviderResponse.CareProviderLocation CareProviderLocationToCareProviderLocationResponse(CareProviderLocation careProviderLocation)
+    {
+        return new GetCareProviderResponse.CareProviderLocation
+        {
+            LocationName = careProviderLocation.Name,
+            LocationCode = careProviderLocation.Code
+        };
+    }
+
+    public GetCareProviderLocationResponse CareProviderLocationToGetCareProviderLocationResponse(CareProviderLocation cpl, bool includeParents)
     {
         return new GetCareProviderLocationResponse
         {
-            Id = cpl.Code,
+            Code = cpl.Code,
             DisplayName = cpl.Name,
             Address = cpl.Address,
-            ProviderId = cpl.CareProvider.Code,
+            ProviderCode = cpl.CareProvider.Code,
             ProviderName = cpl.CareProvider.Name,
             NominatedIndividual = cpl.NominatedIndividual,
-            LocalAuthorityId = cpl.LocalAuthority.Code,
-            GeoData = GeoDataToGeoDataDto(cpl.GeoData)
+            GeoData = GeoDataToGeoDataDto(cpl.GeoData),
+            LocalAuthorityCode = cpl.LocalAuthority?.Code,
+            LocalAuthorityName = cpl.LocalAuthority?.Name,
+            RegionCode = cpl.LocalAuthority?.Region.Code,
+            RegionName = cpl.LocalAuthority?.Region.Name,
+            CountryCode = cpl.LocalAuthority?.Region.Country.Code,
+            CountryName = cpl.LocalAuthority?.Region.Country.Name,
         };
     }
 

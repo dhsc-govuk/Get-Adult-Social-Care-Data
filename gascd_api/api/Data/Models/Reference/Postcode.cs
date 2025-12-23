@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace api.Data.Models.Reference;
 
 [Table("postcodes")]
-public partial class Postcode : EntityBase
+public partial class Postcode : SearchableEntity
 {
     [Column("display_postcode"), StringLength(8)]
     public required string DisplayPostcode { get; init; } = null!;

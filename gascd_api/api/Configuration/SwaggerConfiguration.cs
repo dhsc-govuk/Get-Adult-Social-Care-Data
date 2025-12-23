@@ -20,6 +20,7 @@ public static class SwaggerConfiguration
                         In = OpenApiSecurityApiKeyLocation.Header,
                         Type = OpenApiSecuritySchemeType.ApiKey
                     });
+
             };
         });
         return services;
