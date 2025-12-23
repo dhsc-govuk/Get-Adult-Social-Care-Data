@@ -1,10 +1,11 @@
 using api.Data;
 using api.Data.Mappers;
 using FastEndpoints;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.Organisation.CareProvider;
 
-public class GetCareProviderEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetCareProviderEndpoint> logger) : Endpoint<GetCareProviderRequest, List<GetCareProviderResponse>>
+public class GetCareProviderEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetCareProviderEndpoint> logger) : Endpoint<GetCareProviderRequest, GetCareProviderResponse>
 {
     public override void Configure()
     {
@@ -14,18 +15,18 @@ public class GetCareProviderEndpoint(GascdDataContext context, ReferenceMapper m
     public override async Task HandleAsync(GetCareProviderRequest req, CancellationToken ct)
     {
         logger.LogDebug("Received request for care provider code: {code}", req.CareProviderCode);
-        var locations = context.CareProviderLocations
-            .Where(cpl => cpl.CareProvider.Code == req.CareProviderCode);
+        var careProvider = context.CareProviders
+            .Include(cp => cp.CareProviderLocations)
+            .SingleOrDefault(cp => cp.Code == req.CareProviderCode);
 
-        if (!locations.Any() && !context.CareProviders.Any(cp => cp.Code == req.CareProviderCode))
+        if (careProvider == null)
         {
             logger.LogInformation("Care provider code not found: {code}", req.CareProviderCode);
             await Send.NotFoundAsync(ct);
             return;
         }
 
-        List<GetCareProviderResponse> response =
-            locations.Select(l => mapper.CareProviderLocationToGetCareProviderResponse(l)).ToList();
+        GetCareProviderResponse response = mapper.CareProviderToGetCareProviderResponse(careProvider);
         logger.LogInformation("Finished processing care provider code: {code}", req.CareProviderCode);
         await Send.OkAsync(response, ct);
     }

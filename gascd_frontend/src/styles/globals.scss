@@ -2,7 +2,11 @@ $govuk-assets-path: "/govuk-frontend/";
 $govuk-fonts-path: "/govuk-frontend/fonts/";
 
 @import "govuk-frontend/dist/govuk/index";
+// Importing this stylesheet directly, otherwise it doesn't pick up the asset/font paths
+@import "node_modules/@x-govuk/govuk-prototype-components/dist/govuk-prototype-components.scss";
 @import "./styles.scss";
+// Service header pulled from https://github.com/govuk-one-login/service-header/tree/main/dist/styles
+@import "./service-header-no-imports.scss";
 
 html, body {
     margin: 0;
@@ -24,4 +28,17 @@ html, body {
 // bodge some non-bulletted lists
 ul.nobullet {
   list-style-type: none;
+}
+
+.tmp-mobile-signout {
+  display: none;
+}
+
+@media (max-width: 40.0525em) {
+  .tmp-mobile-signout {
+    display: block;
+    a {
+      color: #fff !important;
+    }
+  }
 }

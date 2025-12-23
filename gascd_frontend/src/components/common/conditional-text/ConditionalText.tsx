@@ -1,20 +1,19 @@
 import React from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
+import { LocationNames } from '@/data/interfaces/LocationNames';
 
 interface ConditionalTextProps {
-  ColumnHeaders: string[];
+  ColumnHeaders: LocationNames;
   section: string;
   data: Indicator[];
-  locations: string[];
   metric_Id: string;
 }
 
 const compareDriversConditionals = (
   data: Indicator[],
-  locations: string[],
   section: string,
   metric_Id: string,
-  columnHeaders: string[]
+  columnHeaders: LocationNames
 ): React.ReactNode => {
   const localAuthority = data.find(
     (item) => item.location_type === 'LA' && item.metric_id === metric_Id
@@ -49,7 +48,7 @@ const compareDriversConditionals = (
     if (localAuthority.data_point > country.data_point) {
       return (
         <>
-          {columnHeaders[1]} has a{' '}
+          {columnHeaders.LALabel} has a{' '}
           <strong>
             larger proportion of people aged 65 and over (
             {localAuthority.data_point ?? 'Loading...'}%) compared to the
@@ -63,7 +62,7 @@ const compareDriversConditionals = (
     if (localAuthority.data_point < country.data_point) {
       return (
         <>
-          {columnHeaders[1]} has a{' '}
+          {columnHeaders.LALabel} has a{' '}
           <strong>
             smaller proportion of people aged 65 and over (
             {localAuthority.data_point ?? 'Loading...'}%) compared to the
@@ -76,7 +75,7 @@ const compareDriversConditionals = (
     }
     return (
       <>
-        {columnHeaders[1]} has a{' '}
+        {columnHeaders.LALabel} has a{' '}
         <strong>
           similar proportion of people aged 65 and over (
           {localAuthority.data_point ?? 'Loading...'}%) compared to the national
@@ -91,7 +90,7 @@ const compareDriversConditionals = (
     if (localAuthority.data_point > region.data_point) {
       return (
         <>
-          Care homes in {locations[1]} are
+          Care homes in {columnHeaders.LALabel} are
           <strong>
             {' '}
             operating at {localAuthority.data_point}% occupancy,{' '}
@@ -105,7 +104,7 @@ const compareDriversConditionals = (
     if (localAuthority.data_point < region.data_point) {
       return (
         <>
-          Care homes in {locations[1]} are
+          Care homes in {columnHeaders.LALabel} are
           <strong>
             {' '}
             operating at {localAuthority.data_point}% occupancy,{' '}
@@ -118,7 +117,7 @@ const compareDriversConditionals = (
     }
     return (
       <>
-        Care homes in {locations[1]} are
+        Care homes in {columnHeaders.LALabel} are
         <strong>
           {' '}
           operating at {localAuthority.data_point}% occupancy,
@@ -133,32 +132,32 @@ const compareDriversConditionals = (
     if (Number(careProvider?.data_point) > Number(region.data_point)) {
       return (
         <>
-          {locations[1]} has{' '}
+          {columnHeaders.CPLabel} has{' '}
           <strong>{careProvider?.data_point ?? 0}% occupancy </strong> for all
           adult social care beds compared to the median occupancy of all care
-          homes in {locations[2]} ({region.data_point}%), suggesting limited
-          availability for new admissions.
+          homes in {columnHeaders.RegionLabel} ({region.data_point}%),
+          suggesting limited availability for new admissions.
         </>
       );
     }
     if (Number(careProvider?.data_point) < Number(region.data_point)) {
       return (
         <>
-          {locations[1]} has{' '}
+          {columnHeaders.CPLabel} has{' '}
           <strong>{careProvider?.data_point ?? 0}% occupancy </strong> for all
           adult social care beds compared to the median occupancy of all care
-          homes in {locations[2]} ({region.data_point}%), suggesting greater
-          availability for new admissions.
+          homes in {columnHeaders.RegionLabel} ({region.data_point}%),
+          suggesting greater availability for new admissions.
         </>
       );
     }
     return (
       <>
-        {locations[1]} has{' '}
+        {columnHeaders.CPLabel} has{' '}
         <strong>{careProvider?.data_point ?? 0}% occupancy </strong>
         for all adult social care beds compared to the median occupancy of all
-        care homes in {locations[2]} ({region.data_point}%), suggesting a
-        similar level of availability for new admissions.
+        care homes in {columnHeaders.RegionLabel} ({region.data_point}%),
+        suggesting a similar level of availability for new admissions.
       </>
     );
   }
@@ -168,18 +167,11 @@ const ConditionalText: React.FC<ConditionalTextProps> = ({
   section,
   data,
   ColumnHeaders,
-  locations,
   metric_Id,
 }) => {
   return (
     <p className="govuk-body">
-      {compareDriversConditionals(
-        data,
-        locations,
-        section,
-        metric_Id,
-        ColumnHeaders
-      )}
+      {compareDriversConditionals(data, section, metric_Id, ColumnHeaders)}
     </p>
   );
 };

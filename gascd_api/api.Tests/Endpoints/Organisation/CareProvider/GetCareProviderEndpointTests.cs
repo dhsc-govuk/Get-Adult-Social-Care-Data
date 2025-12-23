@@ -22,7 +22,7 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     public async Task GetCareProvider_ReturnsOk()
     {
         var (httpCode, _) =
-            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
+            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, GetCareProviderResponse>(
                 new GetCareProviderRequest { CareProviderCode = "1-123456789" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -33,14 +33,15 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     {
         var validCareProviderCode = "1-123456789";
         var (httpCode, response) =
-            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
+            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, GetCareProviderResponse>(
                 new GetCareProviderRequest { CareProviderCode = validCareProviderCode });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
-        response.ShouldNotBeEmpty();
-        response.Count.ShouldBe(1);
-        response[0].LocationName.ShouldBe("Bupa Liverpool");
-        response[0].LocationId.ShouldBe("1-222222222");
+        response.DisplayName.ShouldBe("Bupa");
+        response.Locations.ShouldNotBeEmpty();
+        response.Locations.Count.ShouldBe(1);
+        response.Locations[0].LocationName.ShouldBe("Bupa Liverpool");
+        response.Locations[0].LocationId.ShouldBe("1-222222222");
 
     }
 
@@ -50,9 +51,10 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         var response = await _client.GetAsync("api/organisation/care_provider/1-123456789", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var jsonArray = await ParseJsonResponse<JArray>(response);
-        GetFromJson(jsonArray, "[0].location_name").ShouldBe("Bupa Liverpool");
-        GetFromJson(jsonArray, "[0].location_id").ShouldBe("1-222222222");
+        var jObject = await ParseJsonResponse<JObject>(response);
+        GetFromJson(jObject, "display_name").ShouldBe("Bupa");
+        GetFromJson(jObject, "locations[0].location_name").ShouldBe("Bupa Liverpool");
+        GetFromJson(jObject, "locations[0].location_id").ShouldBe("1-222222222");
     }
 
     [Fact]
@@ -71,14 +73,15 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     {
         var idForCareProvideWith2Locations = "1-123456777";
         var (httpCode, response) =
-            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
+            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, GetCareProviderResponse>(
                 new GetCareProviderRequest { CareProviderCode = idForCareProvideWith2Locations });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
-        response.ShouldNotBeEmpty();
-        response.Count.ShouldBe(2);
-        response.ShouldContain(o => o.LocationName == "Katherines Teeth" && o.LocationId == "1-222222223");
-        response.ShouldContain(o => o.LocationName == "Katherines Eyes" && o.LocationId == "1-222222224");
+        response.DisplayName.ShouldBe("Katherine");
+        response.Locations.ShouldNotBeEmpty();
+        response.Locations.Count.ShouldBe(2);
+        response.Locations.ShouldContain(o => o.LocationName == "Katherines Teeth" && o.LocationId == "1-222222223");
+        response.Locations.ShouldContain(o => o.LocationName == "Katherines Eyes" && o.LocationId == "1-222222224");
     }
 
     [Theory]
@@ -109,11 +112,11 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     {
         var codeForCareProviderWithNoLocations = "1-123456712";
         var (httpCode, response) =
-            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, List<GetCareProviderResponse>>(
+            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, GetCareProviderResponse>(
                 new GetCareProviderRequest { CareProviderCode = codeForCareProviderWithNoLocations });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
-        response.Count.ShouldBe(0);
+        response.Locations.Count.ShouldBe(0);
     }
 
 }

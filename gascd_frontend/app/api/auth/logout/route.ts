@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
   const tenant = process.env.AZURE_AD_TENANT_NAME;
   const userFlow = process.env.AZURE_AD_B2C_USER_SIGN_IN;
-  const logoutRedirectUrl = process.env.AZURE_AD_B2C_LOGOUT_URL;
+  const logoutRedirectUrl = process.env.AZURE_AD_B2C_LOGOUT_URL + '/signed-out';
 
   if (!tenant || !userFlow || !logoutRedirectUrl) {
     logger.warn('Missing environment variables for azure logout URL');
