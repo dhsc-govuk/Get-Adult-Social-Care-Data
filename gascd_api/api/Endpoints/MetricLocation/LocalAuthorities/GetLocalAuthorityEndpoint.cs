@@ -18,6 +18,12 @@ public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper
             .Include(la => la.GeoData)
             .SingleOrDefault(x => x.Code == req.LocalAuthorityCode);
 
+        if (la == null)
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
         var response = mapper.LocalAuthorityToGetLocalAuthorityResponse(la);
 
         await Send.OkAsync(response, ct);

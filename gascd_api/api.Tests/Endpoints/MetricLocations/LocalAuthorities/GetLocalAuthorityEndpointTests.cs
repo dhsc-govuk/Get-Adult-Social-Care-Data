@@ -50,4 +50,14 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.26 }
         };
     }
+
+    [Fact]
+    public async Task NonExistent_LocalAuthorityCode_Input()
+    {
+        var (httpResponse, problemDetails) =
+            await _client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, ProblemDetails>(
+                new GetLocalAuthorityRequest { LocalAuthorityCode = "1-128738329" });
+        httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
 }
