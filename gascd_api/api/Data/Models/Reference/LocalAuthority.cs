@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace api.Data.Models.Reference;
 
 [Table("local_authorities")]
-public class LocalAuthority : EntityBase
+public class LocalAuthority : SearchableEntity
 {
     [Column("name"), StringLength(50)]
     public required string Name { get; init; }
