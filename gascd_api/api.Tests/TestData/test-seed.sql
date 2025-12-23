@@ -477,14 +477,27 @@ DECLARE
     country_id integer = 1;
     region_id integer = 1;
     la_id integer = 1;
+    care_provider_id integer = 1;
+    care_provider_id_2 integer = 2;
+    care_provider_id_3 integer = 3;              
+    care_provider_location_id integer = 1;
+    care_provider_location_id_2 integer = 2;
+    care_provider_location_id_3 integer = 3;
     gd_country integer = 1;
     gd_region integer = 2;
     gd_la integer = 3;
+    gd_cpl integer = 4;
+    gd_cpl_2 integer = 5;
+    gd_cpl_3 integer = 6;
+
 BEGIN
     INSERT INTO geo_data(id, coordinate, bounding_polygon, loaded_datetime)
     VALUES (gd_country, ST_Point(-1.464854, 52.561928), null, CURRENT_TIMESTAMP),
            (gd_region, ST_Point(-2.75, 54.075),ST_Polygon('LINESTRING(-3.8 52.9,-1.8 52.9,-1.8 55.25,-3.8 55.25,-3.8 52.9)'::geometry, 4326), CURRENT_TIMESTAMP),
-           (gd_la, ST_Point(-2.98, 53.405),ST_Polygon('LINESTRING(-3.3 53.26,-2.55 53.26,-2.55 53.73,-3.3 53.73,-3.3 53.26)'::geometry, 4326), CURRENT_TIMESTAMP);
+           (gd_la, ST_Point(-2.98, 53.405),ST_Polygon('LINESTRING(-3.3 53.26,-2.55 53.26,-2.55 53.73,-3.3 53.73,-3.3 53.26)'::geometry, 4326), CURRENT_TIMESTAMP),
+           (gd_cpl, ST_Point(-2.88, 53.425), null, CURRENT_TIMESTAMP),
+           (gd_cpl_2, ST_Point(-2.38, 52.425), null, CURRENT_TIMESTAMP),
+           (gd_cpl_3, ST_Point(-2.83, 53.425), null, CURRENT_TIMESTAMP);
     
     INSERT INTO countries (id, code, name, geo_data_fk, loaded_datetime)
     VALUES (country_id, 'E92000001','England', gd_country, CURRENT_TIMESTAMP);
@@ -500,5 +513,15 @@ BEGIN
            (2, 'ME101QX', 'ME10 1QX', ST_Point(0.7260691453143282, 51.32988801568501), la_id, CURRENT_TIMESTAMP),
            (3, 'ME101QY', 'ME10 1QY', ST_Point(0.7283745919593453, 51.32954649874547), la_id, CURRENT_TIMESTAMP),
            (4, 'CV22TN', 'CV2 2TN', ST_Point(-1.445481473, 52.43602168912626), la_id, CURRENT_TIMESTAMP);
+
+    INSERT INTO care_providers (id, name, code, loaded_datetime)
+    VALUES (care_provider_id, 'Bupa', '1-123456789', CURRENT_TIMESTAMP),
+           (care_provider_id_2, 'Katherine', '1-123456777', CURRENT_TIMESTAMP),
+           (care_provider_id_3, 'Rob', '1-123456712', CURRENT_TIMESTAMP);
+    INSERT INTO care_provider_locations (id, name, care_provider_fk, geo_data_fk, address, nominated_individual, local_authority_fk, code, loaded_datetime)
+    VALUES (care_provider_location_id, 'Bupa Liverpool', care_provider_id, gd_cpl, 'Bupa Liverpool, CV2 2TN', 'Mr. Ice Cool', la_id, '1-222222222', CURRENT_TIMESTAMP),
+           (care_provider_location_id_2, 'Katherines Teeth', care_provider_id_2, gd_cpl_2, 'Katherines Teeth, Liverpool, ME10 1QX', 'Katherine', la_id, '1-222222223', CURRENT_TIMESTAMP),
+           (care_provider_location_id_3, 'Katherines Eyes', care_provider_id_2, gd_cpl_3, 'Katherines Eyes, Liverpool, ME10 1QY', 'Katherine', la_id, '1-222222224', CURRENT_TIMESTAMP);
+
 END $$;
 

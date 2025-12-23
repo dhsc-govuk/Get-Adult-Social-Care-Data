@@ -204,7 +204,7 @@ describe('IndicatorFetchService', () => {
       const result = await IndicatorFetchService.getMetadateByType('testType');
 
       expect(fetch).toHaveBeenCalledWith(
-        'api/get_metadata_by_data_types?metric_data_type=testType'
+        '/api/get_metadata_by_data_types?metric_data_type=testType'
       );
       expect(result).toEqual(mockMetadata);
     });

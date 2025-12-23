@@ -23,11 +23,11 @@ const LogoutButton: React.FC = () => {
         console.error('error fetching logout URL:', error);
       }
     };
-
     fetchLogoutUrl();
   }, []);
 
-  const handleSignOut = async () => {
+  const handleSignOut = async (event: any) => {
+    event.preventDefault();
     await LogService.logEvent('User logged out');
     localStorage.clear();
     await authClient.signOut({
@@ -36,7 +36,7 @@ const LogoutButton: React.FC = () => {
           if (logoutUrl) {
             window.location.href = logoutUrl;
           } else {
-            window.location.href = '/login';
+            window.location.href = '/signed-out';
           }
         },
       },
@@ -44,12 +44,15 @@ const LogoutButton: React.FC = () => {
   };
 
   return (
-    <button
-      className="govuk-button govuk-button--inverse"
+    <a
+      href="#"
+      className="rebranded-one-login-header__nav__link"
       onClick={handleSignOut}
     >
-      Sign out
-    </button>
+      <span className="rebranded-one-login-header__nav__link-content rebranded-one-login-header__nav__link-content--sign-out">
+        Sign out
+      </span>
+    </a>
   );
 };
 

@@ -12,7 +12,7 @@ const Axe: React.FC = () => {
               id: 'region',
               enabled: true,
               selector:
-                '*:not(.govuk-phase-banner):not(.govuk-phase-banner__text)',
+                '*:not(.govuk-phase-banner):not(.govuk-phase-banner__text):not(.phasebanner-tmp-bg)',
             },
           ],
         });
