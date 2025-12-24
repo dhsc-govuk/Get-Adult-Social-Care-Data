@@ -40,7 +40,7 @@ public class ReferenceMapper
         };
     }
 
-    public GetCareProviderLocationResponse CareProviderLocationToGetCareProviderLocationResponse(CareProviderLocation cpl, bool includeParents)
+    public GetCareProviderLocationResponse CareProviderLocationToGetCareProviderLocationResponse(CareProviderLocation cpl)
     {
         return new GetCareProviderLocationResponse
         {
@@ -77,7 +77,9 @@ public class ReferenceMapper
         {
             Code = la.Code,
             DisplayName = la.Name,
-            GeoData = GeoDataToGeoDataDto(la.GeoData)
+            GeoData = GeoDataToGeoDataDto(la.GeoData),
+            RegionCode = la.Region?.Code,
+            CountryCode = la.Region?.Country?.Code,
         };
     }
 }

@@ -14,9 +14,18 @@ public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper
 
     public override async Task HandleAsync(GetLocalAuthorityRequest req, CancellationToken ct)
     {
-        var la = context.LocalAuthorities
+        var laQuery = context.LocalAuthorities
             .Include(la => la.GeoData)
-            .SingleOrDefault(x => x.Code == req.LocalAuthorityCode);
+            .AsQueryable();
+
+        if (req.IncludeParents)
+        {
+            laQuery = laQuery
+                .Include(la => la.Region)
+                .Include(la => la.Region.Country);
+        }
+
+        var la = laQuery.SingleOrDefault(x => x.Code == req.LocalAuthorityCode);
 
         if (la == null)
         {

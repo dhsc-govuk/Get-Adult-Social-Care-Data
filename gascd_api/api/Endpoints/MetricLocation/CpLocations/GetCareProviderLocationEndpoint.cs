@@ -40,7 +40,7 @@ public class GetCareProviderLocationEndpoint(GascdDataContext context, Reference
             return;
         }
 
-        var response = mapper.CareProviderLocationToGetCareProviderLocationResponse(cpl, req.IncludeParents);
+        var response = mapper.CareProviderLocationToGetCareProviderLocationResponse(cpl);
         logger.LogInformation("Finished processing care provider location: {cpl}", req.CareProviderLocationCode);
         await Send.OkAsync(response, ct);
 

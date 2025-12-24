@@ -52,6 +52,32 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
     }
 
     [Fact]
+    public async Task GetLocalAuthority_ReturnsExpectedLADataWithIncludeParents()
+    {
+        var (httpCode, response) =
+            await _client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, GetLocalAuthorityResponse>(
+                new GetLocalAuthorityRequest { LocalAuthorityCode = "E08000014", IncludeParents = true });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Code.ShouldBe("E08000014");
+        response.DisplayName.ShouldBe("Liverpool");
+        response.RegionCode.ShouldBe("E12000002");
+        response.CountryCode.ShouldBe("E92000001");
+        response.GeoData.Latitude.ShouldBe(53.405);
+        response.GeoData.Longitude.ShouldBe(-2.98);
+        List<GeoDataDto.CoordinateDto> expectedPolygon = new()
+        {
+            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.26 },
+            new GeoDataDto.CoordinateDto { Longitude = -2.55, Latitude = 53.26 },
+            new GeoDataDto.CoordinateDto { Longitude = -2.55, Latitude = 53.73 },
+            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.73 },
+            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.26 }
+        };
+    }
+
+
+
+    [Fact]
     public async Task NonExistent_LocalAuthorityCode_Input()
     {
         var (httpResponse, problemDetails) =
