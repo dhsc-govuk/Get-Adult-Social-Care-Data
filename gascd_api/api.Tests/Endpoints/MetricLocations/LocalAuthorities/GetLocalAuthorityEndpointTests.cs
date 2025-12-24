@@ -75,7 +75,19 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
         };
     }
 
-
+    [Theory]
+    [InlineData("1-", "Local Authority code has a minimum length of 3")]
+    [InlineData("1-1234232323232344233324324", "Local Authority code has a maximum length of 15")]
+    public async Task Invalid_CareProviderLocationCode_Input(string localAuthorityCode, string expectedErrorMessage)
+    {
+        var (httpResponse, problemDetails) =
+            await _client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, ProblemDetails>(
+                new GetLocalAuthorityRequest { LocalAuthorityCode = localAuthorityCode });
+        httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        problemDetails.Errors.Count().ShouldBe(1);
+        problemDetails.Errors.Select(e => e.Name).ShouldBe(["local_authority_code"]);
+        problemDetails.Errors.Select(e => e.Reason).ShouldBe([expectedErrorMessage]);
+    }
 
     [Fact]
     public async Task NonExistent_LocalAuthorityCode_Input()

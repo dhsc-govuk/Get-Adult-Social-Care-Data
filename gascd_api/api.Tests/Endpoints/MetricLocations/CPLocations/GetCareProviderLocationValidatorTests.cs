@@ -27,7 +27,7 @@ public class GetCareProviderLocationValidatorTests : IDisposable
     [InlineData("1-", "Care provider location code has a minimum length of 3")]
     [InlineData(" ", "Care provider location code is required")]
     [InlineData("1-12345678910111", "Care provider location code has a maximum length of 15")]
-    public void InvalidPostcode_ShouldBeInvalid(string cplCode, string expectedErrorMessage)
+    public void InvalidLocationCode_ShouldBeInvalid(string cplCode, string expectedErrorMessage)
     {
         var request = new GetCareProviderLocationRequest { CareProviderLocationCode = cplCode };
         var result = _validator.TestValidate(request);
