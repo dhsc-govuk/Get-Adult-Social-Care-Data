@@ -2,8 +2,10 @@ using api.Endpoints.MetricLocation.LocalAuthorities;
 using api.Endpoints.Shared;
 using api.Tests.Fixtures;
 using FastEndpoints;
+using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
+using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.MetricLocations.LocalAuthorities;
 
@@ -73,6 +75,54 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.73 },
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.26 }
         };
+    }
+
+    [Fact]
+    public async Task GetCareProviderLocation_ReturnsExpectedCareProviderJsonObject()
+    {
+        var response = await _client.GetAsync("api/metric_locations/local_authorities/E08000014", TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var jObject = await ParseJsonResponse<JObject>(response);
+        GetFromJson(jObject, "code").ShouldBe("E08000014");
+        GetFromJson(jObject, "display_name").ShouldBe("Liverpool");
+        GetFromJson(jObject, "geo_data.latitude").ShouldBe("53.405");
+        GetFromJson(jObject, "geo_data.longitude").ShouldBe("-2.98");
+        GetFromJson(jObject, "geo_data.polygon[0].longitude").ShouldBe("-3.3");
+        GetFromJson(jObject, "geo_data.polygon[0].latitude").ShouldBe("53.26");
+        GetFromJson(jObject, "geo_data.polygon[1].longitude").ShouldBe("-2.55");
+        GetFromJson(jObject, "geo_data.polygon[1].latitude").ShouldBe("53.26");
+        GetFromJson(jObject, "geo_data.polygon[2].longitude").ShouldBe("-2.55");
+        GetFromJson(jObject, "geo_data.polygon[2].latitude").ShouldBe("53.73");
+        GetFromJson(jObject, "geo_data.polygon[3].longitude").ShouldBe("-3.3");
+        GetFromJson(jObject, "geo_data.polygon[3].latitude").ShouldBe("53.73");
+        GetFromJson(jObject, "geo_data.polygon[4].longitude").ShouldBe("-3.3");
+        GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("53.26");
+        GetFromJson(jObject, "region_code").ShouldBe(null);
+        GetFromJson(jObject, "country_code").ShouldBe(null);
+    }
+
+    [Fact]
+    public async Task GetCareProviderLocation_ReturnsExpectedCareProviderJsonObjectIncludeParents()
+    {
+        var response = await _client.GetAsync("api/metric_locations/local_authorities/E08000014?include_parents=true", TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var jObject = await ParseJsonResponse<JObject>(response);
+        GetFromJson(jObject, "code").ShouldBe("E08000014");
+        GetFromJson(jObject, "display_name").ShouldBe("Liverpool");
+        GetFromJson(jObject, "geo_data.latitude").ShouldBe("53.405");
+        GetFromJson(jObject, "geo_data.longitude").ShouldBe("-2.98");
+        GetFromJson(jObject, "geo_data.polygon[0].longitude").ShouldBe("-3.3");
+        GetFromJson(jObject, "geo_data.polygon[0].latitude").ShouldBe("53.26");
+        GetFromJson(jObject, "geo_data.polygon[1].longitude").ShouldBe("-2.55");
+        GetFromJson(jObject, "geo_data.polygon[1].latitude").ShouldBe("53.26");
+        GetFromJson(jObject, "geo_data.polygon[2].longitude").ShouldBe("-2.55");
+        GetFromJson(jObject, "geo_data.polygon[2].latitude").ShouldBe("53.73");
+        GetFromJson(jObject, "geo_data.polygon[3].longitude").ShouldBe("-3.3");
+        GetFromJson(jObject, "geo_data.polygon[3].latitude").ShouldBe("53.73");
+        GetFromJson(jObject, "geo_data.polygon[4].longitude").ShouldBe("-3.3");
+        GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("53.26");
+        GetFromJson(jObject, "region_code").ShouldBe("E12000002");
+        GetFromJson(jObject, "country_code").ShouldBe("E92000001");
     }
 
     [Theory]
