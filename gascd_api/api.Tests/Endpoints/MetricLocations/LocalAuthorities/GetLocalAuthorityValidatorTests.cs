@@ -14,9 +14,9 @@ public class GetLocalAuthorityValidatorTests : IDisposable
     }
 
     [Theory]
-    [InlineData("1-1")]
-    [InlineData("1-123456789")]
-    [InlineData("1-1234567891011")]
+    [InlineData("E11")]
+    [InlineData("E1123456789")]
+    [InlineData("E41234567891011")]
     public void ValidLACode_ShouldBeValid(string laCode)
     {
         var request = new GetLocalAuthorityRequest { LocalAuthorityCode = laCode };
@@ -25,9 +25,9 @@ public class GetLocalAuthorityValidatorTests : IDisposable
     }
 
     [Theory]
-    [InlineData("1-", "Local Authority code has a minimum length of 3")]
+    [InlineData("E1", "Local Authority code has a minimum length of 3")]
     [InlineData(" ", "Local Authority code is required")]
-    [InlineData("1-12345678910111", "Local Authority code has a maximum length of 15")]
+    [InlineData("E112345678910111", "Local Authority code has a maximum length of 15")]
     public void InvalidLACode_ShouldBeInvalid(string cplCode, string expectedErrorMessage)
     {
         var request = new GetLocalAuthorityRequest { LocalAuthorityCode = cplCode };
