@@ -79,7 +79,9 @@ public class ReferenceMapper
             DisplayName = la.Name,
             GeoData = GeoDataToGeoDataDto(la.GeoData),
             RegionCode = la.Region?.Code,
+            RegionName = la.Region?.Name,
             CountryCode = la.Region?.Country?.Code,
+            CountryName = la.Region?.Country?.Name,
         };
     }
 }

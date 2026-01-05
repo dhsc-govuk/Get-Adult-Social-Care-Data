@@ -40,7 +40,9 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
         response.Code.ShouldBe("E08000014");
         response.DisplayName.ShouldBe("Liverpool");
         response.RegionCode.ShouldBe(null);
+        response.RegionName.ShouldBe(null);
         response.CountryCode.ShouldBe(null);
+        response.CountryName.ShouldBe(null);
         response.GeoData.Latitude.ShouldBe(53.405);
         response.GeoData.Longitude.ShouldBe(-2.98);
         List<GeoDataDto.CoordinateDto> expectedPolygon = new()
@@ -64,7 +66,9 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
         response.Code.ShouldBe("E08000014");
         response.DisplayName.ShouldBe("Liverpool");
         response.RegionCode.ShouldBe("E12000002");
+        response.RegionName.ShouldBe("North West");
         response.CountryCode.ShouldBe("E92000001");
+        response.CountryName.ShouldBe("England");
         response.GeoData.Latitude.ShouldBe(53.405);
         response.GeoData.Longitude.ShouldBe(-2.98);
         List<GeoDataDto.CoordinateDto> expectedPolygon = new()
@@ -98,7 +102,9 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
         GetFromJson(jObject, "geo_data.polygon[4].longitude").ShouldBe("-3.3");
         GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("53.26");
         GetFromJson(jObject, "region_code").ShouldBe(null);
+        GetFromJson(jObject, "region_name").ShouldBe(null);
         GetFromJson(jObject, "country_code").ShouldBe(null);
+        GetFromJson(jObject, "country_name").ShouldBe(null);
     }
 
     [Fact]
@@ -122,7 +128,9 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
         GetFromJson(jObject, "geo_data.polygon[4].longitude").ShouldBe("-3.3");
         GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("53.26");
         GetFromJson(jObject, "region_code").ShouldBe("E12000002");
+        GetFromJson(jObject, "region_name").ShouldBe("North West");
         GetFromJson(jObject, "country_code").ShouldBe("E92000001");
+        GetFromJson(jObject, "country_name").ShouldBe("England");
     }
 
     [Theory]
