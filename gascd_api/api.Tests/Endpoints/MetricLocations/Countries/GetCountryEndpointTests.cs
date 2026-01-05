@@ -46,7 +46,7 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
             new GeoDataDto.CoordinateDto { Longitude = -3.8, Latitude = 50.0 },
             new GeoDataDto.CoordinateDto { Longitude = -1.8, Latitude = 53.9 },
             new GeoDataDto.CoordinateDto { Longitude = -1.8, Latitude = 55.25 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.9, Latitude = 55.25 },
+            new GeoDataDto.CoordinateDto { Longitude = -3.9, Latitude = 52.25 },
             new GeoDataDto.CoordinateDto { Longitude = -3.8, Latitude = 50.0 }
         };
         response.GeoData.Polygon.ShouldBe(expectedPolygon);
@@ -55,23 +55,23 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetCountry_ReturnsExpectedCountryJsonObject()
     {
-        var response = await _client.GetAsync("api/metric_locations/regions/E92000001", TestContext.Current.CancellationToken);
+        var response = await _client.GetAsync("api/metric_locations/countries/E92000001", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var jObject = await ParseJsonResponse<JObject>(response);
         GetFromJson(jObject, "code").ShouldBe("E92000001");
         GetFromJson(jObject, "display_name").ShouldBe("England");
-        GetFromJson(jObject, "geo_data.latitude").ShouldBe("52.561928)");
+        GetFromJson(jObject, "geo_data.latitude").ShouldBe("52.561928");
         GetFromJson(jObject, "geo_data.longitude").ShouldBe("-1.464854");
         GetFromJson(jObject, "geo_data.polygon[0].longitude").ShouldBe("-3.8");
-        GetFromJson(jObject, "geo_data.polygon[0].latitude").ShouldBe("50.0");
+        GetFromJson(jObject, "geo_data.polygon[0].latitude").ShouldBe("50");
         GetFromJson(jObject, "geo_data.polygon[1].longitude").ShouldBe("-1.8");
         GetFromJson(jObject, "geo_data.polygon[1].latitude").ShouldBe("53.9");
         GetFromJson(jObject, "geo_data.polygon[2].longitude").ShouldBe("-1.8");
         GetFromJson(jObject, "geo_data.polygon[2].latitude").ShouldBe("55.25");
         GetFromJson(jObject, "geo_data.polygon[3].longitude").ShouldBe("-3.9");
-        GetFromJson(jObject, "geo_data.polygon[3].latitude").ShouldBe("55.25");
+        GetFromJson(jObject, "geo_data.polygon[3].latitude").ShouldBe("52.25");
         GetFromJson(jObject, "geo_data.polygon[4].longitude").ShouldBe("-3.8");
-        GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("50.0");
+        GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("50");
 
     }
 
