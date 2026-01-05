@@ -78,6 +78,20 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
         GetFromJson(jObject, "country_name").ShouldBe("England");
     }
 
+    [Theory]
+    [InlineData("1-", "Region code has a minimum length of 3")]
+    [InlineData("1-123433232232333324324", "Region code has a maximum length of 15")]
+    public async Task Invalid_CareProviderLocationCode_Input(string regionCode, string expectedErrorMessage)
+    {
+        var (httpResponse, problemDetails) =
+            await _client.GETAsync<GetRegionEndpoint, GetRegionRequest, ProblemDetails>(
+                new GetRegionRequest { RegionCode = regionCode });
+        httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        problemDetails.Errors.Count().ShouldBe(1);
+        problemDetails.Errors.Select(e => e.Name).ShouldBe(["region_code"]);
+        problemDetails.Errors.Select(e => e.Reason).ShouldBe([expectedErrorMessage]);
+    }
+
     [Fact]
     public async Task NonExistent_RegionCode_Input()
     {
