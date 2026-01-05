@@ -1,8 +1,11 @@
+using api.Data;
+using api.Data.Mappers;
 using FastEndpoints;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.MetricLocation.Regions;
 
-public class GetRegionEndpoint : Endpoint<GetRegionRequest, GetRegionResponse>
+public class GetRegionEndpoint(GascdDataContext context, ReferenceMapper mapper) : Endpoint<GetRegionRequest, GetRegionResponse>
 {
     public override void Configure()
     {
@@ -11,6 +14,13 @@ public class GetRegionEndpoint : Endpoint<GetRegionRequest, GetRegionResponse>
 
     public override async Task HandleAsync(GetRegionRequest req, CancellationToken ct)
     {
-        await Send.OkAsync(ct);
+        var region = context.Regions
+            .Include(r => r.Country)
+            .Include(r => r.GeoData)
+            .SingleOrDefault(x => x.Code == req.RegionCode);
+
+        var response = mapper.RegionToGetRegionResponse(region);
+
+        await Send.OkAsync(response, ct);
     }
 }
