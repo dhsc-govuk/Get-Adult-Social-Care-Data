@@ -78,4 +78,13 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
         GetFromJson(jObject, "country_name").ShouldBe("England");
     }
 
+    [Fact]
+    public async Task NonExistent_RegionCode_Input()
+    {
+        var (httpResponse, problemDetails) =
+            await _client.GETAsync<GetRegionEndpoint, GetRegionRequest, ProblemDetails>(
+                new GetRegionRequest { RegionCode = "1-134343434" });
+        httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
 }
