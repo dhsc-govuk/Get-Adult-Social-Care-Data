@@ -78,11 +78,11 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
     [Theory]
     [InlineData("1-", "Country code has a minimum length of 3")]
     [InlineData("1-123433232232333324324", "Country code has a maximum length of 15")]
-    public async Task Invalid_CareProviderLocationCode_Input(string regionCode, string expectedErrorMessage)
+    public async Task Invalid_CareProviderLocationCode_Input(string countryCode, string expectedErrorMessage)
     {
         var (httpResponse, problemDetails) =
             await _client.GETAsync<GetCountryEndpoint, GetCountryRequest, ProblemDetails>(
-                new GetCountryRequest { CountryCode = regionCode });
+                new GetCountryRequest { CountryCode = countryCode });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
         problemDetails.Errors.Select(e => e.Name).ShouldBe(["country_code"]);

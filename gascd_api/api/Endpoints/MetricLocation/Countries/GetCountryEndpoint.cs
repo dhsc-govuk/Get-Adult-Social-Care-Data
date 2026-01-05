@@ -15,7 +15,7 @@ public class GetCountryEndpoint(GascdDataContext context, ReferenceMapper mapper
 
     public override async Task HandleAsync(GetCountryRequest req, CancellationToken ct)
     {
-        logger.LogDebug("Received request for Region code: {code}", req.CountryCode);
+        logger.LogDebug("Received request for Country code: {code}", req.CountryCode);
         var country = context.Countries
             .Include(r => r.GeoData)
             .SingleOrDefault(x => x.Code == req.CountryCode);
@@ -28,7 +28,7 @@ public class GetCountryEndpoint(GascdDataContext context, ReferenceMapper mapper
         }
 
         var response = mapper.CountryToGetCountryResponse(country);
-        logger.LogInformation("Finished processing region code: {code}", req.CountryCode);
+        logger.LogInformation("Finished processing country code: {code}", req.CountryCode);
         await Send.OkAsync(response, ct);
     }
 }

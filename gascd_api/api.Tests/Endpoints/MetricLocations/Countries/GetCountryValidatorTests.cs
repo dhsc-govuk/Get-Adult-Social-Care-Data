@@ -27,9 +27,9 @@ public class GetCountryValidatorTests : IDisposable
     [InlineData("E1", "Country code has a minimum length of 3")]
     [InlineData(" ", "Country code is required")]
     [InlineData("E1123233223243278910111", "Country code has a maximum length of 15")]
-    public void InvalidCountryCode_ShouldBeInvalid(string regionCode, string expectedErrorMessage)
+    public void InvalidCountryCode_ShouldBeInvalid(string countryCode, string expectedErrorMessage)
     {
-        var request = new GetCountryRequest { CountryCode = regionCode };
+        var request = new GetCountryRequest { CountryCode = countryCode };
         var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(r => r.CountryCode)
             .WithErrorMessage(expectedErrorMessage);
