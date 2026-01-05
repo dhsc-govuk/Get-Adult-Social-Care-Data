@@ -372,11 +372,20 @@ components:
           $ref: '#/components/schemas/GeoData'
         region_code:
           type: string
+          nullable: true
           description: "The associated region code."
+        region_name:
+            type: string
+            nullable: true
+            description: "The associated region name."
         country_code:
           type: string
           nullable: true
           description: "The associated country code."
+        country_name:
+          type: string
+          nullable: true
+          description: "The associated country name."
     
     Region:
       type: object
