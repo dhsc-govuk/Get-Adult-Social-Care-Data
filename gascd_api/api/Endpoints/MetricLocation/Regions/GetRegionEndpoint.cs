@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.MetricLocation.Regions;
 
-public class GetRegionEndpoint(GascdDataContext context, ReferenceMapper mapper) : Endpoint<GetRegionRequest, GetRegionResponse>
+public class GetRegionEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetRegionEndpoint> logger) : Endpoint<GetRegionRequest, GetRegionResponse>
 {
     public override void Configure()
     {
@@ -14,6 +14,7 @@ public class GetRegionEndpoint(GascdDataContext context, ReferenceMapper mapper)
 
     public override async Task HandleAsync(GetRegionRequest req, CancellationToken ct)
     {
+        logger.LogDebug("Received request for Region code: {code}", req.RegionCode);
         var region = context.Regions
             .Include(r => r.Country)
             .Include(r => r.GeoData)
@@ -21,12 +22,13 @@ public class GetRegionEndpoint(GascdDataContext context, ReferenceMapper mapper)
 
         if (region == null)
         {
+            logger.LogInformation("Region code not found: {code}", req.RegionCode);
             await Send.NotFoundAsync(ct);
             return;
         }
 
         var response = mapper.RegionToGetRegionResponse(region);
-
+        logger.LogInformation("Finished processing region code: {code}", req.RegionCode);
         await Send.OkAsync(response, ct);
     }
 }
