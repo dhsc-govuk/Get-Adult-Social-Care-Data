@@ -1,5 +1,6 @@
 using api.Data;
 using api.Data.Mappers;
+using api.Data.Models.Reference;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,9 +13,9 @@ public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper
         Get("/api/metric_locations/local_authorities/{LocalAuthorityCode}");
     }
 
-    public override async Task HandleAsync(GetLocalAuthorityRequest req, CancellationToken ct)
+    private LocalAuthority? QueryLocalAuthority(GetLocalAuthorityRequest req)
     {
-        logger.LogDebug("Received request for Local Authority code: {code}", req.LocalAuthorityCode);
+
         var laQuery = context.LocalAuthorities
             .Include(la => la.GeoData)
             .AsQueryable();
@@ -27,7 +28,14 @@ public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper
                 .Include(la => la.Region.Country);
         }
 
-        var la = laQuery.SingleOrDefault(x => x.Code == req.LocalAuthorityCode);
+        return laQuery.SingleOrDefault(x => x.Code == req.LocalAuthorityCode);
+
+    }
+    public override async Task HandleAsync(GetLocalAuthorityRequest req, CancellationToken ct)
+    {
+        logger.LogDebug("Received request for Local Authority code: {code}", req.LocalAuthorityCode);
+
+        var la = QueryLocalAuthority(req);
 
         if (la == null)
         {
@@ -40,4 +48,6 @@ public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper
         logger.LogInformation("Finished processing care provider code: {code}", req.LocalAuthorityCode);
         await Send.OkAsync(response, ct);
     }
+
+
 }
