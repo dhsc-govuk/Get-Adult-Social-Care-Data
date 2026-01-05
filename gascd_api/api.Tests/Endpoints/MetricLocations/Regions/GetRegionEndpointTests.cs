@@ -2,8 +2,10 @@ using api.Endpoints.MetricLocation.Regions;
 using api.Endpoints.Shared;
 using api.Tests.Fixtures;
 using FastEndpoints;
+using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
+using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.MetricLocations.Regions;
 
@@ -28,7 +30,7 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
     }
 
     [Fact]
-    public async Task GetLocalAuthority_ReturnsExpectedRegionData()
+    public async Task GetRegion_ReturnsExpectedRegionData()
     {
         var (httpCode, response) =
             await _client.GETAsync<GetRegionEndpoint, GetRegionRequest, GetRegionResponse>(
@@ -52,6 +54,28 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
         response.CountryName.ShouldBe("England");
     }
 
-
+    [Fact]
+    public async Task GetRegion_ReturnsExpectedRegionJsonObject()
+    {
+        var response = await _client.GetAsync("api/metric_locations/regions/E12000002", TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var jObject = await ParseJsonResponse<JObject>(response);
+        GetFromJson(jObject, "code").ShouldBe("E12000002");
+        GetFromJson(jObject, "display_name").ShouldBe("North West");
+        GetFromJson(jObject, "geo_data.latitude").ShouldBe("54.075");
+        GetFromJson(jObject, "geo_data.longitude").ShouldBe("-2.75");
+        GetFromJson(jObject, "geo_data.polygon[0].longitude").ShouldBe("-3.8");
+        GetFromJson(jObject, "geo_data.polygon[0].latitude").ShouldBe("52.9");
+        GetFromJson(jObject, "geo_data.polygon[1].longitude").ShouldBe("-1.8");
+        GetFromJson(jObject, "geo_data.polygon[1].latitude").ShouldBe("52.9");
+        GetFromJson(jObject, "geo_data.polygon[2].longitude").ShouldBe("-1.8");
+        GetFromJson(jObject, "geo_data.polygon[2].latitude").ShouldBe("55.25");
+        GetFromJson(jObject, "geo_data.polygon[3].longitude").ShouldBe("-3.8");
+        GetFromJson(jObject, "geo_data.polygon[3].latitude").ShouldBe("55.25");
+        GetFromJson(jObject, "geo_data.polygon[4].longitude").ShouldBe("-3.8");
+        GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("52.9");
+        GetFromJson(jObject, "country_code").ShouldBe("E92000001");
+        GetFromJson(jObject, "country_name").ShouldBe("England");
+    }
 
 }
