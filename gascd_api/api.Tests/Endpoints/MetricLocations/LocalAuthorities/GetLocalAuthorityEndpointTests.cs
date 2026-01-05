@@ -53,6 +53,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.73 },
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.26 }
         };
+        response.GeoData.Polygon.ShouldBe(expectedPolygon);
     }
 
     [Fact]
@@ -79,6 +80,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.73 },
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.26 }
         };
+        response.GeoData.Polygon.ShouldBe(expectedPolygon);
     }
 
     [Fact]
