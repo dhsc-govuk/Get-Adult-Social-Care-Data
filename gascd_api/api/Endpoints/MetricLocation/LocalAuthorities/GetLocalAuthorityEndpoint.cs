@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.MetricLocation.LocalAuthorities;
 
-public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper mapper) : Endpoint<GetLocalAuthorityRequest, GetLocalAuthorityResponse>
+public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetLocalAuthorityEndpoint> logger) : Endpoint<GetLocalAuthorityRequest, GetLocalAuthorityResponse>
 {
     public override void Configure()
     {
@@ -14,12 +14,14 @@ public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper
 
     public override async Task HandleAsync(GetLocalAuthorityRequest req, CancellationToken ct)
     {
+        logger.LogDebug("Received request for Local Authority code: {code}", req.LocalAuthorityCode);
         var laQuery = context.LocalAuthorities
             .Include(la => la.GeoData)
             .AsQueryable();
 
         if (req.IncludeParents)
         {
+            logger.LogInformation("Including parent information.");
             laQuery = laQuery
                 .Include(la => la.Region)
                 .Include(la => la.Region.Country);
@@ -29,12 +31,13 @@ public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper
 
         if (la == null)
         {
+            logger.LogInformation("Local Authority code not found: {code}", req.LocalAuthorityCode);
             await Send.NotFoundAsync(ct);
             return;
         }
 
         var response = mapper.LocalAuthorityToGetLocalAuthorityResponse(la);
-
+        logger.LogInformation("Finished processing care provider code: {code}", req.LocalAuthorityCode);
         await Send.OkAsync(response, ct);
     }
 }
