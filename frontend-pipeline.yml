@@ -16,6 +16,7 @@ pr:
     include:
       - gascd_frontend
       - frontend-pipeline.yml
+      - gascd_metrics_api/openapi.yaml
 
 resources:
   - repo: self
