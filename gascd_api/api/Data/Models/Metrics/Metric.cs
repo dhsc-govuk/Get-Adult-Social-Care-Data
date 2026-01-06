@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace api.Data.Models.Metrics;
 
 [Table("metrics")]
-public class Metric : EntityBase
+public class Metric : SearchableEntity
 {
     [Column("name"), StringLength(100)]
     public required string Name { get; init; }
