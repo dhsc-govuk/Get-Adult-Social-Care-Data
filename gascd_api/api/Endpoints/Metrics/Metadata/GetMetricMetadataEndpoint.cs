@@ -4,7 +4,7 @@ using FastEndpoints;
 
 namespace api.Endpoints.Metrics.Metadata;
 
-public class GetMetricMetadataEndpoint(GascdDataContext context, ReferenceMapper mapper) : Endpoint<GetMetricMetadataRequest, GetMetricMetadataResponse>
+public class GetMetricMetadataEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetMetricMetadataEndpoint> logger) : Endpoint<GetMetricMetadataRequest, GetMetricMetadataResponse>
 {
     public override void Configure()
     {
@@ -13,16 +13,18 @@ public class GetMetricMetadataEndpoint(GascdDataContext context, ReferenceMapper
 
     public override async Task HandleAsync(GetMetricMetadataRequest req, CancellationToken ct)
     {
+        logger.LogDebug("Received request for Metric code: {code}", req.MetricCode);
         var metric = context.Metrics.SingleOrDefault(x => x.Code == req.MetricCode);
 
         if (metric == null)
         {
+            logger.LogInformation("Metric code not found: {code}", req.MetricCode);
             await Send.NotFoundAsync(ct);
             return;
         }
 
         var response = mapper.MetricToGetMetricMetadataResponse(metric);
-
+        logger.LogInformation("Finished processing Metric code: {code}", req.MetricCode);
         await Send.OkAsync(response, ct);
     }
 }
