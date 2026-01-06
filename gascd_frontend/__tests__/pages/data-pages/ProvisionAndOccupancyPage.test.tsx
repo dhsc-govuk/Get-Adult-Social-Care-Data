@@ -12,12 +12,10 @@ import { TEST_CONNECTION_STRING } from '../../services/analytics/AnalyticsServic
 vi.mock('@/components/common/buttons/logoutButton');
 vi.mock('@/services/logger/logService');
 //vi.mock('@/services/indicator/IndicatorFetchService');
-vi.mock('@/services/location/LocationService');
+vi.mock('@/services/location/locationService/LocationService');
 vi.mock('react-plotly.js', () => ({
   default: vi.fn(),
 }));
-const mockedLocationService = vi.mocked(LocationService.getSelectedLocation);
-mockedLocationService.mockResolvedValue('');
 
 describe('ProvisionAndOccupancyPage', () => {
   it('should render the heading, body text, and data tables', () => {
