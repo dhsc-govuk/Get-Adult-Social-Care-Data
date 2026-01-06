@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import ProvisionAndOccupancyPage from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/data/page';
-import { authClient } from '@/lib/auth-client';
-import { mockSession } from '@/test-utils/test-utils';
+import LocationService from '@/services/location/locationService';
 import {
   initializeAppInsights,
   resetAppInsights,
@@ -12,22 +11,13 @@ import { TEST_CONNECTION_STRING } from '../../services/analytics/AnalyticsServic
 // Mock out things we are not testing at the moment to prevent them making api requests
 vi.mock('@/components/common/buttons/logoutButton');
 vi.mock('@/services/logger/logService');
-vi.mock('@/services/indicator/IndicatorFetchService');
+//vi.mock('@/services/indicator/IndicatorFetchService');
 vi.mock('@/services/location/LocationService');
 vi.mock('react-plotly.js', () => ({
   default: vi.fn(),
 }));
-
-vi.mock('@/lib/auth-client', () => ({
-  authClient: {
-    getSession: vi.fn(),
-    useSession: vi.fn(),
-  },
-}));
-const mockGetSession = vi.mocked(authClient.getSession);
-const mockUseSession = vi.mocked(authClient.useSession);
-mockGetSession.mockReturnValue({ data: mockSession } as any);
-mockUseSession.mockReturnValue({ data: mockSession } as any);
+const mockedLocationService = vi.mocked(LocationService.getSelectedLocation);
+mockedLocationService.mockResolvedValue('');
 
 describe('ProvisionAndOccupancyPage', () => {
   it('should render the heading, body text, and data tables', () => {
