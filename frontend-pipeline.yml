@@ -7,9 +7,14 @@ trigger:
   branches:
     include:
       - main
+
+pr:
+  branches:
+    include:
+      - '*'  
   paths:
     include:
-      - gascd_frontend/*
+      - gascd_frontend
       - frontend-pipeline.yml
 
 resources:
@@ -77,6 +82,9 @@ stages:
             workingDirectory: gascd_frontend
           - script: npm run test -- --reporter=default --reporter=junit --outputFile=junit.xml
             displayName: Run vitest Tests
+            workingDirectory: gascd_frontend
+          - script: npm run build
+            displayName: Run a test build
             workingDirectory: gascd_frontend
           - task: PublishTestResults@2
             displayName: Publish Test Results

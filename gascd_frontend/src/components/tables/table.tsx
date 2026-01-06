@@ -1,21 +1,19 @@
-import React, { useRef } from 'react';
+import React, { Ref } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
-import { MetaData } from '@/data/interfaces/MetaData';
-import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
-import PresentDemandService from '@/services/present-demand/presentDemandService';
 
 type DataTableProps = {
   caption?: string;
-  columnHeaders: string[];
+  columnHeaders: Object;
   rowHeaders: Object;
   data: Indicator[];
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
-  percentageRows?: MetaData[];
+  percentageRows?: string[];
   source?: string;
   last_updated?: string;
-  csv_download?: boolean;
   children?: React.ReactNode;
+  showAverageLabel?: boolean;
+  tableref?: Ref<HTMLTableElement>;
 };
 
 const getCareProviderKey = (
@@ -29,7 +27,8 @@ const getFormattedDataPoint = (
   data: Indicator[],
   metricId: string,
   locationType: string,
-  isPercentage: boolean = false
+  isPercentage: boolean = false,
+  showAverageLabel?: boolean
 ): string => {
   const foundMetric = data.find(
     (metric) =>
@@ -41,8 +40,11 @@ const getFormattedDataPoint = (
     foundMetric.data_point !== null &&
     !isNaN(Number(foundMetric.data_point))
   ) {
-    let formattedDataPoint = Number(foundMetric.data_point).toLocaleString();
-    return isPercentage ? `${formattedDataPoint}%` : formattedDataPoint;
+    let formatted = Number(foundMetric.data_point).toLocaleString();
+    if (isPercentage) formatted += '%';
+    if (showAverageLabel)
+      formatted += isPercentage ? ' (average)' : ' (median)';
+    return formatted;
   }
   return 'Loading...';
 };
@@ -55,11 +57,11 @@ const DataTable: React.FC<DataTableProps> = ({
   showCareProvider,
   careProviderMedianMetrics,
   percentageRows,
-  csv_download = true,
   children,
   source,
+  showAverageLabel = false,
+  tableref = undefined,
 }) => {
-  const tableref = useRef<HTMLTableElement>(null);
   const columnClass = (columnIndex: number) => {
     if (columnIndex === 0) {
       return 'govuk-table__header govuk-!-width-one-third';
@@ -71,21 +73,25 @@ const DataTable: React.FC<DataTableProps> = ({
     <div>
       <table className="govuk-table" ref={tableref}>
         {caption && (
-          <caption className="govuk-table__caption govuk-table__caption--s govuk-!-margin-top-7">
+          <caption className="govuk-table__caption govuk-table__caption--s">
             {caption}
           </caption>
         )}
         <thead className="govuk-table__head">
           <tr className="govuk-table__row">
-            {columnHeaders.map((columnHeader, columnIndex) => (
-              <th
-                key={columnIndex}
-                scope="col"
-                className={columnClass(columnIndex)}
-              >
-                {columnHeader}
-              </th>
-            ))}
+            {Object.entries(columnHeaders)
+              .filter(
+                ([columnKey]) => !(columnKey === 'CPLabel' && !showCareProvider)
+              )
+              .map(([columnKey, columnLabel], columnIndex) => (
+                <th
+                  key={columnKey}
+                  scope="col"
+                  className={columnClass(columnIndex)}
+                >
+                  {columnLabel}
+                </th>
+              ))}
           </tr>
         </thead>
         <tbody className="govuk-table__body">
@@ -93,7 +99,7 @@ const DataTable: React.FC<DataTableProps> = ({
             <tr key={key}>
               <th
                 scope="row"
-                className="govuk-table__cell govuk-table__cell--header"
+                className="govuk-table__cell govuk-!-font-weight-regular"
               >
                 {value}
               </th>
@@ -103,8 +109,7 @@ const DataTable: React.FC<DataTableProps> = ({
                     data,
                     getCareProviderKey(key, careProviderMedianMetrics),
                     'Care provider location',
-                    percentageRows?.some((item) => item.metric_id === key) ??
-                      false
+                    percentageRows?.some((item) => item === key) ?? false
                   )}
                 </td>
               )}
@@ -113,8 +118,8 @@ const DataTable: React.FC<DataTableProps> = ({
                   data,
                   key,
                   'LA',
-                  percentageRows?.some((item) => item.metric_id === key) ??
-                    false
+                  percentageRows?.some((item) => item === key) ?? false,
+                  showAverageLabel
                 )}
               </td>
               <td className="govuk-table__cell govuk-table__cell--numeric">
@@ -122,8 +127,8 @@ const DataTable: React.FC<DataTableProps> = ({
                   data,
                   key,
                   'Regional',
-                  percentageRows?.some((item) => item.metric_id === key) ??
-                    false
+                  percentageRows?.some((item) => item === key) ?? false,
+                  showAverageLabel
                 )}
               </td>
               <td className="govuk-table__cell govuk-table__cell--numeric">
@@ -131,8 +136,8 @@ const DataTable: React.FC<DataTableProps> = ({
                   data,
                   key,
                   'National',
-                  percentageRows?.some((item) => item.metric_id === key) ??
-                    false
+                  percentageRows?.some((item) => item === key) ?? false,
+                  showAverageLabel
                 )}
               </td>
             </tr>
@@ -140,24 +145,7 @@ const DataTable: React.FC<DataTableProps> = ({
         </tbody>
       </table>
       {children}
-      {csv_download && (
-        <p className="govuk-body">
-          <DownloadTableDataCSVLink tableref={tableref} xLabel="" />
-        </p>
-      )}
-      <p className="govuk-body">
-        {source}
-        <br />
-        {data.length > 0 && (
-          <span>
-            Data correct as of{' '}
-            {PresentDemandService.getMostRecentDate(
-              data,
-              Object.keys(rowHeaders)
-            )}
-          </span>
-        )}
-      </p>
+      <p className="govuk-body govuk-!-margin-bottom-0">Source: {source}</p>
     </div>
   );
 };

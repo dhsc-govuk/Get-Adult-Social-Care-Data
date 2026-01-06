@@ -168,9 +168,9 @@ class IndicatorService {
         // expects dd/mm/yyyy
         const dateparts = entry.metric_date.split('/');
         return new Date(
-          parseInt(dateparts[2]),
-          parseInt(dateparts[1]),
-          parseInt(dateparts[0])
+          parseInt(dateparts[2]), // year,
+          parseInt(dateparts[1]) - 1, // month index (zero-based)
+          parseInt(dateparts[0]) // dom
         );
       } else {
         // Assume it is a parseable date
@@ -178,6 +178,62 @@ class IndicatorService {
       }
     }
     return entry.metric_date;
+  }
+
+  public static formatDate(dateStr: string): string {
+    if (!dateStr.includes('/')) {
+      // Not a recognised format
+      return dateStr;
+    }
+
+    const [day, month, year] = dateStr.split('/').map(Number);
+    const date = new Date(year, month - 1, day);
+
+    return new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(date);
+  }
+
+  public static getMostRecentIndicator(
+    indicators: Indicator[],
+    metric_ids?: string[]
+  ): string {
+    if (indicators.length === 0) {
+      return '';
+    }
+
+    let filtered_indicators = indicators;
+    if (metric_ids) {
+      filtered_indicators = indicators.filter((item) =>
+        metric_ids.includes(item.metric_id)
+      );
+    }
+
+    if (filtered_indicators.length === 0) {
+      return '';
+    }
+
+    return filtered_indicators
+      .reduce((latest, current) => {
+        return this.parseDate(current) > this.parseDate(latest)
+          ? current
+          : latest;
+      }, filtered_indicators[0])
+      .metric_date.toString();
+  }
+
+  public static getMostRecentDate(
+    data: Indicator[],
+    metric_ids?: string[]
+  ): string {
+    const recentData = this.getMostRecentIndicator(data, metric_ids);
+    if (recentData) {
+      return this.formatDate(recentData);
+    } else {
+      return '';
+    }
   }
 }
 

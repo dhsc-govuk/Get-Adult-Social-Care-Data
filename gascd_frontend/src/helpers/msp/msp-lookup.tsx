@@ -264,6 +264,9 @@ export const MSPLookup: MSPItems = {
   E06000033: {
     url: 'https://www.careproviderhubsouthend.co.uk/market-position-statement/about-this-market-position-statement/',
   },
+  E06000034: {
+    url: 'https://www.thurrock.gov.uk/adult-care-strategies-and-plans/thurrock-integrated-commissioning-strategy',
+  },
   E10000029: {
     url: 'https://www.suffolk.gov.uk/care-and-support-for-adults/work-with-adult-social-care/suffolk-care-market',
   },

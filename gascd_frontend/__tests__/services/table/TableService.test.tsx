@@ -57,7 +57,7 @@ describe('TableService', () => {
     it('should return only the latest entry for each metric-location pair', () => {
       const result: Indicator[] = TableService.filterDate(mockData);
       expect(result).toHaveLength(2);
-      expect(result).toEqual([mockData[1], mockData[2]]);
+      expect(result).toEqual([mockData[0], mockData[2]]);
     });
   });
 

@@ -6,6 +6,11 @@ Cypress.Commands.add('login', () => {
   cy.wait(500);
 });
 
+Cypress.Commands.add('logout', () => {
+  cy.get('header ul a').contains('Sign out').click();
+  cy.wait(500);
+});
+
 Cypress.Commands.add('metatag', (name: string) => {
   return cy.get(`head > meta[name="${name}"]`);
 });

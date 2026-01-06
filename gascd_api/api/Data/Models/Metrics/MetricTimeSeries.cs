@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Data.Models.Metrics;
@@ -10,14 +11,14 @@ public class MetricTimeSeries : EntityBase
     [Column("end_date")]
     public required DateTime EndDate { get; init; }
 
-    [Column("location_fk")]
+    [Column("location_code"), StringLength(15)]
     public required string LocationFk { get; init; }
 
-    [Column("location_type")]
+    [Column("location_type"), StringLength(25)]
     public required string LocationType { get; init; }
 
     [Column("metric_fk")]
-    public required Guid MetricFk { get; init; }
+    public required int MetricFk { get; init; }
 
     [ForeignKey("MetricFk")]
     public virtual Metric Metric { get; init; } = null!;
