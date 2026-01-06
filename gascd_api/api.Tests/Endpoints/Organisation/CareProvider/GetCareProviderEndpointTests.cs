@@ -41,7 +41,7 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         response.Locations.ShouldNotBeEmpty();
         response.Locations.Count.ShouldBe(1);
         response.Locations[0].LocationName.ShouldBe("Bupa Liverpool");
-        response.Locations[0].LocationId.ShouldBe("1-222222222");
+        response.Locations[0].LocationCode.ShouldBe("1-222222222");
 
     }
 
@@ -54,7 +54,7 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         var jObject = await ParseJsonResponse<JObject>(response);
         GetFromJson(jObject, "display_name").ShouldBe("Bupa");
         GetFromJson(jObject, "locations[0].location_name").ShouldBe("Bupa Liverpool");
-        GetFromJson(jObject, "locations[0].location_id").ShouldBe("1-222222222");
+        GetFromJson(jObject, "locations[0].location_code").ShouldBe("1-222222222");
     }
 
     [Fact]
@@ -80,8 +80,8 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         response.DisplayName.ShouldBe("Katherine");
         response.Locations.ShouldNotBeEmpty();
         response.Locations.Count.ShouldBe(2);
-        response.Locations.ShouldContain(o => o.LocationName == "Katherines Teeth" && o.LocationId == "1-222222223");
-        response.Locations.ShouldContain(o => o.LocationName == "Katherines Eyes" && o.LocationId == "1-222222224");
+        response.Locations.ShouldContain(o => o.LocationName == "Katherines Teeth" && o.LocationCode == "1-222222223");
+        response.Locations.ShouldContain(o => o.LocationName == "Katherines Eyes" && o.LocationCode == "1-222222224");
     }
 
     [Theory]

@@ -5,7 +5,7 @@
       context: .
       dockerfile: api/Dockerfile
     ports:
-      - 5050:5050
+      - "5050:5050"
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
 
