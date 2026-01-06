@@ -22,6 +22,7 @@ import LogService from '@/services/logger/logService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
+import RelatedDataList from '@/components/data-components/RelatedDataList';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -442,6 +443,25 @@ export default function ProvisionAndOccupancyPage() {
           url="/help/population-size"
         />
       </DataIndicatorDetailsList>
+
+      <RelatedDataList>
+        <DataLinkCard
+          label="Dementia prevalence and estimated diagnosis rate"
+          description="Data on registered dementia diagnoses with estimates for undiagnosed dementia."
+          url="/topics/population-needs/dementia-prevalence/data"
+        />
+        <DataLinkCard
+          label="Economic factors and household composition"
+          description="Data on household deprivation, property ownership and older people living alone."
+          url="/topics/population-needs/household-composition-and-economic-factors/data"
+        />
+        <DataLinkCard
+          label="General health, disability and learning disability"
+          description="Data on disability prevalence, learning disability diagnoses and reasons for accessing care."
+          url="/topics/population-needs/disability-prevalence/data"
+        />
+      </RelatedDataList>
+
       <LocalMarketInformation
         localAuthority={locationNames.LALabel}
         localAuthorityId={locationIds[1]}

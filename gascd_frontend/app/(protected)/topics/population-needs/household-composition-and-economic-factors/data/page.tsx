@@ -18,6 +18,7 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import AnalyticsService from '@/services/analytics/analyticsService';
+import RelatedDataList from '@/components/data-components/RelatedDataList';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -356,6 +357,25 @@ export default function ProvisionAndOccupancyPage() {
           url="/help/one-person-households-where-person-aged-65-or-over"
         />
       </DataIndicatorDetailsList>
+
+      <RelatedDataList>
+        <DataLinkCard
+          label="Dementia prevalence and estimated diagnosis rate"
+          description="Data on registered dementia diagnoses with estimates for undiagnosed dementia."
+          url="/topics/population-needs/dementia-prevalence/data"
+        />
+        <DataLinkCard
+          label="General health, disability and learning disability"
+          description="Data on disability prevalence, learning disability diagnoses and reasons for accessing care."
+          url="/topics/population-needs/disability-prevalence/data"
+        />
+        <DataLinkCard
+          label="Population size and age group percentages"
+          description="Population data at district, local authority, regional and national levels for England."
+          url="/topics/population-needs/population-age-and-size/data"
+        />
+      </RelatedDataList>
+
       <LocalMarketInformation
         localAuthority={locationNames.LALabel}
         localAuthorityId={locationIds[1]}

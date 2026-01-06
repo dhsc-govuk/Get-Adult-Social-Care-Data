@@ -1,6 +1,7 @@
 using api.Logging;
 using FastEndpoints;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace api.Configuration;
 
@@ -17,6 +18,7 @@ public static class FastEndpointsConfiguration
             {
                 c.Errors.UseProblemDetails();
                 c.Serializer.Options.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
+                c.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
             }
         );
     }

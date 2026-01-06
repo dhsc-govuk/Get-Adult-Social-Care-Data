@@ -18,6 +18,7 @@ import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
+import RelatedDataList from '@/components/data-components/RelatedDataList';
 
 export default function DisabilityPrevalence() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -281,6 +282,25 @@ export default function DisabilityPrevalence() {
           url="/help/people-who-reported-bad-or-very-bad-health"
         />
       </DataIndicatorDetailsList>
+
+      <RelatedDataList>
+        <DataLinkCard
+          label="Dementia prevalence and estimated diagnosis rate"
+          description="Data on registered dementia diagnoses with estimates for undiagnosed dementia."
+          url="/topics/population-needs/dementia-prevalence/data"
+        />
+        <DataLinkCard
+          label="Economic factors and household composition"
+          description="Data on household deprivation, property ownership and older people living alone."
+          url="/topics/population-needs/household-composition-and-economic-factors/data"
+        />
+        <DataLinkCard
+          label="Population size and age group percentages"
+          description="Population data at district, local authority, regional and national levels for England."
+          url="/topics/population-needs/population-age-and-size/data"
+        />
+      </RelatedDataList>
+
       <LocalMarketInformation
         localAuthority={locationNames.LALabel}
         localAuthorityId={locationIds[1]}

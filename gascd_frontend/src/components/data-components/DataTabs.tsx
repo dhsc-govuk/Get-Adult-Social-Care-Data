@@ -34,6 +34,7 @@ const DataTabs: React.FC<Props> = ({
 
   return (
     <>
+      <h3 className="govuk-tabs__title">Contents</h3>
       <ul className="govuk-tabs__list">
         {map && (
           <li
