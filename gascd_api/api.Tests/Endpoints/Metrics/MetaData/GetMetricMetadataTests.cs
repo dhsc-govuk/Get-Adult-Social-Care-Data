@@ -21,10 +21,25 @@ public class GetMetricMetadataTests : IClassFixture<IntegrationTestFixture>
     {
         var (httpCode, _) =
             await _client.GETAsync<GetMetricMetadataEndpoint, GetMetricMetadataRequest, GetMetricMetadataResponse>(
-                new GetMetricMetadataRequest { MetricCode = "123" });
+                new GetMetricMetadataRequest { MetricCode = "metric_code" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
 
+    [Fact]
+    public async Task GetMetricMetadata_ReturnsExpectedMetricdata()
+    {
+        var (httpCode, response) =
+            await _client.GETAsync<GetMetricMetadataEndpoint, GetMetricMetadataRequest, GetMetricMetadataResponse>(
+                new GetMetricMetadataRequest { MetricCode = "metric_code" });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.MetricCode.ShouldBe("metric_code");
+        response.MetricName.ShouldBe("Metric");
+        response.DataType.ShouldBe("numbers");
+        response.DataSource.ShouldBe("ONS");
+        response.Numerator.ShouldBe("This is a numerator");
+        response.Denominator.ShouldBe("This is a denominator");
+    }
 
 }

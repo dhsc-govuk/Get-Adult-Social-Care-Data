@@ -1,8 +1,10 @@
+using api.Data;
+using api.Data.Mappers;
 using FastEndpoints;
 
 namespace api.Endpoints.Metrics.Metadata;
 
-public class GetMetricMetadataEndpoint : Endpoint<GetMetricMetadataRequest, GetMetricMetadataResponse>
+public class GetMetricMetadataEndpoint(GascdDataContext context, ReferenceMapper mapper) : Endpoint<GetMetricMetadataRequest, GetMetricMetadataResponse>
 {
     public override void Configure()
     {
@@ -11,6 +13,10 @@ public class GetMetricMetadataEndpoint : Endpoint<GetMetricMetadataRequest, GetM
 
     public override async Task HandleAsync(GetMetricMetadataRequest req, CancellationToken ct)
     {
-        await Send.OkAsync(ct);
+        var metric = context.Metrics.SingleOrDefault(x => x.Code == req.MetricCode);
+
+        var response = mapper.MetricToGetMetricMetadataResponse(metric);
+
+        await Send.OkAsync(response, ct);
     }
 }
