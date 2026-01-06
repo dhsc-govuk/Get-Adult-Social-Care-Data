@@ -84,7 +84,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
     }
 
     [Fact]
-    public async Task GetCareProviderLocation_ReturnsExpectedCareProviderJsonObject()
+    public async Task GetLocalAuthority_ReturnsExpectedCareProviderJsonObject()
     {
         var response = await _client.GetAsync("api/metric_locations/local_authorities/E08000014", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -110,7 +110,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
     }
 
     [Fact]
-    public async Task GetCareProviderLocation_ReturnsExpectedCareProviderJsonObjectIncludeParents()
+    public async Task GetLocalAuthority_ReturnsExpectedCareProviderJsonObjectIncludeParents()
     {
         var response = await _client.GetAsync("api/metric_locations/local_authorities/E08000014?include_parents=true", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -138,7 +138,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
     [Theory]
     [InlineData("1-", "Local Authority code has a minimum length of 3")]
     [InlineData("1-1234232323232344233324324", "Local Authority code has a maximum length of 15")]
-    public async Task Invalid_CareProviderLocationCode_Input(string localAuthorityCode, string expectedErrorMessage)
+    public async Task Invalid_LocalAuthority_Input(string localAuthorityCode, string expectedErrorMessage)
     {
         var (httpResponse, problemDetails) =
             await _client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, ProblemDetails>(
