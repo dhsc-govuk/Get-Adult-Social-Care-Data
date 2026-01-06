@@ -3,8 +3,6 @@ using FluentValidation.TestHelper;
 
 namespace api.Tests.Endpoints.Metrics.MetaData;
 
-
-
 public class GetMetricMetadataValidatorTests : IDisposable
 {
     private GetMetricMetadataValidator _validator;
