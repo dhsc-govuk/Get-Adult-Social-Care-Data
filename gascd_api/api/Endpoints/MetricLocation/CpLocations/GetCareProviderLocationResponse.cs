@@ -1,4 +1,4 @@
-namespace api.Endpoints.MetricLocation.CpLocations;
+namespace api.Endpoints.Shared;
 
 public class GetCareProviderLocationResponse
 {

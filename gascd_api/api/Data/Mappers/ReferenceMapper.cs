@@ -1,7 +1,7 @@
 using api.Data.Models.Reference;
 using api.Endpoints.Geo.Postcode;
-using api.Endpoints.MetricLocation.CpLocations;
 using api.Endpoints.Organisation.CareProvider;
+using api.Endpoints.Shared;
 
 namespace api.Data.Mappers;
 
@@ -13,8 +13,7 @@ public class ReferenceMapper
         {
             SanitisedPostcode = postcode.Code,
             DisplayPostcode = postcode.DisplayPostcode,
-            Latitude = postcode.Coordinate.X,
-            Longitude = postcode.Coordinate.Y,
+            GeoData = GeoDataToGeoDataDto(postcode.GeoData),
             LaCode = postcode.LocalAuthority.Code,
             LaName = postcode.LocalAuthority.Name
         };
