@@ -1,5 +1,6 @@
-import React, { Ref } from 'react';
+import React, { Ref, useEffect } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
+import { SortableTable } from '../../../public/moj-frontend/js/moj-frontend.min.js';
 
 type VerticalLocationTableProps = {
   caption?: string;
@@ -25,6 +26,16 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
   tableref = undefined,
   userLa,
 }) => {
+  useEffect(() => {
+    const $sortableTables = document.querySelectorAll(
+      '[data-module="moj-sortable-table"]'
+    );
+
+    $sortableTables.forEach(($sortableTable) => {
+      new SortableTable($sortableTable);
+    });
+  }, []);
+
   const columnClass = (columnIndex: number) => {
     if (columnIndex === 0) {
       return 'govuk-table__header';
@@ -71,7 +82,11 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
 
   return (
     <div>
-      <table className="govuk-table" ref={tableref}>
+      <table
+        className="govuk-table"
+        ref={tableref}
+        data-module="moj-sortable-table"
+      >
         {caption && (
           <caption className="govuk-table__caption govuk-table__caption--s">
             {caption}
@@ -85,6 +100,7 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
                   key={columnKey}
                   scope="col"
                   className={columnClass(columnIndex)}
+                  aria-sort="none"
                 >
                   {columnLabel}
                 </th>
@@ -101,7 +117,13 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
               >
                 {getFormattedLocationLabel(value, index)}
               </th>
-              <td className="govuk-table__cell govuk-table__cell--numeric">
+              <td
+                className="govuk-table__cell govuk-table__cell--numeric"
+                data-sort-value={
+                  data.find((metric) => metric.location_id === key)
+                    ?.data_point || 0
+                }
+              >
                 {getFormattedDataPoint(data, key)}
               </td>
             </tr>
