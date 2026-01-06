@@ -199,7 +199,7 @@ paths:
         '404':
           description: "Country not found."
 
-  /metric_filters/{metricGroupId}:
+  /metric_filters/{metric_group_id}:
     get:
       summary: "Get available filters for a group of metrics"
       description: "Retrieves the available filter options for a metric group."
@@ -215,7 +215,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/MetricFilter'
 
-  /metrics/{metricId}/metadata:
+  /metrics/{metric_id}/metadata:
     get:
       summary: "Get metadata for a specific metric"
       description: "Retrieves all metadata for a single metric, including its name, numerator, and denominator definitions. "
@@ -231,7 +231,7 @@ paths:
         '404':
           description: "Metric not found."
 
-  /metrics/{metricId}/data:
+  /metrics/{metric_id}/data:
     get:
       summary: "Get time-series or most recent data for a single metric"
       description: "Retrieves data points for a single specified metric across one or more locations. Omit date parameters to get the most recent data point. Provide a startDate to get a time-series."
