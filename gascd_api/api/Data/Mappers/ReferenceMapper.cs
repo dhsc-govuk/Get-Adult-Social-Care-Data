@@ -1,6 +1,7 @@
 using api.Data.Models.Reference;
 using api.Endpoints.Geo.Postcode;
 using api.Endpoints.MetricLocation.LocalAuthorities;
+using api.Endpoints.MetricLocation.Regions;
 using api.Endpoints.Organisation.CareProvider;
 using api.Endpoints.Shared;
 
@@ -82,6 +83,18 @@ public class ReferenceMapper
             RegionName = la.Region?.Name,
             CountryCode = la.Region?.Country?.Code,
             CountryName = la.Region?.Country?.Name,
+        };
+    }
+
+    public GetRegionResponse RegionToGetRegionResponse(Region region)
+    {
+        return new GetRegionResponse
+        {
+            Code = region.Code,
+            DisplayName = region.Name,
+            GeoData = GeoDataToGeoDataDto(region.GeoData),
+            CountryCode = region.Country.Code,
+            CountryName = region.Country.Name,
         };
     }
 }

@@ -402,6 +402,9 @@ components:
         country_code:
           type: string
           description: "The associated country code."
+        country_name:
+          type: string
+          description: "The associated country name."
 
     Country:
       type: object
