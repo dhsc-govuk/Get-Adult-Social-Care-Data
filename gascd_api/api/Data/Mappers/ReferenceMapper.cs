@@ -1,5 +1,6 @@
 using api.Data.Models.Reference;
 using api.Endpoints.Geo.Postcode;
+using api.Endpoints.MetricLocation.Countries;
 using api.Endpoints.MetricLocation.LocalAuthorities;
 using api.Endpoints.MetricLocation.Regions;
 using api.Endpoints.Organisation.CareProvider;
@@ -95,6 +96,16 @@ public class ReferenceMapper
             GeoData = GeoDataToGeoDataDto(region.GeoData),
             CountryCode = region.Country.Code,
             CountryName = region.Country.Name,
+        };
+    }
+
+    public GetCountryResponse CountryToGetCountryResponse(Country country)
+    {
+        return new GetCountryResponse
+        {
+            Code = country.Code,
+            DisplayName = country.Name,
+            GeoData = GeoDataToGeoDataDto(country.GeoData),
         };
     }
 }

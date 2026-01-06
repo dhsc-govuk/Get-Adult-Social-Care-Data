@@ -500,7 +500,7 @@ DECLARE
 
 BEGIN
     INSERT INTO geo_data(id, coordinate, bounding_polygon, loaded_datetime)
-    VALUES (gd_country, ST_Point(-1.464854, 52.561928), null, CURRENT_TIMESTAMP),
+    VALUES (gd_country, ST_Point(-1.464854, 52.561928), ST_Polygon('LINESTRING(50.0 -3.8, 53.9 -1.8, 55.25 -1.8, 52.25 -3.9, 50.0 -3.8)'::geometry, 4326), CURRENT_TIMESTAMP),
            (gd_region, ST_Point(-2.75, 54.075),ST_Polygon('LINESTRING(52.9 -3.8, 52.9 -1.8, 55.25 -1.8, 55.25 -3.8, 52.9 -3.8)'::geometry, 4326), CURRENT_TIMESTAMP),
            (gd_la, ST_Point(-2.98, 53.405),ST_Polygon('LINESTRING(53.26 -3.3, 53.26 -2.55, 53.73 -2.55, 53.73 -3.3, 53.26 -3.3)'::geometry, 4326), CURRENT_TIMESTAMP),
            (gd_la_2, ST_Point(-2.55, 52.600),ST_Polygon('LINESTRING(51.26 -3.4, 53.26 -2.95, 53.73 -2.75, 55.73 -3.3, 51.26 -3.4)'::geometry, 4326), CURRENT_TIMESTAMP),
