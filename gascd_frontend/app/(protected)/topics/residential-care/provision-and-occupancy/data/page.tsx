@@ -528,7 +528,7 @@ export default function ProvisionAndOccupancyPage() {
             <div className="govuk-summary-list__row">
               <dt className="govuk-summary-list__key">Filters</dt>
               <dd className="govuk-summary-list__value">
-                <ul className="govuk-!-margin-top-0 nobullet">
+                <ul className="govuk-!-margin-top-0 govuk-!-padding-left-0 nobullet">
                   {selectedBedTypeTableFilters.map((filter, index) => (
                     <li key={index}>{filter}</li>
                   ))}
