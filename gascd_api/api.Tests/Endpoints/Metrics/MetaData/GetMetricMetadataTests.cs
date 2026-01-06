@@ -58,4 +58,13 @@ public class GetMetricMetadataTests : IClassFixture<IntegrationTestFixture>
         GetFromJson(jObject, "numerator").ShouldBe("This is a numerator");
         GetFromJson(jObject, "denominator").ShouldBe("This is a denominator");
     }
+
+    [Fact]
+    public async Task NonExistent_MetricCode_Input()
+    {
+        var (httpResponse, problemDetails) =
+            await _client.GETAsync<GetMetricMetadataEndpoint, GetMetricMetadataRequest, ProblemDetails>(
+                new GetMetricMetadataRequest { MetricCode = "non_existant_code" });
+        httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
 }

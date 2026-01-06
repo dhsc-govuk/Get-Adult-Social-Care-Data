@@ -15,6 +15,12 @@ public class GetMetricMetadataEndpoint(GascdDataContext context, ReferenceMapper
     {
         var metric = context.Metrics.SingleOrDefault(x => x.Code == req.MetricCode);
 
+        if (metric == null)
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
         var response = mapper.MetricToGetMetricMetadataResponse(metric);
 
         await Send.OkAsync(response, ct);
