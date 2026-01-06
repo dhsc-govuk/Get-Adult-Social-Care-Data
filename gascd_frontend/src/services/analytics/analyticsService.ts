@@ -12,7 +12,6 @@ import { ICustomProperties } from '@microsoft/applicationinsights-web';
 class AnalyticsService {
   // Note - user properties are added to all events inside the analytics init method
   private static _track(event_name: string, props?: ICustomProperties) {
-    console.log(event_name);
     const appInsights = getAppInsights();
     if (!appInsights) {
       // Opted out - ignore
