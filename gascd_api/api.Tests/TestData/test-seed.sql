@@ -479,6 +479,7 @@ DECLARE
     country_id integer = 1;
     region_id integer = 1;
     la_id integer = 1;
+    la_id_2 integer = 2;
     care_provider_id integer = 1;
     care_provider_id_2 integer = 2;
     care_provider_id_3 integer = 3;              
@@ -488,6 +489,7 @@ DECLARE
     gd_country integer = 1;
     gd_region integer = 2;
     gd_la integer = 3;
+    gd_la_2 integer = 11;
     gd_cpl integer = 4;
     gd_cpl_2 integer = 5;
     gd_cpl_3 integer = 6;
@@ -501,6 +503,7 @@ BEGIN
     VALUES (gd_country, ST_Point(-1.464854, 52.561928), null, CURRENT_TIMESTAMP),
            (gd_region, ST_Point(-2.75, 54.075),ST_Polygon('LINESTRING(52.9 -3.8, 52.9 -1.8, 55.25 -1.8, 55.25 -3.8, 52.9 -3.8)'::geometry, 4326), CURRENT_TIMESTAMP),
            (gd_la, ST_Point(-2.98, 53.405),ST_Polygon('LINESTRING(53.26 -3.3, 53.26 -2.55, 53.73 -2.55, 53.73 -3.3, 53.26 -3.3)'::geometry, 4326), CURRENT_TIMESTAMP),
+           (gd_la_2, ST_Point(-2.55, 52.600),ST_Polygon('LINESTRING(51.26 -3.4, 53.26 -2.95, 53.73 -2.75, 55.73 -3.3, 51.26 -3.4)'::geometry, 4326), CURRENT_TIMESTAMP),
            (gd_cpl, ST_Point(-2.88, 53.425), ST_Polygon('LINESTRING(55.26 -3.3, 52.26 -2.55, 53.73 -2.65, 54.73 -3.3, 55.26 -3.3)'::geometry, 4326), CURRENT_TIMESTAMP),
            (gd_cpl_2, ST_Point(-2.38, 52.425), null, CURRENT_TIMESTAMP),
            (gd_cpl_3, ST_Point(-2.83, 53.425), null, CURRENT_TIMESTAMP),
@@ -517,7 +520,8 @@ INSERT INTO countries (id, code, name, geo_data_fk, loaded_datetime)
     VALUES (region_id, 'E12000002', 'North West', country_id, gd_region,CURRENT_TIMESTAMP);
 
     INSERT INTO local_authorities (id, code, name, region_fk, geo_data_fk, loaded_datetime)
-    VALUES (la_id, 'E08000014', 'Liverpool', region_id, gd_la, CURRENT_TIMESTAMP);
+    VALUES (la_id, 'E08000014', 'Liverpool', region_id, gd_la, CURRENT_TIMESTAMP),
+           (la_id_2, 'E08000015', 'Manchester', region_id, gd_la_2, CURRENT_TIMESTAMP);
 
     INSERT INTO postcodes (id, code, display_postcode, local_authority_fk, geo_data_fk, loaded_datetime)
     VALUES (1, 'KT220UF', 'KT22 0UF', la_id, gd_postcode, CURRENT_TIMESTAMP),
