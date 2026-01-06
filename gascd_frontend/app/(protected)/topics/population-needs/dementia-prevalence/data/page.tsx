@@ -19,6 +19,7 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import IndicatorService from '@/services/indicator/IndicatorService';
+import RelatedDataList from '@/components/data-components/RelatedDataList';
 
 export default function DementaPrevalencePage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -252,6 +253,25 @@ export default function DementaPrevalencePage() {
           url="/help/estimated-dementia-diagnosis-rate-aged-65-and-over"
         />
       </DataIndicatorDetailsList>
+
+      <RelatedDataList>
+        <DataLinkCard
+          label="Economic factors and household composition"
+          description="Data on household deprivation, property ownership and older people living alone."
+          url="/topics/population-needs/household-composition-and-economic-factors/data"
+        />
+        <DataLinkCard
+          label="General health, disability and learning disability"
+          description="Data on disability prevalence, learning disability diagnoses and reasons for accessing care."
+          url="/topics/population-needs/disability-prevalence/data"
+        />
+        <DataLinkCard
+          label="Population size and age group percentages"
+          description="Population data at district, local authority, regional and national levels for England."
+          url="/topics/population-needs/population-age-and-size/data"
+        />
+      </RelatedDataList>
+
       <LocalMarketInformation
         localAuthority={locationNames.LALabel}
         localAuthorityId={locationIds[1]}
