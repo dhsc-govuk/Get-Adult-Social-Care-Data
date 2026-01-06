@@ -21,8 +21,10 @@ public class GetMetricMetadataTests : IClassFixture<IntegrationTestFixture>
     {
         var (httpCode, _) =
             await _client.GETAsync<GetMetricMetadataEndpoint, GetMetricMetadataRequest, GetMetricMetadataResponse>(
-                new GetMetricMetadataRequest { MetricId = "123" });
+                new GetMetricMetadataRequest { MetricCode = "123" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
+
+
 }

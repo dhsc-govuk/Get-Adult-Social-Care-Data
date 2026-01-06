@@ -5,5 +5,5 @@ namespace api.Endpoints.Metrics.Metadata;
 public class GetMetricMetadataRequest
 {
     [RouteParam]
-    public required string MetricId { get; set; }
+    public required string MetricCode { get; set; }
 }

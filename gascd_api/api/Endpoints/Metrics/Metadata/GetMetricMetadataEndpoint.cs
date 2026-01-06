@@ -6,7 +6,7 @@ public class GetMetricMetadataEndpoint : Endpoint<GetMetricMetadataRequest, GetM
 {
     public override void Configure()
     {
-        Get("/api/metrics/{MetricId}/metadata");
+        Get("/api/metrics/{MetricCode}/metadata");
     }
 
     public override async Task HandleAsync(GetMetricMetadataRequest req, CancellationToken ct)
