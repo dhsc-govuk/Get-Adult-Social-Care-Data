@@ -17,6 +17,9 @@ const LocationSelectPage: React.FC = () => {
   const [availableLocations, setAvailableLocations] = useState<
     AvailableLocation[]
   >([]);
+  const [searchedLocations, setSearchedLocations] = useState<
+    AvailableLocation[]
+  >([]);
 
   useEffect(() => {
     const fetchAvailableLocations = async () => {
@@ -25,7 +28,7 @@ const LocationSelectPage: React.FC = () => {
         a.location_name.localeCompare(b.location_name)
       );
       setAvailableLocations(sortedLocations);
-
+      setSearchedLocations(sortedLocations);
       const currentSelectedLocation =
         await LocationService.getSelectedLocation();
       const currentSelectedLocationName =
@@ -52,6 +55,14 @@ const LocationSelectPage: React.FC = () => {
     router.push('/home#top');
     // Ensure changes to saved name are displayed
     router.refresh();
+  };
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
+    const filtered = availableLocations.filter((location) =>
+      location.location_name.toLowerCase().includes(searchTerm)
+    );
+    setSearchedLocations(filtered);
   };
 
   return (
@@ -94,6 +105,7 @@ const LocationSelectPage: React.FC = () => {
                         id="search-location"
                         name="searchLocation"
                         type="text"
+                        onKeyUp={handleSearch}
                       />
                     </div>
                   </div>
@@ -105,11 +117,12 @@ const LocationSelectPage: React.FC = () => {
                   </legend>
                   {selectedLocation && (
                     <p className="govuk-heading-m">
-                      You&apos;ve selected &quot;{selectedLocation}&quot;{' '}
+                      You&apos;ve selected &quot;{selectedLocationName}
+                      &quot;{' '}
                     </p>
                   )}
                   <div className="govuk-radios" data-module="govuk-radios">
-                    {availableLocations.map((location, index) => (
+                    {searchedLocations.map((location, index) => (
                       <div
                         className="govuk-radios__item"
                         key={`location-${index}`}
