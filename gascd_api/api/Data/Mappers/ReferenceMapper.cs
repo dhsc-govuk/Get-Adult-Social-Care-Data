@@ -36,7 +36,7 @@ public class ReferenceMapper
         };
     }
 
-    public GetCareProviderResponse.CareProviderLocation CareProviderLocationToCareProviderLocationResponse(CareProviderLocation careProviderLocation)
+    private GetCareProviderResponse.CareProviderLocation CareProviderLocationToCareProviderLocationResponse(CareProviderLocation careProviderLocation)
     {
         return new GetCareProviderResponse.CareProviderLocation
         {
@@ -65,7 +65,7 @@ public class ReferenceMapper
         };
     }
 
-    public GeoDataDto GeoDataToGeoDataDto(GeoData geoData)
+    private GeoDataDto GeoDataToGeoDataDto(GeoData geoData)
     {
         return new GeoDataDto
         {
@@ -131,11 +131,11 @@ public class ReferenceMapper
         {
             MetricGroupCode = metricGroup.Code,
             MetricFilters = metricGroup.Metrics
-                .Select(MetricsToMetricFilterDto).ToList()
+                .Select(MetricToMetricFilterDto).ToList()
         };
     }
 
-    private GetMetricFiltersResponse.MetricFilterDto MetricsToMetricFilterDto(Metric metric)
+    private GetMetricFiltersResponse.MetricFilterDto MetricToMetricFilterDto(Metric metric)
     {
         return new GetMetricFiltersResponse.MetricFilterDto
         {

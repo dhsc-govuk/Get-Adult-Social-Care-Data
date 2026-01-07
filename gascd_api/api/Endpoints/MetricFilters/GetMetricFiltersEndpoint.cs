@@ -18,6 +18,12 @@ public class GetMetricFiltersEndpoint(GascdDataContext context, ReferenceMapper 
             .Include(mg => mg.Metrics)
             .SingleOrDefault(cp => cp.Code == req.MetricGroupCode);
 
+        if (metricGroup == null)
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
         var response = mapper.MetricGroupToMetricFiltersResponse(metricGroup);
 
         await Send.OkAsync(response, ct);

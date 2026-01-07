@@ -27,7 +27,7 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
     }
 
     [Fact]
-    public async Task GetMetricFilters_ReturnsExpectedFilters()
+    public async Task GetMetricFilters_ReturnsTwoExpectedFilters()
     {
         var (httpCode, response) =
             await _client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, GetMetricFiltersResponse>(
@@ -37,14 +37,43 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
         response.MetricGroupCode.ShouldBe("metric_group_code");
         List<GetMetricFiltersResponse.MetricFilterDto> expectedMetricFilters = new()
         {
-            new GetMetricFiltersResponse.MetricFilterDto() { MetricCode = "metric_code", DisplayName = "Metric"},
-            new GetMetricFiltersResponse.MetricFilterDto() { MetricCode = "metric_code_2", DisplayName = "Metric 2"},
+            new GetMetricFiltersResponse.MetricFilterDto() { MetricCode = "metric_code", DisplayName = "Metric" },
+            new GetMetricFiltersResponse.MetricFilterDto()
+            {
+                MetricCode = "metric_code_2", DisplayName = "Metric 2"
+            },
         };
         response.MetricFilters.ShouldBe(expectedMetricFilters);
     }
 
+    [Fact]
+    public async Task GetMetricFilters_ReturnsSingleExpectedFilter()
+    {
+        var (httpCode, response) =
+            await _client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, GetMetricFiltersResponse>(
+                new GetMetricFiltersRequest { MetricGroupCode = "metric_group_code_2" });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.MetricGroupCode.ShouldBe("metric_group_code_2");
+        List<GetMetricFiltersResponse.MetricFilterDto> expectedMetricFilters = new()
+        {
+            new GetMetricFiltersResponse.MetricFilterDto()
+            {
+                MetricCode = "metric_code_3", DisplayName = "Metric 3"
+            },
+        };
+        response.MetricFilters.ShouldBe(expectedMetricFilters);
+    }
+
+    [Fact]
+    public async Task GetUnknownMetricFilters_Returns404()
+    {
+        var (httpCode, _) = await _client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, GetMetricFiltersResponse>(
+            new GetMetricFiltersRequest { MetricGroupCode = "unknown_metric_group_code" });
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
     // 200 metric group with no metrics
-    // metric group with only 1 metric
     // JSON check
     // non-existent metric group code
     // invalid metric group code
