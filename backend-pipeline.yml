@@ -176,7 +176,7 @@ stages:
                         inlineScript: |
                           # 1. Get an Access Token for Azure SQL (resource ID is fixed)
                           # We verify the token is fetched before proceeding
-                          TOKEN=$(az account get-access-token --resource-type oss-rdbms --query accessToken -o tsv)
+                          TOKEN=$(az account get-access-token --resource https://database.windows.net --query accessToken -o tsv)
 
                           if [ -z "$TOKEN" ]; then
                             echo "Error: Failed to obtain access token"
