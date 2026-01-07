@@ -1,8 +1,10 @@
 using api.Endpoints.MetricFilters;
 using api.Tests.Fixtures;
 using FastEndpoints;
+using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
+using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.MetricFilters;
 
@@ -54,10 +56,11 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
                 new GetMetricFiltersRequest { MetricGroupCode = "metric_group_code_2" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+
         response.MetricGroupCode.ShouldBe("metric_group_code_2");
         List<GetMetricFiltersResponse.MetricFilterDto> expectedMetricFilters = new()
         {
-            new GetMetricFiltersResponse.MetricFilterDto()
+            new GetMetricFiltersResponse.MetricFilterDto
             {
                 MetricCode = "metric_code_3", DisplayName = "Metric 3"
             },
@@ -73,8 +76,29 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
         httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
-    // 200 metric group with no metrics
-    // JSON check
-    // non-existent metric group code
+    [Fact]
+    public async Task GetMetricFilters_WithNoFilters()
+    {
+        var (httpCode, response) = await _client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, GetMetricFiltersResponse>(
+            new GetMetricFiltersRequest { MetricGroupCode = "metric_group_code_3" });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.MetricGroupCode.ShouldBe("metric_group_code_3");
+        response.MetricFilters.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task GetMetricFilters_ReturnsExpectedJsonObject()
+    {
+        var response = await _client.GetAsync("/api/metric_filters/metric_group_code_2", TestContext.Current.CancellationToken);
+        response.EnsureSuccessStatusCode();
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        var jObject = await ParseJsonResponse<JObject>(response);
+        GetFromJson(jObject, "metric_group_code").ShouldBe("metric_group_code_2");
+        GetFromJson(jObject, "metric_filters[0].metric_code").ShouldBe("metric_code_3");
+        GetFromJson(jObject, "metric_filters[0].display_name").ShouldBe("Metric 3");
+    }
+
     // invalid metric group code
 }
