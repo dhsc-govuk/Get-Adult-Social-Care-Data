@@ -42,4 +42,10 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
         };
         response.MetricFilters.ShouldBe(expectedMetricFilters);
     }
+
+    // 200 metric group with no metrics
+    // metric group with only 1 metric
+    // JSON check
+    // non-existent metric group code
+    // invalid metric group code
 }
