@@ -11,6 +11,7 @@ public class GetMetricEndpoint : Endpoint<GetMetricRequest, GetMetricResponse>
 
     public override async Task HandleAsync(GetMetricRequest req, CancellationToken ct)
     {
-        await Send.OkAsync(ct);
+        var response = new GetMetricResponse { MetricCode = req.MetricCode, LocationCode = "location_code", LocationType = "location_type" };
+        await Send.OkAsync(response, ct);
     }
 }

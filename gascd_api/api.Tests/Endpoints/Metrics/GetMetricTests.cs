@@ -22,8 +22,22 @@ public class GetMetricTests : IClassFixture<IntegrationTestFixture>
     {
         var (httpCode, _) =
             await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-                new GetMetricRequest { MetricCode = "metric_code" });
+                new GetMetricRequest { MetricCode = "metric_code", LocationCode = "location_code", LocationType = "location_type" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task GetMetric_ReturnsExpectedData()
+    {
+        var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
+            new GetMetricRequest { MetricCode = "metric_code", LocationCode = "location_code", LocationType = "location_type" });
+
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        response.MetricCode.ShouldBe("metric_code");
+        response.LocationCode.ShouldBe("location_code");
+        response.LocationType.ShouldBe("location_type");
     }
 }

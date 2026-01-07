@@ -78,7 +78,7 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
     [Theory]
     [InlineData("1-", "Country code has a minimum length of 3")]
     [InlineData("1-123433232232333324324", "Country code has a maximum length of 15")]
-    public async Task Invalid_CareProviderLocationCode_Input(string countryCode, string expectedErrorMessage)
+    public async Task Invalid_CountryCode_Input(string countryCode, string expectedErrorMessage)
     {
         var (httpResponse, problemDetails) =
             await _client.GETAsync<GetCountryEndpoint, GetCountryRequest, ProblemDetails>(

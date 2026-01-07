@@ -239,7 +239,7 @@ paths:
         - $ref: '#/components/parameters/MetricCode'
         - name: locations
           in: query
-          description: "Comma-separated list of location codes to retrieve data for."
+          description: "A list of locations to retrieve data for."
           required: true
           style: form
           explode: false
