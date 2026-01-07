@@ -484,7 +484,10 @@ DECLARE
     care_provider_location_id_2 integer = 2;
     care_provider_location_id_3 integer = 3;
     metric_group_id integer = 4;
+    metric_group_id_2 integer = 11;
     metric_id integer = 5;
+    metric_id_2 integer = 6;
+    metric_id_3 integer = 7;
     gd_country integer = 1;
     gd_region integer = 2;
     gd_la integer = 3;
@@ -538,10 +541,12 @@ BEGIN
            (care_provider_location_id_3, 'Katherines Eyes', care_provider_id_2, gd_cpl_3, 'Katherines Eyes, Liverpool, ME10 1QY', 'Katherine', la_id, '1-222222224', CURRENT_TIMESTAMP);
 
     INSERT INTO metric_groups (id, code, loaded_datetime)
-    VALUES (metric_group_id, 'metric_group_code', CURRENT_TIMESTAMP );
+    VALUES (metric_group_id, 'metric_group_code', CURRENT_TIMESTAMP ),
+           (metric_group_id_2, 'metric_group_code_2', CURRENT_TIMESTAMP );
 
     INSERT INTO metrics (id, code, metric_group_fk, display_name, numerator_description, denominator_description, data_source, data_type, frequency, loaded_datetime)
-    VALUES (metric_id, 'metric_code', metric_group_id, 'Metric', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP);
-    
-END $$;
+    VALUES (metric_id, 'metric_code', metric_group_id, 'Metric', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
+           (metric_id_2, 'metric_code_2', metric_group_id, 'Metric 2', 'This is a numerator 2', 'This is a denominator 2', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
+           (metric_id_3, 'metric_code_3', metric_group_id_2, 'Metric 3', 'This is a numerator 3', 'This is a denominator 3','ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP);
+    END $$;
 

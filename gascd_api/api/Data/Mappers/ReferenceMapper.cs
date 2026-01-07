@@ -1,6 +1,7 @@
 using api.Data.Models.Metrics;
 using api.Data.Models.Reference;
 using api.Endpoints.Geo.Postcode;
+using api.Endpoints.MetricFilters;
 using api.Endpoints.MetricLocation.Countries;
 using api.Endpoints.MetricLocation.LocalAuthorities;
 using api.Endpoints.MetricLocation.Regions;
@@ -123,4 +124,24 @@ public class ReferenceMapper
             Denominator = metric.DenominatorDescription,
         };
     }
+
+    public GetMetricFiltersResponse MetricGroupToMetricFiltersResponse(MetricGroup metricGroup)
+    {
+        return new GetMetricFiltersResponse
+        {
+            MetricGroupCode = metricGroup.Code,
+            MetricFilters = metricGroup.Metrics
+                .Select(MetricsToMetricFilterDto).ToList()
+        };
+    }
+
+    private GetMetricFiltersResponse.MetricFilterDto MetricsToMetricFilterDto(Metric metric)
+    {
+        return new GetMetricFiltersResponse.MetricFilterDto
+        {
+            MetricCode = metric.Code,
+            DisplayName = metric.DisplayName
+        };
+    }
+
 }
