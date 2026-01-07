@@ -67,7 +67,10 @@ export const OneLoginPlugin = (): GenericOAuthConfig => {
       nonce: generateNonce(),
       vtr: JSON.stringify(['Cl.Cm.P0']),
     },
-    // No manual signup support, but users are implicitly created on login
+    // Ensure email for user is updated to match onelogin
+    // (this is then checked against registeredEmail, which is not updated from onelogin)
+    overrideUserInfo: true,
+    // No manual signup support, but users are implicitly created on successful login
     disableImplicitSignUp: false,
     mapProfileToUser: (profile) => {
       return {

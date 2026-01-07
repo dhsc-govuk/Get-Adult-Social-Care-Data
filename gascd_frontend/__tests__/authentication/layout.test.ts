@@ -5,7 +5,11 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
-import { mockSession, mockSessionWithLocation } from '@/test-utils/test-utils';
+import {
+  mockSession,
+  mockSessionWithLocation,
+  mockSessionUnregistered,
+} from '@/test-utils/test-utils';
 
 vi.mock('next/headers', () => ({
   headers: vi.fn(),
@@ -37,6 +41,12 @@ describe('Auth Layout', () => {
     mockGetSession.mockResolvedValue(null);
     await AuthLayout({ children: mockChildren });
     expect(mockedRedirect).toHaveBeenCalledWith('/login');
+  });
+
+  test('redirects to unregistered page if not registered', async () => {
+    mockGetSession.mockResolvedValue(mockSessionUnregistered);
+    await AuthLayout({ children: mockChildren });
+    expect(mockedRedirect).toHaveBeenCalledWith('/not-registered');
   });
 
   test('location picker is rendered if valid session', async () => {
