@@ -48,6 +48,7 @@ const seedDevelopmentUser = async () => {
     .set({
       locationId: process.env.LOCAL_AUTH_LOCATION_ID,
       locationType: process.env.LOCAL_AUTH_LOCATION_TYPE,
+      registeredEmail: email,
     })
     .where('user.email', '=', process.env.LOCAL_AUTH_EMAIL)
     .executeTakeFirst();
