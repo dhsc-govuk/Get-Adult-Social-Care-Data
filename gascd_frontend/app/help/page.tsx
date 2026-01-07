@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
 
-const PrivacyPage = () => {
+const HelpPage = () => {
   return (
     <>
       <Layout
@@ -31,4 +31,4 @@ const PrivacyPage = () => {
   );
 };
 
-export default PrivacyPage;
+export default HelpPage;
