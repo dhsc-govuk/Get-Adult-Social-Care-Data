@@ -30,6 +30,13 @@ export const auth = betterAuth({
   },
   user: {
     additionalFields: {
+      // The email address we think they should be using
+      // (to be checked against the one provided by an external IdP)
+      registeredEmail: {
+        type: 'string',
+        required: false,
+        input: false,
+      },
       locationType: {
         type: 'string',
         required: false,
@@ -48,11 +55,13 @@ export const auth = betterAuth({
       selectedLocationId: {
         type: 'string',
         required: false,
+        // Can be set by the user
         input: true,
       },
       selectedLocationDisplayName: {
         type: 'string',
         required: false,
+        // Can be set by the user
         input: true,
       },
     },

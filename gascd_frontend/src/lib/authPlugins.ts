@@ -41,6 +41,8 @@ export const B2CPlugin = (): GenericOAuthConfig => {
         smartInsights: profile.extension_Smart_Insights,
         // B2C users are always members
         role: 'member',
+        // B2C is allowed to write/rewrite the registeredEmail
+        registeredEmail: profile.email,
       };
     },
   };
