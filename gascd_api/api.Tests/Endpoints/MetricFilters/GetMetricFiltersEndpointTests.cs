@@ -100,5 +100,28 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
         GetFromJson(jObject, "metric_filters[0].display_name").ShouldBe("Metric 3");
     }
 
-    // invalid metric group code
+    [Fact]
+    public async Task GetMetricFilters_ReturnsErrorWhenProvidedWhiteSpace()
+    {
+        var response = await _client.GetAsync("/api/metric_filters/ /", TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+
+        JObject? json = await ParseJsonResponse<JObject>(response);
+        GetFromJson(json, "errors[0].name").ShouldBe("metric_group_code");
+        GetFromJson(json, "errors[0].reason").ShouldBe("Metric group code is required");
+    }
+
+    [Theory]
+    [InlineData("WA", "Metric group code has a minimum length of 3")]
+    [InlineData("this-is-a-very-long-group-code-without-any-possible-chance-of-being-valid-as-it-is-just-far-tooo-long", "Metric group code has a maximum length of 100")]
+    public async Task Invalid_MetricGroupCode_Input(string metricGroupCode, string expectedErrorMessage)
+    {
+        var (httpResponse, problemDetails) =
+            await _client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, ProblemDetails>(
+                new GetMetricFiltersRequest { MetricGroupCode = metricGroupCode });
+        httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        problemDetails.Errors.Count().ShouldBe(1);
+        problemDetails.Errors.Select(e => e.Name).ShouldBe(["metric_group_code"]);
+        problemDetails.Errors.Select(e => e.Reason).ShouldBe([expectedErrorMessage]);
+    }
 }
