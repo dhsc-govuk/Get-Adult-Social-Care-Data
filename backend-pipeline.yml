@@ -207,10 +207,10 @@ stages:
                       inputs:
                         command: login
                         containerRegistry: $(acr_connection)
-                    - task: AzureWebAppContainer@1
+                    - task: AzureContainerApps@1
                       inputs:
-                        appType: "webAppLinux"
-                        appName: "dapalpha-${{environment.name}}-backend-api"
-                        azureSubscription: ${{environment.arm_connection}}
-                        containers: "$(acr_name).azurecr.io/$(imageName):$(tag)"
-      
+                        azureSubscription: '${{environment.arm_connection}}'
+                        imageToDeploy: '$(acr_name).azurecr.io/$(imageName):$(tag)'
+                        containerAppName: 'dapalpha-data-api-${{environment.name}}'
+                        resourceGroup: 'dapalpha-container-apps-${{environment.name}}-rg'
+                        containerAppEnvironment: 'dapalpha-container-apps-env-${{environment.name}}'      
