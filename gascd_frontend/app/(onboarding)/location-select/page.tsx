@@ -24,11 +24,8 @@ const LocationSelectPage: React.FC = () => {
   useEffect(() => {
     const fetchAvailableLocations = async () => {
       const availableLocations = await LocationService.getAvailableLocations();
-      const sortedLocations = availableLocations.sort((a, b) =>
-        a.location_name.localeCompare(b.location_name)
-      );
-      setAvailableLocations(sortedLocations);
-      setSearchedLocations(sortedLocations);
+      setAvailableLocations(availableLocations);
+      setSearchedLocations(availableLocations);
       const currentSelectedLocation =
         await LocationService.getSelectedLocation();
       const currentSelectedLocationName =
