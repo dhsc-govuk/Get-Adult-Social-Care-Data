@@ -486,7 +486,7 @@ DECLARE
     metric_group_id integer = 4;
     metric_group_id_2 integer = 11;
     metric_group_id_3 integer = 13;
-    metric_id integer = 5;
+    bedcount_metric_id integer = 5;
     metric_id_2 integer = 6;
     metric_id_3 integer = 7;
     gd_country integer = 1;
@@ -547,8 +547,13 @@ BEGIN
            (metric_group_id_3, 'metric_group_code_3', CURRENT_TIMESTAMP );
 
     INSERT INTO metrics (id, code, metric_group_fk, display_name, numerator_description, denominator_description, data_source, data_type, frequency, loaded_datetime)
-    VALUES (metric_id, 'metric_code', metric_group_id, 'Metric', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
+    VALUES (bedcount_metric_id, 'bedcount', metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (metric_id_2, 'metric_code_2', metric_group_id, 'Metric 2', 'This is a numerator 2', 'This is a denominator 2', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (metric_id_3, 'metric_code_3', metric_group_id_2, 'Metric 3', 'This is a numerator 3', 'This is a denominator 3','ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP);
-    END $$;
 
+    INSERT INTO bedcount (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
+    VALUES (1, bedcount_metric_id, '1-123456789', 'regional', '2000-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [1,2,3,4,5], 5, CURRENT_TIMESTAMP);
+    
+    END $$;
+    
+    

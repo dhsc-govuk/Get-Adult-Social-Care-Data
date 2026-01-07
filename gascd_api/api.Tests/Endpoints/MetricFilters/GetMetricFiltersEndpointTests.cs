@@ -39,7 +39,7 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
         response.MetricGroupCode.ShouldBe("metric_group_code");
         List<GetMetricFiltersResponse.MetricFilterDto> expectedMetricFilters = new()
         {
-            new GetMetricFiltersResponse.MetricFilterDto() { MetricCode = "metric_code", DisplayName = "Metric" },
+            new GetMetricFiltersResponse.MetricFilterDto() { MetricCode = "bedcount", DisplayName = "Bedcount" },
             new GetMetricFiltersResponse.MetricFilterDto()
             {
                 MetricCode = "metric_code_2", DisplayName = "Metric 2"

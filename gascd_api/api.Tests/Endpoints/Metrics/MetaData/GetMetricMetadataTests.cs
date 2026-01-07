@@ -23,7 +23,7 @@ public class GetMetricMetadataTests : IClassFixture<IntegrationTestFixture>
     {
         var (httpCode, _) =
             await _client.GETAsync<GetMetricMetadataEndpoint, GetMetricMetadataRequest, GetMetricMetadataResponse>(
-                new GetMetricMetadataRequest { MetricCode = "metric_code" });
+                new GetMetricMetadataRequest { MetricCode = "bedcount" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -33,11 +33,11 @@ public class GetMetricMetadataTests : IClassFixture<IntegrationTestFixture>
     {
         var (httpCode, response) =
             await _client.GETAsync<GetMetricMetadataEndpoint, GetMetricMetadataRequest, GetMetricMetadataResponse>(
-                new GetMetricMetadataRequest { MetricCode = "metric_code" });
+                new GetMetricMetadataRequest { MetricCode = "bedcount" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
-        response.MetricCode.ShouldBe("metric_code");
-        response.MetricName.ShouldBe("Metric");
+        response.MetricCode.ShouldBe("bedcount");
+        response.MetricName.ShouldBe("Bedcount");
         response.DataType.ShouldBe("numbers");
         response.DataSource.ShouldBe("ONS");
         response.Numerator.ShouldBe("This is a numerator");
@@ -48,11 +48,11 @@ public class GetMetricMetadataTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetMetricMetadata_ReturnsExpectedJsonObject()
     {
-        var response = await _client.GetAsync("api/metrics/metric_code/metadata", TestContext.Current.CancellationToken);
+        var response = await _client.GetAsync("api/metrics/bedcount/metadata", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var jObject = await ParseJsonResponse<JObject>(response);
-        GetFromJson(jObject, "metric_code").ShouldBe("metric_code");
-        GetFromJson(jObject, "metric_name").ShouldBe("Metric");
+        GetFromJson(jObject, "metric_code").ShouldBe("bedcount");
+        GetFromJson(jObject, "metric_name").ShouldBe("Bedcount");
         GetFromJson(jObject, "data_type").ShouldBe("numbers");
         GetFromJson(jObject, "data_source").ShouldBe("ONS");
         GetFromJson(jObject, "numerator").ShouldBe("This is a numerator");
