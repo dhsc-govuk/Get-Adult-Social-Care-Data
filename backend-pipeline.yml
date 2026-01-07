@@ -186,7 +186,7 @@ stages:
                           echo "Access token obtained successfully."
                           
                           CONNECTION_STRING="Host=${{environment.db_server}};Port=${{environment.db_port}};Database=gascd_data;Username=${{environment.db_user}};Password=$TOKEN"
-
+                          chmod +x ./efbundle
                           # Run the Better Auth migration
                           ./efbundle --connection "$CONNECTION_STRING"
       - stage: Deploy_${{environment.name}}
