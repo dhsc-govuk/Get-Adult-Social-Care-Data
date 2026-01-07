@@ -20,6 +20,7 @@ variables:
   - group: acr_service_connection
   - group: arm_service_connection
   - group: docker_build_arguments
+  - group: data_db_connection
   - name: vmImageName
     value: "ubuntu-latest"
   - name: tag
