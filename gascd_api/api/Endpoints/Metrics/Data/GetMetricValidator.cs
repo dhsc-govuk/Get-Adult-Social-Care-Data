@@ -7,8 +7,6 @@ public class GetMetricValidator : Validator<GetMetricRequest>
 {
     public GetMetricValidator()
     {
-        RuleFor(r => r.MetricCode)
-            .IsInEnum();
         RuleFor(r => r.LocationCode)
             .NotEmpty().WithMessage("Location code is required")
             .MinimumLength(3).WithMessage("Location code has a minimum length of 3")

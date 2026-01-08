@@ -1,8 +1,10 @@
 using api.Endpoints.Metrics.Data;
 using api.Tests.Fixtures;
 using FastEndpoints;
+using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
+using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.Metrics.Data;
 
@@ -122,5 +124,16 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
                 yield return [code, "1-12345678910112", "Location code has a maximum length of 15"];
             }
         }
+    }
+
+    [Fact]
+    public async Task GetMetric_NonExistent_MetricCodeInput()
+    {
+        var response = await _client.GetAsync("api/metrics/nonexistent/data", TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+
+        JObject? json = await ParseJsonResponse<JObject>(response);
+        GetFromJson(json, "errors[0].name").ShouldBe("metric_code");
+        GetFromJson(json, "errors[0].reason").ShouldBe("Value [nonexistent] is not valid for a [MetricCodeEnum] property!");
     }
 }
