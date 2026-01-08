@@ -213,7 +213,8 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/MetricFilter'
+                  $ref: '#/components/schemas/MetricFilters'
+                  
 
   /metrics/{metric_code}/metadata:
     get:
@@ -501,7 +502,7 @@ components:
           type: string
           description: "A description of the denominator."
 
-    MetricFilter:
+    MetricFilters:
       type: object
       description: "An available filter for a metric, such as bed type."
       properties:
@@ -509,14 +510,20 @@ components:
           type: string
           description: "The specific metric group code this filter applies to."
           example: "bedcount_per_100000_adults"
-        metric_code:
-          type: string
-          description: "The specific metric code this filter applies to."
-          example: "bedcount_per_100000_adults_total_general_nursing"
-        display_name:
-          type: string
-          description: "A user-friendly name for the filter value."
-          example: "General nursing"
+        metrics:
+          type: array
+          description: "A list of Metric filters belonging to this Metric Group"
+          items:
+            type: object
+            properties:
+              metric_code:
+                type: string
+                description: "The specific metric code this filter applies to."
+                example: "bedcount_per_100000_adults_total_general_nursing"
+              display_name:
+                type: string
+                description: "A user-friendly name for the filter value."
+                example: "General nursing"
 
     MetricSeries:
       type: object
