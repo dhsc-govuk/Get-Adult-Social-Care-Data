@@ -82,6 +82,19 @@ class LocationService {
     }
   }
 
+  public static async chunkLocations(
+    locations: AvailableLocation[]
+  ): Promise<AvailableLocation[][]> {
+    const chunkSize = 5;
+    const chunkedLocations: AvailableLocation[][] = [];
+
+    for (let i = 0; i < locations.length; i += chunkSize) {
+      const chunk = locations.slice(i, i + chunkSize);
+      chunkedLocations.push(chunk);
+    }
+    return chunkedLocations;
+  }
+
   public static async checkCPLocation(
     cpLocationID: string,
     userLocationId: string
