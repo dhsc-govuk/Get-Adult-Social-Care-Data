@@ -77,6 +77,15 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response.Values.ShouldBe([6.6m]);
     }
 
-
+    [Theory]
+    [InlineData("bedcount", "nonexistent", "Regional")]
+    [InlineData("median_bed_count", "nonexistent", "Regional")]
+    [InlineData("median_bed_count", "E92000001", "nonexistent")]
+    public async Task GetMetric_NonExistentTimeSeries_Returns404(string metricCode, string locationCode, string locationType)
+    {
+        var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
+            new GetMetricRequest { MetricCode = metricCode, LocationCode = locationCode, LocationType = locationType });
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
 
 }

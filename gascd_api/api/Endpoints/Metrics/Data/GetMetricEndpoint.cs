@@ -22,6 +22,12 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper) : 
                                   d.LocationCode == req.LocationCode &&
                                   d.LocationType == req.LocationType);
 
+        if (data == null)
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
         var response = mapper.MetricTimeSeriesToGetMetricResponse(data);
         await Send.OkAsync(response, ct);
     }
