@@ -81,6 +81,4 @@ public class GetMetricMetadataTests : IClassFixture<IntegrationTestFixture>
         problemDetails.Errors.Select(e => e.Name).ShouldBe(["metric_code"]);
         problemDetails.Errors.Select(e => e.Reason).ShouldBe([expectedErrorMessage]);
     }
-
-
 }

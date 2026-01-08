@@ -21,7 +21,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     {
         var (httpCode, _) =
             await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-                new GetMetricRequest { MetricCode = "bedcount", LocationCode = "1-123456789", LocationType = "Regional" });
+                new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "1-123456789", LocationType = "Regional" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -30,7 +30,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetMetric_Bedcount_ReturnsExpectedData()
     {
         var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-            new GetMetricRequest { MetricCode = "bedcount", LocationCode = "1-123456789", LocationType = "Regional" });
+            new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "1-123456789", LocationType = "Regional" });
 
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -47,7 +47,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetMetric_Bedcount_AnotherLocationReturnsExpectedData()
     {
         var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-            new GetMetricRequest { MetricCode = "bedcount", LocationCode = "E92000001", LocationType = "National" });
+            new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "E92000001", LocationType = "National" });
 
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -64,7 +64,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetMetric_MedianBedCount_ReturnsExpectedData()
     {
         var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-            new GetMetricRequest { MetricCode = "median_bed_count", LocationCode = "E92000001", LocationType = "Regional" });
+            new GetMetricRequest { MetricCode = MetricCodeEnum.median_bed_count, LocationCode = "E92000001", LocationType = "Regional" });
 
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -78,14 +78,49 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     }
 
     [Theory]
-    [InlineData("bedcount", "nonexistent", "Regional")]
-    [InlineData("median_bed_count", "nonexistent", "Regional")]
-    [InlineData("median_bed_count", "E92000001", "nonexistent")]
-    public async Task GetMetric_NonExistentTimeSeries_Returns404(string metricCode, string locationCode, string locationType)
+    [MemberData(nameof(MetricCodeNonexistentLocationCodeTypeCombinations))]
+    public async Task GetMetric_NonExistentTimeSeries_Returns404(MetricCodeEnum metricCode, string locationCode, string locationType)
     {
         var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
             new GetMetricRequest { MetricCode = metricCode, LocationCode = locationCode, LocationType = locationType });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
+    public static IEnumerable<object[]> MetricCodeNonexistentLocationCodeTypeCombinations
+    {
+        get
+        {
+            foreach (var code in Enum.GetValues(typeof(MetricCodeEnum)))
+            {
+                yield return [code, "nonexistent", "Regional"];
+                yield return [code, "E92000001", "nonexistent"];
+            }
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(MetricCodeLocationCombinations))]
+    public async Task GetMetric_Invalid_LocationCode_Input(MetricCodeEnum metricCode, string locationCode, string expectedErrorMessage)
+    {
+        var (httpResponse, problemDetails) =
+            await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, ProblemDetails>(
+                new GetMetricRequest { MetricCode = metricCode, LocationCode = locationCode, LocationType = "Regional" });
+        httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        problemDetails.Errors.Count().ShouldBe(1);
+        problemDetails.Errors.Select(e => e.Name).ShouldBe(["location_code"]);
+        problemDetails.Errors.Select(e => e.Reason).ShouldBe([expectedErrorMessage]);
+    }
+
+    public static IEnumerable<object[]> MetricCodeLocationCombinations
+    {
+        get
+        {
+            foreach (var code in Enum.GetValues(typeof(MetricCodeEnum)))
+            {
+                yield return [code, " ", "Location code is required"];
+                yield return [code, "1-", "Location code has a minimum length of 3"];
+                yield return [code, "1-12345678910112", "Location code has a maximum length of 15"];
+            }
+        }
+    }
 }

@@ -5,7 +5,7 @@ namespace api.Endpoints.Metrics.Data;
 public class GetMetricRequest
 {
     [RouteParam]
-    public required string MetricCode { get; set; }
+    public required MetricCodeEnum MetricCode { get; set; }
 
     [QueryParam]
     public required string LocationCode { get; set; }

@@ -18,7 +18,7 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper) : 
         IQueryable<MetricTimeSeries> query = context.GetMetricTimeSeriesQueryable(req.MetricCode);
 
         var data = query.Include(d => d.Metric)
-            .SingleOrDefault(d => d.Metric.Code == req.MetricCode &&
+            .SingleOrDefault(d => d.Metric.Code == req.MetricCode.ToString() &&
                                   d.LocationCode == req.LocationCode &&
                                   d.LocationType == req.LocationType);
 

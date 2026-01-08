@@ -1,6 +1,7 @@
 ﻿using api.Data.Models.Metrics;
 using api.Data.Models.Metrics.TimeSeries;
 using api.Data.Models.Reference;
+using api.Endpoints.Metrics.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data;
@@ -48,13 +49,13 @@ public partial class GascdDataContext : DbContext
     public virtual DbSet<PercUnpaidCareProvider> PercUnpaidCareProviderSet { get; set; } = null!;
     public virtual DbSet<TotalPopulation> TotalPopulationSet { get; set; } = null!;
 
-    public IQueryable<MetricTimeSeries> GetMetricTimeSeriesQueryable(string metricCode)
+    public IQueryable<MetricTimeSeries> GetMetricTimeSeriesQueryable(MetricCodeEnum metricCode)
     {
         switch (metricCode)
         {
-            case "bedcount":
+            case MetricCodeEnum.bedcount:
                 return BedcountSet.AsQueryable();
-            case "median_bed_count":
+            case MetricCodeEnum.median_bed_count:
                 return MedianBedCountSet.AsQueryable();
             default:
                 throw new ArgumentException();
