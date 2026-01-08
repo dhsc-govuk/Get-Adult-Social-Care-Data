@@ -15,7 +15,7 @@ export default async function AuthLayout({
   }
 
   if (!isUserRegistered(user)) {
-    redirect('/not-registered');
+    redirect('/access-denied');
   } else if (!user.selectedLocationId) {
     redirect('/location-select');
   }

@@ -47,7 +47,7 @@ describe('Auth Layout', () => {
   test('redirects to unregistered page if not registered', async () => {
     mockGetSession.mockResolvedValue(mockSessionUnregistered);
     await AuthLayout({ children: mockChildren });
-    expect(mockedRedirect).toHaveBeenCalledWith('/not-registered');
+    expect(mockedRedirect).toHaveBeenCalledWith('/access-denied');
   });
 
   test('location picker is rendered if valid session', async () => {
