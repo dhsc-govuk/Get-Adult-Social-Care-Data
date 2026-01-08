@@ -486,7 +486,9 @@ DECLARE
     metric_group_id integer = 4;
     metric_group_id_2 integer = 11;
     metric_group_id_3 integer = 13;
+    metric_group_id_4 integer = 17;
     bedcount_metric_id integer = 5;
+    median_bed_count_metric_id integer = 17;
     metric_id_2 integer = 6;
     metric_id_3 integer = 7;
     gd_country integer = 1;
@@ -544,15 +546,21 @@ BEGIN
     INSERT INTO metric_groups (id, code, loaded_datetime)
     VALUES (metric_group_id, 'metric_group_code', CURRENT_TIMESTAMP ),
            (metric_group_id_2, 'metric_group_code_2', CURRENT_TIMESTAMP ),
-           (metric_group_id_3, 'metric_group_code_3', CURRENT_TIMESTAMP );
+           (metric_group_id_3, 'metric_group_code_3', CURRENT_TIMESTAMP ),
+           (metric_group_id_4, 'metric_group_code_4', CURRENT_TIMESTAMP );
 
     INSERT INTO metrics (id, code, metric_group_fk, display_name, numerator_description, denominator_description, data_source, data_type, frequency, loaded_datetime)
     VALUES (bedcount_metric_id, 'bedcount', metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (metric_id_2, 'metric_code_2', metric_group_id, 'Metric 2', 'This is a numerator 2', 'This is a denominator 2', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
-           (metric_id_3, 'metric_code_3', metric_group_id_2, 'Metric 3', 'This is a numerator 3', 'This is a denominator 3','ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP);
+           (metric_id_3, 'metric_code_3', metric_group_id_2, 'Metric 3', 'This is a numerator 3', 'This is a denominator 3','ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
+           (median_bed_count_metric_id, 'median_bed_count', metric_group_id_4, 'Median Bed Count', 'This is a numerator', 'This is a denominator', 'Capacity Tracker', 'numbers', 'Monthly', CURRENT_TIMESTAMP);
 
     INSERT INTO bedcount (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
-    VALUES (1, bedcount_metric_id, '1-123456789', 'regional', '2000-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [1,2,3,4,5], 5, CURRENT_TIMESTAMP);
+    VALUES (1, bedcount_metric_id, '1-123456789', 'Regional', '2000-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [1.1,2.2,3.3,4.4,5.5], 5.5, CURRENT_TIMESTAMP),
+           (2, bedcount_metric_id, 'E92000001', 'National', '2000-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5,6.6], 6.6, CURRENT_TIMESTAMP);
+
+    INSERT INTO median_bed_count (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
+    VALUES (1, median_bed_count_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.6], 6.6, CURRENT_TIMESTAMP);
     
     END $$;
     

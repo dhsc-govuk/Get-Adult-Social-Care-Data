@@ -12,7 +12,7 @@ public class MetricTimeSeries : EntityBase
     public required DateTime EndDate { get; init; }
 
     [Column("location_code"), StringLength(15)]
-    public required string LocationFk { get; init; }
+    public required string LocationCode { get; init; }
 
     [Column("location_type"), StringLength(25)]
     public required string LocationType { get; init; }
