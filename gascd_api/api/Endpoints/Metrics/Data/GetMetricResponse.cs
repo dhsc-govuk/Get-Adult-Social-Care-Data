@@ -1,4 +1,4 @@
-namespace api.Endpoints.Metrics;
+namespace api.Endpoints.Metrics.Data;
 
 public class GetMetricResponse
 {

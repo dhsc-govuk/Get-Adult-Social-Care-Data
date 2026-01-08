@@ -1,6 +1,6 @@
 using FastEndpoints;
 
-namespace api.Endpoints.Metrics;
+namespace api.Endpoints.Metrics.Data;
 
 public class GetMetricRequest
 {

@@ -2,7 +2,7 @@ using api.Data;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Endpoints.Metrics;
+namespace api.Endpoints.Metrics.Data;
 
 public class GetMetricEndpoint(GascdDataContext context) : Endpoint<GetMetricRequest, GetMetricResponse>
 {

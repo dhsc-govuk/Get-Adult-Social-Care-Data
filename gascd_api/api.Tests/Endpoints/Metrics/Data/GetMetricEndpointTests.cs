@@ -1,17 +1,16 @@
-using api.Endpoints.Metrics;
-using api.Endpoints.Metrics.Metadata;
+using api.Endpoints.Metrics.Data;
 using api.Tests.Fixtures;
 using FastEndpoints;
 using Shouldly;
 using System.Net;
 
-namespace api.Tests.Endpoints.Metrics;
+namespace api.Tests.Endpoints.Metrics.Data;
 
-public class GetMetricTests : IClassFixture<IntegrationTestFixture>
+public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
 {
     private readonly HttpClient _client;
 
-    public GetMetricTests(IntegrationTestFixture fixture)
+    public GetMetricEndpointTests(IntegrationTestFixture fixture)
     {
         var factory = new CustomWebAppFactory(fixture.PostgresContainer);
         _client = factory.CreateClient();
