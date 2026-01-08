@@ -76,4 +76,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response.SeriesFrequency.ShouldBe("Monthly");
         response.Values.ShouldBe([6.6m]);
     }
+
+
+
 }

@@ -15,15 +15,7 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper) : 
 
     public override async Task HandleAsync(GetMetricRequest req, CancellationToken ct)
     {
-        IQueryable<MetricTimeSeries> query;
-        if (req.MetricCode == "median_bed_count")
-        {
-            query = context.MedianBedCountSet.AsQueryable();
-        }
-        else
-        {
-            query = context.BedcountSet.AsQueryable();
-        }
+        IQueryable<MetricTimeSeries> query = context.GetMetricTimeSeriesQueryable(req.MetricCode);
 
         var data = query.Include(d => d.Metric)
             .SingleOrDefault(d => d.Metric.Code == req.MetricCode &&
