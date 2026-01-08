@@ -11,7 +11,7 @@ export default async function AuthLayout({
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  addUserTelemetry();
+  await addUserTelemetry();
 
   if (!session || !session.user) {
     redirect('/login');

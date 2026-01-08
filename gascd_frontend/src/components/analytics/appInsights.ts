@@ -7,7 +7,13 @@ import { createBrowserHistory } from 'history';
 import { ReactPlugin } from '@microsoft/applicationinsights-react-js';
 import LogService from '@/services/logger/logService';
 import { Session } from '@/lib/auth-client';
-import { PRIMARY_LOCATION_ID, PRIMARY_LOCATION_TYPE } from '@/constants';
+import {
+  PRIMARY_LOCATION_ID,
+  PRIMARY_LOCATION_TYPE,
+  ACTIVE_LOCATION_ID,
+  USER_EMAIL_HASH,
+} from '@/constants';
+import crypto from 'crypto';
 
 let appInsights: ApplicationInsights | null = null;
 let browserHistory: any;
@@ -37,6 +43,7 @@ export const initializeAppInsights = (
           if (envelope.data) {
             envelope.data[PRIMARY_LOCATION_ID] = session.user.locationId;
             envelope.data[PRIMARY_LOCATION_TYPE] = session.user.locationType;
+            envelope.data[ACTIVE_LOCATION_ID] = session.user.selectedLocationId;
           }
         };
         appInsights.addTelemetryInitializer(telemetryInitializer);
