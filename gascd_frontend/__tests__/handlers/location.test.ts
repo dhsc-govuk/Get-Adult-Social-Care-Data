@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { GET as GetLocalAuthority } from '../../app/api/get_local_authority/route';
 import { GET as GetCareProviderLocation } from '../../app/api/get_care_provider/route';
 import { GET as GetRegion } from '../../app/api/get_region/route';
@@ -17,7 +17,7 @@ describe('test handlers', () => {
 
     const req = {
       url: `http://localhost/api/get_care_provider?cp_code=${query}`,
-    };
+    } as NextRequest;
 
     const result = await GetCareProviderLocation(req);
     const data = await result.json();
@@ -31,7 +31,7 @@ describe('test handlers', () => {
 
     const req = {
       url: `http://localhost/api/get_local_authority?la_code=${query}`,
-    };
+    } as NextRequest;
 
     const result = await GetLocalAuthority(req);
     const data = await result.json();
@@ -43,7 +43,9 @@ describe('test handlers', () => {
     const query = 'E12000001';
     const mockRegion: {} = locations_data.region;
 
-    const req = { url: `http://localhost/api/get_region?region_code=${query}` };
+    const req = {
+      url: `http://localhost/api/get_region?region_code=${query}`,
+    } as NextRequest;
 
     const result = await GetRegion(req);
     const data = await result.json();

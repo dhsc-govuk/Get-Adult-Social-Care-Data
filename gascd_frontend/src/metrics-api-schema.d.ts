@@ -87,11 +87,18 @@ export interface paths {
           };
           content: {
             'application/json': {
-              /** @description The unique ID of the location. */
-              location_id?: string;
-              /** @description The display name of the location. */
-              location_name?: string;
-            }[];
+              /** @description The unique identifier for this Care Provider */
+              code?: string;
+              /** @description Display name of the Care Provider */
+              display_name?: string;
+              /** @description A list of Care provider locations belonging to this Care Provider */
+              locations?: {
+                /** @description The unique identifier of the location. */
+                location_code?: string;
+                /** @description The display name of the location. */
+                location_name?: string;
+              }[];
+            };
           };
         };
       };
@@ -113,13 +120,13 @@ export interface paths {
     };
     /**
      * Get a care provider location
-     * @description Retrieves detailed information for a single care provider location by its ID.
+     * @description Retrieves detailed information for a single care provider location by its code.
      */
     get: {
       parameters: {
         query?: {
           /** @description Whether to include parent location information. */
-          includeParents?: boolean;
+          include_parents?: boolean;
         };
         header?: never;
         path: {
@@ -165,13 +172,13 @@ export interface paths {
     };
     /**
      * Get a district
-     * @description Retrieves detailed information for a district by its ID. TBC This endpoint may not be required
+     * @description Retrieves detailed information for a district by its code. TBC This endpoint may not be required
      */
     get: {
       parameters: {
         query?: {
           /** @description Whether to include parent location information. */
-          includeParents?: boolean;
+          include_parents?: boolean;
         };
         header?: never;
         path: {
@@ -217,13 +224,13 @@ export interface paths {
     };
     /**
      * Get a local authority
-     * @description Retrieves detailed information for a local authority by its ID.
+     * @description Retrieves detailed information for a local authority by its code.
      */
     get: {
       parameters: {
         query?: {
           /** @description Whether to include parent location information. */
-          includeParents?: boolean;
+          include_parents?: boolean;
         };
         header?: never;
         path: {
@@ -269,7 +276,7 @@ export interface paths {
     };
     /**
      * Get a region
-     * @description Retrieves detailed information for a region by its ID.
+     * @description Retrieves detailed information for a region by its code.
      */
     get: {
       parameters: {
@@ -318,7 +325,7 @@ export interface paths {
     };
     /**
      * Get a country
-     * @description Retrieves detailed information for a country by its ID.
+     * @description Retrieves detailed information for a country by its code.
      */
     get: {
       parameters: {
@@ -358,7 +365,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/metric_filters/{metricGroupId}': {
+  '/metric_filters/{metric_group_id}': {
     parameters: {
       query?: never;
       header?: never;
@@ -375,7 +382,7 @@ export interface paths {
         header?: never;
         path: {
           /** @description The unique identifier for the metric group. */
-          metricGroupId: components['parameters']['MetricGroupId'];
+          metric_group_id: components['parameters']['MetricGroupId'];
         };
         cookie?: never;
       };
@@ -400,7 +407,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/metrics/{metricId}/metadata': {
+  '/metrics/{metric_id}/metadata': {
     parameters: {
       query?: never;
       header?: never;
@@ -417,7 +424,7 @@ export interface paths {
         header?: never;
         path: {
           /** @description The unique identifier for the metric. */
-          metricId: components['parameters']['MetricId'];
+          metric_id: components['parameters']['MetricId'];
         };
         cookie?: never;
       };
@@ -449,7 +456,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/metrics/{metricId}/data': {
+  '/metrics/{metric_id}/data': {
     parameters: {
       query?: never;
       header?: never;
@@ -463,19 +470,15 @@ export interface paths {
     get: {
       parameters: {
         query: {
-          /** @description Comma-separated list of location IDs to retrieve data for. */
-          locationId: string[];
-          /** @description The start date for the time series (YYYY-MM-DD). If omitted, only the most recent data point is returned. */
-          startDate?: string;
-          /** @description The end date for the time series (YYYY-MM-DD). Defaults to the current date if startDate is provided. */
-          endDate?: string;
-          /** @description The frequency of data points for the time series. To get just the most recent data point, use 'latest' */
-          frequency?: 'latest' | 'daily' | 'monthly' | 'yearly';
+          /** @description Comma-separated list of location codes to retrieve data for. */
+          locations: components['schemas']['Location'][];
+          /** @description Boolean whether to return whole time series. If false or omitted, only the most recent data point is returned. */
+          timeSeries?: boolean;
         };
         header?: never;
         path: {
           /** @description The unique identifier for the metric. */
-          metricId: components['parameters']['MetricId'];
+          metric_id: components['parameters']['MetricId'];
         };
         cookie?: never;
       };
@@ -507,123 +510,121 @@ export interface components {
     /** @description Represents a care provider location */
     CareProviderLocation: {
       /** @description Unique identifier for the care provider location. */
-      id?: string;
+      code?: string;
       /** @description Display name of the care provider location. */
       display_name?: string;
       /** @description Address of the care provider location. */
       address?: string;
-      /** @description Geographical data for the care provider location. */
-      geo_data?: {
-        /** @description Latitude of the location. */
-        latitude?: number;
-        /** @description Longitude of the location. */
-        longitude?: number;
-        /** @description Bounding box coordinates. */
-        bbox?: number[];
-      };
-      /** @description The parent provider ID. */
-      provider_id?: string;
+      geo_data?: components['schemas']['GeoData'];
+      /** @description The parent provider code. */
+      provider_code?: string;
       /** @description The parent provider name. */
       provider_name?: string;
       /** @description The nominated individual for the care provider location. */
       nominated_individual?: string;
       /** @description The associated local authority ID. */
-      local_authority_id?: string;
-      /** @description The associated region ID. */
-      region_id?: string | null;
-      /** @description The associated country ID. */
-      country_id?: string | null;
+      local_authority_code?: string | null;
+      /** @description The associated local authority name. */
+      local_authority_name?: string | null;
+      /** @description The associated region code. */
+      region_code?: string | null;
+      /** @description The associated region name. */
+      region_name?: string | null;
+      /** @description The associated country code. */
+      country_code?: string | null;
+      /** @description The associated country name. */
+      country_name?: string | null;
     };
     /** @description Represents a district */
     District: {
       /** @description Unique identifier for the district. */
-      id?: string;
+      code?: string;
       /** @description Display name of the district. */
       display_name?: string;
-      /** @description Geographical data for the district. */
-      geo_data?: {
-        /** @description Latitude of the centre point of the district. */
-        latitude?: number;
-        /** @description Longitude of the centre point of the district. */
-        longitude?: number;
-        /** @description Bounding box coordinates. */
-        bbox?: number[];
-      };
-      /** @description The associated local authority ID. */
-      local_authority_id?: string;
-      /** @description The associated region ID. */
-      region_id?: string | null;
-      /** @description The associated country ID. */
-      country_id?: string | null;
+      geo_data?: components['schemas']['GeoData'];
+      /** @description The associated local authority code. */
+      local_authority_code?: string;
+      /** @description The associated region code. */
+      region_code?: string | null;
+      /** @description The associated country code. */
+      country_code?: string | null;
     };
     /** @description Represents a local authority */
     LocalAuthority: {
       /** @description Unique identifier for the local authority. */
-      id?: string;
+      code?: string;
       /** @description Display name of the local authority. */
       display_name?: string;
-      /** @description Geographical data for the local authority. */
-      geo_data?: {
-        /** @description Latitude of the centre point of the local authority. */
-        latitude?: number;
-        /** @description Longitude of the centre point of the local authority. */
-        longitude?: number;
-        /** @description Bounding box coordinates. */
-        bbox?: number[];
-      };
-      /** @description The associated region ID. */
-      region_id?: string;
-      /** @description The associated country ID. */
-      country_id?: string | null;
+      geo_data?: components['schemas']['GeoData'];
+      /** @description The associated region code. */
+      region_code?: string | null;
+      /** @description The associated region name. */
+      region_name?: string | null;
+      /** @description The associated country code. */
+      country_code?: string | null;
+      /** @description The associated country name. */
+      country_name?: string | null;
     };
     /** @description Represents a region */
     Region: {
       /** @description Unique identifier for the region. */
-      id?: string;
+      code?: string;
       /** @description Display name of the region. */
       display_name?: string;
-      /** @description Geographical data for the region. */
-      geo_data?: {
-        /** @description Latitude of the centre point of the region. */
-        latitude?: number;
-        /** @description Longitude of the centre point of the region. */
-        longitude?: number;
-        /** @description Bounding box coordinates. */
-        bbox?: number[];
-      };
-      /** @description The associated country ID. */
-      country_id?: string;
+      geo_data?: components['schemas']['GeoData'];
+      /** @description The associated country code. */
+      country_code?: string;
+      /** @description The associated country name. */
+      country_name?: string;
     };
     /** @description Represents a country */
     Country: {
       /** @description Unique identifier for the country. */
-      id?: string;
+      code?: string;
       /** @description Display name of the country. */
       display_name?: string;
-      /** @description Geographical data for the country. */
-      geo_data?: {
-        /** @description Latitude of the centre point of the country. */
-        latitude?: number;
-        /** @description Longitude of the centre point of the country. */
-        longitude?: number;
-        /** @description Bounding box coordinates. */
-        bbox?: number[];
-      };
+      geo_data?: components['schemas']['GeoData'];
     };
     /** @description Geo details for postcode */
     Postcode: {
-      /** @description Clean postcode with no whitespace used to seach DB */
+      /** @description Clean postcode with no whitespace used to search DB */
       sanitised_postcode?: string;
       /** @description Properly formatted postcode for display */
       display_postcode?: string;
-      /** @description The postcode latitude. */
-      latitude?: number;
-      /** @description The postcode longitude. */
-      longitude?: number;
+      geo_data?: components['schemas']['GeoData'];
       /** @description Local authority code. */
       la_code?: string;
       /** @description Local authority name. */
       la_name?: string;
+    };
+    /** @description Geographical data for a location. */
+    GeoData: {
+      /** @description Latitude of the centre point of the location. */
+      latitude?: number;
+      /** @description Longitude of the centre point of the location. */
+      longitude?: number;
+      polygon?: components['schemas']['Coordinate'][];
+    };
+    /** @description Pair of coordinates */
+    Coordinate: {
+      /** @description Latitude of the location. */
+      latitude?: number;
+      /** @description Longitude of the location. */
+      longitude?: number;
+    };
+    /** @description A location type and code pair. */
+    Location: {
+      /**
+       * @description The locations unique code.
+       * @example 1-123456789
+       */
+      location_code?: string;
+      /**
+       * @description The type of this location.
+       * @default la
+       * @enum {string}
+       */
+      location_type: 'la' | 'national' | 'regional';
     };
     /** @description Defines the properties and context of a metric. */
     MetricMetadata: {
@@ -663,7 +664,7 @@ export interface components {
       /** @description The unique identifier for the metric. */
       metric_id?: string;
       /** @description The unique identifier for the location. */
-      location_id?: string;
+      location_code?: string;
       /**
        * Format: date
        * @description The start date of the metric series.
