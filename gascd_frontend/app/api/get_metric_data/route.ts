@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const pool = await dbPool;
     const queryParams = await req.json();
 
-    addUserTelemetry();
+    await addUserTelemetry();
 
     if (!queryParams.metric_ids?.length || !queryParams.location_ids?.length) {
       return NextResponse.json(

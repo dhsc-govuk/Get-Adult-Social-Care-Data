@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { MSPLookup } from '@/helpers/msp/msp-lookup';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 type Props = {
   localAuthority: string;
@@ -13,6 +14,10 @@ const LocalMarketInformation: React.FC<Props> = ({
 }) => {
   const msp = MSPLookup[localAuthorityId];
   const url = msp && msp.url;
+
+  const trackMSPClick = () => {
+    AnalyticsService.trackMPSClicked(localAuthorityId);
+  };
 
   return (
     <div className="govuk-grid-row">
@@ -27,6 +32,7 @@ const LocalMarketInformation: React.FC<Props> = ({
               className="govuk-link"
               target="_blank"
               rel="noreferrer"
+              onClick={trackMSPClick}
             >
               Market Position Statement for {localAuthority} (opens in new tab)
             </a>

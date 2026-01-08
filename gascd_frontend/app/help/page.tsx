@@ -1,7 +1,13 @@
+'use client';
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 const HelpPage = () => {
+  const handleClick = () => {
+    AnalyticsService.trackHelpEmailClicked();
+  };
+
   return (
     <>
       <Layout
@@ -19,6 +25,7 @@ const HelpPage = () => {
               <a
                 href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
                 className="govuk-link"
+                onClick={handleClick}
               >
                 getadultsocialcaredata.team@dhsc.gov.uk
               </a>

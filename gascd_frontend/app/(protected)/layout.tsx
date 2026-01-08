@@ -7,7 +7,7 @@ export default async function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  addUserTelemetry();
+  await addUserTelemetry();
 
   const user = await getCurrentUser();
   if (!user) {

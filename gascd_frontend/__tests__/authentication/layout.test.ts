@@ -1,4 +1,5 @@
 import AuthLayout from '../../app/(protected)/layout';
+import NoAuthLayout from '../../app/(authentication)/layout';
 import OnboardingLayout from '../../app/(onboarding)/layout';
 import { redirect } from 'next/navigation';
 import React from 'react';
@@ -74,5 +75,18 @@ describe('Onboarding Layout', () => {
     mockGetSession.mockResolvedValue(null);
     await OnboardingLayout({ children: mockChildren });
     expect(mockedRedirect).toHaveBeenCalledWith('/login');
+  });
+});
+
+describe('Login Layout', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  test('redirects to login page if no session', async () => {
+    mockGetSession.mockResolvedValue(null);
+    const response = await NoAuthLayout({ children: mockChildren });
+    const renderedMarkup = renderToStaticMarkup(response);
+    expect(renderedMarkup).toContain('Mock Component');
   });
 });
