@@ -1,5 +1,6 @@
 using api.Data;
 using api.Data.Mappers;
+using api.Data.Models.Metrics;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,8 +15,17 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper) : 
 
     public override async Task HandleAsync(GetMetricRequest req, CancellationToken ct)
     {
-        var data = context.BedcountSet
-            .Include(d => d.Metric)
+        IQueryable<MetricTimeSeries> query;
+        if (req.MetricCode == "median_bed_count")
+        {
+            query = context.MedianBedCountSet.AsQueryable();
+        }
+        else
+        {
+            query = context.BedcountSet.AsQueryable();
+        }
+
+        var data = query.Include(d => d.Metric)
             .SingleOrDefault(d => d.Metric.Code == req.MetricCode &&
                                   d.LocationCode == req.LocationCode &&
                                   d.LocationType == req.LocationType);

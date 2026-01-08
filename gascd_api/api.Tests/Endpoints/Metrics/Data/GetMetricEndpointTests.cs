@@ -60,20 +60,20 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response.Values.ShouldBe([6.6m]);
     }
 
-    // [Fact]
-    // public async Task GetMetric_MedianBedCount_ReturnsExpectedData()
-    // {
-    //     var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-    //         new GetMetricRequest { MetricCode = "median_bed_count", LocationCode = "location_code", LocationType = "location_type" });
-    //
-    //     httpCode.EnsureSuccessStatusCode();
-    //     httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
-    //
-    //     response.MetricCode.ShouldBe("median_bed_count");
-    //     response.LocationCode.ShouldBe("E92000001");
-    //     response.LocationType.ShouldBe("national");
-    //     response.SeriesStartDate.ShouldBe(new DateTime(2001, 01, 01));
-    //     response.SeriesFrequency.ShouldBe("daily");
-    //     response.Values.ShouldBe([6.6]);
-    // }
+    [Fact]
+    public async Task GetMetric_MedianBedCount_ReturnsExpectedData()
+    {
+        var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
+            new GetMetricRequest { MetricCode = "median_bed_count", LocationCode = "E92000001", LocationType = "Regional" });
+
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        response.MetricCode.ShouldBe("median_bed_count");
+        response.LocationCode.ShouldBe("E92000001");
+        response.LocationType.ShouldBe("Regional");
+        response.SeriesStartDate.ShouldBe(new DateTime(2001, 01, 01));
+        response.SeriesFrequency.ShouldBe("Monthly");
+        response.Values.ShouldBe([6.6m]);
+    }
 }
