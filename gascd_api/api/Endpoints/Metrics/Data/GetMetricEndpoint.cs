@@ -1,10 +1,11 @@
 using api.Data;
+using api.Data.Mappers;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.Metrics.Data;
 
-public class GetMetricEndpoint(GascdDataContext context) : Endpoint<GetMetricRequest, GetMetricResponse>
+public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper) : Endpoint<GetMetricRequest, GetMetricResponse>
 {
     public override void Configure()
     {
@@ -19,15 +20,7 @@ public class GetMetricEndpoint(GascdDataContext context) : Endpoint<GetMetricReq
                                   d.LocationCode == req.LocationCode &&
                                   d.LocationType == req.LocationType);
 
-        var response = new GetMetricResponse
-        {
-            MetricCode = data.Metric.Code,
-            LocationCode = data.LocationCode,
-            LocationType = data.LocationType,
-            SeriesStartDate = data.StartDate,
-            SeriesFrequency = data.Metric.Frequency,
-            Values = [data.LatestValue]
-        };
+        var response = mapper.MetricTimeSeriesToGetMetricResponse(data);
         await Send.OkAsync(response, ct);
     }
 }
