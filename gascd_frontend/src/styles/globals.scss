@@ -42,3 +42,19 @@ ul.nobullet {
     }
   }
 }
+
+// Temporary one login header styles
+@media (min-width: 40.0625em) {
+  .rebranded-one-login-header__nav__link-content {
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .rebranded-one-login-header__nav__link-content--sign-out {
+  height: 30px;
+  border-left: 1px solid #ffffff;
+  }
+}
