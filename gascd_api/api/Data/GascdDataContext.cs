@@ -3,6 +3,7 @@ using api.Data.Models.Metrics.TimeSeries;
 using api.Data.Models.Reference;
 using api.Endpoints.Metrics.Data;
 using Microsoft.EntityFrameworkCore;
+using static api.Endpoints.Metrics.Data.MetricCodeEnum;
 
 namespace api.Data;
 
@@ -53,9 +54,27 @@ public partial class GascdDataContext : DbContext
     {
         return metricCode switch
         {
-            MetricCodeEnum.bedcount => BedcountSet.AsQueryable(),
-            MetricCodeEnum.median_bed_count => MedianBedCountSet.AsQueryable(),
-            MetricCodeEnum.bedcount_per_hundred_thousand_adults => BedcountPerHundredThousandAdultsSet.AsQueryable(),
+            bedcount => BedcountSet.AsQueryable(),
+            bedcount_per_hundred_thousand_adults => BedcountPerHundredThousandAdultsSet.AsQueryable(),
+            dementia_estimated_diagnosis_rate_65over => DementiaEstimatedDiagnosisRate65OverSet.AsQueryable(),
+            dementia_prevalence_65over => DementiaPrevalence65OverSet.AsQueryable(),
+            dementia_qof_prevalence => DementiaQOFPrevalenceSet.AsQueryable(),
+            dementia_register_65over_per100k => DementiaRegister65OverPer100kSet.AsQueryable(),
+            learning_disability_prevalence => LearningDisabilityPrevalenceSet.AsQueryable(),
+            median_bed_count => MedianBedCountSet.AsQueryable(),
+            median_occupancy => MedianOccupancySet.AsQueryable(),
+            occupancy_rates => OccupancyRateSet.AsQueryable(),
+            perc_18_64 => Perc1864Set.AsQueryable(),
+            perc_65over => Perc65OverSet.AsQueryable(),
+            perc_75over => Perc75OverSet.AsQueryable(),
+            perc_85over => Perc85OverSet.AsQueryable(),
+            perc_general_health => PercGeneralHealthSet.AsQueryable(),
+            perc_household_ownership => PercHouseholdOwnershipSet.AsQueryable(),
+            perc_households_deprivation_deprived => PercHouseholdsDeprivationDeprivedSet.AsQueryable(),
+            perc_households_one_person => PercHouseholdsOnePersonSet.AsQueryable(),
+            perc_population_disability => PercPopulationDisabilitySet.AsQueryable(),
+            perc_unpaid_care_provider => PercUnpaidCareProviderSet.AsQueryable(),
+            total_population => TotalPopulationSet.AsQueryable(),
             _ => throw new ArgumentException()
         };
     }

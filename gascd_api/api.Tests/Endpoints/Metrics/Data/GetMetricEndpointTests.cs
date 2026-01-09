@@ -62,22 +62,6 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response.Values.ShouldBe([6.6m]);
     }
 
-    [Fact]
-    public async Task GetMetric_MedianBedCount_ReturnsExpectedData()
-    {
-        var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-            new GetMetricRequest { MetricCode = MetricCodeEnum.median_bed_count, LocationCode = "E92000001", LocationType = "Regional" });
-
-        httpCode.EnsureSuccessStatusCode();
-        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
-
-        response.MetricCode.ShouldBe("median_bed_count");
-        response.LocationCode.ShouldBe("E92000001");
-        response.LocationType.ShouldBe("Regional");
-        response.SeriesStartDate.ShouldBe(new DateTime(2001, 01, 01));
-        response.SeriesFrequency.ShouldBe("Monthly");
-        response.Values.ShouldBe([6.6m]);
-    }
 
     [Theory]
     [MemberData(nameof(MetricCodeNonexistentLocationCodeTypeCombinations))]
@@ -161,7 +145,29 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         {
             yield return [MetricCodeEnum.bedcount, 6.6m];
             yield return [MetricCodeEnum.bedcount_per_hundred_thousand_adults, 6.7m];
+            yield return [MetricCodeEnum.dementia_estimated_diagnosis_rate_65over, 6.8m];
+            yield return [MetricCodeEnum.dementia_prevalence_65over, 6.9m];
+            yield return [MetricCodeEnum.dementia_qof_prevalence, 6.11m];
+            yield return [MetricCodeEnum.dementia_register_65over_per100k, 6.12m];
+            yield return [MetricCodeEnum.learning_disability_prevalence, 6.13m];
+            yield return [MetricCodeEnum.median_bed_count, 6.6m];
+            yield return [MetricCodeEnum.median_occupancy, 6.15m];
+            yield return [MetricCodeEnum.occupancy_rates, 6.16m];
+            yield return [MetricCodeEnum.perc_18_64, 6.17m];
+            yield return [MetricCodeEnum.perc_65over, 6.18m];
+            yield return [MetricCodeEnum.perc_75over, 6.19m];
+            yield return [MetricCodeEnum.perc_85over, 6.21m];
+            yield return [MetricCodeEnum.perc_general_health, 6.22m];
+            yield return [MetricCodeEnum.perc_household_ownership, 6.23m];
+            yield return [MetricCodeEnum.perc_households_deprivation_deprived, 6.24m];
+            yield return [MetricCodeEnum.perc_households_one_person, 6.25m];
+            yield return [MetricCodeEnum.perc_population_disability, 6.26m];
+            yield return [MetricCodeEnum.perc_unpaid_care_provider, 6.27m];
+            yield return [MetricCodeEnum.total_population, 6.28m];
+
         }
+
+
     }
 
 
