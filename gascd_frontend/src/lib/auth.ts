@@ -5,6 +5,11 @@ import { nextCookies } from 'better-auth/next-js';
 import logger from '@/utils/logger';
 import { msdialect } from './authDatabase';
 import { admin, lastLoginMethod } from 'better-auth/plugins';
+import { Kysely } from 'kysely';
+
+// Export a connection to the user db for usage elsewhere
+// (re-uses the same connection pool set up in the dialect)
+export const authDB = new Kysely<any>({ dialect: msdialect });
 
 export const auth = betterAuth({
   session: {
