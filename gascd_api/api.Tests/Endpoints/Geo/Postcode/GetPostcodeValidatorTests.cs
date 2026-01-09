@@ -37,6 +37,7 @@ public class GetPostcodeValidatorTests : IDisposable
         result.ShouldHaveValidationErrorFor(r => r.Postcode)
             .WithErrorMessage(expectedErrorMessage);
     }
+
     public void Dispose()
     {
 

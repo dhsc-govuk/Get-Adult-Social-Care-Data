@@ -18,6 +18,7 @@ public class GetPostcodeEndpoint(GascdDataContext context, ReferenceMapper mappe
         logger.LogDebug("Received request for postcode: {postcode}", req.Postcode);
         var postcodeEntity = context.PostcodeData
             .Include(p => p.LocalAuthority)
+            .Include(p => p.GeoData)
             .SingleOrDefault(p => p.Code == req.Postcode);
 
         if (postcodeEntity == null)

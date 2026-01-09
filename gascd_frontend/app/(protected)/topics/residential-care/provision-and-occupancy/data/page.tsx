@@ -24,6 +24,7 @@ import TimeSeriesChart, {
   Series,
 } from '@/components/charts/TimeSeriesChart';
 import IndicatorService from '@/services/indicator/IndicatorService';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -127,6 +128,20 @@ export default function ProvisionAndOccupancyPage() {
     },
   ];
 
+  const trackDefaultMetrics = () => {
+    // Track all of the key metrics shown on this page
+    // note - does not include filters, which are tracked as separate events
+    careProviderMetricIds1.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+    careProviderMetricIds2.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+    bedNumberMetricIds.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+  };
+
   const [chartData, setChartData] = useState<{
     categories: string[];
     values: number[];
@@ -160,6 +175,7 @@ export default function ProvisionAndOccupancyPage() {
       setCPLocationId(userLocationId);
     };
     fetchSelectedLocation();
+    trackDefaultMetrics();
   }, []);
 
   useEffect(() => {
@@ -340,7 +356,8 @@ export default function ProvisionAndOccupancyPage() {
             location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
             most_recent: true,
           });
-          if (parsedData) {
+          AnalyticsService.trackMetricView(id);
+          if (name) {
             setSelectedBedNumberTableFilter(name);
           } else {
             setSelectedBedNumberTableFilter(bedNumberMetricIds);
@@ -528,7 +545,7 @@ export default function ProvisionAndOccupancyPage() {
             <div className="govuk-summary-list__row">
               <dt className="govuk-summary-list__key">Filters</dt>
               <dd className="govuk-summary-list__value">
-                <ul className="govuk-!-margin-top-0 nobullet">
+                <ul className="govuk-!-margin-top-0 govuk-!-padding-left-0 nobullet">
                   {selectedBedTypeTableFilters.map((filter, index) => (
                     <li key={index}>{filter}</li>
                   ))}

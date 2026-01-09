@@ -3,6 +3,7 @@ import {
   Tabs,
   createAll,
 } from '../../../public/govuk-frontend/js/govuk-frontend.min.js';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 type Props = {
   id: string;
@@ -12,6 +13,10 @@ type Props = {
   textSummary?: React.ReactNode;
   map?: React.ReactNode;
   download?: React.ReactNode;
+};
+
+const tabClicked = (tabname: string) => {
+  AnalyticsService.trackDataTabChange(tabname);
 };
 
 const DataTabs: React.FC<Props> = ({
@@ -29,12 +34,19 @@ const DataTabs: React.FC<Props> = ({
 
   return (
     <>
+      <h3 className="govuk-tabs__title">Contents</h3>
       <ul className="govuk-tabs__list">
         {map && (
           <li
             className={`govuk-tabs__list-item${map ? ' govuk-tabs__list-item--selected' : ''}`}
           >
-            <a className="govuk-tabs__tab" href={`#map-${id}`}>
+            <a
+              className="govuk-tabs__tab"
+              href={`#map-${id}`}
+              onClick={() => {
+                tabClicked('map');
+              }}
+            >
               Map
             </a>
           </li>
@@ -43,7 +55,13 @@ const DataTabs: React.FC<Props> = ({
           <li
             className={`govuk-tabs__list-item${!map && chart ? ' govuk-tabs__list-item--selected' : ''}`}
           >
-            <a className="govuk-tabs__tab" href={`#chart-${id}`}>
+            <a
+              className="govuk-tabs__tab"
+              href={`#chart-${id}`}
+              onClick={() => {
+                tabClicked('chart');
+              }}
+            >
               Chart
             </a>
           </li>
@@ -52,7 +70,13 @@ const DataTabs: React.FC<Props> = ({
           <li
             className={`govuk-tabs__list-item${!map && !chart && graph ? ' govuk-tabs__list-item--selected' : ''}`}
           >
-            <a className="govuk-tabs__tab" href={`#graph-${id}`}>
+            <a
+              className="govuk-tabs__tab"
+              href={`#graph-${id}`}
+              onClick={() => {
+                tabClicked('graph');
+              }}
+            >
               Graph
             </a>
           </li>
@@ -61,7 +85,13 @@ const DataTabs: React.FC<Props> = ({
           <li
             className={`govuk-tabs__list-item${!map && !chart && !graph && table ? ' govuk-tabs__list-item--selected' : ''}`}
           >
-            <a className="govuk-tabs__tab" href={`#table-${id}`}>
+            <a
+              className="govuk-tabs__tab"
+              href={`#table-${id}`}
+              onClick={() => {
+                tabClicked('table');
+              }}
+            >
               Table
             </a>
           </li>
@@ -70,7 +100,13 @@ const DataTabs: React.FC<Props> = ({
           <li
             className={`govuk-tabs__list-item${!map && !chart && !table && textSummary ? ' govuk-tabs__list-item--selected' : ''}`}
           >
-            <a className="govuk-tabs__tab" href={`#textSummary-${id}`}>
+            <a
+              className="govuk-tabs__tab"
+              href={`#textSummary-${id}`}
+              onClick={() => {
+                tabClicked('text-summary');
+              }}
+            >
               Text Summary
             </a>
           </li>
@@ -79,7 +115,13 @@ const DataTabs: React.FC<Props> = ({
           <li
             className={`govuk-tabs__list-item${!map && !chart && !table && !textSummary && download ? ' govuk-tabs__list-item--selected' : ''}`}
           >
-            <a className="govuk-tabs__tab" href={`#download-${id}`}>
+            <a
+              className="govuk-tabs__tab"
+              href={`#download-${id}`}
+              onClick={() => {
+                tabClicked('download');
+              }}
+            >
               Download
             </a>
           </li>
