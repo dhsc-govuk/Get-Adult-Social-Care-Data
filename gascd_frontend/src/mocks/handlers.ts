@@ -66,11 +66,11 @@ export const handlers = [
     return HttpResponse.json(locations_data.district);
   }),
 
-  http.get(api_root + '/metric_location/local_authorities/:code', () => {
+  http.get(api_root + '/metric_location/local_authorities/:la_code', () => {
     return HttpResponse.json(locations_data.local_authority);
   }),
 
-  http.get(api_root + '/metric_location/regions/:code', () => {
+  http.get(api_root + '/metric_location/regions/:region_code', () => {
     return HttpResponse.json(locations_data.region);
   }),
 

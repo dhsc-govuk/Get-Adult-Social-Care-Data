@@ -36,7 +36,7 @@ describe('test handlers', () => {
     const result = await GetLocalAuthority(req);
     const data = await result.json();
 
-    expect(data).toEqual(mockLocalAuthority);
+    expect(data.data).toEqual(mockLocalAuthority);
   });
 
   it('fetches and returns regions successfully', async () => {
@@ -50,6 +50,6 @@ describe('test handlers', () => {
     const result = await GetRegion(req);
     const data = await result.json();
 
-    expect(data).toEqual(mockRegion);
+    expect(data.data).toEqual(mockRegion);
   });
 });
