@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GET as GetLocalAuthority } from '../../app/api/get_local_authority/route';
 import { GET as GetCareProviderLocation } from '../../app/api/get_care_provider/route';
 import { GET as GetRegion } from '../../app/api/get_region/route';
+import { GET as GetCountry } from '../../app/api/get_country/route';
 import { locations_data } from '@/data/mockResponses/locations_data';
 
 const { server } = await import('@/mocks/node');
@@ -51,5 +52,19 @@ describe('test handlers', () => {
     const data = await result.json();
 
     expect(data.data).toEqual(mockRegion);
+  });
+
+  it('fetches and returns countries successfully', async () => {
+    const query = 'E92000001';
+    const mockCountry: {} = locations_data.country;
+
+    const req = {
+      url: `http://localhost/api/get_country?country_code=${query}`,
+    } as NextRequest;
+
+    const result = await GetCountry(req);
+    const data = await result.json();
+
+    expect(data.data).toEqual(mockCountry);
   });
 });
