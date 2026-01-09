@@ -55,6 +55,8 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         GetFromJson(jObject, "display_name").ShouldBe("Bupa");
         GetFromJson(jObject, "locations[0].location_name").ShouldBe("Bupa Liverpool");
         GetFromJson(jObject, "locations[0].location_code").ShouldBe("1-222222222");
+        GetFromJson(jObject, "locations[0].address").ShouldBe("Bupa Liverpool, CV2 2TN");
+
     }
 
     [Fact]
