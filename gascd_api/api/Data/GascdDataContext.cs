@@ -51,15 +51,13 @@ public partial class GascdDataContext : DbContext
 
     public IQueryable<MetricTimeSeries> GetMetricTimeSeriesQueryable(MetricCodeEnum metricCode)
     {
-        switch (metricCode)
+        return metricCode switch
         {
-            case MetricCodeEnum.bedcount:
-                return BedcountSet.AsQueryable();
-            case MetricCodeEnum.median_bed_count:
-                return MedianBedCountSet.AsQueryable();
-            default:
-                throw new ArgumentException();
-        }
+            MetricCodeEnum.bedcount => BedcountSet.AsQueryable(),
+            MetricCodeEnum.median_bed_count => MedianBedCountSet.AsQueryable(),
+            MetricCodeEnum.bedcount_per_hundred_thousand_adults => BedcountPerHundredThousandAdultsSet.AsQueryable(),
+            _ => throw new ArgumentException()
+        };
     }
 
 }

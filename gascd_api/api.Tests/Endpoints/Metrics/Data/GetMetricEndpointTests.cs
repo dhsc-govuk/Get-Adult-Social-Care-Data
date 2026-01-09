@@ -23,7 +23,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     {
         var (httpCode, _) =
             await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-                new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "1-123456789", LocationType = "Regional" });
+                new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "1-123456789", LocationType = "National" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -32,14 +32,14 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetMetric_Bedcount_ReturnsExpectedData()
     {
         var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-            new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "1-123456789", LocationType = "Regional" });
+            new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "1-123456789", LocationType = "National" });
 
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         response.MetricCode.ShouldBe("bedcount");
         response.LocationCode.ShouldBe("1-123456789");
-        response.LocationType.ShouldBe("Regional");
+        response.LocationType.ShouldBe("National");
         response.SeriesStartDate.ShouldBe(new DateTime(2000, 01, 01));
         response.SeriesFrequency.ShouldBe("Daily");
         response.Values.ShouldBe([5.5m]);
@@ -49,15 +49,15 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetMetric_Bedcount_AnotherLocationReturnsExpectedData()
     {
         var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-            new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "E92000001", LocationType = "National" });
+            new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "E92000001", LocationType = "Regional" });
 
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         response.MetricCode.ShouldBe("bedcount");
         response.LocationCode.ShouldBe("E92000001");
-        response.LocationType.ShouldBe("National");
-        response.SeriesStartDate.ShouldBe(new DateTime(2000, 01, 01));
+        response.LocationType.ShouldBe("Regional");
+        response.SeriesStartDate.ShouldBe(new DateTime(2001, 01, 01));
         response.SeriesFrequency.ShouldBe("Daily");
         response.Values.ShouldBe([6.6m]);
     }
@@ -136,4 +136,33 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         GetFromJson(json, "errors[0].name").ShouldBe("metric_code");
         GetFromJson(json, "errors[0].reason").ShouldBe("Value [nonexistent] is not valid for a [MetricCodeEnum] property!");
     }
+
+
+    [Theory]
+    [MemberData(nameof(MetricCodeTimeSeriesCombinations))]
+    public async Task GetMetric_EachMetricCode_ReturnsExpectedData(MetricCodeEnum metricCode, decimal lastValue)
+    {
+        var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
+            new GetMetricRequest { MetricCode = metricCode, LocationCode = "E92000001", LocationType = "Regional" });
+
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.MetricCode.ShouldBe(metricCode.ToString());
+        response.LocationCode.ShouldBe("E92000001");
+        response.LocationType.ShouldBe("Regional");
+        response.SeriesStartDate.ShouldBe(new DateTime(2001, 01, 01));
+        response.SeriesFrequency.ShouldBe("Daily");
+        response.Values.ShouldBe([lastValue]);
+    }
+
+    public static IEnumerable<object[]> MetricCodeTimeSeriesCombinations
+    {
+        get
+        {
+            yield return [MetricCodeEnum.bedcount, 6.6m];
+            yield return [MetricCodeEnum.bedcount_per_hundred_thousand_adults, 6.7m];
+        }
+    }
+
+
 }

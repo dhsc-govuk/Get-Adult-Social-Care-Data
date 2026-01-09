@@ -3,7 +3,7 @@ namespace api.Endpoints.Metrics.Data;
 public enum MetricCodeEnum
 {
     bedcount,
-    // bedcount_per_hundred_thousand_adults,
+    bedcount_per_hundred_thousand_adults,
     // dementia_estimated_diagnosis_rate_65over,
     // dementia_prevalence_65over,
     // dementia_qof_prevalence,

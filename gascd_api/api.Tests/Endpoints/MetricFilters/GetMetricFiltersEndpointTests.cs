@@ -37,15 +37,8 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.MetricGroupCode.ShouldBe("metric_group_code");
-        List<GetMetricFiltersResponse.MetricFilterDto> expectedMetricFilters = new()
-        {
-            new GetMetricFiltersResponse.MetricFilterDto() { MetricCode = "bedcount", DisplayName = "Bedcount" },
-            new GetMetricFiltersResponse.MetricFilterDto()
-            {
-                MetricCode = "metric_code_2", DisplayName = "Metric 2"
-            },
-        };
-        response.MetricFilters.ShouldBe(expectedMetricFilters);
+        response.MetricFilters.ShouldContain(o => o.MetricCode == "bedcount" && o.DisplayName == "Bedcount");
+        response.MetricFilters.ShouldContain(o => o.MetricCode == "metric_code_2" && o.DisplayName == "Metric 2");
     }
 
     [Fact]
