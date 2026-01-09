@@ -28,6 +28,7 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
   useEffect(() => {
     const sortTables = async () => {
       // Import this at page load time to avoid NextJS SSR errors
+      // https://nextjs.org/docs/app/guides/lazy-loading#loading-external-libraries
       const MOJFrontend = await import('@ministryofjustice/frontend');
 
       const $sortableTables = document.querySelectorAll(

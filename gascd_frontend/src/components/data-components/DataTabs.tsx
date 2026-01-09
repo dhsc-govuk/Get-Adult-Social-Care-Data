@@ -27,6 +27,7 @@ const DataTabs: React.FC<Props> = ({
   useEffect(() => {
     const setupTabs = async () => {
       // Import this at page load time to avoid NextJS SSR errors
+      // https://nextjs.org/docs/app/guides/lazy-loading#loading-external-libraries
       const GOVUKFrontend = await import('govuk-frontend');
       GOVUKFrontend.createAll(GOVUKFrontend.Tabs);
     };
