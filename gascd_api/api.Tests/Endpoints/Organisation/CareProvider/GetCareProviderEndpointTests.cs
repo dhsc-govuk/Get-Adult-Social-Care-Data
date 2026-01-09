@@ -80,8 +80,8 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         response.DisplayName.ShouldBe("Katherine");
         response.Locations.ShouldNotBeEmpty();
         response.Locations.Count.ShouldBe(2);
-        response.Locations.ShouldContain(o => o.LocationName == "Katherines Teeth" && o.LocationCode == "1-222222223");
-        response.Locations.ShouldContain(o => o.LocationName == "Katherines Eyes" && o.LocationCode == "1-222222224");
+        response.Locations.ShouldContain(o => o.LocationName == "Katherines Teeth" && o.LocationCode == "1-222222223" && o.Address == "Katherines Teeth, Liverpool, ME10 1QX");
+        response.Locations.ShouldContain(o => o.LocationName == "Katherines Eyes" && o.LocationCode == "1-222222224" && o.Address == "Katherines Eyes, Liverpool, ME10 1QY");
     }
 
     [Theory]
