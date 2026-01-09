@@ -1,6 +1,5 @@
 import React, { Ref, useEffect } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
-import { SortableTable } from '../../../public/moj-frontend/js/moj-frontend.min.js';
 
 type VerticalLocationTableProps = {
   caption?: string;
@@ -27,13 +26,19 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
   userLa,
 }) => {
   useEffect(() => {
-    const $sortableTables = document.querySelectorAll(
-      '[data-module="moj-sortable-table"]'
-    );
+    const sortTables = async () => {
+      // Import this at page load time to avoid NextJS SSR errors
+      const MOJFrontend = await import('@ministryofjustice/frontend');
 
-    $sortableTables.forEach(($sortableTable) => {
-      new SortableTable($sortableTable);
-    });
+      const $sortableTables = document.querySelectorAll(
+        '[data-module="moj-sortable-table"]'
+      );
+
+      $sortableTables.forEach(($sortableTable) => {
+        new MOJFrontend.SortableTable($sortableTable);
+      });
+    };
+    sortTables();
   }, []);
 
   const columnClass = (columnIndex: number) => {

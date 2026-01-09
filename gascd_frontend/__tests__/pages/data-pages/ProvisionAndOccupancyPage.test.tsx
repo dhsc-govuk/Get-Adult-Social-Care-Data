@@ -14,8 +14,6 @@ vi.mock('@/services/indicator/IndicatorFetchService');
 vi.mock('@/services/location/locationService');
 
 // Mock out JS libraries that we are not testing here
-vi.mock('../../../public/moj-frontend/js/moj-frontend.min.js');
-vi.mock('../../../public/govuk-frontend/js/govuk-frontend.min.js');
 vi.mock('react-plotly.js', () => ({
   default: vi.fn(),
 }));
