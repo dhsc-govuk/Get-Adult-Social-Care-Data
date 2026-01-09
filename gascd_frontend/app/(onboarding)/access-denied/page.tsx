@@ -29,7 +29,6 @@ const AccessDeniedPage: React.FC = () => {
               </a>
               .
             </p>
-            <p className="govuk-body"></p>
             <p className="govuk-body">We will need your:</p>
             <ul className="govuk-list govuk-list--bullet">
               <li>name</li>
