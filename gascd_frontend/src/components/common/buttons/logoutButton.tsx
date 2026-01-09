@@ -2,13 +2,18 @@
 
 import React, { useEffect, useState } from 'react';
 import LogService from '@/services/logger/logService';
+import { Session } from '@/lib/auth-client';
 import { authClient } from '@/lib/auth-client';
 
-const LogoutButton: React.FC = () => {
+type Props = {
+  session: Session | null;
+};
+
+const LogoutButton: React.FC<Props> = ({ session }) => {
   const [logoutUrl, setLogoutUrl] = useState('');
 
   useEffect(() => {
-    const fetchLogoutUrl = async () => {
+    const fetchB2CLogoutUrl = async () => {
       try {
         const response = await fetch('/api/auth/logout', {
           method: 'POST',
@@ -23,7 +28,13 @@ const LogoutButton: React.FC = () => {
         console.error('error fetching logout URL:', error);
       }
     };
-    fetchLogoutUrl();
+
+    if (session) {
+      const lastLoginMethod = (session.user as any).lastLoginMethod;
+      if (lastLoginMethod == 'azure-ad-b2c-signin') {
+        fetchB2CLogoutUrl();
+      }
+    }
   }, []);
 
   const handleSignOut = async (event: any) => {

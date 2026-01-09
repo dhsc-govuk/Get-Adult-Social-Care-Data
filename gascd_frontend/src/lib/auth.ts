@@ -4,7 +4,7 @@ import { getOAuthConfig } from './authPlugins';
 import { nextCookies } from 'better-auth/next-js';
 import logger from '@/utils/logger';
 import { msdialect } from './authDatabase';
-import { admin } from 'better-auth/plugins';
+import { admin, lastLoginMethod } from 'better-auth/plugins';
 
 export const auth = betterAuth({
   session: {
@@ -30,6 +30,13 @@ export const auth = betterAuth({
   },
   user: {
     additionalFields: {
+      // The email address we think they should be using
+      // (to be checked against the one provided by an external IdP)
+      registeredEmail: {
+        type: 'string',
+        required: false,
+        input: false,
+      },
       locationType: {
         type: 'string',
         required: false,
@@ -48,17 +55,22 @@ export const auth = betterAuth({
       selectedLocationId: {
         type: 'string',
         required: false,
+        // Can be set by the user
         input: true,
       },
       selectedLocationDisplayName: {
         type: 'string',
         required: false,
+        // Can be set by the user
         input: true,
       },
     },
   },
   plugins: [
     admin(),
+    lastLoginMethod({
+      storeInDatabase: true,
+    }),
     getOAuthConfig(),
     // https://www.better-auth.com/docs/integrations/next#server-action-cookies
     nextCookies(), // make sure this is the last plugin in the array
@@ -87,3 +99,5 @@ export const auth = betterAuth({
     }),
   },
 });
+
+export type User = typeof auth.$Infer.Session.user;

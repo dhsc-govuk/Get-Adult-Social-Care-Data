@@ -17,7 +17,7 @@ afterAll(() => server.close());
 
 describe('Logout Button component', () => {
   test('is rendered', () => {
-    render(<LogoutButton />);
+    render(<LogoutButton session={null} />);
     expect(screen.getByText('Sign out')).toBeInTheDocument();
   });
 });
