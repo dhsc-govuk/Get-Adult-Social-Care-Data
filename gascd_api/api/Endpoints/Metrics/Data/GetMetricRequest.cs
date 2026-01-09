@@ -1,3 +1,4 @@
+using api.Data.Shared;
 using FastEndpoints;
 
 namespace api.Endpoints.Metrics.Data;
@@ -11,5 +12,5 @@ public class GetMetricRequest
     public required string LocationCode { get; set; }
 
     [QueryParam, BindFrom("location_type")]
-    public required string LocationType { get; set; }
+    public required LocationTypeEnum LocationType { get; set; }
 }

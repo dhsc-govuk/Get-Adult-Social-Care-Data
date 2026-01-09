@@ -20,7 +20,7 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper) : 
         var data = query.Include(d => d.Metric)
             .SingleOrDefault(d => d.Metric.Code == req.MetricCode.ToString() &&
                                   d.LocationCode == req.LocationCode &&
-                                  d.LocationType == req.LocationType);
+                                  d.LocationType == req.LocationType.ToString());
 
         if (data == null)
         {

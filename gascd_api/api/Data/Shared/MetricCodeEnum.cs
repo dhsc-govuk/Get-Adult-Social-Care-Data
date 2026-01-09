@@ -1,4 +1,4 @@
-namespace api.Endpoints.Metrics.Data;
+namespace api.Data.Shared;
 
 public enum MetricCodeEnum
 {

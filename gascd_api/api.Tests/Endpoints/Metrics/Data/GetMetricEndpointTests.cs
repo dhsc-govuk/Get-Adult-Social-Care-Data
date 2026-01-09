@@ -1,3 +1,4 @@
+using api.Data.Shared;
 using api.Endpoints.Metrics.Data;
 using api.Tests.Fixtures;
 using FastEndpoints;
@@ -23,7 +24,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     {
         var (httpCode, _) =
             await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-                new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "1-123456789", LocationType = "National" });
+                new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "1-123456789", LocationType = LocationTypeEnum.National });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -32,7 +33,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetMetric_Bedcount_ReturnsExpectedData()
     {
         var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-            new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "1-123456789", LocationType = "National" });
+            new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "1-123456789", LocationType = LocationTypeEnum.National });
 
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -49,7 +50,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetMetric_Bedcount_AnotherLocationReturnsExpectedData()
     {
         var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-            new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "E92000001", LocationType = "Regional" });
+            new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "E92000001", LocationType = LocationTypeEnum.Regional });
 
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -64,24 +65,24 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
 
 
     [Theory]
-    [MemberData(nameof(MetricCodeNonexistentLocationCodeTypeCombinations))]
-    public async Task GetMetric_NonExistentTimeSeries_Returns404(MetricCodeEnum metricCode, string locationCode, string locationType)
+    [MemberData(nameof(MetricCodeTimeSeriesCombinations))]
+    public async Task GetMetric_NonExistentLocationCode_Returns404(MetricCodeEnum metricCode, decimal _)
     {
         var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-            new GetMetricRequest { MetricCode = metricCode, LocationCode = locationCode, LocationType = locationType });
+            new GetMetricRequest { MetricCode = metricCode, LocationCode = "nonexistent", LocationType = LocationTypeEnum.National });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
-    public static IEnumerable<object[]> MetricCodeNonexistentLocationCodeTypeCombinations
+    [Theory]
+    [MemberData(nameof(MetricCodeTimeSeriesCombinations))]
+    public async Task GetMetric_NonExistentLocationType_Returns404(MetricCodeEnum metricCode, decimal _)
     {
-        get
-        {
-            foreach (var code in Enum.GetValues(typeof(MetricCodeEnum)))
-            {
-                yield return [code, "nonexistent", "Regional"];
-                yield return [code, "E92000001", "nonexistent"];
-            }
-        }
+        var response = await _client.GetAsync($"api/metrics/{metricCode}/data?location_code=E92000001&location_type=nonexistent", TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+
+        JObject? json = await ParseJsonResponse<JObject>(response);
+        GetFromJson(json, "errors[0].name").ShouldBe("location_type");
+        GetFromJson(json, "errors[0].reason").ShouldBe("Value [nonexistent] is not valid for a [LocationTypeEnum] property!");
     }
 
     [Theory]
@@ -90,7 +91,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     {
         var (httpResponse, problemDetails) =
             await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, ProblemDetails>(
-                new GetMetricRequest { MetricCode = metricCode, LocationCode = locationCode, LocationType = "Regional" });
+                new GetMetricRequest { MetricCode = metricCode, LocationCode = locationCode, LocationType = LocationTypeEnum.Regional });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
         problemDetails.Errors.Select(e => e.Name).ShouldBe(["location_code"]);
@@ -113,7 +114,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetMetric_NonExistent_MetricCodeInput()
     {
-        var response = await _client.GetAsync("api/metrics/nonexistent/data", TestContext.Current.CancellationToken);
+        var response = await _client.GetAsync("api/metrics/nonexistent/data?location_code=E92000001&location_type=Regional", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
         JObject? json = await ParseJsonResponse<JObject>(response);
@@ -127,7 +128,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetMetric_EachMetricCode_ReturnsExpectedData(MetricCodeEnum metricCode, decimal lastValue)
     {
         var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-            new GetMetricRequest { MetricCode = metricCode, LocationCode = "E92000001", LocationType = "Regional" });
+            new GetMetricRequest { MetricCode = metricCode, LocationCode = "E92000001", LocationType = LocationTypeEnum.Regional });
 
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
