@@ -39,7 +39,7 @@ public class MetricMapper
         };
     }
 
-    public GetMetricResponse MetricTimeSeriesToGetMetricResponse(MetricTimeSeries mts)
+    public GetMetricResponse MetricTimeSeriesToGetMetricResponse(MetricTimeSeries mts, bool includeTimeSeries)
     {
         return new GetMetricResponse
         {
@@ -48,7 +48,7 @@ public class MetricMapper
             LocationType = mts.LocationType,
             SeriesStartDate = mts.StartDate,
             SeriesFrequency = mts.Metric.Frequency,
-            Values = [mts.LatestValue]
+            Values = includeTimeSeries ? mts.TimeSeries : [mts.LatestValue]
         };
     }
 }

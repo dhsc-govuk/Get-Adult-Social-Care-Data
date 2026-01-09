@@ -234,7 +234,7 @@ paths:
   /metrics/{metric_code}/data:
     get:
       summary: "Get time-series or most recent data for a single metric"
-      description: "Retrieves data points for a single specified metric across one or more locations. Omit date parameters to get the most recent data point. Provide a startDate to get a time-series."
+      description: "Retrieves data points for a single specified metric across one or more locations. Omit the time_series parameter to get the most recent data point. Include time_series=true to get the time-series."
       parameters:
         - $ref: '#/components/parameters/MetricCode'
         - name: locations
@@ -247,7 +247,7 @@ paths:
             type: array
             items:
               $ref: "#/components/schemas/Location"
-        - name: timeSeries
+        - name: time_series
           in: query
           description: "Boolean whether to return whole time series. If false or omitted, only the most recent data point is returned."
           required: false

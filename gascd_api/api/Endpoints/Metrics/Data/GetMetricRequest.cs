@@ -13,4 +13,7 @@ public class GetMetricRequest
 
     [QueryParam, BindFrom("location_type")]
     public required LocationTypeEnum LocationType { get; set; }
+
+    [QueryParam, BindFrom("time_series")]
+    public bool TimeSeries { get; set; } = false;
 }

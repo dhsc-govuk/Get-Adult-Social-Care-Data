@@ -5,6 +5,8 @@ using FastEndpoints;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
+using static api.Data.Shared.LocationTypeEnum;
+using static api.Data.Shared.MetricCodeEnum;
 using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.Metrics.Data;
@@ -24,7 +26,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     {
         var (httpCode, _) =
             await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-                new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "1-123456789", LocationType = LocationTypeEnum.National });
+                new GetMetricRequest { MetricCode = bedcount, LocationCode = "1-123456789", LocationType = National });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -33,7 +35,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetMetric_Bedcount_ReturnsExpectedData()
     {
         var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-            new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "1-123456789", LocationType = LocationTypeEnum.National });
+            new GetMetricRequest { MetricCode = bedcount, LocationCode = "1-123456789", LocationType = National });
 
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -50,7 +52,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetMetric_Bedcount_AnotherLocationReturnsExpectedData()
     {
         var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-            new GetMetricRequest { MetricCode = MetricCodeEnum.bedcount, LocationCode = "E92000001", LocationType = LocationTypeEnum.Regional });
+            new GetMetricRequest { MetricCode = bedcount, LocationCode = "E92000001", LocationType = Regional });
 
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -69,7 +71,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetMetric_NonExistentLocationCode_Returns404(MetricCodeEnum metricCode, decimal _)
     {
         var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-            new GetMetricRequest { MetricCode = metricCode, LocationCode = "nonexistent", LocationType = LocationTypeEnum.National });
+            new GetMetricRequest { MetricCode = metricCode, LocationCode = "nonexistent", LocationType = National });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
@@ -91,7 +93,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     {
         var (httpResponse, problemDetails) =
             await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, ProblemDetails>(
-                new GetMetricRequest { MetricCode = metricCode, LocationCode = locationCode, LocationType = LocationTypeEnum.Regional });
+                new GetMetricRequest { MetricCode = metricCode, LocationCode = locationCode, LocationType = Regional });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
         problemDetails.Errors.Select(e => e.Name).ShouldBe(["location_code"]);
@@ -128,7 +130,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetMetric_EachMetricCode_ReturnsExpectedData(MetricCodeEnum metricCode, decimal lastValue)
     {
         var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
-            new GetMetricRequest { MetricCode = metricCode, LocationCode = "E92000001", LocationType = LocationTypeEnum.Regional });
+            new GetMetricRequest { MetricCode = metricCode, LocationCode = "E92000001", LocationType = Regional });
 
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -144,32 +146,65 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     {
         get
         {
-            yield return [MetricCodeEnum.bedcount, 6.6m];
-            yield return [MetricCodeEnum.bedcount_per_hundred_thousand_adults, 6.7m];
-            yield return [MetricCodeEnum.dementia_estimated_diagnosis_rate_65over, 6.8m];
-            yield return [MetricCodeEnum.dementia_prevalence_65over, 6.9m];
-            yield return [MetricCodeEnum.dementia_qof_prevalence, 6.11m];
-            yield return [MetricCodeEnum.dementia_register_65over_per100k, 6.12m];
-            yield return [MetricCodeEnum.learning_disability_prevalence, 6.13m];
-            yield return [MetricCodeEnum.median_bed_count, 6.6m];
-            yield return [MetricCodeEnum.median_occupancy, 6.15m];
-            yield return [MetricCodeEnum.occupancy_rates, 6.16m];
-            yield return [MetricCodeEnum.perc_18_64, 6.17m];
-            yield return [MetricCodeEnum.perc_65over, 6.18m];
-            yield return [MetricCodeEnum.perc_75over, 6.19m];
-            yield return [MetricCodeEnum.perc_85over, 6.21m];
-            yield return [MetricCodeEnum.perc_general_health, 6.22m];
-            yield return [MetricCodeEnum.perc_household_ownership, 6.23m];
-            yield return [MetricCodeEnum.perc_households_deprivation_deprived, 6.24m];
-            yield return [MetricCodeEnum.perc_households_one_person, 6.25m];
-            yield return [MetricCodeEnum.perc_population_disability, 6.26m];
-            yield return [MetricCodeEnum.perc_unpaid_care_provider, 6.27m];
-            yield return [MetricCodeEnum.total_population, 6.28m];
+            yield return [bedcount, 6.6m];
+            yield return [bedcount_per_hundred_thousand_adults, 6.7m];
+            yield return [dementia_estimated_diagnosis_rate_65over, 6.8m];
+            yield return [dementia_prevalence_65over, 6.9m];
+            yield return [dementia_qof_prevalence, 6.11m];
+            yield return [dementia_register_65over_per100k, 6.12m];
+            yield return [learning_disability_prevalence, 6.13m];
+            yield return [median_bed_count, 6.6m];
+            yield return [median_occupancy, 6.15m];
+            yield return [occupancy_rates, 6.16m];
+            yield return [perc_18_64, 6.17m];
+            yield return [perc_65over, 6.18m];
+            yield return [perc_75over, 6.19m];
+            yield return [perc_85over, 6.21m];
+            yield return [perc_general_health, 6.22m];
+            yield return [perc_household_ownership, 6.23m];
+            yield return [perc_households_deprivation_deprived, 6.24m];
+            yield return [perc_households_one_person, 6.25m];
+            yield return [perc_population_disability, 6.26m];
+            yield return [perc_unpaid_care_provider, 6.27m];
+            yield return [total_population, 6.28m];
 
         }
 
 
     }
 
+    [Fact]
+    public async Task GetMetric_BedcountWithTimeSeries_ReturnsExpectedData()
+    {
+        var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
+            new GetMetricRequest { MetricCode = bedcount, LocationCode = "1-123456789", LocationType = National, TimeSeries = true });
 
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        response.MetricCode.ShouldBe("bedcount");
+        response.LocationCode.ShouldBe("1-123456789");
+        response.LocationType.ShouldBe("National");
+        response.SeriesStartDate.ShouldBe(new DateTime(2000, 01, 01));
+        response.SeriesFrequency.ShouldBe("Daily");
+        response.Values.ShouldBe([1.1m, 2.2m, 3.3m, 4.4m, 5.5m]);
+    }
+
+    [Theory]
+    [MemberData(nameof(MetricCodeTimeSeriesCombinations))]
+    public async Task GetMetric_AllMetricsWithTimeSeries_ReturnsExpectedData(MetricCodeEnum metricCode, decimal lastValue)
+    {
+        var (httpCode, response) = await _client.GETAsync<GetMetricEndpoint, GetMetricRequest, GetMetricResponse>(
+            new GetMetricRequest { MetricCode = metricCode, LocationCode = "E92000001", LocationType = Regional, TimeSeries = true });
+
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        response.MetricCode.ShouldBe(metricCode.ToString());
+        response.LocationCode.ShouldBe("E92000001");
+        response.LocationType.ShouldBe(nameof(Regional));
+        response.SeriesStartDate.ShouldBe(new DateTime(2001, 01, 01));
+        response.SeriesFrequency.ShouldBe("Daily");
+        response.Values.ShouldBe([2.2m, 3.3m, 4.4m, 5.5m, lastValue]);
+    }
 }

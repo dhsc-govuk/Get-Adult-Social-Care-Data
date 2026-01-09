@@ -28,7 +28,7 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper) : 
             return;
         }
 
-        var response = mapper.MetricTimeSeriesToGetMetricResponse(data);
+        var response = mapper.MetricTimeSeriesToGetMetricResponse(data, req.TimeSeries);
         await Send.OkAsync(response, ct);
     }
 }
