@@ -96,10 +96,15 @@ export const auth = betterAuth({
         }
       }
       if (ctx.path == '/error') {
+        const error = ctx.query?.error;
         logger.error('Auth error', {
           error: ctx.query?.error,
           description: ctx.query?.error_description,
         });
+        if (error === 'signup_disabled') {
+          // This occurs for valid oauth flows which don't match existing users in the db
+          throw ctx.redirect('/access-denied');
+        }
       }
     }),
   },

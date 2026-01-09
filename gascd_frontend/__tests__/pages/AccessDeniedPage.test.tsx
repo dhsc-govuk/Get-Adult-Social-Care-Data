@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import AccessDeniedPage from '../../app/(onboarding)/access-denied/page';
+import AccessDeniedPage from '../../app/(authentication)/access-denied/page';
 
 describe('AccessDeniedPage', () => {
   it('should render the heading, and some body text', () => {
