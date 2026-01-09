@@ -22,7 +22,7 @@ describe('test handlers', () => {
     const result = await GetCareProviderLocation(req);
     const data = await result.json();
 
-    expect(data).toEqual(mockCPLocation);
+    expect(data.data).toEqual(mockCPLocation);
   });
 
   it('fetches and returns local authority successfully', async () => {

@@ -55,9 +55,12 @@ export const handlers = [
     }
   ),
 
-  http.get(api_root + '/metric_location/cp_locations/:code', () => {
-    return HttpResponse.json(locations_data.care_provider_location);
-  }),
+  http.get(
+    api_root + '/metric_location/cp_locations/:care_provider_code',
+    () => {
+      return HttpResponse.json(locations_data.care_provider_location);
+    }
+  ),
 
   http.get(api_root + '/metric_location/district/:code', () => {
     return HttpResponse.json(locations_data.district);
