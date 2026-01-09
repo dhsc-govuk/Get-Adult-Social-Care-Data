@@ -1,31 +1,26 @@
 import { render, screen } from '@testing-library/react';
-import ProvisionAndOccuplancyPage from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/data/page';
-import { authClient } from '@/lib/auth-client';
-import { mockSession } from '@/test-utils/test-utils';
+import ProvisionAndOccupancyPage from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/data/page';
+import {
+  initializeAppInsights,
+  resetAppInsights,
+  getAppInsights,
+} from '@/components/analytics/appInsights';
+import { TEST_CONNECTION_STRING } from '../../services/analytics/AnalyticsService.test';
 
 // Mock out things we are not testing at the moment to prevent them making api requests
 vi.mock('@/components/common/buttons/logoutButton');
 vi.mock('@/services/logger/logService');
 vi.mock('@/services/indicator/IndicatorFetchService');
-vi.mock('@/services/location/LocationService');
+vi.mock('@/services/location/locationService');
+
+// Mock out JS libraries that we are not testing here
 vi.mock('react-plotly.js', () => ({
   default: vi.fn(),
 }));
 
-vi.mock('@/lib/auth-client', () => ({
-  authClient: {
-    getSession: vi.fn(),
-    useSession: vi.fn(),
-  },
-}));
-const mockGetSession = vi.mocked(authClient.getSession);
-const mockUseSession = vi.mocked(authClient.useSession);
-mockGetSession.mockReturnValue({ data: mockSession } as any);
-mockUseSession.mockReturnValue({ data: mockSession } as any);
-
-describe('ProvisionAndOccuplancyPage', () => {
+describe('ProvisionAndOccupancyPage', () => {
   it('should render the heading, body text, and data tables', () => {
-    render(<ProvisionAndOccuplancyPage />);
+    render(<ProvisionAndOccupancyPage />);
 
     const mainHeading = screen.getByRole('heading', {
       name: /Care home beds and occupancy levels/i,
@@ -72,5 +67,42 @@ describe('ProvisionAndOccuplancyPage', () => {
     for (let table of tables) {
       expect(screen.getByRole('table', { name: table })).toBeInTheDocument();
     }
+  });
+});
+
+describe('ProvisionAndOccupancyPage', () => {
+  beforeAll(() => {
+    initializeAppInsights(TEST_CONNECTION_STRING);
+    vi.resetAllMocks();
+  });
+
+  afterAll(() => {
+    resetAppInsights();
+  });
+
+  it('should track the correct metric events', () => {
+    const appInsights = getAppInsights() as any;
+    const insightSpy = vi.spyOn(appInsights, 'trackEvent');
+
+    render(<ProvisionAndOccupancyPage />);
+
+    const expected_metrics = [
+      'bedcount_total',
+      'occupancy_rate_total',
+      'median_bed_count_total',
+      'median_occupancy_total',
+      'bedcount_per_100000_adults_total',
+    ];
+
+    expect(insightSpy).toHaveBeenCalledTimes(expected_metrics.length);
+    expected_metrics.forEach((metric_id) => {
+      const expected_event = {
+        name: 'metric-view',
+        properties: {
+          metric_id: metric_id,
+        },
+      };
+      expect(insightSpy).toHaveBeenCalledWith(expected_event);
+    });
   });
 });
