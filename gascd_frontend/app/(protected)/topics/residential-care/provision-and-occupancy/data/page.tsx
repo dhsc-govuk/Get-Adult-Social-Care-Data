@@ -124,7 +124,7 @@ export default function ProvisionAndOccupancyPage() {
       url: '/home',
     },
     {
-      text: 'Care homes',
+      text: 'Care provision',
       url: '/topics/residential-care/subtopics',
     },
   ];
