@@ -8,6 +8,7 @@ import LocationService, {
 } from '@/services/location/locationService';
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 const LocationSelectPage: React.FC = () => {
   const { data: session } = useSession();
@@ -45,6 +46,11 @@ const LocationSelectPage: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    if (session?.user.selectedLocationId) {
+      // If they had a previous location, track this change
+      AnalyticsService.trackLocationChange(selectedLocation);
+    }
+
     await LocationService.setSelectedLocation(
       selectedLocation,
       selectedLocationName
