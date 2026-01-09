@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import ProvisionAndOccupancyPage from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/data/page';
-import LocationService from '@/services/location/locationService';
 import {
   initializeAppInsights,
   resetAppInsights,
@@ -11,8 +10,10 @@ import { TEST_CONNECTION_STRING } from '../../services/analytics/AnalyticsServic
 // Mock out things we are not testing at the moment to prevent them making api requests
 vi.mock('@/components/common/buttons/logoutButton');
 vi.mock('@/services/logger/logService');
-//vi.mock('@/services/indicator/IndicatorFetchService');
+vi.mock('@/services/indicator/IndicatorFetchService');
 vi.mock('@/services/location/locationService');
+
+// Mock out JS libraries that we are not testing here
 vi.mock('react-plotly.js', () => ({
   default: vi.fn(),
 }));

@@ -1,8 +1,4 @@
 import React, { useEffect } from 'react';
-import {
-  Tabs,
-  createAll,
-} from '../../../public/govuk-frontend/js/govuk-frontend.min.js';
 import AnalyticsService from '@/services/analytics/analyticsService';
 
 type Props = {
@@ -29,7 +25,12 @@ const DataTabs: React.FC<Props> = ({
   textSummary,
 }) => {
   useEffect(() => {
-    createAll(Tabs);
+    const setupTabs = async () => {
+      // Import this at page load time to avoid NextJS SSR errors
+      const GOVUKFrontend = await import('govuk-frontend');
+      GOVUKFrontend.createAll(GOVUKFrontend.Tabs);
+    };
+    setupTabs();
   }, []);
 
   return (

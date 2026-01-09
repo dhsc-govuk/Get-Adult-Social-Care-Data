@@ -1,6 +1,7 @@
 $govuk-assets-path: "/govuk-frontend/";
 $govuk-fonts-path: "/govuk-frontend/fonts/";
 
+@forward "node_modules/@ministryofjustice/frontend/moj/all";
 @import "govuk-frontend/dist/govuk/index";
 // Importing this stylesheet directly, otherwise it doesn't pick up the asset/font paths
 @import "node_modules/@x-govuk/govuk-prototype-components/dist/govuk-prototype-components.scss";
