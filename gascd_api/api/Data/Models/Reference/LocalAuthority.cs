@@ -16,8 +16,8 @@ public class LocalAuthority : SearchableEntity
     public virtual Region Region { get; init; } = null!;
 
     [Column("geo_data_fk")]
-    public required int GeoDataFk { get; init; }
+    public int? GeoDataFk { get; init; }
 
     [ForeignKey("GeoDataFk")]
-    public virtual GeoData GeoData { get; init; } = null!;
+    public virtual GeoData? GeoData { get; init; } = null!;
 }

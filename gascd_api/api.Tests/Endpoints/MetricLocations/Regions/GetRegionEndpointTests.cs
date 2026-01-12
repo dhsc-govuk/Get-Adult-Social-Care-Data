@@ -54,6 +54,22 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
         response.CountryName.ShouldBe("England");
     }
 
+
+    [Fact]
+    public async Task GetRegion_WithNullGeoData_ReturnsExpectedRegionData()
+    {
+        var (httpCode, response) =
+            await _client.GETAsync<GetRegionEndpoint, GetRegionRequest, GetRegionResponse>(
+                new GetRegionRequest { RegionCode = "E12000003" });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Code.ShouldBe("E12000003");
+        response.DisplayName.ShouldBe("North East");
+        response.GeoData.ShouldBe(null);
+        response.CountryCode.ShouldBe("E92000001");
+        response.CountryName.ShouldBe("England");
+    }
+
     [Fact]
     public async Task GetRegion_ReturnsExpectedRegionJsonObject()
     {
