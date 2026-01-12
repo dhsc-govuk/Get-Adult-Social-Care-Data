@@ -159,14 +159,18 @@ You can log raw SQL queries to the terminal by running the app as follows:
 
 ### E2E tests
 
-There are some basic end-to-end tests written with cypress, which you can run against a local docker build.
+There are some basic end-to-end tests written with cypress, which you can run against a local production build.
 
 First ensure you have local auth and a local db set up and configured in your .env (see above). Then run:
 
 ```bash
 # In one terminal
+## Start the user db
 docker compose up userdb -d
-make docker-up-rebuild
+## Start onelogin simulator
+docker compose up onelogin_simulator -d
+## Build and run the app in production mode
+npm run build && npm run start
 # In a second terminal
 make test-e2e
 ```

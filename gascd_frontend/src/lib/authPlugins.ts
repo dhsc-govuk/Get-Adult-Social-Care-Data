@@ -70,8 +70,8 @@ export const OneLoginPlugin = (): GenericOAuthConfig => {
     // Ensure email for user is updated to match onelogin
     // (this is then checked against registeredEmail, which is not updated from onelogin)
     overrideUserInfo: true,
-    // No manual signup support, but users are implicitly created on successful login
-    disableImplicitSignUp: false,
+    // No automatic signup support through one login
+    disableImplicitSignUp: true,
     mapProfileToUser: (profile) => {
       return {
         name: profile.email,

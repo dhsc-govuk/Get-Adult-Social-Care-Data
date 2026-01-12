@@ -14,3 +14,12 @@ Cypress.Commands.add('logout', () => {
 Cypress.Commands.add('metatag', (name: string) => {
   return cy.get(`head > meta[name="${name}"]`);
 });
+
+Cypress.Commands.add('login_onelogin', (username: string, email: string) => {
+  cy.visit('/onelogin');
+  cy.get('button').contains('Sign in with GOV.UK One Login').click();
+  cy.get('input#sub').clear().type(username);
+  cy.get('input#email').clear().type(email);
+  cy.get('button').contains('Continue').click();
+  cy.wait(500);
+});
