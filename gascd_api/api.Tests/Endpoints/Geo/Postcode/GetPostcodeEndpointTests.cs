@@ -57,6 +57,19 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
         response.LaName.ShouldBe("Liverpool");
     }
 
+    [Fact]
+    public async Task GetPostCode_NullGeoData_ReturnsCorrectData()
+    {
+        var (httpCode, response) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
+            new GetPostcodeRequest { Postcode = "CV23TN" });
+        httpCode.EnsureSuccessStatusCode();
+        response.SanitisedPostcode.ShouldBe("CV23TN");
+        response.DisplayPostcode.ShouldBe("CV2 3TN");
+        response.GeoData.ShouldBe(null);
+        response.LaCode.ShouldBe("E08000016");
+        response.LaName.ShouldBe("Cheshire");
+    }
+
     [Theory]
     [InlineData("")]
     [InlineData(" ")]
