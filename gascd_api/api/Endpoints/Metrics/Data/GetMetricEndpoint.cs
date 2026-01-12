@@ -17,6 +17,12 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper) : 
     {
         var metricTimeSerieses = GetMetricTimeSerieses(req);
 
+        if (metricTimeSerieses.Count == 0)
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
         var response = metricTimeSerieses.Select(mts => mapper.MetricTimeSeriesToGetMetricResponse(mts, req.TimeSeries)).ToList();
         await Send.OkAsync(response, ct);
     }
@@ -32,6 +38,11 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper) : 
                 .SingleOrDefault(d => d.Metric.Code == req.MetricCode.ToString() &&
                                       d.LocationCode == location.LocationCode &&
                                       d.LocationType == location.LocationType.ToString());
+
+            if (data == null)
+            {
+                return [];
+            }
 
             metricTimeSerieses.Add(data);
         }
