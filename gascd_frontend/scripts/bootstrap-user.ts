@@ -1,18 +1,16 @@
 // dotenv/config to load env vars in development
 import 'dotenv/config';
 import { authDB } from '@/lib/auth';
-import { createRandomStringGenerator } from '@better-auth/utils/random';
-
-export const generateId = (size?: number) => {
-  return createRandomStringGenerator('a-z', 'A-Z', '0-9')(size || 32);
-};
+import { generateId } from 'better-auth';
 
 const bootstrapUser = async (
   email: string,
   location_id: string,
   location_type: string
 ) => {
-  console.log(`Attempting to create user: ${email}`);
+  console.log(
+    `Attempting to create user: ${email} / ${location_id} / ${location_type}`
+  );
 
   // This updates the db directly, because the location properties are
   // protected from being updated through the Better Auth client API
