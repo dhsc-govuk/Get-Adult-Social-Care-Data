@@ -6,7 +6,7 @@ dotenv.config();
 export default defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
-      config.env.APPLICATION_PASSWORD = process.env.LOCAL_AUTH_PASSWORD;
+      config.env.AUTH_EMAIL = process.env.LOCAL_AUTH_EMAIL;
       return config;
     },
     experimentalModifyObstructiveThirdPartyCode: true,
