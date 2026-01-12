@@ -288,4 +288,39 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[1].SeriesFrequency.ShouldBe("Daily");
         response[1].Values.ShouldBe([6.6m]);
     }
+
+    [Fact]
+    public async Task GetMetric_TwoLocations_EveryMetric_ReturnsExpectedData()
+    {
+        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+            new GetMetricRequest
+            {
+                MetricCode = bedcount,
+                Locations = new List<GetMetricRequest.Location>
+                {
+                    new() { LocationCode = "1-123456789", LocationType = National },
+                    new() { LocationCode = "E92000001", LocationType = Regional }
+                },
+                TimeSeries = true
+            });
+
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        response.Count.ShouldBe(2);
+
+        response[0].MetricCode.ShouldBe("bedcount");
+        response[0].LocationCode.ShouldBe("1-123456789");
+        response[0].LocationType.ShouldBe("National");
+        response[0].SeriesStartDate.ShouldBe(new DateTime(2000, 01, 01));
+        response[0].SeriesFrequency.ShouldBe("Daily");
+        response[0].Values.ShouldBe([1.1m, 2.2m, 3.3m, 4.4m, 5.5m]);
+
+        response[1].MetricCode.ShouldBe("bedcount");
+        response[1].LocationCode.ShouldBe("E92000001");
+        response[1].LocationType.ShouldBe("Regional");
+        response[1].SeriesStartDate.ShouldBe(new DateTime(2001, 01, 01));
+        response[1].SeriesFrequency.ShouldBe("Daily");
+        response[1].Values.ShouldBe([2.2m, 3.3m, 4.4m, 5.5m, 6.6m]);
+    }
 }
