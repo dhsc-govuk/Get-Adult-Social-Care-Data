@@ -53,6 +53,20 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
     }
 
     [Fact]
+    public async Task GetCountry_NullGeoData_ReturnsExpectedCountryData()
+    {
+        var (httpCode, response) =
+            await _client.GETAsync<GetCountryEndpoint, GetCountryRequest, GetCountryResponse>(
+                new GetCountryRequest { CountryCode = "E92000002" });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Code.ShouldBe("E92000002");
+        response.DisplayName.ShouldBe("Scotland");
+        response.GeoData.ShouldBe(null);
+
+    }
+
+    [Fact]
     public async Task GetCountry_ReturnsExpectedCountryJsonObject()
     {
         var response = await _client.GetAsync("api/metric_locations/countries/E92000001", TestContext.Current.CancellationToken);
