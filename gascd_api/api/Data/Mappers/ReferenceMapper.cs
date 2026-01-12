@@ -41,7 +41,8 @@ public class ReferenceMapper
         return new GetCareProviderResponse.CareProviderLocation
         {
             LocationName = careProviderLocation.Name,
-            LocationCode = careProviderLocation.Code
+            LocationCode = careProviderLocation.Code,
+            Address = careProviderLocation.Address,
         };
     }
 
