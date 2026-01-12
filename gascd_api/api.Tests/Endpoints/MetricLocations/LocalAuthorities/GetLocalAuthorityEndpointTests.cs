@@ -83,6 +83,24 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
         response.GeoData.Polygon.ShouldBe(expectedPolygon);
     }
 
+
+    [Fact]
+    public async Task GetLocalAuthority_NullGeoData_ReturnsExpectedLADataWithIncludeParents()
+    {
+        var (httpCode, response) =
+            await _client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, GetLocalAuthorityResponse>(
+                new GetLocalAuthorityRequest { LocalAuthorityCode = "E08000016", IncludeParents = true });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Code.ShouldBe("E08000016");
+        response.DisplayName.ShouldBe("Cheshire");
+        response.RegionCode.ShouldBe("E12000002");
+        response.RegionName.ShouldBe("North West");
+        response.CountryCode.ShouldBe("E92000001");
+        response.CountryName.ShouldBe("England");
+        response.GeoData.ShouldBe(null);
+    }
+
     [Fact]
     public async Task GetLocalAuthority_ReturnsExpectedCareProviderJsonObject()
     {
