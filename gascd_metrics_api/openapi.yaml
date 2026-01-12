@@ -70,6 +70,9 @@ paths:
                         location_name:
                           type: string
                           description: "The display name of the location."
+                        address:
+                          type: string
+                          description: "The address of the location."
 
   /metric_locations/cp_locations/{code}:
     get:
