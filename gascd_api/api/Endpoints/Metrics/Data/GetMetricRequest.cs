@@ -8,12 +8,18 @@ public class GetMetricRequest
     [RouteParam]
     public required MetricCodeEnum MetricCode { get; set; }
 
-    [QueryParam, BindFrom("location_code")]
-    public required string LocationCode { get; set; }
-
-    [QueryParam, BindFrom("location_type")]
-    public required LocationTypeEnum LocationType { get; set; }
+    [FromBody]
+    public required List<Location> Locations { get; set; }
 
     [QueryParam, BindFrom("time_series")]
     public bool TimeSeries { get; set; } = false;
+
+    public record Location
+    {
+        [QueryParam, BindFrom("location_code")]
+        public required string LocationCode { get; set; }
+
+        [QueryParam, BindFrom("location_type")]
+        public required LocationTypeEnum LocationType { get; set; }
+    }
 }
