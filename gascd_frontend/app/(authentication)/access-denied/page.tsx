@@ -1,0 +1,46 @@
+'use client';
+import React from 'react';
+import Layout from '@/components/common/layout/Layout';
+import { useSession } from '@/lib/auth-client';
+
+const AccessDeniedPage: React.FC = () => {
+  const { data: session } = useSession();
+  return (
+    <>
+      <Layout title="Access Denied" currentPage="access-denied">
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <h1 className="govuk-heading-xl">
+              You do not have access to this service
+            </h1>
+            <h2 className="govuk-heading-m">People with access</h2>
+
+            <div className="govuk-inset-text">
+              CQC nominated individuals with a CQC registered email addresses
+            </div>
+
+            <p className="govuk-body">
+              If you think you need access,{' '}
+              <a
+                href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
+                className="govuk-link"
+              >
+                request access to this service
+              </a>
+              .
+            </p>
+            <p className="govuk-body">We will need your:</p>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>name</li>
+              <li>organisation name</li>
+              <li>CQC registration number</li>
+              <li>CQC registered email address</li>
+            </ul>
+          </div>
+        </div>
+      </Layout>
+    </>
+  );
+};
+
+export default AccessDeniedPage;

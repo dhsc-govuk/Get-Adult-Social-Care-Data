@@ -152,7 +152,7 @@ METRIC_DEFINITIONS = {
 # Define location IDs
 LOCATIONS = {
     'Care provider location': [
-        'testcpl1', 'testcpl2'
+        'testcpl1', 'testcpl2', 'testcpl1a'
     ],
     'LA': [
         'testla1', 'testla2'
