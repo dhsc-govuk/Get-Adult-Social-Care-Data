@@ -44,8 +44,8 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         response.ProviderCode.ShouldBe("1-123456789");
         response.ProviderName.ShouldBe("Bupa");
         response.NominatedIndividual.ShouldBe("Mr. Ice Cool");
-        response.GeoData.Latitude.ShouldBe(53.425);
-        response.GeoData.Longitude.ShouldBe(-2.88);
+        response.GeoData?.Latitude.ShouldBe(53.425);
+        response.GeoData?.Longitude.ShouldBe(-2.88);
         List<GeoDataDto.CoordinateDto> expectedPolygon = new()
         {
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 },
@@ -54,7 +54,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 54.73 },
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 }
         };
-        response.GeoData.Polygon.ShouldBe(expectedPolygon);
+        response.GeoData?.Polygon.ShouldBe(expectedPolygon);
         response.LocalAuthorityCode.ShouldBe(null);
         response.LocalAuthorityName.ShouldBe(null);
         response.RegionCode.ShouldBe(null);
@@ -77,8 +77,8 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         response.ProviderCode.ShouldBe("1-123456789");
         response.ProviderName.ShouldBe("Bupa");
         response.NominatedIndividual.ShouldBe("Mr. Ice Cool");
-        response.GeoData.Latitude.ShouldBe(53.425);
-        response.GeoData.Longitude.ShouldBe(-2.88);
+        response.GeoData?.Latitude.ShouldBe(53.425);
+        response.GeoData?.Longitude.ShouldBe(-2.88);
         List<GeoDataDto.CoordinateDto> expectedPolygon = new()
         {
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 },
@@ -87,7 +87,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 54.73 },
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 }
         };
-        response.GeoData.Polygon.ShouldBe(expectedPolygon);
+        response.GeoData?.Polygon.ShouldBe(expectedPolygon);
         response.LocalAuthorityCode.ShouldBe("E08000014");
         response.LocalAuthorityName.ShouldBe("Liverpool");
         response.RegionCode.ShouldBe("E12000002");

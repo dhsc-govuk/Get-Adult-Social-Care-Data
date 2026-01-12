@@ -39,8 +39,8 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Code.ShouldBe("E92000001");
         response.DisplayName.ShouldBe("England");
-        response.GeoData.Latitude.ShouldBe(52.561928);
-        response.GeoData.Longitude.ShouldBe(-1.464854);
+        response.GeoData?.Latitude.ShouldBe(52.561928);
+        response.GeoData?.Longitude.ShouldBe(-1.464854);
         List<GeoDataDto.CoordinateDto> expectedPolygon = new()
         {
             new GeoDataDto.CoordinateDto { Longitude = -3.8, Latitude = 50.0 },
@@ -49,7 +49,7 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
             new GeoDataDto.CoordinateDto { Longitude = -3.9, Latitude = 52.25 },
             new GeoDataDto.CoordinateDto { Longitude = -3.8, Latitude = 50.0 }
         };
-        response.GeoData.Polygon.ShouldBe(expectedPolygon);
+        response.GeoData?.Polygon.ShouldBe(expectedPolygon);
     }
 
     [Fact]

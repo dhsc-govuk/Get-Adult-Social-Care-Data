@@ -43,8 +43,8 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
         response.RegionName.ShouldBe(null);
         response.CountryCode.ShouldBe(null);
         response.CountryName.ShouldBe(null);
-        response.GeoData.Latitude.ShouldBe(53.405);
-        response.GeoData.Longitude.ShouldBe(-2.98);
+        response.GeoData?.Latitude.ShouldBe(53.405);
+        response.GeoData?.Longitude.ShouldBe(-2.98);
         List<GeoDataDto.CoordinateDto> expectedPolygon = new()
         {
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.26 },
@@ -53,7 +53,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.73 },
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.26 }
         };
-        response.GeoData.Polygon.ShouldBe(expectedPolygon);
+        response.GeoData?.Polygon.ShouldBe(expectedPolygon);
     }
 
     [Fact]
@@ -70,8 +70,8 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
         response.RegionName.ShouldBe("North West");
         response.CountryCode.ShouldBe("E92000001");
         response.CountryName.ShouldBe("England");
-        response.GeoData.Latitude.ShouldBe(53.405);
-        response.GeoData.Longitude.ShouldBe(-2.98);
+        response.GeoData?.Latitude.ShouldBe(53.405);
+        response.GeoData?.Longitude.ShouldBe(-2.98);
         List<GeoDataDto.CoordinateDto> expectedPolygon = new()
         {
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.26 },
@@ -80,7 +80,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.73 },
             new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 53.26 }
         };
-        response.GeoData.Polygon.ShouldBe(expectedPolygon);
+        response.GeoData?.Polygon.ShouldBe(expectedPolygon);
     }
 
 
