@@ -202,12 +202,12 @@ paths:
         '404':
           description: "Country not found."
 
-  /metric_filters/{metric_group_id}:
+  /metric_filters/{metric_group_code}:
     get:
       summary: "Get available filters for a group of metrics"
       description: "Retrieves the available filter options for a metric group."
       parameters:
-        - $ref: '#/components/parameters/MetricGroupId'
+        - $ref: '#/components/parameters/MetricGroupCode'
       responses:
         '200':
           description: "A list of available filter options."
@@ -218,12 +218,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/MetricFilter'
 
-  /metrics/{metric_id}/metadata:
+  /metrics/{metric_code}/metadata:
     get:
       summary: "Get metadata for a specific metric"
       description: "Retrieves all metadata for a single metric, including its name, numerator, and denominator definitions. "
       parameters:
-        - $ref: '#/components/parameters/MetricId'
+        - $ref: '#/components/parameters/MetricCode'
       responses:
         '200':
           description: "The metadata for the requested metric."
@@ -234,12 +234,12 @@ paths:
         '404':
           description: "Metric not found."
 
-  /metrics/{metric_id}/data:
+  /metrics/{metric_code}/data:
     get:
       summary: "Get time-series or most recent data for a single metric"
       description: "Retrieves data points for a single specified metric across one or more locations. Omit date parameters to get the most recent data point. Provide a startDate to get a time-series."
       parameters:
-        - $ref: '#/components/parameters/MetricId'
+        - $ref: '#/components/parameters/MetricCode'
         - name: locations
           in: query
           description: "Comma-separated list of location codes to retrieve data for."
@@ -270,16 +270,16 @@ paths:
 # Reusable components
 components:
   parameters:
-    MetricId:
-      name: metric_id
+    MetricCode:
+      name: metric_code
       in: path
       required: true
       description: "The unique identifier for the metric."
       schema:
         type: string
         example: "bedcount_per_100000_adults_total"
-    MetricGroupId:
-      name: metric_group_id
+    MetricGroupCode:
+      name: metric_group_code
       in: path
       required: true
       description: "The unique identifier for the metric group."
@@ -485,7 +485,7 @@ components:
       type: object
       description: "Defines the properties and context of a metric."
       properties:
-        metric_id:
+        metric_code:
           type: string
           description: "The unique identifier for the metric."
         metric_name:
@@ -508,13 +508,13 @@ components:
       type: object
       description: "An available filter for a metric, such as bed type."
       properties:
-        metric_group_id:
+        metric_group_code:
           type: string
-          description: "The specific metric group ID this filter applies to."
+          description: "The specific metric group code this filter applies to."
           example: "bedcount_per_100000_adults"
-        metric_id:
+        metric_code:
           type: string
-          description: "The specific metric ID this filter applies to."
+          description: "The specific metric code this filter applies to."
           example: "bedcount_per_100000_adults_total_general_nursing"
         display_name:
           type: string
@@ -525,7 +525,7 @@ components:
       type: object
       description: "A series of data points at a specific time and location specified in the call for the metric."
       properties:
-        metric_id:
+        metric_code:
           type: string
           description: "The unique identifier for the metric."
         location_code:
