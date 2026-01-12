@@ -290,7 +290,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     }
 
     [Fact]
-    public async Task GetMetric_TwoLocations_EveryMetric_ReturnsExpectedData()
+    public async Task GetMetric_TwoLocations_TimeSeriesTrue_ReturnsExpectedData()
     {
         var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
             new GetMetricRequest
@@ -323,4 +323,40 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[1].SeriesFrequency.ShouldBe("Daily");
         response[1].Values.ShouldBe([2.2m, 3.3m, 4.4m, 5.5m, 6.6m]);
     }
+
+
+    [Fact]
+    public async Task GetMetric_TwoLocations_TimeSeriesTrue_ReturnsExpectedJsonData()
+    {
+
+        HttpContent content = new StringContent("[ { \"location_code\": \"1-123456789\", \"location_type\": \"National\" } ,{ \"location_code\": \"E92000001\", \"location_type\": \"Regional\" } ]", Encoding.UTF8, "application/json");
+        var response = await _client.PostAsync("api/metrics/bedcount/data?time_series=true", content, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var jArray = await ParseJsonResponse<JArray>(response);
+
+        GetFromJson(jArray, "[0].metric_code").ShouldBe("bedcount");
+        GetFromJson(jArray, "[0].location_code").ShouldBe("1-123456789");
+        GetFromJson(jArray, "[0].location_type").ShouldBe("National");
+        GetFromJson(jArray, "[0].series_start_date").ShouldBe("01/01/2000 00:00:00");
+        GetFromJson(jArray, "[0].series_frequency").ShouldBe("Daily");
+        GetFromJson(jArray, "[0].values[0]").ShouldBe("1.1");
+        GetFromJson(jArray, "[0].values[1]").ShouldBe("2.2");
+        GetFromJson(jArray, "[0].values[2]").ShouldBe("3.3");
+        GetFromJson(jArray, "[0].values[3]").ShouldBe("4.4");
+        GetFromJson(jArray, "[0].values[4]").ShouldBe("5.5");
+
+        GetFromJson(jArray, "[1].metric_code").ShouldBe("bedcount");
+        GetFromJson(jArray, "[1].location_code").ShouldBe("E92000001");
+        GetFromJson(jArray, "[1].location_type").ShouldBe("Regional");
+        GetFromJson(jArray, "[1].series_start_date").ShouldBe("01/01/2001 00:00:00");
+        GetFromJson(jArray, "[1].series_frequency").ShouldBe("Daily");
+        GetFromJson(jArray, "[1].values[0]").ShouldBe("2.2");
+        GetFromJson(jArray, "[1].values[1]").ShouldBe("3.3");
+        GetFromJson(jArray, "[1].values[2]").ShouldBe("4.4");
+        GetFromJson(jArray, "[1].values[3]").ShouldBe("5.5");
+        GetFromJson(jArray, "[1].values[4]").ShouldBe("6.6");
+
+    }
+
 }
