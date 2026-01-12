@@ -6,12 +6,7 @@ namespace api.Tests.Endpoints.Metrics.Data;
 
 public class GetMetricValidatorTests : IDisposable
 {
-    private GetMetricValidator _validator;
-
-    public GetMetricValidatorTests()
-    {
-        _validator = new GetMetricValidator();
-    }
+    private readonly GetMetricValidator _validator = new();
 
     [Theory]
     [InlineData("E11")]

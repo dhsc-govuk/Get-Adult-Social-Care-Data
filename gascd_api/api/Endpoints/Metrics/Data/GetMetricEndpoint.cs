@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.Metrics.Data;
 
-public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper) : Endpoint<GetMetricRequest, List<GetMetricResponse>>
+public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper, ILogger<GetMetricEndpoint> logger) : Endpoint<GetMetricRequest, List<GetMetricResponse>>
 {
     public override void Configure()
     {
@@ -15,19 +15,22 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper) : 
 
     public override async Task HandleAsync(GetMetricRequest req, CancellationToken ct)
     {
-        var metricTimeSerieses = GetMetricTimeSerieses(req);
+        logger.LogDebug("Received data request for Metric code: {code}", req.MetricCode);
+        var metricTimeSerieses = GetMetricTimeSeriesList(req);
 
         if (metricTimeSerieses.Count == 0)
         {
+            logger.LogInformation("Metric time series not found for Metric code: {code}", req.MetricCode);
             await Send.NotFoundAsync(ct);
             return;
         }
 
         var response = metricTimeSerieses.Select(mts => mapper.MetricTimeSeriesToGetMetricResponse(mts, req.TimeSeries)).ToList();
+        logger.LogInformation("Finished processing data for Metric code: {code}", req.MetricCode);
         await Send.OkAsync(response, ct);
     }
 
-    private List<MetricTimeSeries> GetMetricTimeSerieses(GetMetricRequest req)
+    private List<MetricTimeSeries> GetMetricTimeSeriesList(GetMetricRequest req)
     {
         List<MetricTimeSeries> metricTimeSerieses = new();
         foreach (GetMetricRequest.Location location in req.Locations)
