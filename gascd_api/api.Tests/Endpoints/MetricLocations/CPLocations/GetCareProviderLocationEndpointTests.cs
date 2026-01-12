@@ -96,6 +96,29 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         response.CountryName.ShouldBe("England");
     }
 
+    [Fact]
+    public async Task GetCareProviderLocation_WithNullGeodata_ReturnsExpectedCareProviderDataWithIncludeParents()
+    {
+        var (httpCode, response) =
+            await _client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, GetCareProviderLocationResponse>(
+                new GetCareProviderLocationRequest { CareProviderLocationCode = "1-222222225", IncludeParents = true });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Code.ShouldBe("1-222222225");
+        response.DisplayName.ShouldBe("Katherines Ears");
+        response.Address.ShouldBe("Katherines Ears, Liverpool, ME10 1QZ");
+        response.ProviderCode.ShouldBe("1-123456713");
+        response.ProviderName.ShouldBe("James");
+        response.NominatedIndividual.ShouldBe("Katherine");
+        response.GeoData.ShouldBe(null);
+        response.LocalAuthorityCode.ShouldBe("E08000014");
+        response.LocalAuthorityName.ShouldBe("Liverpool");
+        response.RegionCode.ShouldBe("E12000002");
+        response.RegionName.ShouldBe("North West");
+        response.CountryCode.ShouldBe("E92000001");
+        response.CountryName.ShouldBe("England");
+    }
+
 
     [Fact]
     public async Task GetCareProviderLocation_ReturnsExpectedCareProviderJsonObject()
