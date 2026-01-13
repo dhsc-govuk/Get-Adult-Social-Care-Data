@@ -3,6 +3,21 @@ export const mockSession: any = {
   user: {
     id: 'testing-user-1',
     email: 'test@test.com',
+    registeredEmail: 'test@test.com',
+    role: 'member',
+    name: 'Test User 1',
+    locationType: 'Care provider location',
+    locationId: 'testlocation1',
+    smartInsights: false,
+  },
+};
+
+export const mockSessionUnregistered: any = {
+  user: {
+    id: 'testing-user-1',
+    email: 'test@test.com',
+    role: '',
+    registeredEmail: '',
     name: 'Test User 1',
     locationType: 'Care provider location',
     locationId: 'testlocation1',
@@ -14,6 +29,8 @@ export const mockSessionWithLocation: any = {
   user: {
     id: 'testing-user-1',
     email: 'test@test.com',
+    registeredEmail: 'test@test.com',
+    role: 'member',
     name: 'Test User 1',
     locationType: 'Care provider location',
     locationId: 'testlocation1',

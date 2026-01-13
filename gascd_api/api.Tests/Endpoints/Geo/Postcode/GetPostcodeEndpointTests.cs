@@ -42,8 +42,8 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
         httpCode.EnsureSuccessStatusCode();
         response.SanitisedPostcode.ShouldBe("KT220UF");
         response.DisplayPostcode.ShouldBe("KT22 0UF");
-        response.GeoData.Latitude.ShouldBe(51.33954856349381d);
-        response.GeoData.Longitude.ShouldBe(-0.349629386d);
+        response.GeoData?.Latitude.ShouldBe(51.33954856349381d);
+        response.GeoData?.Longitude.ShouldBe(-0.349629386d);
         List<GeoDataDto.CoordinateDto> expectedPolygon = new()
             {
                 new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 },
@@ -52,9 +52,22 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
                 new GeoDataDto.CoordinateDto { Longitude = -3.1, Latitude = 52.73 },
                 new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 }
             };
-        response.GeoData.Polygon.ShouldBe(expectedPolygon);
+        response.GeoData?.Polygon.ShouldBe(expectedPolygon);
         response.LaCode.ShouldBe("E08000014");
         response.LaName.ShouldBe("Liverpool");
+    }
+
+    [Fact]
+    public async Task GetPostCode_NullGeoData_ReturnsCorrectData()
+    {
+        var (httpCode, response) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
+            new GetPostcodeRequest { Postcode = "CV23TN" });
+        httpCode.EnsureSuccessStatusCode();
+        response.SanitisedPostcode.ShouldBe("CV23TN");
+        response.DisplayPostcode.ShouldBe("CV2 3TN");
+        response.GeoData.ShouldBe(null);
+        response.LaCode.ShouldBe("E08000016");
+        response.LaName.ShouldBe("Cheshire");
     }
 
     [Theory]

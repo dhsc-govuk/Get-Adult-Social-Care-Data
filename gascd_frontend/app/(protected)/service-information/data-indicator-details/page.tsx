@@ -46,6 +46,13 @@ export default function DataIndicatorDetailsPage() {
               limitations={true}
               url="/help/percentage-beds-occupied"
             />
+            <DataLinkCard
+              label="People aged 5 and over who provide unpaid care"
+              sources="Office for National Statistics."
+              updateFrequency="Updated every 10 years"
+              limitations={false}
+              url="/help/percentage-people-aged-5-and-over-who-provide-unpaid-care"
+            />
           </ul>
           <h2 className="govuk-heading-m govuk-!-margin-top-9">
             Population needs data indicators
