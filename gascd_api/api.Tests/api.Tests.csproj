@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <OutputType>Exe</OutputType>
         <RootNamespace>api.Tests</RootNamespace>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <!--
         This template uses native xUnit.net command line options when using 'dotnet run' and
         VSTest by default when using 'dotnet test'. For more information on how to enable support
@@ -23,12 +23,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FastEndpoints.Testing" Version="7.1.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="9.0.4" />
+        <PackageReference Include="FastEndpoints.Testing" Version="7.1.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="10.0.0" />
         <PackageReference Include="Shouldly" Version="4.3.0" />
-        <PackageReference Include="Testcontainers.PostgreSql" Version="4.8.1" />
-        <PackageReference Include="xunit.v3" Version="3.1.0"/>
+        <PackageReference Include="Testcontainers.PostgreSql" Version="4.10.0" />
+        <PackageReference Include="xunit.v3" Version="3.2.1"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5"/>
     </ItemGroup>
 
