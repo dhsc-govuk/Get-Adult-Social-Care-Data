@@ -67,7 +67,12 @@ METRIC_DEFINITIONS = {
             'metric_date_type': 'Census',
             'location_types': ['LA', 'National', 'Regional'],
             'data_point_range': (8, 18)
-        }
+        },
+        'perc_unpaid_care_provider_total': {
+            'metric_date_type': 'Census',
+            'location_types': ['LA', 'National', 'Regional'],
+            'data_point_range': (8, 18)
+        },
     },
     
     'Capacity Tracker': {

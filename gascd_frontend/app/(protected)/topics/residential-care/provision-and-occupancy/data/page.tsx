@@ -25,6 +25,7 @@ import TimeSeriesChart, {
 } from '@/components/charts/TimeSeriesChart';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
+import RelatedDataList from '@/components/data-components/RelatedDataList';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -123,7 +124,7 @@ export default function ProvisionAndOccupancyPage() {
       url: '/home',
     },
     {
-      text: 'Care homes',
+      text: 'Care provision',
       url: '/topics/residential-care/subtopics',
     },
   ];
@@ -797,6 +798,15 @@ export default function ProvisionAndOccupancyPage() {
           url="/help/percentage-beds-occupied"
         />
       </DataIndicatorDetailsList>
+
+      <RelatedDataList>
+        <DataLinkCard
+          label="Unpaid care"
+          description="Statistics on the people who provide unpaid care to family members, friends and neighbours."
+          url="/topics/residential-care/unpaid-care/data"
+        />
+      </RelatedDataList>
+
       <LocalMarketInformation
         localAuthority={locationNamesCP.LALabel}
         localAuthorityId={locationIds[1]}

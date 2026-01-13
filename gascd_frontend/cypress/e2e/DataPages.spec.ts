@@ -97,6 +97,29 @@ describe('Data pages exist and contain data', () => {
     cy.get('#textSummary-3').should('not.be.visible');
   });
 
+  it('Should navigate to the Unpaid care page and check the contents', () => {
+    cy.login();
+    cy.visit('/topics/residential-care/unpaid-care/data');
+
+    cy.get('h1').should('contains.text', 'Unpaid care');
+
+    cy.contains('Unpaid care');
+
+    cy.get('a[href*="table-1"]').click();
+    cy.url().should('include', '#table-1');
+    cy.get('#table-1')
+      .should('be.visible')
+      .contains(
+        'Table 1: percentage of people aged 5 and over who provide unpaid care'
+      );
+    cy.get('#download-1').should('not.be.visible');
+
+    cy.get('a[href*="download-1"]').click();
+    cy.url().should('include', '#download-1');
+    cy.get('#download-1').should('be.visible');
+    cy.get('#table-1').should('not.be.visible');
+  });
+
   it('Should navigate to the Population size and age group percentages page and check the contents', () => {
     cy.login();
     cy.visit('/topics/population-needs/population-age-and-size/data');
