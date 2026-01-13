@@ -1,3 +1,4 @@
+using api.Endpoints.PostProcessors;
 using api.Logging;
 using FastEndpoints;
 using System.Text.Json;
@@ -19,6 +20,8 @@ public static class FastEndpointsConfiguration
                 c.Errors.UseProblemDetails();
                 c.Serializer.Options.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
                 c.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                c.Endpoints.Configurator = definition =>
+                    definition.PostProcessor<ValidationLogger>(Order.Before);
             }
         );
     }
