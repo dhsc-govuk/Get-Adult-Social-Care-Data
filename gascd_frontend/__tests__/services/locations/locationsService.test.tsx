@@ -85,16 +85,18 @@ describe('LocationService', () => {
   });
 
   describe('getAvailableLocations', () => {
-    const mockJsonResponse = [
-      {
-        metric_location_id: '1',
-        metric_location_name: 'Location A',
-      },
-      {
-        metric_location_id: '2',
-        metric_location_name: 'Location B',
-      },
-    ];
+    const mockJsonResponse = {
+      data: [
+        {
+          location_id: '1',
+          location_name: 'Location A',
+        },
+        {
+          location_id: '2',
+          location_name: 'Location B',
+        },
+      ],
+    };
     const mockLocations: AvailableLocation[] = [
       {
         location_id: '1',

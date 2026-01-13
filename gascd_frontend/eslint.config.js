@@ -6,10 +6,7 @@ import pluginNext from '@next/eslint-plugin-next';
 
 export default [
   {
-    ignores: [
-      '.next/',
-      'coverage/'
-    ]
+    ignores: ['.next/', 'coverage/', './src/metrics-api-schema.d.ts'],
   },
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
@@ -35,7 +32,7 @@ export default [
       //...typescriptEslint.configs.recommended.rules, temporarily removed for build.
       'react/react-in-jsx-scope': 'off',
       ...pluginNext.configs.recommended.rules,
-      ...pluginNext.configs['core-web-vitals'].rules
+      ...pluginNext.configs['core-web-vitals'].rules,
     },
   },
 ];

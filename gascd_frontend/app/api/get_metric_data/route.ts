@@ -6,8 +6,41 @@ import logger from '@/utils/logger';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { addUserTelemetry } from '@/helpers/telemetry/usertelemetry';
+import type { paths } from '@/metrics-api-schema';
+import createClient from 'openapi-fetch';
 
 export async function POST(req: NextRequest) {
+  const queryParams = await req.json();
+
+  if (!queryParams.metric_ids?.length || !queryParams.location_ids?.length) {
+    return NextResponse.json(
+      { error: 'Missing required fields' },
+      { status: 400 }
+    );
+  }
+
+  if (process.env.DATA_API_ROOT) {
+    const client = createClient<paths>({ baseUrl: process.env.DATA_API_ROOT });
+    const metric_ids = queryParams.metric_ids;
+    let all_metrics: any[] = [];
+    for (let metric_id of metric_ids) {
+      const { data, error } = await client.GET('/metrics/{metric_code}/data', {
+        params: {
+          path: {
+            metric_code: metric_id,
+          },
+          query: {
+            locations: queryParams.location_ids,
+          },
+        },
+      });
+      if (data) {
+        all_metrics.push(data);
+      }
+    }
+    return NextResponse.json(all_metrics, { status: 200 });
+  }
+
   try {
     const session = await auth.api.getSession({
       headers: await headers(),

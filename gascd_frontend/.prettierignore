@@ -2,3 +2,4 @@ node_modules
 build
 dist
 .next
+src/metrics-api-schema.d.ts

@@ -3,10 +3,19 @@ import { dbPool } from '../../../src/data/dbModule';
 import logger from '@/utils/logger';
 
 export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  let provider_location_id = searchParams.get('provider_location_id');
+
+  if (process.env.DATA_API_ROOT) {
+    const url =
+      process.env.DATA_API_ROOT + '/providers/' + provider_location_id;
+    const response = await fetch(url);
+    const data = await response.json();
+    return NextResponse.json(data, { status: 200 });
+  }
+
   try {
     const pool = await dbPool;
-    const { searchParams } = new URL(req.url);
-    let provider_location_id = searchParams.get('provider_location_id');
     const resultSet = await pool
       .request()
       .input('provider_location_id', provider_location_id).query(`

@@ -20,7 +20,9 @@
     "db:migrate": " ./node_modules/@better-auth/cli/dist/index.mjs migrate",
     "db:migrate:ci": " ./node_modules/@better-auth/cli/dist/index.mjs migrate --yes",
     "db:user:add": "tsx scripts/bootstrap-user.ts",
-    "openapi:lint": "redocly lint --extends recommended ../gascd_metrics_api/openapi.yaml"
+    "openapi:lint": "redocly lint --extends recommended ../gascd_metrics_api/openapi.yaml",
+    "openapi:types:generate": "openapi-typescript ../gascd_metrics_api/openapi.yaml -o ./src/metrics-api-schema.d.ts",
+    "openapi:types:check": "openapi-typescript ../gascd_metrics_api/openapi.yaml -o ./src/metrics-api-schema.d.ts --check"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": "eslint --config eslint.config.js",
@@ -83,6 +85,8 @@
     "identity-obj-proxy": "^3.0.0",
     "lint-staged": "^16.1.2",
     "msw": "^2.7.3",
+    "openapi-fetch": "^0.15.0",
+    "openapi-typescript": "^7.10.1",
     "prettier": "^3.4.2",
     "sass": "^1.89.2",
     "ts-node": "^10.9.2",

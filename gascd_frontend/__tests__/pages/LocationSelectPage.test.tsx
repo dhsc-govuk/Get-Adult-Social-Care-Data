@@ -22,16 +22,18 @@ mockUseSession.mockReturnValue({ data: mockSession } as any);
 
 describe('LocationSelectPage', () => {
   it('should render the heading and some body text', () => {
-    const mockJsonResponse = [
-      {
-        metric_location_id: '1',
-        metric_location_name: 'Location A',
-      },
-      {
-        metric_location_id: '2',
-        metric_location_name: 'Location B',
-      },
-    ];
+    const mockJsonResponse = {
+      data: [
+        {
+          location_id: '1',
+          location_name: 'Location A',
+        },
+        {
+          location_id: '2',
+          location_name: 'Location B',
+        },
+      ],
+    };
     (fetch as vi.Mock).mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue(mockJsonResponse),
