@@ -111,6 +111,12 @@ stages:
                     command: 'custom'
                     custom: 'tool'
                     arguments: 'install --global dotnet-ef'
+                    
+                - task: DotNetCoreCLI@2
+                  displayName: 'Restore Dependencies'
+                  inputs:
+                    command: 'restore'
+                    projects: '**/*.csproj'
                 
                 # create migration bundle
                 - task: CmdLine@2
