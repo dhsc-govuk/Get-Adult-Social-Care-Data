@@ -19,11 +19,11 @@ export async function GET(req: NextRequest) {
         baseUrl: process.env.DATA_API_ROOT,
       });
       const { data } = await client.GET(
-        '/metric_location/cp_locations/{care_provider_code}',
+        '/metric_locations/cp_locations/{code}',
         {
           params: {
             path: {
-              care_provider_code: cp_code,
+              code: cp_code,
             },
           },
         }

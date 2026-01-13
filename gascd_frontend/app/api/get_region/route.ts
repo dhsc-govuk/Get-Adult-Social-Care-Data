@@ -18,16 +18,13 @@ export async function GET(req: NextRequest) {
       const client = createClient<paths>({
         baseUrl: process.env.DATA_API_ROOT,
       });
-      const { data } = await client.GET(
-        '/metric_location/regions/{region_code}',
-        {
-          params: {
-            path: {
-              region_code: code,
-            },
+      const { data } = await client.GET('/metric_locations/regions/{code}', {
+        params: {
+          path: {
+            code: code,
           },
-        }
-      );
+        },
+      });
 
       if (!data) {
         return NextResponse.json({ error: 'No data found' }, { status: 404 });

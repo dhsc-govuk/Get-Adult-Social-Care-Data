@@ -24,13 +24,13 @@ export async function POST(req: NextRequest) {
     const metric_ids = queryParams.metric_ids;
     let all_metrics: any[] = [];
     for (let metric_id of metric_ids) {
-      const { data, error } = await client.GET('/metrics/{metricId}/data', {
+      const { data, error } = await client.GET('/metrics/{metric_code}/data', {
         params: {
           path: {
-            metricId: metric_id,
+            metric_code: metric_id,
           },
           query: {
-            locationId: queryParams.location_ids,
+            locations: queryParams.location_ids,
           },
         },
       });
