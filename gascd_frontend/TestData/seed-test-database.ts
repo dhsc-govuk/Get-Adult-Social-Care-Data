@@ -1,7 +1,5 @@
 import 'dotenv/config';
-import { auth } from '@/lib/auth';
-import { msdialect } from '@/lib/authDatabase';
-import { Kysely } from 'kysely';
+import { auth, authDB } from '@/lib/auth';
 
 const seedDevelopmentUser = async () => {
   const email = process.env.LOCAL_AUTH_EMAIL;
@@ -42,12 +40,12 @@ const seedDevelopmentUser = async () => {
   // Now update the user properties
   // This updates the db directly, because the location properties are
   // protected from being updated through the Better Auth client API
-  const db = new Kysely<any>({ dialect: msdialect });
-  const rows = await db
+  const rows = await authDB
     .updateTable('user')
     .set({
       locationId: process.env.LOCAL_AUTH_LOCATION_ID,
       locationType: process.env.LOCAL_AUTH_LOCATION_TYPE,
+      registeredEmail: email,
     })
     .where('user.email', '=', process.env.LOCAL_AUTH_EMAIL)
     .executeTakeFirst();

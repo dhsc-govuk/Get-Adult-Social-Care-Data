@@ -7,7 +7,7 @@ import { authClient } from '@/lib/auth-client';
 const LoginPage: React.FC = () => {
   const handleSubmit = async () => {
     const { data, error } = await authClient.signIn.oauth2({
-      providerId: 'azure-ad-b2c-signin', // required
+      providerId: 'azure-ad-b2c-signin',
       callbackURL: '/home',
     });
     if (error) {
