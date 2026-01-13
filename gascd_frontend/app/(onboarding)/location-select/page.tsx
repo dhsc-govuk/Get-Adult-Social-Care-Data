@@ -56,13 +56,17 @@ const LocationSelectPage: React.FC = () => {
       selectedLocationName
     );
 
+    goBack();
+    // Ensure changes to saved name are displayed
+    router.refresh();
+  };
+
+  const goBack = () => {
     if (document.referrer.includes(window.location.origin)) {
       router.back();
     } else {
-      router.push('/home#top');
+      router.push('/home');
     }
-    // Ensure changes to saved name are displayed
-    router.refresh();
   };
 
   return (
@@ -137,11 +141,7 @@ const LocationSelectPage: React.FC = () => {
                 {session && session.user?.selectedLocationId && (
                   <Link
                     href="/home"
-                    onClick={() => {
-                      if (document.referrer.includes(window.location.origin)) {
-                        router.back();
-                      }
-                    }}
+                    onClick={() => goBack()}
                     className="govuk-link govuk-body-m"
                   >
                     Cancel and go back
