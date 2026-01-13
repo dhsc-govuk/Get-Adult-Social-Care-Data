@@ -14,7 +14,10 @@ async function run() {
   }
 
   const fileContent = fs.readFileSync(csvPath);
-  const records = parse(fileContent, { columns: true, skip_empty_lines: true });
+  const records: any[] = parse(fileContent, {
+    columns: true,
+    skip_empty_lines: true,
+  });
 
   console.log(
     `[${isDryRun ? 'DRY RUN' : 'LIVE'}] Processing ${records.length} users...`
@@ -38,12 +41,15 @@ async function run() {
         emailVerified: 1,
         locationId: row.location_id,
         locationType: row.location_type,
+        source: row.source,
         role: 'member',
       })
       .execute();
+    console.log(`Created user ${userid} - ${row.name} (${row.email})`);
   }
 
   console.log('Import completed successfully.');
+  authDB.destroy();
 }
 
 run().catch((err) => {
