@@ -55,7 +55,12 @@ const LocationSelectPage: React.FC = () => {
       selectedLocation,
       selectedLocationName
     );
-    router.push('/home#top');
+
+    if (document.referrer.includes(window.location.origin)) {
+      router.back();
+    } else {
+      router.push('/home#top');
+    }
     // Ensure changes to saved name are displayed
     router.refresh();
   };
