@@ -42,6 +42,18 @@ export const auth = betterAuth({
         required: false,
         input: false,
       },
+      // Name they were registered with (the default better auth field is overriden on oauth login)
+      registeredName: {
+        type: 'string',
+        required: false,
+        input: false,
+      },
+      // Where this user was created/imported from
+      source: {
+        type: 'string',
+        required: false,
+        input: false,
+      },
       locationType: {
         type: 'string',
         required: false,
