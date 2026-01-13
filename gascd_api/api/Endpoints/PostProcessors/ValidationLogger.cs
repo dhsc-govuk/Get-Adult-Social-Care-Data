@@ -9,9 +9,9 @@ public class ValidationLogger(ILogger<ValidationLogger> logger) : IGlobalPostPro
     {
         if (ValidationContext.Instance.ValidationFailed)
         {
-            foreach (ValidationFailure instanceValidationFailure in ValidationContext.Instance.ValidationFailures)
+            foreach (ValidationFailure failure in ValidationContext.Instance.ValidationFailures)
             {
-                logger.LogInformation(instanceValidationFailure.ToString());
+                logger.LogWarning(failure.ToString());
             }
         }
         return Task.CompletedTask;

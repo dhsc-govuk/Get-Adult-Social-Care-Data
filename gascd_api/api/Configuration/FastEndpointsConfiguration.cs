@@ -20,8 +20,8 @@ public static class FastEndpointsConfiguration
                 c.Errors.UseProblemDetails();
                 c.Serializer.Options.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
                 c.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-                c.Endpoints.Configurator = definition =>
-                    definition.PostProcessor<ValidationLogger>(Order.Before);
+                c.Endpoints.Configurator = d =>
+                    d.PostProcessor<ValidationLogger>(Order.Before);
             }
         );
     }
