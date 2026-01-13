@@ -359,4 +359,26 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
 
     }
 
+    [Fact]
+    public async Task GetMetric_WithNullTimeSeriesValues_ReturnsExpectedData()
+    {
+        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+            new GetMetricRequest
+            {
+                MetricCode = bedcount_per_hundred_thousand_adults,
+                TimeSeries = true,
+                Locations = new() { new GetMetricRequest.Location { LocationCode = "1-123456789", LocationType = National } }
+            });
+
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        response.Count.ShouldBe(1);
+        response[0].MetricCode.ShouldBe(nameof(bedcount_per_hundred_thousand_adults));
+        response[0].LocationCode.ShouldBe("1-123456789");
+        response[0].LocationType.ShouldBe(nameof(National));
+        response[0].SeriesStartDate.ShouldBe(new DateTime(2002, 01, 01));
+        response[0].SeriesFrequency.ShouldBe("Daily");
+        response[0].Values.ShouldBe([22.2m, null, 44.4m, null, 32.1m]);
+    }
 }

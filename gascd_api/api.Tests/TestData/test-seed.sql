@@ -1,10 +1,33 @@
-DROP TABLE IF EXISTS local_authorities;
-DROP TABLE IF EXISTS care_provider_locations;
-DROP TABLE IF EXISTS regions;
 DROP TABLE IF EXISTS postcodes;
+DROP TABLE IF EXISTS care_provider_locations;
+DROP TABLE IF EXISTS local_authorities;
+DROP TABLE IF EXISTS total_population;
+DROP TABLE IF EXISTS perc_unpaid_care_provider;
+DROP TABLE IF EXISTS perc_population_disability;
+DROP TABLE IF EXISTS perc_households_one_person;
+DROP TABLE IF EXISTS perc_households_deprivation_deprived;
+DROP TABLE IF EXISTS perc_household_ownership;
+DROP TABLE IF EXISTS perc_general_health;
+DROP TABLE IF EXISTS perc_85over;
+DROP TABLE IF EXISTS perc_75over;
+DROP TABLE IF EXISTS perc_65over;
+DROP TABLE IF EXISTS perc_18_64;
+DROP TABLE IF EXISTS occupancy_rates;
+DROP TABLE IF EXISTS median_occupancy;
+DROP TABLE IF EXISTS median_bed_count;
+DROP TABLE IF EXISTS learning_disability_prevalence;
+DROP TABLE IF EXISTS dementia_register_65over_per100k;
+DROP TABLE IF EXISTS dementia_qof_prevalence;
+DROP TABLE IF EXISTS dementia_prevalence_65over;
+DROP TABLE IF EXISTS dementia_estimated_diagnosis_rate_65over;
+DROP TABLE IF EXISTS bedcount_per_hundred_thousand_adults;
+DROP TABLE IF EXISTS bedcount;
+DROP TABLE IF EXISTS regions;
+DROP TABLE IF EXISTS metrics;
 DROP TABLE IF EXISTS countries;
-DROP TABLE IF EXISTS care_providers;
+DROP TABLE IF EXISTS metric_groups;
 DROP TABLE IF EXISTS geo_data;
+DROP TABLE IF EXISTS care_providers;
 
 
 -- Start script
@@ -599,7 +622,8 @@ INSERT INTO bedcount (id, metric_fk, location_code, location_type, start_date, e
            (2, bedcount_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5,6.6], 6.6, CURRENT_TIMESTAMP);
 
     INSERT INTO bedcount_per_hundred_thousand_adults (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
-    VALUES (1, bedcount_per_hundred_thousand_adults_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.7], 6.7, CURRENT_TIMESTAMP);
+    VALUES (1, bedcount_per_hundred_thousand_adults_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.7], 6.7, CURRENT_TIMESTAMP),
+           (2, bedcount_per_hundred_thousand_adults_metric_id, '1-123456789', 'National', '2002-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [22.2,null,44.4, null, 32.1], 32.1, CURRENT_TIMESTAMP);
     
     INSERT INTO dementia_estimated_diagnosis_rate_65over (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, dementia_estimated_diagnosis_rate_65over_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP);
@@ -617,7 +641,7 @@ INSERT INTO bedcount (id, metric_fk, location_code, location_type, start_date, e
     VALUES (1, learning_disability_prevalence_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.13], 6.13, CURRENT_TIMESTAMP);
     
     INSERT INTO median_bed_count (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
-        VALUES (1, median_bed_count_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.6], 6.6, CURRENT_TIMESTAMP);
+    VALUES (1, median_bed_count_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.6], 6.6, CURRENT_TIMESTAMP);
     
     INSERT INTO median_occupancy (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, median_occupancy_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.15], 6.15, CURRENT_TIMESTAMP);

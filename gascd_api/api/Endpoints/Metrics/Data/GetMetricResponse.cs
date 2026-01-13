@@ -7,5 +7,5 @@ public class GetMetricResponse
     public required string LocationType { get; set; }
     public required DateTime SeriesStartDate { get; set; }
     public required string SeriesFrequency { get; set; }
-    public required decimal[] Values { get; set; }
+    public required decimal?[] Values { get; set; }
 }

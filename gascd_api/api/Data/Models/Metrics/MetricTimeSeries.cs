@@ -24,7 +24,7 @@ public class MetricTimeSeries : EntityBase
     public virtual Metric Metric { get; init; } = null!;
 
     [Column("time_series")]
-    public required decimal[] TimeSeries { get; init; }
+    public required decimal?[] TimeSeries { get; init; }
 
     [Column("latest_value")]
     public decimal LatestValue { get; init; }
