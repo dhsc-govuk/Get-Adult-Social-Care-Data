@@ -7,7 +7,7 @@ import * as fs from 'fs';
 
 async function run() {
   const csvPath = process.env.CSV_PATH;
-  const isDryRun = process.env.DRY_RUN === 'true';
+  const isDryRun = (process.env.DRY_RUN || '').toLowerCase() === 'true';
 
   if (!csvPath || !fs.existsSync(csvPath)) {
     throw new Error(`CSV file not found at path: ${csvPath}`);
