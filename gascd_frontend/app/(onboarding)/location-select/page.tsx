@@ -130,7 +130,15 @@ const LocationSelectPage: React.FC = () => {
                   Apply changes
                 </button>
                 {session && session.user?.selectedLocationId && (
-                  <Link href="/" className="govuk-link govuk-body-m">
+                  <Link
+                    href="/home"
+                    onClick={() => {
+                      if (document.referrer.includes(window.location.origin)) {
+                        router.back();
+                      }
+                    }}
+                    className="govuk-link govuk-body-m"
+                  >
                     Cancel and go back
                   </Link>
                 )}
