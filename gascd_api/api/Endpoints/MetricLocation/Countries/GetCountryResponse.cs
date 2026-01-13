@@ -6,5 +6,5 @@ public class GetCountryResponse
 {
     public required string Code { get; init; }
     public required string DisplayName { get; init; }
-    public required GeoDataDto GeoData { get; init; }
+    public GeoDataDto? GeoData { get; init; }
 }
