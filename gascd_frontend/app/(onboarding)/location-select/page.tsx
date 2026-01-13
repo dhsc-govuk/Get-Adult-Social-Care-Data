@@ -207,9 +207,13 @@ const LocationSelectPage: React.FC = () => {
                       <ul className="govuk-pagination__list pager-items">
                         {[...Array(chunkedLocations.length).keys()].map(
                           (key) => (
-                            <li className="govuk-pagination__item" key={key}>
+                            <li
+                              className={`govuk-pagination__item ${key === pageNumber ? ' govuk-pagination__item--current' : ''}`}
+                              key={key}
+                            >
                               <a
                                 className="govuk-link govuk-pagination__link"
+                                href="#"
                                 aria-label={`page-${key}`}
                                 onClick={() => setPageNumber(key)}
                               >
