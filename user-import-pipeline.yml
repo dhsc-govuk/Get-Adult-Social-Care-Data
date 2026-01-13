@@ -1,0 +1,61 @@
+trigger: none
+
+parameters:
+  - name: dryRun
+    displayName: "Dry Run? (Don't save to DB)"
+    type: boolean
+    default: true
+  - name: secureFileName
+    displayName: "Secure File Name"
+    type: string
+    default: 'users_import.csv'
+
+jobs:
+- job: ImportUsers
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+    - checkout: self
+    # 1. Access the secure file
+    - task: DownloadSecureFile@1
+      name: csvFile
+      inputs:
+        secureFile: '${{ parameters.secureFileName }}'
+
+    # 2. Setup Node environment
+    - task: NodeTool@0
+      inputs:
+        versionSpec: "24.4.1"
+
+    - script: npm ci --omit=optional
+      displayName: install dependencies
+      workingDirectory: gascd_frontend
+
+    - task: AzureCLI@2
+      displayName: 'Run user import with access token'
+      inputs:
+        azureSubscription: ${{environment.arm_connection}}
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          # 1. Get an Access Token for Azure SQL (resource ID is fixed)
+          # We verify the token is fetched before proceeding
+          TOKEN=$(az account get-access-token --resource https://database.windows.net/ --query accessToken -o tsv)
+
+          if [ -z "$TOKEN" ]; then
+            echo "Error: Failed to obtain access token"
+            exit 1
+          fi
+
+          echo "Access token obtained successfully."
+
+          export USER_DB_ACCESS_TOKEN=$TOKEN
+          export USER_DB_SERVER="${{environment.user_db_server}}"
+          export USER_DB_PORT="${{environment.user_db_port}}"
+          export USER_DATABASE="${{environment.user_db_name}}"
+          
+          # Run the import
+          cd gascd_frontend && npx tsx ./scripts/import-users.ts
+      env:
+        CSV_PATH: $(csvFile.secureFilePath)
+        DRY_RUN: ${{ parameters.dryRun }}
