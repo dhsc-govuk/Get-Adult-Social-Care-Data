@@ -5,6 +5,8 @@ import { generateId } from 'better-auth';
 import { parse } from 'csv-parse/sync';
 import * as fs from 'fs';
 
+// Expected CSV headers:
+// name,email,location_id,location_type,source
 async function run() {
   const csvPath = process.env.CSV_PATH;
   const isDryRun = (process.env.DRY_RUN || '').toLowerCase() === 'true';
