@@ -97,6 +97,8 @@ export interface paths {
                 location_code?: string;
                 /** @description The display name of the location. */
                 location_name?: string;
+                /** @description The address of the location. */
+                address?: string;
               }[];
             };
           };
@@ -365,7 +367,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/metric_filters/{metric_group_id}': {
+  '/metric_filters/{metric_group_code}': {
     parameters: {
       query?: never;
       header?: never;
@@ -382,7 +384,7 @@ export interface paths {
         header?: never;
         path: {
           /** @description The unique identifier for the metric group. */
-          metric_group_id: components['parameters']['MetricGroupId'];
+          metric_group_code: components['parameters']['MetricGroupCode'];
         };
         cookie?: never;
       };
@@ -407,7 +409,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/metrics/{metric_id}/metadata': {
+  '/metrics/{metric_code}/metadata': {
     parameters: {
       query?: never;
       header?: never;
@@ -424,7 +426,7 @@ export interface paths {
         header?: never;
         path: {
           /** @description The unique identifier for the metric. */
-          metric_id: components['parameters']['MetricId'];
+          metric_code: components['parameters']['MetricCode'];
         };
         cookie?: never;
       };
@@ -456,7 +458,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/metrics/{metric_id}/data': {
+  '/metrics/{metric_code}/data': {
     parameters: {
       query?: never;
       header?: never;
@@ -478,7 +480,7 @@ export interface paths {
         header?: never;
         path: {
           /** @description The unique identifier for the metric. */
-          metric_id: components['parameters']['MetricId'];
+          metric_code: components['parameters']['MetricCode'];
         };
         cookie?: never;
       };
@@ -629,7 +631,7 @@ export interface components {
     /** @description Defines the properties and context of a metric. */
     MetricMetadata: {
       /** @description The unique identifier for the metric. */
-      metric_id?: string;
+      metric_code?: string;
       /** @description The display name for the metric. */
       metric_name?: string;
       /** @description The format of the metric's data, e.g., 'Percentage', 'Currency'. */
@@ -644,15 +646,15 @@ export interface components {
     /** @description An available filter for a metric, such as bed type. */
     MetricFilter: {
       /**
-       * @description The specific metric group ID this filter applies to.
+       * @description The specific metric group code this filter applies to.
        * @example bedcount_per_100000_adults
        */
-      metric_group_id?: string;
+      metric_group_code?: string;
       /**
-       * @description The specific metric ID this filter applies to.
+       * @description The specific metric code this filter applies to.
        * @example bedcount_per_100000_adults_total_general_nursing
        */
-      metric_id?: string;
+      metric_code?: string;
       /**
        * @description A user-friendly name for the filter value.
        * @example General nursing
@@ -662,7 +664,7 @@ export interface components {
     /** @description A series of data points at a specific time and location specified in the call for the metric. */
     MetricSeries: {
       /** @description The unique identifier for the metric. */
-      metric_id?: string;
+      metric_code?: string;
       /** @description The unique identifier for the location. */
       location_code?: string;
       /**
@@ -683,9 +685,9 @@ export interface components {
   responses: never;
   parameters: {
     /** @description The unique identifier for the metric. */
-    MetricId: string;
+    MetricCode: string;
     /** @description The unique identifier for the metric group. */
-    MetricGroupId: string;
+    MetricGroupCode: string;
   };
   requestBodies: never;
   headers: never;
