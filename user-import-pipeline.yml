@@ -1,5 +1,11 @@
 trigger: none
 
+variables:
+  # Variable groups
+  - group: acr_service_connection
+  - group: arm_service_connection
+  - group: user_db_connection
+  
 parameters:
   - name: dryRun
     displayName: "Dry Run? (Don't save to DB)"
