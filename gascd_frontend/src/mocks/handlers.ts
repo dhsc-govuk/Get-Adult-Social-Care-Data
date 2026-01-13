@@ -56,25 +56,25 @@ export const handlers = [
   ),
 
   http.get(
-    api_root + '/metric_location/cp_locations/:care_provider_code',
+    api_root + '/metric_locations/cp_locations/:care_provider_code',
     () => {
       return HttpResponse.json(locations_data.care_provider_location);
     }
   ),
 
-  http.get(api_root + '/metric_location/district/:code', () => {
+  http.get(api_root + '/metric_locations/district/:code', () => {
     return HttpResponse.json(locations_data.district);
   }),
 
-  http.get(api_root + '/metric_location/local_authorities/:la_code', () => {
+  http.get(api_root + '/metric_locations/local_authorities/:la_code', () => {
     return HttpResponse.json(locations_data.local_authority);
   }),
 
-  http.get(api_root + '/metric_location/regions/:region_code', () => {
+  http.get(api_root + '/metric_locations/regions/:region_code', () => {
     return HttpResponse.json(locations_data.region);
   }),
 
-  http.get(api_root + '/metric_location/countries/:code', () => {
+  http.get(api_root + '/metric_locations/countries/:code', () => {
     return HttpResponse.json(locations_data.country);
   }),
 ];
