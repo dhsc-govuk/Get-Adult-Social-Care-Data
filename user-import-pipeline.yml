@@ -58,7 +58,7 @@ stages:
           inputs:
             versionSpec: "24.4.1"
 
-        - script: npm ci --omit=optional
+        - script: npm ci
           displayName: install dependencies
           workingDirectory: gascd_frontend
 
