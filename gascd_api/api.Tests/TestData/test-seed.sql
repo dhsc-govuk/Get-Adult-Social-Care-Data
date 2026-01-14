@@ -658,6 +658,7 @@ BEGIN
            (perc_unpaid_care_provider_metric_group_id, 'perc_unpaid_care_provider',  CURRENT_TIMESTAMP),
            (total_population_metric_group_id, 'total_population',  CURRENT_TIMESTAMP);
 
+
     INSERT INTO metrics (id, code, metric_group_fk, display_name, numerator_description, denominator_description, data_source, data_type, frequency, loaded_datetime)
     VALUES (metric_id, 'metric_code', metric_group_id, 'Metric', 'This is a numerator 2', 'This is a denominator 2', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP), 
            (metric_id_2, 'metric_code_2', metric_group_id, 'Metric 2', 'This is a numerator 2', 'This is a denominator 2', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
