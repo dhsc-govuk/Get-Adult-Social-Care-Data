@@ -8,9 +8,8 @@ public class IntegrationTestFixture : IAsyncLifetime
 
     public async ValueTask InitializeAsync()
     {
-        PostgresContainer = new PostgreSqlBuilder()
+        PostgresContainer = new PostgreSqlBuilder("postgis/postgis:18-3.6-alpine")
             .WithDatabase("gascd_data")
-            .WithImage("imresamu/postgis:18-3.6-bookworm")
             .WithResourceMapping("TestData/test-seed.sql", "/docker-entrypoint-initdb.d/")
             .Build();
 
