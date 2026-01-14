@@ -29,7 +29,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
             await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
                 new GetMetricRequest
                 {
-                    MetricCode = bedcount,
+                    MetricCode = bedcount_total,
                     Locations = new()
                     {
                         new GetMetricRequest.Location { LocationCode = "1-123456789", LocationType = National }
@@ -46,7 +46,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
             await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
                 new GetMetricRequest
                 {
-                    MetricCode = bedcount,
+                    MetricCode = bedcount_total,
                     Locations = new() { new GetMetricRequest.Location { LocationCode = "1-123456789", LocationType = National } }
                 });
 
@@ -68,7 +68,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
             new GetMetricRequest
             {
-                MetricCode = bedcount,
+                MetricCode = bedcount_total,
                 Locations = new() { new GetMetricRequest.Location { LocationCode = "E92000001", LocationType = Regional } }
             });
 
@@ -181,26 +181,38 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     {
         get
         {
-            yield return [bedcount, 6.6m];
-            yield return [bedcount_per_hundred_thousand_adults, 6.7m];
+            yield return [bedcount_total, 6.6m];
+            yield return [bedcount_per_hundred_thousand_adults_total, 6.7m];
+
+            yield return [bedcount_per_hundred_thousand_adults_total_dementia_nursing, 7.1m];
+            yield return [bedcount_per_hundred_thousand_adults_total_dementia_residential, 7.2m];
+            yield return [bedcount_per_hundred_thousand_adults_total_general_nursing, 7.3m];
+            yield return [bedcount_per_hundred_thousand_adults_total_general_residential, 7.4m];
+            yield return [bedcount_per_hundred_thousand_adults_total_learning_disability_nursing, 7.5m];
+            yield return [bedcount_per_hundred_thousand_adults_total_learning_disability_residential, 7.6m];
+            yield return [bedcount_per_hundred_thousand_adults_total_mental_health_nursing, 7.7m];
+            yield return [bedcount_per_hundred_thousand_adults_total_mential_health_residential, 7.8m];
+            yield return [bedcount_per_hundred_thousand_adults_total_transitional, 7.9m];
+            yield return [bedcount_per_hundred_thousand_adults_total_ypd_young_physically_disabled, 7.11m];
+
             yield return [dementia_estimated_diagnosis_rate_65over, 6.8m];
             yield return [dementia_prevalence_65over, 6.9m];
             yield return [dementia_qof_prevalence, 6.11m];
             yield return [dementia_register_65over_per100k, 6.12m];
             yield return [learning_disability_prevalence, 6.13m];
-            yield return [median_bed_count, 6.6m];
-            yield return [median_occupancy, 6.15m];
-            yield return [occupancy_rates, 6.16m];
+            yield return [median_bed_count_total, 6.6m];
+            yield return [median_occupancy_total, 6.15m];
+            yield return [occupancy_rates_total, 6.16m];
             yield return [perc_18_64, 6.17m];
             yield return [perc_65over, 6.18m];
             yield return [perc_75over, 6.19m];
             yield return [perc_85over, 6.21m];
-            yield return [perc_general_health, 6.22m];
-            yield return [perc_household_ownership, 6.23m];
-            yield return [perc_households_deprivation_deprived, 6.24m];
-            yield return [perc_households_one_person, 6.25m];
-            yield return [perc_population_disability, 6.26m];
-            yield return [perc_unpaid_care_provider, 6.27m];
+            yield return [perc_general_health_total, 6.22m];
+            yield return [perc_household_ownership_total, 6.23m];
+            yield return [perc_households_deprivation_deprived_total, 6.24m];
+            yield return [perc_households_one_person_total, 6.25m];
+            yield return [perc_population_disability_disabled_total, 6.26m];
+            yield return [perc_unpaid_care_provider_total, 6.27m];
             yield return [total_population, 6.28m];
 
         }
@@ -214,7 +226,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
             new GetMetricRequest
             {
-                MetricCode = bedcount,
+                MetricCode = bedcount_total,
                 TimeSeries = true,
                 Locations = new() { new GetMetricRequest.Location { LocationCode = "1-123456789", LocationType = National } }
             });
@@ -261,7 +273,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
             new GetMetricRequest
             {
-                MetricCode = bedcount,
+                MetricCode = bedcount_total,
                 Locations = new List<GetMetricRequest.Location>
                 {
                     new() { LocationCode = "1-123456789", LocationType = National },
@@ -295,7 +307,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
             new GetMetricRequest
             {
-                MetricCode = bedcount,
+                MetricCode = bedcount_total,
                 Locations = new List<GetMetricRequest.Location>
                 {
                     new() { LocationCode = "1-123456789", LocationType = National },
@@ -365,7 +377,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
             new GetMetricRequest
             {
-                MetricCode = bedcount_per_hundred_thousand_adults,
+                MetricCode = bedcount_per_hundred_thousand_adults_total,
                 TimeSeries = true,
                 Locations = new() { new GetMetricRequest.Location { LocationCode = "1-123456789", LocationType = National } }
             });
@@ -374,7 +386,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         response.Count.ShouldBe(1);
-        response[0].MetricCode.ShouldBe(nameof(bedcount_per_hundred_thousand_adults));
+        response[0].MetricCode.ShouldBe(nameof(bedcount_per_hundred_thousand_adults_total));
         response[0].LocationCode.ShouldBe("1-123456789");
         response[0].LocationType.ShouldBe(nameof(National));
         response[0].SeriesStartDate.ShouldBe(new DateTime(2002, 01, 01));

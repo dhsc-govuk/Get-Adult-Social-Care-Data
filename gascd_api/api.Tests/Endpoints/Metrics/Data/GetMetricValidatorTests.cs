@@ -16,7 +16,7 @@ public class GetMetricValidatorTests : IDisposable
     {
         var request = new GetMetricRequest
         {
-            MetricCode = MetricCodeEnum.bedcount,
+            MetricCode = MetricCodeEnum.bedcount_total,
             Locations = new()
             {
                 new GetMetricRequest.Location
@@ -37,7 +37,7 @@ public class GetMetricValidatorTests : IDisposable
     {
         var request = new GetMetricRequest
         {
-            MetricCode = MetricCodeEnum.bedcount,
+            MetricCode = MetricCodeEnum.bedcount_total,
             Locations = new()
             {
                 new GetMetricRequest.Location
