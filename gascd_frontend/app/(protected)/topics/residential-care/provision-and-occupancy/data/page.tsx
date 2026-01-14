@@ -26,6 +26,7 @@ import TimeSeriesChart, {
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
+import FilterGroup from '@/components/filters/FilterRadioGroup';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -449,24 +450,10 @@ export default function ProvisionAndOccupancyPage() {
           </>
         }
       >
-        <div className="govuk-form-group govuk-!-padding-top-3">
-          <dl className="govuk-summary-list">
-            <div className="govuk-summary-list__row">
-              <dt className="govuk-summary-list__key">Filter</dt>
-              <dd className="govuk-summary-list__value">
-                {selectedBedNumberTableFilter}
-              </dd>
-              <dd className="govuk-summary-list__actions">
-                <a
-                  href="/topics/residential-care/provision-and-occupancy/number-filters"
-                  className="govuk-link"
-                >
-                  Change<span className="govuk-visually-hidden"> filters</span>
-                </a>
-              </dd>
-            </div>
-          </dl>
-        </div>
+        <FilterGroup
+          filterType="numbers-table-metrics"
+          filterLabel="Bed type"
+        />
         <DataTabs
           id="1"
           chart={
