@@ -177,49 +177,6 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[0].Values.ShouldBe([lastValue]);
     }
 
-    public static IEnumerable<object[]> MetricCodeTimeSeriesCombinations
-    {
-        get
-        {
-            yield return [bedcount_total, 6.6m];
-            yield return [bedcount_per_hundred_thousand_adults_total, 6.7m];
-
-            yield return [bedcount_per_hundred_thousand_adults_total_dementia_nursing, 7.1m];
-            yield return [bedcount_per_hundred_thousand_adults_total_dementia_residential, 7.2m];
-            yield return [bedcount_per_hundred_thousand_adults_total_general_nursing, 7.3m];
-            yield return [bedcount_per_hundred_thousand_adults_total_general_residential, 7.4m];
-            yield return [bedcount_per_hundred_thousand_adults_total_learning_disability_nursing, 7.5m];
-            yield return [bedcount_per_hundred_thousand_adults_total_learning_disability_residential, 7.6m];
-            yield return [bedcount_per_hundred_thousand_adults_total_mental_health_nursing, 7.7m];
-            yield return [bedcount_per_hundred_thousand_adults_total_mential_health_residential, 7.8m];
-            yield return [bedcount_per_hundred_thousand_adults_total_transitional, 7.9m];
-            yield return [bedcount_per_hundred_thousand_adults_total_ypd_young_physically_disabled, 7.11m];
-
-            yield return [dementia_estimated_diagnosis_rate_65over, 6.8m];
-            yield return [dementia_prevalence_65over, 6.9m];
-            yield return [dementia_qof_prevalence, 6.11m];
-            yield return [dementia_register_65over_per100k, 6.12m];
-            yield return [learning_disability_prevalence, 6.13m];
-            yield return [median_bed_count_total, 6.6m];
-            yield return [median_occupancy_total, 6.15m];
-            yield return [occupancy_rates_total, 6.16m];
-            yield return [perc_18_64, 6.17m];
-            yield return [perc_65over, 6.18m];
-            yield return [perc_75over, 6.19m];
-            yield return [perc_85over, 6.21m];
-            yield return [perc_general_health_total, 6.22m];
-            yield return [perc_household_ownership_total, 6.23m];
-            yield return [perc_households_deprivation_deprived_total, 6.24m];
-            yield return [perc_households_one_person_total, 6.25m];
-            yield return [perc_population_disability_disabled_total, 6.26m];
-            yield return [perc_unpaid_care_provider_total, 6.27m];
-            yield return [total_population, 6.28m];
-
-        }
-
-
-    }
-
     [Fact]
     public async Task GetMetric_BedcountWithTimeSeries_ReturnsExpectedData()
     {
@@ -285,7 +242,6 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         response.Count.ShouldBe(2);
-
         response[0].MetricCode.ShouldBe(nameof(bedcount_total));
         response[0].LocationCode.ShouldBe("1-123456789");
         response[0].LocationType.ShouldBe(nameof(National));
@@ -320,7 +276,6 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         response.Count.ShouldBe(2);
-
         response[0].MetricCode.ShouldBe(nameof(bedcount_total));
         response[0].LocationCode.ShouldBe("1-123456789");
         response[0].LocationType.ShouldBe(nameof(National));
@@ -392,5 +347,43 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[0].SeriesStartDate.ShouldBe(new DateTime(2002, 01, 01));
         response[0].SeriesFrequency.ShouldBe("Daily");
         response[0].Values.ShouldBe([22.2m, null, 44.4m, null, 32.1m]);
+    }
+
+    public static IEnumerable<object[]> MetricCodeTimeSeriesCombinations
+    {
+        get
+        {
+            yield return [bedcount_total, 6.6m];
+            yield return [bedcount_per_hundred_thousand_adults_total, 6.7m];
+            yield return [bedcount_per_hundred_thousand_adults_total_dementia_nursing, 7.1m];
+            yield return [bedcount_per_hundred_thousand_adults_total_dementia_residential, 7.2m];
+            yield return [bedcount_per_hundred_thousand_adults_total_general_nursing, 7.3m];
+            yield return [bedcount_per_hundred_thousand_adults_total_general_residential, 7.4m];
+            yield return [bedcount_per_hundred_thousand_adults_total_learning_disability_nursing, 7.5m];
+            yield return [bedcount_per_hundred_thousand_adults_total_learning_disability_residential, 7.6m];
+            yield return [bedcount_per_hundred_thousand_adults_total_mental_health_nursing, 7.7m];
+            yield return [bedcount_per_hundred_thousand_adults_total_mential_health_residential, 7.8m];
+            yield return [bedcount_per_hundred_thousand_adults_total_transitional, 7.9m];
+            yield return [bedcount_per_hundred_thousand_adults_total_ypd_young_physically_disabled, 7.11m];
+            yield return [dementia_estimated_diagnosis_rate_65over, 6.8m];
+            yield return [dementia_prevalence_65over, 6.9m];
+            yield return [dementia_qof_prevalence, 6.11m];
+            yield return [dementia_register_65over_per100k, 6.12m];
+            yield return [learning_disability_prevalence, 6.13m];
+            yield return [median_bed_count_total, 6.6m];
+            yield return [median_occupancy_total, 6.15m];
+            yield return [occupancy_rates_total, 6.16m];
+            yield return [perc_18_64, 6.17m];
+            yield return [perc_65over, 6.18m];
+            yield return [perc_75over, 6.19m];
+            yield return [perc_85over, 6.21m];
+            yield return [perc_general_health_total, 6.22m];
+            yield return [perc_household_ownership_total, 6.23m];
+            yield return [perc_households_deprivation_deprived_total, 6.24m];
+            yield return [perc_households_one_person_total, 6.25m];
+            yield return [perc_population_disability_disabled_total, 6.26m];
+            yield return [perc_unpaid_care_provider_total, 6.27m];
+            yield return [total_population, 6.28m];
+        }
     }
 }
