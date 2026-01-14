@@ -1,7 +1,7 @@
 using FastEndpoints;
 using FluentValidation.Results;
 
-namespace api.Endpoints.PostProcessors;
+namespace api.Logging;
 
 public class ValidationLogger(ILogger<ValidationLogger> logger) : IGlobalPostProcessor
 {
@@ -9,11 +9,13 @@ public class ValidationLogger(ILogger<ValidationLogger> logger) : IGlobalPostPro
     {
         if (ValidationContext.Instance.ValidationFailed)
         {
-            foreach (ValidationFailure failure in ValidationContext.Instance.ValidationFailures)
-            {
-                logger.LogWarning(failure.ToString());
-            }
+            logger.LogWarning(GetValidationErrorString(ValidationContext.Instance.ValidationFailures));
         }
         return Task.CompletedTask;
+    }
+
+    private string GetValidationErrorString(List<ValidationFailure> validationFailures)
+    {
+        return String.Join(", ", validationFailures.Select(f => $"[{f.PropertyName}] - [{f.ErrorMessage}]").ToArray());
     }
 }
