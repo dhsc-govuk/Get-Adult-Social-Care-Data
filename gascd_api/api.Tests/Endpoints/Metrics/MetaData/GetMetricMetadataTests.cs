@@ -4,6 +4,7 @@ using FastEndpoints;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
+using static api.Data.Shared.MetricCodeEnum;
 using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.Metrics.MetaData;
@@ -23,7 +24,7 @@ public class GetMetricMetadataTests : IClassFixture<IntegrationTestFixture>
     {
         var (httpCode, _) =
             await _client.GETAsync<GetMetricMetadataEndpoint, GetMetricMetadataRequest, GetMetricMetadataResponse>(
-                new GetMetricMetadataRequest { MetricCode = "bedcount" });
+                new GetMetricMetadataRequest { MetricCode = nameof(bedcount_total) });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -33,10 +34,10 @@ public class GetMetricMetadataTests : IClassFixture<IntegrationTestFixture>
     {
         var (httpCode, response) =
             await _client.GETAsync<GetMetricMetadataEndpoint, GetMetricMetadataRequest, GetMetricMetadataResponse>(
-                new GetMetricMetadataRequest { MetricCode = "bedcount" });
+                new GetMetricMetadataRequest { MetricCode = nameof(bedcount_total) });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
-        response.MetricCode.ShouldBe("bedcount");
+        response.MetricCode.ShouldBe(nameof(bedcount_total));
         response.MetricName.ShouldBe("Bedcount");
         response.DataType.ShouldBe("numbers");
         response.DataSource.ShouldBe("ONS");
@@ -48,10 +49,10 @@ public class GetMetricMetadataTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetMetricMetadata_ReturnsExpectedJsonObject()
     {
-        var response = await _client.GetAsync("api/metrics/bedcount/metadata", TestContext.Current.CancellationToken);
+        var response = await _client.GetAsync($"api/metrics/{bedcount_total}/metadata", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var jObject = await ParseJsonResponse<JObject>(response);
-        GetFromJson(jObject, "metric_code").ShouldBe("bedcount");
+        GetFromJson(jObject, "metric_code").ShouldBe(nameof(bedcount_total));
         GetFromJson(jObject, "metric_name").ShouldBe("Bedcount");
         GetFromJson(jObject, "data_type").ShouldBe("numbers");
         GetFromJson(jObject, "data_source").ShouldBe("ONS");

@@ -515,7 +515,29 @@ DECLARE
     metric_group_id_2 integer = 11;
     metric_group_id_3 integer = 13;
     metric_group_id_4 integer = 17;
-    
+                   
+    bedcount_metric_group_id integer = 200;
+    bphta_metric_group_id integer = 201;
+    dementia_estimated_diagnosis_rate_65over_metric_group_id integer = 202;
+    dementia_prevalence_65over_metric_group_id integer = 203;
+    dementia_qof_prevalence_metric_group_id integer = 204;
+    dementia_register_65over_per100k_metric_group_id integer = 205;
+    learning_disability_prevalence_metric_group_id integer = 206;
+    median_bed_count_metric_group_id integer = 207;
+    median_occupancy_metric_group_id integer = 208;
+    occupancy_rates_metric_group_id integer = 209;
+    perc_18_64_metric_group_id integer = 210;
+    perc_65over_metric_group_id integer = 211;
+    perc_75over_metric_group_id integer = 212;
+    perc_85over_metric_group_id integer = 213;
+    perc_general_health_metric_group_id integer = 214;
+    perc_household_ownership_metric_group_id integer = 215;
+    perc_households_deprivation_deprived_metric_group_id integer = 216;
+    perc_households_one_person_metric_group_id integer = 217;
+    perc_population_disability_metric_group_id integer = 218;
+    perc_unpaid_care_provider_metric_group_id integer = 219;
+    total_population_metric_group_id integer = 220;              
+                                   
     bedcount_total_metric_id integer = 101;
     bphta_total_metric_id integer = 102;
     bphta_total_dementia_nursing_metric_id integer = 103;
@@ -547,29 +569,8 @@ DECLARE
     perc_population_disability_disabled_total_metric_id integer = 128;
     perc_unpaid_care_provider_total_metric_id integer = 129;
     total_population_metric_id integer = 130;
-                   
-    bedcount_metric_group_id integer = 200;
-    bphta_metric_group_id integer = 201;
-    dementia_estimated_diagnosis_rate_65over_metric_group_id integer = 202;
-    dementia_prevalence_65over_metric_group_id integer = 203;
-    dementia_qof_prevalence_metric_group_id integer = 204;
-    dementia_register_65over_per100k_metric_group_id integer = 205;
-    learning_disability_prevalence_metric_group_id integer = 206;
-    median_bed_count_metric_group_id integer = 207;
-    median_occupancy_metric_group_id integer = 208;
-    occupancy_rates_metric_group_id integer = 209;
-    perc_18_64_metric_group_id integer = 210;
-    perc_65over_metric_group_id integer = 211;
-    perc_75over_metric_group_id integer = 212;
-    perc_85over_metric_group_id integer = 213;
-    perc_general_health_metric_group_id integer = 214;
-    perc_household_ownership_metric_group_id integer = 215;
-    perc_households_deprivation_deprived_metric_group_id integer = 216;
-    perc_households_one_person_metric_group_id integer = 217;
-    perc_population_disability_metric_group_id integer = 218;
-    perc_unpaid_care_provider_metric_group_id integer = 219;
-    total_population_metric_group_id integer = 220;              
-                                               
+
+    metric_id integer = 5;
     metric_id_2 integer = 6;
     metric_id_3 integer = 7;
     gd_country integer = 1;
@@ -597,7 +598,6 @@ BEGIN
            (gd_postcode_2, ST_Point(0.7260691453143282, 51.32988801568501 ), null, CURRENT_TIMESTAMP),
            (gd_postcode_3, ST_Point(0.7283745919593453, 51.32954649874547), null, CURRENT_TIMESTAMP),
            (gd_postcode_4, ST_Point(-1.445481473,52.43602168912626), null, CURRENT_TIMESTAMP);
-
 
     INSERT INTO countries (id, code, name, geo_data_fk, loaded_datetime)
     VALUES (country_id, 'E92000001','England', gd_country, CURRENT_TIMESTAMP),
@@ -658,19 +658,12 @@ BEGIN
            (perc_unpaid_care_provider_metric_group_id, 'perc_unpaid_care_provider',  CURRENT_TIMESTAMP),
            (total_population_metric_group_id, 'total_population',  CURRENT_TIMESTAMP);
 
-
-
-
-
-
-    
-
-
-INSERT INTO metrics (id, code, metric_group_fk, display_name, numerator_description, denominator_description, data_source, data_type, frequency, loaded_datetime)
-    VALUES (metric_id_2, 'metric_code_2', metric_group_id, 'Metric 2', 'This is a numerator 2', 'This is a denominator 2', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
+    INSERT INTO metrics (id, code, metric_group_fk, display_name, numerator_description, denominator_description, data_source, data_type, frequency, loaded_datetime)
+    VALUES (metric_id, 'metric_code', metric_group_id, 'Metric', 'This is a numerator 2', 'This is a denominator 2', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP), 
+           (metric_id_2, 'metric_code_2', metric_group_id, 'Metric 2', 'This is a numerator 2', 'This is a denominator 2', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (metric_id_3, 'metric_code_3', metric_group_id_2, 'Metric 3', 'This is a numerator 3', 'This is a denominator 3','ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            
-           (bedcount_total_metric_id, 'bedcount', bedcount_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
+           (bedcount_total_metric_id, 'bedcount_total', bedcount_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (bphta_total_metric_id, 'bedcount_per_hundred_thousand_adults_total', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (bphta_total_dementia_nursing_metric_id, 'bedcount_per_hundred_thousand_adults_total_dementia_nursing', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (bphta_total_dementia_residential_metric_id, 'bedcount_per_hundred_thousand_adults_total_dementia_residential', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
@@ -701,19 +694,13 @@ INSERT INTO metrics (id, code, metric_group_fk, display_name, numerator_descript
            (perc_population_disability_disabled_total_metric_id, 'perc_population_disability_disabled_total', perc_population_disability_metric_group_id, 'Median Bed Count', 'This is a numerator', 'This is a denominator', 'Capacity Tracker', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (perc_unpaid_care_provider_total_metric_id, 'perc_unpaid_care_provider_total', perc_unpaid_care_provider_metric_group_id, 'Median Bed Count', 'This is a numerator', 'This is a denominator', 'Capacity Tracker', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (total_population_metric_id, 'total_population', total_population_metric_group_id, 'Median Bed Count', 'This is a numerator', 'This is a denominator', 'Capacity Tracker', 'numbers', 'Daily', CURRENT_TIMESTAMP);
-         
 
-
-
-INSERT INTO bedcount (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
+    INSERT INTO bedcount (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, bedcount_total_metric_id, '1-123456789', 'National', '2000-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [1.1,2.2,3.3,4.4,5.5], 5.5, CURRENT_TIMESTAMP),
            (2, bedcount_total_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5,6.6], 6.6, CURRENT_TIMESTAMP);
 
-
     INSERT INTO bedcount_per_hundred_thousand_adults (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, bphta_total_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.7], 6.7, CURRENT_TIMESTAMP),
-          
-
            (3, bphta_total_dementia_nursing_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.1], 7.1, CURRENT_TIMESTAMP),
            (4, bphta_total_dementia_residential_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.2], 7.2, CURRENT_TIMESTAMP),
            (5, bphta_total_general_nursing_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.3], 7.3, CURRENT_TIMESTAMP),
@@ -724,11 +711,8 @@ INSERT INTO bedcount (id, metric_fk, location_code, location_type, start_date, e
            (10, bphta_total_mential_health_residential_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.8], 7.8, CURRENT_TIMESTAMP),
            (11, bphta_total_transitional_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.9], 7.9, CURRENT_TIMESTAMP),
            (12, bphta_total_ypd_young_physically_disabled_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.11], 7.11, CURRENT_TIMESTAMP),
-    
            (2, bphta_total_metric_id, '1-123456789', 'National', '2002-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [22.2,null,44.4, null, 32.1], 32.1, CURRENT_TIMESTAMP);
-  
-  
-  
+    
     INSERT INTO dementia_estimated_diagnosis_rate_65over (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, dementia_estimated_diagnosis_rate_65over_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP);
     
@@ -787,5 +771,4 @@ INSERT INTO bedcount (id, metric_fk, location_code, location_type, start_date, e
     VALUES (1, total_population_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.28], 6.28, CURRENT_TIMESTAMP);
     
 END $$;
-    
     
