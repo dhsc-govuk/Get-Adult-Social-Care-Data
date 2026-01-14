@@ -8,4 +8,6 @@ public class MetricGroup : EntityBase
 {
     [Column("code"), StringLength(100)]
     public required string Code { get; init; }
+
+    public virtual ICollection<Metric> Metrics { get; init; } = new List<Metric>();
 }
