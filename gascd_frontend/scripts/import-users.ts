@@ -5,6 +5,8 @@ import { generateId } from 'better-auth';
 import { parse } from 'csv-parse/sync';
 import * as fs from 'fs';
 
+const USER_DATABASE_NAME = 'user';
+
 // Usage:
 // DRY_RUN=true CSV_PATH=./testimport.csv npx tsx ./scripts/import-users.ts
 // CSV_PATH=./testimport.csv npx tsx ./scripts/import-users.ts
@@ -29,6 +31,24 @@ async function run() {
     `[${isDryRun ? 'DRY RUN' : 'LIVE'}] Processing ${records.length} users...`
   );
 
+  let import_errors = false;
+  for (const row of records) {
+    const email_lower = row.email.toLowerCase();
+    const user_match = await authDB
+      .selectFrom(USER_DATABASE_NAME)
+      .select('id')
+      .where('email', '=', email_lower)
+      .executeTakeFirst();
+    if (user_match) {
+      console.error('Existing user match: ', email_lower);
+      import_errors = true;
+    }
+  }
+
+  if (import_errors) {
+    throw new Error('Existing users found in CSV. Please remove and re-run');
+  }
+
   for (const row of records) {
     if (isDryRun) {
       console.log(`Dry Run: Would insert user ${row.name} (${row.email})`);
@@ -37,7 +57,7 @@ async function run() {
 
     const userid = generateId();
     await authDB
-      .insertInto('user')
+      .insertInto(USER_DATABASE_NAME)
       .values({
         id: userid,
         name: row.name,
@@ -59,6 +79,7 @@ async function run() {
 }
 
 run().catch((err) => {
+  authDB.destroy();
   console.error(err);
   process.exit(1);
 });
