@@ -5,6 +5,10 @@ import { generateId } from 'better-auth';
 import { parse } from 'csv-parse/sync';
 import * as fs from 'fs';
 
+// Usage:
+// DRY_RUN=true CSV_PATH=./testimport.csv npx tsx ./scripts/import-users.ts
+// CSV_PATH=./testimport.csv npx tsx ./scripts/import-users.ts
+
 // Expected CSV headers:
 // name,email,location_id,location_type,source
 async function run() {
