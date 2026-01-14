@@ -2,7 +2,6 @@
 
 import Layout from '@/components/common/layout/Layout';
 import React, { useEffect, useRef, useState } from 'react';
-import { authClient } from '@/lib/auth-client';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
@@ -20,9 +19,9 @@ import { LocationNames } from '@/data/interfaces/LocationNames';
 import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
 import { Locations } from '@/data/interfaces/Locations';
 import LogService from '@/services/logger/logService';
-import AnalyticsService from '@/services/analytics/analyticsService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import IndicatorService from '@/services/indicator/IndicatorService';
+import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 
 export default function ProvisionAndOccupancyPage() {
@@ -51,8 +50,6 @@ export default function ProvisionAndOccupancyPage() {
   const [mapUrl, setMapUrl] = useState('');
   const mapAlternative =
     'https://www.ons.gov.uk/census/maps/choropleth/population/age/resident-age-11a/aged-85-years-and-over';
-
-  const { data: session } = authClient.useSession();
 
   const demographicMetricIds = [
     'total_population',
@@ -133,10 +130,14 @@ export default function ProvisionAndOccupancyPage() {
         return;
       }
       setCPLocationId(userLocationId);
-      AnalyticsService.trackMetricLocationView(userLocationId);
     };
     fetchSelectedLocation();
-  }, [session]);
+
+    // Track all metrics on this page
+    demographicMetricIds.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+  }, []);
 
   useEffect(() => {
     const fetchLocationNames = async () => {

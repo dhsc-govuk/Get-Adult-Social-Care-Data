@@ -13,7 +13,7 @@ describe('User can log in and log out', () => {
     cy.get('h1').should('contains.text', 'Get adult social care data');
 
     // Check homepage links
-    cy.get('h2').should('contains.text', 'Care homes');
+    cy.get('h2').should('contains.text', 'Care provision');
     cy.get('h2').should('contains.text', 'Population needs');
 
     // Sign out

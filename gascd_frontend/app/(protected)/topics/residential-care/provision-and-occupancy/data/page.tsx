@@ -24,6 +24,8 @@ import TimeSeriesChart, {
   Series,
 } from '@/components/charts/TimeSeriesChart';
 import IndicatorService from '@/services/indicator/IndicatorService';
+import AnalyticsService from '@/services/analytics/analyticsService';
+import RelatedDataList from '@/components/data-components/RelatedDataList';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -122,10 +124,24 @@ export default function ProvisionAndOccupancyPage() {
       url: '/home',
     },
     {
-      text: 'Care homes',
+      text: 'Care provision',
       url: '/topics/residential-care/subtopics',
     },
   ];
+
+  const trackDefaultMetrics = () => {
+    // Track all of the key metrics shown on this page
+    // note - does not include filters, which are tracked as separate events
+    careProviderMetricIds1.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+    careProviderMetricIds2.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+    bedNumberMetricIds.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+  };
 
   const [chartData, setChartData] = useState<{
     categories: string[];
@@ -160,6 +176,7 @@ export default function ProvisionAndOccupancyPage() {
       setCPLocationId(userLocationId);
     };
     fetchSelectedLocation();
+    trackDefaultMetrics();
   }, []);
 
   useEffect(() => {
@@ -340,7 +357,8 @@ export default function ProvisionAndOccupancyPage() {
             location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
             most_recent: true,
           });
-          if (parsedData) {
+          AnalyticsService.trackMetricView(id);
+          if (name) {
             setSelectedBedNumberTableFilter(name);
           } else {
             setSelectedBedNumberTableFilter(bedNumberMetricIds);
@@ -780,6 +798,15 @@ export default function ProvisionAndOccupancyPage() {
           url="/help/percentage-beds-occupied"
         />
       </DataIndicatorDetailsList>
+
+      <RelatedDataList>
+        <DataLinkCard
+          label="Unpaid care"
+          description="Statistics on the people who provide unpaid care to family members, friends and neighbours."
+          url="/topics/residential-care/unpaid-care/data"
+        />
+      </RelatedDataList>
+
       <LocalMarketInformation
         localAuthority={locationNamesCP.LALabel}
         localAuthorityId={locationIds[1]}

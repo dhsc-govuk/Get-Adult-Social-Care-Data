@@ -1,4 +1,4 @@
-import React, { Ref } from 'react';
+import React, { Ref, useEffect } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
 
 type VerticalLocationTableProps = {
@@ -25,6 +25,23 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
   tableref = undefined,
   userLa,
 }) => {
+  useEffect(() => {
+    const sortTables = async () => {
+      // Import this at page load time to avoid NextJS SSR errors
+      // https://nextjs.org/docs/app/guides/lazy-loading#loading-external-libraries
+      const MOJFrontend = await import('@ministryofjustice/frontend');
+
+      const $sortableTables = document.querySelectorAll(
+        '[data-module="moj-sortable-table"]'
+      );
+
+      $sortableTables.forEach(($sortableTable) => {
+        new MOJFrontend.SortableTable($sortableTable);
+      });
+    };
+    sortTables();
+  }, []);
+
   const columnClass = (columnIndex: number) => {
     if (columnIndex === 0) {
       return 'govuk-table__header';
@@ -71,7 +88,11 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
 
   return (
     <div>
-      <table className="govuk-table" ref={tableref}>
+      <table
+        className="govuk-table"
+        ref={tableref}
+        data-module="moj-sortable-table"
+      >
         {caption && (
           <caption className="govuk-table__caption govuk-table__caption--s">
             {caption}
@@ -85,6 +106,7 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
                   key={columnKey}
                   scope="col"
                   className={columnClass(columnIndex)}
+                  aria-sort="none"
                 >
                   {columnLabel}
                 </th>
@@ -101,7 +123,13 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
               >
                 {getFormattedLocationLabel(value, index)}
               </th>
-              <td className="govuk-table__cell govuk-table__cell--numeric">
+              <td
+                className="govuk-table__cell govuk-table__cell--numeric"
+                data-sort-value={
+                  data.find((metric) => metric.location_id === key)
+                    ?.data_point || 0
+                }
+              >
                 {getFormattedDataPoint(data, key)}
               </td>
             </tr>

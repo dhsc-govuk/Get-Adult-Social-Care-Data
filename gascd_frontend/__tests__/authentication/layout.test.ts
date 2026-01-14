@@ -1,11 +1,16 @@
 import AuthLayout from '../../app/(protected)/layout';
+import NoAuthLayout from '../../app/(authentication)/layout';
 import OnboardingLayout from '../../app/(onboarding)/layout';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
-import { mockSession, mockSessionWithLocation } from '@/test-utils/test-utils';
+import {
+  mockSession,
+  mockSessionWithLocation,
+  mockSessionUnregistered,
+} from '@/test-utils/test-utils';
 
 vi.mock('next/headers', () => ({
   headers: vi.fn(),
@@ -39,6 +44,12 @@ describe('Auth Layout', () => {
     expect(mockedRedirect).toHaveBeenCalledWith('/login');
   });
 
+  test('redirects to unregistered page if not registered', async () => {
+    mockGetSession.mockResolvedValue(mockSessionUnregistered);
+    await AuthLayout({ children: mockChildren });
+    expect(mockedRedirect).toHaveBeenCalledWith('/access-denied');
+  });
+
   test('location picker is rendered if valid session', async () => {
     mockGetSession.mockResolvedValue(mockSession);
     const response = await AuthLayout({ children: mockChildren });
@@ -64,5 +75,18 @@ describe('Onboarding Layout', () => {
     mockGetSession.mockResolvedValue(null);
     await OnboardingLayout({ children: mockChildren });
     expect(mockedRedirect).toHaveBeenCalledWith('/login');
+  });
+});
+
+describe('Login Layout', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  test('redirects to login page if no session', async () => {
+    mockGetSession.mockResolvedValue(null);
+    const response = await NoAuthLayout({ children: mockChildren });
+    const renderedMarkup = renderToStaticMarkup(response);
+    expect(renderedMarkup).toContain('Mock Component');
   });
 });

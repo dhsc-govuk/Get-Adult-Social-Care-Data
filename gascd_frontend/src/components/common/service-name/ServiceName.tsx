@@ -40,9 +40,9 @@ const ServiceName: React.FC<Props> = ({ session }) => {
 
   const topicLinks = [
     {
-      name: 'Care Homes',
+      name: 'Care Provision',
       description:
-        'Find data on residential care homes and nursing homes across England.',
+        'Find data on care provision and the support provided by unpaid carers across England.',
       url: '/topics/residential-care/subtopics',
     },
     {

@@ -38,7 +38,8 @@ public class ReferenceMapper
         return new GetCareProviderResponse.CareProviderLocation
         {
             LocationName = careProviderLocation.Name,
-            LocationCode = careProviderLocation.Code
+            LocationCode = careProviderLocation.Code,
+            Address = careProviderLocation.Address,
         };
     }
 
@@ -62,9 +63,9 @@ public class ReferenceMapper
         };
     }
 
-    private GeoDataDto GeoDataToGeoDataDto(GeoData geoData)
+    public GeoDataDto? GeoDataToGeoDataDto(GeoData? geoData)
     {
-        return new GeoDataDto
+        return geoData == null ? null : new GeoDataDto
         {
             Latitude = geoData.Coordinate.Y,
             Longitude = geoData.Coordinate.X,

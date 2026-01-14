@@ -1,10 +1,15 @@
 import { betterAuth, boolean } from 'better-auth';
 import { createAuthMiddleware } from 'better-auth/api';
-import { B2CPlugin } from './authPlugins';
+import { getOAuthConfig } from './authPlugins';
 import { nextCookies } from 'better-auth/next-js';
 import logger from '@/utils/logger';
 import { msdialect } from './authDatabase';
-import { admin } from 'better-auth/plugins';
+import { admin, lastLoginMethod } from 'better-auth/plugins';
+import { Kysely } from 'kysely';
+
+// Export a connection to the user db for usage elsewhere
+// (re-uses the same connection pool set up in the dialect)
+export const authDB = new Kysely<any>({ dialect: msdialect });
 
 export const auth = betterAuth({
   session: {
@@ -30,6 +35,13 @@ export const auth = betterAuth({
   },
   user: {
     additionalFields: {
+      // The email address we think they should be using
+      // (to be checked against the one provided by an external IdP)
+      registeredEmail: {
+        type: 'string',
+        required: false,
+        input: false,
+      },
       locationType: {
         type: 'string',
         required: false,
@@ -48,28 +60,54 @@ export const auth = betterAuth({
       selectedLocationId: {
         type: 'string',
         required: false,
+        // Can be set by the user
         input: true,
       },
       selectedLocationDisplayName: {
         type: 'string',
         required: false,
+        // Can be set by the user
         input: true,
       },
     },
   },
   plugins: [
     admin(),
-    B2CPlugin(),
+    lastLoginMethod({
+      storeInDatabase: true,
+    }),
+    getOAuthConfig(),
     // https://www.better-auth.com/docs/integrations/next#server-action-cookies
     nextCookies(), // make sure this is the last plugin in the array
   ],
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
-      if (ctx.context.newSession) {
-        logger.info('User logged in success', {
-          userid: ctx.context.newSession.user.id,
+      if (
+        ctx.path.startsWith('/sign-in/') ||
+        ctx.path.startsWith('/oauth2/callback/')
+      ) {
+        if (ctx.context.newSession) {
+          logger.info('User logged in success', {
+            userid: ctx.context.newSession.user.id,
+            primaryLocationId: ctx.context.newSession.user.locationId,
+            primaryLocationType: ctx.context.newSession.user.locationType,
+            activeLocationId: ctx.context.newSession.user.selectedLocationId,
+          });
+        }
+      }
+      if (ctx.path == '/error') {
+        const error = ctx.query?.error;
+        logger.error('Auth error', {
+          error: ctx.query?.error,
+          description: ctx.query?.error_description,
         });
+        if (error === 'signup_disabled') {
+          // This occurs for valid oauth flows which don't match existing users in the db
+          throw ctx.redirect('/access-denied');
+        }
       }
     }),
   },
 });
+
+export type User = typeof auth.$Infer.Session.user;

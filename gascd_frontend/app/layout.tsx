@@ -26,6 +26,7 @@ export default async function RootLayout({
 }) {
   const browserInsightsConnectionString =
     process.env.BROWSER_APPLICATIONINSIGHTS_CONNECTION_STRING || '';
+  const ONELOGIN_HOME_URL = process.env.ONELOGIN_HOME_URL || '';
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -37,7 +38,7 @@ export default async function RootLayout({
           connectionString={browserInsightsConnectionString}
           session={session}
         />
-        <Header session={session} />
+        <Header session={session} account_url={ONELOGIN_HOME_URL} />
         <ServiceName session={session} />
         {children}
       </body>

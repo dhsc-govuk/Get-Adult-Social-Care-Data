@@ -6,13 +6,13 @@ describe('CareHomePage', () => {
     render(<CareHomePage />);
 
     const headingElement = screen.getByRole('heading', {
-      name: /Care homes/i,
+      name: /Care provision/i,
       level: 1,
     });
     expect(headingElement).toBeInTheDocument();
 
     const bodyTextElement = screen.getByText(
-      /Find data on residential care homes and nursing homes across England./i
+      /Find data on care provision and the support provided by unpaid carers across England./i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
@@ -23,6 +23,15 @@ describe('CareHomePage', () => {
     expect(careHomeBedsLinkElement).toHaveAttribute(
       'href',
       '/topics/residential-care/provision-and-occupancy/data'
+    );
+
+    const unpaidCareLinkElement = screen.getByRole('link', {
+      name: /Unpaid care/i,
+    });
+    expect(unpaidCareLinkElement).toBeInTheDocument();
+    expect(unpaidCareLinkElement).toHaveAttribute(
+      'href',
+      '/topics/residential-care/unpaid-care/data'
     );
   });
 });
