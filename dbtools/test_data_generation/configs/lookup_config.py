@@ -4,14 +4,14 @@ LOCATION_RELATIONSHIPS = {
     'care_provider_location_to_care_provider': {
         'testcpl1': 'testcp1',
         'testcpl1a': 'testcp1',
-        'testcpl2': 'testcp2'
+        'testcpl2': 'testcp2',
     },
     
     # Care providers locations belong to LAs
     'care_provider_location_to_la': {
         'testcpl1': 'testla1',
         'testcpl1a': 'testla2',
-        'testcpl2': 'testla2'
+        'testcpl2': 'testla2',
     },
     
     # LAs belong to regions
@@ -26,3 +26,7 @@ LOCATION_RELATIONSHIPS = {
         'testregion2': 'testnation1'
     }
 }
+
+for i in range(100):
+    LOCATION_RELATIONSHIPS['care_provider_location_to_care_provider'][f'testcpl3_{i}'] = 'testcp3'
+    LOCATION_RELATIONSHIPS['care_provider_location_to_la'][f'testcpl3_{i}'] = 'testla1'

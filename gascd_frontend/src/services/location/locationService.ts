@@ -68,7 +68,10 @@ class LocationService {
           location_name: item.metric_location_name,
         };
       });
-      return availableLocations;
+      return availableLocations.sort(
+        (a: AvailableLocation, b: AvailableLocation) =>
+          a.location_name.localeCompare(b.location_name)
+      );
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
