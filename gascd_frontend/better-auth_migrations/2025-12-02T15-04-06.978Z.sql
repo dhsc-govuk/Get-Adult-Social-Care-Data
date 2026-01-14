@@ -1,1 +1,0 @@
-alter table "user" add "selectedLocationId" varchar(8000);

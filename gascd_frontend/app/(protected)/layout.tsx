@@ -1,21 +1,22 @@
 import { redirect } from 'next/navigation';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
 import { addUserTelemetry } from '@/helpers/telemetry/usertelemetry';
+import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 
 export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
   await addUserTelemetry();
 
-  if (!session || !session.user) {
+  const user = await getCurrentUser();
+  if (!user) {
     redirect('/login');
-  } else if (!session.user.selectedLocationId) {
+  }
+
+  if (!isUserRegistered(user)) {
+    redirect('/access-denied');
+  } else if (!user.selectedLocationId) {
     redirect('/location-select');
   }
 

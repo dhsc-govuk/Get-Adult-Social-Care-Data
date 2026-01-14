@@ -15,4 +15,4 @@ WORKDIR /app
 
 COPY test_data_generation .
 
-ENTRYPOINT ["uv", "run", "main.py"]
+ENTRYPOINT ["uv", "run", "main.py", "--truncate"]

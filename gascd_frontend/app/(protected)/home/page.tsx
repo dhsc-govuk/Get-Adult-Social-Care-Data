@@ -16,7 +16,7 @@ const HomePage: React.FC = () => {
 
   const topics: Topic[] = [
     {
-      title: 'Care homes',
+      title: 'Care provision',
       url: 'topics/residential-care/subtopics',
       subtopics: [
         {
@@ -24,6 +24,12 @@ const HomePage: React.FC = () => {
           description:
             'Provision and capacity data for care homes, including local, regional and national statistics.',
           url: 'topics/residential-care/provision-and-occupancy/data',
+        },
+        {
+          title: 'Unpaid care',
+          description:
+            'Statistics on the people who provide unpaid care to family members, friends and neighbours.',
+          url: '/topics/residential-care/unpaid-care/data',
         },
       ],
     },

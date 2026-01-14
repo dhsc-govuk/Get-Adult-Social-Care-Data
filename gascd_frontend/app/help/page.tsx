@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '@/components/common/layout/Layout';
 import AnalyticsService from '@/services/analytics/analyticsService';
 
-const PrivacyPage = () => {
+const HelpPage = () => {
   const handleClick = () => {
     AnalyticsService.trackHelpEmailClicked();
   };
@@ -38,4 +38,4 @@ const PrivacyPage = () => {
   );
 };
 
-export default PrivacyPage;
+export default HelpPage;

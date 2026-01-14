@@ -62,9 +62,25 @@ For Authentication we are using 'Better Auth' which requires a user database. Th
   npm run db:test:seed
 ```
 
-- Start the app and load the following URL (only available if `LOCAL_AUTH=true`):
+- Start the app and load the following development login URL (only available if `LOCAL_AUTH=true`):
   - http://localhost:3000/api/auth/local
 - This will log you in automatically using the credentials you set up above.
+
+### Running the GOV.UK One login simulator in development
+
+As well as using the magic development login URL above, you can also use the GOV.UK One Login simulator:
+
+- Copy the `ONELOGIN_` env variables from `.env.template` into your `.env` file
+- Enter a development secret in the env var `ONELOGIN_CLIENT_SECRET` (can be anything)
+- Generate the `ONELOGIN_CLIENT_SECRET_HASH_ESCAPED` value using the utility script:
+  - `../utils/hash_client_secret.py --interactive --escape`
+  - Enter your development secret when prompted
+- Run `docker compose up onelogin_simulator`
+- Start the frontend app as normal
+- Head to the temporary "one login" page in the app and click "Sign in":
+  - http://localhost:3000/onelogin
+- On the interactive login simulator form, change the "Email" field to match your `LOCAL_AUTH_EMAIL` value.
+- Click "Continue", and you should be logged in.
 
 ### Development Metrics database setup
 
@@ -143,14 +159,18 @@ You can log raw SQL queries to the terminal by running the app as follows:
 
 ### E2E tests
 
-There are some basic end-to-end tests written with cypress, which you can run against a local docker build.
+There are some basic end-to-end tests written with cypress, which you can run against a local production build.
 
 First ensure you have local auth and a local db set up and configured in your .env (see above). Then run:
 
 ```bash
 # In one terminal
+## Start the user db
 docker compose up userdb -d
-make docker-up-rebuild
+## Start onelogin simulator
+docker compose up onelogin_simulator -d
+## Build and run the app in production mode
+npm run build && npm run start
 # In a second terminal
 make test-e2e
 ```

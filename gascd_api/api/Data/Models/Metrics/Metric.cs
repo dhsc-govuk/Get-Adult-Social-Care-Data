@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace api.Data.Models.Metrics;
 
 [Table("metrics")]
-public class Metric : SearchableEntity
+public class Metric : EntityBase
 {
-    [Column("name"), StringLength(100)]
-    public required string Name { get; init; }
+    [Column("code"), StringLength(100)]
+    public required string Code { get; init; }
 
     [Column("metric_group_fk")]
     public required int MetricGroupFk { get; init; }
