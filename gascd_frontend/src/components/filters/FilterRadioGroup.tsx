@@ -3,14 +3,20 @@ import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import FilterBox from './FilterBox';
 import { filter_helptext } from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/helptext';
-import { useRouter } from 'next/dist/client/components/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
   filterType: string;
   filterLabel: string;
+  updateMethod: () => void;
 };
 
-const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
+const FilterRadioGroup: React.FC<Props> = ({
+  filterType,
+  filterLabel,
+  updateMethod,
+}) => {
   const [showFilters, setShowFilters] = React.useState(false);
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
   const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
@@ -48,6 +54,7 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
     setShowFilters(false);
     setShowActiveFilters(true);
     setDisplayFilter(selectedFilter?.filter_bedtype ?? null);
+    updateMethod();
   };
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -64,6 +71,7 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
     setShowFilters(false);
     setShowActiveFilters(false);
     setDisplayFilter(null);
+    updateMethod();
   };
 
   const setDefaultFilter = () => {
@@ -96,9 +104,9 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
           >
             {showFilters ? 'Hide' : 'Show'} filters
           </span>
-          <i
-            id="dhsc-filter--icon1"
-            className={`fa ${showFilters ? 'fa-plus' : 'fa-minus'}`}
+          <FontAwesomeIcon
+            className="govuk-!-margin-left-2"
+            icon={showFilters ? faMinus : faPlus}
             aria-hidden="true"
           />
         </button>

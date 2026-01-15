@@ -3,13 +3,20 @@ import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import FilterBox from './FilterBox';
 import { filter_helptext } from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/helptext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
   filterType: string;
   filterLabel: string;
+  updateMethod: () => void;
 };
 
-const FilterCheckboxGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
+const FilterCheckboxGroup: React.FC<Props> = ({
+  filterType,
+  filterLabel,
+  updateMethod,
+}) => {
   const [showFilters, setShowFilters] = React.useState(false);
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
   const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
@@ -73,6 +80,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
     setDisplayFilters(
       selectedFilters?.map((filter) => filter.filter_bedtype) ?? null
     );
+    updateMethod();
   };
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -89,6 +97,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
     setShowActiveFilters(false);
     setDisplayFilters(null);
     filters.map((filter) => (filter.checked = false));
+    updateMethod();
   };
 
   const clearFilter = (filterName: string) => {
@@ -105,6 +114,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
         updatedSelectedFilters.map((filter) => filter.filter_bedtype)
       );
     }
+    updateMethod();
   };
 
   return (
@@ -128,9 +138,9 @@ const FilterCheckboxGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
           >
             {showFilters ? 'Hide' : 'Show'} filters
           </span>
-          <i
-            id="dhsc-filter--icon1"
-            className={`fa ${showFilters ? 'fa-plus' : 'fa-minus'}`}
+          <FontAwesomeIcon
+            className="govuk-!-margin-left-2"
+            icon={showFilters ? faMinus : faPlus}
             aria-hidden="true"
           />
         </button>
