@@ -3,7 +3,6 @@ import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import FilterBox from './FilterBox';
 import { filter_helptext } from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/helptext';
-import { useRouter } from 'next/navigation';
 
 type Props = {
   filterType: string;
@@ -21,7 +20,6 @@ const FilterCheckboxGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
     []
   );
   const [displayFilters, setDisplayFilters] = useState<string[] | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const getFilters = async () => {
@@ -75,7 +73,6 @@ const FilterCheckboxGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
     setDisplayFilters(
       selectedFilters?.map((filter) => filter.filter_bedtype) ?? null
     );
-    router.refresh();
   };
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -92,7 +89,6 @@ const FilterCheckboxGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
     setShowActiveFilters(false);
     setDisplayFilters(null);
     filters.map((filter) => (filter.checked = false));
-    router.refresh();
   };
 
   const clearFilter = (filterName: string) => {
@@ -109,7 +105,6 @@ const FilterCheckboxGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
         updatedSelectedFilters.map((filter) => filter.filter_bedtype)
       );
     }
-    router.refresh();
   };
 
   return (
@@ -143,7 +138,9 @@ const FilterCheckboxGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
       {showFilters && (
         <FilterBox filterLabel={filterLabel}>
           {filters.length === 0 && (
-            <p className="govuk-body">Loading filters...</p>
+            <p className="govuk-body govuk-!-padding-left-3">
+              Loading filters...
+            </p>
           )}
           {filters.length > 0 && (
             <>

@@ -19,7 +19,6 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
     []
   );
   const [displayFilter, setDisplayFilter] = useState<string | null>('');
-  const router = useRouter();
 
   useEffect(() => {
     const getFilters = async () => {
@@ -31,6 +30,8 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
       const storedData = localStorage.getItem(filterType);
       if (storedData) {
         setSelectedFilter(JSON.parse(storedData));
+        setDisplayFilter(JSON.parse(storedData).filter_bedtype);
+        setShowActiveFilters(true);
       } else {
         setDefaultFilter();
       }
@@ -47,7 +48,6 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
     setShowFilters(false);
     setShowActiveFilters(true);
     setDisplayFilter(selectedFilter?.filter_bedtype ?? null);
-    router.refresh();
   };
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -64,7 +64,6 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
     setShowFilters(false);
     setShowActiveFilters(false);
     setDisplayFilter(null);
-    router.refresh();
   };
 
   const setDefaultFilter = () => {
@@ -107,7 +106,9 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
       {showFilters && (
         <FilterBox filterLabel={filterLabel}>
           {filters.length === 0 && (
-            <p className="govuk-body">Loading filters...</p>
+            <p className="govuk-body govuk-!-padding-left-3">
+              Loading filters...
+            </p>
           )}
           {filters.length > 0 && (
             <>
@@ -190,7 +191,6 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
               </div>
             </>
           )}
-          {filters.length === 0 && <p>Loading filters...</p>}
         </FilterBox>
       )}
       {displayFilter && showActiveFilters && (
