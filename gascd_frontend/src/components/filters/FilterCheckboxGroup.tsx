@@ -3,22 +3,24 @@ import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import FilterBox from './FilterBox';
 import { filter_helptext } from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/helptext';
-import { useRouter } from 'next/dist/client/components/navigation';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   filterType: string;
   filterLabel: string;
 };
 
-const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
+const FilterCheckboxGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
   const [showFilters, setShowFilters] = React.useState(false);
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
   const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
-  const [selectedFilter, setSelectedFilter] = useState<TotalBedsFilters>();
+  const [selectedFilters, setSelectedFilters] = useState<TotalBedsFilters[]>(
+    []
+  );
   const [searchedFilters, setSearchedFilters] = useState<TotalBedsFilters[]>(
     []
   );
-  const [displayFilter, setDisplayFilter] = useState<string | null>('');
+  const [displayFilters, setDisplayFilters] = useState<string[] | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -30,23 +32,49 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
 
       const storedData = localStorage.getItem(filterType);
       if (storedData) {
-        setSelectedFilter(JSON.parse(storedData));
+        setSelectedFilters(JSON.parse(storedData));
+        setDisplayFilters(
+          JSON.parse(storedData).map((filter: any) => filter.filter_bedtype)
+        );
+        setShowActiveFilters(true);
+        const parsedData = JSON.parse(storedData);
+        const preSelectedFilters = filters.map((filter) => ({
+          ...filter,
+          checked: parsedData.some(
+            (item: TotalBedsFilters) => item.metric_id === filter.metric_id
+          ),
+        }));
+        setFilters(preSelectedFilters);
       } else {
-        setDefaultFilter();
+        setSelectedFilters(filters);
       }
     };
     getFilters();
   }, []);
 
-  const handleChange = (filter: TotalBedsFilters) => {
-    setSelectedFilter(filter);
+  const handleCheckboxChange = (metric_id: string, checked: boolean) => {
+    const newFilters = [...filters];
+    let newItem = newFilters.findIndex((item) => item.metric_id === metric_id);
+    newFilters[newItem].checked = checked;
+    setFilters(newFilters);
+
+    setSelectedFilters(
+      filters
+        .filter((filter) => filter.checked)
+        .map((filter) => ({
+          metric_id: filter.metric_id,
+          filter_bedtype: filter.filter_bedtype,
+        }))
+    );
   };
 
   const handleSubmit = () => {
-    localStorage.setItem(filterType, JSON.stringify(selectedFilter));
+    localStorage.setItem('type-table-metrics', JSON.stringify(selectedFilters));
     setShowFilters(false);
     setShowActiveFilters(true);
-    setDisplayFilter(selectedFilter?.filter_bedtype ?? null);
+    setDisplayFilters(
+      selectedFilters?.map((filter) => filter.filter_bedtype) ?? null
+    );
     router.refresh();
   };
 
@@ -60,20 +88,28 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
 
   const clearFilters = () => {
     localStorage.removeItem(filterType);
-    setDefaultFilter();
     setShowFilters(false);
     setShowActiveFilters(false);
-    setDisplayFilter(null);
+    setDisplayFilters(null);
+    filters.map((filter) => (filter.checked = false));
     router.refresh();
   };
 
-  const setDefaultFilter = () => {
-    if (filterType === 'numbers-table-metrics') {
-      setSelectedFilter({
-        metric_id: 'bedcount_per_100000_adults_total',
-        filter_bedtype: 'All bed types',
-      });
+  const clearFilter = (filterName: string) => {
+    const updatedSelectedFilters = selectedFilters.filter(
+      (filter) => filter.filter_bedtype !== filterName
+    );
+    setSelectedFilters(updatedSelectedFilters);
+    localStorage.setItem(filterType, JSON.stringify(updatedSelectedFilters));
+    if (updatedSelectedFilters.length === 0) {
+      setShowActiveFilters(false);
+      setDisplayFilters(null);
+    } else {
+      setDisplayFilters(
+        updatedSelectedFilters.map((filter) => filter.filter_bedtype)
+      );
     }
+    router.refresh();
   };
 
   return (
@@ -111,15 +147,18 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
           )}
           {filters.length > 0 && (
             <>
-              <div id="radios-search" className="app-c-option-select__filter">
+              <div
+                id="checkboxes-search"
+                className="app-c-option-select__container js-options-container"
+              >
                 <label
-                  htmlFor="input-bedtype-radios"
+                  htmlFor="input-bedtype-checkboxes"
                   className="govuk-label govuk-visually-hidden"
                 >
                   {filterLabel}
                 </label>
                 <input
-                  id="input-bedtype-radios"
+                  id="input-bedtype-checkboxes"
                   className="app-c-option-select__filter-input govuk-input"
                   type="text"
                   onKeyUp={handleSearch}
@@ -127,38 +166,41 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
               </div>
               <div
                 role="group"
-                aria-labelledby="option-select-title-status-radios"
+                aria-labelledby="option-select-title-status-checkboxes"
                 className="app-c-option-select__container js-options-container"
                 tabIndex={-1}
               >
                 <div className="app-c-option-select__container-inner js-auto-height-inner">
-                  <div className="govuk-radios govuk-form-group govuk-radios--small">
+                  <div className="gem-c-checkboxes govuk-form-group govuk-checkboxes--small">
                     <fieldset className="govuk-fieldset">
-                      <legend className="govuk-fieldset__legend gem-c-radios govuk-fieldset__legend--m govuk-visually-hidden">
+                      <legend className="govuk-fieldset__legend govuk-fieldset__legend--m gem-c-checkboxes__legend--hidden">
                         {filterLabel}
                       </legend>
-                      <ul className="govuk-radios__list gem-c-radios__list">
+                      <ul className="govuk-checkboxes gem-c-checkboxes__list">
                         {searchedFilters.map((filter: any, index) => (
-                          <li className="govuk-radios__item" key={index}>
+                          <li className="govuk-checkboxes__item" key={index}>
                             <input
-                              className="govuk-radios__input"
+                              className="govuk-checkboxes__input"
                               id={filter.metric_id}
                               name="Table filter"
-                              type="radio"
+                              type="checkbox"
                               value={filter.metric_id}
-                              defaultChecked={
-                                selectedFilter?.metric_id === filter.metric_id
+                              defaultChecked={filter.checked || false}
+                              onChange={(e) =>
+                                handleCheckboxChange(
+                                  e.target.value,
+                                  e.target.checked
+                                )
                               }
-                              onChange={() => handleChange(filter)}
                             />
                             <label
-                              className="govuk-label govuk-radios__label"
+                              className="govuk-label govuk-checkboxes__label"
                               htmlFor={filter.metric_id}
                             >
                               {filter.filter_bedtype}
                             </label>
                             {filter_helptext[filter.metric_id] && (
-                              <div className="govuk-hint govuk-radios__hint">
+                              <div className="govuk-hint govuk-checkboxes__hint">
                                 {filter_helptext[filter.metric_id]}
                               </div>
                             )}
@@ -190,22 +232,23 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
               </div>
             </>
           )}
-          {filters.length === 0 && <p>Loading filters...</p>}
         </FilterBox>
       )}
-      {displayFilter && showActiveFilters && (
+      {displayFilters && showActiveFilters && (
         <div className="app-c-filter-summary">
           <h5 className="app-c-filter-summary__heading">Active filters</h5>
           <ul className="app-c-filter-summary__remove-filters">
-            <li>
-              <button
-                className="app-c-filter-summary__remove-filter govuk-link govuk-body-m govuk-!-margin-bottom-0"
-                onClick={() => clearFilters()}
-              >
-                <span className="govuk-visually-hidden">Remove filter</span>
-                {filterLabel}: {displayFilter}
-              </button>
-            </li>
+            {displayFilters.map((filterName, index) => (
+              <li key={index}>
+                <button
+                  className="app-c-filter-summary__remove-filter govuk-link govuk-body-m govuk-!-margin-bottom-0"
+                  onClick={() => clearFilter(filterName)}
+                >
+                  <span className="govuk-visually-hidden">Remove filter</span>
+                  {filterLabel}: {filterName}
+                </button>
+              </li>
+            ))}
           </ul>
           <div>
             <button
@@ -221,4 +264,4 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
   );
 };
 
-export default FilterRadioGroup;
+export default FilterCheckboxGroup;
