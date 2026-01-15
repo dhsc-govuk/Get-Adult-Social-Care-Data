@@ -1,4 +1,4 @@
-import 'server-only';
+//import 'server-only';
 import createClient from 'openapi-fetch';
 import { paths } from '@/metrics-api-schema';
 
