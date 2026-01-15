@@ -14,7 +14,7 @@
       "defaultReferenceTypeNullHandling": "Null",
       "defaultDictionaryValueReferenceTypeNullHandling": "NotNull",
       "defaultResponseReferenceTypeNullHandling": "NotNull",
-      "generateOriginalParameterNames": true,
+      "generateOriginalParameterNames": false,
       "defaultEnumHandling": "String", 
       "flattenInheritanceHierarchy": false,
       "generateKnownTypes": true,
