@@ -104,6 +104,13 @@ export default function ProvisionAndOccupancyPage() {
       'Young physically disabled',
   });
 
+  const [bedTypeChartHeaders, setBedTypeChartHeaders] = useState<any>({
+    bedcount_per_100000_adults_total: 'All bed types',
+    bedcount_per_100000_adults_total_dementia_nursing: 'Dementia nursing',
+    bedcount_per_100000_adults_total_dementia_residential:
+      'Dementia residential',
+  });
+
   const [bedNumberRowHeaders, setBedNumberRowHeaders] = useState<Object[]>([]);
 
   const careProviderMetricIds1 = ['bedcount_total', 'occupancy_rate_total'];
@@ -387,8 +394,18 @@ export default function ProvisionAndOccupancyPage() {
     if (!allBedTypeData.length) return;
     let series: Series[] = [];
     const la_code = locationIds[1];
+
+    const storedData = localStorage.getItem('type-chart-metrics');
+
+    if (storedData) {
+      const headers = JSON.parse(storedData);
+      const map: any = {};
+      headers.map((item: any) => (map[item.metric_id] = item.filter_bedtype));
+      setBedTypeChartHeaders(map);
+    }
+    console.log('bedTypeChartHeaders:', bedTypeChartHeaders);
     // Make some time series data based on the bed type row headers
-    Object.entries(bedTypeRowHeaders).forEach((header: any) => {
+    Object.entries(bedTypeChartHeaders).forEach((header: any) => {
       const metric_id = header[0];
       const name = header[1];
       // Filter to the current metric ID, for the LA only
@@ -726,6 +743,10 @@ export default function ProvisionAndOccupancyPage() {
           </p>
         }
       >
+        <FilterCheckboxGroup
+          filterType="type-chart-metrics"
+          filterLabel="Bed type"
+        />
         <DataTabs
           id="4"
           graph={
