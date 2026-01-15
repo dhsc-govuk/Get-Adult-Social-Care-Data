@@ -5,6 +5,10 @@ import { GET as GetRegion } from '../../app/api/get_region/route';
 import { GET as GetCountry } from '../../app/api/get_country/route';
 import { locations_data } from '@/data/mockResponses/locations_data';
 
+vi.mock('server-only', () => ({
+  default: vi.fn(),
+}));
+
 const { server } = await import('@/mocks/node');
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));

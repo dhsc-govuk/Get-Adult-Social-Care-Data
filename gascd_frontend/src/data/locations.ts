@@ -1,4 +1,4 @@
-//import 'server-only';
+import 'server-only';
 import { getAPIClient } from './dataAPI';
 import { User } from '@/lib/auth';
 import logger from '@/utils/logger';
