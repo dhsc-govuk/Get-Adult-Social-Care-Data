@@ -65,7 +65,7 @@ public partial class GascdDataContext : DbContext
             case bedcount_per_hundred_thousand_adults_total_learning_disability_nursing:
             case bedcount_per_hundred_thousand_adults_total_learning_disability_residential:
             case bedcount_per_hundred_thousand_adults_total_mental_health_nursing:
-            case bedcount_per_hundred_thousand_adults_total_mential_health_residential:
+            case bedcount_per_hundred_thousand_adults_total_mental_health_residential:
             case bedcount_per_hundred_thousand_adults_total_transitional:
             case bedcount_per_hundred_thousand_adults_total_ypd_young_physically_disabled:
                 return BedcountPerHundredThousandAdultsSet.AsQueryable();

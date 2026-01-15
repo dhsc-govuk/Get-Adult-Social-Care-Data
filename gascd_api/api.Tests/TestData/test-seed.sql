@@ -547,7 +547,7 @@ DECLARE
     bphta_total_learning_disability_nursing_metric_id integer = 106;
     bphta_total_learning_disability_residential_metric_id integer = 107;
     bphta_total_mental_health_nursing_metric_id integer = 108;
-    bphta_total_mential_health_residential_metric_id integer = 109;
+    bphta_total_mental_health_residential_metric_id integer = 109;
     bphta_total_transitional_metric_id integer = 110;
     bphta_total_ypd_young_physically_disabled_metric_id integer = 111;
     dementia_estimated_diagnosis_rate_65over_metric_id integer = 112;
@@ -673,7 +673,7 @@ BEGIN
            (bphta_total_learning_disability_nursing_metric_id, 'bedcount_per_hundred_thousand_adults_total_learning_disability_nursing', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (bphta_total_learning_disability_residential_metric_id, 'bedcount_per_hundred_thousand_adults_total_learning_disability_residential', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (bphta_total_mental_health_nursing_metric_id, 'bedcount_per_hundred_thousand_adults_total_mental_health_nursing', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
-           (bphta_total_mential_health_residential_metric_id, 'bedcount_per_hundred_thousand_adults_total_mential_health_residential', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
+           (bphta_total_mental_health_residential_metric_id, 'bedcount_per_hundred_thousand_adults_total_mental_health_residential', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (bphta_total_transitional_metric_id, 'bedcount_per_hundred_thousand_adults_total_transitional', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (bphta_total_ypd_young_physically_disabled_metric_id, 'bedcount_per_hundred_thousand_adults_total_ypd_young_physically_disabled', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (dementia_estimated_diagnosis_rate_65over_metric_id, 'dementia_estimated_diagnosis_rate_65over', dementia_estimated_diagnosis_rate_65over_metric_group_id, 'Median Bed Count', 'This is a numerator', 'This is a denominator', 'Capacity Tracker', 'numbers', 'Daily', CURRENT_TIMESTAMP),
@@ -709,7 +709,7 @@ BEGIN
            (7, bphta_total_learning_disability_nursing_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.5], 7.5, CURRENT_TIMESTAMP),
            (8, bphta_total_learning_disability_residential_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.6], 7.6, CURRENT_TIMESTAMP),
            (9, bphta_total_mental_health_nursing_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.7], 7.7, CURRENT_TIMESTAMP),
-           (10, bphta_total_mential_health_residential_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.8], 7.8, CURRENT_TIMESTAMP),
+           (10, bphta_total_mental_health_residential_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.8], 7.8, CURRENT_TIMESTAMP),
            (11, bphta_total_transitional_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.9], 7.9, CURRENT_TIMESTAMP),
            (12, bphta_total_ypd_young_physically_disabled_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.11], 7.11, CURRENT_TIMESTAMP),
            (2, bphta_total_metric_id, '1-123456789', 'National', '2002-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [22.2,null,44.4, null, 32.1], 32.1, CURRENT_TIMESTAMP);

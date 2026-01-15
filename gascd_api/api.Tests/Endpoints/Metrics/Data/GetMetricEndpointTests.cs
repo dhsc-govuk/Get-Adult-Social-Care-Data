@@ -362,7 +362,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
             yield return [bedcount_per_hundred_thousand_adults_total_learning_disability_nursing, 7.5m];
             yield return [bedcount_per_hundred_thousand_adults_total_learning_disability_residential, 7.6m];
             yield return [bedcount_per_hundred_thousand_adults_total_mental_health_nursing, 7.7m];
-            yield return [bedcount_per_hundred_thousand_adults_total_mential_health_residential, 7.8m];
+            yield return [bedcount_per_hundred_thousand_adults_total_mental_health_residential, 7.8m];
             yield return [bedcount_per_hundred_thousand_adults_total_transitional, 7.9m];
             yield return [bedcount_per_hundred_thousand_adults_total_ypd_young_physically_disabled, 7.11m];
             yield return [dementia_estimated_diagnosis_rate_65over, 6.8m];
