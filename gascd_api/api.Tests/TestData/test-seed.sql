@@ -697,7 +697,7 @@ BEGIN
            (total_population_metric_id, 'total_population', total_population_metric_group_id, 'Median Bed Count', 'This is a numerator', 'This is a denominator', 'Capacity Tracker', 'numbers', 'Daily', CURRENT_TIMESTAMP);
 
     INSERT INTO bedcount (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
-    VALUES (1, bedcount_total_metric_id, '1-123456789', 'National', '2000-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [1.1,2.2,3.3,4.4,5.5], 5.5, CURRENT_TIMESTAMP),
+    VALUES (1, bedcount_total_metric_id, '1-123456789', 'National', '2000-01-01 00:00:00', '2025-01-01 00:00:00', ARRAY [1.1,2.2,3.3,4.4,5.5], 5.5, CURRENT_TIMESTAMP),
            (2, bedcount_total_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5,6.6], 6.6, CURRENT_TIMESTAMP);
 
     INSERT INTO bedcount_per_hundred_thousand_adults (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
@@ -712,7 +712,7 @@ BEGIN
            (10, bphta_total_mental_health_residential_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.8], 7.8, CURRENT_TIMESTAMP),
            (11, bphta_total_transitional_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.9], 7.9, CURRENT_TIMESTAMP),
            (12, bphta_total_ypd_young_physically_disabled_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.11], 7.11, CURRENT_TIMESTAMP),
-           (2, bphta_total_metric_id, '1-123456789', 'National', '2002-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [22.2,null,44.4, null, 32.1], 32.1, CURRENT_TIMESTAMP);
+           (2, bphta_total_metric_id, '1-123456789', 'National', '2002-01-01 00:00:00', '2024-01-01 00:00:00', ARRAY [22.2,null,44.4, null, 32.1], 32.1, CURRENT_TIMESTAMP);
     
     INSERT INTO dementia_estimated_diagnosis_rate_65over (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, dementia_estimated_diagnosis_rate_65over_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP);
