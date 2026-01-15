@@ -27,6 +27,7 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import FilterRadioGroup from '@/components/filters/FilterRadioGroup';
+import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -83,18 +84,24 @@ export default function ProvisionAndOccupancyPage() {
       location_ids: [],
     });
 
-  const [selectedBedTypeTableFilters, setSelectedBedTypeTableFilters] =
-    useState<string[]>([
-      'All bed types',
-      'Dementia nursing',
-      'Dementia residential',
-    ]);
-
   const [bedTypeRowHeaders, setBedTypeRowHeaders] = useState<any>({
     bedcount_per_100000_adults_total: 'All bed types',
     bedcount_per_100000_adults_total_dementia_nursing: 'Dementia nursing',
     bedcount_per_100000_adults_total_dementia_residential:
       'Dementia residential',
+    bedcount_per_100000_adults_total_general_nursing: 'General nursing',
+    bedcount_per_100000_adults_total_general_residential: 'General residential',
+    bedcount_per_100000_adults_total_learning_disability_nursing:
+      'Learning disability nursing',
+    bedcount_per_100000_adults_total_learning_disability_residential:
+      'Learning disability residential',
+    bedcount_per_100000_adults_total_mental_health_nursing:
+      'Mental health nursing',
+    bedcount_per_100000_adults_total_mental_health_residential:
+      'Mental health residential',
+    bedcount_per_100000_adults_total_transitional: 'Transitional',
+    bedcount_per_100000_adults_total_ypd_young_physically_disabled:
+      'Young physically disabled',
   });
 
   const [bedNumberRowHeaders, setBedNumberRowHeaders] = useState<Object[]>([]);
@@ -113,6 +120,14 @@ export default function ProvisionAndOccupancyPage() {
     'bedcount_per_100000_adults_total',
     'bedcount_per_100000_adults_total_dementia_nursing',
     'bedcount_per_100000_adults_total_dementia_residential',
+    'bedcount_per_100000_adults_total_general_nursing',
+    'bedcount_per_100000_adults_total_general_residential',
+    'bedcount_per_100000_adults_total_learning_disability_nursing',
+    'bedcount_per_100000_adults_total_learning_disability_residential',
+    'bedcount_per_100000_adults_total_mental_health_nursing',
+    'bedcount_per_100000_adults_total_mental_health_residential',
+    'bedcount_per_100000_adults_total_transitional',
+    'bedcount_per_100000_adults_total_ypd_young_physically_disabled',
   ];
 
   const bedNumberMetricIds = ['bedcount_per_100000_adults_total'];
@@ -327,8 +342,6 @@ export default function ProvisionAndOccupancyPage() {
           const map: any = {};
           parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
           setBedTypeRowHeaders(map);
-          const tMetricNames = parsedData.map((obj) => obj['filter_bedtype']);
-          setSelectedBedTypeTableFilters(tMetricNames);
         }
       } catch (error) {
         console.error(error);
@@ -520,28 +533,10 @@ export default function ProvisionAndOccupancyPage() {
           </>
         }
       >
-        <div className="govuk-form-group govuk-!-padding-top-3">
-          <dl className="govuk-summary-list">
-            <div className="govuk-summary-list__row">
-              <dt className="govuk-summary-list__key">Filters</dt>
-              <dd className="govuk-summary-list__value">
-                <ul className="govuk-!-margin-top-0 govuk-!-padding-left-0 nobullet">
-                  {selectedBedTypeTableFilters.map((filter, index) => (
-                    <li key={index}>{filter}</li>
-                  ))}
-                </ul>
-              </dd>
-              <dd className="govuk-summary-list__actions">
-                <a
-                  href="/topics/residential-care/provision-and-occupancy/type-filters"
-                  className="govuk-link"
-                >
-                  Change<span className="govuk-visually-hidden"> filters</span>
-                </a>
-              </dd>
-            </div>
-          </dl>
-        </div>
+        <FilterCheckboxGroup
+          filterType="type-table-metrics"
+          filterLabel="Bed type"
+        />
         <DataTabs
           id="2"
           table={
