@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   filterLabel: string;
@@ -6,6 +7,8 @@ type Props = {
 };
 
 const FilterBox: React.FC<Props> = ({ filterLabel, children }) => {
+  const route = useRouter();
+
   return (
     <>
       <div className="govuk-grid-row">
