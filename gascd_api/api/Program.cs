@@ -10,7 +10,7 @@ bld.Logging.RegisterLoggingConfiguration();
 bld.Services
     .RegisterDatabase(bld.Configuration)
     .RegisterFastEndpoints()
-    .AddSingleton<ReferenceMapper>()
+    .AddSingletonConfiguration()
     .RegisterSwaggerConfiguration()
     .RegisterAuth();
 
