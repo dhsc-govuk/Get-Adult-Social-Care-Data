@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.MetricFilters;
 
-public class GetMetricFiltersEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetMetricFiltersEndpoint> logger) : Endpoint<GetMetricFiltersRequest, GetMetricFiltersResponse>
+public class GetMetricFiltersEndpoint(GascdDataContext context, MetricMapper mapper, ILogger<GetMetricFiltersEndpoint> logger) : Endpoint<GetMetricFiltersRequest, GetMetricFiltersResponse>
 {
     public override void Configure()
     {
