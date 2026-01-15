@@ -1,5 +1,5 @@
 //import 'server-only';
-import { APIClient } from './dataAPI';
+import { getAPIClient } from './dataAPI';
 import { User } from '@/lib/auth';
 import logger from '@/utils/logger';
 
@@ -12,21 +12,19 @@ export const getAllowedLocations = async (user: User) => {
     return [];
   }
 
+  const client = getAPIClient();
   let provider_code;
   if (location_type === 'Care provider') {
     provider_code = location_id;
   } else if (user.locationType === 'Care provider location') {
     // Look up the correct provider from the API
-    const response = await APIClient.GET(
-      '/metric_locations/cp_locations/{code}',
-      {
-        params: {
-          path: {
-            code: location_id,
-          },
+    const response = await client.GET('/metric_locations/cp_locations/{code}', {
+      params: {
+        path: {
+          code: location_id,
         },
-      }
-    );
+      },
+    });
 
     if (response.response.status != 200) {
       logger.error('Invalid API response: ' + response.response.status);
@@ -45,7 +43,7 @@ export const getAllowedLocations = async (user: User) => {
     return [];
   }
 
-  const { data: provider_data } = await APIClient.GET(
+  const { data: provider_data } = await client.GET(
     '/organisation/care_provider/{code}',
     { params: { path: { code: provider_code } } }
   );

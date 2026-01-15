@@ -6,7 +6,7 @@ import logger from '@/utils/logger';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { addUserTelemetry } from '@/helpers/telemetry/usertelemetry';
-import { APIClient } from '@/data/dataAPI';
+import { getAPIClient } from '@/data/dataAPI';
 
 export async function POST(req: NextRequest) {
   const queryParams = await req.json();
@@ -28,18 +28,16 @@ export async function POST(req: NextRequest) {
     });
 
     let all_metrics: any[] = [];
+    const client = getAPIClient();
     for (let metric_id of metric_ids) {
-      const { data, error } = await APIClient.POST(
-        '/metrics/{metric_code}/data',
-        {
-          params: {
-            path: {
-              metric_code: metric_id,
-            },
+      const { data, error } = await client.POST('/metrics/{metric_code}/data', {
+        params: {
+          path: {
+            metric_code: metric_id,
           },
-          body: location_query,
-        }
-      );
+        },
+        body: location_query,
+      });
       if (data) {
         all_metrics.push(data);
       }

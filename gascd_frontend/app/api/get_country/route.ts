@@ -1,4 +1,4 @@
-import { APIClient } from '@/data/dataAPI';
+import { getAPIClient } from '@/data/dataAPI';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -11,20 +11,17 @@ export async function GET(req: NextRequest) {
       { status: 400 }
     );
   }
-
   if (process.env.DATA_API_ROOT) {
     try {
-      const { data } = await APIClient.GET(
-        '/metric_locations/countries/{code}',
-        {
-          params: {
-            path: {
-              code: code,
-            },
+      const client = getAPIClient();
+      const { data } = await client.GET('/metric_locations/countries/{code}', {
+        params: {
+          path: {
+            code: code,
           },
-        }
-      );
-
+        },
+      });
+      console.error(data);
       if (!data) {
         return NextResponse.json({ error: 'No data found' }, { status: 404 });
       }

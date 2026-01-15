@@ -1,4 +1,4 @@
-import { APIClient } from '@/data/dataAPI';
+import { getAPIClient } from '@/data/dataAPI';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -14,7 +14,8 @@ export async function GET(req: NextRequest) {
 
   if (process.env.DATA_API_ROOT) {
     try {
-      const { data } = await APIClient.GET('/metric_locations/regions/{code}', {
+      const client = getAPIClient();
+      const { data } = await client.GET('/metric_locations/regions/{code}', {
         params: {
           path: {
             code: code,
