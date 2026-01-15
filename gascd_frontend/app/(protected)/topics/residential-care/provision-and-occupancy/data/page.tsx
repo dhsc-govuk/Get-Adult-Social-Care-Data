@@ -1,33 +1,33 @@
 'use client';
 
-import Layout from '@/components/common/layout/Layout';
 import React, { useEffect, useRef, useState } from 'react';
+import Layout from '@/components/common/layout/Layout';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
 import DataLinkCard from '@/components/data-components/DataLinkCard';
 import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
 import BackToTop from '@/components/data-components/BackToTop';
-import LocationService from '@/services/location/locationService';
+import RelatedDataList from '@/components/data-components/RelatedDataList';
 import DataTable from '@/components/tables/table';
-import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
-import { Indicator } from '@/data/interfaces/Indicator';
-import TableService from '@/services/Table/TableService';
-import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
+import VerticalLocationTable from '@/components/tables/VerticalLocationTable';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
-import { LocationNames } from '@/data/interfaces/LocationNames';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import BarChart from '@/components/charts/BarChart';
-import VerticalLocationTable from '@/components/tables/VerticalLocationTable';
 import TimeSeriesChart, {
   DataPoint,
   Series,
 } from '@/components/charts/TimeSeriesChart';
-import IndicatorService from '@/services/indicator/IndicatorService';
-import AnalyticsService from '@/services/analytics/analyticsService';
-import RelatedDataList from '@/components/data-components/RelatedDataList';
 import FilterRadioGroup from '@/components/filters/FilterRadioGroup';
 import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
+import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
+import { LocationNames } from '@/data/interfaces/LocationNames';
+import { Indicator } from '@/data/interfaces/Indicator';
+import TableService from '@/services/Table/TableService';
+import IndicatorService from '@/services/indicator/IndicatorService';
+import AnalyticsService from '@/services/analytics/analyticsService';
+import LocationService from '@/services/location/locationService';
+import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -334,7 +334,10 @@ export default function ProvisionAndOccupancyPage() {
   }, [CPLocationId, locationIds]);
 
   useEffect(() => {
-    // Set up filterable metric queries for the types table
+    updateTypesTableMetrics();
+  }, [locationIds]);
+
+  const updateTypesTableMetrics = () => {
     const storedData = localStorage.getItem('type-table-metrics');
     if (storedData) {
       try {
@@ -359,9 +362,13 @@ export default function ProvisionAndOccupancyPage() {
         location_ids: locationIds,
       });
     }
-  }, [locationIds]);
+  };
 
   useEffect(() => {
+    updateNumbersTableMetrics();
+  }, [locationIds, laIdsForRegion, lasForRegion]);
+
+  const updateNumbersTableMetrics = () => {
     // Set up filterable metric queries for the numbers table
     const storedData = localStorage.getItem('numbers-table-metrics');
     if (storedData && locationIds && laIdsForRegion && lasForRegion) {
@@ -386,11 +393,15 @@ export default function ProvisionAndOccupancyPage() {
         location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
       });
     }
-  }, [locationIds, laIdsForRegion, lasForRegion]);
+  };
 
   // Generate time series chart data
   const [timeData, setTimedata] = useState<Series[]>([]);
   useEffect(() => {
+    updateTypesChartMetrics();
+  }, [allBedTypeData]);
+
+  const updateTypesChartMetrics = () => {
     if (!allBedTypeData.length) return;
     let series: Series[] = [];
     const la_code = locationIds[1];
@@ -403,7 +414,6 @@ export default function ProvisionAndOccupancyPage() {
       headers.map((item: any) => (map[item.metric_id] = item.filter_bedtype));
       setBedTypeChartHeaders(map);
     }
-    console.log('bedTypeChartHeaders:', bedTypeChartHeaders);
     // Make some time series data based on the bed type row headers
     Object.entries(bedTypeChartHeaders).forEach((header: any) => {
       const metric_id = header[0];
@@ -433,7 +443,7 @@ export default function ProvisionAndOccupancyPage() {
       });
     });
     setTimedata(series);
-  }, [allBedTypeData]);
+  };
 
   return (
     <Layout
@@ -475,6 +485,7 @@ export default function ProvisionAndOccupancyPage() {
         <FilterRadioGroup
           filterType="numbers-table-metrics"
           filterLabel="Bed type"
+          updateMethod={updateNumbersTableMetrics}
         />
         <DataTabs
           id="1"
@@ -553,6 +564,7 @@ export default function ProvisionAndOccupancyPage() {
         <FilterCheckboxGroup
           filterType="type-table-metrics"
           filterLabel="Bed type"
+          updateMethod={updateTypesTableMetrics}
         />
         <DataTabs
           id="2"
@@ -746,6 +758,7 @@ export default function ProvisionAndOccupancyPage() {
         <FilterCheckboxGroup
           filterType="type-chart-metrics"
           filterLabel="Bed type"
+          updateMethod={updateTypesChartMetrics}
         />
         <DataTabs
           id="4"

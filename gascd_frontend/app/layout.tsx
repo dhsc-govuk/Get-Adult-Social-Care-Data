@@ -7,6 +7,9 @@ import { headers } from 'next/headers';
 import type { Metadata } from 'next';
 import Header from '@/components/common/header/Header';
 import ServiceName from '@/components/common/service-name/ServiceName';
+import { config } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+config.autoAddCss = false;
 
 export const viewport: Viewport = {
   themeColor: '#1d70b8',
