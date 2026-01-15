@@ -1,6 +1,7 @@
 using api.Data.Models.Metrics;
 using api.Data.Models.Reference;
 using api.Endpoints.Geo.Postcode;
+using api.Endpoints.MetricFilters;
 using api.Endpoints.MetricLocation.Countries;
 using api.Endpoints.MetricLocation.LocalAuthorities;
 using api.Endpoints.MetricLocation.Regions;
@@ -35,7 +36,7 @@ public class ReferenceMapper
         };
     }
 
-    public GetCareProviderResponse.CareProviderLocation CareProviderLocationToCareProviderLocationResponse(CareProviderLocation careProviderLocation)
+    private GetCareProviderResponse.CareProviderLocation CareProviderLocationToCareProviderLocationResponse(CareProviderLocation careProviderLocation)
     {
         return new GetCareProviderResponse.CareProviderLocation
         {
@@ -72,7 +73,7 @@ public class ReferenceMapper
             Latitude = geoData.Coordinate.Y,
             Longitude = geoData.Coordinate.X,
             Polygon = geoData.BoundingPolygon?.Coordinates
-                .Select(c => new GeoDataDto.CoordinateDto { Latitude = c.X, Longitude = c.Y }).ToList()
+                .Select(c => new GeoDataDto.CoordinateDto { Latitude = c.X, Longitude = c.Y }).ToList() ?? new()
         };
     }
 
@@ -124,4 +125,24 @@ public class ReferenceMapper
             Denominator = metric.DenominatorDescription,
         };
     }
+
+    public GetMetricFiltersResponse MetricGroupToMetricFiltersResponse(MetricGroup metricGroup)
+    {
+        return new GetMetricFiltersResponse
+        {
+            MetricGroupCode = metricGroup.Code,
+            MetricFilters = metricGroup.Metrics
+                .Select(MetricToMetricFilterDto).ToList()
+        };
+    }
+
+    private GetMetricFiltersResponse.MetricFilterDto MetricToMetricFilterDto(Metric metric)
+    {
+        return new GetMetricFiltersResponse.MetricFilterDto
+        {
+            MetricCode = metric.Code,
+            DisplayName = metric.DisplayName
+        };
+    }
+
 }

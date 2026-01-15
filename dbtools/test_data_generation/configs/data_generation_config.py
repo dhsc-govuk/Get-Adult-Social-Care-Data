@@ -157,7 +157,7 @@ METRIC_DEFINITIONS = {
 # Define location IDs
 LOCATIONS = {
     'Care provider location': [
-        'testcpl1', 'testcpl2', 'testcpl1a'
+        'testcpl1', 'testcpl2', 'testcpl1a', 
     ],
     'LA': [
         'testla1', 'testla2'
@@ -169,6 +169,10 @@ LOCATIONS = {
         'testnation1'
     ]
 }
+
+# Add in a whole load of CLPs for a 3rd CP
+for i in range(100):
+    LOCATIONS['Care provider location'].append(f'testcpl3_{i}')
 
 # Define date ranges
 DATE_RANGES = {

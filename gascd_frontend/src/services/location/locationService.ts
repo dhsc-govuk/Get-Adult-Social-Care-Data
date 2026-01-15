@@ -61,14 +61,11 @@ class LocationService {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
 
-      let results = (await response.json()).data;
-      //let availableLocations = results.map((item: any) => {
-      //  return {
-      //    location_id: item.metric_location_id,
-      //    location_name: item.metric_location_name,
-      //  };
-      //});
-      return results;
+      let availableLocations = (await response.json()).data;
+      return availableLocations.sort(
+        (a: AvailableLocation, b: AvailableLocation) =>
+          a.location_name.localeCompare(b.location_name)
+      );
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
