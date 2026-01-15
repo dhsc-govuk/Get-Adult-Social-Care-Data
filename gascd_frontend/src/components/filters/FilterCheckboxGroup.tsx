@@ -69,7 +69,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
   };
 
   const handleSubmit = () => {
-    localStorage.setItem('type-table-metrics', JSON.stringify(selectedFilters));
+    localStorage.setItem(filterType, JSON.stringify(selectedFilters));
     setShowFilters(false);
     setShowActiveFilters(true);
     setDisplayFilters(
