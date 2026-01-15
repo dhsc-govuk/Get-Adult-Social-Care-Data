@@ -9,17 +9,21 @@ type Props = {
   filterLabel: string;
 };
 
-const FilterGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
+const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
   const [showFilters, setShowFilters] = React.useState(false);
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
   const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<TotalBedsFilters>();
+  const [searchedFilters, setSearchedFilters] = useState<TotalBedsFilters[]>(
+    []
+  );
 
   useEffect(() => {
     const getFilters = async () => {
       const filters: TotalBedsFilters[] =
         await IndicatorFetchService.getFilters('');
       setFilters(filters);
+      setSearchedFilters(filters);
 
       const storedData = localStorage.getItem(filterType);
       if (storedData) {
@@ -39,6 +43,14 @@ const FilterGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
     localStorage.setItem(filterType, JSON.stringify(selectedFilter));
     setShowFilters(false);
     setShowActiveFilters(true);
+  };
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
+    const searchedFilters = filters.filter((filter) =>
+      filter.filter_bedtype.toLowerCase().includes(searchTerm)
+    );
+    setSearchedFilters(searchedFilters);
   };
 
   const clearFilters = () => {
@@ -99,6 +111,7 @@ const FilterGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
                 id="input-bedtype-radios"
                 className="app-c-option-select__filter-input govuk-input"
                 type="text"
+                onKeyUp={handleSearch}
               />
             </div>
             <div
@@ -115,7 +128,7 @@ const FilterGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
                     </legend>
                     <ul className="govuk-radios__list gem-c-radios__list">
                       {filters &&
-                        filters.map((filter: any, index) => (
+                        searchedFilters.map((filter: any, index) => (
                           <li className="govuk-radios__item" key={index}>
                             <input
                               className="govuk-radios__input"
@@ -196,4 +209,4 @@ const FilterGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
   );
 };
 
-export default FilterGroup;
+export default FilterRadioGroup;

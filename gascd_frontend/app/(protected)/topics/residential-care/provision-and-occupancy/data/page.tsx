@@ -26,7 +26,7 @@ import TimeSeriesChart, {
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
-import FilterGroup from '@/components/filters/FilterRadioGroup';
+import FilterRadioGroup from '@/components/filters/FilterRadioGroup';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -450,7 +450,7 @@ export default function ProvisionAndOccupancyPage() {
           </>
         }
       >
-        <FilterGroup
+        <FilterRadioGroup
           filterType="numbers-table-metrics"
           filterLabel="Bed type"
         />
