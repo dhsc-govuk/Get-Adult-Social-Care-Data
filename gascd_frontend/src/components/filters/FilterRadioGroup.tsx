@@ -98,37 +98,37 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
         </button>
       </div>
       {showFilters && (
-        <div>
-          <FilterBox filterLabel={filterLabel}>
-            <div id="radios-search" className="app-c-option-select__filter">
-              <label
-                htmlFor="input-bedtype-radios"
-                className="govuk-label govuk-visually-hidden"
+        <FilterBox filterLabel={filterLabel}>
+          {filters && (
+            <>
+              <div id="radios-search" className="app-c-option-select__filter">
+                <label
+                  htmlFor="input-bedtype-radios"
+                  className="govuk-label govuk-visually-hidden"
+                >
+                  {filterLabel}
+                </label>
+                <input
+                  id="input-bedtype-radios"
+                  className="app-c-option-select__filter-input govuk-input"
+                  type="text"
+                  onKeyUp={handleSearch}
+                />
+              </div>
+              <div
+                role="group"
+                aria-labelledby="option-select-title-status-radios"
+                className="app-c-option-select__container js-options-container"
+                tabIndex={-1}
               >
-                {filterLabel}
-              </label>
-              <input
-                id="input-bedtype-radios"
-                className="app-c-option-select__filter-input govuk-input"
-                type="text"
-                onKeyUp={handleSearch}
-              />
-            </div>
-            <div
-              role="group"
-              aria-labelledby="option-select-title-status-radios"
-              className="app-c-option-select__container js-options-container"
-              tabIndex={-1}
-            >
-              <div className="app-c-option-select__container-inner js-auto-height-inner">
-                <div className="govuk-radios govuk-form-group govuk-radios--small">
-                  <fieldset className="govuk-fieldset">
-                    <legend className="govuk-fieldset__legend gem-c-radios govuk-fieldset__legend--m govuk-visually-hidden">
-                      {filterLabel}
-                    </legend>
-                    <ul className="govuk-radios__list gem-c-radios__list">
-                      {filters &&
-                        searchedFilters.map((filter: any, index) => (
+                <div className="app-c-option-select__container-inner js-auto-height-inner">
+                  <div className="govuk-radios govuk-form-group govuk-radios--small">
+                    <fieldset className="govuk-fieldset">
+                      <legend className="govuk-fieldset__legend gem-c-radios govuk-fieldset__legend--m govuk-visually-hidden">
+                        {filterLabel}
+                      </legend>
+                      <ul className="govuk-radios__list gem-c-radios__list">
+                        {searchedFilters.map((filter: any, index) => (
                           <li className="govuk-radios__item" key={index}>
                             <input
                               className="govuk-radios__input"
@@ -154,32 +154,34 @@ const FilterRadioGroup: React.FC<Props> = ({ filterType, filterLabel }) => {
                             )}
                           </li>
                         ))}
-                    </ul>
-                  </fieldset>
+                      </ul>
+                    </fieldset>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="govuk-grid-row govuk-!-margin-top-4">
-              <div className="govuk-grid-column-full">
-                <div className="govuk-button-group">
-                  <button
-                    type="submit"
-                    className="govuk-button"
-                    onClick={() => handleSubmit()}
-                  >
-                    Apply
-                  </button>
-                  <button
-                    className="govuk-button govuk-button--secondary"
-                    onClick={() => clearFilters()}
-                  >
-                    Clear all
-                  </button>
+              <div className="govuk-grid-row govuk-!-margin-top-4">
+                <div className="govuk-grid-column-full">
+                  <div className="govuk-button-group">
+                    <button
+                      type="submit"
+                      className="govuk-button"
+                      onClick={() => handleSubmit()}
+                    >
+                      Apply
+                    </button>
+                    <button
+                      className="govuk-button govuk-button--secondary"
+                      onClick={() => clearFilters()}
+                    >
+                      Clear all
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </FilterBox>
-        </div>
+            </>
+          )}
+          {filters.length === 0 && <p>Loading filters...</p>}
+        </FilterBox>
       )}
       {selectedFilter && showActiveFilters && (
         <div className="app-c-filter-summary">
