@@ -22,17 +22,22 @@ export async function POST(req: NextRequest) {
   if (process.env.DATA_API_ROOT) {
     const client = createClient<paths>({ baseUrl: process.env.DATA_API_ROOT });
     const metric_ids = queryParams.metric_ids;
+    const location_query = queryParams.location_ids.map((item: string) => {
+      return {
+        location_code: item,
+        location_type: 'Regional', // XXX this needs to come from somewhere,
+      };
+    });
+
     let all_metrics: any[] = [];
     for (let metric_id of metric_ids) {
-      const { data, error } = await client.GET('/metrics/{metric_code}/data', {
+      const { data, error } = await client.POST('/metrics/{metric_code}/data', {
         params: {
           path: {
             metric_code: metric_id,
           },
-          query: {
-            locations: queryParams.location_ids,
-          },
         },
+        body: location_query,
       });
       if (data) {
         all_metrics.push(data);
