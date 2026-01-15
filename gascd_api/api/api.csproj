@@ -40,18 +40,13 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="OpenAPI\" />
+    </ItemGroup>
     
-
-    <!-- Defines the Target for post build event and condition to be met inorder to be executed. -->
-    <Target Name="NSwag" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Debug' ">
-        <!-- A good practice to restore the project nuget packages to make sure the next step doesn't fail. -->
-        <Exec Command="dotnet tool restore"></Exec>
-        <!-- An exec command to generate swagger.json file as part of the build process.
-        EnvironmentVariables = allows you to set the project environment variable
-        WorkingDirectory = holds the directory path from which the command has to be executed
-        Command = holds the command to be executed when this exec block is executed during post build process
-        . -->
-        <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Debug" Command="$(NSwagExe_Net100) run nswag.json" />
+    <Target Name="NSwag" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Release' ">
+        <Exec Command="dotnet tool restore"/>
+        <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Release" Command="$(NSwagExe_Net100) run nswag.json" />
     </Target>
     
 </Project>

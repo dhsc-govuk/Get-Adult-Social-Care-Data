@@ -5,7 +5,7 @@
     "aspNetCoreToOpenApi": {
       "project": "api.csproj", 
       "defaultUrlTemplate": "api/{controller}/{id?}",
-      "configuration": "Debug", 
+      "configuration": "Release", 
       "noBuild": true, 
       "verbose": true,
       "requireParametersWithoutDefault": false,
