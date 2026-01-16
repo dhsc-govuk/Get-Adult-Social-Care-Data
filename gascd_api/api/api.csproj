@@ -5,7 +5,6 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-        <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -27,11 +26,6 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.2" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="10.0.0" />
-      <PackageReference Include="NSwag.AspNetCore" Version="14.6.3" />
-      <PackageReference Include="NSwag.MSBuild" Version="14.6.3">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
@@ -39,14 +33,5 @@
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="OpenAPI\" />
-    </ItemGroup>
-    
-    <Target Name="NSwag" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Release' ">
-        <Exec Command="dotnet tool restore"/>
-        <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Release" Command="$(NSwagExe_Net100) run nswag.json" />
-    </Target>
     
 </Project>

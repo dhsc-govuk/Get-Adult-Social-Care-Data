@@ -486,6 +486,3 @@ $RECYCLE.BIN/
 
 # local project config
 appsettings.Local.json
-
-# Generated swagger files
-api/OpenAPI/swagger.yaml
