@@ -16,7 +16,7 @@ public static class FastEndpointsConfiguration
                 o.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
             })
             .Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
-            .AddServiceHealthChecks(configureChecks: hc => hc.AddNpgSql(config.GetConnectionString("DefaultConnection")!));
+            .AddServiceHealthChecks(configureChecks: hc => hc.AddNpgSql(config.GetConnectionString("DefaultConnection") ?? "null"));
     }
 
     public static IApplicationBuilder RegisterFastEndpoints(this IApplicationBuilder app)
