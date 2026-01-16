@@ -9,7 +9,6 @@ import {
   PRIMARY_LOCATION_ID,
   PRIMARY_LOCATION_TYPE,
 } from '@/constants';
-import { generateId } from 'better-auth';
 
 // Server side helper to add user details to the current trace
 export const addUserTelemetry = async () => {
@@ -37,9 +36,4 @@ export const addUserTelemetry = async () => {
       }
     }
   }
-};
-
-export const generateAnalyticsId = () => {
-  // Generate a unique ID (e.g., "ua_123456789")
-  return 'ua_' + generateId();
 };
