@@ -1,5 +1,5 @@
 [tools]
-dotnet = "10.0.101"  # use your SDK version
+dotnet = "10.0.102"  # use your SDK version
 
 [tasks.lint]
 description = "Run .NET code formatting and static analysis"
