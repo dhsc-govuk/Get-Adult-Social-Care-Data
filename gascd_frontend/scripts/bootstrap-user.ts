@@ -2,6 +2,7 @@
 import 'dotenv/config';
 import { authDB } from '@/lib/auth';
 import { generateId } from 'better-auth';
+import { generateAnalyticsId } from '@/helpers/telemetry/usertelemetry';
 
 const bootstrapUser = async (
   email: string,
@@ -25,6 +26,7 @@ const bootstrapUser = async (
       emailVerified: 1,
       locationId: location_id,
       locationType: location_type,
+      analyticsId: generateAnalyticsId(),
       role: 'member',
     })
     .execute();

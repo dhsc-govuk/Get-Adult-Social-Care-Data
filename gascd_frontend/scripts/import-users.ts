@@ -4,6 +4,7 @@ import { generateId } from 'better-auth';
 
 import { parse } from 'csv-parse/sync';
 import * as fs from 'fs';
+import { generateAnalyticsId } from '@/helpers/telemetry/usertelemetry';
 
 const USER_DATABASE_NAME = 'user';
 
@@ -60,6 +61,7 @@ async function run() {
       .insertInto(USER_DATABASE_NAME)
       .values({
         id: userid,
+        analyticsId: generateAnalyticsId(),
         name: row.name,
         registeredName: row.name,
         email: row.email,
