@@ -56,7 +56,9 @@ export default function ProvisionAndOccupancyPage() {
   const [filteredBedTypeData, setFilteredBedTypeData] = useState<Indicator[]>(
     []
   );
-  const [allBedTypeData, setAllBedTypeData] = useState<Indicator[]>([]);
+  const [bedTypeOverTimeData, setBedTypeOverTimeData] = useState<Indicator[]>(
+    []
+  );
   const [filteredBedNumbersData, setFilteredBedNumbersData] = useState<
     Indicator[]
   >([]);
@@ -293,7 +295,7 @@ export default function ProvisionAndOccupancyPage() {
             await IndicatorFetchService.getData(
               careHomeBedTypesOverTimeDataQuery
             );
-          setAllBedTypeData(bedTypeOverTimeData);
+          setBedTypeOverTimeData(bedTypeOverTimeData);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -380,7 +382,7 @@ export default function ProvisionAndOccupancyPage() {
       }));
       setCareHomeBedTypesOverTimeDataQuery(() => ({
         metric_ids: bedTypeMetricIds,
-        location_ids: locationIds,
+        location_ids: [locationIds[1]],
       }));
     }
   }, [CPLocationId, locationIds]);
@@ -451,12 +453,12 @@ export default function ProvisionAndOccupancyPage() {
 
   useEffect(() => {
     updateTypesChartMetrics();
-  }, [locationIds, allBedTypeData]);
+  }, [locationIds]);
 
   const [timeData, setTimedata] = useState<Series[]>([]);
   // Generate time series chart data
   const updateTypesChartMetrics = () => {
-    if (!allBedTypeData.length) return;
+    if (!bedTypeOverTimeData.length) return;
     const la_code = locationIds[1];
 
     const storedData = localStorage.getItem('type-chart-metrics');
@@ -465,14 +467,16 @@ export default function ProvisionAndOccupancyPage() {
       const filters = JSON.parse(storedData);
       const map: any = {};
       filters.map((item: any) => (map[item.metric_id] = item.filter_bedtype));
-
       setCareHomeBedTypesOverTimeDataQuery({
         metric_ids: [...Object.keys(map)],
         location_ids: [locationIds[1]],
-        most_recent: true,
       });
       setBedTypeChartHeaders(map);
     } else {
+      setCareHomeBedTypesOverTimeDataQuery({
+        metric_ids: Object.keys(bedTypeChartHeadersDefault),
+        location_ids: [locationIds[1]],
+      });
       setBedTypeChartHeaders(bedTypeChartHeadersDefault);
     }
     // Make some time series data based on the bed type row headers
@@ -481,13 +485,14 @@ export default function ProvisionAndOccupancyPage() {
   };
 
   const createTimeSeries = (la_code: string) => {
+    console.log('Creating time series for LA code:', la_code);
     let series: Series[] = [];
     Object.entries(bedTypeChartHeaders).forEach((header: any) => {
       const metric_id = header[0];
       const name = header[1];
       // Filter to the current metric ID, for the LA only
-      const metric_items = allBedTypeData.filter(
-        (item) => item.metric_id === metric_id && item.location_id === la_code
+      const metric_items = bedTypeOverTimeData.filter(
+        (item) => item.metric_id === metric_id
       );
       // Turn into the correct time series format
       const values: DataPoint[] = metric_items.map((item) => {
