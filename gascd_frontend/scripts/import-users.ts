@@ -76,7 +76,11 @@ async function run() {
     console.log(`Created user ${userid} - ${row.name} (${row.email})`);
   }
 
-  console.log('Import completed successfully.');
+  if (isDryRun) {
+    console.log('[Dry run completed successfully.]');
+  } else {
+    console.log('Import completed successfully.');
+  }
   authDB.destroy();
 }
 
