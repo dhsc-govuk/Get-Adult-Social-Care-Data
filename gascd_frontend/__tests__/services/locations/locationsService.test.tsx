@@ -115,11 +115,9 @@ describe('LocationService', () => {
         json: vi.fn().mockResolvedValue(mockJsonResponse),
       });
 
-      const result = await LocationService.getAvailableLocations(query);
+      const result = await LocationService.getAvailableLocations();
 
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/get_available_locations?provider_location_id=${query}`
-      );
+      expect(fetch).toHaveBeenCalledWith(`/api/get_available_locations`);
       expect(result).toEqual(mockLocations);
     });
 
@@ -131,9 +129,7 @@ describe('LocationService', () => {
 
       const result = await LocationService.getAvailableLocations();
 
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/get_available_locations?provider_location_id=${query}`
-      );
+      expect(fetch).toHaveBeenCalledWith(`/api/get_available_locations`);
       expect(result).toEqual(mockLocations);
     });
 
