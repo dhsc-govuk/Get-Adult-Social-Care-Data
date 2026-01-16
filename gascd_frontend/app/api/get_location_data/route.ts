@@ -6,6 +6,15 @@ import { getCurrentUser } from '@/lib/permissions';
 
 export async function GET(req: NextRequest) {
   const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const provider_location_id = user.selectedLocationId;
+  if (!provider_location_id) {
+    logger.error('No selected location found for user');
+    return NextResponse.json([]);
+  }
 
   if (process.env.DATA_API_ROOT) {
     const client = getAPIClient();
