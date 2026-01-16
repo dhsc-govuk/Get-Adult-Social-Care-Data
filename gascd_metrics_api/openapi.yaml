@@ -4,13 +4,13 @@ info:
   description: "A RESTful API for accessing health and care provider metric data, metadata, and insights."
   version: "0.0.1"
 servers:
-  - url: "http://gascd.internal/api"
+  - url: "http://gascd.internal"
 
 security:
   - ApiKey: []
 
 paths:
-  /geo/postcode:
+  /api/geo/postcode:
     get:
       summary: "Get geo details for a postcode"
       parameters:
@@ -32,7 +32,7 @@ paths:
         '404':
           description: "No details found for postcode"
 
-  /organisation/care_provider/{code}:
+  /api/organisation/care_provider/{code}:
     get:
       summary: "Get the care provider locations linked to a care provider organisation."
       description: "Retrieves the list of Care Provider (CP) locations that the currently linked to a Care Provider Organisation."
@@ -74,7 +74,7 @@ paths:
                           type: string
                           description: "The address of the location."
 
-  /metric_locations/cp_locations/{code}:
+  /api/metric_locations/cp_locations/{code}:
     get:
       summary: "Get a care provider location"
       description: "Retrieves detailed information for a single care provider location by its code."
@@ -103,7 +103,7 @@ paths:
         '404':
           description: "Care provider location not found."
 
-  /metric_locations/districts/{code}:
+  /api/metric_locations/districts/{code}:
     get:
       summary: "Get a district"
       description: "Retrieves detailed information for a district by its code. TBC This endpoint may not be required"
@@ -131,7 +131,7 @@ paths:
                 $ref: '#/components/schemas/District'
         '404':
           description: "District not found."
-  /metric_locations/local_authorities/{code}:
+  /api/metric_locations/local_authorities/{code}:
       get:
         summary: "Get a local authority"
         description: "Retrieves detailed information for a local authority by its code."
@@ -159,7 +159,7 @@ paths:
                   $ref: '#/components/schemas/LocalAuthority'
           '404':
             description: "Local authority not found."
-  /metric_locations/regions/{code}:
+  /api/metric_locations/regions/{code}:
     get:
       summary: "Get a region"
       description: "Retrieves detailed information for a region by its code."
@@ -180,7 +180,7 @@ paths:
                 $ref: '#/components/schemas/Region'
         '404':
           description: "Region not found."
-  /metric_locations/countries/{code}:
+  /api/metric_locations/countries/{code}:
     get:
       summary: "Get a country"
       description: "Retrieves detailed information for a country by its code."
@@ -202,7 +202,7 @@ paths:
         '404':
           description: "Country not found."
 
-  /metric_filters/{metric_group_code}:
+  /api/metric_filters/{metric_group_code}:
     get:
       summary: "Get available filters for a group of metrics"
       description: "Retrieves the available filter options for a metric group."
@@ -217,7 +217,7 @@ paths:
                 $ref: '#/components/schemas/MetricFilters'
                   
 
-  /metrics/{metric_code}/metadata:
+  /api/metrics/{metric_code}/metadata:
     get:
       summary: "Get metadata for a specific metric"
       description: "Retrieves all metadata for a single metric, including its name, numerator, and denominator definitions. "
@@ -233,7 +233,7 @@ paths:
         '404':
           description: "Metric not found."
 
-  /metrics/{metric_code}/data:
+  /api/metrics/{metric_code}/data:
     post:
       summary: "Get time-series or most recent data for a single metric"
       description: "Retrieves data points for a single specified metric across one or more locations. Omit the time_series parameter to get the most recent data point. Include time_series=true to get the time-series."
@@ -300,7 +300,9 @@ components:
           type: string
           description: "Address of the care provider location."
         geo_data:
-          $ref: '#/components/schemas/GeoData'
+          nullable: true
+          oneOf:
+            - $ref: '#/components/schemas/GeoData'
         provider_code:
           type: string
           description: "The parent provider code."
@@ -370,7 +372,9 @@ components:
           type: string
           description: "Display name of the local authority."
         geo_data:
-          $ref: '#/components/schemas/GeoData'
+          nullable: true
+          oneOf:
+            - $ref: '#/components/schemas/GeoData'
         region_code:
           type: string
           nullable: true
@@ -399,7 +403,9 @@ components:
           type: string
           description: "Display name of the region."
         geo_data:
-          $ref: '#/components/schemas/GeoData'
+          nullable: true
+          oneOf:
+            - $ref: '#/components/schemas/GeoData'
         country_code:
           type: string
           description: "The associated country code."
@@ -418,7 +424,9 @@ components:
           type: string
           description: "Display name of the country."
         geo_data:
-          $ref: '#/components/schemas/GeoData'
+          nullable: true
+          oneOf:
+            - $ref: '#/components/schemas/GeoData'
 
     Postcode:
       type: object
@@ -431,7 +439,9 @@ components:
           type: string
           description: "Properly formatted postcode for display"
         geo_data:
-          $ref: '#/components/schemas/GeoData'
+          nullable: true
+          oneOf:
+            - $ref: '#/components/schemas/GeoData'
         la_code:
           type: string
           description: "Local authority code."
@@ -538,7 +548,12 @@ components:
         series_start_date:
           type: string
           format: date
-          description: "The start date of the metric series."
+          nullable: true
+          description: "The start date of the metric series. This value is null when a single data point is requested"
+        series_end_date:
+          type: string
+          format: date
+          description: "The end date of the metric series."
         series_frequency:
           type: string
           description: "The frequency of data points for the time series."
@@ -549,8 +564,9 @@ components:
           description: "The calculated data points at the specified frequency. If frequency is 'latest' this array will have one data point"
           items:
             type: number
-            format: float
-          
+            format: decimal
+            nullable: true
+  
   securitySchemes:
     ApiKey:
       type: apiKey
