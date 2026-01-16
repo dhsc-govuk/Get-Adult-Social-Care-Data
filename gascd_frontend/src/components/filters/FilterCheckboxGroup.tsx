@@ -36,7 +36,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
       setSearchedFilters(filters);
 
       const storedData = localStorage.getItem(filterType);
-      if (storedData) {
+      if (storedData && storedData !== '[]') {
         setSelectedFilters(JSON.parse(storedData));
         setDisplayFilters(
           JSON.parse(storedData).map((filter: any) => filter.filter_bedtype)
@@ -49,7 +49,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
             (item: TotalBedsFilters) => item.metric_id === filter.metric_id
           ),
         }));
-        setFilters(preSelectedFilters);
+        setSelectedFilters(preSelectedFilters);
       } else {
         setSelectedFilters(filters);
       }
@@ -107,14 +107,13 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     setSelectedFilters(updatedSelectedFilters);
     localStorage.setItem(filterType, JSON.stringify(updatedSelectedFilters));
     if (updatedSelectedFilters.length === 0) {
-      setShowActiveFilters(false);
-      setDisplayFilters(null);
+      clearFilters();
     } else {
       setDisplayFilters(
         updatedSelectedFilters.map((filter) => filter.filter_bedtype)
       );
+      updateMethod();
     }
-    updateMethod();
   };
 
   return (

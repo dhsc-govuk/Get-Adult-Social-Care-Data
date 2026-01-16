@@ -28,6 +28,7 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import LocationService from '@/services/location/locationService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
+import { set } from 'better-auth';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -84,7 +85,7 @@ export default function ProvisionAndOccupancyPage() {
       location_ids: [],
     });
 
-  const [bedTypeRowHeaders, setBedTypeRowHeaders] = useState<any>({
+  const bedTypeRowHeadersDefault = {
     bedcount_per_100000_adults_total: 'All bed types',
     bedcount_per_100000_adults_total_dementia_nursing: 'Dementia nursing',
     bedcount_per_100000_adults_total_dementia_residential:
@@ -102,14 +103,22 @@ export default function ProvisionAndOccupancyPage() {
     bedcount_per_100000_adults_total_transitional: 'Transitional',
     bedcount_per_100000_adults_total_ypd_young_physically_disabled:
       'Young physically disabled',
-  });
+  };
 
-  const [bedTypeChartHeaders, setBedTypeChartHeaders] = useState<any>({
+  const [bedTypeRowHeaders, setBedTypeRowHeaders] = useState<any>(
+    bedTypeRowHeadersDefault
+  );
+
+  const bedTypeChartHeadersDefault = {
     bedcount_per_100000_adults_total: 'All bed types',
     bedcount_per_100000_adults_total_dementia_nursing: 'Dementia nursing',
     bedcount_per_100000_adults_total_dementia_residential:
       'Dementia residential',
-  });
+  };
+
+  const [bedTypeChartHeaders, setBedTypeChartHeaders] = useState<any>(
+    bedTypeChartHeadersDefault
+  );
 
   const [bedNumberRowHeaders, setBedNumberRowHeaders] = useState<Object[]>([]);
 
@@ -361,6 +370,7 @@ export default function ProvisionAndOccupancyPage() {
         metric_ids: bedTypeMetricIds,
         location_ids: locationIds,
       });
+      setBedTypeRowHeaders(bedTypeRowHeadersDefault);
     }
   };
 
@@ -395,12 +405,12 @@ export default function ProvisionAndOccupancyPage() {
     }
   };
 
-  // Generate time series chart data
-  const [timeData, setTimedata] = useState<Series[]>([]);
   useEffect(() => {
     updateTypesChartMetrics();
   }, [allBedTypeData]);
 
+  const [timeData, setTimedata] = useState<Series[]>([]);
+  // Generate time series chart data
   const updateTypesChartMetrics = () => {
     if (!allBedTypeData.length) return;
     let series: Series[] = [];
@@ -409,12 +419,19 @@ export default function ProvisionAndOccupancyPage() {
     const storedData = localStorage.getItem('type-chart-metrics');
 
     if (storedData) {
-      const headers = JSON.parse(storedData);
+      const filters = JSON.parse(storedData);
       const map: any = {};
-      headers.map((item: any) => (map[item.metric_id] = item.filter_bedtype));
+      filters.map((item: any) => (map[item.metric_id] = item.filter_bedtype));
       setBedTypeChartHeaders(map);
+    } else {
+      setBedTypeChartHeaders(bedTypeChartHeadersDefault);
     }
     // Make some time series data based on the bed type row headers
+    createTimeSeries(la_code, series);
+    setTimedata(series);
+  };
+
+  const createTimeSeries = (la_code: string, series: Series[]) => {
     Object.entries(bedTypeChartHeaders).forEach((header: any) => {
       const metric_id = header[0];
       const name = header[1];
@@ -442,7 +459,6 @@ export default function ProvisionAndOccupancyPage() {
         data: values,
       });
     });
-    setTimedata(series);
   };
 
   return (
