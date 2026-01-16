@@ -413,7 +413,6 @@ export default function ProvisionAndOccupancyPage() {
   // Generate time series chart data
   const updateTypesChartMetrics = () => {
     if (!allBedTypeData.length) return;
-    let series: Series[] = [];
     const la_code = locationIds[1];
 
     const storedData = localStorage.getItem('type-chart-metrics');
@@ -427,11 +426,12 @@ export default function ProvisionAndOccupancyPage() {
       setBedTypeChartHeaders(bedTypeChartHeadersDefault);
     }
     // Make some time series data based on the bed type row headers
-    createTimeSeries(la_code, series);
+    let series: Series[] = createTimeSeries(la_code);
     setTimedata(series);
   };
 
-  const createTimeSeries = (la_code: string, series: Series[]) => {
+  const createTimeSeries = (la_code: string) => {
+    let series: Series[] = [];
     Object.entries(bedTypeChartHeaders).forEach((header: any) => {
       const metric_id = header[0];
       const name = header[1];
@@ -459,6 +459,7 @@ export default function ProvisionAndOccupancyPage() {
         data: values,
       });
     });
+    return series;
   };
 
   return (
