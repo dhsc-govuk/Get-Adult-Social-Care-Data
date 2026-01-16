@@ -1,6 +1,5 @@
-import type { paths } from '@/metrics-api-schema';
+import { getAPIClient } from '@/data/dataAPI';
 import { NextRequest, NextResponse } from 'next/server';
-import createClient from 'openapi-fetch';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -12,12 +11,9 @@ export async function GET(req: NextRequest) {
       { status: 400 }
     );
   }
-
   if (process.env.DATA_API_ROOT) {
     try {
-      const client = createClient<paths>({
-        baseUrl: process.env.DATA_API_ROOT,
-      });
+      const client = getAPIClient();
       const { data } = await client.GET('/metric_locations/countries/{code}', {
         params: {
           path: {
@@ -25,7 +21,6 @@ export async function GET(req: NextRequest) {
           },
         },
       });
-
       if (!data) {
         return NextResponse.json({ error: 'No data found' }, { status: 404 });
       }

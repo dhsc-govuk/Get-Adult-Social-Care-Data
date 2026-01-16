@@ -1,17 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbPool } from '../../../src/data/dbModule';
 import logger from '@/utils/logger';
+import { getAPIClient } from '@/data/dataAPI';
+import { getCurrentUser } from '@/lib/permissions';
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  let provider_location_id = searchParams.get('provider_location_id');
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const provider_location_id = user.selectedLocationId;
+  if (!provider_location_id) {
+    logger.error('No selected location found for user');
+    return NextResponse.json([]);
+  }
 
   if (process.env.DATA_API_ROOT) {
-    const url =
-      process.env.DATA_API_ROOT + '/providers/' + provider_location_id;
-    const response = await fetch(url);
-    const data = await response.json();
-    return NextResponse.json(data, { status: 200 });
+    const client = getAPIClient();
+    const { data } = await client.GET('/metric_locations/cp_locations/{code}', {
+      params: {
+        query: {
+          include_parents: true,
+        },
+        path: {
+          code: user?.selectedLocationId || '',
+        },
+      },
+    });
+    if (data) {
+      // Map api results to those expected by the client JS
+      // XXX this could be ditched when we refactor the client JS
+      const result = {
+        provider_location_id: data.code,
+        provider_location_name: data.display_name,
+        provider_id: data.provider_code,
+        provider_name: data.provider_name,
+        la_code: data.local_authority_code,
+        la_name: data.local_authority_name,
+        region_code: data.region_code,
+        region_name: data.region_name,
+        country_code: data.country_code,
+        country_name: data.country_name,
+      };
+      return NextResponse.json(result, { status: 200 });
+    }
   }
 
   try {

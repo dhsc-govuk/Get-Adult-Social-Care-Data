@@ -396,7 +396,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["MetricFilter"][];
+                        "application/json": components["schemas"]["MetricFilters"];
                     };
                 };
             };
@@ -465,17 +465,17 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        get?: never;
+        put?: never;
         /**
          * Get time-series or most recent data for a single metric
-         * @description Retrieves data points for a single specified metric across one or more locations. Omit date parameters to get the most recent data point. Provide a startDate to get a time-series.
+         * @description Retrieves data points for a single specified metric across one or more locations. Omit the time_series parameter to get the most recent data point. Include time_series=true to get the time-series.
          */
-        get: {
+        post: {
             parameters: {
-                query: {
-                    /** @description Comma-separated list of location codes to retrieve data for. */
-                    locations: components["schemas"]["Location"][];
+                query?: {
                     /** @description Boolean whether to return whole time series. If false or omitted, only the most recent data point is returned. */
-                    timeSeries?: boolean;
+                    time_series?: boolean;
                 };
                 header?: never;
                 path: {
@@ -484,7 +484,12 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            /** @description A list of locations to retrieve data for. */
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["Location"][];
+                };
+            };
             responses: {
                 /** @description A list of matching metric series for the specified metric. */
                 200: {
@@ -497,8 +502,6 @@ export interface paths {
                 };
             };
         };
-        put?: never;
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -644,22 +647,25 @@ export interface components {
             denominator?: string;
         };
         /** @description An available filter for a metric, such as bed type. */
-        MetricFilter: {
+        MetricFilters: {
             /**
              * @description The specific metric group code this filter applies to.
              * @example bedcount_per_100000_adults
              */
             metric_group_code?: string;
-            /**
-             * @description The specific metric code this filter applies to.
-             * @example bedcount_per_100000_adults_total_general_nursing
-             */
-            metric_code?: string;
-            /**
-             * @description A user-friendly name for the filter value.
-             * @example General nursing
-             */
-            display_name?: string;
+            /** @description A list of Metric filters belonging to this Metric Group */
+            metrics?: {
+                /**
+                 * @description The specific metric code this filter applies to.
+                 * @example bedcount_per_100000_adults_total_general_nursing
+                 */
+                metric_code?: string;
+                /**
+                 * @description A user-friendly name for the filter value.
+                 * @example General nursing
+                 */
+                display_name?: string;
+            }[];
         };
         /** @description A series of data points at a specific time and location specified in the call for the metric. */
         MetricSeries: {

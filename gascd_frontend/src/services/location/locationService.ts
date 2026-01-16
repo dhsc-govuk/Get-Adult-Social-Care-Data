@@ -46,17 +46,9 @@ class LocationService {
     }
   }
 
-  public static async getAvailableLocations(
-    provider_location_id?: string
-  ): Promise<AvailableLocation[]> {
-    if (!provider_location_id) {
-      const session = await authClient.getSession();
-      provider_location_id = session?.data?.user?.locationId || '';
-    }
+  public static async getAvailableLocations(): Promise<AvailableLocation[]> {
     try {
-      const response = await fetch(
-        `/api/get_available_locations?provider_location_id=${provider_location_id}`
-      );
+      const response = await fetch(`/api/get_available_locations`);
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
@@ -74,17 +66,6 @@ class LocationService {
         `Failed to retrieve available location data: ${errorMessage}`
       );
     }
-  }
-
-  public static async checkCPLocation(
-    cpLocationID: string,
-    userLocationId: string
-  ) {
-    // Verify that the user can actually view the given cpLocation
-    // XXX - this should ideally be handled by a completely different permissions setup
-    const valid_locations = await this.getAvailableLocations(userLocationId);
-    const valid_location_ids = valid_locations.map((item) => item.location_id);
-    return valid_location_ids.includes(cpLocationID);
   }
 
   public static async getDefaultCPLocation(

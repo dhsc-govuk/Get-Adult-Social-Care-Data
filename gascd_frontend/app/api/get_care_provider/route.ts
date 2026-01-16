@@ -1,6 +1,5 @@
-import type { paths } from '@/metrics-api-schema';
 import { NextRequest, NextResponse } from 'next/server';
-import createClient from 'openapi-fetch';
+import { getAPIClient } from '@/data/dataAPI';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -15,9 +14,7 @@ export async function GET(req: NextRequest) {
 
   if (process.env.DATA_API_ROOT) {
     try {
-      const client = createClient<paths>({
-        baseUrl: process.env.DATA_API_ROOT,
-      });
+      const client = getAPIClient();
       const { data } = await client.GET(
         '/metric_locations/cp_locations/{code}',
         {
