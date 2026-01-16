@@ -9,6 +9,7 @@ import {
   PRIMARY_LOCATION_ID,
   PRIMARY_LOCATION_TYPE,
 } from '@/constants';
+import { generateId } from 'better-auth';
 
 // Server side helper to add user details to the current trace
 export const addUserTelemetry = async () => {
@@ -16,11 +17,9 @@ export const addUserTelemetry = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  if (session?.user?.id) {
+  if (session?.user) {
     let activeSpan = trace.getActiveSpan();
     if (activeSpan) {
-      // Note - this would be better handled in middleware to apply to all telemetry
-      activeSpan.setAttribute(ATTR_ENDUSER_ID, session.user.id);
       if (session.user.locationId) {
         activeSpan.setAttribute(PRIMARY_LOCATION_ID, session.user.locationId);
       }
@@ -38,4 +37,9 @@ export const addUserTelemetry = async () => {
       }
     }
   }
+};
+
+export const generateAnalyticsId = () => {
+  // Generate a unique ID (e.g., "ua_123456789")
+  return 'ua_' + generateId();
 };
