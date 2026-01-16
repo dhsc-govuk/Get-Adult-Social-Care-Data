@@ -10,6 +10,7 @@ const loggingMiddleware: Middleware = {
       logger.error('Unexpected response from Data API', {
         status_code: response.status,
         status: response.statusText,
+        request_url: request.url,
       });
     }
     return undefined;
