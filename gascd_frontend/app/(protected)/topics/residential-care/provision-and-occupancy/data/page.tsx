@@ -28,7 +28,6 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import LocationService from '@/services/location/locationService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
-import { set } from 'better-auth';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -84,6 +83,14 @@ export default function ProvisionAndOccupancyPage() {
       metric_ids: [],
       location_ids: [],
     });
+
+  const [
+    careHomeBedTypesOverTimeDataQuery,
+    setCareHomeBedTypesOverTimeDataQuery,
+  ] = useState<IndicatorQuery>({
+    metric_ids: [],
+    location_ids: [],
+  });
 
   const bedTypeRowHeadersDefault = {
     bedcount_per_100000_adults_total: 'All bed types',
@@ -235,25 +242,9 @@ export default function ProvisionAndOccupancyPage() {
 
   useEffect(() => {
     // Fetch all metric data based on set queries
-    const fetchAllData = async () => {
+    const fetchCareProviderData = async () => {
       if (!CPLocationId || !locationIds) return;
       try {
-        if (careHomeBedTypesDataQuery.location_ids.length) {
-          const bedTypeData: Indicator[] = await IndicatorFetchService.getData(
-            careHomeBedTypesDataQuery
-          );
-          setAllBedTypeData(bedTypeData);
-          const filteredBedTypeData = TableService.filterDate(bedTypeData);
-          setFilteredBedTypeData(filteredBedTypeData);
-        }
-
-        if (careHomeBedNumbersDataQuery.location_ids.length) {
-          const bedNumberData: Indicator[] =
-            await IndicatorFetchService.getData(careHomeBedNumbersDataQuery);
-          const filteredBedNumbersData = TableService.filterDate(bedNumberData);
-          setFilteredBedNumbersData(filteredBedNumbersData);
-        }
-
         if (
           careProviderDataQuery1.location_ids.length &&
           careProviderDataQuery2.location_ids.length
@@ -272,13 +263,61 @@ export default function ProvisionAndOccupancyPage() {
         console.error('Error fetching data:', error);
       }
     };
-    fetchAllData();
-  }, [
-    careHomeBedTypesDataQuery,
-    careHomeBedNumbersDataQuery,
-    careProviderDataQuery1,
-    careProviderDataQuery2,
-  ]);
+    fetchCareProviderData();
+  }, [careProviderDataQuery1, careProviderDataQuery2]);
+
+  useEffect(() => {
+    const careHomeBedTypesData = async () => {
+      if (!CPLocationId || !locationIds) return;
+      try {
+        if (careHomeBedTypesDataQuery.location_ids.length) {
+          const bedTypeData: Indicator[] = await IndicatorFetchService.getData(
+            careHomeBedTypesDataQuery
+          );
+          const filteredBedTypeData = TableService.filterDate(bedTypeData);
+          setFilteredBedTypeData(filteredBedTypeData);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    careHomeBedTypesData();
+  }, [careHomeBedTypesDataQuery]);
+
+  useEffect(() => {
+    const careHomeBedTypesOverTimeData = async () => {
+      if (!CPLocationId || !locationIds) return;
+      try {
+        if (careHomeBedTypesOverTimeDataQuery.location_ids.length) {
+          const bedTypeOverTimeData: Indicator[] =
+            await IndicatorFetchService.getData(
+              careHomeBedTypesOverTimeDataQuery
+            );
+          setAllBedTypeData(bedTypeOverTimeData);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    careHomeBedTypesOverTimeData();
+  }, [careHomeBedTypesOverTimeDataQuery]);
+
+  useEffect(() => {
+    const careHomeBedNumbersData = async () => {
+      if (!CPLocationId || !locationIds) return;
+      try {
+        if (careHomeBedNumbersDataQuery.location_ids.length) {
+          const bedNumberData: Indicator[] =
+            await IndicatorFetchService.getData(careHomeBedNumbersDataQuery);
+          const filteredBedNumbersData = TableService.filterDate(bedNumberData);
+          setFilteredBedNumbersData(filteredBedNumbersData);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    careHomeBedNumbersData();
+  }, [careHomeBedNumbersDataQuery]);
 
   useEffect(() => {
     // Get location IDs for the selected location
@@ -339,6 +378,10 @@ export default function ProvisionAndOccupancyPage() {
         metric_ids: bedTypeMetricIds,
         location_ids: locationIds,
       }));
+      setCareHomeBedTypesOverTimeDataQuery(() => ({
+        metric_ids: bedTypeMetricIds,
+        location_ids: locationIds,
+      }));
     }
   }, [CPLocationId, locationIds]);
 
@@ -353,6 +396,7 @@ export default function ProvisionAndOccupancyPage() {
         const parsedData = JSON.parse(storedData);
         if (Array.isArray(parsedData)) {
           const ids = parsedData.map((item) => item.metric_id);
+
           setCareHomeBedTypesDataQuery(() => ({
             metric_ids: ['bedcount_per_100000_adults_total', ...ids],
             location_ids: locationIds,
@@ -407,7 +451,7 @@ export default function ProvisionAndOccupancyPage() {
 
   useEffect(() => {
     updateTypesChartMetrics();
-  }, [allBedTypeData]);
+  }, [locationIds, allBedTypeData]);
 
   const [timeData, setTimedata] = useState<Series[]>([]);
   // Generate time series chart data
@@ -421,6 +465,12 @@ export default function ProvisionAndOccupancyPage() {
       const filters = JSON.parse(storedData);
       const map: any = {};
       filters.map((item: any) => (map[item.metric_id] = item.filter_bedtype));
+
+      setCareHomeBedTypesOverTimeDataQuery({
+        metric_ids: [...Object.keys(map)],
+        location_ids: [locationIds[1]],
+        most_recent: true,
+      });
       setBedTypeChartHeaders(map);
     } else {
       setBedTypeChartHeaders(bedTypeChartHeadersDefault);
