@@ -129,7 +129,7 @@ stages:
                   displayName: Create migration bundle
                   inputs:
                     workingDirectory: '$(Build.SourcesDirectory)/gascd_api/api'
-                    script: 'dotnet-ef migrations bundle --output $(Build.ArtifactStagingDirectory)/efbundle --self-contained --configuration Release'
+                    script: 'dotnet-ef migrations bundle --output $(Build.ArtifactStagingDirectory)/efbundle --self-contained --configuration Release --verbose'
                     
                 - task: PublishBuildArtifacts@1
                   displayName: 'Publish Migration Bundle Artifact'
