@@ -125,11 +125,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -154,8 +154,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -179,11 +179,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -208,8 +208,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -233,11 +233,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -262,8 +262,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -287,11 +287,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -316,8 +316,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -341,11 +341,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -370,8 +370,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -395,11 +395,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -424,8 +424,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -449,11 +449,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -478,8 +478,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -503,11 +503,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -532,8 +532,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -557,11 +557,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -586,8 +586,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -611,11 +611,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -640,8 +640,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -665,11 +665,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -694,8 +694,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -719,11 +719,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -748,8 +748,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -773,11 +773,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -802,8 +802,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -827,11 +827,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -856,8 +856,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -881,11 +881,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -910,8 +910,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -935,11 +935,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -964,8 +964,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -989,11 +989,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -1018,8 +1018,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -1043,11 +1043,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -1072,8 +1072,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -1097,11 +1097,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -1126,8 +1126,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -1151,11 +1151,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -1180,8 +1180,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -1205,11 +1205,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -1234,8 +1234,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")
@@ -1259,11 +1259,11 @@ namespace api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
                         .HasColumnName("end_date");
 
-                    b.Property<decimal>("LatestValue")
+                    b.Property<decimal?>("LatestValue")
                         .HasColumnType("numeric")
                         .HasColumnName("latest_value");
 
@@ -1288,8 +1288,8 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("metric_fk");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
                         .HasColumnName("start_date");
 
                     b.PrimitiveCollection<decimal?[]>("TimeSeries")

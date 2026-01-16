@@ -143,13 +143,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -169,13 +169,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -195,13 +195,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -221,13 +221,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -247,13 +247,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -273,13 +273,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -299,13 +299,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -325,13 +325,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -351,13 +351,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -377,13 +377,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -403,13 +403,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -429,13 +429,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -455,13 +455,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -481,13 +481,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -507,13 +507,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -533,13 +533,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -559,13 +559,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -585,13 +585,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -611,13 +611,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -637,13 +637,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -663,13 +663,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -689,13 +689,13 @@ namespace api.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     loaded_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    end_date = table.Column<DateOnly>(type: "date", nullable: false),
                     location_code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     location_type = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     metric_fk = table.Column<int>(type: "integer", nullable: false),
                     time_series = table.Column<decimal?[]>(type: "numeric[]", nullable: false),
-                    latest_value = table.Column<decimal>(type: "numeric", nullable: false)
+                    latest_value = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
