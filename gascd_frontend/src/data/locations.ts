@@ -25,11 +25,6 @@ export const getAllowedLocations = async (user: User) => {
         },
       },
     });
-
-    if (response.response.status != 200) {
-      logger.error('Invalid API response: ' + response.response.status);
-      return [];
-    }
     const loc_data = response.data;
     if (!loc_data || !loc_data.provider_code) {
       logger.error(`No location data found`);
@@ -48,5 +43,11 @@ export const getAllowedLocations = async (user: User) => {
     { params: { path: { code: provider_code } } }
   );
   const locations = provider_data?.locations;
-  return locations;
+  // map from api 'code' to 'id' as expected by client JS
+  return locations?.map((location) => {
+    return {
+      location_id: location.location_code,
+      ...location,
+    };
+  });
 };

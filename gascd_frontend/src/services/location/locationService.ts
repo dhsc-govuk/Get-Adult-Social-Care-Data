@@ -49,14 +49,8 @@ class LocationService {
   public static async getAvailableLocations(
     provider_location_id?: string
   ): Promise<AvailableLocation[]> {
-    if (!provider_location_id) {
-      const session = await authClient.getSession();
-      provider_location_id = session?.data?.user?.locationId || '';
-    }
     try {
-      const response = await fetch(
-        `/api/get_available_locations?provider_location_id=${provider_location_id}`
-      );
+      const response = await fetch(`/api/get_available_locations`);
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
