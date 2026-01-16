@@ -4,7 +4,7 @@ import { generateId } from 'better-auth';
 
 import { parse } from 'csv-parse/sync';
 import * as fs from 'fs';
-import { generateAnalyticsId } from '@/helpers/telemetry/usertelemetry';
+import { generateAnalyticsId } from '@/helpers/telemetry/analyticsId';
 
 const USER_DATABASE_NAME = 'user';
 
