@@ -101,6 +101,7 @@ stages:
   - stage: Build_Image
     displayName: "Build/push Docker image (uses PROD container registry)"
     condition: succeeded()
+    trigger: manual
     jobs:
       - deployment: Build
         displayName: Build
