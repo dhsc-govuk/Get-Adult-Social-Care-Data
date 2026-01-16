@@ -7,11 +7,17 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { addUserTelemetry } from '@/helpers/telemetry/usertelemetry';
 import { getAPIClient } from '@/data/dataAPI';
+import { getDefaultLocations } from '@/data/locations';
+import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 
 export async function POST(req: NextRequest) {
-  const queryParams = await req.json();
+  const user = await getCurrentUser();
+  if (!user || !isUserRegistered(user)) {
+    return NextResponse.json({ error: `No user` }, { status: 401 });
+  }
 
-  if (!queryParams.metric_ids?.length || !queryParams.location_ids?.length) {
+  const queryParams = await req.json();
+  if (!queryParams.metric_ids?.length) {
     return NextResponse.json(
       { error: 'Missing required fields' },
       { status: 400 }
@@ -20,12 +26,7 @@ export async function POST(req: NextRequest) {
 
   if (process.env.DATA_API_ROOT) {
     const metric_ids = queryParams.metric_ids;
-    const location_query = queryParams.location_ids.map((item: string) => {
-      return {
-        location_code: item,
-        location_type: 'Regional', // XXX this needs to come from somewhere,
-      };
-    });
+    const location_data = await getDefaultLocations(user);
 
     let all_metrics: any[] = [];
     const client = getAPIClient();
@@ -36,12 +37,21 @@ export async function POST(req: NextRequest) {
             metric_code: metric_id,
           },
         },
-        body: location_query,
+        body: location_data,
       });
       if (data) {
-        all_metrics.push(data);
+        console.log(data);
+        const item = data[0];
+        all_metrics.push({
+          ...item,
+          metric_id: item.metric_code,
+          location_id: item.location_code,
+          metric_date: item.series_end_date,
+          data_point: item.values[0],
+        });
       }
     }
+    console.log(all_metrics);
     return NextResponse.json(all_metrics, { status: 200 });
   }
 

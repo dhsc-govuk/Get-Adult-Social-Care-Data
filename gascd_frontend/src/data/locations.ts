@@ -3,6 +3,58 @@ import { getAPIClient } from './dataAPI';
 import { User } from '@/lib/auth';
 import logger from '@/utils/logger';
 
+export const getDefaultLocations = async (user: User) => {
+  let selected_location_id = user.selectedLocationId;
+  let location_type = user.locationType;
+
+  if (!(selected_location_id && location_type)) {
+    logger.error(`No location details for user`);
+    return [];
+  }
+  if (location_type !== 'Care provider location') {
+    logger.error(`User is not a care provider`);
+    return [];
+  }
+
+  const client = getAPIClient();
+  // Look up details for the selected location, including all parent locations
+  const { data: cpdata, error } = await client.GET(
+    '/metric_locations/cp_locations/{code}',
+    {
+      params: {
+        path: {
+          code: selected_location_id,
+        },
+        query: {
+          include_parents: true,
+        },
+      },
+    }
+  );
+  if (cpdata) {
+    const default_locations = [
+      {
+        location_code: cpdata.code,
+        location_type: 'CareProviderLocation',
+      },
+      {
+        location_code: cpdata.local_authority_code,
+        location_type: 'LA',
+      },
+      {
+        location_code: cpdata.region_code,
+        location_type: 'Regional',
+      },
+      {
+        location_code: cpdata.country_code,
+        location_type: 'National',
+      },
+    ];
+    console.log(default_locations);
+    return default_locations;
+  }
+};
+
 export const getAllowedLocations = async (user: User) => {
   let location_id = user.locationId;
   let location_type = user.locationType;
