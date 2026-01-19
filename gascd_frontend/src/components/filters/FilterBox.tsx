@@ -2,11 +2,10 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 
 type Props = {
-  filterLabel: string;
   children?: React.ReactNode;
 };
 
-const FilterBox: React.FC<Props> = ({ filterLabel, children }) => {
+const FilterBox: React.FC<Props> = ({ children }) => {
   const route = useRouter();
 
   return (
@@ -26,7 +25,7 @@ const FilterBox: React.FC<Props> = ({ filterLabel, children }) => {
                     id="bed-type-radios"
                   >
                     <h3 className="js-container-heading govuk-heading-s searchable-filters-heading">
-                      {filterLabel}
+                      Bed type
                       <span
                         className="app-c-option-select__title app-c-option-select__button govuk-heading-s"
                         id="option-select-title-status-radios"
@@ -41,7 +40,7 @@ const FilterBox: React.FC<Props> = ({ filterLabel, children }) => {
                         htmlFor="input-bedtype-radios"
                         className="govuk-label govuk-visually-hidden"
                       >
-                        {filterLabel}
+                        Bed type
                       </label>
                       <input
                         name="option-select-filter-bedtype-radios"

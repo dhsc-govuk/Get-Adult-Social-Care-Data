@@ -68,10 +68,6 @@ export default function ProvisionAndOccupancyPage() {
     useState<Indicator[]>([]);
   const [filteredCareHomeBedTypesData, setFilteredCareHomeBedTypesData] =
     useState<Indicator[]>([]);
-  const [
-    filteredCareHomeBedNumbersOverTimeData,
-    setFilteredCareHomeBedNumbersOverTimeData,
-  ] = useState<Indicator[]>([]);
 
   // data queries
   const [careProviderDataQuery1, setCareProviderData1Query] =
@@ -382,7 +378,6 @@ export default function ProvisionAndOccupancyPage() {
               careHomeBedTypesOverTimeDataQuery
             );
           setBedTypeOverTimeData(bedTypeOverTimeData);
-          setFilteredCareHomeBedNumbersOverTimeData(bedTypeOverTimeData);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -561,7 +556,7 @@ export default function ProvisionAndOccupancyPage() {
       >
         <FilterRadioGroup
           filterType="numbers-table-metrics"
-          filterLabel="Bed type"
+          filterLabel="Bed numbers"
           updateMethod={updateNumbersTableMetrics}
         />
         <DataTabs
@@ -640,7 +635,7 @@ export default function ProvisionAndOccupancyPage() {
       >
         <FilterCheckboxGroup
           filterType="type-table-metrics"
-          filterLabel="Bed type"
+          filterLabel="Bed types"
           updateMethod={updateTypesTableMetrics}
         />
         <DataTabs
@@ -834,7 +829,7 @@ export default function ProvisionAndOccupancyPage() {
       >
         <FilterCheckboxGroup
           filterType="type-chart-metrics"
-          filterLabel="Bed type"
+          filterLabel="Bed types over time"
           updateMethod={updateTypesChartMetrics}
         />
         <DataTabs
