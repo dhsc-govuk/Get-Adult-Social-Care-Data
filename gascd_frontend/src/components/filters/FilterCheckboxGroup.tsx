@@ -118,13 +118,12 @@ const FilterCheckboxGroup: React.FC<Props> = ({
 
   return (
     <div className="govuk-!-padding-bottom-4 govuk-!-padding-top-4">
-      <div id="dhsc-filter--action1" className="dhsc-filter--action">
+      <div className="dhsc-filter--action">
         <button
-          id="dhsc-filter--button1"
           className="govuk-button"
           type="button"
           aria-expanded={`${showFilters ? true : false}`}
-          aria-controls="dhsc-filter--content1"
+          aria-label={`${showFilters ? 'Hide' : 'Show'} ${filterLabel} filters`}
           onClick={
             showFilters
               ? () => setShowFilters(false)
@@ -145,7 +144,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
         </button>
       </div>
       {showFilters && (
-        <FilterBox filterLabel={filterLabel}>
+        <FilterBox>
           {filters.length === 0 && (
             <p className="govuk-body govuk-!-padding-left-3">
               Loading filters...
@@ -161,7 +160,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                   htmlFor="input-bedtype-checkboxes"
                   className="govuk-label govuk-visually-hidden"
                 >
-                  {filterLabel}
+                  Bed type
                 </label>
                 <input
                   id="input-bedtype-checkboxes"
@@ -180,7 +179,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                   <div className="gem-c-checkboxes govuk-form-group govuk-checkboxes--small">
                     <fieldset className="govuk-fieldset">
                       <legend className="govuk-fieldset__legend govuk-fieldset__legend--m gem-c-checkboxes__legend--hidden">
-                        {filterLabel}
+                        Bed type
                       </legend>
                       <ul className="govuk-checkboxes gem-c-checkboxes__list">
                         {searchedFilters.map((filter: any, index) => (
@@ -251,7 +250,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                   onClick={() => clearFilter(filterName)}
                 >
                   <span className="govuk-visually-hidden">Remove filter</span>
-                  {filterLabel}: {filterName}
+                  Bed type: {filterName}
                 </button>
               </li>
             ))}

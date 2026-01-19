@@ -85,23 +85,19 @@ const FilterRadioGroup: React.FC<Props> = ({
 
   return (
     <div className="govuk-!-padding-bottom-4 govuk-!-padding-top-4">
-      <div id="dhsc-filter--action1" className="dhsc-filter--action">
+      <div className="dhsc-filter--action">
         <button
-          id="dhsc-filter--button1"
           className="govuk-button"
           type="button"
           aria-expanded={`${showFilters ? true : false}`}
-          aria-controls="dhsc-filter--content1"
+          aria-label={`${showFilters ? 'Hide' : 'Show'} ${filterLabel} filters`}
           onClick={
             showFilters
               ? () => setShowFilters(false)
               : () => setShowFilters(true)
           }
         >
-          <span
-            id="dhsc-filter--button-content1"
-            className="dhsc-filter--button-content"
-          >
+          <span className="dhsc-filter--button-content">
             {showFilters ? 'Hide' : 'Show'} filters
           </span>
           <FontAwesomeIcon
@@ -112,7 +108,7 @@ const FilterRadioGroup: React.FC<Props> = ({
         </button>
       </div>
       {showFilters && (
-        <FilterBox filterLabel={filterLabel}>
+        <FilterBox>
           {filters.length === 0 && (
             <p className="govuk-body govuk-!-padding-left-3">
               Loading filters...
@@ -125,7 +121,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                   htmlFor="input-bedtype-radios"
                   className="govuk-label govuk-visually-hidden"
                 >
-                  {filterLabel}
+                  Bed type
                 </label>
                 <input
                   id="input-bedtype-radios"
