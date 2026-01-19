@@ -87,6 +87,7 @@ const FilterRadioGroup: React.FC<Props> = ({
     <div className="govuk-!-padding-bottom-4 govuk-!-padding-top-4">
       <div className="dhsc-filter--action">
         <button
+          id={`${filterType}-button`}
           className="govuk-button"
           type="button"
           aria-expanded={`${showFilters ? true : false}`}
@@ -140,7 +141,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                   <div className="govuk-radios govuk-form-group govuk-radios--small">
                     <fieldset className="govuk-fieldset">
                       <legend className="govuk-fieldset__legend gem-c-radios govuk-fieldset__legend--m govuk-visually-hidden">
-                        {filterLabel}
+                        Bed type
                       </legend>
                       <ul className="govuk-radios__list gem-c-radios__list">
                         {searchedFilters.map((filter: any, index) => (
@@ -178,6 +179,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                 <div className="govuk-grid-column-full">
                   <div className="govuk-button-group">
                     <button
+                      id={`${filterType}-submit-button`}
                       type="submit"
                       className="govuk-button"
                       onClick={() => handleSubmit()}
@@ -207,7 +209,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                 onClick={() => clearFilters()}
               >
                 <span className="govuk-visually-hidden">Remove filter</span>
-                {filterLabel}: {displayFilter}
+                Bed type: {displayFilter}
               </button>
             </li>
           </ul>
