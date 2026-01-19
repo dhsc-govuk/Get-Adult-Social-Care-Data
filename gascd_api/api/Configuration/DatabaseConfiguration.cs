@@ -2,7 +2,6 @@ using api.Data;
 using Azure.Core;
 using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 
 namespace api.Configuration;
 
@@ -41,25 +40,27 @@ public static class DatabaseConfiguration
 
         var azureCredential = new DefaultAzureCredential(credentialOptions);
 
-        return services.AddSingleton<NpgsqlDataSource>(sp =>
+        return services.AddDbContext<GascdDataContext>(o =>
         {
-            var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+            o.UseNpgsql(connectionString, p =>
+            {
+                p.UseNetTopologySuite();
+                p.ConfigureDataSource(q =>
+                    q.UsePeriodicPasswordProvider(async (_, ct) =>
+                        {
+                            var context = new TokenRequestContext(
+                                ["https://ossrdbms-aad.database.windows.net/.default"]
+                            );
 
-            dataSourceBuilder.UsePeriodicPasswordProvider(
-                async (settings, cancellationToken) =>
-                {
-                    var tokenContext = new TokenRequestContext(
-                        ["https://ossrdbms-aad.database.windows.net/.default"]
-                    );
+                            var result = await azureCredential.GetTokenAsync(context, ct);
 
-                    var tokenResult = await azureCredential.GetTokenAsync(tokenContext, cancellationToken);
-
-                    return tokenResult.Token;
-                },
-                successRefreshInterval: TimeSpan.FromMinutes(45),
-                failureRefreshInterval: TimeSpan.FromSeconds(10)
-            );
-            return dataSourceBuilder.Build();
+                            return result.Token;
+                        },
+                        successRefreshInterval: TimeSpan.FromMinutes(45),
+                        failureRefreshInterval: TimeSpan.FromSeconds(10)
+                    )
+                );
+            });
         });
     }
 }
