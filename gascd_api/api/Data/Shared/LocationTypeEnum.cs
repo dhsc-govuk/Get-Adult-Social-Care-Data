@@ -3,5 +3,7 @@ namespace api.Data.Shared;
 public enum LocationTypeEnum
 {
     Regional,
-    National
+    National,
+    LA,
+    Care_Provider_Location,
 }
