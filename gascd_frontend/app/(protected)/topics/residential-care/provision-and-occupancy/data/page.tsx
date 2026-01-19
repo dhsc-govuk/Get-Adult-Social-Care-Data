@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { use, useEffect, useRef, useState } from 'react';
 import Layout from '@/components/common/layout/Layout';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -28,11 +28,14 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import LocationService from '@/services/location/locationService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
+import { set } from 'better-auth';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
   const tableref2 = useRef<HTMLTableElement>(null);
   const tableref3 = useRef<HTMLTableElement>(null);
+
+  // location variables
   const [locationNamesCP, setLocationNamesCP] = useState<LocationNames>({
     IndicatorLabel: 'Indicator',
     CPLabel: 'Loading...',
@@ -52,17 +55,26 @@ export default function ProvisionAndOccupancyPage() {
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [lasForRegion, setLasForRegion] = useState<string[]>();
   const [laIdsForRegion, setLaIdsForRegion] = useState<string[]>();
+
+  // full data sets
   const [finalCpData, setFinalCpData] = useState<Indicator[]>([]);
-  const [filteredBedTypeData, setFilteredBedTypeData] = useState<Indicator[]>(
-    []
-  );
+  const [latestBedTypeData, setLatestBedTypeData] = useState<Indicator[]>([]);
   const [bedTypeOverTimeData, setBedTypeOverTimeData] = useState<Indicator[]>(
     []
   );
-  const [filteredBedNumbersData, setFilteredBedNumbersData] = useState<
-    Indicator[]
-  >([]);
+  const [bedNumbersData, setBedNumbersData] = useState<Indicator[]>([]);
 
+  // Filtered data sets
+  const [filteredCareHomeBedNumbersData, setFilteredCareHomeBedNumbersData] =
+    useState<Indicator[]>([]);
+  const [filteredCareHomeBedTypesData, setFilteredCareHomeBedTypesData] =
+    useState<Indicator[]>([]);
+  const [
+    filteredCareHomeBedNumbersOverTimeData,
+    setFilteredCareHomeBedNumbersOverTimeData,
+  ] = useState<Indicator[]>([]);
+
+  // data queries
   const [careProviderDataQuery1, setCareProviderData1Query] =
     useState<IndicatorQuery>({
       metric_ids: [],
@@ -94,6 +106,7 @@ export default function ProvisionAndOccupancyPage() {
     location_ids: [],
   });
 
+  // headers for tables and charts
   const bedTypeRowHeadersDefault = {
     bedcount_per_100000_adults_total: 'All bed types',
     bedcount_per_100000_adults_total_dementia_nursing: 'Dementia nursing',
@@ -131,6 +144,7 @@ export default function ProvisionAndOccupancyPage() {
 
   const [bedNumberRowHeaders, setBedNumberRowHeaders] = useState<Object[]>([]);
 
+  // metric ids
   const careProviderMetricIds1 = ['bedcount_total', 'occupancy_rate_total'];
   const careProviderMetricIds2 = [
     'median_bed_count_total',
@@ -156,6 +170,7 @@ export default function ProvisionAndOccupancyPage() {
   ];
 
   const bedNumberMetricIds = ['bedcount_per_100000_adults_total'];
+
   const breadcrumbs = [
     {
       text: 'Home',
@@ -190,7 +205,7 @@ export default function ProvisionAndOccupancyPage() {
     let values: number[] = [];
     Object.entries(bedNumberRowHeaders).map((header: any) => {
       categories.push(header[1]);
-      const datapoints = filteredBedNumbersData.filter(
+      const datapoints = bedNumbersData.filter(
         (item) => item.location_id === header[0]
       );
       if (datapoints.length) {
@@ -201,8 +216,9 @@ export default function ProvisionAndOccupancyPage() {
       categories: categories,
       values: values,
     });
-  }, [bedNumberRowHeaders, filteredBedNumbersData]);
+  }, [bedNumberRowHeaders, bedNumbersData]);
 
+  // Location effects
   useEffect(() => {
     // Get Selected location from user
     const fetchSelectedLocation = async () => {
@@ -218,7 +234,7 @@ export default function ProvisionAndOccupancyPage() {
   }, []);
 
   useEffect(() => {
-    // Look up the related names for the current location
+    // Get the location names for the current location
     const fetchLocationNames = async () => {
       if (CPLocationId) {
         try {
@@ -241,85 +257,6 @@ export default function ProvisionAndOccupancyPage() {
     };
     fetchLocationNames();
   }, [CPLocationId]);
-
-  useEffect(() => {
-    // Fetch all metric data based on set queries
-    const fetchCareProviderData = async () => {
-      if (!CPLocationId || !locationIds) return;
-      try {
-        if (
-          careProviderDataQuery1.location_ids.length &&
-          careProviderDataQuery2.location_ids.length
-        ) {
-          const CPData: Indicator[] = await IndicatorFetchService.getData(
-            careProviderDataQuery1
-          );
-          const CPData2: Indicator[] = await IndicatorFetchService.getData(
-            careProviderDataQuery2
-          );
-          const comboData: Indicator[] = [...CPData, ...CPData2];
-          const filteredCPData = TableService.filterDate(comboData);
-          setFinalCpData(filteredCPData);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchCareProviderData();
-  }, [careProviderDataQuery1, careProviderDataQuery2]);
-
-  useEffect(() => {
-    const careHomeBedTypesData = async () => {
-      if (!CPLocationId || !locationIds) return;
-      try {
-        if (careHomeBedTypesDataQuery.location_ids.length) {
-          const bedTypeData: Indicator[] = await IndicatorFetchService.getData(
-            careHomeBedTypesDataQuery
-          );
-          const filteredBedTypeData = TableService.filterDate(bedTypeData);
-          setFilteredBedTypeData(filteredBedTypeData);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    careHomeBedTypesData();
-  }, [careHomeBedTypesDataQuery]);
-
-  useEffect(() => {
-    const careHomeBedTypesOverTimeData = async () => {
-      if (!CPLocationId || !locationIds) return;
-      try {
-        if (careHomeBedTypesOverTimeDataQuery.location_ids.length) {
-          const bedTypeOverTimeData: Indicator[] =
-            await IndicatorFetchService.getData(
-              careHomeBedTypesOverTimeDataQuery
-            );
-          setBedTypeOverTimeData(bedTypeOverTimeData);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    careHomeBedTypesOverTimeData();
-  }, [careHomeBedTypesOverTimeDataQuery]);
-
-  useEffect(() => {
-    const careHomeBedNumbersData = async () => {
-      if (!CPLocationId || !locationIds) return;
-      try {
-        if (careHomeBedNumbersDataQuery.location_ids.length) {
-          const bedNumberData: Indicator[] =
-            await IndicatorFetchService.getData(careHomeBedNumbersDataQuery);
-          const filteredBedNumbersData = TableService.filterDate(bedNumberData);
-          setFilteredBedNumbersData(filteredBedNumbersData);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    careHomeBedNumbersData();
-  }, [careHomeBedNumbersDataQuery]);
 
   useEffect(() => {
     // Get location IDs for the selected location
@@ -363,6 +300,7 @@ export default function ProvisionAndOccupancyPage() {
     fetchLasForRegion();
   }, [locationIds, locationNamesWithAverageLabels]);
 
+  // Data fetching effects
   useEffect(() => {
     // Set up the basic metric queries
     if (CPLocationId) {
@@ -385,11 +323,105 @@ export default function ProvisionAndOccupancyPage() {
         location_ids: [locationIds[1]],
       }));
     }
-  }, [CPLocationId, locationIds]);
+    if (laIdsForRegion?.length) {
+      setCareHomeBedNumbersDataQuery({
+        metric_ids: bedTypeMetricIds,
+        location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
+      });
+    }
+  }, [CPLocationId, locationIds, laIdsForRegion]);
 
   useEffect(() => {
+    // Fetch all metric data based on set queries
+    const fetchCareProviderData = async () => {
+      if (!CPLocationId || !locationIds) return;
+      try {
+        if (
+          careProviderDataQuery1.location_ids.length &&
+          careProviderDataQuery2.location_ids.length
+        ) {
+          const CPData: Indicator[] = await IndicatorFetchService.getData(
+            careProviderDataQuery1
+          );
+          const CPData2: Indicator[] = await IndicatorFetchService.getData(
+            careProviderDataQuery2
+          );
+          const comboData: Indicator[] = [...CPData, ...CPData2];
+          const filteredCPData = TableService.filterDate(comboData);
+          setFinalCpData(filteredCPData);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchCareProviderData();
+  }, [careProviderDataQuery1, careProviderDataQuery2]);
+
+  useEffect(() => {
+    const careHomeBedTypesData = async () => {
+      if (!CPLocationId || !locationIds) return;
+      try {
+        if (careHomeBedTypesDataQuery.location_ids.length) {
+          const bedTypeData: Indicator[] = await IndicatorFetchService.getData(
+            careHomeBedTypesDataQuery
+          );
+          const filteredBedTypeData = TableService.filterDate(bedTypeData);
+          setLatestBedTypeData(filteredBedTypeData);
+          setFilteredCareHomeBedTypesData(filteredBedTypeData);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    careHomeBedTypesData();
+  }, [careHomeBedTypesDataQuery]);
+
+  useEffect(() => {
+    const careHomeBedTypesOverTimeData = async () => {
+      if (!CPLocationId || !locationIds) return;
+      try {
+        if (careHomeBedTypesOverTimeDataQuery.location_ids.length) {
+          const bedTypeOverTimeData: Indicator[] =
+            await IndicatorFetchService.getData(
+              careHomeBedTypesOverTimeDataQuery
+            );
+          setBedTypeOverTimeData(bedTypeOverTimeData);
+          setFilteredCareHomeBedNumbersOverTimeData(bedTypeOverTimeData);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    careHomeBedTypesOverTimeData();
+  }, [careHomeBedTypesOverTimeDataQuery]);
+
+  useEffect(() => {
+    const careHomeBedNumbersData = async () => {
+      if (!CPLocationId || !locationIds) return;
+      try {
+        if (careHomeBedNumbersDataQuery.location_ids.length) {
+          const bedNumberData: Indicator[] =
+            await IndicatorFetchService.getData(careHomeBedNumbersDataQuery);
+          const bedNumbersData = TableService.filterDate(bedNumberData);
+          console.log(bedNumbersData);
+          setBedNumbersData(bedNumbersData);
+          setFilteredCareHomeBedNumbersData(
+            bedNumbersData.filter(
+              (item) => 'bedcount_per_100000_adults_total' === item.metric_id
+            )
+          );
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    careHomeBedNumbersData();
+  }, [careHomeBedNumbersDataQuery]);
+
+  // update data based on filter changes
+  useEffect(() => {
     updateTypesTableMetrics();
-  }, [locationIds]);
+  }, [latestBedTypeData]);
 
   const updateTypesTableMetrics = () => {
     const storedData = localStorage.getItem('type-table-metrics');
@@ -398,12 +430,10 @@ export default function ProvisionAndOccupancyPage() {
         const parsedData = JSON.parse(storedData);
         if (Array.isArray(parsedData)) {
           const ids = parsedData.map((item) => item.metric_id);
+          setFilteredCareHomeBedTypesData(
+            latestBedTypeData.filter((item) => ids.includes(item.metric_id))
+          );
 
-          setCareHomeBedTypesDataQuery(() => ({
-            metric_ids: ['bedcount_per_100000_adults_total', ...ids],
-            location_ids: locationIds,
-            most_recent: true,
-          }));
           const map: any = {};
           parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
           setBedTypeRowHeaders(map);
@@ -412,48 +442,42 @@ export default function ProvisionAndOccupancyPage() {
         console.error(error);
       }
     } else {
-      setCareHomeBedTypesDataQuery({
-        metric_ids: bedTypeMetricIds,
-        location_ids: locationIds,
-      });
+      setFilteredCareHomeBedTypesData(latestBedTypeData);
       setBedTypeRowHeaders(bedTypeRowHeadersDefault);
     }
   };
 
   useEffect(() => {
     updateNumbersTableMetrics();
-  }, [locationIds, laIdsForRegion, lasForRegion]);
+  }, [bedNumbersData]);
 
   const updateNumbersTableMetrics = () => {
     // Set up filterable metric queries for the numbers table
     const storedData = localStorage.getItem('numbers-table-metrics');
-    if (storedData && locationIds && laIdsForRegion && lasForRegion) {
-      try {
-        const parsedData = JSON.parse(storedData);
-        if (parsedData) {
-          const id = parsedData.metric_id;
-          const name = parsedData.filter_bedtype;
-          setCareHomeBedNumbersDataQuery({
-            metric_ids: [id],
-            location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
-            most_recent: true,
-          });
-          AnalyticsService.trackMetricView(id);
-        }
-      } catch (error) {
-        console.error(error);
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      if (parsedData) {
+        const id = parsedData.metric_id;
+        const name = parsedData.filter_bedtype;
+        console.log('before filters', bedNumbersData);
+        setFilteredCareHomeBedNumbersData(
+          bedNumbersData.filter((item) => id === item.metric_id)
+        );
+        console.log('after filtering:', filteredCareHomeBedNumbersData);
+        AnalyticsService.trackMetricView(id);
       }
-    } else if (locationIds && laIdsForRegion) {
-      setCareHomeBedNumbersDataQuery({
-        metric_ids: bedNumberMetricIds,
-        location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
-      });
+    } else {
+      setFilteredCareHomeBedNumbersData(
+        bedNumbersData.filter(
+          (item) => 'bedcount_per_100000_adults_total' === item.metric_id
+        )
+      );
     }
   };
 
   useEffect(() => {
     updateTypesChartMetrics();
-  }, [locationIds]);
+  }, [bedTypeOverTimeData]);
 
   const [timeData, setTimedata] = useState<Series[]>([]);
   // Generate time series chart data
@@ -467,16 +491,8 @@ export default function ProvisionAndOccupancyPage() {
       const filters = JSON.parse(storedData);
       const map: any = {};
       filters.map((item: any) => (map[item.metric_id] = item.filter_bedtype));
-      setCareHomeBedTypesOverTimeDataQuery({
-        metric_ids: [...Object.keys(map)],
-        location_ids: [locationIds[1]],
-      });
       setBedTypeChartHeaders(map);
     } else {
-      setCareHomeBedTypesOverTimeDataQuery({
-        metric_ids: Object.keys(bedTypeChartHeadersDefault),
-        location_ids: [locationIds[1]],
-      });
       setBedTypeChartHeaders(bedTypeChartHeadersDefault);
     }
     // Make some time series data based on the bed type row headers
@@ -485,7 +501,6 @@ export default function ProvisionAndOccupancyPage() {
   };
 
   const createTimeSeries = (la_code: string) => {
-    console.log('Creating time series for LA code:', la_code);
     let series: Series[] = [];
     Object.entries(bedTypeChartHeaders).forEach((header: any) => {
       const metric_id = header[0];
@@ -566,7 +581,7 @@ export default function ProvisionAndOccupancyPage() {
               <h3 className="govuk-heading-s">
                 Figure 1: chart of care home beds per 100,000 adult population -
                 local authorities in {locationNamesCP.RegionLabel},{' '}
-                {IndicatorService.getMostRecentDate(filteredBedNumbersData)}
+                {IndicatorService.getMostRecentDate(bedNumbersData)}
               </h3>
               {(chartData.categories.length > 0 &&
                 chartData.values.length > 0 && (
@@ -592,7 +607,7 @@ export default function ProvisionAndOccupancyPage() {
               caption={
                 `Table 1: care home bed numbers per 100,000 adult population for regional local authorities -
                 ${locationNamesCP.RegionLabel}, ` +
-                IndicatorService.getMostRecentDate(filteredBedNumbersData)
+                IndicatorService.getMostRecentDate(bedNumbersData)
               }
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
@@ -602,7 +617,7 @@ export default function ProvisionAndOccupancyPage() {
                 'Care home beds per 100,000 adult population',
               ]}
               rowHeaders={bedNumberRowHeaders}
-              data={filteredBedNumbersData}
+              data={filteredCareHomeBedNumbersData}
               userLa={locationNamesCP.LALabel}
             ></VerticalLocationTable>
           }
@@ -646,14 +661,14 @@ export default function ProvisionAndOccupancyPage() {
               caption={
                 `Table 2: care home bed numbers per 100,000 adult population – ${locationNamesCP.LALabel} local authority, 
                 ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, ` +
-                IndicatorService.getMostRecentDate(filteredBedTypeData)
+                IndicatorService.getMostRecentDate(latestBedTypeData)
               }
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
               }
               columnHeaders={locationNamesWithAverageLabels}
               rowHeaders={bedTypeRowHeaders}
-              data={filteredBedTypeData}
+              data={filteredCareHomeBedTypesData}
               showCareProvider={false}
               percentageRows={[]}
             ></DataTable>
@@ -669,7 +684,7 @@ export default function ProvisionAndOccupancyPage() {
               <p className="govuk-body">
                 Care homes in {locationNamesCP.LALabel} have{' '}
                 <strong>
-                  {filteredBedTypeData.find(
+                  {latestBedTypeData.find(
                     (metric) =>
                       metric.metric_id === 'bedcount_per_100000_adults_total' &&
                       metric.location_type === 'LA'
@@ -678,7 +693,7 @@ export default function ProvisionAndOccupancyPage() {
                 </strong>
                 , compared to the {locationNamesCP.RegionLabel} regional average
                 of{' '}
-                {filteredBedTypeData.find(
+                {latestBedTypeData.find(
                   (metric) =>
                     metric.metric_id === 'bedcount_per_100000_adults_total' &&
                     metric.location_type === 'Regional'
