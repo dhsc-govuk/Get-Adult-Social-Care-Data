@@ -120,6 +120,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     <div className="govuk-!-padding-bottom-4 govuk-!-padding-top-4">
       <div className="dhsc-filter--action">
         <button
+          id={`${filterType}-button`}
           className="govuk-button"
           type="button"
           aria-expanded={`${showFilters ? true : false}`}
@@ -220,6 +221,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                 <div className="govuk-grid-column-full">
                   <div className="govuk-button-group">
                     <button
+                      id={`${filterType}-submit-button`}
                       type="submit"
                       className="govuk-button"
                       onClick={() => handleSubmit()}

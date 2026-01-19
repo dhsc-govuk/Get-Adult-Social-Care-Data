@@ -59,6 +59,15 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-2').should('not.be.visible');
     cy.get('#textSummary-2').should('not.be.visible');
 
+    cy.wait(300);
+    cy.get('input[type="radio"][value="bedcount_per_100000_adults_total"]')
+      .check()
+      .should('be.checked');
+    cy.get('#numbers-table-metrics-submit-button').click();
+    cy.contains('Bed type: All bed types').should('be.visible');
+    cy.contains('Bed type: All bed types').click();
+    cy.contains('Bed type: All bed types').should('not.exist');
+
     cy.contains('Beds per care home and occupancy levels');
 
     cy.get('a[href*="table-3"]').click();
