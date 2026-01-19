@@ -700,7 +700,7 @@ BEGIN
     VALUES (1, bedcount_total_metric_id, '1-123456789', 'National', '2000-01-01 00:00:00', '2025-01-01 00:00:00', ARRAY [1.1,2.2,3.3,4.4,5.5], 5.5, CURRENT_TIMESTAMP),
            (2, bedcount_total_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5,6.6], 6.6, CURRENT_TIMESTAMP),
            (3, bedcount_total_metric_id, 'E92000001', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.7], 7.7, CURRENT_TIMESTAMP),
-           (4, bedcount_total_metric_id, 'E92000001', 'Care_Provider_Location', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5,8.8], 8.8, CURRENT_TIMESTAMP),
+           (4, bedcount_total_metric_id, 'E92000001', 'CareProviderLocation', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5,8.8], 8.8, CURRENT_TIMESTAMP),
            (5, bedcount_total_metric_id, 'E92000001', 'National', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5,9.9], 9.9, CURRENT_TIMESTAMP);
 
 

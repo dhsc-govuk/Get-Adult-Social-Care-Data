@@ -395,7 +395,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         {
             yield return [Regional, 6.6m];
             yield return [LA, 7.7m];
-            yield return [Care_Provider_Location, 8.8m];
+            yield return [CareProviderLocation, 8.8m];
             yield return [National, 9.9m];
         }
     }

@@ -1,3 +1,6 @@
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
 namespace api.Data.Shared;
 
 public enum LocationTypeEnum
@@ -5,5 +8,5 @@ public enum LocationTypeEnum
     Regional,
     National,
     LA,
-    Care_Provider_Location,
+    CareProviderLocation,
 }
