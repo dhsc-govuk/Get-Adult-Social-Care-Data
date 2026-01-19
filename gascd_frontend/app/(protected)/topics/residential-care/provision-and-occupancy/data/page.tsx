@@ -137,10 +137,6 @@ export default function ProvisionAndOccupancyPage() {
       'Dementia residential',
   };
 
-  const [bedTypeChartHeaders, setBedTypeChartHeaders] = useState<any>(
-    bedTypeChartHeadersDefault
-  );
-
   const [bedNumberRowHeaders, setBedNumberRowHeaders] = useState<Object[]>([]);
 
   // metric ids
@@ -199,6 +195,7 @@ export default function ProvisionAndOccupancyPage() {
     categories: string[];
     values: number[];
   }>({ categories: [], values: [] });
+
   useEffect(() => {
     let categories: string[] = [];
     let values: number[] = [];
@@ -402,7 +399,6 @@ export default function ProvisionAndOccupancyPage() {
           const bedNumberData: Indicator[] =
             await IndicatorFetchService.getData(careHomeBedNumbersDataQuery);
           const bedNumbersData = TableService.filterDate(bedNumberData);
-          console.log(bedNumbersData);
           setBedNumbersData(bedNumbersData);
           setFilteredCareHomeBedNumbersData(
             bedNumbersData.filter(
@@ -458,11 +454,9 @@ export default function ProvisionAndOccupancyPage() {
       if (parsedData) {
         const id = parsedData.metric_id;
         const name = parsedData.filter_bedtype;
-        console.log('before filters', bedNumbersData);
         setFilteredCareHomeBedNumbersData(
           bedNumbersData.filter((item) => id === item.metric_id)
         );
-        console.log('after filtering:', filteredCareHomeBedNumbersData);
         AnalyticsService.trackMetricView(id);
       }
     } else {
@@ -482,26 +476,23 @@ export default function ProvisionAndOccupancyPage() {
   // Generate time series chart data
   const updateTypesChartMetrics = () => {
     if (!bedTypeOverTimeData.length) return;
-    const la_code = locationIds[1];
 
     const storedData = localStorage.getItem('type-chart-metrics');
-
+    let headers = bedTypeChartHeadersDefault;
     if (storedData) {
       const filters = JSON.parse(storedData);
       const map: any = {};
       filters.map((item: any) => (map[item.metric_id] = item.filter_bedtype));
-      setBedTypeChartHeaders(map);
-    } else {
-      setBedTypeChartHeaders(bedTypeChartHeadersDefault);
+      headers = map;
     }
     // Make some time series data based on the bed type row headers
-    let series: Series[] = createTimeSeries(la_code);
+    let series: Series[] = createTimeSeries(headers);
     setTimedata(series);
   };
 
-  const createTimeSeries = (la_code: string) => {
+  const createTimeSeries = (headers: any) => {
     let series: Series[] = [];
-    Object.entries(bedTypeChartHeaders).forEach((header: any) => {
+    Object.entries(headers).forEach((header: any) => {
       const metric_id = header[0];
       const name = header[1];
       // Filter to the current metric ID, for the LA only
