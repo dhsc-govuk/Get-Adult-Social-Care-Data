@@ -19,7 +19,7 @@ public class CareProviderLocation : SearchableEntity
     public required string Address { get; init; }
 
     [Column("nominated_individual"), StringLength(255)]
-    public required string NominatedIndividual { get; init; }
+    public string? NominatedIndividual { get; init; }
 
     [Column("local_authority_fk")]
     public required int LocalAuthorityFk { get; init; }
@@ -32,4 +32,7 @@ public class CareProviderLocation : SearchableEntity
 
     [ForeignKey("GeoDataFk")]
     public virtual GeoData? GeoData { get; init; } = null!;
+
+    [Column("category"), StringLength(15)]
+    public required string Category { get; init; }
 }

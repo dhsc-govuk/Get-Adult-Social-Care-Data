@@ -420,11 +420,12 @@ CREATE TABLE care_provider_locations (
                                          name character varying(100) NOT NULL,
                                          care_provider_fk integer NOT NULL,
                                          address character varying(255) NOT NULL,
-                                         nominated_individual character varying(255) NOT NULL,
+                                         nominated_individual character varying(255),
                                          local_authority_fk integer NOT NULL,
                                          geo_data_fk integer,
                                          loaded_datetime timestamp with time zone NOT NULL,
                                          code character varying(15) NOT NULL,
+                                         category character varying(15) NOT NULL,
                                          CONSTRAINT "PK_care_provider_locations" PRIMARY KEY (id),
                                          CONSTRAINT "FK_care_provider_locations_care_providers_care_provider_fk" FOREIGN KEY (care_provider_fk) REFERENCES care_providers (id) ON DELETE CASCADE,
                                          CONSTRAINT "FK_care_provider_locations_geo_data_geo_data_fk" FOREIGN KEY (geo_data_fk) REFERENCES geo_data (id),
@@ -509,6 +510,7 @@ CREATE INDEX "IX_regions_geo_data_fk" ON regions (geo_data_fk);
 
 CREATE INDEX "IX_total_population_metric_fk" ON total_population (metric_fk);
 
+
 -- insert test data
 
 DO $$
@@ -528,6 +530,7 @@ DECLARE
     care_provider_location_id_2 integer = 2;
     care_provider_location_id_3 integer = 3;
     care_provider_location_id_4 integer = 4;
+    care_provider_location_id_5 integer = 5;
     metric_group_id integer = 4;
     metric_group_id_2 integer = 11;
     metric_group_id_3 integer = 13;
@@ -642,13 +645,15 @@ BEGIN
            (care_provider_id_3, 'Rob', '1-123456712', CURRENT_TIMESTAMP),
            (care_provider_id_4, 'James', '1-123456713', CURRENT_TIMESTAMP);
 
-    INSERT INTO care_provider_locations (id, name, care_provider_fk, geo_data_fk, address, nominated_individual, local_authority_fk, code, loaded_datetime)
-    VALUES (care_provider_location_id, 'Bupa Liverpool', care_provider_id, gd_cpl, 'Bupa Liverpool, CV2 2TN', 'Mr. Ice Cool', la_id, '1-222222222', CURRENT_TIMESTAMP),
-           (care_provider_location_id_2, 'Katherines Teeth', care_provider_id_2, gd_cpl_2, 'Katherines Teeth, Liverpool, ME10 1QX', 'Katherine', la_id, '1-222222223', CURRENT_TIMESTAMP),
-           (care_provider_location_id_3, 'Katherines Eyes', care_provider_id_2, gd_cpl_3, 'Katherines Eyes, Liverpool, ME10 1QY', 'Katherine', la_id, '1-222222224', CURRENT_TIMESTAMP),
-           (care_provider_location_id_4, 'Katherines Ears', care_provider_id_4, null, 'Katherines Ears, Liverpool, ME10 1QZ', 'Katherine', la_id, '1-222222225', CURRENT_TIMESTAMP);
+    INSERT INTO care_provider_locations (id, name,category, care_provider_fk, geo_data_fk, address, nominated_individual, local_authority_fk, code, loaded_datetime)
+    VALUES (care_provider_location_id, 'Bupa Liverpool', 'Residential',care_provider_id, gd_cpl, 'Bupa Liverpool, CV2 2TN', 'Mr. Ice Cool', la_id, '1-222222222', CURRENT_TIMESTAMP),
+           (care_provider_location_id_2, 'Katherines Teeth', 'Residential', care_provider_id_2, gd_cpl_2, 'Katherines Teeth, Liverpool, ME10 1QX', 'Katherine', la_id, '1-222222223', CURRENT_TIMESTAMP),
+           (care_provider_location_id_3, 'Katherines Eyes','Residential', care_provider_id_2, gd_cpl_3, 'Katherines Eyes, Liverpool, ME10 1QY', 'Katherine', la_id, '1-222222224', CURRENT_TIMESTAMP),
+           (care_provider_location_id_4, 'Katherines Ears','Care home', care_provider_id_4, null, 'Katherines Ears, Liverpool, ME10 1QZ', 'Katherine', la_id, '1-222222225', CURRENT_TIMESTAMP),
+           (care_provider_location_id_5, 'Katherines Noses','Care home', care_provider_id_4, null, 'Katherines Noses, Liverpool, ME11 1QZ', null, la_id, '1-222222226', CURRENT_TIMESTAMP);
 
-    INSERT INTO metric_groups (id, code, loaded_datetime)
+
+INSERT INTO metric_groups (id, code, loaded_datetime)
     VALUES (metric_group_id, 'metric_group_code', CURRENT_TIMESTAMP ),
            (metric_group_id_2, 'metric_group_code_2', CURRENT_TIMESTAMP ),
            (metric_group_id_3, 'metric_group_code_3', CURRENT_TIMESTAMP ),
