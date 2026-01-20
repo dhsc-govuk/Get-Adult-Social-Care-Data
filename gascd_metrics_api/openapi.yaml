@@ -476,7 +476,7 @@ components:
         location_type:
           type: string
           description: "The type of this location."
-          enum: [la, national, regional]
+          enum: [LA, National, Regional, CareProviderLocation]
           default: la
     
     MetricMetadata:
