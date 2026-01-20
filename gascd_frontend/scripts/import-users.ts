@@ -4,6 +4,7 @@ import { generateId } from 'better-auth';
 
 import { parse } from 'csv-parse/sync';
 import * as fs from 'fs';
+import { generateAnalyticsId } from '@/helpers/telemetry/analyticsId';
 
 const USER_DATABASE_NAME = 'user';
 
@@ -60,6 +61,7 @@ async function run() {
       .insertInto(USER_DATABASE_NAME)
       .values({
         id: userid,
+        analyticsId: generateAnalyticsId(),
         name: row.name,
         registeredName: row.name,
         email: row.email,
@@ -74,7 +76,11 @@ async function run() {
     console.log(`Created user ${userid} - ${row.name} (${row.email})`);
   }
 
-  console.log('Import completed successfully.');
+  if (isDryRun) {
+    console.log('[Dry run completed successfully.]');
+  } else {
+    console.log('Import completed successfully.');
+  }
   authDB.destroy();
 }
 
