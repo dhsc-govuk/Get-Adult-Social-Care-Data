@@ -54,6 +54,7 @@ export default function ProvisionAndOccupancyPage() {
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [lasForRegion, setLasForRegion] = useState<string[]>();
   const [laIdsForRegion, setLaIdsForRegion] = useState<string[]>();
+  const [userLocationCategory, setUserLocationCategory] = useState<string>();
 
   // full data sets
   const [finalCpData, setFinalCpData] = useState<Indicator[]>([]);
@@ -220,12 +221,15 @@ export default function ProvisionAndOccupancyPage() {
   useEffect(() => {
     // Get Selected location from user
     const fetchSelectedLocation = async () => {
+      const userLocationCategory =
+        await LocationService.getSelectedLocationCategory();
       const userLocationId = await LocationService.getSelectedLocation();
       if (!userLocationId) {
         // Can't load any data without a valid user location
         return;
       }
       setCPLocationId(userLocationId);
+      setUserLocationCategory(userLocationCategory);
     };
     fetchSelectedLocation();
     trackDefaultMetrics();
@@ -758,7 +762,9 @@ export default function ProvisionAndOccupancyPage() {
                 median_occupancy_total: 'Occupancy level',
               }}
               data={finalCpData}
-              showCareProvider={true}
+              showCareProvider={
+                userLocationCategory === 'care home' ? true : false
+              }
               careProviderMedianMetrics={careProviderMedianMetrics}
               percentageRows={['median_occupancy_total']}
               showAverageLabel={true}

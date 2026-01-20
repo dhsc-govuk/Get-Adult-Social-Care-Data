@@ -179,6 +179,14 @@ class LocationService {
     return session.data.user.selectedLocationDisplayName ?? '';
   }
 
+  public static async getSelectedLocationCategory(): Promise<string> {
+    const session = await authClient.getSession();
+    if (!session?.data?.user) {
+      throw new Error('No user session found');
+    }
+    return 'not a care home';
+  }
+
   public static async setSelectedLocation(
     locationId: string,
     locationName: string
