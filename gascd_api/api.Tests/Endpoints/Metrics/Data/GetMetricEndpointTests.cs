@@ -337,6 +337,8 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
 
     }
 
+
+
     [Fact]
     public async Task GetMetric_WithNullTimeSeriesValues_ReturnsExpectedData()
     {
@@ -360,6 +362,44 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[0].SeriesFrequency.ShouldBe("Daily");
         response[0].Values.ShouldBe([22.2m, null, 44.4m, null, 32.1m]);
     }
+
+
+    [Theory]
+    [MemberData(nameof(LocationTypeCombinations))]
+    public async Task GetMetric_MetricsWithDifferentLocationCodes_ReturnsExpectedData(LocationTypeEnum locationType, decimal lastValue)
+    {
+        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+            new GetMetricRequest
+            {
+                MetricCode = bedcount_total,
+                TimeSeries = true,
+                Locations = new() { new GetMetricRequest.Location { LocationCode = "E92000001", LocationType = locationType } }
+            });
+
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        response.Count.ShouldBe(1);
+        response[0].MetricCode.ShouldBe(nameof(bedcount_total));
+        response[0].LocationCode.ShouldBe("E92000001");
+        response[0].LocationType.ShouldBe(locationType.ToString());
+        response[0].SeriesStartDate.ShouldBe(new DateTime(2001, 01, 01));
+        response[0].SeriesEndDate.ShouldBe(new DateTime(2026, 01, 01));
+        response[0].SeriesFrequency.ShouldBe("Daily");
+        response[0].Values.ShouldBe([2.2m, 3.3m, 4.4m, 5.5m, lastValue]);
+    }
+
+    public static IEnumerable<object[]> LocationTypeCombinations
+    {
+        get
+        {
+            yield return [Regional, 6.6m];
+            yield return [LA, 7.7m];
+            yield return [CareProviderLocation, 8.8m];
+            yield return [National, 9.9m];
+        }
+    }
+
 
     public static IEnumerable<object[]> MetricCodeTimeSeriesCombinations
     {
