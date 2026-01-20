@@ -43,6 +43,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         response.Address.ShouldBe("Bupa Liverpool, CV2 2TN");
         response.ProviderCode.ShouldBe("1-123456789");
         response.ProviderName.ShouldBe("Bupa");
+        response.Category.ShouldBe("Residential");
         response.NominatedIndividual.ShouldBe("Mr. Ice Cool");
         response.GeoData?.Latitude.ShouldBe(53.425);
         response.GeoData?.Longitude.ShouldBe(-2.88);
@@ -76,6 +77,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         response.Address.ShouldBe("Bupa Liverpool, CV2 2TN");
         response.ProviderCode.ShouldBe("1-123456789");
         response.ProviderName.ShouldBe("Bupa");
+        response.Category.ShouldBe("Residential");
         response.NominatedIndividual.ShouldBe("Mr. Ice Cool");
         response.GeoData?.Latitude.ShouldBe(53.425);
         response.GeoData?.Longitude.ShouldBe(-2.88);
@@ -109,6 +111,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         response.Address.ShouldBe("Katherines Ears, Liverpool, ME10 1QZ");
         response.ProviderCode.ShouldBe("1-123456713");
         response.ProviderName.ShouldBe("James");
+        response.Category.ShouldBe("Care home");
         response.NominatedIndividual.ShouldBe("Katherine");
         response.GeoData.ShouldBe(null);
         response.LocalAuthorityCode.ShouldBe("E08000014");
@@ -131,6 +134,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         GetFromJson(jObject, "address").ShouldBe("Bupa Liverpool, CV2 2TN");
         GetFromJson(jObject, "provider_code").ShouldBe("1-123456789");
         GetFromJson(jObject, "provider_name").ShouldBe("Bupa");
+        GetFromJson(jObject, "category").ShouldBe("Residential");
         GetFromJson(jObject, "nominated_individual").ShouldBe("Mr. Ice Cool");
         GetFromJson(jObject, "geo_data.latitude").ShouldBe("53.425");
         GetFromJson(jObject, "geo_data.longitude").ShouldBe("-2.88");
@@ -157,6 +161,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         GetFromJson(jObject, "address").ShouldBe("Bupa Liverpool, CV2 2TN");
         GetFromJson(jObject, "provider_code").ShouldBe("1-123456789");
         GetFromJson(jObject, "provider_name").ShouldBe("Bupa");
+        GetFromJson(jObject, "category").ShouldBe("Residential");
         GetFromJson(jObject, "nominated_individual").ShouldBe("Mr. Ice Cool");
         GetFromJson(jObject, "geo_data.latitude").ShouldBe("53.425");
         GetFromJson(jObject, "geo_data.longitude").ShouldBe("-2.88");

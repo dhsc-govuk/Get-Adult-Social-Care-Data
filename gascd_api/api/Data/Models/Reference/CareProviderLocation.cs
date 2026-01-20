@@ -32,4 +32,7 @@ public class CareProviderLocation : SearchableEntity
 
     [ForeignKey("GeoDataFk")]
     public virtual GeoData? GeoData { get; init; } = null!;
+
+    [Column("category"), StringLength(15)]
+    public required string Category { get; init; }
 }
