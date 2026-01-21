@@ -86,7 +86,6 @@
     "msw": "^2.7.3",
     "prettier": "^3.4.2",
     "sass": "^1.89.2",
-    "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
     "typescript": "5.7.2",
     "typescript-eslint": "^8.0.1",

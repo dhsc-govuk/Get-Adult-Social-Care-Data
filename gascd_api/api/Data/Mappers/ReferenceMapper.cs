@@ -1,11 +1,8 @@
-using api.Data.Models.Metrics;
 using api.Data.Models.Reference;
 using api.Endpoints.Geo.Postcode;
-using api.Endpoints.MetricFilters;
 using api.Endpoints.MetricLocation.Countries;
 using api.Endpoints.MetricLocation.LocalAuthorities;
 using api.Endpoints.MetricLocation.Regions;
-using api.Endpoints.Metrics.Metadata;
 using api.Endpoints.Organisation.CareProvider;
 using api.Endpoints.Shared;
 
@@ -42,6 +39,7 @@ public class ReferenceMapper
         {
             LocationName = careProviderLocation.Name,
             LocationCode = careProviderLocation.Code,
+            LocationCategory = careProviderLocation.Category,
             Address = careProviderLocation.Address,
         };
     }
@@ -55,6 +53,7 @@ public class ReferenceMapper
             Address = cpl.Address,
             ProviderCode = cpl.CareProvider.Code,
             ProviderName = cpl.CareProvider.Name,
+            Category = cpl.Category,
             NominatedIndividual = cpl.NominatedIndividual,
             GeoData = GeoDataToGeoDataDto(cpl.GeoData),
             LocalAuthorityCode = cpl.LocalAuthority?.Code,
@@ -112,37 +111,4 @@ public class ReferenceMapper
             GeoData = GeoDataToGeoDataDto(country.GeoData),
         };
     }
-
-    public GetMetricMetadataResponse MetricToGetMetricMetadataResponse(Metric metric)
-    {
-        return new GetMetricMetadataResponse
-        {
-            MetricCode = metric.Code,
-            MetricName = metric.DisplayName,
-            DataType = metric.DataType,
-            DataSource = metric.DataSource,
-            Numerator = metric.NumeratorDescription,
-            Denominator = metric.DenominatorDescription,
-        };
-    }
-
-    public GetMetricFiltersResponse MetricGroupToMetricFiltersResponse(MetricGroup metricGroup)
-    {
-        return new GetMetricFiltersResponse
-        {
-            MetricGroupCode = metricGroup.Code,
-            MetricFilters = metricGroup.Metrics
-                .Select(MetricToMetricFilterDto).ToList()
-        };
-    }
-
-    private GetMetricFiltersResponse.MetricFilterDto MetricToMetricFilterDto(Metric metric)
-    {
-        return new GetMetricFiltersResponse.MetricFilterDto
-        {
-            MetricCode = metric.Code,
-            DisplayName = metric.DisplayName
-        };
-    }
-
 }

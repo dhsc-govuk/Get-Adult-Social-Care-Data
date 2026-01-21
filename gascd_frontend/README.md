@@ -183,6 +183,20 @@ This project uses Azure DevOps Pipelines for continuous integration and deployme
 - Build and Push: This steps builds a docker image and pushes to container registry
 - Deploy: This step deploys the application to Azure Web App
 
+## Checks
+
+The NextJS app is configured with two checks:
+
+Liveness check
+
+- URL: `/api/checks/live`
+- Returns a simple 200 OK response if the site is running
+
+Health check
+
+- URL: `/api/checks/health`
+- Returns JSON object including additional health status (database connectivity etc.)
+
 ## Further documentation
 
 | Name                                                                               | Description                                                                                                                                                                                                                |

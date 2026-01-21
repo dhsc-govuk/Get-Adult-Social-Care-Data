@@ -4,7 +4,7 @@ using FastEndpoints;
 
 namespace api.Endpoints.Metrics.Metadata;
 
-public class GetMetricMetadataEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetMetricMetadataEndpoint> logger) : Endpoint<GetMetricMetadataRequest, GetMetricMetadataResponse>
+public class GetMetricMetadataEndpoint(GascdDataContext context, MetricMapper mapper, ILogger<GetMetricMetadataEndpoint> logger) : Endpoint<GetMetricMetadataRequest, GetMetricMetadataResponse>
 {
     public override void Configure()
     {
