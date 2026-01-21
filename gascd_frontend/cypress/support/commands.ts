@@ -16,8 +16,8 @@ Cypress.Commands.add('metatag', (name: string) => {
 });
 
 Cypress.Commands.add('login_onelogin', (username: string, email: string) => {
-  cy.visit('/onelogin');
-  cy.get('button').contains('Sign in with GOV.UK One Login').click();
+  cy.visit('/login');
+  cy.get('button').contains('Agree and sign in').click();
   cy.get('input#sub').clear().type(username);
   cy.get('input#email').clear().type(email);
   cy.get('button').contains('Continue').click();
