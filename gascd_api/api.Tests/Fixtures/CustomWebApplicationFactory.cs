@@ -21,7 +21,8 @@ internal class CustomWebAppFactory(PostgreSqlContainer container) : WebApplicati
             var inMemorySettings = new Dictionary<string, string?>
             {
                 ["ConnectionStrings:DefaultConnection"] = connStr,
-                ["AuthApiKey"] = "test-secret-key"
+                ["AuthApiKey"] = "test-secret-key",
+                ["AzureMonitor:ConnectionString"] = "InstrumentationKey=00000000-0000-0000-0000-000000000000",
             };
 
             configBuilder.AddInMemoryCollection(inMemorySettings);
