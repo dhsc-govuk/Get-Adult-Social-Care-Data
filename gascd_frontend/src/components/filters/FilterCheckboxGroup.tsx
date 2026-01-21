@@ -259,7 +259,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           </ul>
           <div>
             <button
-              className="govuk-button govuk-button--secondary"
+              className="govuk-button govuk-button--inverse govuk-button--secondary"
               onClick={() => clearFilters()}
             >
               Clear all filters
