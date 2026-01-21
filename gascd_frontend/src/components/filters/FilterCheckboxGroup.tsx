@@ -37,19 +37,19 @@ const FilterCheckboxGroup: React.FC<Props> = ({
 
       const storedData = localStorage.getItem(filterType);
       if (storedData && storedData !== '[]') {
-        setSelectedFilters(JSON.parse(storedData));
-        setDisplayFilters(
-          JSON.parse(storedData).map((filter: any) => filter.filter_bedtype)
-        );
+        const parsedData: TotalBedsFilters[] = JSON.parse(storedData);
+        setSelectedFilters(parsedData);
+        setDisplayFilters(parsedData.map((filter) => filter.filter_bedtype));
+        filters.forEach((filter) => {
+          if (
+            parsedData.some(
+              (stored) => stored.filter_bedtype === filter.filter_bedtype
+            )
+          ) {
+            filter.checked = true;
+          }
+        });
         setShowActiveFilters(true);
-        const parsedData = JSON.parse(storedData);
-        const preSelectedFilters = filters.map((filter) => ({
-          ...filter,
-          checked: parsedData.some(
-            (item: TotalBedsFilters) => item.metric_id === filter.metric_id
-          ),
-        }));
-        setSelectedFilters(preSelectedFilters);
       } else {
         setSelectedFilters(filters);
       }
@@ -104,11 +104,16 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     const updatedSelectedFilters = selectedFilters.filter(
       (filter) => filter.filter_bedtype !== filterName
     );
-    setSelectedFilters(updatedSelectedFilters);
-    localStorage.setItem(filterType, JSON.stringify(updatedSelectedFilters));
+    filters.map((filter) =>
+      filter.filter_bedtype === filterName
+        ? (filter.checked = false)
+        : (filter.checked = filter.checked)
+    );
     if (updatedSelectedFilters.length === 0) {
       clearFilters();
     } else {
+      setSelectedFilters(updatedSelectedFilters);
+      localStorage.setItem(filterType, JSON.stringify(updatedSelectedFilters));
       setDisplayFilters(
         updatedSelectedFilters.map((filter) => filter.filter_bedtype)
       );
