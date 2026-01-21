@@ -8,8 +8,8 @@ export const B2CPlugin = (): GenericOAuthConfig => {
     clientSecret: process.env.AZURE_AD_CLIENT_SECRET as string,
     discoveryUrl: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${process.env.AZURE_AD_B2C_USER_SIGN_IN}`,
     scopes: ['openid', 'offline_access', 'profile'],
-    // No manual signup support, but users are implicitly created on login
-    disableImplicitSignUp: false,
+    // No signup support through B2C
+    disableImplicitSignUp: true,
     // Ensure location details after updated on every login
     overrideUserInfo: true,
     // Custom userinfo method, to deal with B2Cs list of emails
@@ -85,7 +85,7 @@ export const getPlugins = (): GenericOAuthConfig[] => {
   if (process.env.ONELOGIN_URL) {
     plugins.push(OneLoginPlugin());
   }
-  if (process.env.AZURE_AD_CLIENT_ID) {
+  if (process.env.AZURE_AD_CLIENT_ID && process.env.AZURE_AD_ENABLED) {
     plugins.push(B2CPlugin());
   }
   return plugins;
