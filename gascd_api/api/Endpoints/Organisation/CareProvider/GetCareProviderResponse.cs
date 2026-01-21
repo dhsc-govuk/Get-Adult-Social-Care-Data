@@ -10,6 +10,7 @@ public class GetCareProviderResponse
     {
         public required string LocationName { get; init; }
         public required string LocationCode { get; init; }
+        public required string LocationCategory { get; init; }
         public required string Address { get; init; }
     }
 }
