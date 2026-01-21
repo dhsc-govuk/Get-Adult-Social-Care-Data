@@ -148,6 +148,7 @@ export default function ProvisionAndOccupancyPage() {
 
   const bedTypeMetricIds = [
     'bedcount_per_100000_adults_total',
+    'bedcount_per_100000_adults_total_community_care',
     'bedcount_per_100000_adults_total_dementia_nursing',
     'bedcount_per_100000_adults_total_dementia_residential',
     'bedcount_per_100000_adults_total_general_nursing',
