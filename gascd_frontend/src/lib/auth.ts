@@ -81,6 +81,13 @@ export const auth = betterAuth({
         // Can be set by the user
         input: true,
       },
+      // Unique id for analytics tracking
+      // note - this is currently set during user import, not inside the app itself
+      analyticsId: {
+        type: 'string',
+        required: false,
+        input: false,
+      },
     },
   },
   plugins: [

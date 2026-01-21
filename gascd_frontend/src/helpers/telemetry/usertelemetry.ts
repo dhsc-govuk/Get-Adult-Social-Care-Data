@@ -16,11 +16,9 @@ export const addUserTelemetry = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  if (session?.user?.id) {
+  if (session?.user) {
     let activeSpan = trace.getActiveSpan();
     if (activeSpan) {
-      // Note - this would be better handled in middleware to apply to all telemetry
-      activeSpan.setAttribute(ATTR_ENDUSER_ID, session.user.id);
       if (session.user.locationId) {
         activeSpan.setAttribute(PRIMARY_LOCATION_ID, session.user.locationId);
       }
