@@ -215,7 +215,7 @@ const FilterRadioGroup: React.FC<Props> = ({
           </ul>
           <div>
             <button
-              className="govuk-button govuk-button--secondary"
+              className="govuk-button govuk-button--secondary govuk-button--inverse "
               onClick={() => clearFilters()}
             >
               Clear all filters
