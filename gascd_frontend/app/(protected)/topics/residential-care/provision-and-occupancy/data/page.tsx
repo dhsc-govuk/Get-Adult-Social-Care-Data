@@ -192,12 +192,12 @@ export default function ProvisionAndOccupancyPage() {
     values: number[];
   }>({ categories: [], values: [] });
 
-  useEffect(() => {
+  const updateBarChartData = () => {
     let categories: string[] = [];
     let values: number[] = [];
     Object.entries(bedNumberRowHeaders).map((header: any) => {
       categories.push(header[1]);
-      const datapoints = bedNumbersData.filter(
+      const datapoints = filteredCareHomeBedNumbersData.filter(
         (item) => item.location_id === header[0]
       );
       if (datapoints.length) {
@@ -208,7 +208,11 @@ export default function ProvisionAndOccupancyPage() {
       categories: categories,
       values: values,
     });
-  }, [bedNumberRowHeaders, bedNumbersData]);
+  };
+
+  useEffect(() => {
+    updateBarChartData();
+  }, [bedNumberRowHeaders, filteredCareHomeBedNumbersData]);
 
   // Location effects
   useEffect(() => {
