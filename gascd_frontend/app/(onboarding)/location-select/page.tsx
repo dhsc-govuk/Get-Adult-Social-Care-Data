@@ -18,15 +18,15 @@ const LocationSelectPage: React.FC = () => {
   const [availableLocations, setAvailableLocations] = useState<
     AvailableLocation[]
   >([]);
+  const [searchedLocations, setSearchedLocations] = useState<
+    AvailableLocation[]
+  >([]);
 
   useEffect(() => {
     const fetchAvailableLocations = async () => {
       const availableLocations = await LocationService.getAvailableLocations();
-      const sortedLocations = availableLocations.sort((a, b) =>
-        a.location_name.localeCompare(b.location_name)
-      );
-      setAvailableLocations(sortedLocations);
-
+      setAvailableLocations(availableLocations);
+      setSearchedLocations(availableLocations);
       const currentSelectedLocation =
         await LocationService.getSelectedLocation();
       const currentSelectedLocationName =
@@ -60,6 +60,14 @@ const LocationSelectPage: React.FC = () => {
     router.refresh();
   };
 
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
+    const filtered = availableLocations.filter((location) =>
+      location.location_name.toLowerCase().includes(searchTerm)
+    );
+    setSearchedLocations(filtered);
+  };
+
   return (
     <>
       <Layout
@@ -86,12 +94,38 @@ const LocationSelectPage: React.FC = () => {
             </p>
             <form>
               <div className="govuk-form-group">
+                {availableLocations.length > 1 && (
+                  <div
+                    className="search-field search-field-darker"
+                    id="data-radio-buttons-search-filter"
+                  >
+                    <div className="search-input">
+                      <label className="govuk-label" htmlFor="search-location">
+                        Search for a location
+                      </label>
+                      <input
+                        className="govuk-input"
+                        id="search-location"
+                        name="searchLocation"
+                        type="text"
+                        onKeyUp={handleSearch}
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <fieldset className="govuk-fieldset">
                   <legend className="govuk-visually-hidden">
                     Select a location from your care provider group
                   </legend>
+                  {selectedLocation && (
+                    <p className="govuk-heading-m">
+                      You&apos;ve selected &quot;{selectedLocationName}
+                      &quot;{' '}
+                    </p>
+                  )}
                   <div className="govuk-radios" data-module="govuk-radios">
-                    {availableLocations.map((location, index) => (
+                    {searchedLocations.map((location, index) => (
                       <div
                         className="govuk-radios__item"
                         key={`location-${index}`}

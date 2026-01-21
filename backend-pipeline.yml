@@ -51,7 +51,7 @@ parameters:
     
 stages:
   - stage: Build_and_Test
-    displayName: 'Build and Test .NET 9 App'
+    displayName: 'Build and Test .NET 10 App'
     jobs:
       - job: BuildJob
         pool:
@@ -59,9 +59,9 @@ stages:
         
         steps:
           - task: UseDotNet@2
-            displayName: 'Install .NET 9 SDK'
+            displayName: 'Install .NET 10 SDK'
             inputs:
-              version: '9.0.109'
+              version: '10.0.101'
               packageType: 'sdk'
 
           - task: DotNetCoreCLI@2
@@ -104,13 +104,25 @@ stages:
                 - checkout: self
                   fetchDepth: 50
                   fetchTags: true
+                  
+                - task: UseDotNet@2
+                  displayName: 'Install .NET 10 SDK'
+                  inputs:
+                    version: '10.0.101'
+                    packageType: 'sdk'
                     
                 - task: DotNetCoreCLI@2
                   displayName: Install dotnet-ef
                   inputs:
                     command: 'custom'
                     custom: 'tool'
-                    arguments: 'install --global dotnet-ef --version 9.0.*'
+                    arguments: 'install --global dotnet-ef --version 10.0.1'
+                    
+                - task: DotNetCoreCLI@2
+                  displayName: 'Restore Dependencies'
+                  inputs:
+                    command: 'restore'
+                    projects: '**/*.csproj'
                 
                 # create migration bundle
                 - task: CmdLine@2
@@ -211,6 +223,6 @@ stages:
                       inputs:
                         azureSubscription: '${{environment.arm_connection}}'
                         imageToDeploy: '$(acr_name).azurecr.io/$(imageName):$(tag)'
-                        containerAppName: 'dapalpha-data-api-${{environment.name}}'
+                        containerAppName: 'data-api-${{environment.name}}'
                         resourceGroup: 'dapalpha-container-apps-${{environment.name}}-rg'
-                        containerAppEnvironment: 'dapalpha-container-apps-env-${{environment.name}}'      
+                        containerAppEnvironment: 'gascd-container-apps-env-${{environment.name}}'      

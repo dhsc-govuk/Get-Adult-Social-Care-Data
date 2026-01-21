@@ -70,6 +70,9 @@ paths:
                         location_name:
                           type: string
                           description: "The display name of the location."
+                        location_category:
+                          type: string
+                          description: "The category of the location."
                         address:
                           type: string
                           description: "The address of the location."
@@ -214,9 +217,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MetricFilter'
+                $ref: '#/components/schemas/MetricFilters'
+                  
 
   /metrics/{metric_code}/metadata:
     get:
@@ -235,28 +237,27 @@ paths:
           description: "Metric not found."
 
   /metrics/{metric_code}/data:
-    get:
+    post:
       summary: "Get time-series or most recent data for a single metric"
-      description: "Retrieves data points for a single specified metric across one or more locations. Omit date parameters to get the most recent data point. Provide a startDate to get a time-series."
+      description: "Retrieves data points for a single specified metric across one or more locations. Omit the time_series parameter to get the most recent data point. Include time_series=true to get the time-series."
       parameters:
         - $ref: '#/components/parameters/MetricCode'
-        - name: locations
-          in: query
-          description: "Comma-separated list of location codes to retrieve data for."
-          required: true
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/Location"
-        - name: timeSeries
+        - name: time_series
           in: query
           description: "Boolean whether to return whole time series. If false or omitted, only the most recent data point is returned."
           required: false
           schema:
             type: boolean
             example: False
+      requestBody:
+        description: "A list of locations to retrieve data for."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items: 
+                $ref: "#/components/schemas/Location"
       responses:
         '200':
           description: "A list of matching metric series for the specified metric."
@@ -309,6 +310,9 @@ components:
         provider_name:
           type: string
           description: "The parent provider name."
+        location_category:
+          type: string
+          description: "The category of the location."
         nominated_individual:
           type: string
           description: "The nominated individual for the care provider location."
@@ -478,7 +482,7 @@ components:
         location_type:
           type: string
           description: "The type of this location."
-          enum: [la, national, regional]
+          enum: [LA, National, Regional, CareProviderLocation]
           default: la
     
     MetricMetadata:
@@ -504,7 +508,7 @@ components:
           type: string
           description: "A description of the denominator."
 
-    MetricFilter:
+    MetricFilters:
       type: object
       description: "An available filter for a metric, such as bed type."
       properties:
@@ -512,14 +516,20 @@ components:
           type: string
           description: "The specific metric group code this filter applies to."
           example: "bedcount_per_100000_adults"
-        metric_code:
-          type: string
-          description: "The specific metric code this filter applies to."
-          example: "bedcount_per_100000_adults_total_general_nursing"
-        display_name:
-          type: string
-          description: "A user-friendly name for the filter value."
-          example: "General nursing"
+        metrics:
+          type: array
+          description: "A list of Metric filters belonging to this Metric Group"
+          items:
+            type: object
+            properties:
+              metric_code:
+                type: string
+                description: "The specific metric code this filter applies to."
+                example: "bedcount_per_100000_adults_total_general_nursing"
+              display_name:
+                type: string
+                description: "A user-friendly name for the filter value."
+                example: "General nursing"
 
     MetricSeries:
       type: object

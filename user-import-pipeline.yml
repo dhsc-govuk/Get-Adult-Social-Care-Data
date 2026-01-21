@@ -1,0 +1,93 @@
+trigger: none
+pr: none
+
+variables:
+  # Variable groups
+  - group: acr_service_connection
+  - group: arm_service_connection
+  - group: user_db_connection
+  
+parameters:
+  - name: dryRun
+    displayName: "Dry Run? (Don't save to DB)"
+    type: boolean
+    default: true
+  - name: secureFileName
+    displayName: "Secure File Name"
+    type: string
+    default: 'users_import.csv'
+  - name: environments
+    type: object
+    default:
+      - name: dev
+        environment_name: "Webapp - dev"
+        arm_connection: "$(dev_arm_service_connections)"
+        user_db_name: "$(dev_user_db_name)"
+        user_db_server: "$(dev_user_db_server)"
+        user_db_port: "$(dev_user_db_port)"
+      - name: uat
+        environment_name: "Webapp - UAT"
+        arm_connection: "$(uat_arm_service_connections)"
+        user_db_name: "$(uat_user_db_name)"
+        user_db_server: "$(uat_user_db_server)"
+        user_db_port: "$(uat_user_db_port)"
+      - name: prod
+        environment_name: "Webapp - prod"
+        arm_connection: "$(prod_arm_service_connections)"
+        user_db_name: "$(prod_user_db_name)"
+        user_db_server: "$(prod_user_db_server)"
+        user_db_port: "$(prod_user_db_port)"
+        
+stages:
+- ${{ each environment in parameters.environments}}:
+  - stage: Import_Users_${{environment.name}}
+    displayName: "${{environment.name}}: Import Users"
+    jobs:
+    - job: ImportUsers
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+        - checkout: self
+        # 1. Access the secure file
+        - task: DownloadSecureFile@1
+          name: csvFile
+          inputs:
+            secureFile: '${{ parameters.secureFileName }}'
+
+        # 2. Setup Node environment
+        - task: NodeTool@0
+          inputs:
+            versionSpec: "24.4.1"
+
+        - script: npm ci
+          displayName: install dependencies
+          workingDirectory: gascd_frontend
+
+        - task: AzureCLI@2
+          displayName: 'Run user import with access token'
+          inputs:
+            azureSubscription: ${{environment.arm_connection}}
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              # 1. Get an Access Token for Azure SQL (resource ID is fixed)
+              # We verify the token is fetched before proceeding
+              TOKEN=$(az account get-access-token --resource https://database.windows.net/ --query accessToken -o tsv)
+
+              if [ -z "$TOKEN" ]; then
+                echo "Error: Failed to obtain access token"
+                exit 1
+              fi
+
+              echo "Access token obtained successfully."
+
+              export USER_DB_ACCESS_TOKEN=$TOKEN
+              export USER_DB_SERVER="${{environment.user_db_server}}"
+              export USER_DB_PORT="${{environment.user_db_port}}"
+              export USER_DATABASE="${{environment.user_db_name}}"
+              
+              # Run the import
+              cd gascd_frontend && npx tsx ./scripts/import-users.ts
+          env:
+            CSV_PATH: $(csvFile.secureFilePath)
+            DRY_RUN: ${{ parameters.dryRun }}

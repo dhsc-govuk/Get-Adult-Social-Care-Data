@@ -1,7 +1,10 @@
 ﻿using api.Data.Models.Metrics;
 using api.Data.Models.Metrics.TimeSeries;
 using api.Data.Models.Reference;
+using api.Data.Shared;
+using api.Endpoints.Metrics.Data;
 using Microsoft.EntityFrameworkCore;
+using static api.Data.Shared.MetricCodeEnum;
 
 namespace api.Data;
 
@@ -35,6 +38,7 @@ public partial class GascdDataContext : DbContext
     public virtual DbSet<LearningDisabilityPrevalence> LearningDisabilityPrevalenceSet { get; set; } = null!;
     public virtual DbSet<MedianBedCount> MedianBedCountSet { get; set; } = null!;
     public virtual DbSet<MedianOccupancy> MedianOccupancySet { get; set; } = null!;
+    public virtual DbSet<NumClientsLongTermSupport> NumClientsLongTermSupportSet { get; set; } = null!;
     public virtual DbSet<OccupancyRate> OccupancyRateSet { get; set; } = null!;
     public virtual DbSet<Perc65Over> Perc65OverSet { get; set; } = null!;
     public virtual DbSet<Perc75Over> Perc75OverSet { get; set; } = null!;
@@ -47,5 +51,66 @@ public partial class GascdDataContext : DbContext
     public virtual DbSet<PercPopulationDisability> PercPopulationDisabilitySet { get; set; } = null!;
     public virtual DbSet<PercUnpaidCareProvider> PercUnpaidCareProviderSet { get; set; } = null!;
     public virtual DbSet<TotalPopulation> TotalPopulationSet { get; set; } = null!;
+
+    public IQueryable<MetricTimeSeries> GetMetricTimeSeriesQueryable(MetricCodeEnum metricCode)
+    {
+        switch (metricCode)
+        {
+            case bedcount_total:
+                return BedcountSet.AsQueryable();
+            case bedcount_per_hundred_thousand_adults_total:
+            case bedcount_per_hundred_thousand_adults_total_dementia_nursing:
+            case bedcount_per_hundred_thousand_adults_total_dementia_residential:
+            case bedcount_per_hundred_thousand_adults_total_general_nursing:
+            case bedcount_per_hundred_thousand_adults_total_general_residential:
+            case bedcount_per_hundred_thousand_adults_total_learning_disability_nursing:
+            case bedcount_per_hundred_thousand_adults_total_learning_disability_residential:
+            case bedcount_per_hundred_thousand_adults_total_mental_health_nursing:
+            case bedcount_per_hundred_thousand_adults_total_mental_health_residential:
+            case bedcount_per_hundred_thousand_adults_total_transitional:
+            case bedcount_per_hundred_thousand_adults_total_ypd_young_physically_disabled:
+                return BedcountPerHundredThousandAdultsSet.AsQueryable();
+            case dementia_estimated_diagnosis_rate_65over:
+                return DementiaEstimatedDiagnosisRate65OverSet.AsQueryable();
+            case dementia_prevalence_65over:
+                return DementiaPrevalence65OverSet.AsQueryable();
+            case dementia_qof_prevalence:
+                return DementiaQOFPrevalenceSet.AsQueryable();
+            case dementia_register_65over_per100k:
+                return DementiaRegister65OverPer100kSet.AsQueryable();
+            case learning_disability_prevalence:
+                return LearningDisabilityPrevalenceSet.AsQueryable();
+            case median_bed_count_total:
+                return MedianBedCountSet.AsQueryable();
+            case median_occupancy_total:
+                return MedianOccupancySet.AsQueryable();
+            case occupancy_rates_total:
+                return OccupancyRateSet.AsQueryable();
+            case perc_18_64:
+                return Perc1864Set.AsQueryable();
+            case perc_65over:
+                return Perc65OverSet.AsQueryable();
+            case perc_75over:
+                return Perc75OverSet.AsQueryable();
+            case perc_85over:
+                return Perc85OverSet.AsQueryable();
+            case perc_general_health_total:
+                return PercGeneralHealthSet.AsQueryable();
+            case perc_household_ownership_total:
+                return PercHouseholdOwnershipSet.AsQueryable();
+            case perc_households_deprivation_deprived_total:
+                return PercHouseholdsDeprivationDeprivedSet.AsQueryable();
+            case perc_households_one_person_total:
+                return PercHouseholdsOnePersonSet.AsQueryable();
+            case perc_population_disability_disabled_total:
+                return PercPopulationDisabilitySet.AsQueryable();
+            case perc_unpaid_care_provider_total:
+                return PercUnpaidCareProviderSet.AsQueryable();
+            case total_population:
+                return TotalPopulationSet.AsQueryable();
+            default:
+                throw new ArgumentException();
+        }
+    }
 
 }

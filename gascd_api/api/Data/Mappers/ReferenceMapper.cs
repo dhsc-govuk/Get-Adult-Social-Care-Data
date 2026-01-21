@@ -1,10 +1,8 @@
-using api.Data.Models.Metrics;
 using api.Data.Models.Reference;
 using api.Endpoints.Geo.Postcode;
 using api.Endpoints.MetricLocation.Countries;
 using api.Endpoints.MetricLocation.LocalAuthorities;
 using api.Endpoints.MetricLocation.Regions;
-using api.Endpoints.Metrics.Metadata;
 using api.Endpoints.Organisation.CareProvider;
 using api.Endpoints.Shared;
 
@@ -35,12 +33,13 @@ public class ReferenceMapper
         };
     }
 
-    public GetCareProviderResponse.CareProviderLocation CareProviderLocationToCareProviderLocationResponse(CareProviderLocation careProviderLocation)
+    private GetCareProviderResponse.CareProviderLocation CareProviderLocationToCareProviderLocationResponse(CareProviderLocation careProviderLocation)
     {
         return new GetCareProviderResponse.CareProviderLocation
         {
             LocationName = careProviderLocation.Name,
             LocationCode = careProviderLocation.Code,
+            LocationCategory = careProviderLocation.Category,
             Address = careProviderLocation.Address,
         };
     }
@@ -54,6 +53,7 @@ public class ReferenceMapper
             Address = cpl.Address,
             ProviderCode = cpl.CareProvider.Code,
             ProviderName = cpl.CareProvider.Name,
+            Category = cpl.Category,
             NominatedIndividual = cpl.NominatedIndividual,
             GeoData = GeoDataToGeoDataDto(cpl.GeoData),
             LocalAuthorityCode = cpl.LocalAuthority?.Code,
@@ -72,7 +72,7 @@ public class ReferenceMapper
             Latitude = geoData.Coordinate.Y,
             Longitude = geoData.Coordinate.X,
             Polygon = geoData.BoundingPolygon?.Coordinates
-                .Select(c => new GeoDataDto.CoordinateDto { Latitude = c.X, Longitude = c.Y }).ToList()
+                .Select(c => new GeoDataDto.CoordinateDto { Latitude = c.X, Longitude = c.Y }).ToList() ?? new()
         };
     }
 
@@ -109,19 +109,6 @@ public class ReferenceMapper
             Code = country.Code,
             DisplayName = country.Name,
             GeoData = GeoDataToGeoDataDto(country.GeoData),
-        };
-    }
-
-    public GetMetricMetadataResponse MetricToGetMetricMetadataResponse(Metric metric)
-    {
-        return new GetMetricMetadataResponse
-        {
-            MetricCode = metric.Code,
-            MetricName = metric.DisplayName,
-            DataType = metric.DataType,
-            DataSource = metric.DataSource,
-            Numerator = metric.NumeratorDescription,
-            Denominator = metric.DenominatorDescription,
         };
     }
 }
