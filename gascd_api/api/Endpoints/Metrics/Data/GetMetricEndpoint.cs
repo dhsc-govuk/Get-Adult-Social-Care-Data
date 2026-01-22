@@ -44,7 +44,7 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper, IL
 
             if (data == null)
             {
-                return [];
+                continue;
             }
 
             metricTimeSerieses.Add(data);
