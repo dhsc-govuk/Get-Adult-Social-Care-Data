@@ -57,7 +57,8 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[0].MetricCode.ShouldBe(nameof(bedcount_total));
         response[0].LocationCode.ShouldBe("1-123456789");
         response[0].LocationType.ShouldBe(nameof(National));
-        response[0].SeriesStartDate.ShouldBe(new DateTime(2000, 01, 01));
+        response[0].SeriesStartDate.ShouldBe(null);
+        response[0].SeriesEndDate.ShouldBe(new DateOnly(2025, 01, 01));
         response[0].SeriesFrequency.ShouldBe("Daily");
         response[0].Values.ShouldBe([5.5m]);
     }
@@ -79,7 +80,8 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[0].MetricCode.ShouldBe(nameof(bedcount_total));
         response[0].LocationCode.ShouldBe("E92000001");
         response[0].LocationType.ShouldBe(nameof(Regional));
-        response[0].SeriesStartDate.ShouldBe(new DateTime(2001, 01, 01));
+        response[0].SeriesStartDate.ShouldBe(null);
+        response[0].SeriesEndDate.ShouldBe(new DateOnly(2026, 01, 01));
         response[0].SeriesFrequency.ShouldBe("Daily");
         response[0].Values.ShouldBe([6.6m]);
     }
@@ -172,7 +174,8 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[0].MetricCode.ShouldBe(metricCode.ToString());
         response[0].LocationCode.ShouldBe("E92000001");
         response[0].LocationType.ShouldBe(nameof(Regional));
-        response[0].SeriesStartDate.ShouldBe(new DateTime(2001, 01, 01));
+        response[0].SeriesStartDate.ShouldBe(null);
+        response[0].SeriesEndDate.ShouldBe(new DateOnly(2026, 01, 01));
         response[0].SeriesFrequency.ShouldBe("Daily");
         response[0].Values.ShouldBe([lastValue]);
     }
@@ -195,7 +198,8 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[0].MetricCode.ShouldBe(nameof(bedcount_total));
         response[0].LocationCode.ShouldBe("1-123456789");
         response[0].LocationType.ShouldBe(nameof(National));
-        response[0].SeriesStartDate.ShouldBe(new DateTime(2000, 01, 01));
+        response[0].SeriesStartDate.ShouldBe(new DateOnly(2000, 01, 01));
+        response[0].SeriesEndDate.ShouldBe(new DateOnly(2025, 01, 01));
         response[0].SeriesFrequency.ShouldBe("Daily");
         response[0].Values.ShouldBe([1.1m, 2.2m, 3.3m, 4.4m, 5.5m]);
     }
@@ -219,7 +223,8 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[0].MetricCode.ShouldBe(metricCode.ToString());
         response[0].LocationCode.ShouldBe("E92000001");
         response[0].LocationType.ShouldBe(nameof(Regional));
-        response[0].SeriesStartDate.ShouldBe(new DateTime(2001, 01, 01));
+        response[0].SeriesStartDate.ShouldBe(new DateOnly(2001, 01, 01));
+        response[0].SeriesEndDate.ShouldBe(new DateOnly(2026, 01, 01));
         response[0].SeriesFrequency.ShouldBe("Daily");
         response[0].Values.ShouldBe([2.2m, 3.3m, 4.4m, 5.5m, lastValue]);
     }
@@ -245,14 +250,16 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[0].MetricCode.ShouldBe(nameof(bedcount_total));
         response[0].LocationCode.ShouldBe("1-123456789");
         response[0].LocationType.ShouldBe(nameof(National));
-        response[0].SeriesStartDate.ShouldBe(new DateTime(2000, 01, 01));
+        response[0].SeriesStartDate.ShouldBe(null);
+        response[0].SeriesEndDate.ShouldBe(new DateOnly(2025, 01, 01));
         response[0].SeriesFrequency.ShouldBe("Daily");
         response[0].Values.ShouldBe([5.5m]);
 
         response[1].MetricCode.ShouldBe(nameof(bedcount_total));
         response[1].LocationCode.ShouldBe("E92000001");
         response[1].LocationType.ShouldBe(nameof(Regional));
-        response[1].SeriesStartDate.ShouldBe(new DateTime(2001, 01, 01));
+        response[1].SeriesStartDate.ShouldBe(null);
+        response[1].SeriesEndDate.ShouldBe(new DateOnly(2026, 01, 01));
         response[1].SeriesFrequency.ShouldBe("Daily");
         response[1].Values.ShouldBe([6.6m]);
     }
@@ -279,14 +286,16 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[0].MetricCode.ShouldBe(nameof(bedcount_total));
         response[0].LocationCode.ShouldBe("1-123456789");
         response[0].LocationType.ShouldBe(nameof(National));
-        response[0].SeriesStartDate.ShouldBe(new DateTime(2000, 01, 01));
+        response[0].SeriesStartDate.ShouldBe(new DateOnly(2000, 01, 01));
+        response[0].SeriesEndDate.ShouldBe(new DateOnly(2025, 01, 01));
         response[0].SeriesFrequency.ShouldBe("Daily");
         response[0].Values.ShouldBe([1.1m, 2.2m, 3.3m, 4.4m, 5.5m]);
 
         response[1].MetricCode.ShouldBe(nameof(bedcount_total));
         response[1].LocationCode.ShouldBe("E92000001");
         response[1].LocationType.ShouldBe(nameof(Regional));
-        response[1].SeriesStartDate.ShouldBe(new DateTime(2001, 01, 01));
+        response[1].SeriesStartDate.ShouldBe(new DateOnly(2001, 01, 01));
+        response[1].SeriesEndDate.ShouldBe(new DateOnly(2026, 01, 01));
         response[1].SeriesFrequency.ShouldBe("Daily");
         response[1].Values.ShouldBe([2.2m, 3.3m, 4.4m, 5.5m, 6.6m]);
     }
@@ -305,7 +314,8 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         GetFromJson(jArray, "[0].metric_code").ShouldBe(nameof(bedcount_total));
         GetFromJson(jArray, "[0].location_code").ShouldBe("1-123456789");
         GetFromJson(jArray, "[0].location_type").ShouldBe(nameof(National));
-        GetFromJson(jArray, "[0].series_start_date").ShouldBe("01/01/2000 00:00:00");
+        GetFromJson(jArray, "[0].series_start_date").ShouldBe("2000-01-01");
+        GetFromJson(jArray, "[0].series_end_date").ShouldBe("2025-01-01");
         GetFromJson(jArray, "[0].series_frequency").ShouldBe("Daily");
         GetFromJson(jArray, "[0].values[0]").ShouldBe("1.1");
         GetFromJson(jArray, "[0].values[1]").ShouldBe("2.2");
@@ -316,7 +326,8 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         GetFromJson(jArray, "[1].metric_code").ShouldBe(nameof(bedcount_total));
         GetFromJson(jArray, "[1].location_code").ShouldBe("E92000001");
         GetFromJson(jArray, "[1].location_type").ShouldBe(nameof(Regional));
-        GetFromJson(jArray, "[1].series_start_date").ShouldBe("01/01/2001 00:00:00");
+        GetFromJson(jArray, "[1].series_start_date").ShouldBe("2001-01-01");
+        GetFromJson(jArray, "[1].series_end_date").ShouldBe("2026-01-01");
         GetFromJson(jArray, "[1].series_frequency").ShouldBe("Daily");
         GetFromJson(jArray, "[1].values[0]").ShouldBe("2.2");
         GetFromJson(jArray, "[1].values[1]").ShouldBe("3.3");
@@ -325,6 +336,8 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         GetFromJson(jArray, "[1].values[4]").ShouldBe("6.6");
 
     }
+
+
 
     [Fact]
     public async Task GetMetric_WithNullTimeSeriesValues_ReturnsExpectedData()
@@ -344,10 +357,49 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[0].MetricCode.ShouldBe(nameof(bedcount_per_hundred_thousand_adults_total));
         response[0].LocationCode.ShouldBe("1-123456789");
         response[0].LocationType.ShouldBe(nameof(National));
-        response[0].SeriesStartDate.ShouldBe(new DateTime(2002, 01, 01));
+        response[0].SeriesStartDate.ShouldBe(new DateOnly(2002, 01, 01));
+        response[0].SeriesEndDate.ShouldBe(new DateOnly(2024, 01, 01));
         response[0].SeriesFrequency.ShouldBe("Daily");
         response[0].Values.ShouldBe([22.2m, null, 44.4m, null, 32.1m]);
     }
+
+
+    [Theory]
+    [MemberData(nameof(LocationTypeCombinations))]
+    public async Task GetMetric_MetricsWithDifferentLocationCodes_ReturnsExpectedData(LocationTypeEnum locationType, decimal lastValue)
+    {
+        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+            new GetMetricRequest
+            {
+                MetricCode = bedcount_total,
+                TimeSeries = true,
+                Locations = new() { new GetMetricRequest.Location { LocationCode = "E92000001", LocationType = locationType } }
+            });
+
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        response.Count.ShouldBe(1);
+        response[0].MetricCode.ShouldBe(nameof(bedcount_total));
+        response[0].LocationCode.ShouldBe("E92000001");
+        response[0].LocationType.ShouldBe(locationType.ToString());
+        response[0].SeriesStartDate.ShouldBe(new DateOnly(2001, 01, 01));
+        response[0].SeriesEndDate.ShouldBe(new DateOnly(2026, 01, 01));
+        response[0].SeriesFrequency.ShouldBe("Daily");
+        response[0].Values.ShouldBe([2.2m, 3.3m, 4.4m, 5.5m, lastValue]);
+    }
+
+    public static IEnumerable<object[]> LocationTypeCombinations
+    {
+        get
+        {
+            yield return [Regional, 6.6m];
+            yield return [LA, 7.7m];
+            yield return [CareProviderLocation, 8.8m];
+            yield return [National, 9.9m];
+        }
+    }
+
 
     public static IEnumerable<object[]> MetricCodeTimeSeriesCombinations
     {
@@ -362,7 +414,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
             yield return [bedcount_per_hundred_thousand_adults_total_learning_disability_nursing, 7.5m];
             yield return [bedcount_per_hundred_thousand_adults_total_learning_disability_residential, 7.6m];
             yield return [bedcount_per_hundred_thousand_adults_total_mental_health_nursing, 7.7m];
-            yield return [bedcount_per_hundred_thousand_adults_total_mential_health_residential, 7.8m];
+            yield return [bedcount_per_hundred_thousand_adults_total_mental_health_residential, 7.8m];
             yield return [bedcount_per_hundred_thousand_adults_total_transitional, 7.9m];
             yield return [bedcount_per_hundred_thousand_adults_total_ypd_young_physically_disabled, 7.11m];
             yield return [dementia_estimated_diagnosis_rate_65over, 6.8m];

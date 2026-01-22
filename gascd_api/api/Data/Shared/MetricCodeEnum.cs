@@ -16,7 +16,7 @@ public enum MetricCodeEnum
     bedcount_per_hundred_thousand_adults_total_learning_disability_nursing,
     bedcount_per_hundred_thousand_adults_total_learning_disability_residential,
     bedcount_per_hundred_thousand_adults_total_mental_health_nursing,
-    bedcount_per_hundred_thousand_adults_total_mential_health_residential,
+    bedcount_per_hundred_thousand_adults_total_mental_health_residential,
     bedcount_per_hundred_thousand_adults_total_transitional,
     bedcount_per_hundred_thousand_adults_total_ypd_young_physically_disabled,
     dementia_estimated_diagnosis_rate_65over,

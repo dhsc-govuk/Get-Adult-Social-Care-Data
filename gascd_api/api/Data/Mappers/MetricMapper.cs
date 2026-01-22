@@ -46,7 +46,8 @@ public class MetricMapper
             MetricCode = mts.Metric.Code,
             LocationCode = mts.LocationCode,
             LocationType = mts.LocationType,
-            SeriesStartDate = mts.StartDate,
+            SeriesStartDate = includeTimeSeries ? mts.StartDate : null,
+            SeriesEndDate = mts.EndDate,
             SeriesFrequency = mts.Metric.Frequency,
             Values = includeTimeSeries ? mts.TimeSeries : [mts.LatestValue]
         };
