@@ -16,15 +16,17 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
       <PackageReference Include="Azure.Identity" Version="1.17.1" />
-      <PackageReference Include="FastEndpoints" Version="7.1.1" />
-      <PackageReference Include="FastEndpoints.Swagger" Version="7.1.1" />
+      <PackageReference Include="FastEndpoints" Version="7.2.0" />
+      <PackageReference Include="FastEndpoints.HealthChecks" Version="7.2.0" />
+      <PackageReference Include="FastEndpoints.Swagger" Version="7.2.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.1" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="10.0.0" />
     </ItemGroup>

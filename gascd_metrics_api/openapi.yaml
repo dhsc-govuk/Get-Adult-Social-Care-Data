@@ -70,6 +70,9 @@ paths:
                         location_name:
                           type: string
                           description: "The display name of the location."
+                        location_category:
+                          type: string
+                          description: "The category of the location."
                         address:
                           type: string
                           description: "The address of the location."
@@ -307,6 +310,9 @@ components:
         provider_name:
           type: string
           description: "The parent provider name."
+        location_category:
+          type: string
+          description: "The category of the location."
         nominated_individual:
           type: string
           description: "The nominated individual for the care provider location."
@@ -476,7 +482,7 @@ components:
         location_type:
           type: string
           description: "The type of this location."
-          enum: [la, national, regional]
+          enum: [LA, National, Regional, CareProviderLocation]
           default: la
     
     MetricMetadata:

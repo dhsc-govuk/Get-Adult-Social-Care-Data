@@ -77,8 +77,8 @@ As well as using the magic development login URL above, you can also use the GOV
   - Enter your development secret when prompted
 - Run `docker compose up onelogin_simulator`
 - Start the frontend app as normal
-- Head to the temporary "one login" page in the app and click "Sign in":
-  - http://localhost:3000/onelogin
+- Head to the login page in the app and click "Sign in":
+  - http://localhost:3000/login
 - On the interactive login simulator form, change the "Email" field to match your `LOCAL_AUTH_EMAIL` value.
 - Click "Continue", and you should be logged in.
 
@@ -182,6 +182,20 @@ This project uses Azure DevOps Pipelines for continuous integration and deployme
 - Test: This step runs the tests
 - Build and Push: This steps builds a docker image and pushes to container registry
 - Deploy: This step deploys the application to Azure Web App
+
+## Checks
+
+The NextJS app is configured with two checks:
+
+Liveness check
+
+- URL: `/api/checks/live`
+- Returns a simple 200 OK response if the site is running
+
+Health check
+
+- URL: `/api/checks/health`
+- Returns JSON object including additional health status (database connectivity etc.)
 
 ## Further documentation
 
