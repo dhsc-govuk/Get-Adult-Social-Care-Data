@@ -2,6 +2,7 @@ using api.Data;
 using Azure.Core;
 using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace api.Configuration;
 
@@ -9,9 +10,9 @@ public static class DatabaseConfiguration
 {
     public static IServiceCollection RegisterDatabase(this IServiceCollection services, IConfiguration config)
     {
-        string? id = config.GetValue<string>("MI_ID");
+        string? clientId = config.GetValue<string>("MI_CLIENT_ID");
 
-        return id == null ? RegisterDatabaseConnection(services, config) : RegisterManagedIdentityDatabaseConnection(services, config);
+        return clientId == null ? RegisterDatabaseConnection(services, config) : RegisterManagedIdentityDatabaseConnection(services, config);
     }
 
     private static IServiceCollection RegisterDatabaseConnection(this IServiceCollection services,
@@ -25,16 +26,15 @@ public static class DatabaseConfiguration
     private static IServiceCollection RegisterManagedIdentityDatabaseConnection(IServiceCollection services,
         IConfiguration config)
     {
-        string? id = config.GetValue<string>("MI_ID");
         string? clientId = config.GetValue<string>("MI_CLIENT_ID");
-        string? principalId = config.GetValue<string>("MI_PRINCIPAL_ID");
-        string? tenantId = config.GetValue<string>("MI_TENANT_ID");
-
         string? databaseHost = config.GetValue<string>("database_host");
         string? identityName = config.GetValue<string>("identity_name");
 
-        string connectionString =
-            $"Host={databaseHost};Database=gascd_data;Username={identityName};Ssl Mode=VerifyFull;Trust Server Certificate=true";
+        var builder = new NpgsqlConnectionStringBuilder();
+        builder.Host = databaseHost;
+        builder.Database = "gascd_data";
+        builder.Username = identityName;
+        builder.SslMode = SslMode.VerifyFull;
 
         var credentialOptions = new DefaultAzureCredentialOptions { ManagedIdentityClientId = clientId };
 
@@ -42,7 +42,7 @@ public static class DatabaseConfiguration
 
         return services.AddDbContext<GascdDataContext>(o =>
         {
-            o.UseNpgsql(connectionString, p =>
+            o.UseNpgsql(builder.ConnectionString, p =>
             {
                 p.UseNetTopologySuite();
                 p.ConfigureDataSource(q =>
