@@ -44,6 +44,7 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper, IL
 
             if (data == null)
             {
+                logger.LogInformation("Location not found for Location code: {code} and Location type: {type}", location.LocationCode, location.LocationType);
                 continue;
             }
 
