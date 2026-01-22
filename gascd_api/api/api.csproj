@@ -16,8 +16,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FastEndpoints" Version="7.1.1" />
-      <PackageReference Include="FastEndpoints.Swagger" Version="7.1.1" />
+      <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
+      <PackageReference Include="FastEndpoints" Version="7.2.0" />
+      <PackageReference Include="FastEndpoints.HealthChecks" Version="7.2.0" />
+      <PackageReference Include="FastEndpoints.Swagger" Version="7.2.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
         <PrivateAssets>all</PrivateAssets>

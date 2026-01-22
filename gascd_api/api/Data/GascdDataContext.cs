@@ -38,6 +38,7 @@ public partial class GascdDataContext : DbContext
     public virtual DbSet<LearningDisabilityPrevalence> LearningDisabilityPrevalenceSet { get; set; } = null!;
     public virtual DbSet<MedianBedCount> MedianBedCountSet { get; set; } = null!;
     public virtual DbSet<MedianOccupancy> MedianOccupancySet { get; set; } = null!;
+    public virtual DbSet<NumClientsLongTermSupport> NumClientsLongTermSupportSet { get; set; } = null!;
     public virtual DbSet<OccupancyRate> OccupancyRateSet { get; set; } = null!;
     public virtual DbSet<Perc65Over> Perc65OverSet { get; set; } = null!;
     public virtual DbSet<Perc75Over> Perc75OverSet { get; set; } = null!;
