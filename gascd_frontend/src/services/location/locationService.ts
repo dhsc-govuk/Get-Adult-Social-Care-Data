@@ -82,9 +82,9 @@ class LocationService {
     }
   }
 
-  public static async chunkLocations(
+  public static chunkLocations(
     locations: AvailableLocation[]
-  ): Promise<AvailableLocation[][]> {
+  ): AvailableLocation[][] {
     const chunkSize = 20;
     const chunkedLocations: AvailableLocation[][] = [];
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
 import Link from 'next/link';
 import LocationService, {
@@ -9,7 +9,6 @@ import LocationService, {
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
 import AnalyticsService from '@/services/analytics/analyticsService';
-import { set } from 'better-auth';
 
 const LocationSelectPage: React.FC = () => {
   const { data: session } = useSession();
@@ -20,7 +19,7 @@ const LocationSelectPage: React.FC = () => {
     AvailableLocation[]
   >([]);
   const [searchedLocations, setSearchedLocations] = useState<
-    AvailableLocation[]
+    AvailableLocation[][]
   >([]);
   const [chunkedLocations, setChunkedLocations] = useState<
     AvailableLocation[][]
@@ -33,16 +32,17 @@ const LocationSelectPage: React.FC = () => {
     const fetchAvailableLocations = async () => {
       const availableLocations = await LocationService.getAvailableLocations();
       setAvailableLocations(availableLocations);
-      setSearchedLocations(availableLocations);
-      const chunckedLocations =
-        await LocationService.chunkLocations(availableLocations);
-      setAvailableLocations(availableLocations);
-      setChunkedLocations(chunckedLocations);
-      if (chunckedLocations.length > 1) {
+      let chunkedLocations = LocationService.chunkLocations(availableLocations);
+
+      setChunkedLocations(chunkedLocations);
+      setSearchedLocations(chunkedLocations);
+
+      if (chunkedLocations.length > 1) {
         setPaginationRequired(true);
         setPageNumber(1);
         paginationPageNumbers();
       }
+
       const currentSelectedLocation =
         await LocationService.getSelectedLocation();
       const currentSelectedLocationName =
@@ -51,7 +51,6 @@ const LocationSelectPage: React.FC = () => {
         setSelectedLocation(currentSelectedLocation);
         setSelectedLocationName(currentSelectedLocationName);
       }
-      console.table(chunckedLocations);
     };
     fetchAvailableLocations();
   }, []);
@@ -78,36 +77,37 @@ const LocationSelectPage: React.FC = () => {
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
-    const filtered = availableLocations.filter((location) =>
-      location.location_name.toLowerCase().includes(searchTerm)
-    );
-    setSearchedLocations(filtered);
+    const filtered = chunkedLocations
+      .flat()
+      .filter((location) =>
+        location.location_name.toLowerCase().includes(searchTerm)
+      );
+
+    const chunkedFilteredLocations = LocationService.chunkLocations(filtered);
+
+    setSearchedLocations(chunkedFilteredLocations);
+    paginationPageNumbers();
   };
 
   const paginationPageNumbers = () => {
-    const length = chunkedLocations.length;
+    const length = searchedLocations.length;
 
     if (length < 3) return [];
     if (length === 3) return [1, 2, 3];
 
     const result: (number | null)[] = [1];
-    const adjacentPages = [pageNumber, pageNumber + 1, pageNumber - 1].filter(
-      (page) => page > 1 && page < length
-    );
-    const uniquePages = [...new Set(adjacentPages)].sort((a, b) => a - b);
+    const adjacentPages = [pageNumber - 1, pageNumber, pageNumber + 1]
+      .filter((page) => page > 1 && page < length)
+      .sort((a, b) => a - b);
 
     let lastPage = 1;
-    for (const page of uniquePages) {
-      if (page - lastPage > 1) {
-        result.push(null);
-      }
+    for (const page of adjacentPages) {
+      if (page - lastPage > 1) result.push(null);
       result.push(page);
       lastPage = page;
     }
 
-    if (length - lastPage > 1) {
-      result.push(null);
-    }
+    if (length - lastPage > 1) result.push(null);
     result.push(length);
 
     return result;
@@ -170,7 +170,7 @@ const LocationSelectPage: React.FC = () => {
                     </p>
                   )}
                   <div className="govuk-radios" data-module="govuk-radios">
-                    {chunkedLocations[pageNumber - 1]?.map(
+                    {searchedLocations[pageNumber - 1]?.map(
                       (location, index) => (
                         <div
                           className="govuk-radios__item"
@@ -204,13 +204,11 @@ const LocationSelectPage: React.FC = () => {
 
                 {paginationRequired && (
                   <nav
-                    className="govuk-pagination hidden"
+                    className="govuk-pagination"
                     aria-label="Pagination"
-                    hidden
-                    aria-hidden="true"
                     data-paging
                   >
-                    {pageNumber > 0 && (
+                    {pageNumber > 1 && (
                       <div className="govuk-pagination__prev pager-prev">
                         <a
                           className="govuk-link govuk-pagination__link"
@@ -237,7 +235,7 @@ const LocationSelectPage: React.FC = () => {
                       </div>
                     )}
 
-                    {chunkedLocations.length > 2 && (
+                    {searchedLocations.length > 2 && (
                       <ul className="govuk-pagination__list pager-items">
                         {paginationPageNumbers().map((page, index) =>
                           page !== null ? (
@@ -263,7 +261,7 @@ const LocationSelectPage: React.FC = () => {
                       </ul>
                     )}
 
-                    {pageNumber < chunkedLocations.length - 1 && (
+                    {pageNumber < searchedLocations.length && (
                       <div className="govuk-pagination__next pager-next">
                         <a
                           className="govuk-link govuk-pagination__link"
