@@ -150,6 +150,11 @@ const LocationSelectPage: React.FC = () => {
                         >
                           {location.location_name}
                         </label>
+                        <div className="govuk-hint govuk-radios__hint">
+                          Address:
+                          <br />
+                          Provider:
+                        </div>
                       </div>
                     ))}
                   </div>
