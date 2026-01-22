@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
   }
 
   if (process.env.DATA_API_ROOT) {
+    // XXX share this code with getDefaultLocations?
     const client = getAPIClient();
     const { data } = await client.GET('/metric_locations/cp_locations/{code}', {
       params: {

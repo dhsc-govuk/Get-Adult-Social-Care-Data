@@ -42,12 +42,14 @@ export async function POST(req: NextRequest) {
       if (data) {
         console.log(data);
         const item = data[0];
-        all_metrics.push({
-          ...item,
-          metric_id: item.metric_code,
-          location_id: item.location_code,
-          metric_date: item.series_end_date,
-          data_point: item.values[0],
+        data.map((item) => {
+          all_metrics.push({
+            ...item,
+            metric_id: item.metric_code,
+            location_id: item.location_code,
+            metric_date: item.series_end_date,
+            data_point: item.values && item.values[0],
+          });
         });
       }
     }
