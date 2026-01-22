@@ -10,8 +10,7 @@ describe('User can log in and log out with One Login', () => {
     cy.url().should('include', '/home');
 
     // GOV.UK one login account link in header
-    // - turned off until one login is default
-    //cy.get('header nav').should('contains.text', 'GOV.UK One Login');
+    cy.get('header nav').should('contains.text', 'GOV.UK One Login');
 
     // Check homepage links
     cy.get('h2').should('contains.text', 'Care provision');
