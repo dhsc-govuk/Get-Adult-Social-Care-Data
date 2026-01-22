@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
 import Link from 'next/link';
 import LocationService, {
@@ -9,6 +9,7 @@ import LocationService, {
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
 import AnalyticsService from '@/services/analytics/analyticsService';
+import { set } from 'better-auth';
 
 const LocationSelectPage: React.FC = () => {
   const { data: session } = useSession();
@@ -26,7 +27,7 @@ const LocationSelectPage: React.FC = () => {
   >([]);
   const [paginationRequired, setPaginationRequired] = useState<boolean>(false);
 
-  const [pageNumber, setPageNumber] = useState<number>(0);
+  const [pageNumber, setPageNumber] = useState<number>(1);
 
   useEffect(() => {
     const fetchAvailableLocations = async () => {
@@ -39,6 +40,8 @@ const LocationSelectPage: React.FC = () => {
       setChunkedLocations(chunckedLocations);
       if (chunckedLocations.length > 1) {
         setPaginationRequired(true);
+        setPageNumber(1);
+        paginationPageNumbers();
       }
       const currentSelectedLocation =
         await LocationService.getSelectedLocation();
@@ -81,6 +84,35 @@ const LocationSelectPage: React.FC = () => {
     setSearchedLocations(filtered);
   };
 
+  const paginationPageNumbers = () => {
+    const length = chunkedLocations.length;
+
+    if (length < 3) return [];
+    if (length === 3) return [1, 2, 3];
+
+    const result: (number | null)[] = [1];
+    const adjacentPages = [pageNumber, pageNumber + 1, pageNumber - 1].filter(
+      (page) => page > 1 && page < length
+    );
+    const uniquePages = [...new Set(adjacentPages)].sort((a, b) => a - b);
+
+    let lastPage = 1;
+    for (const page of uniquePages) {
+      if (page - lastPage > 1) {
+        result.push(null);
+      }
+      result.push(page);
+      lastPage = page;
+    }
+
+    if (length - lastPage > 1) {
+      result.push(null);
+    }
+    result.push(length);
+
+    return result;
+  };
+
   return (
     <>
       <Layout
@@ -107,7 +139,7 @@ const LocationSelectPage: React.FC = () => {
             </p>
             <form>
               <div className="govuk-form-group">
-                {availableLocations.length > 1 && (
+                {availableLocations.length > 20 && (
                   <div
                     className="search-field search-field-darker"
                     id="data-radio-buttons-search-filter"
@@ -138,33 +170,35 @@ const LocationSelectPage: React.FC = () => {
                     </p>
                   )}
                   <div className="govuk-radios" data-module="govuk-radios">
-                    {chunkedLocations[pageNumber]?.map((location, index) => (
-                      <div
-                        className="govuk-radios__item"
-                        key={`location-${index}`}
-                      >
-                        <input
-                          id={`location-${index}`}
-                          name="availableLocation"
-                          className="govuk-radios__input"
-                          type="radio"
-                          value={location.location_id}
-                          checked={selectedLocation === location.location_id}
-                          onChange={() =>
-                            handleChange(
-                              location.location_id,
-                              location.location_name
-                            )
-                          }
-                        />
-                        <label
-                          htmlFor={`location-${index}`}
-                          className="govuk-label govuk-radios__label"
+                    {chunkedLocations[pageNumber - 1]?.map(
+                      (location, index) => (
+                        <div
+                          className="govuk-radios__item"
+                          key={`location-${index}`}
                         >
-                          {location.location_name}
-                        </label>
-                      </div>
-                    ))}
+                          <input
+                            id={`location-${index}`}
+                            name="availableLocation"
+                            className="govuk-radios__input"
+                            type="radio"
+                            value={location.location_id}
+                            checked={selectedLocation === location.location_id}
+                            onChange={() =>
+                              handleChange(
+                                location.location_id,
+                                location.location_name
+                              )
+                            }
+                          />
+                          <label
+                            htmlFor={`location-${index}`}
+                            className="govuk-label govuk-radios__label"
+                          >
+                            {location.location_name}
+                          </label>
+                        </div>
+                      )
+                    )}
                   </div>
                 </fieldset>
 
@@ -205,20 +239,24 @@ const LocationSelectPage: React.FC = () => {
 
                     {chunkedLocations.length > 2 && (
                       <ul className="govuk-pagination__list pager-items">
-                        {[...Array(chunkedLocations.length).keys()].map(
-                          (key) => (
+                        {paginationPageNumbers().map((page, index) =>
+                          page !== null ? (
                             <li
-                              className={`govuk-pagination__item ${key === pageNumber ? ' govuk-pagination__item--current' : ''}`}
-                              key={key}
+                              className={`govuk-pagination__item ${page === pageNumber ? ' govuk-pagination__item--current' : ''}`}
+                              key={index}
                             >
                               <a
                                 className="govuk-link govuk-pagination__link"
                                 href="#"
-                                aria-label={`page-${key}`}
-                                onClick={() => setPageNumber(key)}
+                                aria-label={`page-${page}`}
+                                onClick={() => setPageNumber(page)}
                               >
-                                {key + 1}
+                                {page}
                               </a>
+                            </li>
+                          ) : (
+                            <li className="govuk-pagination__item" key={index}>
+                              ...
                             </li>
                           )
                         )}
