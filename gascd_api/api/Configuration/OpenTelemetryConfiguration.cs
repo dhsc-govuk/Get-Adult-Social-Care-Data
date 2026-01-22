@@ -6,7 +6,9 @@ public static class OpenTelemetryConfiguration
 {
     public static IServiceCollection AddOpenTelemetryConfiguration(this IServiceCollection services)
     {
-        services.AddOpenTelemetry().UseAzureMonitor();
+#if !DEBUG
+            services.AddOpenTelemetry().UseAzureMonitor();
+#endif
 
         return services;
     }
