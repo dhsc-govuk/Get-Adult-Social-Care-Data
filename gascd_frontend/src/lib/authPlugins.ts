@@ -17,12 +17,12 @@ async function verifyIdToken(
     throw new Error('No JWKS URI found in discovery document');
   }
 
-  // 2. Setup Key Set (jose handles caching automatically)
+  // Setup Key Set
   const JWKS = createRemoteJWKSet(new URL(data.jwks_uri), {
     cacheMaxAge: 600000, // cache keysets for 10mins
   });
 
-  // 3. Verify Signature and Claims
+  // Verify Signature and Claims
   const { payload } = await jwtVerify(idToken, JWKS, {
     issuer: data.issuer,
     audience: clientId,
