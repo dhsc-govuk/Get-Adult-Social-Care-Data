@@ -677,6 +677,8 @@ export interface components {
             metric_code?: string;
             /** @description The unique identifier for the location. */
             location_code?: string;
+            /** @description The type of the location. */
+            location_type?: string;
             /**
              * Format: date
              * @description The start date of the metric series.
