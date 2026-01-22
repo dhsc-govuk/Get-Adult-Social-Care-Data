@@ -545,6 +545,10 @@ components:
           type: string
           format: date
           description: "The start date of the metric series."
+        series_end_date:
+          type: string
+          format: date
+          description: "The end date of the metric series."
         series_frequency:
           type: string
           description: "The frequency of data points for the time series."

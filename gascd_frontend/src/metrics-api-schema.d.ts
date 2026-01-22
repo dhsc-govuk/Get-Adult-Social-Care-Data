@@ -97,6 +97,8 @@ export interface paths {
                                 location_code?: string;
                                 /** @description The display name of the location. */
                                 location_name?: string;
+                                /** @description The category of the location. */
+                                location_category?: string;
                                 /** @description The address of the location. */
                                 address?: string;
                             }[];
@@ -525,6 +527,8 @@ export interface components {
             provider_code?: string;
             /** @description The parent provider name. */
             provider_name?: string;
+            /** @description The category of the location. */
+            location_category?: string;
             /** @description The nominated individual for the care provider location. */
             nominated_individual?: string;
             /** @description The associated local authority ID. */
@@ -629,7 +633,7 @@ export interface components {
              * @default la
              * @enum {string}
              */
-            location_type: "la" | "national" | "regional";
+            location_type: "LA" | "National" | "Regional" | "CareProviderLocation";
         };
         /** @description Defines the properties and context of a metric. */
         MetricMetadata: {
@@ -678,6 +682,11 @@ export interface components {
              * @description The start date of the metric series.
              */
             series_start_date?: string;
+            /**
+             * Format: date
+             * @description The end date of the metric series.
+             */
+            series_end_date?: string;
             /**
              * @description The frequency of data points for the time series.
              * @default latest
