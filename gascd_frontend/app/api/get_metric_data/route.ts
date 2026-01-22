@@ -67,7 +67,6 @@ export async function POST(req: NextRequest) {
       headers: await headers(),
     });
     const pool = await dbPool;
-    const queryParams = await req.json();
 
     await addUserTelemetry();
 
