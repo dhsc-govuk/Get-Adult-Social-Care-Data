@@ -22,7 +22,6 @@ internal class CustomWebAppFactory(PostgreSqlContainer container) : WebApplicati
             {
                 ["ConnectionStrings:DefaultConnection"] = connStr,
                 ["AuthApiKey"] = "test-secret-key",
-                ["AzureMonitor:ConnectionString"] = "InstrumentationKey=00000000-0000-0000-0000-000000000000",
             };
 
             configBuilder.AddInMemoryCollection(inMemorySettings);
