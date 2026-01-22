@@ -27,6 +27,12 @@ export async function POST(req: NextRequest) {
   if (process.env.DATA_API_ROOT) {
     const metric_ids = queryParams.metric_ids;
     const location_data = await getDefaultLocations(user);
+    if (!location_data) {
+      return NextResponse.json(
+        { error: 'Could not look up default locations for user' },
+        { status: 400 }
+      );
+    }
 
     let all_metrics: any[] = [];
     const client = getAPIClient();
@@ -37,16 +43,15 @@ export async function POST(req: NextRequest) {
             metric_code: metric_id,
           },
         },
-        body: location_data,
+        body: location_data as any,
       });
       if (data) {
         console.log(data);
-        const item = data[0];
         data.map((item) => {
           all_metrics.push({
-            ...item,
             metric_id: item.metric_code,
             location_id: item.location_code,
+            location_type: item.location_type,
             metric_date: item.series_end_date,
             data_point: item.values && item.values[0],
           });
