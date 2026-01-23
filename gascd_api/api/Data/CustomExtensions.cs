@@ -11,5 +11,8 @@ namespace api.Data
 
         public static IQueryable<MetricTimeSeries> MetricTimeSeriesQueryable(this DbContext context, Type entityType) =>
             (IQueryable<MetricTimeSeries>)SetMethod.MakeGenericMethod(entityType).Invoke(context, null)!;
+
+        public static IQueryable<MetricTimeSeries> Query(this DbContext context, Type entityType) =>
+            (IQueryable<MetricTimeSeries>)((IDbSetCache)context).GetOrAddSet(context.GetDependencies().SetSource, entityType);
     }
 }
