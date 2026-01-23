@@ -184,7 +184,7 @@ class LocationService {
     if (!session?.data?.user) {
       throw new Error('No user session found');
     }
-    return 'not a care home';
+    return 'Care home';
   }
 
   public static async setSelectedLocation(

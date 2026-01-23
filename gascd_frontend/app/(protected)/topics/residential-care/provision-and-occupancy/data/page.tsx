@@ -763,7 +763,7 @@ export default function ProvisionAndOccupancyPage() {
               }}
               data={finalCpData}
               showCareProvider={
-                userLocationCategory === 'care home' ? true : false
+                userLocationCategory === 'Care home' ? true : false
               }
               careProviderMedianMetrics={careProviderMedianMetrics}
               percentageRows={['median_occupancy_total']}
