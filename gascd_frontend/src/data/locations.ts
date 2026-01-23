@@ -95,11 +95,19 @@ export const getAllowedLocations = async (user: User) => {
     { params: { path: { code: provider_code } } }
   );
   const locations = provider_data?.locations;
+  if (!locations) {
+    logger.error('No locations found for:' + provider_code);
+    return [];
+  }
+
   // map from api 'code' to 'id' as expected by client JS
-  return locations?.map((location) => {
+  const available_locations = locations?.map((location) => {
     return {
       location_id: location.location_code,
-      ...location,
+      location_name: location.location_name,
+      provider_name: provider_data?.display_name,
+      address: location.address,
     };
   });
+  return available_locations;
 };

@@ -6,6 +6,8 @@ import { authClient } from '@/lib/auth-client';
 export interface AvailableLocation {
   location_id: string;
   location_name: string;
+  address: string;
+  provider_name: string;
 }
 
 class LocationService {
