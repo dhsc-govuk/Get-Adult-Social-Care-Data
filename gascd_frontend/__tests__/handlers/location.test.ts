@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GET as GetLocalAuthority } from '../../app/api/get_local_authority/route';
-import { GET as GetCareProviderLocation } from '../../app/api/get_care_provider/route';
-import { GET as GetRegion } from '../../app/api/get_region/route';
-import { GET as GetCountry } from '../../app/api/get_country/route';
 import { locations_data } from '@/data/mockResponses/locations_data';
+import { GET as GetFilters } from '../../app/api/get_all_total_beds_filters/route';
 
 vi.mock('server-only', () => ({
+  default: vi.fn(),
+}));
+vi.mock('../../src/data/dbModule', () => ({
   default: vi.fn(),
 }));
 
@@ -16,59 +16,43 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 describe('test handlers', () => {
-  it('fetches and returns care provider locations successfully', async () => {
+  it('fetches and returns filters successfully', async () => {
     const query = 'testcpl1';
     const mockCPLocation: {} = locations_data.care_provider_location;
 
     const req = {
-      url: `http://localhost/api/get_care_provider?cp_code=${query}`,
+      url: `http://localhost/api/get_all_total_beds_filters`,
     } as NextRequest;
 
-    const result = await GetCareProviderLocation(req);
+    const result = await GetFilters(req);
     const data = await result.json();
 
-    expect(data.data).toEqual(mockCPLocation);
-  });
-
-  it('fetches and returns local authority successfully', async () => {
-    const query = 'E08000024';
-    const mockLocalAuthority: {} = locations_data.local_authority;
-
-    const req = {
-      url: `http://localhost/api/get_local_authority?la_code=${query}`,
-    } as NextRequest;
-
-    const result = await GetLocalAuthority(req);
-    const data = await result.json();
-
-    expect(data.data).toEqual(mockLocalAuthority);
-  });
-
-  it('fetches and returns regions successfully', async () => {
-    const query = 'E12000001';
-    const mockRegion: {} = locations_data.region;
-
-    const req = {
-      url: `http://localhost/api/get_region?region_code=${query}`,
-    } as NextRequest;
-
-    const result = await GetRegion(req);
-    const data = await result.json();
-
-    expect(data.data).toEqual(mockRegion);
-  });
-
-  it('fetches and returns countries successfully', async () => {
-    const query = 'E92000001';
-    const mockCountry: {} = locations_data.country;
-
-    const req = {
-      url: `http://localhost/api/get_country?country_code=${query}`,
-    } as NextRequest;
-
-    const result = await GetCountry(req);
-    const data = await result.json();
-
-    expect(data.data).toEqual(mockCountry);
+    const expected_filters = [
+      {
+        checked: false,
+        filter_bedtype: 'All bed types',
+      },
+      {
+        checked: false,
+        filter_bedtype: 'General nursing',
+      },
+      {
+        checked: false,
+        filter_bedtype: 'Learning disability residential',
+      },
+      {
+        checked: false,
+        filter_bedtype: 'Mental health residential',
+      },
+      {
+        checked: false,
+        filter_bedtype: 'Transitional',
+      },
+      {
+        checked: false,
+        filter_bedtype: 'Young physically disabled',
+      },
+    ];
+    expect(data).toEqual(expected_filters);
   });
 });
