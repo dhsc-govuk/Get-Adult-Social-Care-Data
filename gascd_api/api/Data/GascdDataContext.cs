@@ -54,17 +54,17 @@ public partial class GascdDataContext : DbContext
 
     public IQueryable<MetricTimeSeries> GetMetricTimeSeriesQueryable(MetricCodeEnum metricCode)
     {
-        Type t = metricCode.MyTypeOf();
+        Type? t = metricCode.MyTypeOf();
 
         if (t != null)
         {
-            return <> (t);
+            return this.Query(t);
         }
 
         switch (metricCode)
         {
-            case bedcount_total:
-                return BedcountSet.AsQueryable();
+            // case bedcount_total:
+            //     return BedcountSet.AsQueryable();
             case bedcount_per_hundred_thousand_adults_total:
             case bedcount_per_hundred_thousand_adults_total_dementia_nursing:
             case bedcount_per_hundred_thousand_adults_total_dementia_residential:
