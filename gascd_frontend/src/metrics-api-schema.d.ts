@@ -658,7 +658,7 @@ export interface components {
              */
             metric_group_code?: string;
             /** @description A list of Metric filters belonging to this Metric Group */
-            metrics?: {
+            metric_filters?: {
                 /**
                  * @description The specific metric code this filter applies to.
                  * @example bedcount_per_100000_adults_total_general_nursing

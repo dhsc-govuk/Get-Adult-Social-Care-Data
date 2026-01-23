@@ -516,7 +516,7 @@ components:
           type: string
           description: "The specific metric group code this filter applies to."
           example: "bedcount_per_100000_adults"
-        metrics:
+        metric_filters:
           type: array
           description: "A list of Metric filters belonging to this Metric Group"
           items:
