@@ -56,7 +56,7 @@ public partial class GascdDataContext : DbContext
     {
         Type t = metricCode.MetricGroupType();
 
-        return this.Query(t);
+        return this.MetricTimeSeriesQueryable(t);
     }
 
 }

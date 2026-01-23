@@ -134,11 +134,11 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     {
         get
         {
-            foreach (var code in Enum.GetValues(typeof(MetricCodeEnum)))
+            foreach (var obj in MetricCodeTimeSeriesCombinations)
             {
-                yield return [code, " ", "Location code is required"];
-                yield return [code, "1-", "Location code has a minimum length of 3"];
-                yield return [code, "1-12345678910112", "Location code has a maximum length of 15"];
+                yield return [obj[0], " ", "Location code is required"];
+                yield return [obj[0], "1-", "Location code has a minimum length of 3"];
+                yield return [obj[0], "1-12345678910112", "Location code has a maximum length of 15"];
             }
         }
     }
