@@ -412,6 +412,18 @@ components:
         country_name:
           type: string
           description: "The associated country name."
+        local_authorities:
+          type: array
+          description: "A list of local authorities within this region"
+          items:
+            type: object
+            properties:
+              la_name:
+                type: string
+                description: "The local authority name."
+              la_code:
+                type: string
+                description: "The local authority code."
 
     Country:
       type: object
