@@ -52,6 +52,10 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
         response.GeoData?.Polygon.ShouldBe(expectedPolygon);
         response.CountryCode.ShouldBe("E92000001");
         response.CountryName.ShouldBe("England");
+        response.LocalAuthorities.Count.ShouldBe(3);
+        response.LocalAuthorities.ShouldContain(x => x.LaName == "Liverpool" && x.LaCode == "E08000014");
+        response.LocalAuthorities.ShouldContain(x => x.LaName == "Manchester" && x.LaCode == "E08000015");
+        response.LocalAuthorities.ShouldContain(x => x.LaName == "Cheshire" && x.LaCode == "E08000016");
     }
 
 
@@ -92,6 +96,12 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
         GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("52.9");
         GetFromJson(jObject, "country_code").ShouldBe("E92000001");
         GetFromJson(jObject, "country_name").ShouldBe("England");
+        GetFromJson(jObject, "local_authorities[0].la_name").ShouldBe("Liverpool");
+        GetFromJson(jObject, "local_authorities[0].la_code").ShouldBe("E08000014");
+        GetFromJson(jObject, "local_authorities[1].la_name").ShouldBe("Manchester");
+        GetFromJson(jObject, "local_authorities[1].la_code").ShouldBe("E08000015");
+        GetFromJson(jObject, "local_authorities[2].la_name").ShouldBe("Cheshire");
+        GetFromJson(jObject, "local_authorities[2].la_code").ShouldBe("E08000016");
     }
 
     [Theory]

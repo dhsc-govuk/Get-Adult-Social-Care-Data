@@ -18,6 +18,7 @@ public class GetRegionEndpoint(GascdDataContext context, ReferenceMapper mapper,
         var region = context.Regions
             .Include(r => r.Country)
             .Include(r => r.GeoData)
+            .Include(r => r.LocalAuthorities)
             .SingleOrDefault(x => x.Code == req.RegionCode);
 
         if (region == null)

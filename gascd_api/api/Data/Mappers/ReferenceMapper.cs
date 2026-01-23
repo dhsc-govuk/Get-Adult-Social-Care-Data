@@ -99,7 +99,13 @@ public class ReferenceMapper
             GeoData = GeoDataToGeoDataDto(region.GeoData),
             CountryCode = region.Country.Code,
             CountryName = region.Country.Name,
+            LocalAuthorities = region.LocalAuthorities.Select(LocalAuthorityToRegionLocalAuthority).ToList()
         };
+    }
+
+    public GetRegionResponse.LocalAuthority LocalAuthorityToRegionLocalAuthority(LocalAuthority la)
+    {
+        return new GetRegionResponse.LocalAuthority { LaCode = la.Code, LaName = la.Name };
     }
 
     public GetCountryResponse CountryToGetCountryResponse(Country country)
