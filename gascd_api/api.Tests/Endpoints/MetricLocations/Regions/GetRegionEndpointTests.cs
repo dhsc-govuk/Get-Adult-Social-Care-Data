@@ -60,7 +60,7 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
 
 
     [Fact]
-    public async Task GetRegion_WithNullGeoData_ReturnsExpectedRegionData()
+    public async Task GetRegion_WithNullGeoData_AndNoLAs_ReturnsExpectedRegionData()
     {
         var (httpCode, response) =
             await _client.GETAsync<GetRegionEndpoint, GetRegionRequest, GetRegionResponse>(
@@ -72,6 +72,7 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
         response.GeoData.ShouldBe(null);
         response.CountryCode.ShouldBe("E92000001");
         response.CountryName.ShouldBe("England");
+        response.LocalAuthorities.Count.ShouldBe(0);
     }
 
     [Fact]
