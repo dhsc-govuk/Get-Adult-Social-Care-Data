@@ -36,8 +36,8 @@ export async function GET(req: NextRequest) {
     );
     if (data && data.local_authorities) {
       const rows = data.local_authorities.map((row) => ({
-        location_name: row.la_name,
-        location_id: row.la_code,
+        la_name: row.la_name,
+        la_code: row.la_code,
       }));
       console.log(rows);
       return NextResponse.json(rows);

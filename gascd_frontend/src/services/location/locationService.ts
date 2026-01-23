@@ -164,7 +164,9 @@ class LocationService {
       }
 
       const data = await response.json();
-      return data;
+      return data.sort((item1: any, item2: any) =>
+        item1.la_name.localeCompare(item2.la_name)
+      );
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
