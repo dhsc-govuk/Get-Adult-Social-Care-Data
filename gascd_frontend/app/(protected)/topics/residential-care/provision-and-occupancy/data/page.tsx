@@ -93,31 +93,32 @@ export default function ProvisionAndOccupancyPage() {
     useState<string[]>(['All bed types']);
 
   const [bedTypeRowHeaders, setBedTypeRowHeaders] = useState<any>({
-    bedcount_per_100000_adults_total: 'All bed types',
-    bedcount_per_100000_adults_total_dementia_nursing: 'Dementia nursing',
-    bedcount_per_100000_adults_total_dementia_residential:
+    bedcount_per_hundred_thousand_adults_total: 'All bed types',
+    bedcount_per_hundred_thousand_adults_total_dementia_nursing:
+      'Dementia nursing',
+    bedcount_per_hundred_thousand_adults_total_dementia_residential:
       'Dementia residential',
   });
 
   const [bedNumberRowHeaders, setBedNumberRowHeaders] = useState<Object[]>([]);
 
-  const careProviderMetricIds1 = ['bedcount_total', 'occupancy_rate_total'];
+  const careProviderMetricIds1 = ['bedcount_total', 'occupancy_rates_total'];
   const careProviderMetricIds2 = [
     'median_bed_count_total',
     'median_occupancy_total',
   ];
   const careProviderMedianMetrics: Record<string, string> = {
     median_bed_count_total: 'bedcount_total',
-    median_occupancy_total: 'occupancy_rate_total',
+    median_occupancy_total: 'occupancy_rates_total',
   };
 
   const bedTypeMetricIds = [
-    'bedcount_per_100000_adults_total',
-    'bedcount_per_100000_adults_total_dementia_nursing',
-    'bedcount_per_100000_adults_total_dementia_residential',
+    'bedcount_per_hundred_thousand_adults_total',
+    'bedcount_per_hundred_thousand_adults_total_dementia_nursing',
+    'bedcount_per_hundred_thousand_adults_total_dementia_residential',
   ];
 
-  const bedNumberMetricIds = ['bedcount_per_100000_adults_total'];
+  const bedNumberMetricIds = ['bedcount_per_hundred_thousand_adults_total'];
   const breadcrumbs = [
     {
       text: 'Home',
@@ -322,7 +323,7 @@ export default function ProvisionAndOccupancyPage() {
         if (Array.isArray(parsedData)) {
           const ids = parsedData.map((item) => item.metric_id);
           setCareHomeBedTypesDataQuery(() => ({
-            metric_ids: ['bedcount_per_100000_adults_total', ...ids],
+            metric_ids: ['bedcount_per_hundred_thousand_adults_total', ...ids],
             location_ids: locationIds,
             most_recent: true,
           }));
@@ -596,7 +597,8 @@ export default function ProvisionAndOccupancyPage() {
                 <strong>
                   {filteredBedTypeData.find(
                     (metric) =>
-                      metric.metric_id === 'bedcount_per_100000_adults_total' &&
+                      metric.metric_id ===
+                        'bedcount_per_hundred_thousand_adults_total' &&
                       metric.location_type === 'LA'
                   )?.data_point ?? 'Loading...'}{' '}
                   beds per 100,000 adult population
@@ -605,7 +607,8 @@ export default function ProvisionAndOccupancyPage() {
                 of{' '}
                 {filteredBedTypeData.find(
                   (metric) =>
-                    metric.metric_id === 'bedcount_per_100000_adults_total' &&
+                    metric.metric_id ===
+                      'bedcount_per_hundred_thousand_adults_total' &&
                     metric.location_type === 'Regional'
                 )?.data_point ?? 'Loading...'}{' '}
                 per 100,000.
