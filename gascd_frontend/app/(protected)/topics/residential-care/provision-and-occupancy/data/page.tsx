@@ -162,6 +162,12 @@ export default function ProvisionAndOccupancyPage() {
     'bedcount_per_100000_adults_total_ypd_young_physically_disabled',
   ];
 
+  const limitedBedTypeMetricIds = [
+    'bedcount_per_100000_adults_total',
+    'bedcount_per_100000_adults_total_dementia_nursing',
+    'bedcount_per_100000_adults_total_dementia_residential',
+  ];
+
   const bedNumberMetricIds = ['bedcount_per_100000_adults_total'];
 
   const breadcrumbs = [
@@ -316,10 +322,22 @@ export default function ProvisionAndOccupancyPage() {
         metric_ids: bedTypeMetricIds,
         location_ids: locationIds,
       }));
-      setCareHomeBedTypesOverTimeDataQuery(() => ({
-        metric_ids: bedTypeMetricIds,
-        location_ids: [locationIds[1]],
-      }));
+
+      const storedData = localStorage.getItem('type-chart-metrics');
+      if (storedData) {
+        const filters = JSON.parse(storedData);
+        const map: any = {};
+        filters.map((item: any) => (map[item.metric_id] = item.filter_bedtype));
+        setCareHomeBedTypesOverTimeDataQuery(() => ({
+          metric_ids: [...Object.keys(map)],
+          location_ids: [locationIds[1]],
+        }));
+      } else {
+        setCareHomeBedTypesOverTimeDataQuery(() => ({
+          metric_ids: limitedBedTypeMetricIds,
+          location_ids: [locationIds[1]],
+        }));
+      }
     }
     if (laIdsForRegion?.length) {
       setCareHomeBedNumbersDataQuery({
@@ -471,7 +489,7 @@ export default function ProvisionAndOccupancyPage() {
 
   useEffect(() => {
     updateTypesChartMetrics();
-  }, [bedTypeOverTimeData]);
+  }, [bedNumbersData]);
 
   const [timeData, setTimedata] = useState<Series[]>([]);
   // Generate time series chart data
@@ -484,6 +502,11 @@ export default function ProvisionAndOccupancyPage() {
       const filters = JSON.parse(storedData);
       const map: any = {};
       filters.map((item: any) => (map[item.metric_id] = item.filter_bedtype));
+
+      setCareHomeBedTypesOverTimeDataQuery({
+        metric_ids: [...Object.keys(map)],
+        location_ids: [locationIds[1]],
+      });
       headers = map;
     }
     // Make some time series data based on the bed type row headers
