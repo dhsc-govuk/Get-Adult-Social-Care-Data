@@ -52,9 +52,9 @@ export default function DisabilityPrevalence() {
   ];
 
   const demographicMetricIds = [
-    'perc_population_disability_disabled_total',
+    'perc_population_disability',
     'learning_disability_prevalence',
-    'perc_general_health_total',
+    'perc_general_health',
   ];
 
   useEffect(() => {
@@ -187,16 +187,16 @@ export default function DisabilityPrevalence() {
               }
               columnHeaders={locationNames}
               rowHeaders={{
-                perc_general_health_total:
+                perc_general_health:
                   'People who reported bad or very bad health',
-                perc_population_disability_disabled_total:
+                perc_population_disability:
                   'Disability prevalence – people who reported a long-term physical or mental health condition, or illness that limits day-to-day activities',
               }}
               data={filteredDemographicData}
               showCareProvider={false}
               percentageRows={[
-                'perc_general_health_total',
-                'perc_population_disability_disabled_total',
+                'perc_general_health',
+                'perc_population_disability',
               ]}
             ></DataTable>
           }
