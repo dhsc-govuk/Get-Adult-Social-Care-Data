@@ -46,7 +46,6 @@ export async function POST(req: NextRequest) {
         body: location_data as any,
       });
       if (data) {
-        console.log(data);
         data.map((item) => {
           all_metrics.push({
             metric_id: item.metric_code,
