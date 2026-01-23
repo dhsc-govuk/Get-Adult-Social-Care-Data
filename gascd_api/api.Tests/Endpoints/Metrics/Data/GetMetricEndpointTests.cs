@@ -100,6 +100,24 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
+    [Fact]
+    public async Task GetMetric_MultipleNonExistentLocationCodes_Returns404()
+    {
+        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+            new GetMetricRequest
+            {
+                MetricCode = bedcount_per_hundred_thousand_adults,
+                Locations = new()
+                {
+                    new GetMetricRequest.Location { LocationCode = "nonexistent", LocationType = National },
+                    new GetMetricRequest.Location { LocationCode = "nonexistent2", LocationType = Regional },
+                    new GetMetricRequest.Location { LocationCode = "nonexistent3", LocationType = LA }
+                }
+            });
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
+
     [Theory]
     [MemberData(nameof(MetricCodeTimeSeriesCombinations))]
     public async Task GetMetric_NonExistentLocationType_Returns404(MetricCodeEnum metricCode, decimal _)
@@ -298,6 +316,35 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[1].SeriesEndDate.ShouldBe(new DateOnly(2026, 01, 01));
         response[1].SeriesFrequency.ShouldBe("Daily");
         response[1].Values.ShouldBe([2.2m, 3.3m, 4.4m, 5.5m, 6.6m]);
+    }
+
+    [Fact]
+    public async Task GetMetric_MultipleLocations_OneDoesntExist_TimeSeriesTrue_ReturnsExpectedData()
+    {
+        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+            new GetMetricRequest
+            {
+                MetricCode = bedcount_total,
+                Locations = new List<GetMetricRequest.Location>
+                {
+                    new() { LocationCode = "1-123456789", LocationType = National },
+                    new() { LocationCode = "non-existent", LocationType = Regional }
+                },
+                TimeSeries = true
+            });
+
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        response.Count.ShouldBe(1);
+        response[0].MetricCode.ShouldBe(nameof(bedcount_total));
+        response[0].LocationCode.ShouldBe("1-123456789");
+        response[0].LocationType.ShouldBe(nameof(National));
+        response[0].SeriesStartDate.ShouldBe(new DateOnly(2000, 01, 01));
+        response[0].SeriesEndDate.ShouldBe(new DateOnly(2025, 01, 01));
+        response[0].SeriesFrequency.ShouldBe("Daily");
+        response[0].Values.ShouldBe([1.1m, 2.2m, 3.3m, 4.4m, 5.5m]);
+
     }
 
 

@@ -20,4 +20,6 @@ public class Region : SearchableEntity
 
     [ForeignKey("GeoDataFk")]
     public virtual GeoData? GeoData { get; init; } = null!;
+
+    public virtual ICollection<LocalAuthority> LocalAuthorities { get; init; } = new List<LocalAuthority>();
 }

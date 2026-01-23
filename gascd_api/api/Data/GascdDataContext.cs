@@ -58,5 +58,4 @@ public partial class GascdDataContext : DbContext
 
         return this.MetricTimeSeriesQueryable(t);
     }
-
 }
