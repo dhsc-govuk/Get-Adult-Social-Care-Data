@@ -39,6 +39,7 @@ public class GetMetricMetadataTests : IClassFixture<IntegrationTestFixture>
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.MetricCode.ShouldBe(nameof(bedcount_total));
         response.MetricName.ShouldBe("metric group display name");
+        response.FilterType.ShouldBe("Metric filter info");
         response.DataType.ShouldBe("numbers");
         response.DataSource.ShouldBe("ONS");
         response.Numerator.ShouldBe("This is a numerator");
@@ -54,6 +55,7 @@ public class GetMetricMetadataTests : IClassFixture<IntegrationTestFixture>
         var jObject = await ParseJsonResponse<JObject>(response);
         GetFromJson(jObject, "metric_code").ShouldBe(nameof(bedcount_total));
         GetFromJson(jObject, "metric_name").ShouldBe("metric group display name");
+        GetFromJson(jObject, "filter_type").ShouldBe("Metric filter info");
         GetFromJson(jObject, "data_type").ShouldBe("numbers");
         GetFromJson(jObject, "data_source").ShouldBe("ONS");
         GetFromJson(jObject, "numerator").ShouldBe("This is a numerator");

@@ -13,6 +13,7 @@ public class MetricMapper
         {
             MetricCode = metric.Code,
             MetricName = metric.MetricGroup.DisplayName,
+            FilterType = metric.FilterType,
             DataType = metric.DataType,
             DataSource = metric.DataSource,
             Numerator = metric.NumeratorDescription,
