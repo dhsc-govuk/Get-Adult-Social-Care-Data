@@ -585,6 +585,13 @@ export interface components {
             country_code?: string;
             /** @description The associated country name. */
             country_name?: string;
+            /** @description A list of local authorities within this region */
+            local_authorities?: {
+                /** @description The local authority name. */
+                la_name?: string;
+                /** @description The local authority code. */
+                la_code?: string;
+            }[];
         };
         /** @description Represents a country */
         Country: {
