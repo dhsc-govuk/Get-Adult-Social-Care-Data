@@ -15,7 +15,6 @@ public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper
 
     private LocalAuthority? QueryLocalAuthority(GetLocalAuthorityRequest req)
     {
-
         var laQuery = context.LocalAuthorities
             .Include(la => la.GeoData)
             .AsQueryable();
@@ -27,16 +26,13 @@ public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper
                 .Include(la => la.Region)
                 .Include(la => la.Region.Country);
         }
-
         return laQuery.SingleOrDefault(x => x.Code == req.LocalAuthorityCode);
-
     }
+
     public override async Task HandleAsync(GetLocalAuthorityRequest req, CancellationToken ct)
     {
         logger.LogDebug("Received request for Local Authority code: {code}", req.LocalAuthorityCode);
-
         var la = QueryLocalAuthority(req);
-
         if (la == null)
         {
             logger.LogInformation("Local Authority code not found: {code}", req.LocalAuthorityCode);
@@ -45,9 +41,7 @@ public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper
         }
 
         var response = mapper.LocalAuthorityToGetLocalAuthorityResponse(la);
-        logger.LogInformation("Finished processing care provider code: {code}", req.LocalAuthorityCode);
+        logger.LogInformation("Finished processing Local Authority code: {code}", req.LocalAuthorityCode);
         await Send.OkAsync(response, ct);
     }
-
-
 }
