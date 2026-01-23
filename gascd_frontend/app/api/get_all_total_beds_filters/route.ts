@@ -5,7 +5,7 @@ import logger from '@/utils/logger';
 import { getAPIClient } from '@/data/dataAPI';
 
 export async function GET(req: NextRequest) {
-  const metric_group_code = 'bedcount_per_100000_adults';
+  const metric_group_code = 'bedcount_per_hundred_thousand_adults';
   if (process.env.DATA_API_ROOT) {
     const client = getAPIClient();
     const { data, error } = await client.GET(
@@ -18,8 +18,8 @@ export async function GET(req: NextRequest) {
         },
       }
     );
-    if (data && data.metrics) {
-      const rows = data.metrics.map((row) => ({
+    if (data && data.metric_filters) {
+      const rows = data.metric_filters.map((row) => ({
         metric_id: row.metric_code,
         filter_bedtype: row.display_name,
         checked: false,
