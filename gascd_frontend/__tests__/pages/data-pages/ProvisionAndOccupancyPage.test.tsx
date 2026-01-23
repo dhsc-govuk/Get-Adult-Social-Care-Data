@@ -88,10 +88,10 @@ describe('ProvisionAndOccupancyPage', () => {
 
     const expected_metrics = [
       'bedcount_total',
-      'occupancy_rate_total',
+      'occupancy_rates_total',
       'median_bed_count_total',
       'median_occupancy_total',
-      'bedcount_per_100000_adults_total',
+      'bedcount_per_hundred_thousand_adults_total',
     ];
 
     expect(insightSpy).toHaveBeenCalledTimes(expected_metrics.length);

@@ -54,36 +54,6 @@ describe('LocationService', () => {
     });
   });
 
-  describe('getLaLocations', () => {
-    const mockLocations: {} = { la_name: 'Suffolk', la_code: '1' };
-    const query = '123';
-
-    it('fetches and returns la locations successfully', async () => {
-      (fetch as vi.Mock).mockResolvedValue({
-        ok: true,
-        json: vi.fn().mockResolvedValue(mockLocations),
-      });
-
-      const result = await LocationService.getLaLocations(query);
-
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/get_la_location_data?la_code=${query}`
-      );
-      expect(result).toEqual(mockLocations);
-    });
-
-    it('throws an error when the fetch response is not ok', async () => {
-      (fetch as vi.Mock).mockResolvedValue({
-        ok: false,
-        statusText: 'Not Found',
-      });
-
-      await expect(LocationService.getLaLocations(query)).rejects.toThrow(
-        'Error fetching data: Not Found'
-      );
-    });
-  });
-
   describe('getAvailableLocations', () => {
     const mockJsonResponse = {
       data: [
@@ -209,13 +179,10 @@ describe('LocationService', () => {
       vi.spyOn(LocationService, 'getLocations').mockResolvedValue(
         mockLocationData as any
       );
-      vi.spyOn(LocationService, 'getLaLocations').mockResolvedValue(
-        mockLocationData as any
-      );
     });
 
     it('returns location names for present demand without care provider', async () => {
-      const result = await LocationService.getLocationNames(query, false, true);
+      const result = await LocationService.getLocationNames(query, false);
 
       expect(LocationService.getLocations).toHaveBeenCalledWith(query);
       expect(result).toEqual({
@@ -228,43 +195,13 @@ describe('LocationService', () => {
     });
 
     it('returns location names for present demand with care provider', async () => {
-      const result = await LocationService.getLocationNames(query, true, true);
+      const result = await LocationService.getLocationNames(query, true);
 
       expect(LocationService.getLocations).toHaveBeenCalledWith(query);
       expect(result).toEqual({
         CPLabel: 'Care Provider A',
         CountryLabel: 'United Kingdom',
         IndicatorLabel: 'Indicator',
-        LALabel: 'Suffolk',
-        RegionLabel: 'East of England',
-      });
-    });
-
-    it('returns location names for LA demand without care provider', async () => {
-      const result = await LocationService.getLocationNames(
-        query,
-        false,
-        false
-      );
-
-      expect(LocationService.getLaLocations).toHaveBeenCalledWith(query);
-      expect(result).toEqual({
-        CPLabel: 'N/A',
-        CountryLabel: 'United Kingdom',
-        IndicatorLabel: 'Location',
-        LALabel: 'Suffolk',
-        RegionLabel: 'East of England',
-      });
-    });
-
-    it('returns location names for LA demand with care provider', async () => {
-      const result = await LocationService.getLocationNames(query, true, false);
-
-      expect(LocationService.getLaLocations).toHaveBeenCalledWith(query);
-      expect(result).toEqual({
-        CPLabel: 'Care Provider A',
-        CountryLabel: 'United Kingdom',
-        IndicatorLabel: 'Location',
         LALabel: 'Suffolk',
         RegionLabel: 'East of England',
       });
@@ -285,13 +222,10 @@ describe('LocationService', () => {
       vi.spyOn(LocationService, 'getLocations').mockResolvedValue(
         mockLocationData as any
       );
-      vi.spyOn(LocationService, 'getLaLocations').mockResolvedValue(
-        mockLocationData as any
-      );
     });
 
     it('returns location names for present demand without care provider', async () => {
-      const result = await LocationService.getLocationIds(query, false, true);
+      const result = await LocationService.getLocationIds(query, false);
 
       expect(LocationService.getLocations).toHaveBeenCalledWith(query);
       expect(result).toEqual([
@@ -303,36 +237,11 @@ describe('LocationService', () => {
     });
 
     it('returns location names for present demand with care provider', async () => {
-      const result = await LocationService.getLocationIds(query, true, true);
+      const result = await LocationService.getLocationIds(query, true);
 
       expect(LocationService.getLocations).toHaveBeenCalledWith(query);
       expect(result).toEqual([
         'Indicator',
-        'ABC',
-        'Suffolk',
-        'East of England',
-        'United Kingdom',
-      ]);
-    });
-
-    it('returns location names for LA demand without care provider', async () => {
-      const result = await LocationService.getLocationIds(query, false, false);
-
-      expect(LocationService.getLaLocations).toHaveBeenCalledWith(query);
-      expect(result).toEqual([
-        'Location',
-        'Suffolk',
-        'East of England',
-        'United Kingdom',
-      ]);
-    });
-
-    it('returns location names for LA demand with care provider', async () => {
-      const result = await LocationService.getLocationIds(query, true, false);
-
-      expect(LocationService.getLaLocations).toHaveBeenCalledWith(query);
-      expect(result).toEqual([
-        'Location',
         'ABC',
         'Suffolk',
         'East of England',

@@ -28,24 +28,6 @@ class LocationService {
     }
   }
 
-  public static async getLaLocations(query: string): Promise<Locations> {
-    try {
-      const response = await fetch(
-        `/api/get_la_location_data?la_code=${query}`
-      );
-      if (!response.ok) {
-        throw new Error(`Error fetching data: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error occurred';
-      LogService.logEvent(`Error in getLaLocations: ${errorMessage}`);
-      throw new Error(`Failed to retrieve location data: ${errorMessage}`);
-    }
-  }
-
   public static async getAvailableLocations(): Promise<AvailableLocation[]> {
     try {
       const response = await fetch(`/api/get_available_locations`);
@@ -95,15 +77,12 @@ class LocationService {
 
   public static async getLocationNames(
     query: string,
-    careProvider: boolean,
-    presentDemand: boolean = true
+    careProvider: boolean
   ): Promise<LocationNames> {
-    const data = presentDemand
-      ? await this.getLocations(query)
-      : await this.getLaLocations(query);
+    const data = await this.getLocations(query);
 
     const locationNames: LocationNames = {
-      IndicatorLabel: presentDemand ? 'Indicator' : 'Location',
+      IndicatorLabel: 'Indicator',
       CPLabel:
         careProvider && data.provider_location_name
           ? data.provider_location_name
@@ -118,15 +97,12 @@ class LocationService {
 
   public static async getLocationIds(
     query: string,
-    CareProvider: boolean,
-    presentDemand: boolean = true
+    CareProvider: boolean
   ): Promise<string[]> {
-    const data = presentDemand
-      ? await this.getLocations(query)
-      : await this.getLaLocations(query);
+    const data = await this.getLocations(query);
 
     const locationIds = [
-      presentDemand ? 'Indicator' : 'Location',
+      'Indicator',
       data.la_code,
       data.region_code,
       data.country_code,
