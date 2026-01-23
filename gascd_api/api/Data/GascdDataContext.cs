@@ -58,17 +58,17 @@ public partial class GascdDataContext : DbContext
         {
             case bedcount_total:
                 return BedcountSet.AsQueryable();
-            case bedcount_per_hundred_thousand_adults_total:
-            case bedcount_per_hundred_thousand_adults_total_dementia_nursing:
-            case bedcount_per_hundred_thousand_adults_total_dementia_residential:
-            case bedcount_per_hundred_thousand_adults_total_general_nursing:
-            case bedcount_per_hundred_thousand_adults_total_general_residential:
-            case bedcount_per_hundred_thousand_adults_total_learning_disability_nursing:
-            case bedcount_per_hundred_thousand_adults_total_learning_disability_residential:
-            case bedcount_per_hundred_thousand_adults_total_mental_health_nursing:
-            case bedcount_per_hundred_thousand_adults_total_mental_health_residential:
-            case bedcount_per_hundred_thousand_adults_total_transitional:
-            case bedcount_per_hundred_thousand_adults_total_ypd_young_physically_disabled:
+            case bedcount_per_hundred_thousand_adults:
+            case bedcount_per_hundred_thousand_adults_dementia_nursing:
+            case bedcount_per_hundred_thousand_adults_dementia_residential:
+            case bedcount_per_hundred_thousand_adults_general_nursing:
+            case bedcount_per_hundred_thousand_adults_general_residential:
+            case bedcount_per_hundred_thousand_adults_learning_disability_nursing:
+            case bedcount_per_hundred_thousand_adults_learning_disability_residential:
+            case bedcount_per_hundred_thousand_adults_mental_health_nursing:
+            case bedcount_per_hundred_thousand_adults_mental_health_residential:
+            case bedcount_per_hundred_thousand_adults_transitional:
+            case bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled:
                 return BedcountPerHundredThousandAdultsSet.AsQueryable();
             case dementia_estimated_diagnosis_rate_65over:
                 return DementiaEstimatedDiagnosisRate65OverSet.AsQueryable();
@@ -84,7 +84,7 @@ public partial class GascdDataContext : DbContext
                 return MedianBedCountSet.AsQueryable();
             case median_occupancy_total:
                 return MedianOccupancySet.AsQueryable();
-            case occupancy_rates_total:
+            case occupancy_rate_total:
                 return OccupancyRateSet.AsQueryable();
             case perc_18_64:
                 return Perc1864Set.AsQueryable();
@@ -94,17 +94,17 @@ public partial class GascdDataContext : DbContext
                 return Perc75OverSet.AsQueryable();
             case perc_85over:
                 return Perc85OverSet.AsQueryable();
-            case perc_general_health_total:
+            case perc_general_health:
                 return PercGeneralHealthSet.AsQueryable();
-            case perc_household_ownership_total:
+            case perc_household_ownership:
                 return PercHouseholdOwnershipSet.AsQueryable();
-            case perc_households_deprivation_deprived_total:
+            case perc_households_deprivation_deprived:
                 return PercHouseholdsDeprivationDeprivedSet.AsQueryable();
-            case perc_households_one_person_total:
+            case perc_households_one_person:
                 return PercHouseholdsOnePersonSet.AsQueryable();
-            case perc_population_disability_disabled_total:
+            case perc_population_disability:
                 return PercPopulationDisabilitySet.AsQueryable();
-            case perc_unpaid_care_provider_total:
+            case perc_unpaid_care_provider:
                 return PercUnpaidCareProviderSet.AsQueryable();
             case total_population:
                 return TotalPopulationSet.AsQueryable();
