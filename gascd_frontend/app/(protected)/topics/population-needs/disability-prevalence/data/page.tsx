@@ -53,7 +53,7 @@ export default function DisabilityPrevalence() {
 
   const demographicMetricIds = [
     'perc_population_disability_disabled_total',
-    'learning_disabilty_prevalence',
+    'learning_disability_prevalence',
     'perc_general_health_total',
   ];
 
@@ -240,11 +240,12 @@ export default function DisabilityPrevalence() {
               }
               columnHeaders={locationNames}
               rowHeaders={{
-                learning_disabilty_prevalence: 'Learning disability prevalence',
+                learning_disability_prevalence:
+                  'Learning disability prevalence',
               }}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={['learning_disabilty_prevalence']}
+              percentageRows={['learning_disability_prevalence']}
             ></DataTable>
           }
           download={
@@ -252,7 +253,7 @@ export default function DisabilityPrevalence() {
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref2}
-                filename="learning_disabilty_prevalence.csv"
+                filename="learning_disability_prevalence.csv"
                 xLabel=""
               />
             </>
