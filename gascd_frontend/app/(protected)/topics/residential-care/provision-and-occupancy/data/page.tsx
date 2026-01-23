@@ -93,32 +93,31 @@ export default function ProvisionAndOccupancyPage() {
     useState<string[]>(['All bed types']);
 
   const [bedTypeRowHeaders, setBedTypeRowHeaders] = useState<any>({
-    bedcount_per_hundred_thousand_adults_total: 'All bed types',
-    bedcount_per_hundred_thousand_adults_total_dementia_nursing:
-      'Dementia nursing',
-    bedcount_per_hundred_thousand_adults_total_dementia_residential:
+    bedcount_per_hundred_thousand_adults: 'All bed types',
+    bedcount_per_hundred_thousand_adults_dementia_nursing: 'Dementia nursing',
+    bedcount_per_hundred_thousand_adults_dementia_residential:
       'Dementia residential',
   });
 
   const [bedNumberRowHeaders, setBedNumberRowHeaders] = useState<Object[]>([]);
 
-  const careProviderMetricIds1 = ['bedcount_total', 'occupancy_rates_total'];
+  const careProviderMetricIds1 = ['bedcount_total', 'occupancy_rate_total'];
   const careProviderMetricIds2 = [
     'median_bed_count_total',
     'median_occupancy_total',
   ];
   const careProviderMedianMetrics: Record<string, string> = {
     median_bed_count_total: 'bedcount_total',
-    median_occupancy_total: 'occupancy_rates_total',
+    median_occupancy_total: 'occupancy_rate_total',
   };
 
   const bedTypeMetricIds = [
-    'bedcount_per_hundred_thousand_adults_total',
-    'bedcount_per_hundred_thousand_adults_total_dementia_nursing',
-    'bedcount_per_hundred_thousand_adults_total_dementia_residential',
+    'bedcount_per_hundred_thousand_adults',
+    'bedcount_per_hundred_thousand_adults_dementia_nursing',
+    'bedcount_per_hundred_thousand_adults_dementia_residential',
   ];
 
-  const bedNumberMetricIds = ['bedcount_per_hundred_thousand_adults_total'];
+  const bedNumberMetricIds = ['bedcount_per_hundred_thousand_adults'];
   const breadcrumbs = [
     {
       text: 'Home',
@@ -323,7 +322,7 @@ export default function ProvisionAndOccupancyPage() {
         if (Array.isArray(parsedData)) {
           const ids = parsedData.map((item) => item.metric_id);
           setCareHomeBedTypesDataQuery(() => ({
-            metric_ids: ['bedcount_per_hundred_thousand_adults_total', ...ids],
+            metric_ids: ['bedcount_per_hundred_thousand_adults', ...ids],
             location_ids: locationIds,
             most_recent: true,
           }));
@@ -356,7 +355,7 @@ export default function ProvisionAndOccupancyPage() {
           setCareHomeBedNumbersDataQuery({
             metric_ids: [id],
             location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
-            most_recent: true,
+            query_type: 'Region',
           });
           AnalyticsService.trackMetricView(id);
           if (name) {
@@ -372,6 +371,7 @@ export default function ProvisionAndOccupancyPage() {
       setCareHomeBedNumbersDataQuery({
         metric_ids: bedNumberMetricIds,
         location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
+        query_type: 'Region',
       });
     }
   }, [locationIds, laIdsForRegion, lasForRegion]);
@@ -598,7 +598,7 @@ export default function ProvisionAndOccupancyPage() {
                   {filteredBedTypeData.find(
                     (metric) =>
                       metric.metric_id ===
-                        'bedcount_per_hundred_thousand_adults_total' &&
+                        'bedcount_per_hundred_thousand_adults' &&
                       metric.location_type === 'LA'
                   )?.data_point ?? 'Loading...'}{' '}
                   beds per 100,000 adult population
@@ -608,7 +608,7 @@ export default function ProvisionAndOccupancyPage() {
                 {filteredBedTypeData.find(
                   (metric) =>
                     metric.metric_id ===
-                      'bedcount_per_hundred_thousand_adults_total' &&
+                      'bedcount_per_hundred_thousand_adults' &&
                     metric.location_type === 'Regional'
                 )?.data_point ?? 'Loading...'}{' '}
                 per 100,000.
@@ -695,7 +695,7 @@ export default function ProvisionAndOccupancyPage() {
                   {finalCpData.find(
                     (metric) =>
                       metric.metric_id === 'bedcount_total' &&
-                      metric.location_type === 'Care provider location'
+                      metric.location_type === 'CareProviderLocation'
                   )?.data_point ?? 'Loading...'}{' '}
                 </strong>
                 total beds, compared to the median (
