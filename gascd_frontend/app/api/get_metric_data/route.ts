@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
   }
 
   const queryParams = await req.json();
+  const query_type = queryParams.query_type;
   if (!queryParams.metric_ids?.length) {
     return NextResponse.json(
       { error: 'Missing required fields' },
@@ -25,17 +26,50 @@ export async function POST(req: NextRequest) {
   }
 
   if (process.env.DATA_API_ROOT) {
+    const client = getAPIClient();
+
     const metric_ids = queryParams.metric_ids;
-    const location_data = await getDefaultLocations(user);
+    console.log(query_type, metric_ids);
+    const user_location_data = await getDefaultLocations(user);
+    let location_data;
+
+    if (query_type === 'Region') {
+      // All users can access across regions
+      const user_region = user_location_data?.find(
+        (item) => item.location_type == 'Regional'
+      );
+      const { data, error } = await client.GET(
+        '/metric_locations/regions/{code}',
+        {
+          params: {
+            path: {
+              code: user_region?.location_code,
+            },
+          },
+        }
+      );
+      if (data) {
+        location_data = data.local_authorities?.map((item) => {
+          return {
+            location_type: 'LA',
+            location_code: item.la_code,
+          };
+        });
+        console.log(location_data);
+      }
+    } else {
+      // Get user's default locations
+      location_data = user_location_data;
+    }
+
     if (!location_data) {
       return NextResponse.json(
-        { error: 'Could not look up default locations for user' },
+        { error: 'Could not look up relevant locations for user' },
         { status: 400 }
       );
     }
 
     let all_metrics: any[] = [];
-    const client = getAPIClient();
     for (let metric_id of metric_ids) {
       const { data, error } = await client.POST('/metrics/{metric_code}/data', {
         params: {

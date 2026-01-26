@@ -309,6 +309,7 @@ export default function ProvisionAndOccupancyPage() {
       setCareHomeBedTypesDataQuery(() => ({
         metric_ids: bedTypeMetricIds,
         location_ids: locationIds,
+        query_type: 'Region',
       }));
     }
   }, [CPLocationId, locationIds]);
@@ -324,7 +325,7 @@ export default function ProvisionAndOccupancyPage() {
           setCareHomeBedTypesDataQuery(() => ({
             metric_ids: ['bedcount_per_hundred_thousand_adults', ...ids],
             location_ids: locationIds,
-            most_recent: true,
+            query_type: 'Region',
           }));
           const map: any = {};
           parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
@@ -339,6 +340,7 @@ export default function ProvisionAndOccupancyPage() {
       setCareHomeBedTypesDataQuery({
         metric_ids: bedTypeMetricIds,
         location_ids: locationIds,
+        query_type: 'Region',
       });
     }
   }, [locationIds]);
