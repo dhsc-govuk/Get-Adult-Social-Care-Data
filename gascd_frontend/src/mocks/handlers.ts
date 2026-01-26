@@ -3,8 +3,9 @@ import { metric_metadata } from '@/data/mockResponses/metric_metadata';
 import { locations_data } from '@/data/mockResponses/locations_data';
 import { organisation_data } from '@/data/mockResponses/organisation_data';
 import { metric_filters_data } from '@/data/mockResponses/metric_filters_data';
+import { API_SUFFIX } from '@/data/dataAPI';
 
-const api_root = process.env.DATA_API_ROOT;
+const api_root = process.env.DATA_API_ROOT + API_SUFFIX;
 
 export const handlers = [
   http.get(api_root + '/organisation/care_provider/:code', () => {
