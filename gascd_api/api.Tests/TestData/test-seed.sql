@@ -687,7 +687,7 @@ INSERT INTO metric_groups (id, code, loaded_datetime)
            (metric_id_3, 'metric_code_3', metric_group_id_2, 'Metric 3', 'This is a numerator 3', 'This is a denominator 3','ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            
            (bedcount_total_metric_id, 'bedcount_total', bedcount_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
-           (bphta_total_metric_id, 'bedcount_per_hundred_thousand_adults', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
+           (bphta_total_metric_id, 'bedcount_per_hundred_thousand_adults_total', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (bphta_total_dementia_nursing_metric_id, 'bedcount_per_hundred_thousand_adults_dementia_nursing', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (bphta_total_dementia_residential_metric_id, 'bedcount_per_hundred_thousand_adults_dementia_residential', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (bphta_total_general_nursing_metric_id, 'bedcount_per_hundred_thousand_adults_general_nursing', bphta_metric_group_id, 'Bedcount', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),

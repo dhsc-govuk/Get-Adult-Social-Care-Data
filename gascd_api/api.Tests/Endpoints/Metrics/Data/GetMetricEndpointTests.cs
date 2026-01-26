@@ -106,7 +106,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
             new GetMetricRequest
             {
-                MetricCode = bedcount_per_hundred_thousand_adults,
+                MetricCode = bedcount_per_hundred_thousand_adults_total,
                 Locations = new()
                 {
                     new GetMetricRequest.Location { LocationCode = "nonexistent", LocationType = National },
@@ -392,7 +392,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
             new GetMetricRequest
             {
-                MetricCode = bedcount_per_hundred_thousand_adults,
+                MetricCode = bedcount_per_hundred_thousand_adults_total,
                 TimeSeries = true,
                 Locations = new() { new GetMetricRequest.Location { LocationCode = "1-123456789", LocationType = National } }
             });
@@ -401,7 +401,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         response.Count.ShouldBe(1);
-        response[0].MetricCode.ShouldBe(nameof(bedcount_per_hundred_thousand_adults));
+        response[0].MetricCode.ShouldBe(nameof(bedcount_per_hundred_thousand_adults_total));
         response[0].LocationCode.ShouldBe("1-123456789");
         response[0].LocationType.ShouldBe(nameof(National));
         response[0].SeriesStartDate.ShouldBe(new DateOnly(2002, 01, 01));
@@ -453,7 +453,7 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         get
         {
             yield return [bedcount_total, 6.6m];
-            yield return [bedcount_per_hundred_thousand_adults, 6.7m];
+            yield return [bedcount_per_hundred_thousand_adults_total, 6.7m];
             yield return [bedcount_per_hundred_thousand_adults_dementia_nursing, 7.1m];
             yield return [bedcount_per_hundred_thousand_adults_dementia_residential, 7.2m];
             yield return [bedcount_per_hundred_thousand_adults_general_nursing, 7.3m];

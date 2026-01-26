@@ -28,7 +28,7 @@ public enum MetricCodeEnum
     [MetricGroup(typeof(Bedcount))]
     bedcount_ypd_young_physically_disabled,
     [MetricGroup(typeof(BedcountPerHundredThousandAdults))]
-    bedcount_per_hundred_thousand_adults,
+    bedcount_per_hundred_thousand_adults_total,
     [MetricGroup(typeof(BedcountPerHundredThousandAdults))]
     bedcount_per_hundred_thousand_adults_community_care,
     [MetricGroup(typeof(BedcountPerHundredThousandAdults))]
