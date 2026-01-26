@@ -31,7 +31,7 @@ const compareDriversConditionals = (
     section === 'CapacityCareProvider'
       ? data.find(
           (item) =>
-            item.location_type === 'Care provider location' &&
+            item.location_type === 'CareProviderLocation' &&
             item.metric_id === 'occupancy_rate_total'
         )
       : null;
