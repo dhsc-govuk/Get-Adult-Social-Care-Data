@@ -39,7 +39,6 @@ export async function GET(req: NextRequest) {
         la_name: row.la_name,
         la_code: row.la_code,
       }));
-      console.log(rows);
       return NextResponse.json(rows);
     } else {
       logger.error(`No LAs found for ${region.location_code}`);

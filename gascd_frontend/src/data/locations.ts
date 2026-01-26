@@ -50,7 +50,6 @@ export const getDefaultLocations = async (user: User) => {
         location_type: 'National',
       },
     ];
-    console.log(default_locations);
     return default_locations;
   }
 };
