@@ -3,11 +3,13 @@ import { transformSeriesData } from '@/utils/timeseries';
 describe('transformSeriesData', () => {
   it('should correctly map daily values to consecutive dates', () => {
     const series_start_date = '2025-01-01';
+    const series_end_date = '2025-01-03';
     const series_frequency = 'Daily';
     const values = [10, 20, 30];
 
     const result = transformSeriesData(
       series_start_date,
+      series_end_date,
       series_frequency,
       values
     );
@@ -23,11 +25,12 @@ describe('transformSeriesData', () => {
       series_start_date: '2025-12-31',
       series_end_date: '2026-01-02',
       series_frequency: 'Daily',
-      values: [100, 200],
+      values: [100, 200, 300],
     };
 
     const result = transformSeriesData(
       input.series_start_date,
+      input.series_end_date,
       input.series_frequency,
       input.values
     );
@@ -46,6 +49,7 @@ describe('transformSeriesData', () => {
 
     const result = transformSeriesData(
       input.series_start_date,
+      input.series_end_date,
       input.series_frequency,
       input.values
     );
@@ -54,21 +58,25 @@ describe('transformSeriesData', () => {
     expect(result[2].date).toBe('2024-03-01');
   });
 
-  it('should return an empty array if values are empty', () => {
+  it('should throw an error if the values do not match the series start/end', () => {
     const input = {
       series_start_date: '2025-01-01',
-      series_end_date: '2025-01-01',
+      series_end_date: '2025-01-07',
       series_frequency: 'Daily',
-      values: [],
+      values: [1],
     };
 
-    expect(
+    const error_func = () => {
       transformSeriesData(
         input.series_start_date,
+        input.series_end_date,
         input.series_frequency,
         input.values
-      )
-    ).toEqual([]);
+      );
+    };
+    expect(error_func).toThrow(
+      'Data mismatch: Expected 7 values for the date range, but received 1.'
+    );
   });
 
   it('should return an empty array if frequency is not daily', () => {
@@ -82,6 +90,7 @@ describe('transformSeriesData', () => {
     const error_func = () => {
       transformSeriesData(
         input.series_start_date,
+        input.series_end_date,
         input.series_frequency,
         input.values
       );
