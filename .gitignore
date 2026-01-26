@@ -112,6 +112,7 @@ bin
 obj
 appsettings.json
 #local.settings.json
+!gascd_api/api/appsettings.json
 
 # Azurite artifacts
 __blobstorage__
