@@ -37,8 +37,9 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.MetricGroupCode.ShouldBe("metric_group_code");
-        response.MetricFilters.ShouldContain(o => o.MetricCode == "metric_code" && o.DisplayName == "Metric");
-        response.MetricFilters.ShouldContain(o => o.MetricCode == "metric_code_2" && o.DisplayName == "Metric 2");
+        response.MetricGroupDisplayName.ShouldBe("Metric group display name");
+        response.MetricFilters.ShouldContain(o => o.MetricCode == "metric_code" && o.FilterType == "Metric filter info");
+        response.MetricFilters.ShouldContain(o => o.MetricCode == "metric_code_2" && o.FilterType == "Metric 2 filter info");
     }
 
     [Fact]
@@ -51,11 +52,12 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         response.MetricGroupCode.ShouldBe("metric_group_code_2");
+        response.MetricGroupDisplayName.ShouldBe("Metric group 2 display name");
         List<GetMetricFiltersResponse.MetricFilterDto> expectedMetricFilters = new()
         {
             new GetMetricFiltersResponse.MetricFilterDto
             {
-                MetricCode = "metric_code_3", DisplayName = "Metric 3"
+                MetricCode = "metric_code_3", FilterType = "Metric 3 filter info"
             },
         };
         response.MetricFilters.ShouldBe(expectedMetricFilters);
@@ -77,6 +79,7 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.MetricGroupCode.ShouldBe("metric_group_code_3");
+        response.MetricGroupDisplayName.ShouldBe("Metric group 3 display name");
         response.MetricFilters.ShouldBeEmpty();
     }
 
@@ -89,8 +92,9 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
 
         var jObject = await ParseJsonResponse<JObject>(response);
         GetFromJson(jObject, "metric_group_code").ShouldBe("metric_group_code_2");
+        GetFromJson(jObject, "metric_group_display_name").ShouldBe("Metric group 2 display name");
         GetFromJson(jObject, "metric_filters[0].metric_code").ShouldBe("metric_code_3");
-        GetFromJson(jObject, "metric_filters[0].display_name").ShouldBe("Metric 3");
+        GetFromJson(jObject, "metric_filters[0].filter_type").ShouldBe("Metric 3 filter info");
     }
 
     [Fact]
