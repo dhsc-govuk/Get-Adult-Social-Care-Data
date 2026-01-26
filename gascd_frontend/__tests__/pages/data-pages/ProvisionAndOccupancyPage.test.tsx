@@ -91,7 +91,7 @@ describe('ProvisionAndOccupancyPage', () => {
       'occupancy_rate_total',
       'median_bed_count_total',
       'median_occupancy_total',
-      'bedcount_per_hundred_thousand_adults',
+      'bedcount_per_hundred_thousand_adults_total',
     ];
 
     expect(insightSpy).toHaveBeenCalledTimes(expected_metrics.length);

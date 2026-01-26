@@ -93,7 +93,7 @@ export default function ProvisionAndOccupancyPage() {
     useState<string[]>(['All bed types']);
 
   const [bedTypeRowHeaders, setBedTypeRowHeaders] = useState<any>({
-    bedcount_per_hundred_thousand_adults: 'All bed types',
+    bedcount_per_hundred_thousand_adults_total: 'All bed types',
     bedcount_per_hundred_thousand_adults_dementia_nursing: 'Dementia nursing',
     bedcount_per_hundred_thousand_adults_dementia_residential:
       'Dementia residential',
@@ -112,12 +112,12 @@ export default function ProvisionAndOccupancyPage() {
   };
 
   const bedTypeMetricIds = [
-    'bedcount_per_hundred_thousand_adults',
+    'bedcount_per_hundred_thousand_adults_total',
     'bedcount_per_hundred_thousand_adults_dementia_nursing',
     'bedcount_per_hundred_thousand_adults_dementia_residential',
   ];
 
-  const bedNumberMetricIds = ['bedcount_per_hundred_thousand_adults'];
+  const bedNumberMetricIds = ['bedcount_per_hundred_thousand_adults_total'];
   const breadcrumbs = [
     {
       text: 'Home',
@@ -148,6 +148,9 @@ export default function ProvisionAndOccupancyPage() {
     values: number[];
   }>({ categories: [], values: [] });
   useEffect(() => {
+    if (!filteredBedNumbersData.length) {
+      return;
+    }
     let categories: string[] = [];
     let values: number[] = [];
     Object.entries(bedNumberRowHeaders).map((header: any) => {
@@ -157,6 +160,8 @@ export default function ProvisionAndOccupancyPage() {
       );
       if (datapoints.length) {
         values.push(datapoints[0].data_point);
+      } else {
+        values.push(0);
       }
     });
     setChartData({
@@ -309,7 +314,6 @@ export default function ProvisionAndOccupancyPage() {
       setCareHomeBedTypesDataQuery(() => ({
         metric_ids: bedTypeMetricIds,
         location_ids: locationIds,
-        query_type: 'Region',
       }));
     }
   }, [CPLocationId, locationIds]);
@@ -323,9 +327,8 @@ export default function ProvisionAndOccupancyPage() {
         if (Array.isArray(parsedData)) {
           const ids = parsedData.map((item) => item.metric_id);
           setCareHomeBedTypesDataQuery(() => ({
-            metric_ids: ['bedcount_per_hundred_thousand_adults', ...ids],
+            metric_ids: ['bedcount_per_hundred_thousand_adults_total', ...ids],
             location_ids: locationIds,
-            query_type: 'Region',
           }));
           const map: any = {};
           parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
@@ -340,7 +343,6 @@ export default function ProvisionAndOccupancyPage() {
       setCareHomeBedTypesDataQuery({
         metric_ids: bedTypeMetricIds,
         location_ids: locationIds,
-        query_type: 'Region',
       });
     }
   }, [locationIds]);
@@ -600,7 +602,7 @@ export default function ProvisionAndOccupancyPage() {
                   {filteredBedTypeData.find(
                     (metric) =>
                       metric.metric_id ===
-                        'bedcount_per_hundred_thousand_adults' &&
+                        'bedcount_per_hundred_thousand_adults_total' &&
                       metric.location_type === 'LA'
                   )?.data_point ?? 'Loading...'}{' '}
                   beds per 100,000 adult population
@@ -610,7 +612,7 @@ export default function ProvisionAndOccupancyPage() {
                 {filteredBedTypeData.find(
                   (metric) =>
                     metric.metric_id ===
-                      'bedcount_per_hundred_thousand_adults' &&
+                      'bedcount_per_hundred_thousand_adults_total' &&
                     metric.location_type === 'Regional'
                 )?.data_point ?? 'Loading...'}{' '}
                 per 100,000.
