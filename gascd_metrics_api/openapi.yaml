@@ -528,6 +528,10 @@ components:
           type: string
           description: "The specific metric group code this filter applies to."
           example: "bedcount_per_100000_adults"
+        metric_group_display_name:
+          type: string
+          description: "A user-friendly name for the metric group."
+          example: "General nursing"
         metric_filters:
           type: array
           description: "A list of Metric filters belonging to this Metric Group"
@@ -538,10 +542,10 @@ components:
                 type: string
                 description: "The specific metric code this filter applies to."
                 example: "bedcount_per_100000_adults_total_general_nursing"
-              display_name:
+              filter_type:
                 type: string
-                description: "A user-friendly name for the filter value."
-                example: "General nursing"
+                description: "A user-friendly name for the metric filter."
+                
 
     MetricSeries:
       type: object
