@@ -36,10 +36,6 @@ public static class DatabaseConfiguration
             Console.WriteLine("Missing required configuration values for Managed Identity database connection");
             throw new InvalidOperationException("Missing required configuration values for Managed Identity database connection");
         }
-        
-        Console.WriteLine($"Using Managed Identity with client id {clientId}");
-        Console.WriteLine($"Connecting to database host {databaseHost}");
-        Console.WriteLine($"Using identity {identityName}");
 
         var builder = new NpgsqlConnectionStringBuilder();
         builder.Host = databaseHost;
@@ -74,4 +70,5 @@ public static class DatabaseConfiguration
             });
         });
     }
+
 }
