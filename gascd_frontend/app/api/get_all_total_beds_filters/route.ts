@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     if (data && data.metric_filters) {
       const rows = data.metric_filters.map((row) => ({
         metric_id: row.metric_code,
-        filter_bedtype: row.display_name,
+        filter_bedtype: row.filter_type,
         checked: false,
       }));
       return NextResponse.json(rows);

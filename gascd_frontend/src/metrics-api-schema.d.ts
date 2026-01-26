@@ -664,6 +664,11 @@ export interface components {
              * @example bedcount_per_100000_adults
              */
             metric_group_code?: string;
+            /**
+             * @description A user-friendly name for the metric group.
+             * @example General nursing
+             */
+            metric_group_display_name?: string;
             /** @description A list of Metric filters belonging to this Metric Group */
             metric_filters?: {
                 /**
@@ -671,11 +676,8 @@ export interface components {
                  * @example bedcount_per_100000_adults_total_general_nursing
                  */
                 metric_code?: string;
-                /**
-                 * @description A user-friendly name for the filter value.
-                 * @example General nursing
-                 */
-                display_name?: string;
+                /** @description A user-friendly name for the metric filter. */
+                filter_type?: string;
             }[];
         };
         /** @description A series of data points at a specific time and location specified in the call for the metric. */
