@@ -12,6 +12,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0.1-alpine3.23
 WORKDIR /app
 COPY --from=build /app/out .
 
+RUN apk add krb5-libs
+
 EXPOSE 5050
 
 ENTRYPOINT ["dotnet", "api.dll"]
