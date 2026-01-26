@@ -686,9 +686,8 @@ INSERT INTO metric_groups (id, code, loaded_datetime, display_name)
     VALUES (metric_id, 'metric_code', metric_group_id, 'Metric filter info', 'This is a numerator 2', 'This is a denominator 2', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP), 
            (metric_id_2, 'metric_code_2', metric_group_id, 'Metric 2 filter info', 'This is a numerator 2', 'This is a denominator 2', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (metric_id_3, 'metric_code_3', metric_group_id_2, 'Metric 3 filter info', 'This is a numerator 3', 'This is a denominator 3','ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
-           
            (bedcount_total_metric_id, 'bedcount_total', bedcount_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
-           (bphta_total_metric_id, 'bedcount_per_hundred_thousand_adults', bphta_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
+           (bphta_total_metric_id, 'bedcount_per_hundred_thousand_adults_total', bphta_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (bphta_total_dementia_nursing_metric_id, 'bedcount_per_hundred_thousand_adults_dementia_nursing', bphta_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (bphta_total_dementia_residential_metric_id, 'bedcount_per_hundred_thousand_adults_dementia_residential', bphta_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (bphta_total_general_nursing_metric_id, 'bedcount_per_hundred_thousand_adults_general_nursing', bphta_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
@@ -718,7 +717,6 @@ INSERT INTO metric_groups (id, code, loaded_datetime, display_name)
            (perc_population_disability_disabled_total_metric_id, 'perc_population_disability', perc_population_disability_metric_group_id, 'Filter info text', 'This is a numerator', 'This is a denominator', 'Capacity Tracker', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (perc_unpaid_care_provider_total_metric_id, 'perc_unpaid_care_provider', perc_unpaid_care_provider_metric_group_id, 'Filter info text', 'This is a numerator', 'This is a denominator', 'Capacity Tracker', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (total_population_metric_id, 'total_population', total_population_metric_group_id, 'Filter info text', 'This is a numerator', 'This is a denominator', 'Capacity Tracker', 'numbers', 'Daily', CURRENT_TIMESTAMP);
-
 
     INSERT INTO bedcount (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, bedcount_total_metric_id, '1-123456789', 'National', '2000-01-01 00:00:00', '2025-01-01 00:00:00', ARRAY [1.1,2.2,3.3,4.4,5.5], 5.5, CURRENT_TIMESTAMP),
