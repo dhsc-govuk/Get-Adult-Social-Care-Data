@@ -22,7 +22,7 @@ class IndicatorFetchService {
     const filteredQuery = {
       metric_ids: query.metric_ids,
       location_ids: query.location_ids.filter((item) => item !== 'Indicator'),
-      query_type: query.query_type,
+      query_type: query.query_type || 'UserQuery',
     };
     const response = await fetch('/api/get_metric_data', {
       method: 'POST',

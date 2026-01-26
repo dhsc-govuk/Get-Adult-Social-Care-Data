@@ -311,10 +311,6 @@ export default function ProvisionAndOccupancyPage() {
         metric_ids: careProviderMetricIds2,
         location_ids: locationIds,
       }));
-      setCareHomeBedTypesDataQuery(() => ({
-        metric_ids: bedTypeMetricIds,
-        location_ids: locationIds,
-      }));
     }
   }, [CPLocationId, locationIds]);
 
@@ -329,6 +325,7 @@ export default function ProvisionAndOccupancyPage() {
           setCareHomeBedTypesDataQuery(() => ({
             metric_ids: ['bedcount_per_hundred_thousand_adults_total', ...ids],
             location_ids: locationIds,
+            query_type: 'LATimeseriesQuery',
           }));
           const map: any = {};
           parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
@@ -343,6 +340,7 @@ export default function ProvisionAndOccupancyPage() {
       setCareHomeBedTypesDataQuery({
         metric_ids: bedTypeMetricIds,
         location_ids: locationIds,
+        query_type: 'LATimeseriesQuery',
       });
     }
   }, [locationIds]);
@@ -359,7 +357,7 @@ export default function ProvisionAndOccupancyPage() {
           setCareHomeBedNumbersDataQuery({
             metric_ids: [id],
             location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
-            query_type: 'Region',
+            query_type: 'RegionQuery',
           });
           AnalyticsService.trackMetricView(id);
           if (name) {
@@ -375,7 +373,7 @@ export default function ProvisionAndOccupancyPage() {
       setCareHomeBedNumbersDataQuery({
         metric_ids: bedNumberMetricIds,
         location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
-        query_type: 'Region',
+        query_type: 'RegionQuery',
       });
     }
   }, [locationIds, laIdsForRegion, lasForRegion]);
