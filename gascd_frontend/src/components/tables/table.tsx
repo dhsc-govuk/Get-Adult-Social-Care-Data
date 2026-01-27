@@ -108,7 +108,7 @@ const DataTable: React.FC<DataTableProps> = ({
                   {getFormattedDataPoint(
                     data,
                     getCareProviderKey(key, careProviderMedianMetrics),
-                    'Care provider location',
+                    'CareProviderLocation',
                     percentageRows?.some((item) => item === key) ?? false
                   )}
                 </td>

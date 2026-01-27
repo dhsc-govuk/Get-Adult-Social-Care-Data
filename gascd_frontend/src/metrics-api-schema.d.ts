@@ -97,6 +97,12 @@ export interface paths {
                                 location_code?: string;
                                 /** @description The display name of the location. */
                                 location_name?: string;
+                                /** @description The name of the care provide location's Local Authority. */
+                                la_name?: string;
+                                /** @description The code of the care provide location's Local Authority. */
+                                la_code?: string;
+                                /** @description The category of the location. */
+                                location_category?: string;
                                 /** @description The address of the location. */
                                 address?: string;
                             }[];
@@ -525,6 +531,8 @@ export interface components {
             provider_code?: string;
             /** @description The parent provider name. */
             provider_name?: string;
+            /** @description The category of the location. */
+            location_category?: string;
             /** @description The nominated individual for the care provider location. */
             nominated_individual?: string;
             /** @description The associated local authority ID. */
@@ -581,6 +589,13 @@ export interface components {
             country_code?: string;
             /** @description The associated country name. */
             country_name?: string;
+            /** @description A list of local authorities within this region */
+            local_authorities?: {
+                /** @description The local authority name. */
+                la_name?: string;
+                /** @description The local authority code. */
+                la_code?: string;
+            }[];
         };
         /** @description Represents a country */
         Country: {
@@ -629,7 +644,7 @@ export interface components {
              * @default la
              * @enum {string}
              */
-            location_type: "la" | "national" | "regional";
+            location_type: "LA" | "National" | "Regional" | "CareProviderLocation";
         };
         /** @description Defines the properties and context of a metric. */
         MetricMetadata: {
@@ -653,18 +668,20 @@ export interface components {
              * @example bedcount_per_100000_adults
              */
             metric_group_code?: string;
+            /**
+             * @description A user-friendly name for the metric group.
+             * @example General nursing
+             */
+            metric_group_display_name?: string;
             /** @description A list of Metric filters belonging to this Metric Group */
-            metrics?: {
+            metric_filters?: {
                 /**
                  * @description The specific metric code this filter applies to.
                  * @example bedcount_per_100000_adults_total_general_nursing
                  */
                 metric_code?: string;
-                /**
-                 * @description A user-friendly name for the filter value.
-                 * @example General nursing
-                 */
-                display_name?: string;
+                /** @description A user-friendly name for the metric filter. */
+                filter_type?: string;
             }[];
         };
         /** @description A series of data points at a specific time and location specified in the call for the metric. */
@@ -673,11 +690,18 @@ export interface components {
             metric_code?: string;
             /** @description The unique identifier for the location. */
             location_code?: string;
+            /** @description The type of the location. */
+            location_type?: string;
             /**
              * Format: date
              * @description The start date of the metric series.
              */
             series_start_date?: string;
+            /**
+             * Format: date
+             * @description The end date of the metric series.
+             */
+            series_end_date?: string;
             /**
              * @description The frequency of data points for the time series.
              * @default latest

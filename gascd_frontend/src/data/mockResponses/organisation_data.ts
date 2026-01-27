@@ -3,28 +3,34 @@ export const organisation_data = {
   display_name: 'Shoggins Care Service',
   locations: [
     {
-      location_id: 1,
-      location_name: 'Shoggins Care Services (Birmingham)',
+      location_code: 'loc1',
+      location_name: 'Shoggins Care Services',
+      la_name: 'Birmingham',
     },
     {
-      location_id: 2,
-      location_name: 'Shoggins Care Services (Bolton)',
+      location_code: 'loc2',
+      location_name: 'Shoggins Care Services',
+      la_name: 'Bolton',
     },
     {
-      location_id: 3,
-      location_name: 'Shoggins Care Services (Brighton)',
+      location_code: 'loc3',
+      location_name: 'Shoggins Care Services',
+      la_name: 'Brighton',
     },
     {
-      location_id: 4,
-      location_name: 'Shoggins Care Services (Canterbury)',
+      location_code: 'loc4',
+      location_name: 'Shoggins Care Services',
+      la_name: 'Canterbury',
     },
     {
-      location_id: 5,
-      location_name: 'Shoggins Care Services (Derby)',
+      location_code: 'loc5',
+      location_name: 'Shoggins Care Services',
+      la_name: 'Derby',
     },
     {
-      location_id: 6,
-      location_name: 'Shoggins Care Services (Durham)',
+      location_code: 'loc6',
+      location_name: 'Shoggins Care Services',
+      la_name: 'Durham',
     },
   ],
 };
