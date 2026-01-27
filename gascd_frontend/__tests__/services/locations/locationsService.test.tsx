@@ -60,25 +60,33 @@ describe('LocationService', () => {
         {
           location_id: '1',
           location_name: 'Location A',
+          provider_name: 'Provider A',
+          address: 'London',
+          la_name: 'London',
         },
         {
           location_id: '2',
           location_name: 'Location B',
+          provider_name: 'Provider A',
+          address: 'Edinburgh',
+          la_name: 'Edinburgh',
         },
       ],
     };
     const mockLocations: AvailableLocation[] = [
       {
         location_id: '1',
-        location_name: 'Location A',
+        location_name: 'Location A (London)',
         provider_name: 'Provider A',
         address: 'London',
+        la_name: 'London',
       },
       {
         location_id: '2',
-        location_name: 'Location B',
+        location_name: 'Location B (Edinburgh)',
         provider_name: 'Provider A',
         address: 'Edinburgh',
+        la_name: 'Edinburgh',
       },
     ];
     const query = 'testlocation1';
