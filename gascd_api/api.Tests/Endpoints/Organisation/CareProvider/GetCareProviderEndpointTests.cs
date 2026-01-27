@@ -88,7 +88,6 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         response.Locations.Count.ShouldBe(2);
         response.Locations.ShouldContain(o => o.LaName == "Liverpool" && o.LaCode == "E08000014" && o.LocationName == "Katherines Teeth" && o.LocationCode == "1-222222223" && o.Address == "Katherines Teeth, Liverpool, ME10 1QX" && o.LocationCategory == "Residential");
         response.Locations.ShouldContain(o => o.LaName == "Liverpool" && o.LaCode == "E08000014" && o.LocationName == "Katherines Eyes" && o.LocationCode == "1-222222224" && o.Address == "Katherines Eyes, Liverpool, ME10 1QY" && o.LocationCategory == "Residential");
-
     }
 
     [Theory]
