@@ -19,6 +19,20 @@ export const mockSessionUnregistered: any = {
   },
 };
 
+export const mockSessionEmailMismatch: any = {
+  user: {
+    ...mockSession.user,
+    registeredEmail: 'foo@ba.com',
+  },
+};
+
+export const mockSessionEmailMatchCase: any = {
+  user: {
+    ...mockSession.user,
+    registeredEmail: 'TEST@test.com',
+  },
+};
+
 export const mockSessionWithAnalytics: any = {
   user: {
     ...mockSession.user,
