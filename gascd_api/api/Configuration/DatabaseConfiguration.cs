@@ -26,9 +26,16 @@ public static class DatabaseConfiguration
     private static IServiceCollection RegisterManagedIdentityDatabaseConnection(IServiceCollection services,
         IConfiguration config)
     {
+        Console.WriteLine("Using Managed Identity to configure PG");
         string? clientId = config.GetValue<string>("MI_CLIENT_ID");
         string? databaseHost = config.GetValue<string>("database_host");
         string? identityName = config.GetValue<string>("identity_name");
+
+        if (clientId == null || databaseHost == null || identityName == null)
+        {
+            Console.WriteLine("Missing required configuration values for Managed Identity database connection");
+            throw new InvalidOperationException("Missing required configuration values for Managed Identity database connection");
+        }
 
         var builder = new NpgsqlConnectionStringBuilder();
         builder.Host = databaseHost;
@@ -63,4 +70,5 @@ public static class DatabaseConfiguration
             });
         });
     }
+
 }
