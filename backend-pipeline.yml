@@ -181,35 +181,35 @@ stages:
                       fetchDepth: 50
                       fetchTags: true
 
-#                    - task: DownloadPipelineArtifact@2
-#                      displayName: 'Download Migration Bundle Artifact'
-#                      inputs:
-#                        buildType: 'current'
-#                        artifactName: 'migration-bundle'
-#                        downloadPath: '$(System.DefaultWorkingDirectory)'
-#
-#                    - task: AzureCLI@2
-#                      displayName: 'Apply migrations with access token'
-#                      inputs:
-#                        azureSubscription: ${{environment.arm_connection}}
-#                        scriptType: 'bash'
-#                        scriptLocation: 'inlineScript'
-#                        inlineScript: |
-#                          # 1. Get an Access Token for Azure SQL (resource ID is fixed)
-#                          # We verify the token is fetched before proceeding
-#                          TOKEN=$(az account get-access-token --resource https://ossrdbms-aad.database.windows.net --query accessToken -o tsv)
-#
-#                          if [ -z "$TOKEN" ]; then
-#                            echo "Error: Failed to obtain access token"
-#                            exit 1
-#                          fi
-#
-#                          echo "Access token obtained successfully."
-#
-#                          CONNECTION_STRING="Host=${{environment.db_server}};Port=${{environment.db_port}};Database=gascd_data;Username=${{environment.db_user}};Password=$TOKEN;Ssl Mode=Require"
-#                          chmod +x ./efbundle
-#                          # Run the migration
-#                          ./efbundle --connection "$CONNECTION_STRING"
+                    - task: DownloadPipelineArtifact@2
+                      displayName: 'Download Migration Bundle Artifact'
+                      inputs:
+                        buildType: 'current'
+                        artifactName: 'migration-bundle'
+                        downloadPath: '$(System.DefaultWorkingDirectory)'
+
+                    - task: AzureCLI@2
+                      displayName: 'Apply migrations with access token'
+                      inputs:
+                        azureSubscription: ${{environment.arm_connection}}
+                        scriptType: 'bash'
+                        scriptLocation: 'inlineScript'
+                        inlineScript: |
+                          # 1. Get an Access Token for Azure SQL (resource ID is fixed)
+                          # We verify the token is fetched before proceeding
+                          TOKEN=$(az account get-access-token --resource https://ossrdbms-aad.database.windows.net --query accessToken -o tsv)
+
+                          if [ -z "$TOKEN" ]; then
+                            echo "Error: Failed to obtain access token"
+                            exit 1
+                          fi
+
+                          echo "Access token obtained successfully."
+
+                          CONNECTION_STRING="Host=${{environment.db_server}};Port=${{environment.db_port}};Database=gascd_data;Username=${{environment.db_user}};Password=$TOKEN;Ssl Mode=Require"
+                          chmod +x ./efbundle
+                          # Run the migration
+                          ./efbundle --connection "$CONNECTION_STRING"
 
                     - script: |
                         curl -LsSf https://astral.sh/uv/install.sh | sh
