@@ -217,7 +217,7 @@ stages:
                     - task: AzureCLI@2
                       displayName: 'Run Python Script with uv'
                       inputs:
-                        azureSubscription: 'MyAzureServiceConnection' # Update this!
+                        azureSubscription: ${{environment.arm_connection}}
                         scriptType: 'bash'
                         scriptLocation: 'scriptPath'
                         scriptPath: 'dbtools/run_pg_access.sh'
