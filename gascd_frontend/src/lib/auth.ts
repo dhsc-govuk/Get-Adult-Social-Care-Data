@@ -72,14 +72,12 @@ export const auth = betterAuth({
       selectedLocationId: {
         type: 'string',
         required: false,
-        // Can be set by the user
-        input: true,
+        input: false,
       },
       selectedLocationDisplayName: {
         type: 'string',
         required: false,
-        // Can be set by the user
-        input: true,
+        input: false,
       },
       // Unique id for analytics tracking
       // note - this is currently set during user import, not inside the app itself

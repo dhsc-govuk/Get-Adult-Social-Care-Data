@@ -82,9 +82,7 @@ export const getAllowedLocations = async (user: User) => {
       return [];
     }
     provider_code = loc_data.provider_code;
-  }
-
-  if (!provider_code) {
+  } else {
     logger.error('No support for user type:' + location_type);
     return [];
   }
@@ -104,6 +102,7 @@ export const getAllowedLocations = async (user: User) => {
     return {
       location_id: location.location_code,
       location_name: location.location_name,
+      location_display_name: location.location_name + ` (${location.la_name})`,
       provider_name: provider_data?.display_name,
       address: location.address,
       la_name: location.la_name,

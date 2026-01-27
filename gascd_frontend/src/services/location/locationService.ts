@@ -123,9 +123,18 @@ class LocationService {
       if (!session?.data?.user) {
         throw new Error('No user session found');
       }
-      await authClient.updateUser({
-        selectedLocationId: locationId,
-        selectedLocationDisplayName: locationName,
+      const response = await fetch(`/api/set_selected_location`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ location_id: locationId }),
+      });
+      // Force the session cache to refresh
+      await authClient.getSession({
+        query: {
+          disableCookieCache: true,
+        },
       });
     } catch (error: unknown) {
       const errorMessage =
