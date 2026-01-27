@@ -70,5 +70,4 @@ public static class DatabaseConfiguration
             });
         });
     }
-
 }
