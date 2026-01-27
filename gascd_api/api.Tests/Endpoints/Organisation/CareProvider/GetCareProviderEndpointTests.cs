@@ -43,7 +43,8 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         response.Locations[0].LocationName.ShouldBe("Bupa Liverpool");
         response.Locations[0].LocationCode.ShouldBe("1-222222222");
         response.Locations[0].LocationCategory.ShouldBe("Residential");
-
+        response.Locations[0].LaName.ShouldBe("Liverpool");
+        response.Locations[0].LaCode.ShouldBe("E08000014");
     }
 
     [Fact]
@@ -58,7 +59,8 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         GetFromJson(jObject, "locations[0].location_code").ShouldBe("1-222222222");
         GetFromJson(jObject, "locations[0].location_category").ShouldBe("Residential");
         GetFromJson(jObject, "locations[0].address").ShouldBe("Bupa Liverpool, CV2 2TN");
-
+        GetFromJson(jObject, "locations[0].la_name").ShouldBe("Liverpool");
+        GetFromJson(jObject, "locations[0].la_code").ShouldBe("E08000014");
     }
 
     [Fact]
@@ -84,8 +86,9 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         response.DisplayName.ShouldBe("Katherine");
         response.Locations.ShouldNotBeEmpty();
         response.Locations.Count.ShouldBe(2);
-        response.Locations.ShouldContain(o => o.LocationName == "Katherines Teeth" && o.LocationCode == "1-222222223" && o.Address == "Katherines Teeth, Liverpool, ME10 1QX" && o.LocationCategory == "Residential");
-        response.Locations.ShouldContain(o => o.LocationName == "Katherines Eyes" && o.LocationCode == "1-222222224" && o.Address == "Katherines Eyes, Liverpool, ME10 1QY" && o.LocationCategory == "Residential");
+        response.Locations.ShouldContain(o => o.LaName == "Liverpool" && o.LaCode == "E08000014" && o.LocationName == "Katherines Teeth" && o.LocationCode == "1-222222223" && o.Address == "Katherines Teeth, Liverpool, ME10 1QX" && o.LocationCategory == "Residential");
+        response.Locations.ShouldContain(o => o.LaName == "Liverpool" && o.LaCode == "E08000014" && o.LocationName == "Katherines Eyes" && o.LocationCode == "1-222222224" && o.Address == "Katherines Eyes, Liverpool, ME10 1QY" && o.LocationCategory == "Residential");
+
     }
 
     [Theory]
