@@ -177,6 +177,10 @@ stages:
               runOnce:
                 deploy:
                   steps:
+                    - checkout: self
+                      fetchDepth: 50
+                      fetchTags: true
+
                     - task: DownloadPipelineArtifact@2
                       displayName: 'Download Migration Bundle Artifact'
                       inputs:
