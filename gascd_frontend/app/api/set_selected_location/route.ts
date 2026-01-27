@@ -29,14 +29,14 @@ export async function POST(req: NextRequest) {
   }
 
   // Update the DB directly to allow these fields to be set
-  const rows = await authDB
+  await authDB
     .updateTable('user')
     .set({
       selectedLocationId: matching_location.location_id,
       selectedLocationDisplayName: matching_location.location_display_name,
     })
     .where('user.id', '=', user.id)
-    .executeTakeFirst();
+    .execute();
 
   return NextResponse.json({ status: 'OK' });
 }
