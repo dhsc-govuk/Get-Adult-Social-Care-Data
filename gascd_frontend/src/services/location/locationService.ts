@@ -8,6 +8,7 @@ export interface AvailableLocation {
   location_name: string;
   address: string;
   provider_name: string;
+  la_name: string;
 }
 
 class LocationService {
@@ -38,6 +39,12 @@ class LocationService {
       }
 
       let availableLocations = (await response.json()).data;
+      availableLocations = availableLocations.map((loc: AvailableLocation) => {
+        return {
+          ...loc,
+          location_name: loc.location_name + ` (${loc.la_name})`,
+        };
+      });
       return availableLocations.sort(
         (a: AvailableLocation, b: AvailableLocation) =>
           a.location_name.localeCompare(b.location_name)

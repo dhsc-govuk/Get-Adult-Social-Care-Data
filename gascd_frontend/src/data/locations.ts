@@ -106,6 +106,7 @@ export const getAllowedLocations = async (user: User) => {
       location_name: location.location_name,
       provider_name: provider_data?.display_name,
       address: location.address,
+      la_name: location.la_name,
     };
   });
   return available_locations;

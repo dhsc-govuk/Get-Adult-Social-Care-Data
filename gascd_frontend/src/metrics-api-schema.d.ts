@@ -97,6 +97,10 @@ export interface paths {
                                 location_code?: string;
                                 /** @description The display name of the location. */
                                 location_name?: string;
+                                /** @description The name of the care provide location's Local Authority. */
+                                la_name?: string;
+                                /** @description The code of the care provide location's Local Authority. */
+                                la_code?: string;
                                 /** @description The category of the location. */
                                 location_category?: string;
                                 /** @description The address of the location. */
