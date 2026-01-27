@@ -70,6 +70,12 @@ paths:
                         location_name:
                           type: string
                           description: "The display name of the location."
+                        la_name:
+                          type: string
+                          description: "The name of the care provide location's Local Authority."
+                        la_code:
+                          type: string
+                          description: "The code of the care provide location's Local Authority."
                         location_category:
                           type: string
                           description: "The category of the location."

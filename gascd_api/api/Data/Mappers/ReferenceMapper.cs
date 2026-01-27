@@ -39,6 +39,8 @@ public class ReferenceMapper
         {
             LocationName = careProviderLocation.Name,
             LocationCode = careProviderLocation.Code,
+            LaName = careProviderLocation.LocalAuthority.Name,
+            LaCode = careProviderLocation.LocalAuthority.Code,
             LocationCategory = careProviderLocation.Category,
             Address = careProviderLocation.Address,
         };
