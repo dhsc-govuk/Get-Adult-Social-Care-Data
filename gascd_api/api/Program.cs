@@ -11,6 +11,7 @@ bld.Services
     .RegisterDatabase(bld.Configuration)
     .RegisterFastEndpoints(bld.Configuration)
     .AddSingletonConfiguration()
+    .AddOpenTelemetryConfiguration(bld.Configuration)
     .RegisterSwaggerConfiguration()
     .RegisterAuth();
 

@@ -1,3 +1,4 @@
+using api.Data;
 using api.Logging;
 using FastEndpoints;
 using System.Text.Json;
@@ -17,7 +18,7 @@ public static class FastEndpointsConfiguration
                 o.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
             })
             .Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
-            .AddServiceHealthChecks(configureChecks: hc => hc.AddNpgSql(config.GetConnectionString("DefaultConnection") ?? "null"));
+            .AddServiceHealthChecks(configureChecks: hc => hc.AddDbContextCheck<GascdDataContext>());
     }
 
     public static IApplicationBuilder RegisterFastEndpoints(this IApplicationBuilder app)
