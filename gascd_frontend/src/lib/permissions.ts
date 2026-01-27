@@ -19,7 +19,7 @@ export const isUserRegistered = (user: User) => {
   } else if (user.role !== 'member') {
     console.debug('User has no member role');
     return false;
-  } else if (user.email !== user.registeredEmail) {
+  } else if (user.email.toLowerCase() !== user.registeredEmail?.toLowerCase()) {
     console.debug(
       'Registered email mismatch',
       user.email,
