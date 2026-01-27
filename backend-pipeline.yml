@@ -43,11 +43,16 @@ parameters:
         db_server: "$(dev_db_server)"
         db_port: "$(dev_db_port)"
         db_user: "$(dev_db_user)"
-        # Temporarily commented out as we're not ready to deploy in these environments yet
-#      - name: uat
-#        arm_connection: "$(uat_arm_service_connections)"
-#      - name: prod
-#        arm_connection: "$(prod_arm_service_connections)"
+      - name: uat
+        arm_connection: "$(uat_arm_service_connections)"
+        db_server: "$(uat_db_server)"
+        db_port: "$(uat_db_port)"
+        db_user: "$(uat_db_user)"
+      - name: prod
+        arm_connection: "$(prod_arm_service_connections)"
+        db_server: "$(prod_db_server)"
+        db_port: "$(prod_db_port)"
+        db_user: "$(prod_db_user)"
     
 stages:
   - stage: Build_and_Test
