@@ -71,10 +71,14 @@ describe('LocationService', () => {
       {
         location_id: '1',
         location_name: 'Location A',
+        provider_name: 'Provider A',
+        address: 'London',
       },
       {
         location_id: '2',
         location_name: 'Location B',
+        provider_name: 'Provider A',
+        address: 'Edinburgh',
       },
     ];
     const query = 'testlocation1';
@@ -128,40 +132,6 @@ describe('LocationService', () => {
       await expect(LocationService.getAvailableLocations()).rejects.toThrow(
         'Failed to retrieve available location data: Unknown error occurred'
       );
-    });
-  });
-
-  describe('getDefaultCPLocation', () => {
-    const providerLocationId: string = '1';
-    const locationType: string = 'LA';
-    const mockResponse = [{ metric_location_id: '123' }];
-
-    it('fetches and returns la locations successfully', async () => {
-      (fetch as vi.Mock).mockResolvedValue({
-        ok: true,
-        json: vi.fn().mockResolvedValue(mockResponse),
-      });
-
-      const result = await LocationService.getDefaultCPLocation(
-        providerLocationId,
-        locationType
-      );
-
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/get_available_locations?provider_location_id=${encodeURIComponent(providerLocationId)}&location_type=${encodeURIComponent(locationType)}`
-      );
-      expect(result).toEqual('123');
-    });
-
-    it('throws an error when the fetch response is not ok', async () => {
-      (fetch as vi.Mock).mockResolvedValue({
-        ok: false,
-        statusText: 'Not Found',
-      });
-
-      await expect(
-        LocationService.getDefaultCPLocation(providerLocationId, locationType)
-      ).rejects.toThrow('Error fetching data: Not Found');
     });
   });
 

@@ -52,31 +52,6 @@ class LocationService {
     }
   }
 
-  public static async getDefaultCPLocation(
-    providerLocationId: string,
-    locationType: string
-  ): Promise<any> {
-    try {
-      const response = await fetch(
-        `/api/get_available_locations?provider_location_id=${encodeURIComponent(providerLocationId)}&location_type=${encodeURIComponent(locationType)}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`Error fetching data: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      return data[0].metric_location_id;
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error occurred';
-      LogService.logEvent(`Error in getDefaultCPLocation: ${errorMessage}`);
-      throw new Error(
-        `Failed to retrieve available location data: ${errorMessage}`
-      );
-    }
-  }
-
   public static async getLocationNames(
     query: string,
     careProvider: boolean
