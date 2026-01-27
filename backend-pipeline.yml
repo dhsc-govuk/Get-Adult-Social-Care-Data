@@ -167,6 +167,7 @@ stages:
         displayName: "${{environment.name}}: Migrate Postgres DB"
         condition: succeeded()
         trigger: manual
+        dependsOn: Build_Image
         jobs:
           - deployment: Deploy
             displayName: Migrate database
