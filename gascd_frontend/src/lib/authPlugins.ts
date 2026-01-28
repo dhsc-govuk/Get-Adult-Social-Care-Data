@@ -1,35 +1,6 @@
 import { genericOAuth, GenericOAuthConfig } from 'better-auth/plugins';
-import { betterFetch } from '@better-fetch/fetch';
 import { decodeJwt } from 'jose';
-import { createRemoteJWKSet, jwtVerify } from 'jose';
-import logger from '@/utils/logger';
-
-async function verifyIdToken(
-  idToken: string,
-  discoveryUrl: string,
-  clientId: string
-) {
-  // Fetch OIDC Config
-  const { data, error } = await betterFetch<any>(discoveryUrl);
-
-  if (!data?.jwks_uri) {
-    logger.error('No JWKS URI found in discovery document');
-    throw new Error('No JWKS URI found in discovery document');
-  }
-
-  // Setup Key Set
-  const JWKS = createRemoteJWKSet(new URL(data.jwks_uri), {
-    cacheMaxAge: 600000, // cache keysets for 10mins
-  });
-
-  // Verify Signature and Claims
-  const { payload } = await jwtVerify(idToken, JWKS, {
-    issuer: data.issuer,
-    audience: clientId,
-  });
-
-  return payload;
-}
+import { verifyIdToken, getUserInfo, generateNonce } from './authUtils';
 
 export const B2CPlugin = (): GenericOAuthConfig => {
   return {
@@ -78,13 +49,6 @@ export const B2CPlugin = (): GenericOAuthConfig => {
   };
 };
 
-function generateNonce() {
-  // Note - this is not actually required by One Login, but it is required by the OL Simulator
-  const timestamp = Date.now();
-  const random = Math.random() * 1000000;
-  return String(timestamp) + String(random);
-}
-
 export const OneLoginPlugin = (): GenericOAuthConfig => {
   return {
     providerId: 'govuk-one-login',
@@ -94,6 +58,7 @@ export const OneLoginPlugin = (): GenericOAuthConfig => {
     scopes: ['openid', 'email'],
     pkce: true,
     authorizationUrlParams: {
+      // Note - nonce is not actually required by One Login, but it is required by the OL Simulator
       nonce: generateNonce(),
       vtr: JSON.stringify(['Cl.Cm.P0']),
     },
@@ -103,26 +68,19 @@ export const OneLoginPlugin = (): GenericOAuthConfig => {
     // No automatic signup support through one login
     disableImplicitSignUp: true,
     getUserInfo: async (tokens) => {
-      // The Patch: Manual Validation
       if (!tokens.idToken) {
         throw new Error('Provider did not return an ID Token');
       }
-
+      if (!tokens.accessToken) {
+        throw new Error('Provider did not return an Access Token');
+      }
+      const discoveryUrl = `${process.env.ONELOGIN_URL}/.well-known/openid-configuration`;
       const verifiedPayload = await verifyIdToken(
         tokens.idToken,
-        `${process.env.ONELOGIN_URL}/.well-known/openid-configuration`,
+        discoveryUrl,
         process.env.ONELOGIN_CLIENT_ID as string
       );
-
-      // Better Auth expects a user object.
-      // You can now trust 'verifiedPayload' for user details.
-      return {
-        id: verifiedPayload.sub as string,
-        email: verifiedPayload.email as string,
-        name: verifiedPayload.name as string,
-        image: verifiedPayload.picture as string,
-        emailVerified: verifiedPayload.email_verified as boolean,
-      };
+      return await getUserInfo(discoveryUrl, tokens.accessToken);
     },
     mapProfileToUser: (profile) => {
       return {
