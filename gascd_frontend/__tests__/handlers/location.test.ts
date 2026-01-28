@@ -40,12 +40,16 @@ vi.mock('../../src/data/dbModule', () => ({
 
 const { server } = await import('@/mocks/node');
 
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+beforeAll(() => {
+  server.listen({ onUnhandledRequest: 'error' });
+});
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 describe('test handlers', () => {
+  beforeEach(() => vi.clearAllMocks());
   it('fetches and returns filters successfully', async () => {
+    mockGetSession.mockReturnValue(mockSession);
     const query = 'testcpl1';
     const mockCPLocation: {} = locations_data.care_provider_location;
 
@@ -54,7 +58,7 @@ describe('test handlers', () => {
     } as NextRequest;
 
     const result = await GetFilters(req);
-    const data = await result.json();
+    const data = await result?.json();
 
     const expected_filters = [
       {
@@ -87,7 +91,9 @@ describe('test handlers', () => {
 });
 
 describe('test available locations', () => {
+  beforeEach(() => vi.clearAllMocks());
   it('fetches throws error if no user', async () => {
+    mockGetSession.mockReturnValue(null as any);
     const req = {
       url: `http://localhost/api/get_available_locations`,
     } as NextRequest;
@@ -120,6 +126,7 @@ describe('test available locations', () => {
 });
 
 describe('set selected locations', () => {
+  beforeEach(() => vi.clearAllMocks());
   it('requires a user', async () => {
     mockGetSession.mockReturnValue(mockSessionUnregistered);
 
