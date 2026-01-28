@@ -3,6 +3,7 @@ using api.Data.Mappers;
 using api.Data.Models.Metrics;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace api.Endpoints.Metrics.Data;
 
@@ -32,33 +33,39 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper, IL
 
     private List<MetricTimeSeries> GetMetricTimeSeriesList(GetMetricRequest req)
     {
-        var metricCodeString = req.MetricCode.ToString();
+        var query = context.GetMetricTimeSeriesQueryable(req.MetricCode).Include(d => d.Metric);
 
-        // Create a list of "Code|Type" strings to match against
-        var locationKeys = req.Locations
-            .Select(l => $"{l.LocationCode}|{l.LocationType}")
-            .ToList();
+        if (!req.Locations.Any()) return new List<MetricTimeSeries>();
 
-        // Run a single query to match all Code|Type pairings
-        var results = context.GetMetricTimeSeriesQueryable(req.MetricCode)
-            .Include(d => d.Metric)
-            .Where(d => d.Metric.Code == metricCodeString &&
-                        locationKeys.Contains(d.LocationCode + "|" + d.LocationType))
-            .ToList();
+        var parameter = Expression.Parameter(typeof(MetricTimeSeries), "d");
+        Expression? body = null;
 
-        // Log missing items by comparing the input list to the results
-        if (results.Count < req.Locations.Count)
+        var metricCodeConstant = Expression.Constant(req.MetricCode.ToString());
+
+        foreach (var loc in req.Locations)
         {
-            var returnedKeys = results.Select(r => $"{r.LocationCode}|{r.LocationType}").ToHashSet();
-            foreach (var loc in req.Locations)
-            {
-                if (!returnedKeys.Contains($"{loc.LocationCode}|{loc.LocationType}"))
-                {
-                    logger.LogInformation("Location not found: {code}, {type}", loc.LocationCode, loc.LocationType);
-                }
-            }
+            // d.LocationCode == "X"
+            var codeProp = Expression.Property(parameter, nameof(MetricTimeSeries.LocationCode));
+            var codeEquals = Expression.Equal(codeProp, Expression.Constant(loc.LocationCode));
+
+            // d.LocationType == "Y"
+            var typeProp = Expression.Property(parameter, nameof(MetricTimeSeries.LocationType));
+            var typeEquals = Expression.Equal(typeProp, Expression.Constant(loc.LocationType.ToString()));
+
+            // Combine with AND
+            var combinedAnd = Expression.AndAlso(codeEquals, typeEquals);
+
+            // Combine with the rest of the list using OR
+            body = body == null ? combinedAnd : Expression.OrElse(body, combinedAnd);
         }
 
-        return results;
+        // Filter by MetricCode for all results
+        var metricProp = Expression.Property(Expression.Property(parameter, nameof(MetricTimeSeries.Metric)), "Code");
+        var metricEquals = Expression.Equal(metricProp, metricCodeConstant);
+
+        var finalBody = Expression.AndAlso(metricEquals, body!);
+        var lambda = Expression.Lambda<Func<MetricTimeSeries, bool>>(finalBody, parameter);
+
+        return query.Where(lambda).ToList();
     }
 }
