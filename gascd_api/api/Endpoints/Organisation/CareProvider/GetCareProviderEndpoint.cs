@@ -17,6 +17,7 @@ public class GetCareProviderEndpoint(GascdDataContext context, ReferenceMapper m
         logger.LogDebug("Received request for care provider code: {code}", req.CareProviderCode);
         var careProvider = context.CareProviders
             .Include(cp => cp.CareProviderLocations)
+            .ThenInclude(cpl => cpl.LocalAuthority)
             .SingleOrDefault(cp => cp.Code == req.CareProviderCode);
 
         if (careProvider == null)

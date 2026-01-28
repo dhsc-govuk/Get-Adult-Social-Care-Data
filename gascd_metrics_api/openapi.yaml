@@ -70,6 +70,12 @@ paths:
                         location_name:
                           type: string
                           description: "The display name of the location."
+                        la_name:
+                          type: string
+                          description: "The name of the care provide location's Local Authority."
+                        la_code:
+                          type: string
+                          description: "The code of the care provide location's Local Authority."
                         location_category:
                           type: string
                           description: "The category of the location."
@@ -412,6 +418,18 @@ components:
         country_name:
           type: string
           description: "The associated country name."
+        local_authorities:
+          type: array
+          description: "A list of local authorities within this region"
+          items:
+            type: object
+            properties:
+              la_name:
+                type: string
+                description: "The local authority name."
+              la_code:
+                type: string
+                description: "The local authority code."
 
     Country:
       type: object
@@ -516,6 +534,10 @@ components:
           type: string
           description: "The specific metric group code this filter applies to."
           example: "bedcount_per_100000_adults"
+        metric_group_display_name:
+          type: string
+          description: "A user-friendly name for the metric group."
+          example: "General nursing"
         metrics:
           type: array
           description: "A list of Metric filters belonging to this Metric Group"
@@ -526,10 +548,10 @@ components:
                 type: string
                 description: "The specific metric code this filter applies to."
                 example: "bedcount_per_100000_adults_total_general_nursing"
-              display_name:
+              filter_type:
                 type: string
-                description: "A user-friendly name for the filter value."
-                example: "General nursing"
+                description: "A user-friendly name for the metric filter."
+                
 
     MetricSeries:
       type: object

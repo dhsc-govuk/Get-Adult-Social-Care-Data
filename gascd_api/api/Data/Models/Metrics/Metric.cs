@@ -15,8 +15,8 @@ public class Metric : EntityBase
     [ForeignKey("MetricGroupFk")]
     public virtual MetricGroup MetricGroup { get; set; } = null!;
 
-    [Column("display_name"), StringLength(255)]
-    public required string DisplayName { get; init; }
+    [Column("filter_type"), StringLength(255)]
+    public required string FilterType { get; init; }
 
     [Column("numerator_description"), StringLength(255)]
     public required string NumeratorDescription { get; init; }

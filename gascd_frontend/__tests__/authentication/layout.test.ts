@@ -10,6 +10,8 @@ import {
   mockSession,
   mockSessionWithLocation,
   mockSessionUnregistered,
+  mockSessionEmailMismatch,
+  mockSessionEmailMatchCase,
 } from '@/test-utils/test-utils';
 
 vi.mock('next/headers', () => ({
@@ -50,8 +52,20 @@ describe('Auth Layout', () => {
     expect(mockedRedirect).toHaveBeenCalledWith('/access-denied');
   });
 
+  test('redirects to unregistered page if emails do not match', async () => {
+    mockGetSession.mockResolvedValue(mockSessionEmailMismatch);
+    await AuthLayout({ children: mockChildren });
+    expect(mockedRedirect).toHaveBeenCalledWith('/access-denied');
+  });
+
   test('location picker is rendered if valid session', async () => {
     mockGetSession.mockResolvedValue(mockSession);
+    const response = await AuthLayout({ children: mockChildren });
+    expect(mockedRedirect).toHaveBeenCalledWith('/location-select');
+  });
+
+  test('location picker is rendered valid session and emails are mixed case', async () => {
+    mockGetSession.mockResolvedValue(mockSessionEmailMatchCase);
     const response = await AuthLayout({ children: mockChildren });
     expect(mockedRedirect).toHaveBeenCalledWith('/location-select');
   });
