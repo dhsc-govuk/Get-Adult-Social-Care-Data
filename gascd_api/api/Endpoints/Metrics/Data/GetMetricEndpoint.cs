@@ -32,24 +32,33 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper, IL
 
     private List<MetricTimeSeries> GetMetricTimeSeriesList(GetMetricRequest req)
     {
-        List<MetricTimeSeries> metricTimeSerieses = new();
-        foreach (GetMetricRequest.Location location in req.Locations)
+        var metricCodeString = req.MetricCode.ToString();
+
+        // Create a list of "Code|Type" strings to match against
+        var locationKeys = req.Locations
+            .Select(l => $"{l.LocationCode}|{l.LocationType}")
+            .ToList();
+
+        // Run a single query to match all Code|Type pairings
+        var results = context.GetMetricTimeSeriesQueryable(req.MetricCode)
+            .Include(d => d.Metric)
+            .Where(d => d.Metric.Code == metricCodeString &&
+                        locationKeys.Contains(d.LocationCode + "|" + d.LocationType))
+            .ToList();
+
+        // Log missing items by comparing the input list to the results
+        if (results.Count < req.Locations.Count)
         {
-            IQueryable<MetricTimeSeries> query = context.GetMetricTimeSeriesQueryable(req.MetricCode);
-
-            var data = query.Include(d => d.Metric)
-                .SingleOrDefault(d => d.Metric.Code == req.MetricCode.ToString() &&
-                                      d.LocationCode == location.LocationCode &&
-                                      d.LocationType == location.LocationType.ToString());
-
-            if (data == null)
+            var returnedKeys = results.Select(r => $"{r.LocationCode}|{r.LocationType}").ToHashSet();
+            foreach (var loc in req.Locations)
             {
-                logger.LogInformation("Location not found for Location code: {code} and Location type: {type}", location.LocationCode, location.LocationType);
-                continue;
+                if (!returnedKeys.Contains($"{loc.LocationCode}|{loc.LocationType}"))
+                {
+                    logger.LogInformation("Location not found: {code}, {type}", loc.LocationCode, loc.LocationType);
+                }
             }
-
-            metricTimeSerieses.Add(data);
         }
-        return metricTimeSerieses;
+
+        return results;
     }
 }
