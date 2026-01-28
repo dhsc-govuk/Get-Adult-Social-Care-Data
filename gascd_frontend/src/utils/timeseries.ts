@@ -1,6 +1,6 @@
 import { Indicator } from '@/data/interfaces/Indicator';
 
-interface SeriesPoint {
+export interface SeriesPoint {
   date: string;
   value: number;
 }

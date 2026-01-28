@@ -9,7 +9,7 @@ import { addUserTelemetry } from '@/helpers/telemetry/usertelemetry';
 import { getAPIClient } from '@/data/dataAPI';
 import { getDefaultLocations } from '@/data/locations';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
-import { transformSeriesData } from '@/utils/timeseries';
+import { transformSeriesData, SeriesPoint } from '@/utils/timeseries';
 
 const REGIONAL_QUERYTYPE = 'RegionQuery';
 const LA_TIMESERIES = 'LATimeseriesQuery';
@@ -79,15 +79,8 @@ export async function POST(req: NextRequest) {
         });
       }
     } else if (query_type === LA_TIMESERIES) {
-      // This is currently covering two scenarios and should be split out
       const user_la = user_location_data?.find(
         (item) => item.location_type == 'LA'
-      );
-      const user_region = user_location_data?.find(
-        (item) => item.location_type == 'Regional'
-      );
-      const user_country = user_location_data?.find(
-        (item) => item.location_type == 'National'
       );
       if (!user_la?.location_code) {
         console.error('No LA found for user');
@@ -100,14 +93,6 @@ export async function POST(req: NextRequest) {
         {
           location_code: user_la.location_code,
           location_type: 'LA',
-        },
-        {
-          location_code: user_region?.location_code,
-          location_type: 'Regional',
-        },
-        {
-          location_code: user_country?.location_code,
-          location_type: 'National',
         },
       ];
     } else if (query_type === USER_QUERY) {
@@ -146,12 +131,22 @@ export async function POST(req: NextRequest) {
       if (data) {
         data.map((metric) => {
           if (query_type === LA_TIMESERIES) {
-            const series = transformSeriesData(
-              metric.series_start_date || '',
-              metric.series_end_date || '',
-              metric.series_frequency,
-              metric.values || []
-            );
+            let series: SeriesPoint[];
+            try {
+              series = transformSeriesData(
+                metric.series_start_date || '',
+                metric.series_end_date || '',
+                metric.series_frequency,
+                metric.values || []
+              );
+            } catch (error: any) {
+              logger.error(
+                'Error converting time series data for metric: ' +
+                  metric.metric_code
+              );
+              logger.error(error.message);
+              series = [];
+            }
             series.map((series_item) => {
               all_metrics.push({
                 metric_id: metric.metric_code,
@@ -173,7 +168,7 @@ export async function POST(req: NextRequest) {
         });
       }
     }
-    console.log(all_metrics);
+    // console.log(all_metrics);
     return NextResponse.json(all_metrics, { status: 200 });
   }
 
