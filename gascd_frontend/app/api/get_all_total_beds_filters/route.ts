@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import logger from '@/utils/logger';
 import { getAPIClient } from '@/data/dataAPI';
+import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 
 export async function GET(req: NextRequest) {
+  const user = await getCurrentUser();
+  if (!user || !isUserRegistered(user)) {
+    return NextResponse.json({ error: `No user` }, { status: 401 });
+  }
+
   const metric_group_code = 'bedcount_per_hundred_thousand_adults';
   if (process.env.DATA_API_ROOT) {
     const client = getAPIClient();

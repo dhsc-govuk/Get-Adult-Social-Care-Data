@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import logger from '@/utils/logger';
 import { getAPIClient } from '@/data/dataAPI';
-import { getCurrentUser } from '@/lib/permissions';
+import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 
 export async function GET(req: NextRequest) {
   const user = await getCurrentUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!user || !isUserRegistered(user)) {
+    return NextResponse.json({ error: `No user` }, { status: 401 });
   }
 
   const provider_location_id = user.selectedLocationId;

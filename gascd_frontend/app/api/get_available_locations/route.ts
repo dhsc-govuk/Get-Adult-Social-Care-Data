@@ -4,7 +4,6 @@ import { getAllowedLocationsForUser } from '@/data/locations';
 
 export async function GET(req: NextRequest) {
   const user = await getCurrentUser();
-
   if (!user || !isUserRegistered(user)) {
     return NextResponse.json({ error: `No user` }, { status: 401 });
   }
