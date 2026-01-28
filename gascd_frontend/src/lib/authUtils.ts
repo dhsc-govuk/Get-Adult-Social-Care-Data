@@ -2,10 +2,6 @@ import { betterFetch } from '@better-fetch/fetch';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import logger from '@/utils/logger';
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export function generateNonce() {
   const timestamp = Date.now();
   const random = Math.random() * 1000000;
