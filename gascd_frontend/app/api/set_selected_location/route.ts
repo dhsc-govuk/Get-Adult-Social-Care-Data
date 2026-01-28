@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
-import { getAllowedLocations } from '@/data/locations';
+import { getAllowedLocationsForUser } from '@/data/locations';
 import { authDB } from '@/lib/auth';
 import logger from '@/utils/logger';
 
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: `Missing location id` }, { status: 400 });
   }
 
-  const allowed_locations = await getAllowedLocations(user);
+  const allowed_locations = await getAllowedLocationsForUser(user);
   const matching_location = allowed_locations.find(
     (loc) => loc.location_id === selected_location_id
   );

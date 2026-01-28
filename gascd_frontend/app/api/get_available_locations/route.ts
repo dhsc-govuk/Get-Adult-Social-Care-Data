@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
-import { getAllowedLocations } from '@/data/locations';
+import { getAllowedLocationsForUser } from '@/data/locations';
 
 export async function GET(req: NextRequest) {
   const user = await getCurrentUser();
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
 
   if (process.env.DATA_API_ROOT) {
     try {
-      const locations = await getAllowedLocations(user);
+      const locations = await getAllowedLocationsForUser(user);
       return NextResponse.json({ data: locations }, { status: 200 });
     } catch (error) {
       return NextResponse.json(

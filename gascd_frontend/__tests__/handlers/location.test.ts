@@ -3,7 +3,11 @@ import { locations_data } from '@/data/mockResponses/locations_data';
 import { GET as GetFilters } from '../../app/api/get_all_total_beds_filters/route';
 import { GET as GetAvailableLocations } from '../../app/api/get_available_locations/route';
 import { POST as SetSelectedLocation } from '../../app/api/set_selected_location/route';
-import { mockSession, mockSessionUnregistered } from '@/test-utils/test-utils';
+import {
+  mockSession,
+  mockSessionUnregistered,
+  mockSessionWithMultipleLocationIDs,
+} from '@/test-utils/test-utils';
 import { auth, authDB } from '@/lib/auth';
 import { organisation_data } from '@/data/mockResponses/organisation_data';
 
@@ -157,6 +161,19 @@ describe('set selected locations', () => {
 
   it('accepts valid location ids', async () => {
     mockGetSession.mockReturnValue(mockSession);
+
+    const req = new NextRequest('http://localhost/api/set_selected_location', {
+      method: 'POST',
+      body: JSON.stringify({ location_id: 'loc1' }),
+    });
+    const result = await SetSelectedLocation(req);
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    expect(data.status).toBe('OK');
+  });
+
+  it('accepts valid location ids and users with multiple orgs', async () => {
+    mockGetSession.mockReturnValue(mockSessionWithMultipleLocationIDs);
 
     const req = new NextRequest('http://localhost/api/set_selected_location', {
       method: 'POST',
