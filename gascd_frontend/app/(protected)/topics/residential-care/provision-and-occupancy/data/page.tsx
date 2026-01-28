@@ -103,23 +103,24 @@ export default function ProvisionAndOccupancyPage() {
 
   // headers for tables and charts
   const bedTypeRowHeadersDefault = {
-    bedcount_per_100000_adults_total: 'All bed types',
-    bedcount_per_100000_adults_total_community_care: 'Community care',
-    bedcount_per_100000_adults_total_dementia_nursing: 'Dementia nursing',
-    bedcount_per_100000_adults_total_dementia_residential:
+    bedcount_per_hundred_thousand_adults_total: 'All bed types',
+    bedcount_per_hundred_thousand_adults_community_care: 'Community care',
+    bedcount_per_hundred_thousand_adults_dementia_nursing: 'Dementia nursing',
+    bedcount_per_hundred_thousand_adults_dementia_residential:
       'Dementia residential',
-    bedcount_per_100000_adults_total_general_nursing: 'General nursing',
-    bedcount_per_100000_adults_total_general_residential: 'General residential',
-    bedcount_per_100000_adults_total_learning_disability_nursing:
+    bedcount_per_hundred_thousand_adults_general_nursing: 'General nursing',
+    bedcount_per_hundred_thousand_adults_general_residential:
+      'General residential',
+    bedcount_per_hundred_thousand_adults_learning_disability_nursing:
       'Learning disability nursing',
-    bedcount_per_100000_adults_total_learning_disability_residential:
+    bedcount_per_hundred_thousand_adults_learning_disability_residential:
       'Learning disability residential',
-    bedcount_per_100000_adults_total_mental_health_nursing:
+    bedcount_per_hundred_thousand_adults_mental_health_nursing:
       'Mental health nursing',
-    bedcount_per_100000_adults_total_mental_health_residential:
+    bedcount_per_hundred_thousand_adults_mental_health_residential:
       'Mental health residential',
-    bedcount_per_100000_adults_total_transitional: 'Transitional',
-    bedcount_per_100000_adults_total_ypd_young_physically_disabled:
+    bedcount_per_hundred_thousand_adults_transitional: 'Transitional',
+    bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled:
       'Young physically disabled',
   };
 
@@ -128,9 +129,9 @@ export default function ProvisionAndOccupancyPage() {
   );
 
   const bedTypeChartHeadersDefault = {
-    bedcount_per_100000_adults_total: 'All bed types',
-    bedcount_per_100000_adults_total_dementia_nursing: 'Dementia nursing',
-    bedcount_per_100000_adults_total_dementia_residential:
+    bedcount_per_hundred_thousand_adults_total: 'All bed types',
+    bedcount_per_hundred_thousand_adults_dementia_nursing: 'Dementia nursing',
+    bedcount_per_hundred_thousand_adults_dementia_residential:
       'Dementia residential',
   };
 
@@ -148,21 +149,21 @@ export default function ProvisionAndOccupancyPage() {
   };
 
   const bedTypeMetricIds = [
-    'bedcount_per_100000_adults_total',
-    'bedcount_per_100000_adults_total_community_care',
-    'bedcount_per_100000_adults_total_dementia_nursing',
-    'bedcount_per_100000_adults_total_dementia_residential',
-    'bedcount_per_100000_adults_total_general_nursing',
-    'bedcount_per_100000_adults_total_general_residential',
-    'bedcount_per_100000_adults_total_learning_disability_nursing',
-    'bedcount_per_100000_adults_total_learning_disability_residential',
-    'bedcount_per_100000_adults_total_mental_health_nursing',
-    'bedcount_per_100000_adults_total_mental_health_residential',
-    'bedcount_per_100000_adults_total_transitional',
-    'bedcount_per_100000_adults_total_ypd_young_physically_disabled',
+    'bedcount_per_hundred_thousand_adults_total',
+    'bedcount_per_hundred_thousand_adults_community_care',
+    'bedcount_per_hundred_thousand_adults_dementia_nursing',
+    'bedcount_per_hundred_thousand_adults_dementia_residential',
+    'bedcount_per_hundred_thousand_adults_general_nursing',
+    'bedcount_per_hundred_thousand_adults_general_residential',
+    'bedcount_per_hundred_thousand_adults_learning_disability_nursing',
+    'bedcount_per_hundred_thousand_adults_learning_disability_residential',
+    'bedcount_per_hundred_thousand_adults_mental_health_nursing',
+    'bedcount_per_hundred_thousand_adults_mental_health_residential',
+    'bedcount_per_hundred_thousand_adults_transitional',
+    'bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled',
   ];
 
-  const bedNumberMetricIds = ['bedcount_per_100000_adults_total'];
+  const bedNumberMetricIds = ['bedcount_per_hundred_thousand_adults_total'];
 
   const breadcrumbs = [
     {
@@ -195,6 +196,9 @@ export default function ProvisionAndOccupancyPage() {
   }>({ categories: [], values: [] });
 
   const updateBarChartData = () => {
+    if (!filteredCareHomeBedNumbersData.length) {
+      return;
+    }
     let categories: string[] = [];
     let values: number[] = [];
     Object.entries(bedNumberRowHeaders).map((header: any) => {
@@ -321,12 +325,14 @@ export default function ProvisionAndOccupancyPage() {
       setCareHomeBedTypesOverTimeDataQuery(() => ({
         metric_ids: bedTypeMetricIds,
         location_ids: [locationIds[1]],
+        query_type: 'LATimeseriesQuery',
       }));
     }
     if (laIdsForRegion?.length) {
       setCareHomeBedNumbersDataQuery({
         metric_ids: bedTypeMetricIds,
         location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
+        query_type: 'RegionQuery',
       });
     }
   }, [CPLocationId, locationIds, laIdsForRegion]);
@@ -405,7 +411,8 @@ export default function ProvisionAndOccupancyPage() {
           setBedNumbersData(bedNumbersData);
           setFilteredCareHomeBedNumbersData(
             bedNumbersData.filter(
-              (item) => 'bedcount_per_100000_adults_total' === item.metric_id
+              (item) =>
+                'bedcount_per_hundred_thousand_adults_total' === item.metric_id
             )
           );
         }
@@ -465,7 +472,8 @@ export default function ProvisionAndOccupancyPage() {
     } else {
       setFilteredCareHomeBedNumbersData(
         bedNumbersData.filter(
-          (item) => 'bedcount_per_100000_adults_total' === item.metric_id
+          (item) =>
+            'bedcount_per_hundred_thousand_adults_total' === item.metric_id
         )
       );
     }
