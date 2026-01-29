@@ -25,7 +25,6 @@ export async function POST(req: NextRequest) {
     const client = getAPIClient();
 
     const metric_ids = queryParams.metric_ids;
-    console.log(query_type, metric_ids);
     const user_location_data = await getDefaultLocations(user);
     let location_data;
 
@@ -109,7 +108,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log('Looking for metrics in: ', location_data);
     let all_metrics: any[] = [];
     for (let metric_id of metric_ids) {
       const { data, error } = await client.POST('/metrics/{metric_code}/data', {
@@ -163,7 +161,6 @@ export async function POST(req: NextRequest) {
         });
       }
     }
-    // console.log(all_metrics);
     return NextResponse.json(all_metrics, { status: 200 });
   }
 }
