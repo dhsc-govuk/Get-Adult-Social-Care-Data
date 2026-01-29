@@ -511,6 +511,50 @@ CREATE INDEX "IX_regions_geo_data_fk" ON regions (geo_data_fk);
 
 CREATE INDEX "IX_total_population_metric_fk" ON total_population (metric_fk);
 
+CREATE INDEX "IX_total_population_location_code_location_type" ON total_population (location_code, location_type);
+
+CREATE INDEX "IX_perc_unpaid_care_provider_location_code_location_type" ON perc_unpaid_care_provider (location_code, location_type);
+
+CREATE INDEX "IX_perc_population_disability_location_code_location_type" ON perc_population_disability (location_code, location_type);
+
+CREATE INDEX "IX_perc_households_one_person_location_code_location_type" ON perc_households_one_person (location_code, location_type);
+
+CREATE INDEX "IX_perc_households_deprivation_deprived_location_code_location~" ON perc_households_deprivation_deprived (location_code, location_type);
+
+CREATE INDEX "IX_perc_household_ownership_location_code_location_type" ON perc_household_ownership (location_code, location_type);
+
+CREATE INDEX "IX_perc_general_health_location_code_location_type" ON perc_general_health (location_code, location_type);
+
+CREATE INDEX "IX_perc_85over_location_code_location_type" ON perc_85over (location_code, location_type);
+
+CREATE INDEX "IX_perc_75over_location_code_location_type" ON perc_75over (location_code, location_type);
+
+CREATE INDEX "IX_perc_65over_location_code_location_type" ON perc_65over (location_code, location_type);
+
+CREATE INDEX "IX_perc_18_64_location_code_location_type" ON perc_18_64 (location_code, location_type);
+
+CREATE INDEX "IX_occupancy_rates_location_code_location_type" ON occupancy_rates (location_code, location_type);
+
+CREATE INDEX "IX_num_clients_long_term_support_location_code_location_type" ON num_clients_long_term_support (location_code, location_type);
+
+CREATE INDEX "IX_median_occupancy_location_code_location_type" ON median_occupancy (location_code, location_type);
+
+CREATE INDEX "IX_median_bed_count_location_code_location_type" ON median_bed_count (location_code, location_type);
+
+CREATE INDEX "IX_learning_disability_prevalence_location_code_location_type" ON learning_disability_prevalence (location_code, location_type);
+
+CREATE INDEX "IX_dementia_register_65over_per100k_location_code_location_type" ON dementia_register_65over_per100k (location_code, location_type);
+
+CREATE INDEX "IX_dementia_qof_prevalence_location_code_location_type" ON dementia_qof_prevalence (location_code, location_type);
+
+CREATE INDEX "IX_dementia_prevalence_65over_location_code_location_type" ON dementia_prevalence_65over (location_code, location_type);
+
+CREATE INDEX "IX_dementia_estimated_diagnosis_rate_65over_location_code_loca~" ON dementia_estimated_diagnosis_rate_65over (location_code, location_type);
+
+CREATE INDEX "IX_bedcount_per_hundred_thousand_adults_location_code_location~" ON bedcount_per_hundred_thousand_adults (location_code, location_type);
+
+CREATE INDEX "IX_bedcount_location_code_location_type" ON bedcount (location_code, location_type);
+
 
 -- insert test data
 

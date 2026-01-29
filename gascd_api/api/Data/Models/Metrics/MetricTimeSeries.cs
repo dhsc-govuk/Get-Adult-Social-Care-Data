@@ -1,8 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Data.Models.Metrics;
 
+[Index(nameof(LocationCode), nameof(LocationType))]
 public class MetricTimeSeries : EntityBase
 {
     [Column("start_date")]
