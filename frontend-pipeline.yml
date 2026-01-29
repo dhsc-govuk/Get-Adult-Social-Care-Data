@@ -98,6 +98,7 @@ stages:
   - stage: Build_Image
     displayName: "Build/push Docker image (uses PROD container registry)"
     condition: succeeded()
+    trigger: manual
     jobs:
       - deployment: Build
         displayName: Build
@@ -251,3 +252,10 @@ stages:
                         appName: "dapalpha-${{environment.name}}-app"
                         azureSubscription: ${{environment.arm_connection}}
                         containers: "$(acr_name).azurecr.io/$(imageRepository):$(tag)"
+                    - task: AzureContainerApps@1
+                      inputs:
+                        azureSubscription: '${{environment.arm_connection}}'
+                        imageToDeploy: "$(acr_name).azurecr.io/$(imageRepository):$(tag)"
+                        containerAppName: 'frontend-${{environment.name}}'
+                        resourceGroup: 'dapalpha-container-apps-${{environment.name}}-rg'
+                        containerAppEnvironment: 'gascd-container-apps-env-${{environment.name}}'

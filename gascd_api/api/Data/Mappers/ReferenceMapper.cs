@@ -39,6 +39,9 @@ public class ReferenceMapper
         {
             LocationName = careProviderLocation.Name,
             LocationCode = careProviderLocation.Code,
+            LaName = careProviderLocation.LocalAuthority.Name,
+            LaCode = careProviderLocation.LocalAuthority.Code,
+            LocationCategory = careProviderLocation.Category,
             Address = careProviderLocation.Address,
         };
     }
@@ -52,6 +55,7 @@ public class ReferenceMapper
             Address = cpl.Address,
             ProviderCode = cpl.CareProvider.Code,
             ProviderName = cpl.CareProvider.Name,
+            Category = cpl.Category,
             NominatedIndividual = cpl.NominatedIndividual,
             GeoData = GeoDataToGeoDataDto(cpl.GeoData),
             LocalAuthorityCode = cpl.LocalAuthority?.Code,
@@ -97,7 +101,13 @@ public class ReferenceMapper
             GeoData = GeoDataToGeoDataDto(region.GeoData),
             CountryCode = region.Country.Code,
             CountryName = region.Country.Name,
+            LocalAuthorities = region.LocalAuthorities.Select(LocalAuthorityToRegionLocalAuthority).ToList()
         };
+    }
+
+    public GetRegionResponse.LocalAuthority LocalAuthorityToRegionLocalAuthority(LocalAuthority la)
+    {
+        return new GetRegionResponse.LocalAuthority { LaCode = la.Code, LaName = la.Name };
     }
 
     public GetCountryResponse CountryToGetCountryResponse(Country country)

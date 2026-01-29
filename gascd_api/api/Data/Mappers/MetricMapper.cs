@@ -12,7 +12,8 @@ public class MetricMapper
         return new GetMetricMetadataResponse
         {
             MetricCode = metric.Code,
-            MetricName = metric.DisplayName,
+            MetricName = metric.MetricGroup.DisplayName,
+            FilterType = metric.FilterType,
             DataType = metric.DataType,
             DataSource = metric.DataSource,
             Numerator = metric.NumeratorDescription,
@@ -25,6 +26,7 @@ public class MetricMapper
         return new GetMetricFiltersResponse
         {
             MetricGroupCode = metricGroup.Code,
+            MetricGroupDisplayName = metricGroup.DisplayName,
             MetricFilters = metricGroup.Metrics
                 .Select(MetricToMetricFilterDto).ToList()
         };
@@ -35,7 +37,7 @@ public class MetricMapper
         return new GetMetricFiltersResponse.MetricFilterDto
         {
             MetricCode = metric.Code,
-            DisplayName = metric.DisplayName
+            FilterType = metric.FilterType,
         };
     }
 

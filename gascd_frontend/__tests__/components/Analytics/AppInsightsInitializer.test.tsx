@@ -6,7 +6,7 @@ import {
 } from '@/components/analytics/appInsights';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import LogService from '@/services/logger/logService';
-import { mockSession } from '@/test-utils/test-utils';
+import { mockSession, mockSessionWithAnalytics } from '@/test-utils/test-utils';
 
 const TEST_CONNECTION_STRING = 'InstrumentationKey=fake-connection-string';
 
@@ -75,19 +75,21 @@ describe('AppInsightsInitializer', () => {
     expect(insights).toBe(null);
   });
 
-  test('It pulls the userid from the session', () => {
+  test('It pulls the analytics userid from the session', () => {
     document.cookie = 'GASCDConsentGDPR=true;';
     render(
       <AppInsightsInitializer
         connectionString={TEST_CONNECTION_STRING}
-        session={mockSession}
+        session={mockSessionWithAnalytics}
       />
     );
 
     const insights = getAppInsights();
     expect(insights).toBeDefined();
     expect(insights).toBeInstanceOf(ApplicationInsights);
-    expect(insights?.context.user.authenticatedId).toBe(mockSession.user.id);
+    expect(insights?.context.user.authenticatedId).toBe(
+      mockSessionWithAnalytics.user.analyticsId
+    );
   });
 
   test('It has no userid if no session provided', () => {

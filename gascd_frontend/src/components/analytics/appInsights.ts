@@ -36,8 +36,8 @@ export const initializeAppInsights = (
     });
     try {
       appInsights.loadAppInsights();
-      if (session?.user?.id) {
-        appInsights.setAuthenticatedUserContext(session.user.id);
+      if (session?.user?.analyticsId) {
+        appInsights.setAuthenticatedUserContext(session.user.analyticsId);
         // Custom telemetry method to add user properties to all analytics
         var telemetryInitializer = (envelope: ITelemetryItem) => {
           if (envelope.data) {

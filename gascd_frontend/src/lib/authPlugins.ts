@@ -1,5 +1,6 @@
 import { genericOAuth, GenericOAuthConfig } from 'better-auth/plugins';
 import { decodeJwt } from 'jose';
+import { verifyIdToken, getUserInfo, generateNonce } from './authUtils';
 
 export const B2CPlugin = (): GenericOAuthConfig => {
   return {
@@ -8,8 +9,8 @@ export const B2CPlugin = (): GenericOAuthConfig => {
     clientSecret: process.env.AZURE_AD_CLIENT_SECRET as string,
     discoveryUrl: `https://${process.env.AZURE_AD_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_TENANT_NAME}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${process.env.AZURE_AD_B2C_USER_SIGN_IN}`,
     scopes: ['openid', 'offline_access', 'profile'],
-    // No manual signup support, but users are implicitly created on login
-    disableImplicitSignUp: false,
+    // No signup support through B2C
+    disableImplicitSignUp: true,
     // Ensure location details after updated on every login
     overrideUserInfo: true,
     // Custom userinfo method, to deal with B2Cs list of emails
@@ -48,13 +49,6 @@ export const B2CPlugin = (): GenericOAuthConfig => {
   };
 };
 
-function generateNonce() {
-  // Note - this is not actually required by One Login, but it is required by the OL Simulator
-  const timestamp = Date.now();
-  const random = Math.random() * 1000000;
-  return String(timestamp) + String(random);
-}
-
 export const OneLoginPlugin = (): GenericOAuthConfig => {
   return {
     providerId: 'govuk-one-login',
@@ -64,6 +58,7 @@ export const OneLoginPlugin = (): GenericOAuthConfig => {
     scopes: ['openid', 'email'],
     pkce: true,
     authorizationUrlParams: {
+      // Note - nonce is not actually required by One Login, but it is required by the OL Simulator
       nonce: generateNonce(),
       vtr: JSON.stringify(['Cl.Cm.P0']),
     },
@@ -72,6 +67,21 @@ export const OneLoginPlugin = (): GenericOAuthConfig => {
     overrideUserInfo: true,
     // No automatic signup support through one login
     disableImplicitSignUp: true,
+    getUserInfo: async (tokens) => {
+      if (!tokens.idToken) {
+        throw new Error('Provider did not return an ID Token');
+      }
+      if (!tokens.accessToken) {
+        throw new Error('Provider did not return an Access Token');
+      }
+      const discoveryUrl = `${process.env.ONELOGIN_URL}/.well-known/openid-configuration`;
+      const verifiedPayload = await verifyIdToken(
+        tokens.idToken,
+        discoveryUrl,
+        process.env.ONELOGIN_CLIENT_ID as string
+      );
+      return await getUserInfo(discoveryUrl, tokens.accessToken);
+    },
     mapProfileToUser: (profile) => {
       return {
         name: profile.email,
@@ -85,7 +95,7 @@ export const getPlugins = (): GenericOAuthConfig[] => {
   if (process.env.ONELOGIN_URL) {
     plugins.push(OneLoginPlugin());
   }
-  if (process.env.AZURE_AD_CLIENT_ID) {
+  if (process.env.AZURE_AD_CLIENT_ID && process.env.AZURE_AD_ENABLED) {
     plugins.push(B2CPlugin());
   }
   return plugins;

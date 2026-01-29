@@ -24,13 +24,9 @@ describe('Header Component', () => {
 
   it('Renders sign out if logged in', () => {
     render(<Header session={mockSession} />);
-    const signouts = screen.getAllByRole('link', {
+    const signout = screen.getByRole('link', {
       name: 'Sign out',
     });
-    // Two signout buttons - one for small/large devices
-    expect(signouts.length).toBe(2);
-    signouts.forEach((button) => {
-      expect(button).toBeInTheDocument();
-    });
+    expect(signout).toBeInTheDocument();
   });
 });

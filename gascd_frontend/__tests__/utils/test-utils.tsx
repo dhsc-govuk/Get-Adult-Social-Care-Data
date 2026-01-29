@@ -14,28 +14,36 @@ export const mockSession: any = {
 
 export const mockSessionUnregistered: any = {
   user: {
-    id: 'testing-user-1',
-    email: 'test@test.com',
-    role: '',
+    ...mockSession.user,
     registeredEmail: '',
-    name: 'Test User 1',
-    locationType: 'Care provider location',
-    locationId: 'testlocation1',
-    smartInsights: false,
+  },
+};
+
+export const mockSessionEmailMismatch: any = {
+  user: {
+    ...mockSession.user,
+    registeredEmail: 'foo@ba.com',
+  },
+};
+
+export const mockSessionEmailMatchCase: any = {
+  user: {
+    ...mockSession.user,
+    registeredEmail: 'TEST@test.com',
+  },
+};
+
+export const mockSessionWithAnalytics: any = {
+  user: {
+    ...mockSession.user,
+    analyticsId: 'ua_12345678',
   },
 };
 
 export const mockSessionWithLocation: any = {
   user: {
-    id: 'testing-user-1',
-    email: 'test@test.com',
-    registeredEmail: 'test@test.com',
-    role: 'member',
-    name: 'Test User 1',
-    locationType: 'Care provider location',
-    locationId: 'testlocation1',
+    ...mockSession.user,
     selectedLocationId: 'testlocation1',
     selectedLocationDisplayName: 'My test location',
-    smartInsights: false,
   },
 };

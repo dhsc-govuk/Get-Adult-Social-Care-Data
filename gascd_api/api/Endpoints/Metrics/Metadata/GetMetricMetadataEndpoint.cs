@@ -1,6 +1,7 @@
 using api.Data;
 using api.Data.Mappers;
 using FastEndpoints;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.Metrics.Metadata;
 
@@ -14,7 +15,9 @@ public class GetMetricMetadataEndpoint(GascdDataContext context, MetricMapper ma
     public override async Task HandleAsync(GetMetricMetadataRequest req, CancellationToken ct)
     {
         logger.LogDebug("Received request for Metric code: {code}", req.MetricCode);
-        var metric = context.Metrics.SingleOrDefault(x => x.Code == req.MetricCode);
+        var metric = context.Metrics
+            .Include(x => x.MetricGroup)
+            .SingleOrDefault(x => x.Code == req.MetricCode);
 
         if (metric == null)
         {
