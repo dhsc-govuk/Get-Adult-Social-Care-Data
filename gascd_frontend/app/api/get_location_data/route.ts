@@ -15,35 +15,33 @@ export async function GET(req: NextRequest) {
     return NextResponse.json([]);
   }
 
-  if (process.env.DATA_API_ROOT) {
-    // XXX share this code with getDefaultLocations?
-    const client = getAPIClient();
-    const { data } = await client.GET('/metric_locations/cp_locations/{code}', {
-      params: {
-        query: {
-          include_parents: true,
-        },
-        path: {
-          code: user?.selectedLocationId || '',
-        },
+  // XXX share this code with getDefaultLocations?
+  const client = getAPIClient();
+  const { data } = await client.GET('/metric_locations/cp_locations/{code}', {
+    params: {
+      query: {
+        include_parents: true,
       },
-    });
-    if (data) {
-      // Map api results to those expected by the client JS
-      // XXX this could be ditched when we refactor the client JS
-      const result = {
-        provider_location_id: data.code,
-        provider_location_name: data.display_name,
-        provider_id: data.provider_code,
-        provider_name: data.provider_name,
-        la_code: data.local_authority_code,
-        la_name: data.local_authority_name,
-        region_code: data.region_code,
-        region_name: data.region_name,
-        country_code: data.country_code,
-        country_name: data.country_name,
-      };
-      return NextResponse.json(result, { status: 200 });
-    }
+      path: {
+        code: user?.selectedLocationId || '',
+      },
+    },
+  });
+  if (data) {
+    // Map api results to those expected by the client JS
+    // XXX this could be ditched when we refactor the client JS
+    const result = {
+      provider_location_id: data.code,
+      provider_location_name: data.display_name,
+      provider_id: data.provider_code,
+      provider_name: data.provider_name,
+      la_code: data.local_authority_code,
+      la_name: data.local_authority_name,
+      region_code: data.region_code,
+      region_name: data.region_name,
+      country_code: data.country_code,
+      country_name: data.country_name,
+    };
+    return NextResponse.json(result, { status: 200 });
   }
 }

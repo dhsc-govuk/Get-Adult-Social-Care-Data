@@ -8,15 +8,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: `No user` }, { status: 401 });
   }
 
-  if (process.env.DATA_API_ROOT) {
-    try {
-      const locations = await getAllowedLocationsForUser(user);
-      return NextResponse.json({ data: locations }, { status: 200 });
-    } catch (error) {
-      return NextResponse.json(
-        { error: 'Error fetching data from API' },
-        { status: 500 }
-      );
-    }
+  try {
+    const locations = await getAllowedLocationsForUser(user);
+    return NextResponse.json({ data: locations }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Error fetching data from API' },
+      { status: 500 }
+    );
   }
 }
