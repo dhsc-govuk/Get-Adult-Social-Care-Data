@@ -1,5 +1,6 @@
 'use client';
 
+import { useSession } from '@/lib/auth-client';
 import Layout from '@/components/common/layout/Layout';
 import React, { useEffect, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
@@ -27,7 +28,10 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 
+const CARE_HOME_RESIDENTIAL_CATEGORY = 'residential';
+
 export default function ProvisionAndOccupancyPage() {
+  const { data: session } = useSession();
   const tableref1 = useRef<HTMLTableElement>(null);
   const tableref2 = useRef<HTMLTableElement>(null);
   const tableref3 = useRef<HTMLTableElement>(null);
@@ -668,8 +672,12 @@ export default function ProvisionAndOccupancyPage() {
             <DataTable
               tableref={tableref3}
               caption={
-                `Table 3: care home bed numbers and occupancy levels – 
-                ${locationNamesCP.CPLabel}, ${locationNamesCP.LALabel} local authority, 
+                `Table 3: care home bed numbers and occupancy levels – ` +
+                ((session?.user.selectedLocationCategory ===
+                  CARE_HOME_RESIDENTIAL_CATEGORY &&
+                  `${locationNamesCP.CPLabel}, `) ||
+                  '') +
+                `${locationNamesCP.LALabel} local authority, 
                 ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, ` +
                 IndicatorService.getMostRecentDate(finalCpData)
               }
@@ -682,7 +690,10 @@ export default function ProvisionAndOccupancyPage() {
                 median_occupancy_total: 'Occupancy level',
               }}
               data={finalCpData}
-              showCareProvider={true}
+              showCareProvider={
+                session?.user.selectedLocationCategory ===
+                CARE_HOME_RESIDENTIAL_CATEGORY
+              }
               careProviderMedianMetrics={careProviderMedianMetrics}
               percentageRows={['median_occupancy_total']}
               showAverageLabel={true}
