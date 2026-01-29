@@ -68,6 +68,7 @@ public static class DatabaseConfiguration
                     )
                 );
             });
+            o.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         });
     }
 }
