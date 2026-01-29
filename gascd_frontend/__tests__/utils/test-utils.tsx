@@ -47,3 +47,10 @@ export const mockSessionWithLocation: any = {
     selectedLocationDisplayName: 'My test location',
   },
 };
+
+export const mockSessionWithMultipleLocationIDs: any = {
+  user: {
+    ...mockSession.user,
+    locationId: 'testlocation1,testlocation2',
+  },
+};

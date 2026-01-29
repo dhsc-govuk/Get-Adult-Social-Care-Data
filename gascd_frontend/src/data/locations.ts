@@ -54,20 +54,36 @@ export const getDefaultLocations = async (user: User) => {
   }
 };
 
-export const getAllowedLocations = async (user: User) => {
-  let location_id = user.locationId;
-  let location_type = user.locationType;
-
+export const getAllowedLocationsForUser = async (user: User) => {
+  const location_id = user.locationId;
+  const location_type = user.locationType;
   if (!(location_id && location_type)) {
     logger.error(`No location details for user`);
     return [];
   }
 
+  let allowed_locations = [];
+  // Support for multiple comma-separated location ids
+  const location_ids = location_id.split(',');
+  for (let location_id of location_ids) {
+    const newLocations = await getAllowedLocations(location_id, location_type);
+    allowed_locations.push(...newLocations);
+  }
+  const unique_allowed_locations = Array.from(
+    new Map(allowed_locations.map((item) => [item.location_id, item])).values()
+  );
+  return unique_allowed_locations;
+};
+
+export const getAllowedLocations = async (
+  location_id: string,
+  location_type: string
+) => {
   const client = getAPIClient();
   let provider_code;
   if (location_type === 'Care provider') {
     provider_code = location_id;
-  } else if (user.locationType === 'Care provider location') {
+  } else if (location_type === 'Care provider location') {
     // Look up the correct provider from the API
     const response = await client.GET('/metric_locations/cp_locations/{code}', {
       params: {

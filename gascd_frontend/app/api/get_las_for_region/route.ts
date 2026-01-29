@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { dbPool } from '../../../src/data/dbModule';
 import { getAPIClient } from '@/data/dataAPI';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import { getDefaultLocations } from '@/data/locations';
@@ -47,25 +46,5 @@ export async function GET(req: NextRequest) {
         { status: 500 }
       );
     }
-  }
-
-  try {
-    const { searchParams } = new URL(req.url);
-    let region_code = searchParams.get('region_code');
-    const pool = await dbPool;
-    const resultSet = await pool
-      .request()
-      .input('region_code', region_code)
-      .query('SELECT * FROM ref.la_lookup WHERE region_code = @region_code');
-
-    const rows = resultSet.recordset;
-
-    return NextResponse.json(rows);
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-    return NextResponse.json(
-      { error: `Error fetching data: ${errorMessage}` },
-      { status: 500 }
-    );
   }
 }
