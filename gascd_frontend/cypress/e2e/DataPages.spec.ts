@@ -36,7 +36,9 @@ describe('Data pages exist and contain data', () => {
     cy.get('#numbers-table-metrics-button').click();
     cy.get('#dhsc-filter--content1').should('be.visible');
     cy.wait(300);
-    cy.get('input[type="radio"][value="bedcount_per_100000_adults_total"]')
+    cy.get(
+      'input[type="radio"][value="bedcount_per_hundred_thousand_adults_total"]'
+    )
       .check()
       .should('be.checked');
     cy.get('#numbers-table-metrics-submit-button').click();
@@ -73,7 +75,9 @@ describe('Data pages exist and contain data', () => {
     cy.get('#type-table-metrics-button').click();
     cy.get('#dhsc-filter--content1').should('be.visible');
     cy.wait(300);
-    cy.get('input[type="checkbox"][value="bedcount_per_100000_adults_total"]')
+    cy.get(
+      'input[type="checkbox"][value="bedcount_per_hundred_thousand_adults_total"]'
+    )
       .check()
       .should('be.checked');
     cy.get('#type-table-metrics-submit-button').click();
@@ -121,7 +125,9 @@ describe('Data pages exist and contain data', () => {
     cy.get('#type-chart-metrics-button').click();
     cy.get('#dhsc-filter--content1').should('be.visible');
     cy.wait(300);
-    cy.get('input[type="checkbox"][value="bedcount_per_100000_adults_total"]')
+    cy.get(
+      'input[type="checkbox"][value="bedcount_per_hundred_thousand_adults_total"]'
+    )
       .check()
       .should('be.checked');
     cy.get('#type-chart-metrics-submit-button').click();
