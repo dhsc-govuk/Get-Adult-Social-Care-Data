@@ -122,6 +122,7 @@ export const getAllowedLocations = async (
       provider_name: provider_data?.display_name,
       address: location.address,
       la_name: location.la_name,
+      location_category: location.location_category,
     };
   });
   return available_locations;

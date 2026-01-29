@@ -1,10 +1,8 @@
 'use client';
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import { useSession } from '@/lib/auth-client';
 
 const AccessDeniedPage: React.FC = () => {
-  const { data: session } = useSession();
   return (
     <>
       <Layout title="Access Denied" currentPage="access-denied">
@@ -18,6 +16,15 @@ const AccessDeniedPage: React.FC = () => {
             <div className="govuk-inset-text">
               CQC nominated individuals with a CQC registered email addresses
             </div>
+
+            <p className="govuk-body">
+              If you are logged into GOV.UK One Login with a different email
+              address, you may need to{' '}
+              <a className="govuk-link" href="https://home.account.gov.uk">
+                sign out of your GOV.UK One Login account
+              </a>{' '}
+              before trying to access this service.
+            </p>
 
             <p className="govuk-body">
               If you think you need access,{' '}
