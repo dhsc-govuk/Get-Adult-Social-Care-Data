@@ -4,6 +4,7 @@ import { getAPIClient } from '@/data/dataAPI';
 import { getDefaultLocations } from '@/data/locations';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import { transformSeriesData, SeriesPoint } from '@/utils/timeseries';
+import logger from '@/utils/logger';
 
 const REGIONAL_QUERYTYPE = 'RegionQuery';
 const LA_TIMESERIES = 'LATimeseriesQuery';
