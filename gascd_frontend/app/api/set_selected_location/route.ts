@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
     .set({
       selectedLocationId: matching_location.location_id,
       selectedLocationDisplayName: matching_location.location_display_name,
+      selectedLocationCategory: matching_location.location_category,
     })
     .where('user.id', '=', user.id)
     .execute();
