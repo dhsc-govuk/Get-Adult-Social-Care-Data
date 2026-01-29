@@ -14,9 +14,7 @@ export interface AvailableLocation {
 class LocationService {
   public static async getLocations(query: string): Promise<Locations> {
     try {
-      const response = await fetch(
-        `/api/get_location_data?provider_location_id=${query}`
-      );
+      const response = await fetch('/api/get_location_data');
 
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
@@ -146,9 +144,7 @@ class LocationService {
 
   public static async getLasForRegion(regionCode: string): Promise<any> {
     try {
-      const response = await fetch(
-        `/api/get_las_for_region?region_code=${encodeURIComponent(regionCode)}`
-      );
+      const response = await fetch('/api/get_las_for_region');
 
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);

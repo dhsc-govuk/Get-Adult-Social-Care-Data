@@ -21,7 +21,8 @@ class IndicatorFetchService {
   public static async getData(query: IndicatorQuery): Promise<Indicator[]> {
     const filteredQuery = {
       metric_ids: query.metric_ids,
-      location_ids: query.location_ids.filter((item) => item !== 'Indicator'),
+      // We don't send this to the backend anymore - still needs pulling out of the in-page queries
+      //location_ids: query.location_ids.filter((item) => item !== 'Indicator'),
       query_type: query.query_type || 'UserQuery',
     };
     const response = await fetch('/api/get_metric_data', {

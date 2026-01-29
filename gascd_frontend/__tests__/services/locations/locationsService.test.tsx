@@ -36,9 +36,7 @@ describe('LocationService', () => {
 
       const result = await LocationService.getLocations(query);
 
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/get_location_data?provider_location_id=${query}`
-      );
+      expect(fetch).toHaveBeenCalledWith(`/api/get_location_data`);
       expect(result).toEqual(mockLocations);
     });
 
@@ -243,9 +241,7 @@ describe('LocationService', () => {
 
       const result = await LocationService.getLasForRegion(query);
 
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/get_las_for_region?region_code=${query}`
-      );
+      expect(fetch).toHaveBeenCalledWith(`/api/get_las_for_region`);
       expect(result).toEqual(mockLocations);
     });
   });
