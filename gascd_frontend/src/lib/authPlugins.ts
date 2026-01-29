@@ -1,5 +1,6 @@
 import { genericOAuth, GenericOAuthConfig } from 'better-auth/plugins';
 import { decodeJwt } from 'jose';
+import { verifyIdToken, getUserInfo, generateNonce } from './authUtils';
 
 export const B2CPlugin = (): GenericOAuthConfig => {
   return {
@@ -48,13 +49,6 @@ export const B2CPlugin = (): GenericOAuthConfig => {
   };
 };
 
-function generateNonce() {
-  // Note - this is not actually required by One Login, but it is required by the OL Simulator
-  const timestamp = Date.now();
-  const random = Math.random() * 1000000;
-  return String(timestamp) + String(random);
-}
-
 export const OneLoginPlugin = (): GenericOAuthConfig => {
   return {
     providerId: 'govuk-one-login',
@@ -64,6 +58,7 @@ export const OneLoginPlugin = (): GenericOAuthConfig => {
     scopes: ['openid', 'email'],
     pkce: true,
     authorizationUrlParams: {
+      // Note - nonce is not actually required by One Login, but it is required by the OL Simulator
       nonce: generateNonce(),
       vtr: JSON.stringify(['Cl.Cm.P0']),
     },
@@ -72,6 +67,21 @@ export const OneLoginPlugin = (): GenericOAuthConfig => {
     overrideUserInfo: true,
     // No automatic signup support through one login
     disableImplicitSignUp: true,
+    getUserInfo: async (tokens) => {
+      if (!tokens.idToken) {
+        throw new Error('Provider did not return an ID Token');
+      }
+      if (!tokens.accessToken) {
+        throw new Error('Provider did not return an Access Token');
+      }
+      const discoveryUrl = `${process.env.ONELOGIN_URL}/.well-known/openid-configuration`;
+      const verifiedPayload = await verifyIdToken(
+        tokens.idToken,
+        discoveryUrl,
+        process.env.ONELOGIN_CLIENT_ID as string
+      );
+      return await getUserInfo(discoveryUrl, tokens.accessToken);
+    },
     mapProfileToUser: (profile) => {
       return {
         name: profile.email,
