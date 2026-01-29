@@ -555,6 +555,8 @@ CREATE INDEX "IX_bedcount_per_hundred_thousand_adults_location_code_location~" O
 
 CREATE INDEX "IX_bedcount_location_code_location_type" ON bedcount (location_code, location_type);
 
+CREATE INDEX "IX_care_provider_locations_code" ON care_provider_locations (code);
+
 
 -- insert test data
 
