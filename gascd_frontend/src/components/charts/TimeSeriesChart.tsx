@@ -63,7 +63,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ series = [] }) => {
     // Legend positioned above the chart, horizontal
     showlegend: true,
     legend: {
-      orientation: 'v',
+      orientation: `${series.length < 6 ? 'v' : 'h'}`,
       yanchor: 'bottom',
       y: 1.05, // Push slightly above the plot area
       xanchor: 'left',

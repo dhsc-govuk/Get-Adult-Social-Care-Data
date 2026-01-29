@@ -53,9 +53,9 @@ export default function ProvisionAndOccupancyPage() {
   ];
 
   const demographicMetricIds = [
-    'perc_households_deprivation_deprived_total',
-    'perc_household_ownership_total',
-    'perc_households_one_person_total',
+    'perc_households_deprivation_deprived',
+    'perc_household_ownership',
+    'perc_households_one_person',
   ];
 
   useEffect(() => {
@@ -212,12 +212,12 @@ export default function ProvisionAndOccupancyPage() {
               }
               columnHeaders={locationNames}
               rowHeaders={{
-                perc_households_deprivation_deprived_total:
+                perc_households_deprivation_deprived:
                   'Percentage of households deprived in 4 dimensions: education, employment, health and housing',
               }}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={['perc_households_deprivation_deprived_total']}
+              percentageRows={['perc_households_deprivation_deprived']}
               showAverageLabel={false}
             ></DataTable>
           }
@@ -264,12 +264,12 @@ export default function ProvisionAndOccupancyPage() {
               }
               columnHeaders={locationNames}
               rowHeaders={{
-                perc_household_ownership_total:
+                perc_household_ownership:
                   'Percentage of households where the property is owned outright',
               }}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={['perc_household_ownership_total']}
+              percentageRows={['perc_household_ownership']}
               showAverageLabel={false}
             ></DataTable>
           }
@@ -313,12 +313,12 @@ export default function ProvisionAndOccupancyPage() {
               }
               columnHeaders={locationNames}
               rowHeaders={{
-                perc_households_one_person_total:
+                perc_households_one_person:
                   'Percentage of one-person households where the person is aged 65 or over',
               }}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={['perc_households_one_person_total']}
+              percentageRows={['perc_households_one_person']}
               showAverageLabel={false}
             ></DataTable>
           }

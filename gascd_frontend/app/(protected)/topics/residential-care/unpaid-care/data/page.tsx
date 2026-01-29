@@ -50,7 +50,7 @@ export default function UnpaidCarePage() {
     },
   ];
 
-  const demographicMetricIds = ['perc_unpaid_care_provider_total'];
+  const demographicMetricIds = ['perc_unpaid_care_provider'];
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -175,12 +175,12 @@ export default function UnpaidCarePage() {
               }
               columnHeaders={locationNames}
               rowHeaders={{
-                perc_unpaid_care_provider_total:
+                perc_unpaid_care_provider:
                   'Percentage of people aged 5 or over who provide unpaid care',
               }}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={['perc_unpaid_care_provider_total']}
+              percentageRows={['perc_unpaid_care_provider']}
             ></DataTable>
           }
           download={

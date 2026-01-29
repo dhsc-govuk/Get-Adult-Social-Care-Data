@@ -52,9 +52,9 @@ export default function DisabilityPrevalence() {
   ];
 
   const demographicMetricIds = [
-    'perc_population_disability_disabled_total',
-    'learning_disabilty_prevalence',
-    'perc_general_health_total',
+    'perc_population_disability',
+    'learning_disability_prevalence',
+    'perc_general_health',
   ];
 
   useEffect(() => {
@@ -187,16 +187,16 @@ export default function DisabilityPrevalence() {
               }
               columnHeaders={locationNames}
               rowHeaders={{
-                perc_general_health_total:
+                perc_general_health:
                   'People who reported bad or very bad health',
-                perc_population_disability_disabled_total:
+                perc_population_disability:
                   'Disability prevalence – people who reported a long-term physical or mental health condition, or illness that limits day-to-day activities',
               }}
               data={filteredDemographicData}
               showCareProvider={false}
               percentageRows={[
-                'perc_general_health_total',
-                'perc_population_disability_disabled_total',
+                'perc_general_health',
+                'perc_population_disability',
               ]}
             ></DataTable>
           }
@@ -240,11 +240,12 @@ export default function DisabilityPrevalence() {
               }
               columnHeaders={locationNames}
               rowHeaders={{
-                learning_disabilty_prevalence: 'Learning disability prevalence',
+                learning_disability_prevalence:
+                  'Learning disability prevalence',
               }}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={['learning_disabilty_prevalence']}
+              percentageRows={['learning_disability_prevalence']}
             ></DataTable>
           }
           download={
@@ -252,7 +253,7 @@ export default function DisabilityPrevalence() {
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref2}
-                filename="learning_disabilty_prevalence.csv"
+                filename="learning_disability_prevalence.csv"
                 xLabel=""
               />
             </>

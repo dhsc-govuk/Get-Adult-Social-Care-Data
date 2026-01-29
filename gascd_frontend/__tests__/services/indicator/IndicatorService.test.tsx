@@ -82,6 +82,11 @@ describe('formatDate', () => {
     expect(result).toBe('5 March 2022');
   });
 
+  it('formats alt format correctly', () => {
+    const result = IndicatorService.formatDate('2022-03-5');
+    expect(result).toBe('5 March 2022');
+  });
+
   it('handles invalid date format gracefully', () => {
     expect(IndicatorService.formatDate('invalid')).toBe('invalid');
   });

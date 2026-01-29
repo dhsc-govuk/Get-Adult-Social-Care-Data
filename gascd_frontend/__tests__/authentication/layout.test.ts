@@ -14,6 +14,10 @@ import {
   mockSessionEmailMatchCase,
 } from '@/test-utils/test-utils';
 
+vi.mock('server-only', () => ({
+  default: vi.fn(),
+}));
+
 vi.mock('next/headers', () => ({
   headers: vi.fn(),
 }));

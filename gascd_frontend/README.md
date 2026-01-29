@@ -183,6 +183,13 @@ This project uses Azure DevOps Pipelines for continuous integration and deployme
 - Build and Push: This steps builds a docker image and pushes to container registry
 - Deploy: This step deploys the application to Azure Web App
 
+### Generating Metrics API types
+
+The project uses `openapi-typescript` and `openapi-fetch` to generate types for the metrics API from our internal openapi spec.
+If the openapi spec changes, these types need regenerating as follows:
+
+`npm run openapi:types:generate`
+
 ## Checks
 
 The NextJS app is configured with two checks:

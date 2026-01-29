@@ -733,3 +733,260 @@
   stroke-dasharray: 3,3;
   fill: none;
 }
+
+/* Add slight indentation to any table <td> elements that are within a hierarchy (i.e. are a child to another data item) */
+.table-indent {
+  padding-left: 20px;
+}
+
+/* Filter component inspired by Apply for plant export certificates and inspections (https://www.gov.uk/guidance/apply-for-plant-export-certificates-and-inspections) and GOV.UK search (https://www.gov.uk) */
+
+.dhsc-filter--action .govuk-button {
+  background-color: #1d70b8;
+  color: #ffffff;
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+.dhsc-filter--open .govuk-button {
+  box-shadow: none !important;
+  background-color: #1d70b8 !important;
+  color: #ffffff !important;
+}
+
+/* Declarations to deal with all related JavaScript progressive enhancements (START) */
+.js-enabled .dhsc-filter--button-content {
+  padding-right: 10px;
+}
+
+.fa {
+  display: none !important;
+}
+
+.js-enabled .fa {
+  display: inherit !important;
+}
+
+/* Declarations to deal with all related JavaScript progressive enhancements (END) */
+
+.dhsc-filter--content {
+  background-color: #ffffff;
+  border: 2px solid #1d70b8;
+  padding: 20px;
+}
+.dhsc-filter--content .govuk-button-group, .dhsc-filter--content .govuk-button, .dhsc-filter--content .govuk-link {
+  margin-bottom: 0;
+}
+.dhsc-filter--content .govuk-link {
+  margin-top: 17px;
+}
+@media (min-width: 40.0625em) {
+  .dhsc-filter--content .govuk-link {
+    margin-top: 0;
+  }
+}
+
+.dhsc-filter--section-spacer-for-mobile {
+  padding-bottom: 20px;
+}
+@media (min-width: 641px) {
+  .dhsc-filter--section-spacer-for-mobile {
+    padding-bottom: 0;
+  }
+}
+
+
+/* GOV.UK searchable checkbox and radio filtering summary section */
+.govuk-grid-column-one-third-searchable-radios-section, .govuk-grid-column-one-third-searchable-checkboxes-section {
+  padding-left: 2px;
+}
+
+.searchable-filters-heading {
+  margin-bottom: 5px;
+  padding-left: 13px;
+}
+
+.app-c-option-select {
+  position: relative;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.app-c-option-select__button {
+  z-index: 1;
+  background: none;
+  border: 0;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+}
+
+.app-c-option-select__title {
+  font-family: "GDS Transport", arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 1.3157894737;
+  margin: 0;
+}
+
+.app-c-option-select__container-inner {
+  padding: 5px 13px;
+}
+
+.app-c-option-select__filter-input {
+  font-family: "GDS Transport", arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.25;
+  padding-left: 33px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' width='40' height='40'%3E%3Cpath d='M25.7 24.8L21.9 21c.7-1 1.1-2.2 1.1-3.5 0-3.6-2.9-6.5-6.5-6.5S10 13.9 10 17.5s2.9 6.5 6.5 6.5c1.6 0 3-.6 4.1-1.5l3.7 3.7 1.4-1.4zM12 17.5c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5-2 4.5-4.5 4.5-4.5-2-4.5-4.5z' fill='currentColor'%3E%3C/path%3E%3C/svg%3E") #fff no-repeat -5px -3px;
+}
+
+.app-c-option-select.js-opened .app-c-option-select__filter, .app-c-option-select.js-opened .app-c-option-select__container {
+  display: block;
+}
+
+.app-c-option-select__filter {
+  position: relative;
+  background: #fff;
+  padding-top: 0;
+  padding-right: 0;
+  padding-bottom: 10px;
+  padding-left: 13px;
+}
+
+.js-enabled .app-c-option-select__heading {
+  position: relative;
+  padding: 10px 8px 5px 0px;
+  border: none;
+  margin: 0;
+}
+
+.app-c-option-select__container {
+  position: relative;
+  max-height: 225px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.app-c-option-select__selected-counter {
+  font-family: "GDS Transport", arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4285714286;
+  color: #0b0c0c;
+  margin-top: 3px;
+}
+
+.gem-c-radios .gem-c-radios__legend--hidden, .gem-c-checkboxes .gem-c-checkboxes__legend--hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  -webkit-clip-path: inset(50%) !important;
+  clip-path: inset(50%) !important;
+  border: 0 !important;
+  white-space: nowrap !important;
+}
+
+.gem-c-radios__list, .gem-c-checkboxes__list {
+  padding-left: 0;
+  margin: 0
+}
+
+.gem-c-radios__divider, .gem-c-checkboxes__divider {
+  font-family: "GDS Transport", arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #0b0c0c;
+  list-style-type: none;
+  margin-bottom: 10px;
+  text-align: center;
+  width: 40px
+}
+
+/* GOV.UK search filtering summary section */
+.app-c-filter-summary {
+  padding-bottom: 5px;
+}
+
+.app-c-filter-summary > a {
+  font-size: 1rem;
+  line-height: 1.25;
+}
+@media (min-width: 40.0625em) {
+  .app-c-filter-summary {
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+  }
+}
+
+.app-c-filter-summary__heading {
+  margin-top: 15px; 
+  margin-bottom: 10px;
+  font-family: "GDS Transport", arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+@media (min-width: 40.0625em) {
+  .app-c-filter-summary__heading {
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+  }
+}
+
+.app-c-filter-summary__remove-filters {
+  list-style-type: none;
+  margin-block-start: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.app-c-filter-summary__remove-filter {
+  border: 2px solid #1d70b8;
+  border-radius: .3125em;
+  padding: 5px 10px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  color: #1d70b8;
+  background-color: #ffffff;
+  font-family: "GDS Transport", arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  cursor: pointer;
+}
+.app-c-filter-summary__remove-filter:focus {
+  background-color: #fd0;
+  outline: 2px #0b0c0c solid;
+  outline-offset: 0;
+  border-color: #0b0c0c;
+}
+.app-c-filter-summary__remove-filter:hover {
+  outline: 1px #0b0c0c solid;
+  outline-offset: 0;
+  border-color: #0b0c0c;
+}
+.app-c-filter-summary__remove-filter::before {
+  margin-top: 1px;
+  content: "×";
+  padding-right: 5px;
+  font-size: 22px;
+}
