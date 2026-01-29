@@ -1,10 +1,8 @@
 'use client';
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import { useSession } from '@/lib/auth-client';
 
 const AccessDeniedPage: React.FC = () => {
-  const { data: session } = useSession();
   return (
     <>
       <Layout title="Access Denied" currentPage="access-denied">
