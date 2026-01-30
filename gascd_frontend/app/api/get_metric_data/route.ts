@@ -23,7 +23,13 @@ export async function POST(req: NextRequest) {
 
   const client = getAPIClient();
 
-  const metric_ids = queryParams.metric_ids;
+  const provided_metric_ids = queryParams.metric_ids || [];
+  const metric_ids = provided_metric_ids;
+
+  if (!metric_ids.length) {
+    return NextResponse.json({ error: `No metric ids` }, { status: 400 });
+  }
+
   const user_location_data = await getDefaultLocations(user);
   let location_data;
 
