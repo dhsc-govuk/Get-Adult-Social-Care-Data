@@ -12,6 +12,20 @@ export const mockSession: any = {
   },
 };
 
+export const mockSessionCareProvider: any = {
+  user: {
+    ...mockSession.user,
+    locationType: 'Care provider',
+  },
+};
+
+export const mockSessionInvalidLocationType: any = {
+  user: {
+    ...mockSession.user,
+    locationType: 'Invalid',
+  },
+};
+
 export const mockSessionUnregistered: any = {
   user: {
     ...mockSession.user,
@@ -43,6 +57,15 @@ export const mockSessionWithAnalytics: any = {
 export const mockSessionWithLocation: any = {
   user: {
     ...mockSession.user,
+    selectedLocationId: 'testlocation1',
+    selectedLocationDisplayName: 'My test location',
+  },
+};
+
+export const mockSessionWithLocationCareProvider: any = {
+  user: {
+    ...mockSession.user,
+    locationType: 'Care provider',
     selectedLocationId: 'testlocation1',
     selectedLocationDisplayName: 'My test location',
   },

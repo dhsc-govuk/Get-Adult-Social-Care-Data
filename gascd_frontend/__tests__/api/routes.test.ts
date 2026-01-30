@@ -5,6 +5,8 @@ import { GET as GetAvailableLocations } from '../../app/api/get_available_locati
 import { POST as SetSelectedLocation } from '../../app/api/set_selected_location/route';
 import {
   mockSession,
+  mockSessionCareProvider,
+  mockSessionInvalidLocationType,
   mockSessionUnregistered,
   mockSessionWithMultipleLocationIDs,
 } from '@/test-utils/test-utils';
@@ -190,5 +192,29 @@ describe('set selected locations', () => {
     expect(result.status).toBe(200);
     const data = await result.json();
     expect(data.status).toBe('OK');
+  });
+
+  it('accepts valid location ids for CP users', async () => {
+    mockGetSession.mockReturnValue(mockSessionCareProvider);
+
+    const req = new NextRequest('http://localhost/api/set_selected_location', {
+      method: 'POST',
+      body: JSON.stringify({ location_id: 'loc1' }),
+    });
+    const result = await SetSelectedLocation(req);
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    expect(data.status).toBe('OK');
+  });
+
+  it('blocks unknown user types', async () => {
+    mockGetSession.mockReturnValue(mockSessionInvalidLocationType);
+
+    const req = new NextRequest('http://localhost/api/set_selected_location', {
+      method: 'POST',
+      body: JSON.stringify({ location_id: 'loc1' }),
+    });
+    const result = await SetSelectedLocation(req);
+    expect(result.status).toBe(401);
   });
 });
