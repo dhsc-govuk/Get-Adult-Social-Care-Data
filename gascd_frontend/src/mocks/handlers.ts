@@ -63,10 +63,6 @@ export const handlers = [
     }
   ),
 
-  http.get(api_root + '/metric_locations/district/:code', () => {
-    return HttpResponse.json(locations_data.district);
-  }),
-
   http.get(api_root + '/metric_locations/local_authorities/:la_code', () => {
     return HttpResponse.json(locations_data.local_authority);
   }),

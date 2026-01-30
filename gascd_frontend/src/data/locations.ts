@@ -3,6 +3,8 @@ import { getAPIClient } from './dataAPI';
 import { User } from '@/lib/auth';
 import logger from '@/utils/logger';
 
+const ALLOWED_CP_USER_TYPES = ['Care provider', 'Care provider location'];
+
 export const getDefaultLocations = async (user: User) => {
   let selected_location_id = user.selectedLocationId;
   let location_type = user.locationType;
@@ -11,8 +13,8 @@ export const getDefaultLocations = async (user: User) => {
     logger.error(`No location details for user`);
     return [];
   }
-  if (location_type !== 'Care provider location') {
-    logger.error(`User is not a care provider`);
+  if (!ALLOWED_CP_USER_TYPES.includes(location_type)) {
+    logger.error(`User is not a care provider or care provider location`);
     return [];
   }
 

@@ -11,21 +11,8 @@ export const locations_data = {
     provider_name: 'Mock Care Provider',
     nominated_individual: 'John Doe',
     local_authority_code: 'E08000024',
-  },
-  district: {
-    code: 'E05001171',
-    display_name: 'Silksworth',
-    geo_data: {
-      latitude: 54.8798077426683,
-      longitude: -1.4036740441143998,
-      polygon: [
-        [-1.4247455227942605, 54.86912871879158],
-        [-1.4247455227942605, 54.88889158836046],
-        [-1.3785352992918785, 54.86912871879158],
-        [-1.3785352992918785, 54.88889158836046],
-      ],
-    },
-    local_authority_code: 'E08000024',
+    region_code: 'E12000001',
+    country_code: 'E92000001',
   },
   local_authority: {
     code: 'E08000024',
