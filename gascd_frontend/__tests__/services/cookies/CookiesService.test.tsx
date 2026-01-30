@@ -1,5 +1,7 @@
 import CookiesService from '@/services/cookies/CookiesService';
 
+vi.mock('@/services/analytics/analyticsService');
+
 describe('CookiesService', () => {
   it('Sets the consent cookie to be true', () => {
     CookiesService.setConsentCookieTrue();

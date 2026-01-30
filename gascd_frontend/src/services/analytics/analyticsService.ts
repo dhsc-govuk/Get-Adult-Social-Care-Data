@@ -56,5 +56,12 @@ class AnalyticsService {
       filename: filename,
     });
   }
+
+  // Anonymously track cookie opt-out events
+  public static async trackOptOut() {
+    const response = await fetch('/api/analytics/optout', {
+      method: 'POST',
+    });
+  }
 }
 export default AnalyticsService;
