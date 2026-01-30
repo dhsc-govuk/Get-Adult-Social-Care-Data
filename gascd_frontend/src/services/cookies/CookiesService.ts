@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import { COOKIE_CONSENT_NAME } from '@/constants';
+import AnalyticsService from '../analytics/analyticsService';
 
 class CookiesService {
   public static setConsentCookieTrue(): void {
@@ -10,6 +11,7 @@ class CookiesService {
     Cookies.set(COOKIE_CONSENT_NAME, 'false', { expires: 365 });
     Cookies.remove('ai_session');
     Cookies.remove('ai_user');
+    AnalyticsService.trackOptOut();
   }
 }
 

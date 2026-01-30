@@ -18,6 +18,6 @@ export const config = {
   runtime: 'nodejs', // Required for auth.api calls
   matcher: [
     // match all /api routes except /api/auth/*
-    '/api/((?!auth|checks).*)',
+    '/api/((?!auth|checks|analytics).*)',
   ],
 };

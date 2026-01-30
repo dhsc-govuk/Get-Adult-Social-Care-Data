@@ -7,9 +7,23 @@ import {
 export const TEST_CONNECTION_STRING =
   'InstrumentationKey=fake-connection-string';
 
+global.fetch = vi.fn();
+const fetchmock = fetch as vi.Mock;
+fetchmock.mockResolvedValue({
+  ok: true,
+  text: vi.fn().mockResolvedValue(''),
+});
+
 describe('AnalyticsService', () => {
   it('does not fail if no analytics are set up', () => {
     AnalyticsService.trackMetricView('my-metric');
+  });
+
+  it('tracks opt out events', async () => {
+    await AnalyticsService.trackOptOut();
+    expect(fetchmock).toHaveBeenCalledWith('/api/analytics/optout', {
+      method: 'POST',
+    });
   });
 
   it('tracks events with the correct location', () => {
