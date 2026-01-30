@@ -14,6 +14,15 @@ const USER_DATABASE_NAME = 'user';
 
 // Expected CSV headers:
 // name,email,location_id,location_type,source
+const REQUIRED_FIELDS = [
+  'name',
+  'email',
+  'location_id',
+  'location_type',
+  'source',
+];
+const ALLOWED_LOCATION_TYPES = ['Care provider', 'Care provider location'];
+
 async function run() {
   const csvPath = process.env.CSV_PATH;
   const isDryRun = (process.env.DRY_RUN || '').toLowerCase() === 'true';
@@ -44,10 +53,20 @@ async function run() {
       console.error('Existing user match: ', email_lower);
       import_errors = true;
     }
+    for (const field of REQUIRED_FIELDS) {
+      if (!row[field]) {
+        console.error('Missing field: ', email_lower, field);
+        import_errors = true;
+      }
+    }
+    if (!ALLOWED_LOCATION_TYPES.includes(row.location_type)) {
+      console.error('Invalid location type: ', email_lower, row.location_type);
+      import_errors = true;
+    }
   }
 
   if (import_errors) {
-    throw new Error('Existing users found in CSV. Please remove and re-run');
+    throw new Error('Errors found in CSV. Fix and re-run');
   }
 
   for (const row of records) {
