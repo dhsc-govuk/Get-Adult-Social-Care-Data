@@ -17,8 +17,11 @@ export async function GET() {
       },
       { status: 200 }
     );
-  } catch (error) {
-    logger.error(error);
+  } catch (error: any) {
+    logger.error(
+      'Healthcheck error. User DB Connection failed: ',
+      error?.message
+    );
     return NextResponse.json(
       {
         status: 'unhealthy',

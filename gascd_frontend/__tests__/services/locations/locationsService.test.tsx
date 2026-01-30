@@ -36,9 +36,7 @@ describe('LocationService', () => {
 
       const result = await LocationService.getLocations(query);
 
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/get_location_data?provider_location_id=${query}`
-      );
+      expect(fetch).toHaveBeenCalledWith(`/api/get_location_data`);
       expect(result).toEqual(mockLocations);
     });
 
@@ -54,55 +52,39 @@ describe('LocationService', () => {
     });
   });
 
-  describe('getLaLocations', () => {
-    const mockLocations: {} = { la_name: 'Suffolk', la_code: '1' };
-    const query = '123';
-
-    it('fetches and returns la locations successfully', async () => {
-      (fetch as vi.Mock).mockResolvedValue({
-        ok: true,
-        json: vi.fn().mockResolvedValue(mockLocations),
-      });
-
-      const result = await LocationService.getLaLocations(query);
-
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/get_la_location_data?la_code=${query}`
-      );
-      expect(result).toEqual(mockLocations);
-    });
-
-    it('throws an error when the fetch response is not ok', async () => {
-      (fetch as vi.Mock).mockResolvedValue({
-        ok: false,
-        statusText: 'Not Found',
-      });
-
-      await expect(LocationService.getLaLocations(query)).rejects.toThrow(
-        'Error fetching data: Not Found'
-      );
-    });
-  });
-
   describe('getAvailableLocations', () => {
-    const mockJsonResponse = [
-      {
-        metric_location_id: '1',
-        metric_location_name: 'Location A',
-      },
-      {
-        metric_location_id: '2',
-        metric_location_name: 'Location B',
-      },
-    ];
+    const mockJsonResponse = {
+      data: [
+        {
+          location_id: '1',
+          location_name: 'Location A',
+          provider_name: 'Provider A',
+          address: 'London',
+          la_name: 'London',
+        },
+        {
+          location_id: '2',
+          location_name: 'Location B',
+          provider_name: 'Provider A',
+          address: 'Edinburgh',
+          la_name: 'Edinburgh',
+        },
+      ],
+    };
     const mockLocations: AvailableLocation[] = [
       {
         location_id: '1',
-        location_name: 'Location A',
+        location_name: 'Location A (London)',
+        provider_name: 'Provider A',
+        address: 'London',
+        la_name: 'London',
       },
       {
         location_id: '2',
-        location_name: 'Location B',
+        location_name: 'Location B (Edinburgh)',
+        provider_name: 'Provider A',
+        address: 'Edinburgh',
+        la_name: 'Edinburgh',
       },
     ];
     const query = 'testlocation1';
@@ -113,11 +95,9 @@ describe('LocationService', () => {
         json: vi.fn().mockResolvedValue(mockJsonResponse),
       });
 
-      const result = await LocationService.getAvailableLocations(query);
+      const result = await LocationService.getAvailableLocations();
 
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/get_available_locations?provider_location_id=${query}`
-      );
+      expect(fetch).toHaveBeenCalledWith(`/api/get_available_locations`);
       expect(result).toEqual(mockLocations);
     });
 
@@ -129,9 +109,7 @@ describe('LocationService', () => {
 
       const result = await LocationService.getAvailableLocations();
 
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/get_available_locations?provider_location_id=${query}`
-      );
+      expect(fetch).toHaveBeenCalledWith(`/api/get_available_locations`);
       expect(result).toEqual(mockLocations);
     });
 
@@ -163,40 +141,6 @@ describe('LocationService', () => {
     });
   });
 
-  describe('getDefaultCPLocation', () => {
-    const providerLocationId: string = '1';
-    const locationType: string = 'LA';
-    const mockResponse = [{ metric_location_id: '123' }];
-
-    it('fetches and returns la locations successfully', async () => {
-      (fetch as vi.Mock).mockResolvedValue({
-        ok: true,
-        json: vi.fn().mockResolvedValue(mockResponse),
-      });
-
-      const result = await LocationService.getDefaultCPLocation(
-        providerLocationId,
-        locationType
-      );
-
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/get_available_locations?provider_location_id=${encodeURIComponent(providerLocationId)}&location_type=${encodeURIComponent(locationType)}`
-      );
-      expect(result).toEqual('123');
-    });
-
-    it('throws an error when the fetch response is not ok', async () => {
-      (fetch as vi.Mock).mockResolvedValue({
-        ok: false,
-        statusText: 'Not Found',
-      });
-
-      await expect(
-        LocationService.getDefaultCPLocation(providerLocationId, locationType)
-      ).rejects.toThrow('Error fetching data: Not Found');
-    });
-  });
-
   describe('getLocationNames', () => {
     const mockLocationData = {
       la_name: 'Suffolk',
@@ -211,13 +155,10 @@ describe('LocationService', () => {
       vi.spyOn(LocationService, 'getLocations').mockResolvedValue(
         mockLocationData as any
       );
-      vi.spyOn(LocationService, 'getLaLocations').mockResolvedValue(
-        mockLocationData as any
-      );
     });
 
     it('returns location names for present demand without care provider', async () => {
-      const result = await LocationService.getLocationNames(query, false, true);
+      const result = await LocationService.getLocationNames(query, false);
 
       expect(LocationService.getLocations).toHaveBeenCalledWith(query);
       expect(result).toEqual({
@@ -230,43 +171,13 @@ describe('LocationService', () => {
     });
 
     it('returns location names for present demand with care provider', async () => {
-      const result = await LocationService.getLocationNames(query, true, true);
+      const result = await LocationService.getLocationNames(query, true);
 
       expect(LocationService.getLocations).toHaveBeenCalledWith(query);
       expect(result).toEqual({
         CPLabel: 'Care Provider A',
         CountryLabel: 'United Kingdom',
         IndicatorLabel: 'Indicator',
-        LALabel: 'Suffolk',
-        RegionLabel: 'East of England',
-      });
-    });
-
-    it('returns location names for LA demand without care provider', async () => {
-      const result = await LocationService.getLocationNames(
-        query,
-        false,
-        false
-      );
-
-      expect(LocationService.getLaLocations).toHaveBeenCalledWith(query);
-      expect(result).toEqual({
-        CPLabel: 'N/A',
-        CountryLabel: 'United Kingdom',
-        IndicatorLabel: 'Location',
-        LALabel: 'Suffolk',
-        RegionLabel: 'East of England',
-      });
-    });
-
-    it('returns location names for LA demand with care provider', async () => {
-      const result = await LocationService.getLocationNames(query, true, false);
-
-      expect(LocationService.getLaLocations).toHaveBeenCalledWith(query);
-      expect(result).toEqual({
-        CPLabel: 'Care Provider A',
-        CountryLabel: 'United Kingdom',
-        IndicatorLabel: 'Location',
         LALabel: 'Suffolk',
         RegionLabel: 'East of England',
       });
@@ -287,13 +198,10 @@ describe('LocationService', () => {
       vi.spyOn(LocationService, 'getLocations').mockResolvedValue(
         mockLocationData as any
       );
-      vi.spyOn(LocationService, 'getLaLocations').mockResolvedValue(
-        mockLocationData as any
-      );
     });
 
     it('returns location names for present demand without care provider', async () => {
-      const result = await LocationService.getLocationIds(query, false, true);
+      const result = await LocationService.getLocationIds(query, false);
 
       expect(LocationService.getLocations).toHaveBeenCalledWith(query);
       expect(result).toEqual([
@@ -305,36 +213,11 @@ describe('LocationService', () => {
     });
 
     it('returns location names for present demand with care provider', async () => {
-      const result = await LocationService.getLocationIds(query, true, true);
+      const result = await LocationService.getLocationIds(query, true);
 
       expect(LocationService.getLocations).toHaveBeenCalledWith(query);
       expect(result).toEqual([
         'Indicator',
-        'ABC',
-        'Suffolk',
-        'East of England',
-        'United Kingdom',
-      ]);
-    });
-
-    it('returns location names for LA demand without care provider', async () => {
-      const result = await LocationService.getLocationIds(query, false, false);
-
-      expect(LocationService.getLaLocations).toHaveBeenCalledWith(query);
-      expect(result).toEqual([
-        'Location',
-        'Suffolk',
-        'East of England',
-        'United Kingdom',
-      ]);
-    });
-
-    it('returns location names for LA demand with care provider', async () => {
-      const result = await LocationService.getLocationIds(query, true, false);
-
-      expect(LocationService.getLaLocations).toHaveBeenCalledWith(query);
-      expect(result).toEqual([
-        'Location',
         'ABC',
         'Suffolk',
         'East of England',
@@ -358,9 +241,7 @@ describe('LocationService', () => {
 
       const result = await LocationService.getLasForRegion(query);
 
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/get_las_for_region?region_code=${query}`
-      );
+      expect(fetch).toHaveBeenCalledWith(`/api/get_las_for_region`);
       expect(result).toEqual(mockLocations);
     });
   });

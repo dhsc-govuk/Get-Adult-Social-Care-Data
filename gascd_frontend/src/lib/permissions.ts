@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { cache } from 'react';
 import { User, auth } from '@/lib/auth';
 import { headers } from 'next/headers';

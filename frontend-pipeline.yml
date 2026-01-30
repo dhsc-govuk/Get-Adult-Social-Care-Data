@@ -81,6 +81,9 @@ stages:
           - script: npm run openapi:lint
             displayName: Check OpenAPI config
             workingDirectory: gascd_frontend
+          - script: npm run openapi:types:check
+            displayName: Check OpenAPI generated types are up to date
+            workingDirectory: gascd_frontend
           - script: npm run test -- --reporter=default --reporter=junit --outputFile=junit.xml
             displayName: Run vitest Tests
             workingDirectory: gascd_frontend

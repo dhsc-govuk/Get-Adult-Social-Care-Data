@@ -6,14 +6,15 @@ import { authClient } from '@/lib/auth-client';
 export interface AvailableLocation {
   location_id: string;
   location_name: string;
+  address: string;
+  provider_name: string;
+  la_name: string;
 }
 
 class LocationService {
   public static async getLocations(query: string): Promise<Locations> {
     try {
-      const response = await fetch(
-        `/api/get_location_data?provider_location_id=${query}`
-      );
+      const response = await fetch('/api/get_location_data');
 
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
@@ -28,44 +29,18 @@ class LocationService {
     }
   }
 
-  public static async getLaLocations(query: string): Promise<Locations> {
+  public static async getAvailableLocations(): Promise<AvailableLocation[]> {
     try {
-      const response = await fetch(
-        `/api/get_la_location_data?la_code=${query}`
-      );
+      const response = await fetch(`/api/get_available_locations`);
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
 
-      return await response.json();
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error occurred';
-      LogService.logEvent(`Error in getLaLocations: ${errorMessage}`);
-      throw new Error(`Failed to retrieve location data: ${errorMessage}`);
-    }
-  }
-
-  public static async getAvailableLocations(
-    provider_location_id?: string
-  ): Promise<AvailableLocation[]> {
-    if (!provider_location_id) {
-      const session = await authClient.getSession();
-      provider_location_id = session?.data?.user?.locationId || '';
-    }
-    try {
-      const response = await fetch(
-        `/api/get_available_locations?provider_location_id=${provider_location_id}`
-      );
-      if (!response.ok) {
-        throw new Error(`Error fetching data: ${response.statusText}`);
-      }
-
-      let results = await response.json();
-      let availableLocations = results.map((item: any) => {
+      let availableLocations = (await response.json()).data;
+      availableLocations = availableLocations.map((loc: AvailableLocation) => {
         return {
-          location_id: item.metric_location_id,
-          location_name: item.metric_location_name,
+          ...loc,
+          location_name: loc.location_name + ` (${loc.la_name})`,
         };
       });
       return availableLocations.sort(
@@ -82,53 +57,14 @@ class LocationService {
     }
   }
 
-  public static async checkCPLocation(
-    cpLocationID: string,
-    userLocationId: string
-  ) {
-    // Verify that the user can actually view the given cpLocation
-    // XXX - this should ideally be handled by a completely different permissions setup
-    const valid_locations = await this.getAvailableLocations(userLocationId);
-    const valid_location_ids = valid_locations.map((item) => item.location_id);
-    return valid_location_ids.includes(cpLocationID);
-  }
-
-  public static async getDefaultCPLocation(
-    providerLocationId: string,
-    locationType: string
-  ): Promise<any> {
-    try {
-      const response = await fetch(
-        `/api/get_available_locations?provider_location_id=${encodeURIComponent(providerLocationId)}&location_type=${encodeURIComponent(locationType)}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`Error fetching data: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      return data[0].metric_location_id;
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error occurred';
-      LogService.logEvent(`Error in getDefaultCPLocation: ${errorMessage}`);
-      throw new Error(
-        `Failed to retrieve available location data: ${errorMessage}`
-      );
-    }
-  }
-
   public static async getLocationNames(
     query: string,
-    careProvider: boolean,
-    presentDemand: boolean = true
+    careProvider: boolean
   ): Promise<LocationNames> {
-    const data = presentDemand
-      ? await this.getLocations(query)
-      : await this.getLaLocations(query);
+    const data = await this.getLocations(query);
 
     const locationNames: LocationNames = {
-      IndicatorLabel: presentDemand ? 'Indicator' : 'Location',
+      IndicatorLabel: 'Indicator',
       CPLabel:
         careProvider && data.provider_location_name
           ? data.provider_location_name
@@ -143,15 +79,12 @@ class LocationService {
 
   public static async getLocationIds(
     query: string,
-    CareProvider: boolean,
-    presentDemand: boolean = true
+    CareProvider: boolean
   ): Promise<string[]> {
-    const data = presentDemand
-      ? await this.getLocations(query)
-      : await this.getLaLocations(query);
+    const data = await this.getLocations(query);
 
     const locationIds = [
-      presentDemand ? 'Indicator' : 'Location',
+      'Indicator',
       data.la_code,
       data.region_code,
       data.country_code,
@@ -188,9 +121,18 @@ class LocationService {
       if (!session?.data?.user) {
         throw new Error('No user session found');
       }
-      await authClient.updateUser({
-        selectedLocationId: locationId,
-        selectedLocationDisplayName: locationName,
+      const response = await fetch(`/api/set_selected_location`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ location_id: locationId }),
+      });
+      // Force the session cache to refresh
+      await authClient.getSession({
+        query: {
+          disableCookieCache: true,
+        },
       });
     } catch (error: unknown) {
       const errorMessage =
@@ -202,16 +144,16 @@ class LocationService {
 
   public static async getLasForRegion(regionCode: string): Promise<any> {
     try {
-      const response = await fetch(
-        `/api/get_las_for_region?region_code=${encodeURIComponent(regionCode)}`
-      );
+      const response = await fetch('/api/get_las_for_region');
 
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
 
       const data = await response.json();
-      return data;
+      return data.sort((item1: any, item2: any) =>
+        item1.la_name.localeCompare(item2.la_name)
+      );
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';

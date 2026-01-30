@@ -33,6 +33,19 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-1').should('not.be.visible');
     cy.get('#chart-1').should('not.be.visible');
 
+    cy.get('#numbers-table-metrics-button').click();
+    cy.get('#dhsc-filter--content1').should('be.visible');
+    cy.wait(300);
+    cy.get(
+      'input[type="radio"][value="bedcount_per_hundred_thousand_adults_total"]'
+    )
+      .check()
+      .should('be.checked');
+    cy.get('#numbers-table-metrics-submit-button').click();
+    cy.contains('Bed type: All bed types').should('be.visible');
+    cy.contains('Bed type: All bed types').click();
+    cy.contains('Bed type: All bed types').should('not.exist');
+
     cy.contains('Care home bed types');
 
     cy.get('a[href*="table-2"]').click();
@@ -58,6 +71,19 @@ describe('Data pages exist and contain data', () => {
     cy.get('#download-2').should('be.visible');
     cy.get('#table-2').should('not.be.visible');
     cy.get('#textSummary-2').should('not.be.visible');
+
+    cy.get('#type-table-metrics-button').click();
+    cy.get('#dhsc-filter--content1').should('be.visible');
+    cy.wait(300);
+    cy.get(
+      'input[type="checkbox"][value="bedcount_per_hundred_thousand_adults_total"]'
+    )
+      .check()
+      .should('be.checked');
+    cy.get('#type-table-metrics-submit-button').click();
+    cy.contains('Bed type: All bed types').should('be.visible');
+    cy.contains('Bed type: All bed types').click();
+    cy.contains('Bed type: All bed types').should('not.exist');
 
     cy.contains('Beds per care home and occupancy levels');
 
@@ -95,6 +121,19 @@ describe('Data pages exist and contain data', () => {
       );
     cy.get('#table-3').should('not.be.visible');
     cy.get('#textSummary-3').should('not.be.visible');
+
+    cy.get('#type-chart-metrics-button').click();
+    cy.get('#dhsc-filter--content1').should('be.visible');
+    cy.wait(300);
+    cy.get(
+      'input[type="checkbox"][value="bedcount_per_hundred_thousand_adults_total"]'
+    )
+      .check()
+      .should('be.checked');
+    cy.get('#type-chart-metrics-submit-button').click();
+    cy.contains('Bed type: All bed types').should('be.visible');
+    cy.contains('Bed type: All bed types').click();
+    cy.contains('Bed type: All bed types').should('not.exist');
   });
 
   it('Should navigate to the Unpaid care page and check the contents', () => {

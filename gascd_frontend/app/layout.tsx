@@ -7,6 +7,9 @@ import { headers } from 'next/headers';
 import type { Metadata } from 'next';
 import Header from '@/components/common/header/Header';
 import ServiceName from '@/components/common/service-name/ServiceName';
+import { config } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+config.autoAddCss = false;
 
 export const viewport: Viewport = {
   themeColor: '#1d70b8',
@@ -24,6 +27,16 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Server-side mocking is set up here (rather than instrumentation.ts)
+  // to avoid issues with hot-reloading
+  if (
+    process.env.NEXT_RUNTIME === 'nodejs' &&
+    process.env.MOCK_SERVER === 'true'
+  ) {
+    const { server } = await import('@/mocks/node');
+    server.listen({ onUnhandledRequest: 'bypass' });
+  }
+
   const browserInsightsConnectionString =
     process.env.BROWSER_APPLICATIONINSIGHTS_CONNECTION_STRING || '';
   const ONELOGIN_HOME_URL = process.env.ONELOGIN_HOME_URL || '';

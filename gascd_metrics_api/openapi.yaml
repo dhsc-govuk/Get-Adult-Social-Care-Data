@@ -553,7 +553,7 @@ components:
           type: string
           description: "A user-friendly name for the metric group."
           example: "General nursing"
-        metrics:
+        metric_filters:
           type: array
           description: "A list of Metric filters belonging to this Metric Group"
           items:
@@ -578,6 +578,9 @@ components:
         location_code:
           type: string
           description: "The unique identifier for the location."
+        location_type:
+          type: string
+          description: "The type of the location."
         series_start_date:
           type: string
           format: date

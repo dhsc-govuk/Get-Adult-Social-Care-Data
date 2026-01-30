@@ -18,7 +18,7 @@ namespace api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.1")
+                .HasAnnotation("ProductVersion", "10.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "postgis");
@@ -173,6 +173,8 @@ namespace api.Migrations
 
                     b.HasIndex("MetricFk");
 
+                    b.HasIndex("LocationCode", "LocationType");
+
                     b.ToTable("bedcount");
                 });
 
@@ -226,6 +228,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("bedcount_per_hundred_thousand_adults");
                 });
@@ -281,6 +285,8 @@ namespace api.Migrations
 
                     b.HasIndex("MetricFk");
 
+                    b.HasIndex("LocationCode", "LocationType");
+
                     b.ToTable("dementia_estimated_diagnosis_rate_65over");
                 });
 
@@ -334,6 +340,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("dementia_prevalence_65over");
                 });
@@ -389,6 +397,8 @@ namespace api.Migrations
 
                     b.HasIndex("MetricFk");
 
+                    b.HasIndex("LocationCode", "LocationType");
+
                     b.ToTable("dementia_qof_prevalence");
                 });
 
@@ -442,6 +452,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("dementia_register_65over_per100k");
                 });
@@ -497,6 +509,8 @@ namespace api.Migrations
 
                     b.HasIndex("MetricFk");
 
+                    b.HasIndex("LocationCode", "LocationType");
+
                     b.ToTable("learning_disability_prevalence");
                 });
 
@@ -550,6 +564,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("median_bed_count");
                 });
@@ -605,6 +621,8 @@ namespace api.Migrations
 
                     b.HasIndex("MetricFk");
 
+                    b.HasIndex("LocationCode", "LocationType");
+
                     b.ToTable("median_occupancy");
                 });
 
@@ -658,6 +676,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("num_clients_long_term_support");
                 });
@@ -713,6 +733,8 @@ namespace api.Migrations
 
                     b.HasIndex("MetricFk");
 
+                    b.HasIndex("LocationCode", "LocationType");
+
                     b.ToTable("occupancy_rates");
                 });
 
@@ -766,6 +788,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("perc_18_64");
                 });
@@ -821,6 +845,8 @@ namespace api.Migrations
 
                     b.HasIndex("MetricFk");
 
+                    b.HasIndex("LocationCode", "LocationType");
+
                     b.ToTable("perc_65over");
                 });
 
@@ -874,6 +900,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("perc_75over");
                 });
@@ -929,6 +957,8 @@ namespace api.Migrations
 
                     b.HasIndex("MetricFk");
 
+                    b.HasIndex("LocationCode", "LocationType");
+
                     b.ToTable("perc_85over");
                 });
 
@@ -982,6 +1012,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("perc_general_health");
                 });
@@ -1037,6 +1069,8 @@ namespace api.Migrations
 
                     b.HasIndex("MetricFk");
 
+                    b.HasIndex("LocationCode", "LocationType");
+
                     b.ToTable("perc_household_ownership");
                 });
 
@@ -1090,6 +1124,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("perc_households_deprivation_deprived");
                 });
@@ -1145,6 +1181,8 @@ namespace api.Migrations
 
                     b.HasIndex("MetricFk");
 
+                    b.HasIndex("LocationCode", "LocationType");
+
                     b.ToTable("perc_households_one_person");
                 });
 
@@ -1198,6 +1236,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("perc_population_disability");
                 });
@@ -1253,6 +1293,8 @@ namespace api.Migrations
 
                     b.HasIndex("MetricFk");
 
+                    b.HasIndex("LocationCode", "LocationType");
+
                     b.ToTable("perc_unpaid_care_provider");
                 });
 
@@ -1306,6 +1348,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("total_population");
                 });
@@ -1399,6 +1443,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CareProviderFk");
+
+                    b.HasIndex("Code");
 
                     b.HasIndex("GeoDataFk");
 
