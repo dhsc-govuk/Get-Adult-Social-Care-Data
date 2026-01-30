@@ -36,9 +36,6 @@ const mockUpdateTable = vi.spyOn(authDB, 'updateTable').mockReturnValue({
 vi.mock('server-only', () => ({
   default: vi.fn(),
 }));
-vi.mock('../../src/data/dbModule', () => ({
-  default: vi.fn(),
-}));
 
 const { server } = await import('@/mocks/node');
 
