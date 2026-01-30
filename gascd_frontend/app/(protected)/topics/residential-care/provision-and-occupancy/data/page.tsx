@@ -790,29 +790,34 @@ export default function ProvisionAndOccupancyPage() {
           textSummary={
             <>
               <h4 className="govuk-heading-s">Text summary</h4>
-              <p className="govuk-body">
-                {locationNamesCP.CPLabel} is a provider with{' '}
-                <strong>
-                  {finalCpData.find(
-                    (metric) =>
-                      metric.metric_id === 'bedcount_total' &&
-                      metric.location_type === 'CareProviderLocation'
-                  )?.data_point ?? 'Loading...'}{' '}
-                </strong>
-                total beds, compared to the median (
-                {finalCpData.find(
-                  (metric) =>
-                    metric.metric_id === 'median_bed_count_total' &&
-                    metric.location_type === 'Regional'
-                )?.data_point ?? 'Loading...'}{' '}
-                beds) in {locationNamesCP.LALabel}.
-              </p>
-              <ConditionalText
-                data={finalCpData}
-                ColumnHeaders={locationNamesCP}
-                section="CapacityCareProvider"
-                metric_Id="median_occupancy_total"
-              ></ConditionalText>
+              {session?.user.selectedLocationCategory ===
+                CARE_HOME_RESIDENTIAL_CATEGORY && (
+                <>
+                  <p className="govuk-body">
+                    {locationNamesCP.CPLabel} is a provider with{' '}
+                    <strong>
+                      {finalCpData.find(
+                        (metric) =>
+                          metric.metric_id === 'bedcount_total' &&
+                          metric.location_type === 'CareProviderLocation'
+                      )?.data_point ?? 'Loading...'}{' '}
+                    </strong>
+                    total beds, compared to the median (
+                    {finalCpData.find(
+                      (metric) =>
+                        metric.metric_id === 'median_bed_count_total' &&
+                        metric.location_type === 'Regional'
+                    )?.data_point ?? 'Loading...'}{' '}
+                    beds) in {locationNamesCP.LALabel}.
+                  </p>
+                  <ConditionalText
+                    data={finalCpData}
+                    ColumnHeaders={locationNamesCP}
+                    section="CapacityCareProvider"
+                    metric_Id="median_occupancy_total"
+                  ></ConditionalText>
+                </>
+              )}
               <ConditionalText
                 data={finalCpData}
                 ColumnHeaders={locationNamesCP}
