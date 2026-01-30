@@ -1,9 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Data.Models.Reference;
 
-[Table("care_provider_locations")]
+[Table("care_provider_locations"), Index(nameof(Code))]
 public class CareProviderLocation : SearchableEntity
 {
     [Column("name"), StringLength(100)]
