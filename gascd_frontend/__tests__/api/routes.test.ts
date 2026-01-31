@@ -117,6 +117,54 @@ describe('test get metrics', () => {
     const data = await result.json();
     expect(data).toEqual({ error: 'No metric ids' });
   });
+
+  it('throws error if no metrics', async () => {
+    mockGetSession.mockReturnValue(mockSessionWithLocation);
+    const req = new NextRequest('http://localhost/api/get_metric_data', {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'NotAQuery',
+        metric_ids: ['mymetric'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(400);
+    const data = await result.json();
+    expect(data).toEqual({ error: 'Unsupported metric query type: NotAQuery' });
+  });
+
+  it('throws error if metric ids are invalid', async () => {
+    mockGetSession.mockReturnValue(mockSessionWithLocation);
+    const req = new NextRequest('http://localhost/api/get_metric_data', {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'UserQuery',
+        metric_ids: ['invalid.metric'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(400);
+    const data = await result.json();
+    expect(data).toEqual({ error: 'No metric ids' });
+  });
+
+  it('passes on valid query type and metrics', async () => {
+    mockGetSession.mockReturnValue(mockSessionWithLocation);
+    const req = new NextRequest('http://localhost/api/get_metric_data', {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'UserQuery',
+        metric_ids: ['valid_but_missing'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    expect(data).toEqual([]);
+  });
 });
 
 describe('test available locations', () => {

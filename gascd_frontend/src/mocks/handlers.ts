@@ -20,9 +20,11 @@ export const handlers = [
     return HttpResponse.json(metric_filters_data);
   }),
 
-  http.get<{ metric_id: string }>(
-    api_root + '/metrics/:metric_id',
+  http.post<{ metric_id: string }>(
+    api_root + '/metrics/:metric_id/data',
     ({ request, params }) => {
+      // XXX this handler is currently wrong and needs to be updated
+      // to the api spec
       const url = new URL(request.url);
       const location_ids =
         url.searchParams.get('location_ids')?.split(',') || [];
