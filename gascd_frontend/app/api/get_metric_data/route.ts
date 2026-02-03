@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
   const metric_ids = validateMetricIds(provided_metric_ids);
 
   if (!metric_ids.length) {
+    logger.error('No valid metric IDs provided');
     return NextResponse.json({ error: `No metric ids` }, { status: 400 });
   }
 
