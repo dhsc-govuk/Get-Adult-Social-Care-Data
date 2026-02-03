@@ -10,7 +10,7 @@ describe('DataIndicatorDetails', () => {
     });
     expect(headingElement).toBeInTheDocument();
 
-    const bodyTextElement = screen.getByText(/Care homes data indicators/i);
+    const bodyTextElement = screen.getByText(/Care provision data indicators/i);
     expect(bodyTextElement).toBeInTheDocument();
 
     const firstLink = screen.getByRole('link', {
