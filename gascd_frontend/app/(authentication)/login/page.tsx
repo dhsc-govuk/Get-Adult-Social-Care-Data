@@ -75,16 +75,16 @@ const LoginPage: React.FC = () => {
             </p>
             <h2 className="govuk-heading-m">Beta phase testing</h2>
             <p className="govuk-body">
-              Get Adult Social Care Data is a beta phase test of the service
-              being shared with a limited number of care home providers for
-              testing purposes only (private beta). Get adult social care data
-              provides information, such as on current provision and capacity
-              based on the latest information given to us by providers. The
-              information is presented only to assist in testing the
-              accessibility of information presented in this way, and not for
-              commercial purposes. In agreeing to participate you have agreed
-              not to publish, copy, share or otherwise reproduce this
-              information or utilise this service for any commercial purposes.
+              Get Adult Social Care Data is a private beta phase test of the
+              service being shared with care providers for testing purposes
+              only. Get adult social care data provides information, such as on
+              current provision and capacity based on the latest information
+              given to us by providers. The information is presented only to
+              assist in testing the accessibility of information presented in
+              this way, and not for commercial purposes. In agreeing to
+              participate you have agreed not to publish, copy, share or
+              otherwise reproduce this information or utilise this service for
+              any commercial purposes.
             </p>
             <p className="govuk-inset-text">
               This service does not constitute advice, and the information
