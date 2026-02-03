@@ -16,85 +16,55 @@ const PrivacyPage = () => {
 
             <h2 className="govuk-heading-m">Summary of initiative or policy</h2>
             <p className="govuk-body">
-              The Data Access Project will design, develop and deliver a new
-              digital service called Get adult social care data to improve
-              access to adult social care data for key stakeholders such as care
-              providers, local authorities, academic researchers and government
-              analysts. The aim of the service is to help you make better
-              strategic decisions to improve care outcomes.
+              The Data Access Project includes the design, development and
+              delivery of a new digital service called &quot;Get Adult Social
+              Care Data&quot; to improve access to adult social care data for
+              all key stakeholders in the sector (i.e. care providers, local
+              authorities, academic researchers and government analysts) who
+              need it to make better decisions to improve the quality of care
+              for individuals. The service processes information drawn through
+              APIs from existing data sets to show ready-made analytical insight
+              on one place on GOV.UK and provides easy access to the data held
+              on different sites.
             </p>
             <p className="govuk-body">
-              The service will process information drawn from existing datasets
-              to show ready-made analytical insight on one place on GOV.UK and
-              provide easy access to the raw data held on different sites.
-            </p>
-            <p className="govuk-body">
-              To ensure that users of the service can only access information
-              that you are legally allowed to see under current data sharing
-              agreements, you will need to apply for a user account. To create
-              and maintain the account, we will collect and store some personal
-              information. This information will be submitted by you, the user
-              of the service.
+              In order to ensure that users of the service can only access
+              information that they are legally allowed to see under current
+              data sharing agreements, we ask users to apply for a user account.
+              To create and maintain the account, we collect some personal
+              information from them and store this on the tool. This information
+              is submitted by the user who wishes to have an account.
             </p>
 
             <h2 className="govuk-heading-m">Data controller</h2>
             <p className="govuk-body">
               The Department of Health and Social Care (DHSC) is the data
-              controller for the Get adult social care data service.
+              controller for the GASCD service.
             </p>
 
             <h2 className="govuk-heading-m">What personal data we collect</h2>
             <p className="govuk-body">
-              The personal data we collect from you includes:
-            </p>
-            <ul className="govuk-list govuk-list--bullet">
-              <li>your name</li>
-              <li>your email address</li>
-              <li>the name and location of your employer or organisation</li>
-              <li>
-                any questions, queries or feedback you share, including your
-                email address if you contact us via email
-              </li>
-              <li>
-                your Internet Protocol (IP) address, and details of which
-                version of web browser you used
-              </li>
-              <li>
-                information on how you use the service, using cookies and page
-                tagging techniques
-              </li>
-            </ul>
-            <p className="govuk-body">
-              When you provide your consent, we use{' '}
-              <a
-                href="https://azure.microsoft.com/en-us/products/monitor"
-                className="govuk-link"
-              >
-                Azure App Insights
-              </a>{' '}
-              cookies to collect information about how you use the service. This
-              includes IP addresses.
+              The following information is collected when you register for a
+              user account with GASCD: your name, your email address, the name
+              and location of your employer or organisation.
             </p>
             <p className="govuk-body">
-              Azure App Insights processes information about:
+              Users may be prompted to complete surveys before and/or after
+              accessing the service, as part of the survey, name and email
+              address will be collected for each user.
             </p>
-            <ul className="govuk-list govuk-list--bullet">
-              <li>the pages you visit in the service</li>
-              <li>how long you spend on each page</li>
-              <li>how you got to the service</li>
-              <li>what you click on while you’re using the service</li>
-            </ul>
-
             <h2 className="govuk-heading-m">How we use your data (purposes)</h2>
             <p className="govuk-body">
-              We collect your personal information directly from you (via
-              email). We save this data in a spreadsheet and use it to create
-              your user account and manage your access to Get adult social care
-              data.{' '}
+              We collect your personal information directly from you (via email)
+              and it is saved in a spreadsheet so that we can create your user
+              account to access GASCD and provide you with access to the secure
+              platform. We also use your personal information for data analysis
+              to understand user demographics of GASCD.
             </p>
             <p className="govuk-body">
-              We also use your personal information for data analysis, to
-              understand user demographics of Get adult social care data.
+              We may also ask you to complete surveys to gather feedback on
+              GASCD, which will prompt you to provide your name and email
+              address.
             </p>
 
             <h2 className="govuk-heading-m">
@@ -102,8 +72,8 @@ const PrivacyPage = () => {
             </h2>
             <p className="govuk-body">
               Under Article 6 of the United Kingdom General Data Protection
-              Regulation (UK GDPR), the lawful basis we rely on for processing
-              personal data is:
+              Regulation (UK GDPR), the lawful bases we rely on for processing
+              personal data are:
             </p>
             <ul className="govuk-list govuk-list--bullet">
               <li>
@@ -122,7 +92,8 @@ const PrivacyPage = () => {
               <abbr title="Department of Health and Social Care">DHSC</abbr> and
               is bound by data protection and security obligations. The supplier
               uses this information to create user accounts which will allow
-              access to the Get adult social care data service.
+              access to the GASCD service and they will also access the survey
+              results to process and analyse them.
             </p>
 
             <h2 className="govuk-heading-m">
@@ -139,28 +110,38 @@ const PrivacyPage = () => {
               review accounts every 6 months. If you have not signed in during
               the past year, your account and data will be deleted.
             </p>
+            <p className="govuk-body">
+              The personal data collected through surveys will be kept for up to
+              one year to ensure your survey responses are analysed and
+              processed appropriately.
+            </p>
 
             <h2 className="govuk-heading-m">How we keep your data secure</h2>
             <p className="govuk-body">
-              We receive your data via an email inbox which is only accessible
-              by individuals working on Get adult social care data.
+              We receive your data via email which is only accessible by
+              individuals working on the data access project. We save your
+              personal information in an Excel spreadsheet which has restricted
+              access; this means that only our technical supplier and{' '}
+              <abbr title="Department of Health and Social Care">DHSC</abbr>{' '}
+              employees working on GASCD are able to access it.
             </p>
             <p className="govuk-body">
-              We save your personal information in an Excel spreadsheet which
-              has restricted access; this means that only our technical supplier
-              and <abbr title="Department of Health and Social Care">DHSC</abbr>{' '}
-              employees working on Get adult social care data are able to access
-              it.{' '}
+              Similarly, your personal data submitted through the survey is
+              saved on an Excel spreadsheet which is only accessed by our
+              technical supplier and{' '}
+              <abbr title="Department of Health and Social Care">DHSC</abbr>{' '}
+              employees.
             </p>
 
             <h2 className="govuk-heading-m">Your rights as a data subject</h2>
             <p className="govuk-body">
               By law, data subjects have a number of rights, and this processing
               does not take away or reduce these rights under the UK General
-              Data Protection Regulation and the UK Data Protection Act 2018.
+              Data Protection Regulation and the UK Data Protection Act 2018
+              applies.
             </p>
             <p className="govuk-body">These rights are:</p>
-            <ul className="govuk-list govuk-list--number">
+            <ol className="govuk-list govuk-list--number">
               <li>
                 The right to get copies of information &ndash; individuals have
                 the right to ask for a copy of any information about them that
@@ -189,7 +170,7 @@ const PrivacyPage = () => {
                 absolute right, and continued use of the information may be
                 necessary, with individuals being advised if this is the case.
               </li>
-            </ul>
+            </ol>
 
             <h2 className="govuk-heading-m">Comments or complaints</h2>
             <p className="govuk-body">
@@ -254,7 +235,7 @@ const PrivacyPage = () => {
             <h2 className="govuk-heading-m">Changes to this policy</h2>
             <p className="govuk-body">
               This privacy notice is kept under regular review. This privacy
-              notice was last updated on 13 June 2025.
+              notice was last updated on 13/06/2025.
             </p>
           </div>
         </div>
