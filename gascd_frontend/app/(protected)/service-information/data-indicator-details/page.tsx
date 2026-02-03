@@ -22,7 +22,7 @@ export default function DataIndicatorDetailsPage() {
             collected and any limitations to consider when using the data.
           </p>
           <h2 className="govuk-heading-m govuk-!-margin-top-9">
-            Care homes data indicators
+            Care provision data indicators
           </h2>
           <ul className="gem-c-cards__list gem-c-cards__list--one-column">
             <DataLinkCard
