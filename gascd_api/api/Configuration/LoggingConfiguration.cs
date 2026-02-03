@@ -1,5 +1,3 @@
-using FastEndpoints;
-
 namespace api.Configuration;
 
 public static class LoggingConfiguration

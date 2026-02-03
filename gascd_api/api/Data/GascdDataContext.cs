@@ -2,9 +2,7 @@
 using api.Data.Models.Metrics.TimeSeries;
 using api.Data.Models.Reference;
 using api.Data.Shared;
-using api.Endpoints.Metrics.Data;
 using Microsoft.EntityFrameworkCore;
-using static api.Data.Shared.MetricCodeEnum;
 
 namespace api.Data;
 

@@ -67,14 +67,14 @@ public class ReferenceMapper
         };
     }
 
-    public GeoDataDto? GeoDataToGeoDataDto(GeoData? geoData)
+    private GeoDataDto? GeoDataToGeoDataDto(GeoData? geoData)
     {
         return geoData == null ? null : new GeoDataDto
         {
             Latitude = geoData.Coordinate.Y,
             Longitude = geoData.Coordinate.X,
             Polygon = geoData.BoundingPolygon?.Coordinates
-                .Select(c => new GeoDataDto.CoordinateDto { Latitude = c.X, Longitude = c.Y }).ToList() ?? new()
+                .Select(c => new GeoDataDto.CoordinateDto { Latitude = c.X, Longitude = c.Y }).ToList() ?? []
         };
     }
 
@@ -105,7 +105,7 @@ public class ReferenceMapper
         };
     }
 
-    public GetRegionResponse.LocalAuthority LocalAuthorityToRegionLocalAuthority(LocalAuthority la)
+    private GetRegionResponse.LocalAuthority LocalAuthorityToRegionLocalAuthority(LocalAuthority la)
     {
         return new GetRegionResponse.LocalAuthority { LaCode = la.Code, LaName = la.Name };
     }

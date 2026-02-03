@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.MetricLocation.Countries;
 
-public class GetCountryEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetCountryEndpoint> logger) : Endpoint<GetCountryRequest, GetCountryResponse>
+public class GetCountryEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetCountryEndpoint> logger)
+    : Endpoint<GetCountryRequest, GetCountryResponse>
 {
 
     public override void Configure()

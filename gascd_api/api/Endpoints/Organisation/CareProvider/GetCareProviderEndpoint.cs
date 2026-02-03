@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.Organisation.CareProvider;
 
-public class GetCareProviderEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetCareProviderEndpoint> logger) : Endpoint<GetCareProviderRequest, GetCareProviderResponse>
+public class GetCareProviderEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetCareProviderEndpoint> logger)
+    : Endpoint<GetCareProviderRequest, GetCareProviderResponse>
 {
     public override void Configure()
     {
