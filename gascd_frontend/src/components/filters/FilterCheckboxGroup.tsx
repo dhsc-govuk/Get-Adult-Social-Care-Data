@@ -170,6 +170,11 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                 >
                   Bed type
                 </label>
+                {selectedFilters.length > 0 && (
+                  <div className="app-c-option-select__selected-counter js-selected-counter">
+                    <p>{selectedFilters.length} selected</p>
+                  </div>
+                )}
                 <input
                   id="input-bedtype-checkboxes"
                   className="app-c-option-select__filter-input govuk-input"
