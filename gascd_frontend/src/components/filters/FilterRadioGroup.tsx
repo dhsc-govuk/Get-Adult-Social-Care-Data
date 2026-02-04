@@ -35,7 +35,11 @@ const FilterRadioGroup: React.FC<Props> = ({
 
       const storedData = localStorage.getItem(filterType);
       if (storedData) {
-        setSelectedFilter(JSON.parse(storedData));
+        let filterFromStorage: TotalBedsFilters = {
+          metric_id: JSON.parse(storedData).metric_id,
+          filter_bedtype: JSON.parse(storedData).filter_bedtype,
+        };
+        setSelectedFilter(filterFromStorage);
         setDisplayFilter(JSON.parse(storedData).filter_bedtype);
         setShowActiveFilters(true);
       } else {
@@ -45,8 +49,12 @@ const FilterRadioGroup: React.FC<Props> = ({
     getFilters();
   }, []);
 
-  const handleChange = (filter: TotalBedsFilters) => {
-    setSelectedFilter(filter);
+  const handleChange = (metric_id: string, filter_bedtype: string) => {
+    let newFilter: TotalBedsFilters = {
+      metric_id: metric_id,
+      filter_bedtype: filter_bedtype,
+    };
+    setSelectedFilter(newFilter);
   };
 
   const handleSubmit = () => {
@@ -75,12 +83,10 @@ const FilterRadioGroup: React.FC<Props> = ({
   };
 
   const setDefaultFilter = () => {
-    if (filterType === 'numbers-table-metrics') {
-      setSelectedFilter({
-        metric_id: 'bedcount_per_100000_adults_total',
-        filter_bedtype: 'All bed types',
-      });
-    }
+    setSelectedFilter({
+      metric_id: 'bedcount_per_hundred_thousand_adults_total',
+      filter_bedtype: 'All bed types',
+    });
   };
 
   return (
@@ -155,7 +161,12 @@ const FilterRadioGroup: React.FC<Props> = ({
                               defaultChecked={
                                 selectedFilter?.metric_id === filter.metric_id
                               }
-                              onChange={() => handleChange(filter)}
+                              onChange={() =>
+                                handleChange(
+                                  filter.metric_id,
+                                  filter.filter_bedtype
+                                )
+                              }
                             />
                             <label
                               className="govuk-label govuk-radios__label"
