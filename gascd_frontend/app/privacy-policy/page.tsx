@@ -235,7 +235,7 @@ const PrivacyPage = () => {
             <h2 className="govuk-heading-m">Changes to this policy</h2>
             <p className="govuk-body">
               This privacy notice is kept under regular review. This privacy
-              notice was last updated on 13/06/2025.
+              notice was last updated on 12th January 2026.
             </p>
           </div>
         </div>
