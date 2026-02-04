@@ -27,11 +27,12 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     []
   );
   const [displayFilters, setDisplayFilters] = useState<string[] | null>(null);
+  const [showClearAll, setShowClearAll] = useState(false);
 
   useEffect(() => {
     const getFilters = async () => {
       const filters: TotalBedsFilters[] =
-        await IndicatorFetchService.getFilters('');
+        await IndicatorFetchService.getFilters();
       setFilters(filters);
       setSearchedFilters(filters);
 
@@ -42,31 +43,31 @@ const FilterCheckboxGroup: React.FC<Props> = ({
         setDisplayFilters(parsedData.map((filter) => filter.filter_bedtype));
         filters.forEach((filter) => {
           if (
-            parsedData.some(
-              (stored) => stored.filter_bedtype === filter.filter_bedtype
-            )
+            parsedData.some((stored) => stored.metric_id === filter.metric_id)
           ) {
             filter.checked = true;
           }
         });
         setShowActiveFilters(true);
-      } else {
-        setSelectedFilters(filters);
       }
     };
     getFilters();
   }, []);
 
+  useEffect(() => {
+    setShowClearAll(selectedFilters.length > 0);
+  }, [selectedFilters]);
+
   const handleCheckboxChange = (metric_id: string, checked: boolean) => {
-    const newFilters = [...filters];
+    const newFilters: TotalBedsFilters[] = [...filters];
     let newItem = newFilters.findIndex((item) => item.metric_id === metric_id);
     newFilters[newItem].checked = checked;
     setFilters(newFilters);
-
     setSelectedFilters(
-      filters
+      newFilters
         .filter((filter) => filter.checked)
         .map((filter) => ({
+          checked: filter.checked,
           metric_id: filter.metric_id,
           filter_bedtype: filter.filter_bedtype,
         }))
@@ -96,6 +97,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     setShowFilters(false);
     setShowActiveFilters(false);
     setDisplayFilters(null);
+    setSelectedFilters([]);
     filters.map((filter) => (filter.checked = false));
     updateMethod();
   };
@@ -233,12 +235,14 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                     >
                       Apply
                     </button>
-                    <button
-                      className="govuk-button govuk-button--secondary"
-                      onClick={() => clearFilters()}
-                    >
-                      Clear all
-                    </button>
+                    {showClearAll && (
+                      <button
+                        className="govuk-button govuk-button--secondary"
+                        onClick={() => clearFilters()}
+                      >
+                        Clear all
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

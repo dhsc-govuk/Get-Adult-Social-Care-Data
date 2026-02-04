@@ -1,12 +1,9 @@
 import { Indicator } from '@/data/interfaces/Indicator';
-import { Location } from '@/data/interfaces/Location';
-import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
-import { MetaData } from '@/data/interfaces/MetaData';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
 
 class IndicatorFetchService {
-  public static async getFilters(metric_id: string) {
+  public static async getFilters() {
     const response = await fetch('/api/get_all_total_beds_filters');
     if (!response.ok) {
       throw new Error(`Failed to fetch data: ${response.statusText}`);
