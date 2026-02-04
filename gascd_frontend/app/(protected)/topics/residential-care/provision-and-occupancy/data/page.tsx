@@ -108,7 +108,7 @@ export default function ProvisionAndOccupancyPage() {
   // headers for tables and charts
   const bedTypeRowHeadersDefault = {
     bedcount_per_hundred_thousand_adults_total: 'All bed types',
-    bedcount_per_hundred_thousand_adults_community_care: 'Community care',
+    bedcount_per_hundred_thousand_adults_community_care: 'Community care bed',
     bedcount_per_hundred_thousand_adults_dementia_nursing: 'Dementia nursing',
     bedcount_per_hundred_thousand_adults_dementia_residential:
       'Dementia residential',
