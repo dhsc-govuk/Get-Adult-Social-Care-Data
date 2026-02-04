@@ -1,4 +1,3 @@
-using api.Logging;
 using FastEndpoints;
 
 namespace api.Configuration;

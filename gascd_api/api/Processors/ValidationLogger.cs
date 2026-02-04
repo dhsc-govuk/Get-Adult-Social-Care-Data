@@ -1,7 +1,7 @@
 using FastEndpoints;
 using FluentValidation.Results;
 
-namespace api.Logging;
+namespace api.Processors;
 
 public class ValidationLogger(ILogger<ValidationLogger> logger) : IGlobalPostProcessor
 {
