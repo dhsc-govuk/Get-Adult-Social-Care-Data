@@ -84,7 +84,7 @@ const FilterRadioGroup: React.FC<Props> = ({
 
   const setDefaultFilter = () => {
     setSelectedFilter({
-      metric_id: 'bedcount_per_100000_adults_total',
+      metric_id: 'bedcount_per_hundred_thousand_adults_total',
       filter_bedtype: 'All bed types',
     });
   };
@@ -159,8 +159,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                               type="radio"
                               value={filter.metric_id}
                               defaultChecked={
-                                selectedFilter?.filter_bedtype ===
-                                filter.filter_bedtype
+                                selectedFilter?.metric_id === filter.metric_id
                               }
                               onChange={() =>
                                 handleChange(
