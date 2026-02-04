@@ -652,6 +652,8 @@ export interface components {
             metric_code?: string;
             /** @description The display name for the metric. */
             metric_name?: string;
+            /** @description A user-friendly name for the metric filter. */
+            filter_type?: string;
             /** @description The format of the metric's data, e.g., 'Percentage', 'Currency'. */
             data_type?: string;
             /** @description The source of the data for this metric. */
