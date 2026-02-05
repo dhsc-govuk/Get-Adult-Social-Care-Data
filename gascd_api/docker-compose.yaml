@@ -5,8 +5,8 @@
       context: .
       dockerfile: api/Dockerfile
       args:
-        - NEXT_PUBLIC_GASCD_GIT_HASH=test
-        - NEXT_PUBLIC_GASCD_GIT_TAG=1.0.0
+        - LATEST_GASCD_GIT_HASH=dev-build
+        - LATEST_GASCD_GIT_TAG=1.0.0
     ports:
       - "5050:5050"
     environment:
