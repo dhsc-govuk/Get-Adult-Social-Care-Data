@@ -51,9 +51,9 @@ const ConsentPage: React.FC = () => {
 
                 <div id="marketing-consent-hint" className="govuk-hint">
                   <p className="govuk-body">
-                    We can send you emails about &lsquo;Get adult social care
-                    data&rsquo;, including new features and opportunities to
-                    take part in user research.
+                    We can send you occasional emails about &lsquo;Get adult
+                    social care data&rsquo;, including new features and
+                    opportunities to take part in user research.
                   </p>
                   <p className="govuk-body">
                     <a
@@ -88,7 +88,7 @@ const ConsentPage: React.FC = () => {
                       className="govuk-label govuk-radios__label"
                       htmlFor="marketing-consent"
                     >
-                      Yes, I want to receive email updates
+                      Yes, I want to receive occasional email updates
                     </label>
                   </div>
 
