@@ -5,12 +5,7 @@ namespace api.Tests.Endpoints.Geo.Postcode;
 
 public class GetPostcodeValidatorTests : IDisposable
 {
-    private GetPostcodeValidator _validator;
-
-    public GetPostcodeValidatorTests()
-    {
-        _validator = new GetPostcodeValidator();
-    }
+    private GetPostcodeValidator _validator = new();
 
     [Theory]
     [InlineData("N14BJ")]

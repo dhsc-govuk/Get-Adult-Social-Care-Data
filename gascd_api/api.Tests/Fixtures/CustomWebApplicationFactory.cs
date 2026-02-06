@@ -15,7 +15,7 @@ internal class CustomWebAppFactory(PostgreSqlContainer container) : WebApplicati
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureAppConfiguration((context, configBuilder) =>
+        builder.ConfigureAppConfiguration((_, configBuilder) =>
         {
             var connStr = container.GetConnectionString();
             var inMemorySettings = new Dictionary<string, string?>
@@ -23,7 +23,6 @@ internal class CustomWebAppFactory(PostgreSqlContainer container) : WebApplicati
                 ["ConnectionStrings:DefaultConnection"] = connStr,
                 ["AuthApiKey"] = "test-secret-key",
             };
-
             configBuilder.AddInMemoryCollection(inMemorySettings);
         });
     }

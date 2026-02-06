@@ -5,7 +5,6 @@ using FastEndpoints;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
-using Xunit.Internal;
 using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.MetricLocations.CPLocations;
@@ -45,17 +44,17 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         response.ProviderName.ShouldBe("Bupa");
         response.Category.ShouldBe("Residential");
         response.NominatedIndividual.ShouldBe("Mr. Ice Cool");
-        response.GeoData?.Latitude.ShouldBe(53.425);
-        response.GeoData?.Longitude.ShouldBe(-2.88);
-        List<GeoDataDto.CoordinateDto> expectedPolygon = new()
-        {
-            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 },
-            new GeoDataDto.CoordinateDto { Longitude = -2.55, Latitude = 52.26 },
-            new GeoDataDto.CoordinateDto { Longitude = -2.65, Latitude = 53.73 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 54.73 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 }
-        };
-        response.GeoData?.Polygon.ShouldBe(expectedPolygon);
+        response.GeoData!.Latitude.ShouldBe(53.425);
+        response.GeoData!.Longitude.ShouldBe(-2.88);
+        List<GeoDataDto.CoordinateDto> expectedPolygon =
+        [
+            new() { Longitude = -3.3, Latitude = 55.26 },
+            new() { Longitude = -2.55, Latitude = 52.26 },
+            new() { Longitude = -2.65, Latitude = 53.73 },
+            new() { Longitude = -3.3, Latitude = 54.73 },
+            new() { Longitude = -3.3, Latitude = 55.26 }
+        ];
+        response.GeoData!.Polygon.ShouldBe(expectedPolygon);
         response.LocalAuthorityCode.ShouldBe(null);
         response.LocalAuthorityName.ShouldBe(null);
         response.RegionCode.ShouldBe(null);
@@ -79,17 +78,17 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         response.ProviderName.ShouldBe("Bupa");
         response.Category.ShouldBe("Residential");
         response.NominatedIndividual.ShouldBe("Mr. Ice Cool");
-        response.GeoData?.Latitude.ShouldBe(53.425);
-        response.GeoData?.Longitude.ShouldBe(-2.88);
-        List<GeoDataDto.CoordinateDto> expectedPolygon = new()
-        {
-            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 },
-            new GeoDataDto.CoordinateDto { Longitude = -2.55, Latitude = 52.26 },
-            new GeoDataDto.CoordinateDto { Longitude = -2.65, Latitude = 53.73 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 54.73 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 }
-        };
-        response.GeoData?.Polygon.ShouldBe(expectedPolygon);
+        response.GeoData!.Latitude.ShouldBe(53.425);
+        response.GeoData!.Longitude.ShouldBe(-2.88);
+        List<GeoDataDto.CoordinateDto> expectedPolygon =
+        [
+            new() { Longitude = -3.3, Latitude = 55.26 },
+            new() { Longitude = -2.55, Latitude = 52.26 },
+            new() { Longitude = -2.65, Latitude = 53.73 },
+            new() { Longitude = -3.3, Latitude = 54.73 },
+            new() { Longitude = -3.3, Latitude = 55.26 }
+        ];
+        response.GeoData!.Polygon.ShouldBe(expectedPolygon);
         response.LocalAuthorityCode.ShouldBe("E08000014");
         response.LocalAuthorityName.ShouldBe("Liverpool");
         response.RegionCode.ShouldBe("E12000002");
@@ -172,6 +171,12 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         GetFromJson(jObject, "geo_data.polygon[3].latitude").ShouldBe("54.73");
         GetFromJson(jObject, "geo_data.polygon[4].longitude").ShouldBe("-3.3");
         GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("55.26");
+        GetFromJson(jObject, "local_authority_code").ShouldBe(null);
+        GetFromJson(jObject, "local_authority_name").ShouldBe(null);
+        GetFromJson(jObject, "region_code").ShouldBe(null);
+        GetFromJson(jObject, "region_name").ShouldBe(null);
+        GetFromJson(jObject, "country_code").ShouldBe(null);
+        GetFromJson(jObject, "country_name").ShouldBe(null);
     }
 
     [Fact]

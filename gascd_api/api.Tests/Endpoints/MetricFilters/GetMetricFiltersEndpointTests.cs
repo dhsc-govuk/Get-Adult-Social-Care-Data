@@ -53,13 +53,10 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
 
         response.MetricGroupCode.ShouldBe("metric_group_code_2");
         response.MetricGroupDisplayName.ShouldBe("Metric group 2 display name");
-        List<GetMetricFiltersResponse.MetricFilterDto> expectedMetricFilters = new()
-        {
-            new GetMetricFiltersResponse.MetricFilterDto
-            {
-                MetricCode = "metric_code_3", FilterType = "Metric 3 filter info"
-            },
-        };
+        List<GetMetricFiltersResponse.MetricFilterDto> expectedMetricFilters =
+        [
+            new() { MetricCode = "metric_code_3", FilterType = "Metric 3 filter info" }
+        ];
         response.MetricFilters.ShouldBe(expectedMetricFilters);
     }
 

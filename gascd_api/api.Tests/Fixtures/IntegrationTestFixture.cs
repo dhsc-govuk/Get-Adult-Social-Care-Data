@@ -19,6 +19,5 @@ public class IntegrationTestFixture : IAsyncLifetime
     public async ValueTask DisposeAsync()
     {
         await PostgresContainer.DisposeAsync();
-
     }
 }

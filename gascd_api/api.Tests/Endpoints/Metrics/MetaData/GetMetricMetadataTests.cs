@@ -65,7 +65,7 @@ public class GetMetricMetadataTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task NonExistent_MetricCode_Input()
     {
-        var (httpResponse, problemDetails) =
+        var (httpResponse, _) =
             await _client.GETAsync<GetMetricMetadataEndpoint, GetMetricMetadataRequest, ProblemDetails>(
                 new GetMetricMetadataRequest { MetricCode = "non_existant_code" });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
@@ -73,7 +73,7 @@ public class GetMetricMetadataTests : IClassFixture<IntegrationTestFixture>
 
     [Theory]
     [InlineData("a", "Metric code has a minimum length of 3")]
-    [InlineData("a-very-long-name-over-one-hundred-characters-long-a-very-long-name-over-one-hundred-characters-long-a-very-long-name-over-one-hundred-characters-long-a-very-long-name-over-one-hundred-characters-long", "Metric code has a maximum length of 100")]
+    [InlineData("this-is-a-very-long-metric-code-without-any-possible-chance-of-being-valid-as-it-is-just-far-too-long", "Metric code has a maximum length of 100")]
     public async Task Invalid_MetricCode_Input(string metricCode, string expectedErrorMessage)
     {
         var (httpResponse, problemDetails) =

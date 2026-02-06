@@ -107,7 +107,7 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     [Fact]
     public async Task NonExistent_CareProviderCode_Input()
     {
-        var (httpResponse, problemDetails) =
+        var (httpResponse, _) =
             await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
                 new GetCareProviderRequest { CareProviderCode = "1-123456" });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
@@ -124,5 +124,4 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Locations.Count.ShouldBe(0);
     }
-
 }

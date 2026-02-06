@@ -5,12 +5,7 @@ namespace api.Tests.Endpoints.MetricLocations.Countries;
 
 public class GetCountryValidatorTests : IDisposable
 {
-    private GetCountryValidator _validator;
-
-    public GetCountryValidatorTests()
-    {
-        _validator = new GetCountryValidator();
-    }
+    private GetCountryValidator _validator = new();
 
     [Theory]
     [InlineData("E11")]

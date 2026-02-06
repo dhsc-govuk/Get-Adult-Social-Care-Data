@@ -699,8 +699,7 @@ BEGIN
            (care_provider_location_id_4, 'Katherines Ears','Care home', care_provider_id_4, null, 'Katherines Ears, Liverpool, ME10 1QZ', 'Katherine', la_id, '1-222222225', CURRENT_TIMESTAMP),
            (care_provider_location_id_5, 'Katherines Noses','Care home', care_provider_id_4, null, 'Katherines Noses, Liverpool, ME11 1QZ', null, la_id, '1-222222226', CURRENT_TIMESTAMP);
 
-
-INSERT INTO metric_groups (id, code, loaded_datetime, display_name)
+    INSERT INTO metric_groups (id, code, loaded_datetime, display_name)
     VALUES (metric_group_id, 'metric_group_code', CURRENT_TIMESTAMP, 'Metric group display name' ),
            (metric_group_id_2, 'metric_group_code_2', CURRENT_TIMESTAMP, 'Metric group 2 display name' ),
            (metric_group_id_3, 'metric_group_code_3', CURRENT_TIMESTAMP,'Metric group 3 display name'  ),
@@ -726,7 +725,6 @@ INSERT INTO metric_groups (id, code, loaded_datetime, display_name)
            (perc_population_disability_metric_group_id, 'perc_population_disability',  CURRENT_TIMESTAMP,  'metric group display name' ),
            (perc_unpaid_care_provider_metric_group_id, 'perc_unpaid_care_provider',  CURRENT_TIMESTAMP,  'metric group display name' ),
            (total_population_metric_group_id, 'total_population',  CURRENT_TIMESTAMP, 'metric group display name' );
-
 
     INSERT INTO metrics (id, code, metric_group_fk, filter_type, numerator_description, denominator_description, data_source, data_type, frequency, loaded_datetime)
     VALUES (metric_id, 'metric_code', metric_group_id, 'Metric filter info', 'This is a numerator 2', 'This is a denominator 2', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP), 
@@ -771,8 +769,6 @@ INSERT INTO metric_groups (id, code, loaded_datetime, display_name)
            (4, bedcount_total_metric_id, 'E92000001', 'CareProviderLocation', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5,8.8], 8.8, CURRENT_TIMESTAMP),
            (5, bedcount_total_metric_id, 'E92000001', 'National', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5,9.9], 9.9, CURRENT_TIMESTAMP);
 
-
-
     INSERT INTO bedcount_per_hundred_thousand_adults (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, bphta_total_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.7], 6.7, CURRENT_TIMESTAMP),
            (3, bphta_total_dementia_nursing_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 7.1], 7.1, CURRENT_TIMESTAMP),
@@ -794,14 +790,12 @@ INSERT INTO metric_groups (id, code, loaded_datetime, display_name)
            (4, dementia_estimated_diagnosis_rate_65over_metric_id, 'E08000014', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP),
            (5, dementia_estimated_diagnosis_rate_65over_metric_id, '1-222222222', 'CareProviderLocation', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP);
 
-
     INSERT INTO dementia_prevalence_65over (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, dementia_prevalence_65over_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.9], 6.9, CURRENT_TIMESTAMP),
            (2, dementia_prevalence_65over_metric_id, 'E92000002', 'National', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.7], 6.7, CURRENT_TIMESTAMP),
            (3, dementia_prevalence_65over_metric_id, 'E12000003', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP),
            (4, dementia_prevalence_65over_metric_id, 'E08000014', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP),
            (5, dementia_prevalence_65over_metric_id, '1-222222222', 'CareProviderLocation', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP);
-
 
     INSERT INTO dementia_qof_prevalence (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, dementia_qof_prevalence_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.11], 6.11, CURRENT_TIMESTAMP),
@@ -810,18 +804,15 @@ INSERT INTO metric_groups (id, code, loaded_datetime, display_name)
            (4, dementia_qof_prevalence_metric_id, 'E08000014', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP),
            (5, dementia_qof_prevalence_metric_id, '1-222222222', 'CareProviderLocation', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP);
 
-
-
-INSERT INTO dementia_register_65over_per100k (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
-    VALUES (1, dementia_register_65over_per100k_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.12], 6.12, CURRENT_TIMESTAMP),
-           (2, dementia_register_65over_per100k_metric_id, 'E92000002', 'National', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.7], 6.7, CURRENT_TIMESTAMP),
-           (3, dementia_register_65over_per100k_metric_id, 'E12000003', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP),
-           (4, dementia_register_65over_per100k_metric_id, 'E08000014', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP),
-           (5, dementia_register_65over_per100k_metric_id, '1-222222222', 'CareProviderLocation', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP);
-
-
-INSERT INTO learning_disability_prevalence (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
-    VALUES (1, learning_disability_prevalence_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.13], 6.13, CURRENT_TIMESTAMP);
+    INSERT INTO dementia_register_65over_per100k (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
+        VALUES (1, dementia_register_65over_per100k_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.12], 6.12, CURRENT_TIMESTAMP),
+               (2, dementia_register_65over_per100k_metric_id, 'E92000002', 'National', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.7], 6.7, CURRENT_TIMESTAMP),
+               (3, dementia_register_65over_per100k_metric_id, 'E12000003', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP),
+               (4, dementia_register_65over_per100k_metric_id, 'E08000014', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP),
+               (5, dementia_register_65over_per100k_metric_id, '1-222222222', 'CareProviderLocation', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP);
+    
+    INSERT INTO learning_disability_prevalence (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
+        VALUES (1, learning_disability_prevalence_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.13], 6.13, CURRENT_TIMESTAMP);
     
     INSERT INTO median_bed_count (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, median_bed_count_total_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.6], 6.6, CURRENT_TIMESTAMP),

@@ -6,12 +6,7 @@ namespace api.Tests.Endpoints.MetricLocations.LocalAuthorities;
 
 public class GetLocalAuthorityValidatorTests : IDisposable
 {
-    private GetLocalAuthorityValidator _validator;
-
-    public GetLocalAuthorityValidatorTests()
-    {
-        _validator = new GetLocalAuthorityValidator();
-    }
+    private GetLocalAuthorityValidator _validator = new();
 
     [Theory]
     [InlineData("E11")]

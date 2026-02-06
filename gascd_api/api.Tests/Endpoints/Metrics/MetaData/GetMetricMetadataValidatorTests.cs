@@ -5,12 +5,7 @@ namespace api.Tests.Endpoints.Metrics.MetaData;
 
 public class GetMetricMetadataValidatorTests : IDisposable
 {
-    private GetMetricMetadataValidator _validator;
-
-    public GetMetricMetadataValidatorTests()
-    {
-        _validator = new GetMetricMetadataValidator();
-    }
+    private GetMetricMetadataValidator _validator = new();
 
     [Theory]
     [InlineData("metric")]
@@ -26,7 +21,7 @@ public class GetMetricMetadataValidatorTests : IDisposable
     [Theory]
     [InlineData("co", "Metric code has a minimum length of 3")]
     [InlineData(" ", "Metric code is required")]
-    [InlineData("a-very-long-name-over-one-hundred-characters-long-a-very-long-name-over-one-hundred-characters-long-a-very-long-name-over-one-hundred-characters-long-a-very-long-name-over-one-hundred-characters-long", "Metric code has a maximum length of 100")]
+    [InlineData("this-is-a-very-long-metric-code-without-any-possible-chance-of-being-valid-as-it-is-just-far-too-long", "Metric code has a maximum length of 100")]
     public void InvalidLACode_ShouldBeInvalid(string cplCode, string expectedErrorMessage)
     {
         var request = new GetMetricMetadataRequest { MetricCode = cplCode };

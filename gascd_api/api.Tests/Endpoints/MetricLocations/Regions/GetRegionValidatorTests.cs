@@ -6,12 +6,7 @@ namespace api.Tests.Endpoints.MetricLocations.Regions;
 
 public class GetRegionValidatorTests : IDisposable
 {
-    private GetRegionValidator _validator;
-
-    public GetRegionValidatorTests()
-    {
-        _validator = new GetRegionValidator();
-    }
+    private GetRegionValidator _validator = new();
 
     [Theory]
     [InlineData("E11")]

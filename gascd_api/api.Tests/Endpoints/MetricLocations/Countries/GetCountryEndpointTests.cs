@@ -39,17 +39,17 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Code.ShouldBe("E92000001");
         response.DisplayName.ShouldBe("England");
-        response.GeoData?.Latitude.ShouldBe(52.561928);
-        response.GeoData?.Longitude.ShouldBe(-1.464854);
-        List<GeoDataDto.CoordinateDto> expectedPolygon = new()
-        {
-            new GeoDataDto.CoordinateDto { Longitude = -3.8, Latitude = 50.0 },
-            new GeoDataDto.CoordinateDto { Longitude = -1.8, Latitude = 53.9 },
-            new GeoDataDto.CoordinateDto { Longitude = -1.8, Latitude = 55.25 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.9, Latitude = 52.25 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.8, Latitude = 50.0 }
-        };
-        response.GeoData?.Polygon.ShouldBe(expectedPolygon);
+        response.GeoData!.Latitude.ShouldBe(52.561928);
+        response.GeoData!.Longitude.ShouldBe(-1.464854);
+        List<GeoDataDto.CoordinateDto> expectedPolygon =
+        [
+            new() { Longitude = -3.8, Latitude = 50.0 },
+            new() { Longitude = -1.8, Latitude = 53.9 },
+            new() { Longitude = -1.8, Latitude = 55.25 },
+            new() { Longitude = -3.9, Latitude = 52.25 },
+            new() { Longitude = -3.8, Latitude = 50.0 }
+        ];
+        response.GeoData!.Polygon.ShouldBe(expectedPolygon);
     }
 
     [Fact]
@@ -63,7 +63,6 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
         response.Code.ShouldBe("E92000002");
         response.DisplayName.ShouldBe("Scotland");
         response.GeoData.ShouldBe(null);
-
     }
 
     [Fact]
@@ -86,7 +85,6 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
         GetFromJson(jObject, "geo_data.polygon[3].latitude").ShouldBe("52.25");
         GetFromJson(jObject, "geo_data.polygon[4].longitude").ShouldBe("-3.8");
         GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("50");
-
     }
 
     [Theory]
@@ -106,10 +104,9 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task NonExistent_CountryCode_Input()
     {
-        var (httpResponse, problemDetails) =
+        var (httpResponse, _) =
             await _client.GETAsync<GetCountryEndpoint, GetCountryRequest, ProblemDetails>(
                 new GetCountryRequest { CountryCode = "1-134343434" });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
-
 }

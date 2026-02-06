@@ -39,17 +39,17 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Code.ShouldBe("E12000002");
         response.DisplayName.ShouldBe("North West");
-        response.GeoData?.Latitude.ShouldBe(54.075);
-        response.GeoData?.Longitude.ShouldBe(-2.75);
-        List<GeoDataDto.CoordinateDto> expectedPolygon = new()
-        {
-            new GeoDataDto.CoordinateDto { Longitude = -3.8, Latitude = 52.9 },
-            new GeoDataDto.CoordinateDto { Longitude = -1.8, Latitude = 52.9 },
-            new GeoDataDto.CoordinateDto { Longitude = -1.8, Latitude = 55.25 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.8, Latitude = 55.25 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.8, Latitude = 52.9 }
-        };
-        response.GeoData?.Polygon.ShouldBe(expectedPolygon);
+        response.GeoData!.Latitude.ShouldBe(54.075);
+        response.GeoData!.Longitude.ShouldBe(-2.75);
+        List<GeoDataDto.CoordinateDto> expectedPolygon =
+        [
+            new() { Longitude = -3.8, Latitude = 52.9 },
+            new() { Longitude = -1.8, Latitude = 52.9 },
+            new() { Longitude = -1.8, Latitude = 55.25 },
+            new() { Longitude = -3.8, Latitude = 55.25 },
+            new() { Longitude = -3.8, Latitude = 52.9 }
+        ];
+        response.GeoData!.Polygon.ShouldBe(expectedPolygon);
         response.CountryCode.ShouldBe("E92000001");
         response.CountryName.ShouldBe("England");
         response.LocalAuthorities.Count.ShouldBe(3);
@@ -128,4 +128,14 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
+    [Fact]
+    public async Task GetRegion_ReturnsErrorWhenProvidedWhiteSpace()
+    {
+        HttpResponseMessage response = await _client.GetAsync("api/metric_locations/regions/ /", TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+
+        JObject? json = await ParseJsonResponse<JObject>(response);
+        GetFromJson(json, "errors[0].name").ShouldBe("region_code");
+        GetFromJson(json, "errors[0].reason").ShouldBe("Region code is required");
+    }
 }

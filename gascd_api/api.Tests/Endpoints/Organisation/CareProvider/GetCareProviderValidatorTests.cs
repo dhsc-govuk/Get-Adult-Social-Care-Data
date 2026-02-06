@@ -5,12 +5,7 @@ namespace api.Tests.Endpoints.Organisation.CareProvider;
 
 public class GetCareProviderValidatorTests : IDisposable
 {
-    private GetCareProviderValidator _validator;
-
-    public GetCareProviderValidatorTests()
-    {
-        _validator = new GetCareProviderValidator();
-    }
+    private GetCareProviderValidator _validator = new();
 
     [Fact]
     public void ValidCareProviderId()
