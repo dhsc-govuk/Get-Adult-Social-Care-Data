@@ -54,8 +54,8 @@ const ConsentPage: React.FC = () => {
                 <div id="marketing-consent-hint" className="govuk-hint">
                   <p className="govuk-body">
                     From time to time, we&rsquo;d like to send you news about
-                    the GASCD service such as new features and opportunities to
-                    take part in user research.
+                    the GASCD service such as new features and ways you can help
+                    us improve the service.
                   </p>
                   <p className="govuk-body">
                     Read the GASCD service{' '}
