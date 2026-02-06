@@ -3,7 +3,7 @@ using FluentValidation.TestHelper;
 
 namespace api.Tests.Endpoints.MetricFilters;
 
-public class GetMetricFiltersValidatorTests : IDisposable
+public class GetMetricFiltersValidatorTests
 {
     private GetMetricFiltersValidator _validator = new();
 
@@ -29,10 +29,5 @@ public class GetMetricFiltersValidatorTests : IDisposable
         var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(r => r.MetricGroupCode)
             .WithErrorMessage(expectedErrorMessage);
-    }
-
-    public void Dispose()
-    {
-
     }
 }

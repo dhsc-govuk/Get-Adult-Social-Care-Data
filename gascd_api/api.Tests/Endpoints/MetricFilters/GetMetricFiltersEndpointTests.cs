@@ -1,6 +1,6 @@
 using api.Endpoints.MetricFilters;
-using api.Tests.Fixtures;
 using FastEndpoints;
+using FastEndpoints.Testing;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
@@ -8,21 +8,13 @@ using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.MetricFilters;
 
-public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixture>
+public class GetMetricFiltersEndpointTests(App app) : TestBase<App>
 {
-    private readonly HttpClient _client;
-
-    public GetMetricFiltersEndpointTests(IntegrationTestFixture fixture)
-    {
-        var factory = new CustomWebAppFactory(fixture.PostgresContainer);
-        _client = factory.CreateClient();
-    }
-
     [Fact]
     public async Task GetMetricFilters_ReturnsOk()
     {
         var (httpCode, _) =
-            await _client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, GetMetricFiltersResponse>(
+            await app.Client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, GetMetricFiltersResponse>(
                 new GetMetricFiltersRequest { MetricGroupCode = "metric_group_code" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -32,7 +24,7 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
     public async Task GetMetricFilters_ReturnsTwoExpectedFilters()
     {
         var (httpCode, response) =
-            await _client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, GetMetricFiltersResponse>(
+            await app.Client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, GetMetricFiltersResponse>(
                 new GetMetricFiltersRequest { MetricGroupCode = "metric_group_code" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -46,7 +38,7 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
     public async Task GetMetricFilters_ReturnsSingleExpectedFilter()
     {
         var (httpCode, response) =
-            await _client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, GetMetricFiltersResponse>(
+            await app.Client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, GetMetricFiltersResponse>(
                 new GetMetricFiltersRequest { MetricGroupCode = "metric_group_code_2" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -63,7 +55,7 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
     [Fact]
     public async Task GetUnknownMetricFilters_Returns404()
     {
-        var (httpCode, _) = await _client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, GetMetricFiltersResponse>(
+        var (httpCode, _) = await app.Client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, GetMetricFiltersResponse>(
             new GetMetricFiltersRequest { MetricGroupCode = "unknown_metric_group_code" });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
@@ -71,7 +63,7 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
     [Fact]
     public async Task GetMetricFilters_WithNoFilters()
     {
-        var (httpCode, response) = await _client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, GetMetricFiltersResponse>(
+        var (httpCode, response) = await app.Client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, GetMetricFiltersResponse>(
             new GetMetricFiltersRequest { MetricGroupCode = "metric_group_code_3" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -83,7 +75,7 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
     [Fact]
     public async Task GetMetricFilters_ReturnsExpectedJsonObject()
     {
-        var response = await _client.GetAsync("/api/metric_filters/metric_group_code_2", TestContext.Current.CancellationToken);
+        var response = await app.Client.GetAsync("/api/metric_filters/metric_group_code_2", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
@@ -97,7 +89,7 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
     [Fact]
     public async Task GetMetricFilters_ReturnsErrorWhenProvidedWhiteSpace()
     {
-        var response = await _client.GetAsync("/api/metric_filters/ /", TestContext.Current.CancellationToken);
+        var response = await app.Client.GetAsync("/api/metric_filters/ /", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
         JObject? json = await ParseJsonResponse<JObject>(response);
@@ -111,7 +103,7 @@ public class GetMetricFiltersEndpointTests : IClassFixture<IntegrationTestFixtur
     public async Task Invalid_MetricGroupCode_Input(string metricGroupCode, string expectedErrorMessage)
     {
         var (httpResponse, problemDetails) =
-            await _client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, ProblemDetails>(
+            await app.Client.GETAsync<GetMetricFiltersEndpoint, GetMetricFiltersRequest, ProblemDetails>(
                 new GetMetricFiltersRequest { MetricGroupCode = metricGroupCode });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);

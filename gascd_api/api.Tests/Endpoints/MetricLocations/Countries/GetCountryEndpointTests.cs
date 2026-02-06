@@ -1,7 +1,7 @@
 using api.Endpoints.MetricLocation.Countries;
 using api.Endpoints.Shared;
-using api.Tests.Fixtures;
 using FastEndpoints;
+using FastEndpoints.Testing;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
@@ -9,21 +9,13 @@ using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.MetricLocations.Countries;
 
-public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
+public class GetCountryEndpointTests(App app) : TestBase<App>
 {
-    private readonly HttpClient _client;
-
-    public GetCountryEndpointTests(IntegrationTestFixture fixture)
-    {
-        var factory = new CustomWebAppFactory(fixture.PostgresContainer);
-        _client = factory.CreateClient();
-    }
-
     [Fact]
     public async Task GetCountry_ReturnsOk()
     {
         var (httpCode, _) =
-            await _client.GETAsync<GetCountryEndpoint, GetCountryRequest, GetCountryResponse>(
+            await app.Client.GETAsync<GetCountryEndpoint, GetCountryRequest, GetCountryResponse>(
                 new GetCountryRequest { CountryCode = "E92000001" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -33,7 +25,7 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetCountry_ReturnsExpectedCountryData()
     {
         var (httpCode, response) =
-            await _client.GETAsync<GetCountryEndpoint, GetCountryRequest, GetCountryResponse>(
+            await app.Client.GETAsync<GetCountryEndpoint, GetCountryRequest, GetCountryResponse>(
                 new GetCountryRequest { CountryCode = "E92000001" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -56,7 +48,7 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetCountry_NullGeoData_ReturnsExpectedCountryData()
     {
         var (httpCode, response) =
-            await _client.GETAsync<GetCountryEndpoint, GetCountryRequest, GetCountryResponse>(
+            await app.Client.GETAsync<GetCountryEndpoint, GetCountryRequest, GetCountryResponse>(
                 new GetCountryRequest { CountryCode = "E92000002" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -68,7 +60,7 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetCountry_ReturnsExpectedCountryJsonObject()
     {
-        var response = await _client.GetAsync("api/metric_locations/countries/E92000001", TestContext.Current.CancellationToken);
+        var response = await app.Client.GetAsync("api/metric_locations/countries/E92000001", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var jObject = await ParseJsonResponse<JObject>(response);
         GetFromJson(jObject, "code").ShouldBe("E92000001");
@@ -93,7 +85,7 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task Invalid_CountryCode_Input(string countryCode, string expectedErrorMessage)
     {
         var (httpResponse, problemDetails) =
-            await _client.GETAsync<GetCountryEndpoint, GetCountryRequest, ProblemDetails>(
+            await app.Client.GETAsync<GetCountryEndpoint, GetCountryRequest, ProblemDetails>(
                 new GetCountryRequest { CountryCode = countryCode });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
@@ -105,7 +97,7 @@ public class GetCountryEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task NonExistent_CountryCode_Input()
     {
         var (httpResponse, _) =
-            await _client.GETAsync<GetCountryEndpoint, GetCountryRequest, ProblemDetails>(
+            await app.Client.GETAsync<GetCountryEndpoint, GetCountryRequest, ProblemDetails>(
                 new GetCountryRequest { CountryCode = "1-134343434" });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }

@@ -1,21 +1,18 @@
 using api.Endpoints.Geo.Postcode;
-using api.Tests.Fixtures;
 using FastEndpoints;
+using FastEndpoints.Testing;
 using Shouldly;
 using System.Net;
 
 namespace api.Tests.Endpoints;
 
-public class AuthTests(IntegrationTestFixture fixture) : IClassFixture<IntegrationTestFixture>
+public class AuthTests(App app) : TestBase<App>
 {
-    private readonly CustomWebAppFactory _factory = new(fixture.PostgresContainer);
-
     [Fact]
     public async Task UnauthorisedAccess_ResultsInError()
     {
-        var client = _factory.CreateClient();
-        client.DefaultRequestHeaders.Remove("x-api-key");
-        var (httpCode, _) = await client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
+        app.Client.DefaultRequestHeaders.Remove("x-api-key");
+        var (httpCode, _) = await app.Client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
             new GetPostcodeRequest { Postcode = "KT220UF" });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
     }
@@ -23,11 +20,10 @@ public class AuthTests(IntegrationTestFixture fixture) : IClassFixture<Integrati
     [Fact]
     public async Task BadApiKey_ResultsInError()
     {
-        var client = _factory.CreateClient();
-        client.DefaultRequestHeaders.Remove("x-api-key");
-        client.DefaultRequestHeaders.Add("x-api-key", "bad-api-key");
+        app.Client.DefaultRequestHeaders.Remove("x-api-key");
+        app.Client.DefaultRequestHeaders.Add("x-api-key", "bad-api-key");
 
-        var (httpCode, _) = await client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
+        var (httpCode, _) = await app.Client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
             new GetPostcodeRequest { Postcode = "KT220UF" });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
     }

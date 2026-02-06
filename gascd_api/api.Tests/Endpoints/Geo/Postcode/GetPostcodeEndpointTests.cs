@@ -1,26 +1,18 @@
 using api.Endpoints.Geo.Postcode;
 using api.Endpoints.Shared;
-using api.Tests.Fixtures;
 using FastEndpoints;
+using FastEndpoints.Testing;
 using Shouldly;
 using System.Net;
 
 namespace api.Tests.Endpoints.Geo.Postcode;
 
-public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
+public class GetPostcodeEndpointTests(App app) : TestBase<App>
 {
-    private readonly HttpClient _client;
-
-    public GetPostcodeEndpointTests(IntegrationTestFixture fixture)
-    {
-        var factory = new CustomWebAppFactory(fixture.PostgresContainer);
-        _client = factory.CreateClient();
-    }
-
     [Fact]
     public async Task GetPostCode_ReturnsOk()
     {
-        var (httpCode, _) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
+        var (httpCode, _) = await app.Client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
                 new GetPostcodeRequest { Postcode = "KT220UF" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -29,7 +21,7 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetUnknownPostCode_Returns404()
     {
-        var (httpCode, _) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
+        var (httpCode, _) = await app.Client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
             new GetPostcodeRequest { Postcode = "NE14BJ" });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
@@ -37,7 +29,7 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetPostCode_ReturnsCorrectData()
     {
-        var (httpCode, response) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
+        var (httpCode, response) = await app.Client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
             new GetPostcodeRequest { Postcode = "KT220UF" });
         httpCode.EnsureSuccessStatusCode();
         response.SanitisedPostcode.ShouldBe("KT220UF");
@@ -60,7 +52,7 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetPostCode_NullGeoData_ReturnsCorrectData()
     {
-        var (httpCode, response) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
+        var (httpCode, response) = await app.Client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, GetPostcodeResponse>(
             new GetPostcodeRequest { Postcode = "CV23TN" });
         httpCode.EnsureSuccessStatusCode();
         response.SanitisedPostcode.ShouldBe("CV23TN");
@@ -75,7 +67,7 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
     [InlineData(" ")]
     public async Task Invalid_EmptyPostcode_User_Input(string postcodeInput)
     {
-        var (httpResponse, problemDetails) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, ProblemDetails>(
+        var (httpResponse, problemDetails) = await app.Client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, ProblemDetails>(
             new GetPostcodeRequest { Postcode = postcodeInput });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
@@ -86,7 +78,7 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task Invalid_EmptyPostcode_Request()
     {
-        var (httpResponse, problemDetails) = await _client.GETAsync<GetPostcodeEndpoint, ProblemDetails>();
+        var (httpResponse, problemDetails) = await app.Client.GETAsync<GetPostcodeEndpoint, ProblemDetails>();
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
         problemDetails.Errors.Select(e => e.Name).ShouldBe(["postcode"]);
@@ -100,7 +92,7 @@ public class GetPostcodeEndpointTests : IClassFixture<IntegrationTestFixture>
     [InlineData("KAT", "Postcode should have a minimum of length of 5")]
     public async Task Invalid_Postcode_Input(string postcodeInput, string expectedMessage)
     {
-        var (httpResponse, problemDetails) = await _client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, ProblemDetails>(
+        var (httpResponse, problemDetails) = await app.Client.GETAsync<GetPostcodeEndpoint, GetPostcodeRequest, ProblemDetails>(
             new GetPostcodeRequest { Postcode = postcodeInput });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);

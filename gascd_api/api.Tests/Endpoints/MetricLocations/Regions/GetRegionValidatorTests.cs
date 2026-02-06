@@ -4,7 +4,7 @@ using FluentValidation.TestHelper;
 namespace api.Tests.Endpoints.MetricLocations.Regions;
 
 
-public class GetRegionValidatorTests : IDisposable
+public class GetRegionValidatorTests
 {
     private GetRegionValidator _validator = new();
 
@@ -29,10 +29,5 @@ public class GetRegionValidatorTests : IDisposable
         var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(r => r.RegionCode)
             .WithErrorMessage(expectedErrorMessage);
-    }
-
-    public void Dispose()
-    {
-
     }
 }

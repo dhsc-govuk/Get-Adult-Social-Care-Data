@@ -3,7 +3,7 @@ using FluentValidation.TestHelper;
 
 namespace api.Tests.Endpoints.Organisation.CareProvider;
 
-public class GetCareProviderValidatorTests : IDisposable
+public class GetCareProviderValidatorTests
 {
     private GetCareProviderValidator _validator = new();
 
@@ -26,10 +26,5 @@ public class GetCareProviderValidatorTests : IDisposable
         var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(r => r.CareProviderCode)
             .WithErrorMessage(expectedErrorMessage);
-    }
-
-    public void Dispose()
-    {
-
     }
 }

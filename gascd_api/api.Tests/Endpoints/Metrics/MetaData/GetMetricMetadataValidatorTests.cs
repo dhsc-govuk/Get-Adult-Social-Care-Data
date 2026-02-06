@@ -3,7 +3,7 @@ using FluentValidation.TestHelper;
 
 namespace api.Tests.Endpoints.Metrics.MetaData;
 
-public class GetMetricMetadataValidatorTests : IDisposable
+public class GetMetricMetadataValidatorTests
 {
     private GetMetricMetadataValidator _validator = new();
 
@@ -28,10 +28,5 @@ public class GetMetricMetadataValidatorTests : IDisposable
         var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(r => r.MetricCode)
             .WithErrorMessage(expectedErrorMessage);
-    }
-
-    public void Dispose()
-    {
-
     }
 }

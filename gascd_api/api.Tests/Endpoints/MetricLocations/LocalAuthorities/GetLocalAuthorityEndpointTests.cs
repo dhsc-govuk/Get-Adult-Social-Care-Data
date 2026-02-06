@@ -2,6 +2,7 @@ using api.Endpoints.MetricLocation.LocalAuthorities;
 using api.Endpoints.Shared;
 using api.Tests.Fixtures;
 using FastEndpoints;
+using FastEndpoints.Testing;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
@@ -9,21 +10,13 @@ using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.MetricLocations.LocalAuthorities;
 
-public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixture>
+public class GetLocalAuthorityEndpointTests(App app) : TestBase<App>
 {
-    private readonly HttpClient _client;
-
-    public GetLocalAuthorityEndpointTests(IntegrationTestFixture fixture)
-    {
-        var factory = new CustomWebAppFactory(fixture.PostgresContainer);
-        _client = factory.CreateClient();
-    }
-
     [Fact]
     public async Task GetLocalAuthority_ReturnsOk()
     {
         var (httpCode, _) =
-            await _client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, GetLocalAuthorityResponse>(
+            await app.Client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, GetLocalAuthorityResponse>(
                 new GetLocalAuthorityRequest { LocalAuthorityCode = "E08000014" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -33,7 +26,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
     public async Task GetLocalAuthority_ReturnsExpectedLAData()
     {
         var (httpCode, response) =
-            await _client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, GetLocalAuthorityResponse>(
+            await app.Client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, GetLocalAuthorityResponse>(
                 new GetLocalAuthorityRequest { LocalAuthorityCode = "E08000014" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -60,7 +53,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
     public async Task GetLocalAuthority_ReturnsExpectedLADataWithIncludeParents()
     {
         var (httpCode, response) =
-            await _client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, GetLocalAuthorityResponse>(
+            await app.Client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, GetLocalAuthorityResponse>(
                 new GetLocalAuthorityRequest { LocalAuthorityCode = "E08000014", IncludeParents = true });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -88,7 +81,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
     public async Task GetLocalAuthority_NullGeoData_ReturnsExpectedLADataWithIncludeParents()
     {
         var (httpCode, response) =
-            await _client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, GetLocalAuthorityResponse>(
+            await app.Client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, GetLocalAuthorityResponse>(
                 new GetLocalAuthorityRequest { LocalAuthorityCode = "E08000016", IncludeParents = true });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -104,7 +97,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
     [Fact]
     public async Task GetLocalAuthority_ReturnsExpectedCareProviderJsonObject()
     {
-        var response = await _client.GetAsync("api/metric_locations/local_authorities/E08000014", TestContext.Current.CancellationToken);
+        var response = await app.Client.GetAsync("api/metric_locations/local_authorities/E08000014", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var jObject = await ParseJsonResponse<JObject>(response);
         GetFromJson(jObject, "code").ShouldBe("E08000014");
@@ -130,7 +123,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
     [Fact]
     public async Task GetLocalAuthority_ReturnsExpectedCareProviderJsonObjectIncludeParents()
     {
-        var response = await _client.GetAsync("api/metric_locations/local_authorities/E08000014?include_parents=true", TestContext.Current.CancellationToken);
+        var response = await app.Client.GetAsync("api/metric_locations/local_authorities/E08000014?include_parents=true", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var jObject = await ParseJsonResponse<JObject>(response);
         GetFromJson(jObject, "code").ShouldBe("E08000014");
@@ -159,7 +152,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
     public async Task Invalid_LocalAuthority_Input(string localAuthorityCode, string expectedErrorMessage)
     {
         var (httpResponse, problemDetails) =
-            await _client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, ProblemDetails>(
+            await app.Client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, ProblemDetails>(
                 new GetLocalAuthorityRequest { LocalAuthorityCode = localAuthorityCode });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
@@ -171,7 +164,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
     public async Task NonExistent_LocalAuthorityCode_Input()
     {
         var (httpResponse, problemDetails) =
-            await _client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, ProblemDetails>(
+            await app.Client.GETAsync<GetLocalAuthorityEndpoint, GetLocalAuthorityRequest, ProblemDetails>(
                 new GetLocalAuthorityRequest { LocalAuthorityCode = "1-128738329" });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
@@ -179,7 +172,7 @@ public class GetLocalAuthorityEndpointTests : IClassFixture<IntegrationTestFixtu
     [Fact]
     public async Task GetLocalAuthority_ReturnsErrorWhenProvidedWhiteSpace()
     {
-        HttpResponseMessage response = await _client.GetAsync("api/metric_locations/local_authorities/ /", TestContext.Current.CancellationToken);
+        HttpResponseMessage response = await app.Client.GetAsync("api/metric_locations/local_authorities/ /", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
         JObject? json = await ParseJsonResponse<JObject>(response);
