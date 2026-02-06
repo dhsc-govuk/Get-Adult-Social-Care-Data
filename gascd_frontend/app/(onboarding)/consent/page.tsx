@@ -32,7 +32,7 @@ const ConsentPage: React.FC = () => {
 
   return (
     <Layout
-      title="Do you want to receive email updates about this service?"
+      title="Can we send you emails about the DHSC's Get Adult Social Care Data (GASCD) service?"
       showLoginInformation={false}
       currentPage="consent"
     >
@@ -46,25 +46,27 @@ const ConsentPage: React.FC = () => {
               >
                 <legend className="govuk-fieldset__legend govuk-fieldset__legend--xl govuk-!-padding-bottom-6">
                   <h1 className="govuk-fieldset__heading">
-                    Do you want to receive email updates about this service?
+                    Can we send you emails about the DHSC&rsquo;s Get Adult
+                    Social Care Data (GASCD) service?
                   </h1>
                 </legend>
 
                 <div id="marketing-consent-hint" className="govuk-hint">
                   <p className="govuk-body">
-                    We can send you occasional emails about &lsquo;Get adult
-                    social care data&rsquo;, including new features and
-                    opportunities to take part in user research.
+                    From time to time, we&rsquo;d like to send you news about
+                    the GASCD service such as new features and opportunities to
+                    take part in user research.
                   </p>
                   <p className="govuk-body">
+                    Read the GASCD service{' '}
                     <a
                       href="/privacy-policy"
                       className="govuk-link"
                       target="_blank"
                     >
-                      Read our privacy policy (opens in new tab)
+                      privacy policy (opens in new tab)
                     </a>{' '}
-                    to find out how we use your personal information.
+                    to find out what happens to your personal information.
                   </p>
                 </div>
 
@@ -89,7 +91,7 @@ const ConsentPage: React.FC = () => {
                       className="govuk-label govuk-radios__label"
                       htmlFor="marketing-consent"
                     >
-                      Yes, I want to receive occasional email updates
+                      Yes, I&rsquo;d like to receive emails
                     </label>
                   </div>
 
@@ -109,7 +111,7 @@ const ConsentPage: React.FC = () => {
                       className="govuk-label govuk-radios__label"
                       htmlFor="marketing-consent-2"
                     >
-                      No, I do not want to receive email updates
+                      No, I don&rsquo;t want to receive emails
                     </label>
                   </div>
                 </div>
@@ -117,8 +119,8 @@ const ConsentPage: React.FC = () => {
             </div>
 
             <p className="govuk-body">
-              You can unsubscribe at any time using the link at the bottom of
-              our emails.
+              You can tell us to stop sending these emails at any time.
+              We&rsquo;ll include details of how to unsubscribe in every email.
             </p>
             <button
               type="button"
