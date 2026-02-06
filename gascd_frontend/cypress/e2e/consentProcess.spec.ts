@@ -3,10 +3,7 @@ describe('User can set consent', () => {
     cy.login();
     cy.visit('/consent');
 
-    cy.get('h1').should(
-      'contains.text',
-      'Do you want to receive email updates'
-    );
+    cy.get('h1').should('contains.text', 'Can we send you email');
     cy.get('label').contains('Yes').click();
     cy.get('button').contains('Continue').click();
     cy.url().should('include', '/home');
@@ -16,10 +13,7 @@ describe('User can set consent', () => {
     cy.login();
     cy.visit('/consent');
 
-    cy.get('h1').should(
-      'contains.text',
-      'Do you want to receive email updates'
-    );
+    cy.get('h1').should('contains.text', 'Can we send you email');
     cy.get('label').contains('No').click();
     cy.get('button').contains('Continue').click();
     cy.url().should('include', '/home');

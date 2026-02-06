@@ -10,14 +10,23 @@ describe('ConsentPage', () => {
     render(<ConsentPage />);
 
     const headingElement = screen.getByRole('heading', {
-      name: /Do you want to receive email/i,
+      name: /Can we send you email/i,
     });
     expect(headingElement).toBeInTheDocument();
 
     const linkElement = screen.getByRole('link', {
-      name: /Read our privacy policy/i,
+      name: /privacy policy/i,
     });
     expect(linkElement).toBeInTheDocument();
     expect(linkElement.getAttribute('href')).toBe('/privacy-policy');
+
+    const optionradio = screen.getByRole('radio', {
+      name: /yes/i,
+    });
+    expect(optionradio).toBeInTheDocument();
+    const optionradio_no = screen.getByRole('radio', {
+      name: /no/i,
+    });
+    expect(optionradio_no).toBeInTheDocument();
   });
 });
