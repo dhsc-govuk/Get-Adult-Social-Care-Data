@@ -1,5 +1,4 @@
 using api.Endpoints.Metrics.Metadata;
-using api.Tests.Fixtures;
 using FastEndpoints;
 using FastEndpoints.Testing;
 using Newtonsoft.Json.Linq;
@@ -10,6 +9,7 @@ using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.Metrics.MetaData;
 
+[Collection("Sequential")]
 public class GetMetricMetadataTests(App app) : TestBase<App>
 {
     [Fact]

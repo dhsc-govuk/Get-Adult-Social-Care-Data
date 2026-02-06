@@ -1,6 +1,5 @@
 using api.Endpoints.MetricLocation.LocalAuthorities;
 using api.Endpoints.Shared;
-using api.Tests.Fixtures;
 using FastEndpoints;
 using FastEndpoints.Testing;
 using Newtonsoft.Json.Linq;
@@ -10,6 +9,7 @@ using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.MetricLocations.LocalAuthorities;
 
+[Collection("Sequential")]
 public class GetLocalAuthorityEndpointTests(App app) : TestBase<App>
 {
     [Fact]

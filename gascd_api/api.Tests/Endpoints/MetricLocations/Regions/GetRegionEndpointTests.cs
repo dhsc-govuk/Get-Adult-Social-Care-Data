@@ -1,6 +1,5 @@
 using api.Endpoints.MetricLocation.Regions;
 using api.Endpoints.Shared;
-using api.Tests.Fixtures;
 using FastEndpoints;
 using FastEndpoints.Testing;
 using Newtonsoft.Json.Linq;

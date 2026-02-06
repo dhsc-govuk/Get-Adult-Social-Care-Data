@@ -7,6 +7,7 @@ using System.Net;
 
 namespace api.Tests.Endpoints.Geo.Postcode;
 
+[Collection("Sequential")]
 public class GetPostcodeEndpointTests(App app) : TestBase<App>
 {
     [Fact]

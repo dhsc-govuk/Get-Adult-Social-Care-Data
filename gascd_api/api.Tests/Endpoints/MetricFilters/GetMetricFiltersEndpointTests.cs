@@ -8,6 +8,7 @@ using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.MetricFilters;
 
+[Collection("Sequential")]
 public class GetMetricFiltersEndpointTests(App app) : TestBase<App>
 {
     [Fact]

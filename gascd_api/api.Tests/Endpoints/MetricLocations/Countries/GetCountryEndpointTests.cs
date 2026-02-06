@@ -9,6 +9,7 @@ using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.MetricLocations.Countries;
 
+[Collection("Sequential")]
 public class GetCountryEndpointTests(App app) : TestBase<App>
 {
     [Fact]

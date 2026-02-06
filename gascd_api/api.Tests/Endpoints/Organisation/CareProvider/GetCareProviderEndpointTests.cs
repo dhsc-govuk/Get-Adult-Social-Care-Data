@@ -1,5 +1,4 @@
 using api.Endpoints.Organisation.CareProvider;
-using api.Tests.Fixtures;
 using FastEndpoints;
 using FastEndpoints.Testing;
 using Newtonsoft.Json.Linq;
@@ -9,6 +8,7 @@ using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.Organisation.CareProvider;
 
+[Collection("Sequential")]
 public class GetCareProviderEndpointTests(App app) : TestBase<App>
 {
     [Fact]

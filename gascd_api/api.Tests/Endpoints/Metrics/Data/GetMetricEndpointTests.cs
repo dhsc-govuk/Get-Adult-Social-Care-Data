@@ -1,6 +1,5 @@
 using api.Data.Shared;
 using api.Endpoints.Metrics.Data;
-using api.Tests.Fixtures;
 using FastEndpoints;
 using FastEndpoints.Testing;
 using Newtonsoft.Json.Linq;
@@ -13,6 +12,7 @@ using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.Metrics.Data;
 
+[Collection("Sequential")]
 public class GetMetricEndpointTests(App app) : TestBase<App>
 {
     [Fact]

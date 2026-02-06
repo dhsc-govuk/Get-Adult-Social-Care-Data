@@ -6,6 +6,7 @@ using System.Net;
 
 namespace api.Tests.Endpoints;
 
+[Collection("Sequential")]
 public class AuthTests(App app) : TestBase<App>
 {
     [Fact]

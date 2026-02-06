@@ -1,6 +1,5 @@
 using api.Endpoints.MetricLocation.CpLocations;
 using api.Endpoints.Shared;
-using api.Tests.Fixtures;
 using FastEndpoints;
 using FastEndpoints.Testing;
 using Newtonsoft.Json.Linq;
@@ -10,6 +9,7 @@ using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.MetricLocations.CPLocations;
 
+[Collection("Sequential")]
 public class GetCareProviderLocationEndpointTests(App app) : TestBase<App>
 {
     [Fact]
