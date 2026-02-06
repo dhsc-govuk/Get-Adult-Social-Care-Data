@@ -24,6 +24,7 @@ const ConsentPage: React.FC = () => {
     if (valid_consents.includes(consent)) {
       await authClient.updateUser({
         marketingConsent: consent,
+        marketingConsentDate: new Date(),
       });
       router.push('/home#top');
     }

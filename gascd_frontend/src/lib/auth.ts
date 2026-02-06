@@ -97,6 +97,12 @@ export const auth = betterAuth({
         // This can be set by users
         input: true,
       },
+      marketingConsentDate: {
+        type: 'date',
+        required: false,
+        // This can be set by users
+        input: true,
+      },
     },
   },
   plugins: [
