@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { authDB } from '@/lib/auth';
 import { generateId } from 'better-auth';
+import { redactUserInfo } from './obfuscate';
 
 import { parse } from 'csv-parse/sync';
 import * as fs from 'fs';
@@ -42,25 +43,33 @@ async function run() {
   );
 
   let import_errors = false;
+  let rowcount = 1;
   for (const row of records) {
+    rowcount += 1;
     const email_lower = row.email.toLowerCase();
+    const email_redacted = redactUserInfo(email_lower);
     const user_match = await authDB
       .selectFrom(USER_DATABASE_NAME)
       .select('id')
       .where('email', '=', email_lower)
       .executeTakeFirst();
     if (user_match) {
-      console.error('Existing user match: ', email_lower);
+      console.error('Existing user match: ', email_redacted, rowcount);
       import_errors = true;
     }
     for (const field of REQUIRED_FIELDS) {
       if (!row[field]) {
-        console.error('Missing field: ', email_lower, field);
+        console.error('Missing field: ', email_redacted, field, rowcount);
         import_errors = true;
       }
     }
     if (!ALLOWED_LOCATION_TYPES.includes(row.location_type)) {
-      console.error('Invalid location type: ', email_lower, row.location_type);
+      console.error(
+        'Invalid location type: ',
+        email_redacted,
+        row.location_type,
+        rowcount
+      );
       import_errors = true;
     }
   }
@@ -70,8 +79,9 @@ async function run() {
   }
 
   for (const row of records) {
+    const userdetails_redacted = `${redactUserInfo(row.name)} (${redactUserInfo(row.email)})`;
     if (isDryRun) {
-      console.log(`Dry Run: Would insert user ${row.name} (${row.email})`);
+      console.log(`Dry Run: Would insert user ${userdetails_redacted}`);
       continue;
     }
 
@@ -92,7 +102,7 @@ async function run() {
         role: 'member',
       })
       .execute();
-    console.log(`Created user ${userid} - ${row.name} (${row.email})`);
+    console.log(`Created user ${userid} - ${userdetails_redacted}`);
   }
 
   if (isDryRun) {

@@ -232,7 +232,7 @@ stages:
                         # Run the Better Auth migration
                         cd gascd_frontend && npm run db:migrate:ci
       - stage: Deploy_${{environment.name}}
-        displayName: "${{environment.name}}: Deploy to Azure Web App"
+        displayName: "${{environment.name}}: Deploy to Azure Container Apps"
         condition: succeeded()
         jobs:
           - deployment: Deploy
@@ -249,12 +249,6 @@ stages:
                       inputs:
                         command: login
                         containerRegistry: "$(acr_connection)"
-                    - task: AzureWebAppContainer@1
-                      inputs:
-                        appType: "webAppLinux"
-                        appName: "dapalpha-${{environment.name}}-app"
-                        azureSubscription: ${{environment.arm_connection}}
-                        containers: "$(acr_name).azurecr.io/$(imageRepository):$(tag)"
                     - task: AzureContainerApps@1
                       inputs:
                         azureSubscription: '${{environment.arm_connection}}'
