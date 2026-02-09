@@ -63,26 +63,66 @@ describe('test handlers', () => {
       {
         checked: false,
         filter_bedtype: 'All bed types',
+        metric_id: 'bedcount_per_hundred_thousand_adults',
       },
       {
         checked: false,
         filter_bedtype: 'General nursing',
+        metric_id: 'bedcount_per_hundred_thousand_adults_total_general_nursing',
       },
       {
         checked: false,
         filter_bedtype: 'Learning disability residential',
+        metric_id:
+          'bedcount_per_hundred_thousand_adults_total_learning_disability_residential',
       },
       {
         checked: false,
         filter_bedtype: 'Mental health residential',
+        metric_id:
+          'bedcount_per_hundred_thousand_adults_total_mental_health_residential',
       },
       {
         checked: false,
         filter_bedtype: 'Transitional',
+        metric_id: 'bedcount_per_hundred_thousand_adults_total_transitional',
       },
       {
         checked: false,
         filter_bedtype: 'Young physically disabled',
+        metric_id:
+          'bedcount_per_hundred_thousand_adults_total_ypd_young_physically_disabled',
+      },
+      {
+        checked: false,
+        filter_bedtype: 'Community care',
+        metric_id: 'bedcount_per_hundred_thousand_adults_community_care',
+      },
+      {
+        checked: false,
+        filter_bedtype: 'Dementia nursing',
+        metric_id: 'bedcount_per_hundred_thousand_adults_dementia_nursing',
+      },
+      {
+        checked: false,
+        filter_bedtype: 'Dementia residential',
+        metric_id: 'bedcount_per_hundred_thousand_adults_dementia_residential',
+      },
+      {
+        checked: false,
+        filter_bedtype: 'General residential',
+        metric_id: 'bedcount_per_hundred_thousand_adults_general_residential',
+      },
+      {
+        checked: false,
+        filter_bedtype: 'Mental health nursing',
+        metric_id: 'bedcount_per_hundred_thousand_adults_mental_health_nursing',
+      },
+      {
+        checked: false,
+        filter_bedtype: 'Learning disability nursing',
+        metric_id:
+          'bedcount_per_hundred_thousand_adults_learning_disability_nursing',
       },
     ];
     expect(data).toEqual(expected_filters);

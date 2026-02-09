@@ -29,7 +29,7 @@ const FilterRadioGroup: React.FC<Props> = ({
   useEffect(() => {
     const getFilters = async () => {
       const filters: TotalBedsFilters[] =
-        await IndicatorFetchService.getFilters('');
+        await IndicatorFetchService.getFilters();
       setFilters(filters);
       setSearchedFilters(filters);
 
