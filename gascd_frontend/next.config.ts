@@ -1,5 +1,19 @@
 import type { NextConfig } from 'next';
 
+// Recommended CSP config from
+// https://nextjs.org/docs/15/app/guides/content-security-policy#without-nonces
+const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-eval' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' blob: data:;
+    font-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+`;
+
 const nextConfig: NextConfig = {
   serverExternalPackages: [
     '@azure/monitor-opentelemetry',
@@ -17,6 +31,19 @@ const nextConfig: NextConfig = {
     incomingRequests: false,
   },
   output: 'standalone',
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: cspHeader.replace(/\n/g, ''),
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
