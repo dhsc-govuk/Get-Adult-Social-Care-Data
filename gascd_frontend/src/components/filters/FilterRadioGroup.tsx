@@ -123,7 +123,17 @@ const FilterRadioGroup: React.FC<Props> = ({
           )}
           {filters.length > 0 && (
             <>
-              <div id="radios-search" className="app-c-option-select__filter">
+              <div className="js-container-heading">
+                <h3 className="govuk-heading-s searchable-filters-heading">
+                  Bed type
+                </h3>
+              </div>
+              <div
+                id="radios-search"
+                className="app-c-option-select__filter"
+                hidden
+                style={{ display: 'block' }}
+              >
                 <label
                   htmlFor="input-bedtype-radios"
                   className="govuk-label govuk-visually-hidden"

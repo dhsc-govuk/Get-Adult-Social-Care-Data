@@ -75,6 +75,10 @@ const FilterCheckboxGroup: React.FC<Props> = ({
   };
 
   const handleSubmit = () => {
+    if (selectedFilters.length === 0) {
+      clearFilters();
+      return;
+    }
     localStorage.setItem(filterType, JSON.stringify(selectedFilters));
     setShowFilters(false);
     setShowActiveFilters(true);
@@ -160,33 +164,46 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           )}
           {filters.length > 0 && (
             <>
-              <div
-                id="checkboxes-search"
-                className="app-c-option-select__container js-options-container"
-              >
-                <label
-                  htmlFor="input-bedtype-checkboxes"
-                  className="govuk-label govuk-visually-hidden"
-                >
+              <div className="js-container-heading">
+                <h3 className="govuk-heading-s searchable-filters-heading">
                   Bed type
-                </label>
+                </h3>
                 {selectedFilters.length > 0 && (
-                  <div className="app-c-option-select__selected-counter js-selected-counter">
-                    <p>{selectedFilters.length} selected</p>
-                  </div>
+                  <p className="app-c-option-select__selected-counter js-selected-counter searchable-filters-heading">
+                    {selectedFilters.length} selected
+                  </p>
                 )}
-                <input
-                  id="input-bedtype-checkboxes"
-                  className="app-c-option-select__filter-input govuk-input"
-                  type="text"
-                  onKeyUp={handleSearch}
-                />
+              </div>
+              <div
+                id="radios-search"
+                className="app-c-option-select__filter"
+                hidden
+                style={{ display: 'block' }}
+              >
+                <div
+                  id="checkboxes-search"
+                  className="app-c-option-select__container js-options-container"
+                >
+                  <label
+                    htmlFor="input-bedtype-search"
+                    className="govuk-label govuk-visually-hidden"
+                  >
+                    Bed type
+                  </label>
+                  <input
+                    id="input-bedtype-search"
+                    className="app-c-option-select__filter-input govuk-input"
+                    type="text"
+                    onKeyUp={handleSearch}
+                  />
+                </div>
               </div>
               <div
                 role="group"
                 aria-labelledby="option-select-title-status-checkboxes"
                 className="app-c-option-select__container js-options-container"
                 tabIndex={-1}
+                style={{ height: 255.333 + 'px' }}
               >
                 <div className="app-c-option-select__container-inner js-auto-height-inner">
                   <div className="gem-c-checkboxes govuk-form-group govuk-checkboxes--small">
