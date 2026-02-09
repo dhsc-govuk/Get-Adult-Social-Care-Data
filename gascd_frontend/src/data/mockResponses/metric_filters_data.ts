@@ -20,8 +20,7 @@ export const metric_filters_data = {
       filter_type: 'Mental health residential',
     },
     {
-      metric_code:
-        'bedcount_per_hundred_thousand_adults_total_transitionalults_total',
+      metric_code: 'bedcount_per_hundred_thousand_adults_total_transitional',
       filter_type: 'Transitional',
     },
     {

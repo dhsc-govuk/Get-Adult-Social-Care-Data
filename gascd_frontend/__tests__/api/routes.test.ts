@@ -68,19 +68,19 @@ describe('test handlers', () => {
       {
         checked: false,
         filter_bedtype: 'General nursing',
-        metric_id: 'bedcount_per_hundred_thousand_adults_general_nursing',
+        metric_id: 'bedcount_per_hundred_thousand_adults_total_general_nursing',
       },
       {
         checked: false,
         filter_bedtype: 'Learning disability residential',
         metric_id:
-          'bedcount_per_hundred_thousand_adults_learning_disability_residential',
+          'bedcount_per_hundred_thousand_adults_total_learning_disability_residential',
       },
       {
         checked: false,
         filter_bedtype: 'Mental health residential',
         metric_id:
-          'bedcount_per_hundred_thousand_adults_mental_health_residential',
+          'bedcount_per_hundred_thousand_adults_total_mental_health_residential',
       },
       {
         checked: false,
