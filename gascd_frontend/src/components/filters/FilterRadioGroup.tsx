@@ -49,6 +49,11 @@ const FilterRadioGroup: React.FC<Props> = ({
     getFilters();
   }, []);
 
+  const handleShowHideToggle = (showFilters: boolean) => {
+    setSearchedFilters(filters);
+    setShowFilters(showFilters);
+  };
+
   const handleChange = (metric_id: string, filter_bedtype: string) => {
     let newFilter: TotalBedsFilters = {
       metric_id: metric_id,
@@ -100,8 +105,8 @@ const FilterRadioGroup: React.FC<Props> = ({
           aria-label={`${showFilters ? 'Hide' : 'Show'} ${filterLabel} filters`}
           onClick={
             showFilters
-              ? () => setShowFilters(false)
-              : () => setShowFilters(true)
+              ? () => handleShowHideToggle(false)
+              : () => handleShowHideToggle(true)
           }
         >
           <span className="dhsc-filter--button-content">

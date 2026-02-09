@@ -58,6 +58,11 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     setShowClearAll(selectedFilters.length > 0);
   }, [selectedFilters]);
 
+  const handleShowHideToggle = (showFilters: boolean) => {
+    setSearchedFilters(filters);
+    setShowFilters(showFilters);
+  };
+
   const handleCheckboxChange = (metric_id: string, checked: boolean) => {
     const newFilters: TotalBedsFilters[] = [...filters];
     let newItem = newFilters.findIndex((item) => item.metric_id === metric_id);
@@ -81,7 +86,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     setDisplayFilters(
       selectedFilters?.map((filter) => filter.filter_bedtype) ?? null
     );
-    updateMethod();
+    resetGroup();
   };
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -94,12 +99,11 @@ const FilterCheckboxGroup: React.FC<Props> = ({
 
   const clearFilters = () => {
     localStorage.removeItem(filterType);
-    setShowFilters(false);
     setShowActiveFilters(false);
     setDisplayFilters(null);
     setSelectedFilters([]);
     filters.map((filter) => (filter.checked = false));
-    updateMethod();
+    resetGroup();
   };
 
   const clearFilter = (filterName: string) => {
@@ -123,6 +127,12 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     }
   };
 
+  const resetGroup = () => {
+    setSearchedFilters(filters);
+    setShowFilters(false);
+    updateMethod();
+  };
+
   return (
     <div className="govuk-!-padding-bottom-4 govuk-!-padding-top-4">
       <div className="dhsc-filter--action">
@@ -134,8 +144,8 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           aria-label={`${showFilters ? 'Hide' : 'Show'} ${filterLabel} filters`}
           onClick={
             showFilters
-              ? () => setShowFilters(false)
-              : () => setShowFilters(true)
+              ? () => handleShowHideToggle(false)
+              : () => handleShowHideToggle(true)
           }
         >
           <span
