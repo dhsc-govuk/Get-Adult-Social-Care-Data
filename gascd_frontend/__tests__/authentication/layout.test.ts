@@ -12,6 +12,7 @@ import {
   mockSessionUnregistered,
   mockSessionEmailMismatch,
   mockSessionEmailMatchCase,
+  mockSessionNoConsent,
 } from '@/test-utils/test-utils';
 
 vi.mock('server-only', () => ({
@@ -54,6 +55,12 @@ describe('Auth Layout', () => {
     mockGetSession.mockResolvedValue(mockSessionUnregistered);
     await AuthLayout({ children: mockChildren });
     expect(mockedRedirect).toHaveBeenCalledWith('/access-denied');
+  });
+
+  test('redirects to consent page if no consent', async () => {
+    mockGetSession.mockResolvedValue(mockSessionNoConsent);
+    await AuthLayout({ children: mockChildren });
+    expect(mockedRedirect).toHaveBeenCalledWith('/consent');
   });
 
   test('redirects to unregistered page if emails do not match', async () => {

@@ -1,6 +1,6 @@
 using api.Configuration;
 using api.Data.Mappers;
-using api.Logging;
+using api.Processors;
 using FastEndpoints.Swagger;
 
 var bld = WebApplication.CreateBuilder();

@@ -1,6 +1,4 @@
-using FastEndpoints;
-
-namespace api.Logging;
+namespace api.Processors;
 
 sealed class LogContextMiddleware(RequestDelegate next, ILogger<LogContextMiddleware> logger)
 {

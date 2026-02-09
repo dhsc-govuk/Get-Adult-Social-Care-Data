@@ -9,6 +9,14 @@ export const mockSession: any = {
     locationType: 'Care provider location',
     locationId: 'testlocation1',
     smartInsights: false,
+    marketingConsent: true,
+  },
+};
+
+export const mockSessionNoConsent: any = {
+  user: {
+    ...mockSession.user,
+    marketingConsent: null,
   },
 };
 

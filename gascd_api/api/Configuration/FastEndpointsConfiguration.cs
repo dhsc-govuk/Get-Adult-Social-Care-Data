@@ -1,5 +1,5 @@
 using api.Data;
-using api.Logging;
+using api.Processors;
 using FastEndpoints;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -27,7 +27,10 @@ public static class FastEndpointsConfiguration
             {
                 c.Errors.UseProblemDetails();
                 c.Endpoints.Configurator = d =>
+                {
+                    d.PreProcessor<VersionHandler>(Order.Before);
                     d.PostProcessor<ValidationLogger>(Order.Before);
+                };
             }
         );
     }
