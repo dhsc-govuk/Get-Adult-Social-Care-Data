@@ -16,6 +16,8 @@ export default async function AuthLayout({
 
   if (!isUserRegistered(user)) {
     redirect('/access-denied');
+  } else if (![true, false].includes(user.marketingConsent as any)) {
+    redirect('/consent');
   } else if (!user.selectedLocationId) {
     redirect('/location-select');
   }
