@@ -30,7 +30,7 @@ export const metric_filters_data = {
     },
     {
       metric_code: 'bedcount_per_hundred_thousand_adults_community_care',
-      filter_type: 'Community care',
+      filter_type: 'Community care bed',
     },
     {
       metric_code: 'bedcount_per_hundred_thousand_adults_dementia_nursing',

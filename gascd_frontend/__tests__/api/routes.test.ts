@@ -95,7 +95,7 @@ describe('test handlers', () => {
       },
       {
         checked: false,
-        filter_bedtype: 'Community care',
+        filter_bedtype: 'Community care bed',
         metric_id: 'bedcount_per_hundred_thousand_adults_community_care',
       },
       {
