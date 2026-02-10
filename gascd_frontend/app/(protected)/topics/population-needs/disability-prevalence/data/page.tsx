@@ -56,17 +56,17 @@ export default function DisabilityPrevalence() {
     'perc_population_disability',
     'learning_disability_prevalence',
     'perc_general_health',
-    'num_client_lt_access_and_mobility_only_physical_support_18_plus',
-    'num_client_lt_asylum_seeker_support_social_support_18_plus',
-    'num_client_lt_learning_disability_support_18_plus',
-    'num_client_lt_mental_health_support_18_plus',
-    'num_client_lt_personal_care_support_physical_support_18_plus',
-    'num_client_lt_substance_misuse_support_social_support_18_plus',
-    'num_client_lt_support_for_dual_impairment_sensory_support_18_plus',
-    'num_client_lt_support_for_hearing_impairment_sensory_support_18_plus',
-    'num_client_lt_support_for_social_isolation_other_social_support_18_plus',
-    'num_client_lt_support_for_visual_impairment_sensory_support_18_plus',
-    'num_client_lt_support_with_memory_and_cognition_18_plus',
+    'access_and_mobility_only_physical_support_18_plus',
+    'asylum_seeker_support_social_support_18_plus',
+    'learning_disability_support_18_plus',
+    'mental_health_support_18_plus',
+    'personal_care_support_physical_support_18_plus',
+    'substance_misuse_support_social_support_18_plus',
+    'support_for_dual_impairment_sensory_support_18_plus',
+    'support_for_hearing_impairment_sensory_support_18_plus',
+    'support_for_social_isolation_other_social_support_18_plus',
+    'support_for_visual_impairment_sensory_support_18_plus',
+    'support_with_memory_and_cognition_18_plus',
   ];
 
   useEffect(() => {
@@ -302,27 +302,26 @@ export default function DisabilityPrevalence() {
               }
               columnHeaders={locationNames}
               rowHeaders={{
-                num_client_lt_learning_disability_support_18_plus:
+                learning_disability_support_18_plus:
                   'Learning disability support',
-                num_client_lt_mental_health_support_18_plus:
-                  'Mental health support',
-                num_client_lt_access_and_mobility_only_physical_support_18_plus:
+                mental_health_support_18_plus: 'Mental health support',
+                access_and_mobility_only_physical_support_18_plus:
                   'Physical support: Access and mobility only',
-                num_client_lt_personal_care_support_physical_support_18_plus:
+                personal_care_support_physical_support_18_plus:
                   'Physical support: Personal care support',
-                num_client_lt_support_for_dual_impairment_sensory_support_18_plus:
+                support_for_dual_impairment_sensory_support_18_plus:
                   'Sensory support: Support for dual impairment',
-                num_client_lt_support_for_hearing_impairment_sensory_support_18_plus:
+                support_for_hearing_impairment_sensory_support_18_plus:
                   'Sensory support: Support for hearing impairment',
-                num_client_lt_support_for_visual_impairment_sensory_support_18_plus:
+                support_for_visual_impairment_sensory_support_18_plus:
                   'Sensory support: Support for visual impairment',
-                num_client_lt_asylum_seeker_support_social_support_18_plus:
+                asylum_seeker_support_social_support_18_plus:
                   'Social support: Asylum seeker support',
-                num_client_lt_substance_misuse_support_social_support_18_plus:
+                substance_misuse_support_social_support_18_plus:
                   'Social support: Substance misuse support',
-                num_client_lt_support_for_social_isolation_other_social_support_18_plus:
+                support_for_social_isolation_other_social_support_18_plus:
                   'Social support: Support for social isolation or other reason',
-                num_client_lt_support_with_memory_and_cognition_18_plus:
+                support_with_memory_and_cognition_18_plus:
                   'Support with memory and cognition',
               }}
               data={filteredDemographicData}
