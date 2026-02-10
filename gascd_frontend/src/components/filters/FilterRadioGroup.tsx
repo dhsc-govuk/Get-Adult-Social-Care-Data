@@ -163,7 +163,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                               name="Table filter"
                               type="radio"
                               value={filter.metric_id}
-                              defaultChecked={
+                              checked={
                                 selectedFilter?.metric_id === filter.metric_id
                               }
                               onChange={() =>
