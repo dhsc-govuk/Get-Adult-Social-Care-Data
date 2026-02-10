@@ -1,0 +1,88 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# dependencies = [
+#   "pandas",
+#   "openpyxl",
+# ]
+# ///
+
+# Attempts to match user email domains against LA gov-uk-slug data from MySociety
+
+# Usage: ./utils/match_la_email_domains.py /path/to/uk_la_past_current.xlsx /path/to/users.csv
+# where `uk_la_past_current.xlsx` is the latest data from:
+# https://pages.mysociety.org/uk_local_authority_names_and_codes/downloads/uk_la_past_current_xlsx/latest
+
+import pandas as pd
+import os
+import re
+import sys
+
+# Update these filenames if yours are named differently
+OUTPUT_FILE = "matched_users_output.csv"
+
+def extract_domain_slug(email):
+    """
+    Extracts the core part of the domain.
+    Example: 'user@hackney.gov.uk' -> 'hackney'
+    """
+    if pd.isna(email) or "@" not in str(email):
+        return None
+    
+    domain = str(email).split("@")[-1].lower()
+    # Strip common UK suffixes to match the 'local-authority-code' column
+    slug = re.sub(r"(\.gov\.uk|\.org\.uk|\.ac\.uk)$", "", domain)
+    return slug
+
+def main(LA_DATA_FILE, USER_DATA_FILE):
+    # 1. Check if files exist
+    if not os.path.exists(LA_DATA_FILE):
+        print(f"Error: {LA_DATA_FILE} not found. Please download it manually to this folder.")
+        return
+    
+    if not os.path.exists(USER_DATA_FILE):
+        print(f"Error: {USER_DATA_FILE} not found. Please ensure your user list is in 'users.csv'.")
+        return
+
+    # 2. Load the data
+    print(f"Loading {LA_DATA_FILE}...")
+    la_df = pd.read_excel(LA_DATA_FILE, sheet_name="uk_local_authorities_current")
+    
+    print(f"Loading {USER_DATA_FILE}...")
+    users_df = pd.read_csv(USER_DATA_FILE)
+
+    # 3. Process domains for matching
+    # We create a temporary key to match against the mySociety 'local-authority-code'
+    users_df['match_key'] = users_df['email'].apply(extract_domain_slug)
+
+    # 4. Perform the Left Join
+    # This keeps every user from your CSV, filling in LA info where a match is found.
+    results = pd.merge(
+        users_df, 
+        la_df[['gss-code', 'official-name', 'gov-uk-slug']], 
+        left_on='match_key', 
+        right_on='gov-uk-slug', 
+        how='left'
+    )
+
+    # 5. Clean up and Export
+    # Remove the helper columns used for the join
+    final_output = results.drop(columns=['match_key', ])
+    final_output.to_csv(OUTPUT_FILE, index=False)
+
+    # 6. Summary Report
+    total = len(users_df)
+    matched = final_output['gss-code'].notna().sum()
+    
+    print("-" * 30)
+    print(f"Match Rate: {matched}/{total} ({(matched/total)*100:.1f}%)")
+    print(f"Results saved to: {OUTPUT_FILE}")
+
+    if matched < total:
+        print("\nCommon unmatched domains (check if these need manual mapping):")
+        unmatched = final_output[final_output['gss-code'].isna()]
+        domains = unmatched['email'].str.split('@').str[-1]
+        print(domains.value_counts().head(5))
+
+if __name__ == "__main__":
+    la_data_file, user_data_file = sys.argv[1:]
+    main(la_data_file, user_data_file)
