@@ -44,6 +44,7 @@ async function run() {
 
   let import_errors = false;
   let rowcount = 1;
+  let found_emails: string[] = [];
   for (const row of records) {
     rowcount += 1;
     const email_lower = row.email.toLowerCase();
@@ -71,6 +72,12 @@ async function run() {
         rowcount
       );
       import_errors = true;
+    }
+    if (found_emails.includes(email_lower)) {
+      console.error('Duplicate email in CSV: ', email_redacted, rowcount);
+      import_errors = true;
+    } else {
+      found_emails.push(email_lower);
     }
   }
 
