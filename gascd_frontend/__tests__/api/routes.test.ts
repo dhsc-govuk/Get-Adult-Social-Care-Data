@@ -3,11 +3,13 @@ import { locations_data } from '@/data/mockResponses/locations_data';
 import { GET as GetFilters } from '../../app/api/get_all_total_beds_filters/route';
 import { GET as GetAvailableLocations } from '../../app/api/get_available_locations/route';
 import { POST as SetSelectedLocation } from '../../app/api/set_selected_location/route';
+import { POST as GetMetricData } from '../../app/api/get_metric_data/route';
 import {
   mockSession,
   mockSessionCareProvider,
   mockSessionInvalidLocationType,
   mockSessionUnregistered,
+  mockSessionWithLocation,
   mockSessionWithMultipleLocationIDs,
 } from '@/test-utils/test-utils';
 import { auth, authDB } from '@/lib/auth';
@@ -126,6 +128,82 @@ describe('test handlers', () => {
       },
     ];
     expect(data).toEqual(expected_filters);
+  });
+});
+
+describe('test get metrics', () => {
+  beforeEach(() => vi.clearAllMocks());
+  it('throws error if no user', async () => {
+    mockGetSession.mockReturnValue(null as any);
+    const req = {
+      url: `http://localhost/api/get_metric_data`,
+    } as NextRequest;
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(401);
+    const data = await result.json();
+    expect(data).toEqual({ error: 'No user' });
+  });
+
+  it('throws error if no metrics', async () => {
+    mockGetSession.mockReturnValue(mockSessionWithLocation);
+    const req = new NextRequest('http://localhost/api/get_metric_data', {
+      method: 'POST',
+      body: JSON.stringify({ query_type: 'UserQuery' }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(400);
+    const data = await result.json();
+    expect(data).toEqual({ error: 'No metric ids' });
+  });
+
+  it('throws error if no metrics', async () => {
+    mockGetSession.mockReturnValue(mockSessionWithLocation);
+    const req = new NextRequest('http://localhost/api/get_metric_data', {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'NotAQuery',
+        metric_ids: ['mymetric'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(400);
+    const data = await result.json();
+    expect(data).toEqual({ error: 'Unsupported metric query type: NotAQuery' });
+  });
+
+  it('throws error if metric ids are invalid', async () => {
+    mockGetSession.mockReturnValue(mockSessionWithLocation);
+    const req = new NextRequest('http://localhost/api/get_metric_data', {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'UserQuery',
+        metric_ids: ['invalid.metric'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(400);
+    const data = await result.json();
+    expect(data).toEqual({ error: 'No metric ids' });
+  });
+
+  it('passes on valid query type and metrics', async () => {
+    mockGetSession.mockReturnValue(mockSessionWithLocation);
+    const req = new NextRequest('http://localhost/api/get_metric_data', {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'UserQuery',
+        metric_ids: ['valid_but_missing'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    expect(data).toEqual([]);
   });
 });
 
