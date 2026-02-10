@@ -77,6 +77,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           filter_bedtype: filter.filter_bedtype,
         }))
     );
+    handleSearch();
   };
 
   const handleSubmit = () => {
@@ -89,12 +90,17 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     resetGroup();
   };
 
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
+  const handleSearch = (): void => {
+    const searchBox = document.getElementById(
+      'input-bedtype-search'
+    ) as HTMLInputElement | null;
+    if (!searchBox) return;
+    const searchTerm = searchBox.value.toLowerCase() ?? '';
     const searchedFilters = filters.filter((filter) =>
       filter.filter_bedtype.toLowerCase().includes(searchTerm)
     );
     setSearchedFilters(searchedFilters);
+    console.log(filters);
   };
 
   const clearFilters = () => {
@@ -175,13 +181,13 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                 className="app-c-option-select__container js-options-container"
               >
                 <label
-                  htmlFor="input-bedtype-checkboxes"
+                  htmlFor="input-bedtype-input-bedtype-search"
                   className="govuk-label govuk-visually-hidden"
                 >
                   Bed type
                 </label>
                 <input
-                  id="input-bedtype-checkboxes"
+                  id="input-bedtype-search"
                   className="app-c-option-select__filter-input govuk-input"
                   type="text"
                   onKeyUp={handleSearch}
@@ -208,7 +214,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                               name="Table filter"
                               type="checkbox"
                               value={filter.metric_id}
-                              defaultChecked={filter.checked || false}
+                              checked={filter.checked || false}
                               onChange={(e) =>
                                 handleCheckboxChange(
                                   e.target.value,
