@@ -190,20 +190,53 @@ describe('test get metrics', () => {
     expect(data).toEqual({ error: 'No metric ids' });
   });
 
-  it('passes on valid query type and metrics', async () => {
+  it('passes on user query type and metrics', async () => {
     mockGetSession.mockReturnValue(mockSessionWithLocation);
     const req = new NextRequest('http://localhost/api/get_metric_data', {
       method: 'POST',
       body: JSON.stringify({
         query_type: 'UserQuery',
-        metric_ids: ['valid_but_missing'],
+        metric_ids: ['bedcount_total'],
       }),
     });
 
     const result = await GetMetricData(req);
     expect(result.status).toBe(200);
     const data = await result.json();
-    expect(data).toEqual([]);
+
+    // This should match the user's CP and associated location
+    const expected_data = [
+      {
+        data_point: '100',
+        location_id: 'testcpl1',
+        location_type: 'CareProviderLocation',
+        metric_date: '2024-01-05',
+        metric_id: 'bedcount_total',
+      },
+      {
+        data_point: '100',
+        location_id: 'E08000024',
+        location_type: 'LA',
+        metric_date: '2024-01-05',
+        metric_id: 'bedcount_total',
+      },
+      {
+        data_point: '100',
+        location_id: 'E12000001',
+        location_type: 'Regional',
+        metric_date: '2024-01-05',
+        metric_id: 'bedcount_total',
+      },
+      {
+        data_point: '100',
+        location_id: 'E92000001',
+        location_type: 'National',
+        metric_date: '2024-01-05',
+        metric_id: 'bedcount_total',
+      },
+    ];
+
+    expect(data).toEqual(expected_data);
   });
 });
 

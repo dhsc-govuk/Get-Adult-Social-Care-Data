@@ -22,35 +22,28 @@ export const handlers = [
 
   http.post<{ metric_id: string }>(
     api_root + '/metrics/:metric_id/data',
-    ({ request, params }) => {
-      // XXX this handler is currently wrong and needs to be updated
-      // to the api spec
-      const url = new URL(request.url);
-      const location_ids =
-        url.searchParams.get('location_ids')?.split(',') || [];
+    async ({ request, params }) => {
       const metric_id = params.metric_id;
+      const url = new URL(request.url);
+      const time_series = url.searchParams.get('time_series') === 'true';
+
+      const locations = (await request.json()) as any;
 
       let metrics: any[] = [];
 
-      for (let location_id of location_ids) {
-        let location_type = '';
-        if (location_id.startsWith('E0')) {
-          location_type = 'LA';
-        } else if (location_id.startsWith('E1')) {
-          location_type = 'Regional';
-        } else if (location_id.startsWith('E9')) {
-          location_type = 'National';
-        } else {
-          location_type = 'Care provider location';
-        }
-
-        let fake_metric = {
-          metric_id: metric_id,
-          location_id: location_id,
-          series_start_date: '01/01/2024',
+      for (let location of locations) {
+        let fake_metric: any = {
+          metric_code: metric_id,
+          location_code: location.location_code,
+          location_type: location.location_type,
+          series_end_date: '2024-01-05',
           series_frequency: 'Daily',
           values: ['100'],
         };
+        if (time_series) {
+          fake_metric.series_start_date = '2024-01-01';
+          fake_metric.values = ['100', '200', '300', '200', '150'];
+        }
         metrics.push(fake_metric);
       }
 
