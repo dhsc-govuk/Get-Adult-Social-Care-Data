@@ -4,6 +4,7 @@ import { getAPIClient } from '@/data/dataAPI';
 import { getDefaultLocations } from '@/data/locations';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import { transformSeriesData, SeriesPoint } from '@/utils/timeseries';
+import { validateMetricIds } from '@/data/locations';
 import logger from '@/utils/logger';
 
 const REGIONAL_QUERYTYPE = 'RegionQuery';
@@ -21,10 +22,16 @@ export async function POST(req: NextRequest) {
 
   await addUserTelemetry();
 
-  const client = getAPIClient();
+  const provided_metric_ids = queryParams.metric_ids || [];
+  const metric_ids = validateMetricIds(provided_metric_ids);
 
-  const metric_ids = queryParams.metric_ids;
+  if (!metric_ids.length) {
+    logger.error('No valid metric IDs provided');
+    return NextResponse.json({ error: `No metric ids` }, { status: 400 });
+  }
+
   const user_location_data = await getDefaultLocations(user);
+  const client = getAPIClient();
   let location_data;
 
   if (query_type === REGIONAL_QUERYTYPE) {
@@ -94,7 +101,7 @@ export async function POST(req: NextRequest) {
   } else {
     console.error('Unsupported metric query type: ' + query_type);
     return NextResponse.json(
-      { error: 'Unsupported metric query type:' + query_type },
+      { error: 'Unsupported metric query type: ' + query_type },
       { status: 400 }
     );
   }

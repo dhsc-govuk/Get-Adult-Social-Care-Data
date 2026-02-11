@@ -76,13 +76,19 @@ const HomePage: React.FC = () => {
         {...topics.map((topic: Topic) => (
           <div className="govuk-grid-row" key={topic.title}>
             <div className="govuk-grid-column-full">
-              <h2 className="govuk-heading-l">
+              <h2
+                className={
+                  'govuk-heading-l ' +
+                  (topic.title === 'Care provision'
+                    ? ''
+                    : 'govuk-!-margin-top-7')
+                }
+              >
                 <a href={topic.url} className="govuk-link">
                   {topic.title}
                 </a>
               </h2>
             </div>
-
             <div className="govuk-grid-row">
               <div className="govuk-grid-column-full">
                 {topic.subtopics.map((subtopic: Subtopic) => (

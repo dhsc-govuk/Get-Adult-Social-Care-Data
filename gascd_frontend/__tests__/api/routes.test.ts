@@ -3,11 +3,13 @@ import { locations_data } from '@/data/mockResponses/locations_data';
 import { GET as GetFilters } from '../../app/api/get_all_total_beds_filters/route';
 import { GET as GetAvailableLocations } from '../../app/api/get_available_locations/route';
 import { POST as SetSelectedLocation } from '../../app/api/set_selected_location/route';
+import { POST as GetMetricData } from '../../app/api/get_metric_data/route';
 import {
   mockSession,
   mockSessionCareProvider,
   mockSessionInvalidLocationType,
   mockSessionUnregistered,
+  mockSessionWithLocation,
   mockSessionWithMultipleLocationIDs,
 } from '@/test-utils/test-utils';
 import { auth, authDB } from '@/lib/auth';
@@ -95,7 +97,7 @@ describe('test handlers', () => {
       },
       {
         checked: false,
-        filter_bedtype: 'Community care',
+        filter_bedtype: 'Community care bed',
         metric_id: 'bedcount_per_hundred_thousand_adults_community_care',
       },
       {
@@ -126,6 +128,115 @@ describe('test handlers', () => {
       },
     ];
     expect(data).toEqual(expected_filters);
+  });
+});
+
+describe('test get metrics', () => {
+  beforeEach(() => vi.clearAllMocks());
+  it('throws error if no user', async () => {
+    mockGetSession.mockReturnValue(null as any);
+    const req = {
+      url: `http://localhost/api/get_metric_data`,
+    } as NextRequest;
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(401);
+    const data = await result.json();
+    expect(data).toEqual({ error: 'No user' });
+  });
+
+  it('throws error if no metrics', async () => {
+    mockGetSession.mockReturnValue(mockSessionWithLocation);
+    const req = new NextRequest('http://localhost/api/get_metric_data', {
+      method: 'POST',
+      body: JSON.stringify({ query_type: 'UserQuery' }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(400);
+    const data = await result.json();
+    expect(data).toEqual({ error: 'No metric ids' });
+  });
+
+  it('throws error if no metrics', async () => {
+    mockGetSession.mockReturnValue(mockSessionWithLocation);
+    const req = new NextRequest('http://localhost/api/get_metric_data', {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'NotAQuery',
+        metric_ids: ['mymetric'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(400);
+    const data = await result.json();
+    expect(data).toEqual({ error: 'Unsupported metric query type: NotAQuery' });
+  });
+
+  it('throws error if metric ids are invalid', async () => {
+    mockGetSession.mockReturnValue(mockSessionWithLocation);
+    const req = new NextRequest('http://localhost/api/get_metric_data', {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'UserQuery',
+        metric_ids: ['invalid.metric'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(400);
+    const data = await result.json();
+    expect(data).toEqual({ error: 'No metric ids' });
+  });
+
+  it('passes on user query type and metrics', async () => {
+    mockGetSession.mockReturnValue(mockSessionWithLocation);
+    const req = new NextRequest('http://localhost/api/get_metric_data', {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'UserQuery',
+        metric_ids: ['bedcount_total'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(200);
+    const data = await result.json();
+
+    // This should match the user's CP and associated location
+    const expected_data = [
+      {
+        data_point: '100',
+        location_id: 'testcpl1',
+        location_type: 'CareProviderLocation',
+        metric_date: '2024-01-05',
+        metric_id: 'bedcount_total',
+      },
+      {
+        data_point: '100',
+        location_id: 'E08000024',
+        location_type: 'LA',
+        metric_date: '2024-01-05',
+        metric_id: 'bedcount_total',
+      },
+      {
+        data_point: '100',
+        location_id: 'E12000001',
+        location_type: 'Regional',
+        metric_date: '2024-01-05',
+        metric_id: 'bedcount_total',
+      },
+      {
+        data_point: '100',
+        location_id: 'E92000001',
+        location_type: 'National',
+        metric_date: '2024-01-05',
+        metric_id: 'bedcount_total',
+      },
+    ];
+
+    expect(data).toEqual(expected_data);
   });
 });
 
