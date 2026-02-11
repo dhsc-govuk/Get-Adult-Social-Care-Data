@@ -13,5 +13,5 @@ public class Country : SearchableEntity
     public int? GeoDataFk { get; init; }
 
     [ForeignKey("GeoDataFk")]
-    public virtual GeoData? GeoData { get; init; } = null!;
+    public virtual GeoData? GeoData { get; init; }
 }

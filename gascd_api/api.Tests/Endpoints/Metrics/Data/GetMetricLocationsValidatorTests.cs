@@ -4,7 +4,7 @@ using FluentValidation.TestHelper;
 
 namespace api.Tests.Endpoints.Metrics.Data;
 
-public class GetMetricLocationsValidatorTests : IDisposable
+public class GetMetricLocationsValidatorTests
 {
     private readonly GetMetricLocationsValidator _validator = new();
 
@@ -28,10 +28,5 @@ public class GetMetricLocationsValidatorTests : IDisposable
         var request = new GetMetricRequest.Location { LocationCode = locationCode, LocationType = LocationTypeEnum.National };
         var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(l => l.LocationCode).WithErrorMessage(expectedErrorMessage);
-    }
-
-    public void Dispose()
-    {
-
     }
 }

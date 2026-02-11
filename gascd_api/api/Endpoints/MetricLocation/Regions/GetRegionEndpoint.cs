@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.MetricLocation.Regions;
 
-public class GetRegionEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetRegionEndpoint> logger) : Endpoint<GetRegionRequest, GetRegionResponse>
+public class GetRegionEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetRegionEndpoint> logger)
+    : Endpoint<GetRegionRequest, GetRegionResponse>
 {
     public override void Configure()
     {

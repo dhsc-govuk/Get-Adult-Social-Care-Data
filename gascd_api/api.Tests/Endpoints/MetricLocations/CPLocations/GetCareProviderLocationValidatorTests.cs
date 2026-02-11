@@ -3,14 +3,9 @@ using FluentValidation.TestHelper;
 
 namespace api.Tests.Endpoints.MetricLocations.CPLocations;
 
-public class GetCareProviderLocationValidatorTests : IDisposable
+public class GetCareProviderLocationValidatorTests
 {
-    private GetCareProviderLocationValidator _validator;
-
-    public GetCareProviderLocationValidatorTests()
-    {
-        _validator = new GetCareProviderLocationValidator();
-    }
+    private GetCareProviderLocationValidator _validator = new();
 
     [Theory]
     [InlineData("1-1")]
@@ -33,10 +28,5 @@ public class GetCareProviderLocationValidatorTests : IDisposable
         var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(r => r.CareProviderLocationCode)
             .WithErrorMessage(expectedErrorMessage);
-    }
-
-    public void Dispose()
-    {
-
     }
 }

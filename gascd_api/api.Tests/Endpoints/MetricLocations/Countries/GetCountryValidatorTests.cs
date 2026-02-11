@@ -3,14 +3,9 @@ using FluentValidation.TestHelper;
 
 namespace api.Tests.Endpoints.MetricLocations.Countries;
 
-public class GetCountryValidatorTests : IDisposable
+public class GetCountryValidatorTests
 {
-    private GetCountryValidator _validator;
-
-    public GetCountryValidatorTests()
-    {
-        _validator = new GetCountryValidator();
-    }
+    private GetCountryValidator _validator = new();
 
     [Theory]
     [InlineData("E11")]
@@ -33,10 +28,5 @@ public class GetCountryValidatorTests : IDisposable
         var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(r => r.CountryCode)
             .WithErrorMessage(expectedErrorMessage);
-    }
-
-    public void Dispose()
-    {
-
     }
 }
