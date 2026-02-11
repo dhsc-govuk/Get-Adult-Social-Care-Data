@@ -18,7 +18,8 @@
     ports:
       - "5431:5431"
     volumes:
-      - ./api.Tests/TestData/test-seed.sql:/docker-entrypoint-initdb.d/test-seed.sql
+      - ./api.Tests/TestData/test-seed.sql:/docker-entrypoint-initdb.d/1-test-seed.sql
+      - ./api.Tests/TestData/test-seed-supplementary.sql:/docker-entrypoint-initdb.d/2-test-seed-supplementary.sql
     environment:
       - POSTGRES_USER=mr-ice-cool
       - POSTGRES_PASSWORD=is-rockin

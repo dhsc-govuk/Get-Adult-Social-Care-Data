@@ -35,7 +35,7 @@ def generate_metric_record(table_name, record_idx, metric_code, location_code, l
 
 
 def get_id_for_table_sql(table_name):
-    return f"with {table_name}_id as (select max(id) as id from public.{table_name})"
+    return f"with {table_name}_id as (select max(id) as id from {table_name})"
 
 
 def get_id_by_code_sql(table, code):
@@ -54,7 +54,7 @@ def get_datapoint_count(start, end, frequency):
         return delta.days
     elif frequency == 'Monthly':
         return delta.days // 30
-    elif frequency == 'Yearly':
+    elif frequency in ('Yearly', 'Financial yearly'):
         return delta.days // 365
     elif frequency == 'Census':
         return 1
@@ -78,7 +78,10 @@ def generate_time_series(metric_group, metric, location_code, count, data_range)
 
     rng = random.Random(seed)
 
-    return [rng.randint(int(min_val), int(max_val)) for _ in range(count)]
+    if max_val.is_integer():
+        return [rng.randint(int(min_val), int(max_val)) for _ in range(count)]
+
+    return [rng.randint(int(min_val*100), int(max_val*100))/100 for _ in range(count)]
 
 
 def generate_records_for_metric(metric_group, metric, data, idx):
@@ -110,11 +113,11 @@ def generate_metric_sql():
     sqls = []
     for metric_group, metric_data in METRIC_DEFINITIONS.items():
         table_sql = get_id_for_table_sql(metric_group)
-        sqls.append(table_sql)
         idx = 1
 
         for metric, data in metric_data.items():
             records, idx = generate_records_for_metric(metric_group, metric, data, idx)
+            sqls.append(table_sql)
             sql = generate_sql(metric_group, records)
             sqls.append(sql)
 
@@ -188,7 +191,7 @@ def generate_reference_sql():
     region_sql = generate_location_sql('regions', 'Regional', generate_region_record)
     la_sql = generate_location_sql('local_authorities', 'LA', generate_la_record)
     cp_sql = generate_location_sql('care_providers', 'Care provider', generate_care_provider_record)
-    cpl_sql = generate_location_sql('care_provider_locations', 'Care provider location', generate_cpl_record)
+    cpl_sql = generate_location_sql('care_provider_locations', 'CareProviderLocation', generate_cpl_record)
 
     return country_sql + region_sql + la_sql + cp_sql + cpl_sql
 
