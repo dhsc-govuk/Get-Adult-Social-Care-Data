@@ -34,6 +34,18 @@ const HomePage: React.FC = () => {
       ],
     },
     {
+      title: 'Funding',
+      url: 'topics/financial-spend-and-unpaid-care/subtopics',
+      subtopics: [
+        {
+          title: 'Local authority (LA) funding',
+          description:
+            'Data on funding for both short-term and long-term care, also funding by individual care type.',
+          url: 'topics/financial-spend-and-unpaid-care/financial-spend/data',
+        },
+      ],
+    },
+    {
       title: 'Population needs',
       url: 'topics/population-needs/subtopics',
       subtopics: [
