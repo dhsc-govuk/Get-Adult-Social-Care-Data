@@ -57,7 +57,7 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
     public async Task GetCareProviderLocationNeighbours_Returns404WhenProvidedNonExistentCPLCode()
     {
         var (httpCode, _) = await app.Client.GETAsync<GetCareProviderLocationNeighboursEndpoint, GetCareProviderLocationNeighboursRequest, GetCareProviderLocationNeighboursResponse>(
-            new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-045678987", DistanceInKm = 1 });
+            new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-045678987" });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
@@ -65,7 +65,7 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
     public async Task GetCareProviderLocationNeighbours_Returns404WhenProvidedCplWithNoGeodata()
     {
         var (httpCode, _) = await app.Client.GETAsync<GetCareProviderLocationNeighboursEndpoint, GetCareProviderLocationNeighboursRequest, GetCareProviderLocationNeighboursResponse>(
-            new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-222222225", DistanceInKm = 1 });
+            new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-222222225" });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
