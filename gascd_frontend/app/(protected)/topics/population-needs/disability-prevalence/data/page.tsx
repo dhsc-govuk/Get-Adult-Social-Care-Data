@@ -31,6 +31,14 @@ export default function DisabilityPrevalence() {
     RegionLabel: 'Loading...',
     CountryLabel: 'Loading...',
   } as LocationNames);
+  const [locationNamesWithAverageLabels, setLocationNamesWithAverageLabels] =
+    useState<LocationNames>({
+      IndicatorLabel: 'Primary support reason',
+      CPLabel: 'Loading...',
+      LALabel: 'Loading...',
+      RegionLabel: 'Loading...',
+      CountryLabel: 'Loading...',
+    } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [filteredDemographicData, setFilteredDemographicData] = useState<
@@ -95,6 +103,14 @@ export default function DisabilityPrevalence() {
             false
           );
           setLocationNames(locationNames);
+          setLocationNamesWithAverageLabels({
+            IndicatorLabel: 'Primary support reason',
+            CPLabel: locationNames.CPLabel!,
+
+            LALabel: locationNames.LALabel,
+            RegionLabel: `${locationNames.RegionLabel} (regional average)`,
+            CountryLabel: `${locationNames.CountryLabel} (national average)`,
+          });
         } catch (error) {
           console.error('Error fetching location names:', error);
         }
@@ -300,7 +316,7 @@ export default function DisabilityPrevalence() {
               source={
                 'Adult Social Care Activity and Finance Report from NHS England'
               }
-              columnHeaders={locationNames}
+              columnHeaders={locationNamesWithAverageLabels}
               rowHeaders={{
                 learning_disability_support_18_and_over:
                   'Learning disability support',
