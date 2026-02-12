@@ -22,7 +22,11 @@ const REQUIRED_FIELDS = [
   'location_type',
   'source',
 ];
-const ALLOWED_LOCATION_TYPES = ['Care provider', 'Care provider location'];
+const ALLOWED_LOCATION_TYPES = [
+  'Care provider',
+  'Care provider location',
+  'LA',
+];
 
 async function run() {
   const csvPath = process.env.CSV_PATH;
@@ -93,6 +97,12 @@ async function run() {
     }
 
     const userid = generateId();
+    let selectedLocationId = null;
+    if (row.location_type == 'LA') {
+      // LA users get their LA selected by default
+      selectedLocationId = row.location_id;
+    }
+
     await authDB
       .insertInto(USER_DATABASE_NAME)
       .values({
@@ -105,6 +115,7 @@ async function run() {
         emailVerified: 1,
         locationId: row.location_id,
         locationType: row.location_type,
+        selectedLocationId: selectedLocationId,
         source: row.source,
         role: 'member',
       })

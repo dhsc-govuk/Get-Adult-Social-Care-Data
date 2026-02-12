@@ -40,11 +40,19 @@ const seedDevelopmentUser = async () => {
   // Now update the user properties
   // This updates the db directly, because the location properties are
   // protected from being updated through the Better Auth client API
+  let selectedLocationId = null;
+  if (process.env.LOCAL_AUTH_LOCATION_TYPE == 'LA') {
+    selectedLocationId = process.env.LOCAL_AUTH_LOCATION_ID;
+  }
   const rows = await authDB
     .updateTable('user')
     .set({
       locationId: process.env.LOCAL_AUTH_LOCATION_ID,
       locationType: process.env.LOCAL_AUTH_LOCATION_TYPE,
+      selectedLocationId: selectedLocationId,
+      // These are reset deliberately to start the dev user afresh
+      selectedLocationDisplayName: null,
+      selectedLocationCategory: null,
       registeredEmail: email,
     })
     .where('user.email', '=', process.env.LOCAL_AUTH_EMAIL)
