@@ -32,6 +32,9 @@ export const locations_data = {
       ],
     },
     region_code: 'E12000001',
+    region_name: 'North East',
+    country_code: 'E92000001',
+    country_name: 'England',
   },
   region: {
     code: 'E12000001',

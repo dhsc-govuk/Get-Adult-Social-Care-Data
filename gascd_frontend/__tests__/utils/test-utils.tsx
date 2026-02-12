@@ -27,6 +27,16 @@ export const mockSessionCareProvider: any = {
   },
 };
 
+// At the moment, LA users are always imported with a selected Location
+export const mockSessionLAUser: any = {
+  user: {
+    ...mockSession.user,
+    locationType: 'LA',
+    locationId: 'testla1',
+    selectedLocationId: 'testla1',
+  },
+};
+
 export const mockSessionInvalidLocationType: any = {
   user: {
     ...mockSession.user,

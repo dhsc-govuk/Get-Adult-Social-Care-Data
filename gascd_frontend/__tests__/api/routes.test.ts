@@ -7,6 +7,7 @@ import { POST as GetMetricData } from '../../app/api/get_metric_data/route';
 import {
   mockSession,
   mockSessionCareProvider,
+  mockSessionLAUser,
   mockSessionInvalidLocationType,
   mockSessionUnregistered,
   mockSessionWithLocation,
@@ -357,6 +358,17 @@ describe('set selected locations', () => {
 
   it('blocks unknown user types', async () => {
     mockGetSession.mockReturnValue(mockSessionInvalidLocationType);
+
+    const req = new NextRequest('http://localhost/api/set_selected_location', {
+      method: 'POST',
+      body: JSON.stringify({ location_id: 'loc1' }),
+    });
+    const result = await SetSelectedLocation(req);
+    expect(result.status).toBe(401);
+  });
+
+  it('blocks LA users', async () => {
+    mockGetSession.mockReturnValue(mockSessionLAUser);
 
     const req = new NextRequest('http://localhost/api/set_selected_location', {
       method: 'POST',
