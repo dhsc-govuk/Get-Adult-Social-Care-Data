@@ -13,6 +13,7 @@ import {
   mockSessionEmailMismatch,
   mockSessionEmailMatchCase,
   mockSessionNoConsent,
+  mockSessionLAUser,
 } from '@/test-utils/test-utils';
 
 vi.mock('server-only', () => ({
@@ -83,6 +84,15 @@ describe('Auth Layout', () => {
 
   test('content is rendered if valid session and picked location', async () => {
     mockGetSession.mockResolvedValue(mockSessionWithLocation);
+    const response = await AuthLayout({ children: mockChildren });
+
+    expect(mockedRedirect).not.toHaveBeenCalled();
+    const renderedMarkup = renderToStaticMarkup(response);
+    expect(renderedMarkup).toContain('Mock Component');
+  });
+
+  test('content is rendered for LA users by default', async () => {
+    mockGetSession.mockResolvedValue(mockSessionLAUser);
     const response = await AuthLayout({ children: mockChildren });
 
     expect(mockedRedirect).not.toHaveBeenCalled();

@@ -2,10 +2,15 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Session } from '@/lib/auth-client';
+import { Session, User } from '@/lib/auth-client';
 
 type Props = {
   session?: Session | null;
+};
+const change_locations_supported = ['Care provider', 'Care provider location'];
+
+const canChangeLocation = (user: User) => {
+  return change_locations_supported.includes(user.locationType || '');
 };
 
 const ServiceName: React.FC<Props> = ({ session }) => {
@@ -90,12 +95,14 @@ const ServiceName: React.FC<Props> = ({ session }) => {
                       {session?.user.selectedLocationDisplayName ||
                         session?.user.selectedLocationId}
                     </span>
-                    <a
-                      className="govuk-service-navigation__link govuk-service-navigation__link-change"
-                      href="/location-select"
-                    >
-                      Change
-                    </a>
+                    {canChangeLocation(session.user) && (
+                      <a
+                        className="govuk-service-navigation__link govuk-service-navigation__link-change"
+                        href="/location-select"
+                      >
+                        Change
+                      </a>
+                    )}
                   </li>
                 )}
                 {session && session.user.selectedLocationId && (
