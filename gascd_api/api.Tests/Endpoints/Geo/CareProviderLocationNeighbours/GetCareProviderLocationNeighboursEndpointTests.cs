@@ -18,4 +18,27 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
 
+    [Fact]
+    public async Task GetCareProviderLocationNeighbours_ReturnsEmptyNeighboursListWhenNoneWithinDefaultDistance()
+    {
+        var (httpCode, response) = await app.Client.GETAsync<GetCareProviderLocationNeighboursEndpoint, GetCareProviderLocationNeighboursRequest, GetCareProviderLocationNeighboursResponse>(
+            new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-000000004" });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Locations.Count.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task GetCareProviderLocationNeighbours_ReturnsLocationsWithinDefaultDistance()
+    {
+        var (httpCode, response) = await app.Client.GETAsync<GetCareProviderLocationNeighboursEndpoint, GetCareProviderLocationNeighboursRequest, GetCareProviderLocationNeighboursResponse>(
+            new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-000000001" });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Locations.ShouldNotBeEmpty();
+        response.Locations.Count.ShouldBe(2);
+        response.Locations.ShouldContain(cpl => cpl.Code == "1-000000002");
+        response.Locations.ShouldContain(cpl => cpl.Code == "1-000000003");
+    }
+
 }

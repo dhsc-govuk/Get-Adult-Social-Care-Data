@@ -649,11 +649,20 @@ DECLARE
     care_provider_id_2 integer = 2;
     care_provider_id_3 integer = 3;   
     care_provider_id_4 integer = 4;
+    care_provider_id_5 integer = 5;
+                       
     care_provider_location_id integer = 1;
     care_provider_location_id_2 integer = 2;
     care_provider_location_id_3 integer = 3;
     care_provider_location_id_4 integer = 4;
     care_provider_location_id_5 integer = 5;
+                                
+    care_provider_location_id_6 integer = 60;
+    care_provider_location_id_7 integer = 61;  
+    care_provider_location_id_8 integer = 62;   
+    
+    care_provider_location_id_9 integer = 63;                              
+                                
     metric_group_id integer = 4;
     metric_group_id_2 integer = 11;
     metric_group_id_3 integer = 13;
@@ -723,6 +732,10 @@ DECLARE
     gd_cpl integer = 4;
     gd_cpl_2 integer = 5;
     gd_cpl_3 integer = 6;
+    gd_cpl_4 integer = 61;
+    gd_cpl_5 integer = 62;
+    gd_cpl_6 integer = 63;
+    gd_cpl_7 integer = 64;
     gd_postcode integer = 7;
     gd_postcode_2 integer = 8;
     gd_postcode_3 integer = 9;    
@@ -737,6 +750,14 @@ BEGIN
            (gd_cpl, ST_Point(-2.88, 53.425), ST_Polygon('LINESTRING(55.26 -3.3, 52.26 -2.55, 53.73 -2.65, 54.73 -3.3, 55.26 -3.3)'::geometry, 4326), CURRENT_TIMESTAMP),
            (gd_cpl_2, ST_Point(-2.38, 52.425), null, CURRENT_TIMESTAMP),
            (gd_cpl_3, ST_Point(-2.83, 53.425), null, CURRENT_TIMESTAMP),
+           
+           (gd_cpl_4, ST_Point(-1.00, 1.001), null, CURRENT_TIMESTAMP),
+           (gd_cpl_5, ST_Point(-1.00, 1.002), null, CURRENT_TIMESTAMP),
+           (gd_cpl_6, ST_Point(-1.00, 1.003), null, CURRENT_TIMESTAMP),
+
+           (gd_cpl_7, ST_Point(89.12, 44.99), null, CURRENT_TIMESTAMP),
+
+
            (gd_postcode, ST_Point(-0.349629386, 51.33954856349381), ST_Polygon('LINESTRING(55.26 -3.3, 59.6 -2.55, 54.73 -2.95, 52.73 -3.1, 55.26 -3.3)'::geometry, 4326), CURRENT_TIMESTAMP),
            (gd_postcode_2, ST_Point(0.7260691453143282, 51.32988801568501 ), null, CURRENT_TIMESTAMP),
            (gd_postcode_3, ST_Point(0.7283745919593453, 51.32954649874547), null, CURRENT_TIMESTAMP),
@@ -766,16 +787,28 @@ BEGIN
     VALUES (care_provider_id, 'Bupa', '1-123456789', CURRENT_TIMESTAMP),
            (care_provider_id_2, 'Katherine', '1-123456777', CURRENT_TIMESTAMP),
            (care_provider_id_3, 'Rob', '1-123456712', CURRENT_TIMESTAMP),
-           (care_provider_id_4, 'James', '1-123456713', CURRENT_TIMESTAMP);
+           (care_provider_id_4, 'James', '1-123456713', CURRENT_TIMESTAMP),
+           (care_provider_id_5, 'June', '1-000000000', CURRENT_TIMESTAMP);
 
     INSERT INTO care_provider_locations (id, name,category, care_provider_fk, geo_data_fk, address, nominated_individual, local_authority_fk, code, loaded_datetime)
     VALUES (care_provider_location_id, 'Bupa Liverpool', 'Residential',care_provider_id, gd_cpl, 'Bupa Liverpool, CV2 2TN', 'Mr. Ice Cool', la_id, '1-222222222', CURRENT_TIMESTAMP),
            (care_provider_location_id_2, 'Katherines Teeth', 'Residential', care_provider_id_2, gd_cpl_2, 'Katherines Teeth, Liverpool, ME10 1QX', 'Katherine', la_id, '1-222222223', CURRENT_TIMESTAMP),
            (care_provider_location_id_3, 'Katherines Eyes','Residential', care_provider_id_2, gd_cpl_3, 'Katherines Eyes, Liverpool, ME10 1QY', 'Katherine', la_id, '1-222222224', CURRENT_TIMESTAMP),
            (care_provider_location_id_4, 'Katherines Ears','Care home', care_provider_id_4, null, 'Katherines Ears, Liverpool, ME10 1QZ', 'Katherine', la_id, '1-222222225', CURRENT_TIMESTAMP),
-           (care_provider_location_id_5, 'Katherines Noses','Care home', care_provider_id_4, null, 'Katherines Noses, Liverpool, ME11 1QZ', null, la_id, '1-222222226', CURRENT_TIMESTAMP);
+           (care_provider_location_id_5, 'Katherines Noses','Care home', care_provider_id_4, null, 'Katherines Noses, Liverpool, ME11 1QZ', null, la_id, '1-222222226', CURRENT_TIMESTAMP),
+          
+           (care_provider_location_id_6, 'Location 1','Care home', care_provider_id_5, gd_cpl_4, 'Location 1, North Pole, NP 1SC', null, la_id, '1-000000001', CURRENT_TIMESTAMP),
+           (care_provider_location_id_7, 'Location 2','Care home', care_provider_id_5, gd_cpl_5, 'Location 2, North Pole, NP 1SC', null, la_id, '1-000000002', CURRENT_TIMESTAMP),
+           (care_provider_location_id_8, 'Location 3','Care home', care_provider_id_5, gd_cpl_6, 'Location 3, North Pole, NP 1SC', null, la_id, '1-000000003', CURRENT_TIMESTAMP),
 
-    INSERT INTO metric_groups (id, code, loaded_datetime, display_name)
+           (care_provider_location_id_9, 'Location 4','Care home', care_provider_id_5, gd_cpl_7, 'Location 4, South Pole, SP 1SC', null, la_id, '1-000000004', CURRENT_TIMESTAMP);
+
+
+
+
+
+
+INSERT INTO metric_groups (id, code, loaded_datetime, display_name)
     VALUES (metric_group_id, 'metric_group_code', CURRENT_TIMESTAMP, 'Metric group display name' ),
            (metric_group_id_2, 'metric_group_code_2', CURRENT_TIMESTAMP, 'Metric group 2 display name' ),
            (metric_group_id_3, 'metric_group_code_3', CURRENT_TIMESTAMP,'Metric group 3 display name'  ),
