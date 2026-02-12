@@ -11,5 +11,9 @@ public class GetCareProviderLocationNeighboursValidator : Validator<GetCareProvi
             .NotEmpty().WithMessage("Care provider location code is required")
             .MinimumLength(3).WithMessage("Care provider location code has a minimum length of 3")
             .MaximumLength(15).WithMessage("Care provider location code has a maximum length of 15");
+
+        RuleFor(x => x.DistanceInKm)
+            .Must(value => value >= 0)
+            .WithMessage("The distance must be zero or a positive integer");
     }
 }

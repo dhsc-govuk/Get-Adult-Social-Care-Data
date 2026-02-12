@@ -27,4 +27,14 @@ public class GetCareProviderLocationNeighboursValidatorTests
         result.ShouldHaveValidationErrorFor(r => r.CareProviderLocationCode)
             .WithErrorMessage(expectedErrorMessage);
     }
+
+    [Theory]
+    [InlineData(-5, "The distance must be zero or a positive integer")]
+    public void InvalidDistance(int distanceInKm, string expectedErrorMessage)
+    {
+        var request = new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-222222222", DistanceInKm = distanceInKm };
+        var result = _validator.TestValidate(request);
+        result.ShouldHaveValidationErrorFor(r => r.DistanceInKm)
+            .WithErrorMessage(expectedErrorMessage);
+    }
 }
