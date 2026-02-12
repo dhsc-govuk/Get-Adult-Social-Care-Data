@@ -1,4 +1,5 @@
 using api.Data.Models.Reference;
+using api.Endpoints.Geo.CareProviderLocationNeighbours;
 using api.Endpoints.Geo.Postcode;
 using api.Endpoints.MetricLocation.Countries;
 using api.Endpoints.MetricLocation.LocalAuthorities;
@@ -117,6 +118,20 @@ public class ReferenceMapper
             Code = country.Code,
             DisplayName = country.Name,
             GeoData = GeoDataToGeoDataDto(country.GeoData),
+        };
+    }
+
+    public GetCareProviderLocationNeighboursResponse.CareProviderLocation
+        CareProviderLocationToCareProviderLocationNeighbourResponse(CareProviderLocation cpl)
+    {
+        return new GetCareProviderLocationNeighboursResponse.CareProviderLocation
+        {
+            LocationName = cpl.Name,
+            LocationCode = cpl.Code,
+            LaName = cpl.LocalAuthority.Name,
+            LaCode = cpl.LocalAuthority.Code,
+            LocationCategory = cpl.Category,
+            Address = cpl.Address,
         };
     }
 }

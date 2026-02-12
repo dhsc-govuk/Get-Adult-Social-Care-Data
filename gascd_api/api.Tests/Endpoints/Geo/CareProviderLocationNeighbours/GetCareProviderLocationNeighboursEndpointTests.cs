@@ -37,10 +37,9 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Locations.ShouldNotBeEmpty();
         response.Locations.Count.ShouldBe(2);
-        response.Locations.ShouldContain(cpl => cpl.Code == "1-000000002");
-        response.Locations.ShouldContain(cpl => cpl.Code == "1-000000003");
+        response.Locations.ShouldContain(cpl => cpl.LocationCode == "1-000000002");
+        response.Locations.ShouldContain(cpl => cpl.LocationCode == "1-000000003");
     }
-
 
     [Fact]
     public async Task GetCareProviderLocationNeighbours_ReturnsLocationsWithinProvidedDistance()
@@ -51,7 +50,15 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Locations.ShouldNotBeEmpty();
         response.Locations.Count.ShouldBe(1);
-        response.Locations.ShouldContain(cpl => cpl.Code == "1-000000002");
+        response.Locations.ShouldContain(cpl => cpl.LocationCode == "1-000000002");
+    }
+
+    [Fact]
+    public async Task GetCareProviderLocationNeighbours_Returns404WhenProvidedNonExistentCPLCode()
+    {
+        var (httpCode, response) = await app.Client.GETAsync<GetCareProviderLocationNeighboursEndpoint, GetCareProviderLocationNeighboursRequest, GetCareProviderLocationNeighboursResponse>(
+            new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-045678987", DistanceInKm = 1 });
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
 }
