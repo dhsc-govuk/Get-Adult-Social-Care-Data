@@ -1,19 +1,35 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Session, User } from '@/lib/auth-client';
+import { ALLOWED_CP_USER_TYPES, LA_USER_TYPE } from '@/constants';
+import LocationService from '@/services/location/locationService';
 
 type Props = {
   session?: Session | null;
 };
-const change_locations_supported = ['Care provider', 'Care provider location'];
-
-const canChangeLocation = (user: User) => {
-  return change_locations_supported.includes(user.locationType || '');
-};
 
 const ServiceName: React.FC<Props> = ({ session }) => {
+  const [selectedLocationName, setSelectedLocationName] = useState<string>('');
+
+  useEffect(() => {
+    const fetchNames = async () => {
+      if (session?.user.selectedLocationDisplayName) {
+        setSelectedLocationName(session?.user.selectedLocationDisplayName);
+      } else if (session?.user.locationType == LA_USER_TYPE) {
+        // LA names are looked up dynamically
+        const lnames = await LocationService.getLocationNames('', false);
+        setSelectedLocationName(lnames.LALabel);
+      }
+    };
+    fetchNames();
+  }, [session]);
+
+  const canChangeLocation = (user: User) => {
+    return ALLOWED_CP_USER_TYPES.includes(user.locationType || '');
+  };
+
   const toggleNav = () => {
     const nav = document.getElementById('super-navigation-menu');
     const navLastChild = document.querySelector<HTMLElement>(
@@ -92,8 +108,7 @@ const ServiceName: React.FC<Props> = ({ session }) => {
                 {session && session.user.selectedLocationId && (
                   <li className="govuk-service-navigation__item govuk-service-navigation__item-start">
                     <span data-testid="selected-location">
-                      {session?.user.selectedLocationDisplayName ||
-                        session?.user.selectedLocationId}
+                      {selectedLocationName}
                     </span>
                     {canChangeLocation(session.user) && (
                       <a
