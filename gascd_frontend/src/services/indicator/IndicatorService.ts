@@ -112,7 +112,7 @@ class IndicatorService {
       .map((entry: Indicator) => ({
         valueTag: entry.location_id,
         metric: entry.metric_id,
-        value: entry.data_point,
+        value: entry.data_point ?? 0, // this should never happen as we filter out nulls, but it won't build otherwise.
         selected: entry.location_id == selected_location_id ? true : false,
       }))
       .sort((a, b) => a.value - b.value);
