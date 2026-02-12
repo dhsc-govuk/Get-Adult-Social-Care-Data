@@ -1,9 +1,7 @@
 using api.Data;
 using api.Data.Mappers;
-using api.Data.Models.Reference;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
-using NetTopologySuite.Geometries;
 
 namespace api.Endpoints.Geo.CareProviderLocationNeighbours;
 
