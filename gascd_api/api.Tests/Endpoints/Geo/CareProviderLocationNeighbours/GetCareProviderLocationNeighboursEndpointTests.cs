@@ -1,6 +1,7 @@
 using api.Endpoints.Geo.CareProviderLocationNeighbours;
 using FastEndpoints;
 using FastEndpoints.Testing;
+using Microsoft.Extensions.Hosting.Internal;
 using Shouldly;
 using System.Net;
 
@@ -37,8 +38,8 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Locations.ShouldNotBeEmpty();
         response.Locations.Count.ShouldBe(2);
-        response.Locations.ShouldContain(cpl => cpl.LocationCode == "1-000000002");
-        response.Locations.ShouldContain(cpl => cpl.LocationCode == "1-000000003");
+        response.Locations.ShouldContain(cpl => cpl.LocationCode == "1-000000002" && cpl.LocationName == "Location 2" && cpl.LaCode == "E08000014" && cpl.LaName == "Liverpool" && cpl.LocationCategory == "Care home" && cpl.Address == "Location 2, North Pole, NP 1SC");
+        response.Locations.ShouldContain(cpl => cpl.LocationCode == "1-000000003" && cpl.LocationName == "Location 3" && cpl.LaCode == "E08000014" && cpl.LaName == "Liverpool" && cpl.LocationCategory == "Care home" && cpl.Address == "Location 3, North Pole, NP 1SC");
     }
 
     [Fact]
