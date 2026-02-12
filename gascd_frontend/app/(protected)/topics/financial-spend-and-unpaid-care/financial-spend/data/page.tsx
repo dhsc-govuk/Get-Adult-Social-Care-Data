@@ -9,23 +9,20 @@ import DataLinkCard from '@/components/data-components/DataLinkCard';
 import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
 import BackToTop from '@/components/data-components/BackToTop';
 import LocationService from '@/services/location/locationService';
-import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { LocationNames } from '@/data/interfaces/LocationNames';
-import Link from 'next/link';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
-import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
-import RelatedDataList from '@/components/data-components/RelatedDataList';
+import SubCatergoryTable from '@/components/tables/SubCatergoryTable';
 
 export default function LAFundingPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
-    IndicatorLabel: 'Indicator',
+    IndicatorLabel: 'Duration of care',
     LALabel: 'Loading...',
     RegionLabel: 'Loading...',
     CountryLabel: 'Loading...',
@@ -51,38 +48,38 @@ export default function LAFundingPage() {
     },
   ];
 
-  useEffect(() => {
-    const fetchLocationNames = async () => {
-      if (CPLocationId) {
-        try {
-          const locationNames = await LocationService.getLocationNames(
-            CPLocationId,
-            false
-          );
-          setLocationNames(locationNames);
-        } catch (error) {
-          console.error('Error fetching location names:', error);
-        }
-      }
-    };
-    fetchLocationNames();
-  }, [CPLocationId]);
+  const demographicMetricIds = [
+    'edpsr_lt_learning_disability_support_all_ages',
+    'edpsr_lt_mental_health_support_all_ages',
+    'edpsr_lt_physical_support_all_ages',
+    'edpsr_lt_sensory_support_all_ages',
+    'edpsr_lt_support_with_memory_and_cognition_all_ages',
+    'edpsr_lt_total_all_ages',
+    'edpsr_st_learning_disability_support_all_ages',
+    'edpsr_st_mental_health_support_all_ages',
+    'edpsr_st_physical_support_all_ages',
+    'edpsr_st_sensory_support_all_ages',
+    'edpsr_st_support_with_memory_and_cognition_all_ages',
+    'edpsr_st_total_all_ages',
+    'edpsr_stlt_total_all_ages',
+  ];
 
   useEffect(() => {
-    const fetchAllData = async () => {
-      if (!CPLocationId) return;
-      try {
-        const demographicData: Indicator[] =
-          await IndicatorFetchService.getData(demographicQuery);
-        const filteredDemographicData =
-          TableService.filterDate(demographicData);
-        setFilteredDemographicData(filteredDemographicData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
+    const fetchSelectedLocation = async () => {
+      const userLocationId = await LocationService.getSelectedLocation();
+      if (!userLocationId) {
+        // Can't load any data without a valid user location
+        return;
       }
+      setCPLocationId(userLocationId);
     };
-    fetchAllData();
-  }, [demographicQuery]);
+    fetchSelectedLocation();
+
+    // Track all metrics on this page
+    demographicMetricIds.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+  }, []);
 
   useEffect(() => {
     const fetchLocationIds = async () => {
@@ -100,6 +97,49 @@ export default function LAFundingPage() {
     };
     fetchLocationIds();
   }, [CPLocationId]);
+
+  useEffect(() => {
+    const fetchLocationNames = async () => {
+      if (CPLocationId) {
+        try {
+          const locationNames = await LocationService.getLocationNames(
+            CPLocationId,
+            false,
+            'Duration of care'
+          );
+          setLocationNames(locationNames);
+        } catch (error) {
+          console.error('Error fetching location names:', error);
+        }
+      }
+    };
+    fetchLocationNames();
+  }, [CPLocationId]);
+
+  useEffect(() => {
+    if (locationIds.length > 0) {
+      setDemographicQuery(() => ({
+        metric_ids: demographicMetricIds,
+        location_ids: locationIds,
+      }));
+    }
+  }, [locationIds]);
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      if (!CPLocationId) return;
+      try {
+        const demographicData: Indicator[] =
+          await IndicatorFetchService.getData(demographicQuery);
+        const filteredDemographicData =
+          TableService.filterDate(demographicData);
+        setFilteredDemographicData(filteredDemographicData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchAllData();
+  }, [demographicQuery]);
 
   return (
     <Layout
@@ -144,7 +184,60 @@ export default function LAFundingPage() {
             .
           </p>
         }
-      ></DataBox>
+      >
+        <DataTabs
+          id="1"
+          table={
+            <SubCatergoryTable
+              tableref={tableref1}
+              caption={`Table 1: LA spending on short-term and long-term adult social care for all age groups – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}`}
+              source={
+                'Adult Social Care Activity and Finance Report from NHS England'
+              }
+              columnHeaders={locationNames}
+              rowHeaders={{
+                edpsr_stlt_total_all_ages: 'Both short-term and long-term',
+                edpsr_lt_total_all_ages: 'Long-term',
+                edpsr_lt_learning_disability_support_all_ages:
+                  'Learning disability support',
+                edpsr_lt_mental_health_support_all_ages:
+                  'Mental health support',
+                edpsr_lt_physical_support_all_ages: 'Physical support',
+                edpsr_lt_sensory_support_all_ages: 'Sensory support',
+                edpsr_lt_support_with_memory_and_cognition_all_ages:
+                  'Support with memory and cognition',
+                edpsr_st_total_all_ages: 'Short-term',
+                edpsr_st_learning_disability_support_all_ages:
+                  'Learning disability support',
+                edpsr_st_mental_health_support_all_ages:
+                  'Mental health support',
+                edpsr_st_physical_support_all_ages: 'Physical support',
+                edpsr_st_sensory_support_all_ages: 'Sensory support',
+                edpsr_st_support_with_memory_and_cognition_all_ages:
+                  'Support with memory and cognition',
+              }}
+              data={filteredDemographicData}
+              showCareProvider={false}
+              percentageRows={[]}
+              totalsRows={[
+                'edpsr_stlt_total_all_ages',
+                'edpsr_lt_total_all_ages',
+                'edpsr_st_total_all_ages',
+              ]}
+            ></SubCatergoryTable>
+          }
+          download={
+            <>
+              <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref1}
+                filename="general_health_and_disability.csv"
+                xLabel=""
+              />
+            </>
+          }
+        />
+      </DataBox>
       <DataBox
         dataTitle={
           <>
