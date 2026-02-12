@@ -4,11 +4,15 @@ dementia_estimated_diagnosis_rate_65over
 dementia_prevalence_65over
 dementia_qof_prevalence
 dementia_register_65over_per100k
+expenditure_duration_psr
+expenditure_longterm_support_setting
 learning_disability_prevalence
 median_bed_count
 median_occupancy
+num_clients_comm_care
 num_clients_long_term_support
-occupancy_rate
+num_provider_locations
+occupancy_rates
 perc_18_64
 perc_65over
 perc_75over
