@@ -18,8 +18,7 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context)
         var cpl = context.CareProviderLocations.Include(cpl => cpl.GeoData).SingleOrDefault(cpl => cpl.Code == req.CareProviderLocationCode);
         var cplCoord = cpl.GeoData.Coordinate;
 
-        var distanceInKm = 1000;
-        var distanceInDegrees = distanceInKm / 111.139;
+        var distanceInDegrees = req.DistanceInKm / 111.139;
 
         var neighbours = context.CareProviderLocations
             .Where(cpl => cpl.GeoData.Coordinate.IsWithinDistance(cplCoord, distanceInDegrees) && cpl.Code != req.CareProviderLocationCode)

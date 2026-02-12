@@ -7,4 +7,6 @@ public class GetCareProviderLocationNeighboursRequest
     [RouteParam]
     public required string CareProviderLocationCode { get; init; }
 
+    [QueryParam]
+    public int DistanceInKm { get; init; } = 5;
 }

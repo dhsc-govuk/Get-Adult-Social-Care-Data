@@ -41,4 +41,17 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
         response.Locations.ShouldContain(cpl => cpl.Code == "1-000000003");
     }
 
+
+    [Fact]
+    public async Task GetCareProviderLocationNeighbours_ReturnsLocationsWithinProvidedDistance()
+    {
+        var (httpCode, response) = await app.Client.GETAsync<GetCareProviderLocationNeighboursEndpoint, GetCareProviderLocationNeighboursRequest, GetCareProviderLocationNeighboursResponse>(
+            new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-000000001", DistanceInKm = 1 });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Locations.ShouldNotBeEmpty();
+        response.Locations.Count.ShouldBe(1);
+        response.Locations.ShouldContain(cpl => cpl.Code == "1-000000002");
+    }
+
 }

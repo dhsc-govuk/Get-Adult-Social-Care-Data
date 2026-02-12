@@ -751,9 +751,9 @@ BEGIN
            (gd_cpl_2, ST_Point(-2.38, 52.425), null, CURRENT_TIMESTAMP),
            (gd_cpl_3, ST_Point(-2.83, 53.425), null, CURRENT_TIMESTAMP),
            
-           (gd_cpl_4, ST_Point(-1.00, 1.001), null, CURRENT_TIMESTAMP),
-           (gd_cpl_5, ST_Point(-1.00, 1.002), null, CURRENT_TIMESTAMP),
-           (gd_cpl_6, ST_Point(-1.00, 1.003), null, CURRENT_TIMESTAMP),
+           (gd_cpl_4, ST_Point(-1.00, 1.000), null, CURRENT_TIMESTAMP),
+           (gd_cpl_5, ST_Point(-1.00, 1.001), null, CURRENT_TIMESTAMP),
+           (gd_cpl_6, ST_Point(-1.00, 1.036), null, CURRENT_TIMESTAMP),
 
            (gd_cpl_7, ST_Point(89.12, 44.99), null, CURRENT_TIMESTAMP),
 
