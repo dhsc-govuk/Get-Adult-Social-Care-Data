@@ -75,9 +75,6 @@ paths:
                     items:
                       type: object
                       properties: 
-                        code: 
-                          type: string
-                          description: "The unique identifier for this Care Provider Location neighbour"
                         distance:
                           type: number
                           description: "The distance of this Care Provider Location neighbour from the Care Provider Location"
