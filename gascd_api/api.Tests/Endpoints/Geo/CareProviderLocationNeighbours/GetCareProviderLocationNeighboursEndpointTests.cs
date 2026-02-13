@@ -1,7 +1,6 @@
 using api.Endpoints.Geo.CareProviderLocationNeighbours;
 using FastEndpoints;
 using FastEndpoints.Testing;
-using Microsoft.Extensions.Hosting.Internal;
 using Shouldly;
 using System.Net;
 
@@ -64,6 +63,11 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
         response.Locations.ShouldNotBeEmpty();
         response.Locations.Count.ShouldBe(6);
     }
+
+    //add a limit
+    //add a json test
+    //check shape of CPL is correct
+    // maybe find two lat and long exactly eg 7km from each other and check it works
 
     [Fact]
     public async Task GetCareProviderLocationNeighbours_Returns404WhenProvidedNonExistentCPLCode()
