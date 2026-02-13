@@ -121,8 +121,18 @@ public class ReferenceMapper
         };
     }
 
-    public GetCareProviderLocationNeighboursResponse.CareProviderLocation
+    public GetCareProviderLocationNeighboursResponse.CareProviderLocationNeighbour
         CareProviderLocationToCareProviderLocationNeighbourResponse(CareProviderLocation cpl)
+    {
+        return new GetCareProviderLocationNeighboursResponse.CareProviderLocationNeighbour
+        {
+            Distance = 1,
+            LocationDetails = CareProviderLocationToCareProviderLocationNeighbour(cpl)
+        };
+    }
+
+    public GetCareProviderLocationNeighboursResponse.CareProviderLocation
+        CareProviderLocationToCareProviderLocationNeighbour(CareProviderLocation cpl)
     {
         return new GetCareProviderLocationNeighboursResponse.CareProviderLocation
         {

@@ -36,7 +36,7 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context,
 
         var neighbours = nearbyCpls.Select(mapper.CareProviderLocationToCareProviderLocationNeighbourResponse).ToList();
 
-        var response = new GetCareProviderLocationNeighboursResponse { Locations = neighbours };
+        var response = new GetCareProviderLocationNeighboursResponse { Code = req.CareProviderLocationCode, Locations = neighbours };
 
         await Send.OkAsync(response, ct);
 

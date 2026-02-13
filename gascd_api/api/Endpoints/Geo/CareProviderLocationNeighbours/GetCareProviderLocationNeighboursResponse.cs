@@ -2,7 +2,13 @@ namespace api.Endpoints.Geo.CareProviderLocationNeighbours;
 
 public class GetCareProviderLocationNeighboursResponse
 {
-    public required List<CareProviderLocation> Locations { get; init; }
+    public required string Code { get; init; }
+    public required List<CareProviderLocationNeighbour> Locations { get; init; }
+    public record CareProviderLocationNeighbour
+    {
+        public required decimal Distance { get; init; }
+        public required CareProviderLocation LocationDetails { get; init; }
+    }
     public record CareProviderLocation
     {
         public required string LocationName { get; init; }

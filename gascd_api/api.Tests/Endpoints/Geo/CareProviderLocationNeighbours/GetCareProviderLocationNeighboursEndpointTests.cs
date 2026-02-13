@@ -35,10 +35,11 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
             new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-000000001" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Code.ShouldBe("1-000000001");
         response.Locations.ShouldNotBeEmpty();
         response.Locations.Count.ShouldBe(2);
-        response.Locations.ShouldContain(cpl => cpl.LocationCode == "1-000000002" && cpl.LocationName == "Location 2" && cpl.LaCode == "E08000014" && cpl.LaName == "Liverpool" && cpl.LocationCategory == "Care home" && cpl.Address == "Location 2, North Pole, NP 1SC");
-        response.Locations.ShouldContain(cpl => cpl.LocationCode == "1-000000003" && cpl.LocationName == "Location 3" && cpl.LaCode == "E08000014" && cpl.LaName == "Liverpool" && cpl.LocationCategory == "Care home" && cpl.Address == "Location 3, North Pole, NP 1SC");
+        response.Locations.ShouldContain(cpl => cpl.LocationDetails.LocationCode == "1-000000002" && cpl.LocationDetails.LocationName == "Location 2" && cpl.LocationDetails.LaCode == "E08000014" && cpl.LocationDetails.LaName == "Liverpool" && cpl.LocationDetails.LocationCategory == "Care home" && cpl.LocationDetails.Address == "Location 2, North Pole, NP 1SC");
+        response.Locations.ShouldContain(cpl => cpl.LocationDetails.LocationCode == "1-000000003" && cpl.LocationDetails.LocationName == "Location 3" && cpl.LocationDetails.LaCode == "E08000014" && cpl.LocationDetails.LaName == "Liverpool" && cpl.LocationDetails.LocationCategory == "Care home" && cpl.LocationDetails.Address == "Location 3, North Pole, NP 1SC");
     }
 
     [Fact]
@@ -50,7 +51,7 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Locations.ShouldNotBeEmpty();
         response.Locations.Count.ShouldBe(1);
-        response.Locations.ShouldContain(cpl => cpl.LocationCode == "1-000000002");
+        response.Locations.ShouldContain(cpl => cpl.LocationDetails.LocationCode == "1-000000002");
     }
 
     [Fact]
