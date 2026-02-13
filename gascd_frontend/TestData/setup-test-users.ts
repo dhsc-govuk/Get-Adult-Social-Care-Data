@@ -50,7 +50,7 @@ const setupTestUsers = async () => {
         emailVerified: 1,
         locationId: user.locationId,
         locationType: user.locationType,
-        selectedLocationId: user.selectedLocationId,
+        selectedLocationId: selectedLocationId,
         selectedLocationDisplayName: null,
         selectedLocationCategory: null,
         marketingConsent: true,
