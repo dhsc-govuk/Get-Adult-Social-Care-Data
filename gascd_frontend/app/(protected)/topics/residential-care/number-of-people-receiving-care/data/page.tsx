@@ -51,10 +51,7 @@ export default function NumberPeopleReceivingCarePage() {
     },
   ];
 
-  const demographicMetricIds = [
-    'dementia_qof_prevalence',
-    'dementia_estimated_diagnosis_rate_65over',
-  ];
+  const demographicMetricIds = ['nccc_num_clients_comm_care'];
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
