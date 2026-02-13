@@ -210,7 +210,7 @@ export default function ProvisionAndOccupancyPage() {
       const datapoints = filteredCareHomeBedNumbersData.filter(
         (item) => item.location_id === header[0]
       );
-      if (datapoints.length) {
+      if (datapoints.length && datapoints[0].data_point !== null) {
         values.push(datapoints[0].data_point);
       } else {
         values.push(0);
