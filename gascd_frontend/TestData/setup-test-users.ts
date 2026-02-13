@@ -9,6 +9,7 @@ interface TestUser {
   locationId: string;
   locationType: string;
   selectedLocationId?: string;
+  selectedLocationCategory?: string;
 }
 
 const test_users: TestUser[] = [
@@ -17,6 +18,7 @@ const test_users: TestUser[] = [
     locationType: 'Care provider location',
     locationId: 'testcpl1',
     selectedLocationId: 'testcpl1',
+    selectedLocationCategory: 'residential',
   },
   {
     email: 'testcp@testing.com',
@@ -35,9 +37,9 @@ const setupTestUsers = async () => {
       .where('source', '=', TESTING_SOURCE)
       .execute();
 
-    let selectedLocationId = null;
-    if (process.env.LOCAL_AUTH_LOCATION_TYPE == 'LA') {
-      selectedLocationId = process.env.LOCAL_AUTH_LOCATION_ID;
+    let selectedLocationId = user.selectedLocationId;
+    if (user.locationType == 'LA') {
+      selectedLocationId = user.locationId;
     }
     const rows = await authDB
       .insertInto('user')
@@ -52,7 +54,7 @@ const setupTestUsers = async () => {
         locationType: user.locationType,
         selectedLocationId: selectedLocationId,
         selectedLocationDisplayName: null,
-        selectedLocationCategory: null,
+        selectedLocationCategory: user.selectedLocationCategory,
         marketingConsent: true,
         source: TESTING_SOURCE,
         role: 'member',
