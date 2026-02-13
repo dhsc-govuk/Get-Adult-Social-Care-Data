@@ -9,4 +9,7 @@ public class GetCareProviderLocationNeighboursRequest
 
     [QueryParam]
     public int DistanceInKm { get; init; } = 5;
+
+    [QueryParam]
+    public int? Limit { get; init; }
 }

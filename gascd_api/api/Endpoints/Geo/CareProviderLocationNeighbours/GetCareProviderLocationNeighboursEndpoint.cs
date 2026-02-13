@@ -16,7 +16,7 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context,
     {
         var distanceInDegrees = req.DistanceInKm / 111.139;
 
-        var nearbyCpls = context.CareProviderLocations
+        var nearbyCplsQuery = context.CareProviderLocations
             .Include(cpl => cpl.LocalAuthority)
             .Where(l => l.GeoData != null
                         && l.GeoData.Coordinate
@@ -25,7 +25,19 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context,
                                 .Select(targetCpl => targetCpl.GeoData!.Coordinate)
                                 .FirstOrDefault(), distanceInDegrees)
                         && l.Code != req.CareProviderLocationCode)
-            .ToList();
+            .OrderBy(l => l.GeoData!.Coordinate
+                .Distance(context.CareProviderLocations
+                    .Where(x => x.Code == req.CareProviderLocationCode)
+                    .Select(targetCpl => targetCpl.GeoData!.Coordinate)
+                    .FirstOrDefault()))
+            .AsQueryable();
+
+        if (req.Limit.HasValue)
+        {
+            nearbyCplsQuery = nearbyCplsQuery.Take(req.Limit.Value);
+        }
+
+        var nearbyCpls = nearbyCplsQuery.ToList();
 
         if (nearbyCpls.Count == 0 && context.CareProviderLocations.SingleOrDefault(cpl => cpl.Code == req.CareProviderLocationCode) == null)
         {
