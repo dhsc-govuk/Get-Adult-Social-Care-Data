@@ -52,7 +52,7 @@ const ServiceName: React.FC<Props> = ({ session }) => {
           Find data on <abbr title="Local Authority">LA</abbr> funding.
         </>
       ),
-      url: '/topics/population-needs/subtopics',
+      url: '/topics/financial-spend-and-unpaid-care/subtopics',
     },
     {
       name: 'Population needs',
