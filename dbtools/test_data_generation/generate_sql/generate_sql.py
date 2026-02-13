@@ -53,8 +53,8 @@ def get_datapoint_count(start, end, frequency):
     elif frequency == 'Census':
         return 1
 
-def generate_deterministic_seed(metric_group, metric, location_id, salt="GASCD_metrics"):
-    combined_string = f"{salt}|{metric_group}|{metric}|{location_id}"
+def generate_deterministic_seed(*args):
+    combined_string = f"GASCD_metrics|{'|'.join(args)}"
     hash_object = hashlib.sha256(combined_string.encode('utf-8'))
 
     return int(hash_object.hexdigest()[:8], 16)
@@ -148,6 +148,7 @@ def generate_country_record(data, idx):
         'name': f"'{data['name']}'",
         'code': f"'{data['code']}'",
         'id': get_id_field_sql('countries', idx),
+        'geo_data_fk': data['geo_data'],
         'loaded_datetime': 'CURRENT_TIMESTAMP'
     }
 
@@ -157,6 +158,7 @@ def generate_region_record(data, idx):
         'code': f"'{data['code']}'",
         'name': f"'{data['name']}'",
         'country_fk': get_id_by_code_sql('countries', data['country']),
+        'geo_data_fk': data['geo_data'],
         'loaded_datetime': 'CURRENT_TIMESTAMP'
     }
 
@@ -166,6 +168,7 @@ def generate_la_record(data, idx):
         'code': format_string(data['code']),
         'name': format_string(data['name']),
         'region_fk': get_id_by_code_sql('regions', data['region']),
+        'geo_data_fk': data['geo_data'],
         'loaded_datetime': 'CURRENT_TIMESTAMP'
     }
 
@@ -187,6 +190,7 @@ def generate_cpl_record(data, idx):
         'nominated_individual': format_string('mr. ice cool'),
         'local_authority_fk': get_id_by_code_sql('local_authorities', data['la']),
         'category': format_string('category'),
+        'geo_data_fk': data['geo_data'],
         'loaded_datetime': 'CURRENT_TIMESTAMP'
     }
 
@@ -203,14 +207,59 @@ def generate_location_sql(table_name, location_type, generate_record_callable):
     sql = generate_sql(table_name, records)
     return [table_sql, sql]
 
+def generate_coord(data):
+    seed = generate_deterministic_seed(data['code'], data['name'])
+    r = random.Random(seed)
+    x = r.randint(-300, 300) / 100
+    y = r.randint(4700, 5300) / 100
+    
+    polys = [(x+dx, y+dy) for dx, dy in ((-1,-1), (1,-1), (1,1), (-1, 1), (-1, -1))]
+    
+    coord = f"ST_Point({x}, {y})"
+    polygon = f"ST_Polygon('LINESTRING({', '.join((f'{y} {x}' for x,y in polys))})'::geometry, 4326)"
+    return coord, polygon
+
+def generate_geo_data_record(data, idx, gd_count):
+    data['geo_data'] = f"(select max(id) - {gd_count} + {idx} from geo_data)"
+    coord, polygon = generate_coord(data)
+    return {
+        'id': get_id_field_sql('geo_data', idx),
+        'coordinate': coord,
+        'bounding_polygon': polygon,
+        'loaded_datetime': 'CURRENT_TIMESTAMP'
+    }
+
+def get_geo_data_count():
+    return sum(len(v) for k,v in LOCATIONS.items() if k != 'Care provider')
+
+def generate_geo_data_sql():
+    table_sql = get_id_for_table_sql('geo_data')
+    
+    gd_count = get_geo_data_count()
+    
+    idx = 1
+    records = []
+    for location_type, data  in LOCATIONS.items():
+        if location_type == 'Care provider':
+            continue
+        
+        for datum in data:
+                record = generate_geo_data_record(datum, idx, gd_count)
+                records.append(record)
+                idx += 1
+    
+    sql = generate_sql('geo_data', records)
+    return [table_sql, sql]
+
 def generate_reference_sql():
+    geo_data_sql = generate_geo_data_sql()
     country_sql = generate_location_sql('countries', 'National', generate_country_record)
     region_sql = generate_location_sql('regions', 'Regional', generate_region_record)
     la_sql = generate_location_sql('local_authorities', 'LA', generate_la_record)
     cp_sql = generate_location_sql('care_providers', 'Care provider', generate_care_provider_record)
     cpl_sql = generate_location_sql('care_provider_locations', 'CareProviderLocation', generate_cpl_record)
 
-    return country_sql + region_sql + la_sql + cp_sql + cpl_sql
+    return geo_data_sql + country_sql + region_sql + la_sql + cp_sql + cpl_sql
 
 def generate_all_sql():
     ref_sql = generate_reference_sql()
