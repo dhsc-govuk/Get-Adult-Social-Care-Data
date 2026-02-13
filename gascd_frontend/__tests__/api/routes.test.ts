@@ -270,6 +270,7 @@ describe('test available locations', () => {
         provider_name: organisation_data.display_name,
         la_name: item.la_name,
         location_display_name: item.location_name + ` (${item.la_name})`,
+        location_category: item.location_category,
       };
     });
     expect(data).toEqual({ data: location_listing });
