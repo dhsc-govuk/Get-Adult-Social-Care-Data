@@ -130,6 +130,7 @@ num_provider_locations,npl_domiciliary_care,Monthly,LA-National-Regional,1,439
 num_provider_locations,npl_extra_care_housing,Monthly,LA-National-Regional,0,24
 num_provider_locations,npl_other_community_care,Monthly,LA-National-Regional,0,7
 num_provider_locations,npl_supported_living,Monthly,LA-National-Regional,0,194
+occupancy_rates,occupancy_rate_total,Daily,CareProviderLocation-LA-National-Regional,0,100
 perc_18_64,perc_18_64,Yearly,LA-National-Regional,52.5,84.9
 perc_65over,perc_65over,Yearly,LA-National-Regional,5.8,30.4
 perc_75over,perc_75over,Yearly,LA-National-Regional,2.3,16
