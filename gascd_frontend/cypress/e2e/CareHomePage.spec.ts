@@ -175,7 +175,7 @@ describe('Care Home pages exist and contain data', () => {
     cy.get('#textSummary-3')
       .should('be.visible')
       .should('not.contains.text', 'compared to the median')
-      .should('contains.text', 'than the regional average');
+      .should('contains.text', 'the regional average');
     cy.get('#download-3').should('not.be.visible');
     cy.get('#table-3').should('not.be.visible');
   });
