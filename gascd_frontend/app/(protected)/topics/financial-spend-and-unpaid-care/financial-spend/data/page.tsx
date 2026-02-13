@@ -27,6 +27,14 @@ export default function LAFundingPage() {
     RegionLabel: 'Loading...',
     CountryLabel: 'Loading...',
   } as LocationNames);
+  const [locationNamesWithAverageLabels, setLocationNamesWithAverageLabels] =
+    useState<LocationNames>({
+      IndicatorLabel: 'Indicator',
+      CPLabel: 'Loading...',
+      LALabel: 'Loading...',
+      RegionLabel: 'Loading...',
+      CountryLabel: 'Loading...',
+    } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [filteredDemographicData, setFilteredDemographicData] = useState<
@@ -108,6 +116,13 @@ export default function LAFundingPage() {
             'Duration of care'
           );
           setLocationNames(locationNames);
+          setLocationNamesWithAverageLabels({
+            IndicatorLabel: locationNames.IndicatorLabel,
+            CPLabel: locationNames.CPLabel!,
+            LALabel: locationNames.LALabel,
+            RegionLabel: `${locationNames.RegionLabel} - regional average`,
+            CountryLabel: `${locationNames.CountryLabel} - national average`,
+          });
         } catch (error) {
           console.error('Error fetching location names:', error);
         }
@@ -202,7 +217,7 @@ export default function LAFundingPage() {
               source={
                 'Adult Social Care Activity and Finance Report from NHS England'
               }
-              columnHeaders={locationNames}
+              columnHeaders={locationNamesWithAverageLabels}
               rowHeaders={{
                 edpsr_stlt_total_all_ages: 'Both short-term and long-term',
                 edpsr_lt_total_all_ages: 'Long-term',
@@ -228,7 +243,6 @@ export default function LAFundingPage() {
               showCareProvider={false}
               percentageRows={[]}
               currency={true}
-              showAverageLabel={true}
               totalsRows={[
                 'edpsr_stlt_total_all_ages',
                 'edpsr_lt_total_all_ages',
