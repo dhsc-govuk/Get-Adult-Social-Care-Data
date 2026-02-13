@@ -9,6 +9,7 @@ type DataTableProps = {
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
   percentageRows?: string[];
+  currency: boolean;
   totalsRows?: string[];
   source?: string;
   last_updated?: string;
@@ -29,6 +30,7 @@ const getFormattedDataPoint = (
   metricId: string,
   locationType: string,
   isPercentage: boolean = false,
+  isCurrency: boolean = false,
   showAverageLabel?: boolean
 ): string => {
   const foundMetric = data.find(
@@ -43,6 +45,7 @@ const getFormattedDataPoint = (
   ) {
     let formatted = Number(foundMetric.data_point).toLocaleString();
     if (isPercentage) formatted += '%';
+    if (isCurrency) formatted = '£' + formatted;
     if (showAverageLabel)
       formatted += isPercentage ? ' (average)' : ' (median)';
     return formatted;
@@ -58,6 +61,7 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
   showCareProvider,
   careProviderMedianMetrics,
   percentageRows,
+  currency,
   totalsRows,
   children,
   source,
@@ -129,7 +133,8 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
                     data,
                     getCareProviderKey(key, careProviderMedianMetrics),
                     'CareProviderLocation',
-                    percentageRows?.some((item) => item === key) ?? false
+                    percentageRows?.some((item) => item === key) ?? false,
+                    currency
                   )}
                 </td>
               )}
@@ -140,6 +145,7 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
                   key,
                   'LA',
                   percentageRows?.some((item) => item === key) ?? false,
+                  currency,
                   showAverageLabel
                 )}
               </td>
@@ -150,6 +156,7 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
                   key,
                   'Regional',
                   percentageRows?.some((item) => item === key) ?? false,
+                  currency,
                   showAverageLabel
                 )}
               </td>
@@ -160,6 +167,7 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
                   key,
                   'National',
                   percentageRows?.some((item) => item === key) ?? false,
+                  currency,
                   showAverageLabel
                 )}
               </td>

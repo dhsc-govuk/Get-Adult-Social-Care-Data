@@ -227,6 +227,7 @@ export default function LAFundingPage() {
               data={filteredDemographicData}
               showCareProvider={false}
               percentageRows={[]}
+              currency={true}
               totalsRows={[
                 'edpsr_stlt_total_all_ages',
                 'edpsr_lt_total_all_ages',
