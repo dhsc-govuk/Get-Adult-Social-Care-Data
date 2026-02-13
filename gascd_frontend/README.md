@@ -159,9 +159,9 @@ You can log raw SQL queries to the terminal by running the app as follows:
 
 ### E2E tests
 
-There are some basic end-to-end tests written with cypress, which you can run against a local production build.
+End to end tests are built in cypress, which you can run against a local production build before a release.
 
-First ensure you have local auth and a local db set up and configured in your .env (see above). Then run:
+First ensure you have a local auth User DB set up and configured in your .env (see above). Then run:
 
 ```bash
 # In one terminal
@@ -169,8 +169,9 @@ First ensure you have local auth and a local db set up and configured in your .e
 docker compose up userdb -d
 ## Start onelogin simulator
 docker compose up onelogin_simulator -d
-## Build and run the app in production mode
-npm run build && npm run start
+## Build and run the app in production-test mode
+npm run build
+MOCK_SERVER=true npm run start:testmode
 # In a second terminal
 make test-e2e
 ```
@@ -203,11 +204,3 @@ Health check
 
 - URL: `/api/checks/health`
 - Returns JSON object including additional health status (database connectivity etc.)
-
-## Further documentation
-
-| Name                                                                               | Description                                                                                                                                                                                                                |
-| :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [DHSC Alpha Data](https://github.com/madetech/dhsc-alpha-data)                     | Repository for Data work required for DHSC Alpha                                                                                                                                                                           |
-| [DHSC Alpha Infrastructure](https://github.com/madetech/dhsc-alpha-infrastructure) | Infrastructure Repository for the DHSC Alpha Delivery                                                                                                                                                                      |
-| [Govuk React](https://github.com/govuk-react/govuk-react?tab=readme-ov-file)       | An implementation of the [GOV.UK Design System](https://govuk-design-system-production.cloudapps.digital/) in [React](https://reactjs.org/). Not used directly, but most of the components were adapted from this package. |

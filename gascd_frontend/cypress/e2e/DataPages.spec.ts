@@ -1,9 +1,4 @@
 describe('Data pages exist and contain data', () => {
-  beforeEach(() => {
-    // This runs the npm command on your host machine
-    //cy.task('resetUserDb');
-  });
-
   it('Should navigate to the Care home beds and occupancy levels page and check the contents', () => {
     cy.login_onelogin(Cypress.env('cpl_user'));
 

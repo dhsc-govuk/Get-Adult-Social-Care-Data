@@ -50,6 +50,12 @@ export const locations_data = {
       ],
     },
     country_code: 'E92000001',
+    local_authorities: [
+      {
+        la_code: 'E08000024',
+        la_name: 'Sunderland',
+      },
+    ],
   },
   country: {
     code: 'E92000001',

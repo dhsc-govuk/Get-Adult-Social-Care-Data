@@ -12,16 +12,7 @@ export default defineConfig({
       cp_user: 'testcp@testing.com',
       la_user: 'testla@testing.com',
     },
-    setupNodeEvents(on, config) {
-      on('task', {
-        resetUserDb() {
-          console.log('Resetting Database...');
-          console.log(process.cwd());
-          execSync('npx tsx ./TestData/setup-test-users');
-          return null; // Tasks must return a value or null
-        },
-      });
-    },
+    setupNodeEvents(on, config) {},
     experimentalModifyObstructiveThirdPartyCode: true,
     baseUrl: process.env.CYPRESS_BASE_URL,
     specPattern: 'cypress/e2e/**/*.spec.{js,jsx,ts,tsx}',

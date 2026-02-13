@@ -66,7 +66,7 @@ describe('test handlers', () => {
       {
         checked: false,
         filter_bedtype: 'All bed types',
-        metric_id: 'bedcount_per_hundred_thousand_adults',
+        metric_id: 'bedcount_per_hundred_thousand_adults_total',
       },
       {
         checked: false,

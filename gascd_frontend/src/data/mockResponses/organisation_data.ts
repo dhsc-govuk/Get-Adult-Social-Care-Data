@@ -32,5 +32,10 @@ export const organisation_data = {
       location_name: 'Shoggins Care Services',
       la_name: 'Durham',
     },
+    {
+      location_code: 'testcpl1',
+      location_name: 'Test Care Provider Location 1',
+      la_name: 'Durham',
+    },
   ],
 };
