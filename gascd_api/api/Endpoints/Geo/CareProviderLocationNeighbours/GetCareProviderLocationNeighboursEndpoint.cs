@@ -18,11 +18,12 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context,
 
         var nearbyCpls = context.CareProviderLocations
             .Include(cpl => cpl.LocalAuthority)
-            .Where(l => l.GeoData.Coordinate
-                .IsWithinDistance(context.CareProviderLocations
-                    .Where(l => l.Code == req.CareProviderLocationCode)
-                    .Select(targetCpl => targetCpl.GeoData.Coordinate)
-                    .FirstOrDefault(), distanceInDegrees)
+            .Where(l => l.GeoData != null
+                        && l.GeoData.Coordinate
+                            .IsWithinDistance(context.CareProviderLocations
+                                .Where(x => x.Code == req.CareProviderLocationCode)
+                                .Select(targetCpl => targetCpl.GeoData!.Coordinate)
+                                .FirstOrDefault(), distanceInDegrees)
                         && l.Code != req.CareProviderLocationCode)
             .ToList();
 
