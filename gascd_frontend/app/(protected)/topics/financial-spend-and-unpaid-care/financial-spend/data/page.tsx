@@ -228,6 +228,7 @@ export default function LAFundingPage() {
               showCareProvider={false}
               percentageRows={[]}
               currency={true}
+              showAverageLabel={true}
               totalsRows={[
                 'edpsr_stlt_total_all_ages',
                 'edpsr_lt_total_all_ages',
