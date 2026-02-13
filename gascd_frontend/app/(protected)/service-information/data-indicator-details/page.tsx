@@ -55,6 +55,47 @@ export default function DataIndicatorDetailsPage() {
             />
           </ul>
           <h2 className="govuk-heading-m govuk-!-margin-top-9">
+            Funding data indicators
+          </h2>
+          <ul className="gem-c-cards__list gem-c-cards__list--one-column">
+            <DataLinkCard
+              label={
+                <>
+                  <abbr title="Local Authority">LA</abbr> funding for adult
+                  social care
+                </>
+              }
+              sources="NHS England"
+              updateFrequency="Yearly updates"
+              limitations={false}
+              url="/help/total-financial-spend-adult-social-care"
+            />
+            <DataLinkCard
+              label={
+                <>
+                  <abbr title="Local Authority">LA</abbr> funding for long-term
+                  community adult social care
+                </>
+              }
+              sources="NHS England"
+              updateFrequency="Yearly updates"
+              limitations={false}
+              url="/help/total-financial-spend-long-term-community-adult-social-care"
+            />
+            <DataLinkCard
+              label={
+                <>
+                  <abbr title="Local Authority">LA</abbr> funding for short-term
+                  and long term adult social care
+                </>
+              }
+              sources="NHS England"
+              updateFrequency="Yearly updates"
+              limitations={false}
+              url="/help/percentages-financial-spend-long-term-and-short-term-care"
+            />
+          </ul>
+          <h2 className="govuk-heading-m govuk-!-margin-top-9">
             Population needs data indicators
           </h2>
           <ul className="gem-c-cards__list gem-c-cards__list--one-column">
