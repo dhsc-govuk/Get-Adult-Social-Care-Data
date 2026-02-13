@@ -2,7 +2,7 @@ import React, { Ref } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
 
 type DataTableProps = {
-  caption?: string;
+  caption?: React.ReactNode;
   columnHeaders: Object;
   rowHeaders: Object;
   data: Indicator[];

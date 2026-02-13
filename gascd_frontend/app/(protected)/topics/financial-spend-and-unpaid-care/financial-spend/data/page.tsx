@@ -190,7 +190,15 @@ export default function LAFundingPage() {
           table={
             <SubCatergoryTable
               tableref={tableref1}
-              caption={`Table 1: LA spending on short-term and long-term adult social care for all age groups – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}`}
+              caption={
+                <>
+                  Table 1: <abbr title="Local Authority">LA</abbr> spending on
+                  short-term and long-term adult social care for all age groups
+                  – {locationNames.LALabel} local authority,{' '}
+                  {locationNames.RegionLabel} region and{' '}
+                  {locationNames.CountryLabel}
+                </>
+              }
               source={
                 'Adult Social Care Activity and Finance Report from NHS England'
               }
