@@ -49,6 +49,11 @@ const FilterRadioGroup: React.FC<Props> = ({
     getFilters();
   }, []);
 
+  const handleShowHideToggle = (showFilters: boolean) => {
+    setSearchedFilters(filters);
+    setShowFilters(showFilters);
+  };
+
   const handleChange = (metric_id: string, filter_bedtype: string) => {
     let newFilter: TotalBedsFilters = {
       metric_id: metric_id,
@@ -100,8 +105,8 @@ const FilterRadioGroup: React.FC<Props> = ({
           aria-label={`${showFilters ? 'Hide' : 'Show'} ${filterLabel} filters`}
           onClick={
             showFilters
-              ? () => setShowFilters(false)
-              : () => setShowFilters(true)
+              ? () => handleShowHideToggle(false)
+              : () => handleShowHideToggle(true)
           }
         >
           <span className="dhsc-filter--button-content">
@@ -123,7 +128,17 @@ const FilterRadioGroup: React.FC<Props> = ({
           )}
           {filters.length > 0 && (
             <>
-              <div id="radios-search" className="app-c-option-select__filter">
+              <div className="js-container-heading">
+                <h3 className="govuk-heading-s searchable-filters-heading">
+                  Bed type
+                </h3>
+              </div>
+              <div
+                id="radios-search"
+                className="app-c-option-select__filter"
+                hidden
+                style={{ display: 'block' }}
+              >
                 <label
                   htmlFor="input-bedtype-radios"
                   className="govuk-label govuk-visually-hidden"
@@ -158,7 +173,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                               name="Table filter"
                               type="radio"
                               value={filter.metric_id}
-                              defaultChecked={
+                              checked={
                                 selectedFilter?.metric_id === filter.metric_id
                               }
                               onChange={() =>

@@ -44,6 +44,7 @@ describe('DisabilityPrevalencePage', () => {
     const dataBoxHeadings = [
       'Disability prevalence',
       'Learning disability prevalence',
+      'Primary reason for people to access long-term adult social care',
     ];
     for (let dataBoxHeadingText of dataBoxHeadings) {
       expect(
@@ -68,6 +69,7 @@ describe('DisabilityPrevalencePage', () => {
     const tables = [
       /Table 1: self-reporting on general health and disability – /i,
       /Table 2: learning disability prevalence – /i,
+      /Table 3: primary reason for /i,
     ];
     for (let table of tables) {
       expect(screen.getByRole('table', { name: table })).toBeInTheDocument();

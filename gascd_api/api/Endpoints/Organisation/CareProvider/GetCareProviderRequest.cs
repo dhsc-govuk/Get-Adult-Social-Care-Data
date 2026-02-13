@@ -5,5 +5,5 @@ namespace api.Endpoints.Organisation.CareProvider;
 public class GetCareProviderRequest
 {
     [RouteParam]
-    public required string CareProviderCode { get; set; }
+    public required string CareProviderCode { get; init; }
 }

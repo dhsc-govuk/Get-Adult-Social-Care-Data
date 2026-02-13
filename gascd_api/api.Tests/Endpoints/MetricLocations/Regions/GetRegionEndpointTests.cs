@@ -1,7 +1,7 @@
 using api.Endpoints.MetricLocation.Regions;
 using api.Endpoints.Shared;
-using api.Tests.Fixtures;
 using FastEndpoints;
+using FastEndpoints.Testing;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
@@ -9,21 +9,13 @@ using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.MetricLocations.Regions;
 
-public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
+public class GetRegionEndpointTests(App app) : TestBase<App>
 {
-    private readonly HttpClient _client;
-
-    public GetRegionEndpointTests(IntegrationTestFixture fixture)
-    {
-        var factory = new CustomWebAppFactory(fixture.PostgresContainer);
-        _client = factory.CreateClient();
-    }
-
     [Fact]
     public async Task GetRegion_ReturnsOk()
     {
         var (httpCode, _) =
-            await _client.GETAsync<GetRegionEndpoint, GetRegionRequest, GetRegionResponse>(
+            await app.Client.GETAsync<GetRegionEndpoint, GetRegionRequest, GetRegionResponse>(
                 new GetRegionRequest { RegionCode = "E12000002" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -33,23 +25,23 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetRegion_ReturnsExpectedRegionData()
     {
         var (httpCode, response) =
-            await _client.GETAsync<GetRegionEndpoint, GetRegionRequest, GetRegionResponse>(
+            await app.Client.GETAsync<GetRegionEndpoint, GetRegionRequest, GetRegionResponse>(
                 new GetRegionRequest { RegionCode = "E12000002" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Code.ShouldBe("E12000002");
         response.DisplayName.ShouldBe("North West");
-        response.GeoData?.Latitude.ShouldBe(54.075);
-        response.GeoData?.Longitude.ShouldBe(-2.75);
-        List<GeoDataDto.CoordinateDto> expectedPolygon = new()
-        {
-            new GeoDataDto.CoordinateDto { Longitude = -3.8, Latitude = 52.9 },
-            new GeoDataDto.CoordinateDto { Longitude = -1.8, Latitude = 52.9 },
-            new GeoDataDto.CoordinateDto { Longitude = -1.8, Latitude = 55.25 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.8, Latitude = 55.25 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.8, Latitude = 52.9 }
-        };
-        response.GeoData?.Polygon.ShouldBe(expectedPolygon);
+        response.GeoData!.Latitude.ShouldBe(54.075);
+        response.GeoData!.Longitude.ShouldBe(-2.75);
+        List<GeoDataDto.CoordinateDto> expectedPolygon =
+        [
+            new() { Longitude = -3.8, Latitude = 52.9 },
+            new() { Longitude = -1.8, Latitude = 52.9 },
+            new() { Longitude = -1.8, Latitude = 55.25 },
+            new() { Longitude = -3.8, Latitude = 55.25 },
+            new() { Longitude = -3.8, Latitude = 52.9 }
+        ];
+        response.GeoData!.Polygon.ShouldBe(expectedPolygon);
         response.CountryCode.ShouldBe("E92000001");
         response.CountryName.ShouldBe("England");
         response.LocalAuthorities.Count.ShouldBe(3);
@@ -63,7 +55,7 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetRegion_WithNullGeoData_AndNoLAs_ReturnsExpectedRegionData()
     {
         var (httpCode, response) =
-            await _client.GETAsync<GetRegionEndpoint, GetRegionRequest, GetRegionResponse>(
+            await app.Client.GETAsync<GetRegionEndpoint, GetRegionRequest, GetRegionResponse>(
                 new GetRegionRequest { RegionCode = "E12000003" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -78,7 +70,7 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetRegion_ReturnsExpectedRegionJsonObject()
     {
-        var response = await _client.GetAsync("api/metric_locations/regions/E12000002", TestContext.Current.CancellationToken);
+        var response = await app.Client.GetAsync("api/metric_locations/regions/E12000002", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var jObject = await ParseJsonResponse<JObject>(response);
         GetFromJson(jObject, "code").ShouldBe("E12000002");
@@ -111,7 +103,7 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task Invalid_RegionCode_Input(string regionCode, string expectedErrorMessage)
     {
         var (httpResponse, problemDetails) =
-            await _client.GETAsync<GetRegionEndpoint, GetRegionRequest, ProblemDetails>(
+            await app.Client.GETAsync<GetRegionEndpoint, GetRegionRequest, ProblemDetails>(
                 new GetRegionRequest { RegionCode = regionCode });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
@@ -123,9 +115,19 @@ public class GetRegionEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task NonExistent_RegionCode_Input()
     {
         var (httpResponse, problemDetails) =
-            await _client.GETAsync<GetRegionEndpoint, GetRegionRequest, ProblemDetails>(
+            await app.Client.GETAsync<GetRegionEndpoint, GetRegionRequest, ProblemDetails>(
                 new GetRegionRequest { RegionCode = "1-134343434" });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
+    [Fact]
+    public async Task GetRegion_ReturnsErrorWhenProvidedWhiteSpace()
+    {
+        HttpResponseMessage response = await app.Client.GetAsync("api/metric_locations/regions/ /", TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+
+        JObject? json = await ParseJsonResponse<JObject>(response);
+        GetFromJson(json, "errors[0].name").ShouldBe("region_code");
+        GetFromJson(json, "errors[0].reason").ShouldBe("Region code is required");
+    }
 }

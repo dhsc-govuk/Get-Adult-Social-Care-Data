@@ -1,6 +1,6 @@
 using api.Endpoints.Organisation.CareProvider;
-using api.Tests.Fixtures;
 using FastEndpoints;
+using FastEndpoints.Testing;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
@@ -8,21 +8,14 @@ using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.Organisation.CareProvider;
 
-public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture>
+[Collection("Sequential")]
+public class GetCareProviderEndpointTests(App app) : TestBase<App>
 {
-    private readonly HttpClient _client;
-
-    public GetCareProviderEndpointTests(IntegrationTestFixture fixture)
-    {
-        var factory = new CustomWebAppFactory(fixture.PostgresContainer);
-        _client = factory.CreateClient();
-    }
-
     [Fact]
     public async Task GetCareProvider_ReturnsOk()
     {
         var (httpCode, _) =
-            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, GetCareProviderResponse>(
+            await app.Client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, GetCareProviderResponse>(
                 new GetCareProviderRequest { CareProviderCode = "1-123456789" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -33,7 +26,7 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     {
         var validCareProviderCode = "1-123456789";
         var (httpCode, response) =
-            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, GetCareProviderResponse>(
+            await app.Client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, GetCareProviderResponse>(
                 new GetCareProviderRequest { CareProviderCode = validCareProviderCode });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -50,7 +43,7 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     [Fact]
     public async Task GetCareProvider_ReturnsExpectedCareProviderJsonObject()
     {
-        var response = await _client.GetAsync("api/organisation/care_provider/1-123456789", TestContext.Current.CancellationToken);
+        var response = await app.Client.GetAsync("api/organisation/care_provider/1-123456789", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         var jObject = await ParseJsonResponse<JObject>(response);
@@ -66,7 +59,7 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     [Fact]
     public async Task GetCareProvider_ReturnsErrorWhenProvidedWhiteSpace()
     {
-        HttpResponseMessage response = await _client.GetAsync("api/organisation/care_provider/ /", TestContext.Current.CancellationToken);
+        HttpResponseMessage response = await app.Client.GetAsync("api/organisation/care_provider/ /", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
         JObject? json = await ParseJsonResponse<JObject>(response);
@@ -79,7 +72,7 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     {
         var idForCareProvideWith2Locations = "1-123456777";
         var (httpCode, response) =
-            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, GetCareProviderResponse>(
+            await app.Client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, GetCareProviderResponse>(
                 new GetCareProviderRequest { CareProviderCode = idForCareProvideWith2Locations });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -96,7 +89,7 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     public async Task Invalid_CareProviderCode_Input(string careProviderCode, string expectedErrorMessage)
     {
         var (httpResponse, problemDetails) =
-            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
+            await app.Client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
                 new GetCareProviderRequest { CareProviderCode = careProviderCode });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
@@ -107,8 +100,8 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     [Fact]
     public async Task NonExistent_CareProviderCode_Input()
     {
-        var (httpResponse, problemDetails) =
-            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
+        var (httpResponse, _) =
+            await app.Client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, ProblemDetails>(
                 new GetCareProviderRequest { CareProviderCode = "1-123456" });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
@@ -118,11 +111,10 @@ public class GetCareProviderEndpointTests : IClassFixture<IntegrationTestFixture
     {
         var codeForCareProviderWithNoLocations = "1-123456712";
         var (httpCode, response) =
-            await _client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, GetCareProviderResponse>(
+            await app.Client.GETAsync<GetCareProviderEndpoint, GetCareProviderRequest, GetCareProviderResponse>(
                 new GetCareProviderRequest { CareProviderCode = codeForCareProviderWithNoLocations });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Locations.Count.ShouldBe(0);
     }
-
 }

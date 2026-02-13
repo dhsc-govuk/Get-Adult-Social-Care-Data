@@ -46,6 +46,15 @@ const ServiceName: React.FC<Props> = ({ session }) => {
       url: '/topics/residential-care/subtopics',
     },
     {
+      name: 'Funding',
+      description: (
+        <>
+          Find data on <abbr title="Local Authority">LA</abbr> funding.
+        </>
+      ),
+      url: '/topics/financial-spend-and-unpaid-care/subtopics',
+    },
+    {
       name: 'Population needs',
       description:
         'Find data on a range of care need indicators, such as household economic factors and disability prevalence.',

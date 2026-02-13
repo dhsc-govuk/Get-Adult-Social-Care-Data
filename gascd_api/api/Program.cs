@@ -1,5 +1,4 @@
 using api.Configuration;
-using api.Data.Mappers;
 using api.Processors;
 using FastEndpoints.Swagger;
 

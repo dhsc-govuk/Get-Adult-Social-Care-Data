@@ -2,7 +2,7 @@ namespace api.Endpoints.Organisation.CareProvider;
 
 public class GetCareProviderResponse
 {
-    public required string Code { get; set; }
+    public required string Code { get; init; }
     public required string DisplayName { get; init; }
     public required List<CareProviderLocation> Locations { get; init; }
 

@@ -1,30 +1,22 @@
 using api.Endpoints.MetricLocation.CpLocations;
 using api.Endpoints.Shared;
-using api.Tests.Fixtures;
 using FastEndpoints;
+using FastEndpoints.Testing;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
-using Xunit.Internal;
 using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.MetricLocations.CPLocations;
 
-public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTestFixture>
+[Collection("Sequential")]
+public class GetCareProviderLocationEndpointTests(App app) : TestBase<App>
 {
-    private readonly HttpClient _client;
-
-    public GetCareProviderLocationEndpointTests(IntegrationTestFixture fixture)
-    {
-        var factory = new CustomWebAppFactory(fixture.PostgresContainer);
-        _client = factory.CreateClient();
-    }
-
     [Fact]
     public async Task GetCareProviderLocation_ReturnsOk()
     {
         var (httpCode, _) =
-            await _client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, GetCareProviderLocationResponse>(
+            await app.Client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, GetCareProviderLocationResponse>(
                 new GetCareProviderLocationRequest { CareProviderLocationCode = "1-222222222" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -34,7 +26,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
     public async Task GetCareProviderLocation_ReturnsExpectedCareProviderData()
     {
         var (httpCode, response) =
-            await _client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, GetCareProviderLocationResponse>(
+            await app.Client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, GetCareProviderLocationResponse>(
                 new GetCareProviderLocationRequest { CareProviderLocationCode = "1-222222222" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -45,17 +37,17 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         response.ProviderName.ShouldBe("Bupa");
         response.Category.ShouldBe("Residential");
         response.NominatedIndividual.ShouldBe("Mr. Ice Cool");
-        response.GeoData?.Latitude.ShouldBe(53.425);
-        response.GeoData?.Longitude.ShouldBe(-2.88);
-        List<GeoDataDto.CoordinateDto> expectedPolygon = new()
-        {
-            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 },
-            new GeoDataDto.CoordinateDto { Longitude = -2.55, Latitude = 52.26 },
-            new GeoDataDto.CoordinateDto { Longitude = -2.65, Latitude = 53.73 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 54.73 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 }
-        };
-        response.GeoData?.Polygon.ShouldBe(expectedPolygon);
+        response.GeoData!.Latitude.ShouldBe(53.425);
+        response.GeoData!.Longitude.ShouldBe(-2.88);
+        List<GeoDataDto.CoordinateDto> expectedPolygon =
+        [
+            new() { Longitude = -3.3, Latitude = 55.26 },
+            new() { Longitude = -2.55, Latitude = 52.26 },
+            new() { Longitude = -2.65, Latitude = 53.73 },
+            new() { Longitude = -3.3, Latitude = 54.73 },
+            new() { Longitude = -3.3, Latitude = 55.26 }
+        ];
+        response.GeoData!.Polygon.ShouldBe(expectedPolygon);
         response.LocalAuthorityCode.ShouldBe(null);
         response.LocalAuthorityName.ShouldBe(null);
         response.RegionCode.ShouldBe(null);
@@ -68,7 +60,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
     public async Task GetCareProviderLocation_ReturnsExpectedCareProviderDataWithIncludeParents()
     {
         var (httpCode, response) =
-            await _client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, GetCareProviderLocationResponse>(
+            await app.Client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, GetCareProviderLocationResponse>(
                 new GetCareProviderLocationRequest { CareProviderLocationCode = "1-222222222", IncludeParents = true });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -79,17 +71,17 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         response.ProviderName.ShouldBe("Bupa");
         response.Category.ShouldBe("Residential");
         response.NominatedIndividual.ShouldBe("Mr. Ice Cool");
-        response.GeoData?.Latitude.ShouldBe(53.425);
-        response.GeoData?.Longitude.ShouldBe(-2.88);
-        List<GeoDataDto.CoordinateDto> expectedPolygon = new()
-        {
-            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 },
-            new GeoDataDto.CoordinateDto { Longitude = -2.55, Latitude = 52.26 },
-            new GeoDataDto.CoordinateDto { Longitude = -2.65, Latitude = 53.73 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 54.73 },
-            new GeoDataDto.CoordinateDto { Longitude = -3.3, Latitude = 55.26 }
-        };
-        response.GeoData?.Polygon.ShouldBe(expectedPolygon);
+        response.GeoData!.Latitude.ShouldBe(53.425);
+        response.GeoData!.Longitude.ShouldBe(-2.88);
+        List<GeoDataDto.CoordinateDto> expectedPolygon =
+        [
+            new() { Longitude = -3.3, Latitude = 55.26 },
+            new() { Longitude = -2.55, Latitude = 52.26 },
+            new() { Longitude = -2.65, Latitude = 53.73 },
+            new() { Longitude = -3.3, Latitude = 54.73 },
+            new() { Longitude = -3.3, Latitude = 55.26 }
+        ];
+        response.GeoData!.Polygon.ShouldBe(expectedPolygon);
         response.LocalAuthorityCode.ShouldBe("E08000014");
         response.LocalAuthorityName.ShouldBe("Liverpool");
         response.RegionCode.ShouldBe("E12000002");
@@ -102,7 +94,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
     public async Task GetCareProviderLocation_WithNullGeodata_ReturnsExpectedCareProviderDataWithIncludeParents()
     {
         var (httpCode, response) =
-            await _client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, GetCareProviderLocationResponse>(
+            await app.Client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, GetCareProviderLocationResponse>(
                 new GetCareProviderLocationRequest { CareProviderLocationCode = "1-222222225", IncludeParents = true });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -126,7 +118,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
     public async Task GetCareProviderLocation_WithNullNominatedIndividual_ReturnsExpectedCareProviderDataWithIncludeParents()
     {
         var (httpCode, response) =
-            await _client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, GetCareProviderLocationResponse>(
+            await app.Client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, GetCareProviderLocationResponse>(
                 new GetCareProviderLocationRequest { CareProviderLocationCode = "1-222222226", IncludeParents = true });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -150,7 +142,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
     [Fact]
     public async Task GetCareProviderLocation_ReturnsExpectedCareProviderJsonObject()
     {
-        var response = await _client.GetAsync("api/metric_locations/cp_locations/1-222222222", TestContext.Current.CancellationToken);
+        var response = await app.Client.GetAsync("api/metric_locations/cp_locations/1-222222222", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var jObject = await ParseJsonResponse<JObject>(response);
         GetFromJson(jObject, "code").ShouldBe("1-222222222");
@@ -172,12 +164,18 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
         GetFromJson(jObject, "geo_data.polygon[3].latitude").ShouldBe("54.73");
         GetFromJson(jObject, "geo_data.polygon[4].longitude").ShouldBe("-3.3");
         GetFromJson(jObject, "geo_data.polygon[4].latitude").ShouldBe("55.26");
+        GetFromJson(jObject, "local_authority_code").ShouldBe(null);
+        GetFromJson(jObject, "local_authority_name").ShouldBe(null);
+        GetFromJson(jObject, "region_code").ShouldBe(null);
+        GetFromJson(jObject, "region_name").ShouldBe(null);
+        GetFromJson(jObject, "country_code").ShouldBe(null);
+        GetFromJson(jObject, "country_name").ShouldBe(null);
     }
 
     [Fact]
     public async Task GetCareProviderLocation_ReturnsExpectedCareProviderJsonObjectIncludeParents()
     {
-        var response = await _client.GetAsync("api/metric_locations/cp_locations/1-222222222?include_parents=true", TestContext.Current.CancellationToken);
+        var response = await app.Client.GetAsync("api/metric_locations/cp_locations/1-222222222?include_parents=true", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var jObject = await ParseJsonResponse<JObject>(response);
         GetFromJson(jObject, "code").ShouldBe("1-222222222");
@@ -214,7 +212,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
     public async Task Invalid_CareProviderLocationCode_Input(string careProviderLocationCode, string expectedErrorMessage)
     {
         var (httpResponse, problemDetails) =
-            await _client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, ProblemDetails>(
+            await app.Client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, ProblemDetails>(
                 new GetCareProviderLocationRequest { CareProviderLocationCode = careProviderLocationCode });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
@@ -226,7 +224,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
     public async Task NonExistent_CareProviderLocationCode_Input()
     {
         var (httpResponse, problemDetails) =
-            await _client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, ProblemDetails>(
+            await app.Client.GETAsync<GetCareProviderLocationEndpoint, GetCareProviderLocationRequest, ProblemDetails>(
                 new GetCareProviderLocationRequest { CareProviderLocationCode = "1-1234567" });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
@@ -234,7 +232,7 @@ public class GetCareProviderLocationEndpointTests : IClassFixture<IntegrationTes
     [Fact]
     public async Task GetCareProviderLocation_ReturnsErrorWhenProvidedWhiteSpace()
     {
-        HttpResponseMessage response = await _client.GetAsync("api/metric_locations/cp_locations/ /", TestContext.Current.CancellationToken);
+        HttpResponseMessage response = await app.Client.GetAsync("api/metric_locations/cp_locations/ /", TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
         JObject? json = await ParseJsonResponse<JObject>(response);

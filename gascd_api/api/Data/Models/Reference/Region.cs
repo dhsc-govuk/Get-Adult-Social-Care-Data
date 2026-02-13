@@ -19,7 +19,7 @@ public class Region : SearchableEntity
     public int? GeoDataFk { get; init; }
 
     [ForeignKey("GeoDataFk")]
-    public virtual GeoData? GeoData { get; init; } = null!;
+    public virtual GeoData? GeoData { get; init; }
 
     public virtual ICollection<LocalAuthority> LocalAuthorities { get; init; } = new List<LocalAuthority>();
 }

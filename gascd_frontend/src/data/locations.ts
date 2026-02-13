@@ -129,3 +129,15 @@ export const getAllowedLocations = async (
   });
   return available_locations;
 };
+
+/**
+ * Validates and sanitizes a list of string IDs.
+ * Returns only the IDs that pass the alphanumeric + underscore check.
+ */
+export function validateMetricIds(ids: string[]): string[] {
+  const validPattern = /^[a-zA-Z0-9_]+$/;
+
+  return ids
+    .map((id) => id.trim()) // Remove accidental whitespace
+    .filter((id) => id.length > 0 && validPattern.test(id));
+}
