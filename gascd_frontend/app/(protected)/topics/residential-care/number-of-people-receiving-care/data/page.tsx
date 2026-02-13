@@ -12,6 +12,7 @@ import LocationService from '@/services/location/locationService';
 import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { LocationNames } from '@/data/interfaces/LocationNames';
+import Link from 'next/link';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
@@ -20,7 +21,7 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 
-export default function UnpaidCarePage() {
+export default function NumberPeopleReceivingCarePage() {
   const tableref1 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
@@ -45,12 +46,15 @@ export default function UnpaidCarePage() {
       url: '/home',
     },
     {
-      text: 'Care provision',
+      text: 'Population needs',
       url: '/topics/residential-care/subtopics',
     },
   ];
 
-  const demographicMetricIds = ['perc_unpaid_care_provider'];
+  const demographicMetricIds = [
+    'dementia_qof_prevalence',
+    'dementia_estimated_diagnosis_rate_65over',
+  ];
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -130,18 +134,20 @@ export default function UnpaidCarePage() {
 
   return (
     <Layout
-      title="Unpaid care"
+      title="Number of adults receiving community social care"
       autoSpaceMainContent={false}
       showLoginInformation={true}
-      currentPage="unpaid-care"
+      currentPage="number-of-people-receiving-care"
       breadcrumbs={breadcrumbs}
     >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
-          <h1 className="govuk-heading-xl">Unpaid care</h1>
+          <h1 className="govuk-heading-xl">
+            Number of adults receiving community social care
+          </h1>
           <p className="govuk-body-l">
-            Statistics on the people who provide unpaid care to family members,
-            friends and neighbours.
+            Data on the number of people supported through community social
+            care, including trends over time.
           </p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview
@@ -149,72 +155,45 @@ export default function UnpaidCarePage() {
         </div>
       </div>
       <DataBox
-        dataTitle="People aged 5 and over who provide unpaid care"
+        dataTitle="Number of adults receiving community social care"
         dataInfo={
           <>
             <p className="govuk-body-m">
               Find out how{' '}
               <a
-                href="/help/percentage-people-aged-5-and-over-who-provide-unpaid-care"
+                href="/help/number-people-receiving-care-from-community-social-care-provider"
                 className="govuk-link"
               >
-                how unpaid care is measured.
-              </a>{' '}
+                how the number of people receiving community social care is
+                calculated
+              </a>
+              .
             </p>
           </>
         }
       >
-        <DataTabs
-          id="1"
-          table={
-            <DataTable
-              tableref={tableref1}
-              caption={`Table 1: percentage of people aged 5 and over who provide unpaid care – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
-              source={
-                'Census 2021 from the Office for National Statistics (ONS)'
-              }
-              columnHeaders={locationNames}
-              rowHeaders={{
-                perc_unpaid_care_provider:
-                  'Percentage of people aged 5 or over who provide unpaid care',
-              }}
-              data={filteredDemographicData}
-              showCareProvider={false}
-              percentageRows={['perc_unpaid_care_provider']}
-            ></DataTable>
-          }
-          download={
-            <>
-              <h4 className="govuk-heading-s">Download</h4>
-              <DownloadTableDataCSVLink
-                tableref={tableref1}
-                filename="percent_unpaid_care.csv"
-                xLabel=""
-              />
-            </>
-          }
-        />
+        <DataTabs id="1" />
       </DataBox>
       <DataIndicatorDetailsList>
         <DataLinkCard
-          label="People aged 5 and over who provide unpaid care"
-          sources="Office for National Statistics."
-          updateFrequency="Updated every 10 years"
-          limitations={false}
-          url="/help/percentage-people-aged-5-and-over-who-provide-unpaid-care"
+          label="Number of people receiving care from a community social care provider"
+          sources="Capacity Tracker"
+          updateFrequency="Daily updates"
+          limitations={true}
+          url="/help/number-people-receiving-care-from-community-social-care-provider"
         />
       </DataIndicatorDetailsList>
 
       <RelatedDataList>
         <DataLinkCard
+          label="Unpaid care"
+          description="Statistics on the people who provide unpaid care to family members, friends and neighbours."
+          url="/topics/residential-care/unpaid-care/data"
+        />
+        <DataLinkCard
           label="Care home beds and occupancy levels"
           description="Provision and capacity data for care homes, including local, regional and national statistics."
           url="/topics/residential-care/provision-and-occupancy/data"
-        />
-        <DataLinkCard
-          label="Number of adults receiving community social care"
-          description="Data on the number of people supported through community social care, including trends over time."
-          url="/topics/residential-care/number-of-people-receiving-care/data"
         />
       </RelatedDataList>
 
