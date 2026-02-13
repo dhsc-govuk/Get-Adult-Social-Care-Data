@@ -6,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.MetricLocation.LocalAuthorities;
 
-public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetLocalAuthorityEndpoint> logger) : Endpoint<GetLocalAuthorityRequest, GetLocalAuthorityResponse>
+public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetLocalAuthorityEndpoint> logger)
+    : Endpoint<GetLocalAuthorityRequest, GetLocalAuthorityResponse>
 {
     public override void Configure()
     {
@@ -26,6 +27,7 @@ public class GetLocalAuthorityEndpoint(GascdDataContext context, ReferenceMapper
                 .Include(la => la.Region)
                 .Include(la => la.Region.Country);
         }
+
         return laQuery.SingleOrDefault(x => x.Code == req.LocalAuthorityCode);
     }
 

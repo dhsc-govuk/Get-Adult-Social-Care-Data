@@ -13,7 +13,7 @@ public class Metric : EntityBase
     public required int MetricGroupFk { get; init; }
 
     [ForeignKey("MetricGroupFk")]
-    public virtual MetricGroup MetricGroup { get; set; } = null!;
+    public virtual MetricGroup MetricGroup { get; init; } = null!;
 
     [Column("filter_type"), StringLength(255)]
     public required string FilterType { get; init; }

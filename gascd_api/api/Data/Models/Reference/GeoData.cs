@@ -7,8 +7,8 @@ namespace api.Data.Models.Reference;
 public class GeoData : EntityBase
 {
     [Column("coordinate", TypeName = "geometry (point)")]
-    public required Point Coordinate { get; set; }
+    public required Point Coordinate { get; init; }
 
     [Column("bounding_polygon", TypeName = "geometry (polygon)")]
-    public Polygon? BoundingPolygon { get; set; }
+    public Polygon? BoundingPolygon { get; init; }
 }

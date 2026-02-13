@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NetTopologySuite.Geometries;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Data.Models.Reference;
@@ -21,6 +19,5 @@ public partial class Postcode : SearchableEntity
     public int? GeoDataFk { get; init; }
 
     [ForeignKey("GeoDataFk")]
-    public virtual GeoData? GeoData { get; init; } = null!;
-
+    public virtual GeoData? GeoData { get; init; }
 }

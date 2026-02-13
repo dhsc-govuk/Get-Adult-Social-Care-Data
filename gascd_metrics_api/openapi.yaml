@@ -513,6 +513,9 @@ components:
         metric_name:
           type: string
           description: "The display name for the metric."
+        filter_type:
+          type: string
+          description: "A user-friendly name for the metric filter."
         data_type:
           type: string
           description: "The format of the metric's data, e.g., 'Percentage', 'Currency'."

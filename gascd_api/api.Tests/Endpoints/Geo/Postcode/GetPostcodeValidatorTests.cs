@@ -3,14 +3,9 @@ using FluentValidation.TestHelper;
 
 namespace api.Tests.Endpoints.Geo.Postcode;
 
-public class GetPostcodeValidatorTests : IDisposable
+public class GetPostcodeValidatorTests
 {
-    private GetPostcodeValidator _validator;
-
-    public GetPostcodeValidatorTests()
-    {
-        _validator = new GetPostcodeValidator();
-    }
+    private GetPostcodeValidator _validator = new();
 
     [Theory]
     [InlineData("N14BJ")]
@@ -36,10 +31,5 @@ public class GetPostcodeValidatorTests : IDisposable
         var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(r => r.Postcode)
             .WithErrorMessage(expectedErrorMessage);
-    }
-
-    public void Dispose()
-    {
-
     }
 }

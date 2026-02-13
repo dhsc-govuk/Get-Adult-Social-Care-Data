@@ -4,14 +4,9 @@ using FluentValidation.TestHelper;
 namespace api.Tests.Endpoints.MetricLocations.LocalAuthorities;
 
 
-public class GetLocalAuthorityValidatorTests : IDisposable
+public class GetLocalAuthorityValidatorTests
 {
-    private GetLocalAuthorityValidator _validator;
-
-    public GetLocalAuthorityValidatorTests()
-    {
-        _validator = new GetLocalAuthorityValidator();
-    }
+    private GetLocalAuthorityValidator _validator = new();
 
     [Theory]
     [InlineData("E11")]
@@ -34,10 +29,5 @@ public class GetLocalAuthorityValidatorTests : IDisposable
         var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(r => r.LocalAuthorityCode)
             .WithErrorMessage(expectedErrorMessage);
-    }
-
-    public void Dispose()
-    {
-
     }
 }

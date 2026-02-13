@@ -1,4 +1,4 @@
-import { getDefaultLocations } from '@/data/locations';
+import { getDefaultLocations, validateMetricIds } from '@/data/locations';
 import {
   mockSessionWithLocationCareProvider,
   mockSessionUnregistered,
@@ -54,5 +54,38 @@ describe('getDefaultLocations', () => {
   it('should return no locations for unregistered user', async () => {
     const locations = await getDefaultLocations(mockSessionUnregistered.user);
     expect(locations).toStrictEqual([]);
+  });
+});
+
+describe('validateMetricIds', () => {
+  it('should allow valid alphanumeric IDs with underscores', () => {
+    const input = ['my_metric_1', 'Alpha_99', 'simpleID'];
+    expect(validateMetricIds(input)).toEqual([
+      'my_metric_1',
+      'Alpha_99',
+      'simpleID',
+    ]);
+  });
+
+  it('should filter out IDs with special characters or spaces', () => {
+    const input = [
+      'valid_id',
+      'invalid-id',
+      'no spaces',
+      'id!',
+      'drop_table;--',
+    ];
+    const result = validateMetricIds(input);
+    expect(result).toEqual(['valid_id']);
+  });
+
+  it('should trim whitespace from IDs', () => {
+    const input = ['  trimmed_id  '];
+    expect(validateMetricIds(input)).toEqual(['trimmed_id']);
+  });
+
+  it('should return an empty array if no IDs are valid', () => {
+    const input = ['!!!', '???', ' '];
+    expect(validateMetricIds(input)).toEqual([]);
   });
 });
