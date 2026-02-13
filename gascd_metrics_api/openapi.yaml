@@ -31,7 +31,59 @@ paths:
           description: "Postcode doesn't meet validation requirements: 5-7 chars inclusive"
         '404':
           description: "No details found for postcode"
-
+          
+  /geo/care_provider_location/{code}/neighbours:
+    get:
+      summary: "Get the care provider locations within a provided distance (defaults to 1km)."
+      description: "Retrieves the list of Care Provider locations that are within the provided distance."
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: "The unique identifier for the care provider location."
+          schema:
+            type: string
+            example: "1-12345678"
+        - name: distance_in_km
+          in: query
+          required: false
+          description: "The distance in kilometres from the provided Care Provider Location to look for other Care Provider Locations. Defaults to 1 if none provided."
+          schema:
+            type: number
+            example: 2     
+        - name: limit
+          in: query
+          required: false
+          description: "The upper limit of the number of returned care provider locations. Must be a positive integer."
+          schema:
+            type: number
+            example: 10
+      responses:
+        '200':
+          description: "A list of neighbouring Care Provider Locations"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: "The unique identifier for the Care Provider Location"
+                  locations:
+                    type: array
+                    description: "A list of neighbouring Care Provider Locations within the specified distance of provided Care Provider Location"
+                    items:
+                      type: object
+                      properties: 
+                        code: 
+                          type: string
+                          description: "The unique identifier for this Care Provider Location neighbour"
+                        distance:
+                          type: number
+                          description: "The distance of this Care Provider Location neighbour from the Care Provider Location"
+                        location_details:
+                          $ref: "#/components/schemas/CareProviderLocationShort"
+                
   /organisation/care_provider/{code}:
     get:
       summary: "Get the care provider locations linked to a care provider organisation."
@@ -62,26 +114,7 @@ paths:
                     type: array
                     description: "A list of Care provider locations belonging to this Care Provider"
                     items:
-                      type: object
-                      properties:
-                        location_code:
-                          type: string
-                          description: "The unique identifier of the location."
-                        location_name:
-                          type: string
-                          description: "The display name of the location."
-                        la_name:
-                          type: string
-                          description: "The name of the care provide location's Local Authority."
-                        la_code:
-                          type: string
-                          description: "The code of the care provide location's Local Authority."
-                        location_category:
-                          type: string
-                          description: "The category of the location."
-                        address:
-                          type: string
-                          description: "The address of the location."
+                      $ref: "#/components/schemas/CareProviderLocationShort"
 
   /metric_locations/cp_locations/{code}:
     get:
@@ -346,7 +379,31 @@ components:
           type: string
           nullable: true
           description: "The associated country name."
-
+          
+    CareProviderLocationShort:
+      type: object
+      description: "Represents a care provider location"
+      properties:
+        location_code:
+          type: string
+          description: "The unique identifier of the location."
+        location_name:
+          type: string
+          description: "The display name of the location."
+        la_name:
+          type: string
+          description: "The name of the care provide location's Local Authority."
+        la_code:
+          type: string
+          description: "The code of the care provide location's Local Authority."
+        location_category:
+          type: string
+          description: "The category of the location."
+        address:
+          type: string
+          description: "The address of the location."     
+    
+    
     District:
       type: object
       description: "Represents a district"
