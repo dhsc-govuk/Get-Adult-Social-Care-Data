@@ -14,7 +14,6 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context,
 
     public override async Task HandleAsync(GetCareProviderLocationNeighboursRequest req, CancellationToken ct)
     {
-        logger.LogDebug("Received request for care provider location: {cpl}", req.CareProviderLocationCode);
         var cpl = context.CareProviderLocations.Include(cpl => cpl.GeoData).SingleOrDefault(cpl => cpl.Code == req.CareProviderLocationCode);
 
         if (cpl == null)
@@ -37,7 +36,7 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context,
 
         var nearbyCpls = context.CareProviderLocations
             .Include(l => l.LocalAuthority)
-            .Where(l => l.GeoData.Coordinate.IsWithinDistance(cplCoord, distanceInDegrees) && cpl.Code != req.CareProviderLocationCode)
+            .Where(l => l.GeoData.Coordinate.IsWithinDistance(cplCoord, distanceInDegrees) && l.Code != req.CareProviderLocationCode)
             .ToList();
 
         var neighbours = nearbyCpls.Select(mapper.CareProviderLocationToCareProviderLocationNeighbourResponse).ToList();

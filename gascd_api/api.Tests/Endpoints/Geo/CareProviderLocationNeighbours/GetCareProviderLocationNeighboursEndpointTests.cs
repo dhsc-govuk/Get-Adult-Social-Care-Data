@@ -55,6 +55,17 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
     }
 
     [Fact]
+    public async Task GetCareProviderLocationNeighbours_ReturnsAllLocationsWithinABigDistance()
+    {
+        var (httpCode, response) = await app.Client.GETAsync<GetCareProviderLocationNeighboursEndpoint, GetCareProviderLocationNeighboursRequest, GetCareProviderLocationNeighboursResponse>(
+            new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-000000001", DistanceInKm = 1000000 });
+        httpCode.EnsureSuccessStatusCode();
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Locations.ShouldNotBeEmpty();
+        response.Locations.Count.ShouldBe(6);
+    }
+
+    [Fact]
     public async Task GetCareProviderLocationNeighbours_Returns404WhenProvidedNonExistentCPLCode()
     {
         var (httpCode, _) = await app.Client.GETAsync<GetCareProviderLocationNeighboursEndpoint, GetCareProviderLocationNeighboursRequest, GetCareProviderLocationNeighboursResponse>(
