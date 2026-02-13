@@ -6,16 +6,16 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
   return (
     <>
       <Layout
-        title="Total financial spend on adult social care"
+        title="LA funding for adult social care"
         showLoginInformation={false}
         currentPage={'total-financial-spend-adult-social-care'}
         backURL="/service-information/data-indicator-details"
       >
         <DataIndicatorDetails
-          title="Total financial spend on adult social care"
+          title="LA funding for adult social care"
           whatThisMeasures={
             <p className="govuk-!-margin-top-0">
-              The total financial spend on adult social care by{' '}
+              The total financial spend on adult social care as funded by{' '}
               <abbr title="Local Authority">LA</abbr>s.
             </p>
           }
