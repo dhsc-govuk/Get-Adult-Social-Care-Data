@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.Geo.CareProviderLocationNeighbours;
 
-public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context, ReferenceMapper mapper) : Endpoint<GetCareProviderLocationNeighboursRequest, GetCareProviderLocationNeighboursResponse>
+public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context, ReferenceMapper mapper, ILogger<GetCareProviderLocationNeighboursEndpoint> logger) : Endpoint<GetCareProviderLocationNeighboursRequest, GetCareProviderLocationNeighboursResponse>
 {
     public override void Configure()
     {
@@ -14,10 +14,19 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context,
 
     public override async Task HandleAsync(GetCareProviderLocationNeighboursRequest req, CancellationToken ct)
     {
+        logger.LogDebug("Received request for care provider location: {cpl}", req.CareProviderLocationCode);
         var cpl = context.CareProviderLocations.Include(cpl => cpl.GeoData).SingleOrDefault(cpl => cpl.Code == req.CareProviderLocationCode);
 
-        if (cpl == null || cpl.GeoData == null)
+        if (cpl == null)
         {
+            logger.LogInformation("Care provider location not found: {cpl}", req.CareProviderLocationCode);
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
+        if (cpl.GeoData == null)
+        {
+            logger.LogInformation("Care provider location: {cpl} has no GeoData", req.CareProviderLocationCode);
             await Send.NotFoundAsync(ct);
             return;
         }
@@ -27,14 +36,14 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context,
         var distanceInDegrees = req.DistanceInKm / 111.139;
 
         var nearbyCpls = context.CareProviderLocations
-            .Include(cpl => cpl.LocalAuthority)
-            .Where(cpl => cpl.GeoData.Coordinate.IsWithinDistance(cplCoord, distanceInDegrees) && cpl.Code != req.CareProviderLocationCode)
+            .Include(l => l.LocalAuthority)
+            .Where(l => l.GeoData.Coordinate.IsWithinDistance(cplCoord, distanceInDegrees) && cpl.Code != req.CareProviderLocationCode)
             .ToList();
 
         var neighbours = nearbyCpls.Select(mapper.CareProviderLocationToCareProviderLocationNeighbourResponse).ToList();
 
         var response = new GetCareProviderLocationNeighboursResponse { Locations = neighbours };
-
+        logger.LogInformation("Finished processing care provider location neighbours: {cpl}", req.CareProviderLocationCode);
         await Send.OkAsync(response, ct);
     }
 }
