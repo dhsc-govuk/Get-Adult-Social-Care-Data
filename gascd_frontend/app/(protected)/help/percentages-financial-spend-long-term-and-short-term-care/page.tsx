@@ -6,7 +6,7 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
   return (
     <>
       <Layout
-        title="Percentages of financial spend on long-term and short-term care"
+        title="LA funding for short-term and long-term adult social care"
         showLoginInformation={false}
         currentPage={
           'percentages-financial-spend-long-term-and-short-term-care'
@@ -14,7 +14,7 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
         backURL="/service-information/data-indicator-details"
       >
         <DataIndicatorDetails
-          title="Percentages of financial spend on long-term and short-term care"
+          title="LA funding for short-term and long-term adult social care"
           whatThisMeasures={
             <p className="govuk-!-margin-top-0">
               The percentages of financial spend on adult social care directed
