@@ -6,7 +6,7 @@ describe('User can log in and log out', () => {
     cy.visit('/home');
     cy.url().should('include', '/login');
 
-    cy.login();
+    cy.login_onelogin(Cypress.env('cpl_user'));
 
     // Load the homepage
     cy.url().should('include', '/home');

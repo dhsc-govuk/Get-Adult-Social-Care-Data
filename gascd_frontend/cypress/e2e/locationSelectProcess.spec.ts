@@ -1,6 +1,6 @@
 describe('User can set location', () => {
   it('Should navigate to the location select page and change the location', () => {
-    cy.login();
+    cy.login_onelogin(Cypress.env('cpl_user'));
     cy.visit('/location-select');
 
     // Verify that we are on the location select page

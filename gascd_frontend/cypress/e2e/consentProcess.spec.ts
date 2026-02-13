@@ -1,6 +1,6 @@
 describe('User can set consent', () => {
   it('Should navigate to the consent page and set consent to true', () => {
-    cy.login();
+    cy.login_onelogin(Cypress.env('cpl_user'));
     cy.visit('/consent');
 
     cy.get('h1').should('contains.text', 'Can we send you email');
@@ -10,7 +10,7 @@ describe('User can set consent', () => {
   });
 
   it('Should navigate to the consent page and set consent to false', () => {
-    cy.login();
+    cy.login_onelogin(Cypress.env('cpl_user'));
     cy.visit('/consent');
 
     cy.get('h1').should('contains.text', 'Can we send you email');

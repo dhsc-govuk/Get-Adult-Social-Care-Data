@@ -1,6 +1,17 @@
 describe('Data pages exist and contain data', () => {
+  beforeEach(() => {
+    // This runs the npm command on your host machine
+    //cy.task('resetUserDb');
+  });
+
   it('Should navigate to the Care home beds and occupancy levels page and check the contents', () => {
-    cy.login();
+    cy.login_onelogin(Cypress.env('cpl_user'));
+
+    cy.visit('/location-select');
+    cy.get('h1').should('contains.text', 'Select a location');
+    cy.get('label').contains('Test Care Provider Location 1').click();
+    cy.get('button').contains('Apply changes').click();
+
     cy.visit('/topics/residential-care/provision-and-occupancy/data');
 
     cy.get('h1').should('contains.text', 'Care home beds and occupancy levels');
@@ -137,7 +148,7 @@ describe('Data pages exist and contain data', () => {
   });
 
   it('Should navigate to the Unpaid care page and check the contents', () => {
-    cy.login();
+    cy.login_onelogin('testcplocation@testing.com');
     cy.visit('/topics/residential-care/unpaid-care/data');
 
     cy.get('h1').should('contains.text', 'Unpaid care');
@@ -160,7 +171,7 @@ describe('Data pages exist and contain data', () => {
   });
 
   it('Should navigate to the Population size and age group percentages page and check the contents', () => {
-    cy.login();
+    cy.login_onelogin(Cypress.env('cpl_user'));
     cy.visit('/topics/population-needs/population-age-and-size/data');
 
     cy.get('h1').should(
@@ -195,7 +206,7 @@ describe('Data pages exist and contain data', () => {
   });
 
   it('Should navigate to the Economic factors and household composition page and check the contents', () => {
-    cy.login();
+    cy.login_onelogin(Cypress.env('cpl_user'));
     cy.visit(
       '/topics/population-needs/household-composition-and-economic-factors/data'
     );
@@ -253,7 +264,7 @@ describe('Data pages exist and contain data', () => {
   });
 
   it('Should navigate to the General health, disability and learning disability page and check the contents', () => {
-    cy.login();
+    cy.login_onelogin(Cypress.env('cpl_user'));
     cy.visit('/topics/population-needs/disability-prevalence/data');
 
     cy.get('h1').should(
@@ -291,7 +302,7 @@ describe('Data pages exist and contain data', () => {
   });
 
   it('Should navigate to the Dementia prevalence and estimated diagnosis rate page and check the contents', () => {
-    cy.login();
+    cy.login_onelogin(Cypress.env('cpl_user'));
     cy.visit('/topics/population-needs/dementia-prevalence/data');
 
     cy.get('h1').should(
