@@ -27,21 +27,11 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context,
                         && l.Code != req.CareProviderLocationCode)
             .ToList();
 
-        if (nearbyCpls.Count == 0)
+        if (nearbyCpls.Count == 0 && context.CareProviderLocations.SingleOrDefault(cpl => cpl.Code == req.CareProviderLocationCode) == null)
         {
-            var cpl = context.CareProviderLocations.Include(cpl => cpl.GeoData).SingleOrDefault(cpl => cpl.Code == req.CareProviderLocationCode);
-            if (cpl == null)
-            {
-                logger.LogInformation("Care provider location not found: {cpl}", req.CareProviderLocationCode);
-                await Send.NotFoundAsync(ct);
-                return;
-            }
-            if (cpl.GeoData == null)
-            {
-                logger.LogInformation("Care provider location: {cpl} has no GeoData", req.CareProviderLocationCode);
-                await Send.NotFoundAsync(ct);
-                return;
-            }
+            logger.LogInformation("Care provider location not found: {cpl}", req.CareProviderLocationCode);
+            await Send.NotFoundAsync(ct);
+            return;
         }
 
         var neighbours = nearbyCpls.Select(mapper.CareProviderLocationToCareProviderLocationNeighbourResponse).ToList();
