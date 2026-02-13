@@ -12,7 +12,6 @@ import LocationService from '@/services/location/locationService';
 import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { LocationNames } from '@/data/interfaces/LocationNames';
-import Link from 'next/link';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
@@ -30,6 +29,14 @@ export default function NumberPeopleReceivingCarePage() {
     RegionLabel: 'Loading...',
     CountryLabel: 'Loading...',
   } as LocationNames);
+  const [locationNamesWithAverageLabels, setLocationNamesWithAverageLabels] =
+    useState<LocationNames>({
+      IndicatorLabel: 'Indicator',
+      CPLabel: 'Loading...',
+      LALabel: 'Loading...',
+      RegionLabel: 'Loading...',
+      CountryLabel: 'Loading...',
+    } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [filteredDemographicData, setFilteredDemographicData] = useState<
@@ -79,6 +86,13 @@ export default function NumberPeopleReceivingCarePage() {
             false
           );
           setLocationNames(locationNames);
+          setLocationNamesWithAverageLabels({
+            IndicatorLabel: 'Indicator',
+            CPLabel: locationNames.CPLabel!,
+            LALabel: `Total for ${locationNames.LALabel}`,
+            RegionLabel: `${locationNames.RegionLabel} (regional average)`,
+            CountryLabel: `${locationNames.CountryLabel} (national average)`,
+          });
         } catch (error) {
           console.error('Error fetching location names:', error);
         }
@@ -169,7 +183,36 @@ export default function NumberPeopleReceivingCarePage() {
           </>
         }
       >
-        <DataTabs id="1" />
+        <DataTabs
+          id="1"
+          table={
+            <DataTable
+              tableref={tableref1}
+              caption={`Table 1: number of people receiving community social care in the last month – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
+              source={
+                'Capacity Tracker from the Department of Health and Social Care (DHSC)'
+              }
+              columnHeaders={locationNamesWithAverageLabels}
+              rowHeaders={{
+                nccc_num_clients_comm_care:
+                  'People receiving community social care in October 2025',
+              }}
+              data={filteredDemographicData}
+              showCareProvider={false}
+              percentageRows={[]}
+            ></DataTable>
+          }
+          download={
+            <>
+              <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref1}
+                filename="number_of_people_receiving_community_social_care.csv"
+                xLabel=""
+              />
+            </>
+          }
+        />
       </DataBox>
       <DataIndicatorDetailsList>
         <DataLinkCard
