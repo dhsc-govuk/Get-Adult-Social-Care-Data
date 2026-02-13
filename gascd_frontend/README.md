@@ -82,78 +82,22 @@ As well as using the magic development login URL above, you can also use the GOV
 - On the interactive login simulator form, change the "Email" field to match your `LOCAL_AUTH_EMAIL` value.
 - Click "Continue", and you should be logged in.
 
-### Development Metrics database setup
+### Development Metrics API
 
-You can spin up a local Metrics SQL server as follows:
+To get a local copy of the Metrics API running, please see the READM.md in the `gascd_api` folder of this repository.
 
-- Set the following in `.env`
-
-```bash
-  # Metrics database
-  DB_DATABASE=Analytical_Datastore
-  DB_SERVER=localhost
-  DB_PORT=1433
-  DB_AUTH_TYPE=local
-  DB_USERNAME=sa
-  # See below for password complexity requirements
-  DB_PASSWORD=<a-password-for-the-db>
-```
-
-- Please note that the DB_PASSWORD must meet [SQL server password complexity](https://learn.microsoft.com/en-us/sql/relational-databases/security/password-policy?view=sql-server-ver16#password-complexity)
-
-To bootstrap the database and tables, you need to to generate an SQL bootstrap file from the `.sqlproject` in the [dhsc-gasdc-data repo](https://github.com/madetech/dhsc-gascd-data) as follows:
+Ensure your `.env` is updated to match the dotnet `appsettings.Local.json`:
 
 ```bash
-./dbtools/generate_bootstrap_sql.py /path/to/dhsc-gascd-data/sql/Analytical_Datastore
+DATA_API_ROOT=http://localhost:5050
+DATA_API_KEY=<your-local-api-secret>
 ```
 
-You can then run this SQL file against your docker DB as follows:
+### Mock service worker support
 
-```bash
-# Build and start the MSSQL server
-DB_PASSWORD="<a-password-for-the-db>" mise run docker-db
-# Imports the SQL bootstrap file
-DB_PASSWORD="<a-password-for-the-db>" mise run docker-db-init
-```
+You can also mock the metrics API by enabling the Mock Service worker when running:
 
-Then run the following to load in the test data
-
-```bash
-DB_PASSWORD="<a-password-for-the-db>" mise run docker-db-init-data
-```
-
-See docs for information on how to configure the test data
-
-[Experimental] - there is also a script to import CSV files into the docker database for dummy content:
-
-```bash
-./dbtools/import_csv.sh {csvfile} {tablename}
-```
-
-## Connecting to the Azure DEV database
-
-Alternatively you can connect your local development instance to the DEV database on Azure as follows:
-
-- Install the Azure CLI (`brew install az`)
-- Log into Azure in your terminal using `az login`
-- Set the following in `.env`
-
-```bash
-  # Get DB values from the infra repo
-  DB_DATABASE=<db_name>
-  DB_SERVER=<db_server_id>.database.windows.net
-  DB_PORT=1433
-  # Allows app to connect with your Azure CLI creds
-  DB_AUTH_TYPE=azure-cli
-```
-
-- Start the app
-
-## Debugging Database queries
-
-You can log raw SQL queries to the terminal by running the app as follows:
-
-`DEBUG=mssql:* make run-dev`
+`MOCK_SERVER=true npm run dev`
 
 ## Continuous Integration, Development and Deployment
 
