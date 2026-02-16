@@ -4,6 +4,7 @@ import { Indicator } from '@/data/interfaces/Indicator';
 type DataTableProps = {
   caption?: React.ReactNode;
   columnHeaders: Object;
+  metricColumnName?: string;
   rowHeaders: Object;
   data: Indicator[];
   showCareProvider: boolean;
@@ -56,6 +57,7 @@ const getFormattedDataPoint = (
 const SubCatergoryTable: React.FC<DataTableProps> = ({
   caption,
   columnHeaders,
+  metricColumnName,
   rowHeaders,
   data,
   showCareProvider,
@@ -85,15 +87,21 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
         )}
         <thead className="govuk-table__head">
           <tr className="govuk-table__row">
+            {metricColumnName && (
+              <th key="0" scope="col" className={columnClass(0)}>
+                {metricColumnName}
+              </th>
+            )}
+
             {Object.entries(columnHeaders)
               .filter(
                 ([columnKey]) => !(columnKey === 'CPLabel' && !showCareProvider)
               )
               .map(([columnKey, columnLabel], columnIndex) => (
                 <th
-                  key={columnKey}
+                  key={columnKey + 1}
                   scope="col"
-                  className={columnClass(columnIndex)}
+                  className={columnClass(columnIndex + 1)}
                 >
                   {columnLabel}
                 </th>
