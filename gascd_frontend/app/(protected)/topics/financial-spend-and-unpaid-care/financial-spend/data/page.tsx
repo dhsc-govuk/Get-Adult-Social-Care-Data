@@ -8,6 +8,7 @@ import DataIndicatorDetailsList from '@/components/data-components/DataIndicator
 import DataLinkCard from '@/components/data-components/DataLinkCard';
 import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
 import BackToTop from '@/components/data-components/BackToTop';
+import DataTable from '@/components/tables/table';
 import SubCatergoryTable from '@/components/tables/SubCatergoryTable';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { LocationNames } from '@/data/interfaces/LocationNames';
@@ -17,11 +18,11 @@ import TableService from '@/services/Table/TableService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import LocationService from '@/services/location/locationService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
-import IndicatorService from '@/services/indicator/IndicatorService';
 
 export default function LAFundingPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
   const tableref2 = useRef<HTMLTableElement>(null);
+  const tableref3 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
     LALabel: 'Loading...',
@@ -44,8 +45,6 @@ export default function LAFundingPage() {
     metric_ids: [],
     location_ids: [],
   });
-
-  const metricColumnNames = ['Duration of care', 'Care type or funding method'];
 
   const breadcrumbs = [
     {
@@ -72,17 +71,6 @@ export default function LAFundingPage() {
     'edpsr_st_support_with_memory_and_cognition_all_ages',
     'edpsr_st_total_all_ages',
     'edpsr_stlt_total_all_ages',
-
-    'elss_all_types_of_care_home_all_ages',
-    'elss_all_types_of_adult_social_care_all_ages',
-    'elss_all_types_of_community_social_care_all_ages',
-    'elss_community_direct_payments_all_ages',
-    'elss_community_home_care_all_ages',
-    'elss_community_other_long_term_care_all_ages',
-    'elss_community_supported_living_all_ages',
-    'elss_nursing_all_ages',
-    'elss_residential_all_ages',
-    'elss_supported_accommodation_all_ages',
   ];
 
   useEffect(() => {
@@ -222,15 +210,13 @@ export default function LAFundingPage() {
                   short-term and long-term adult social care for all age groups
                   – {locationNames.LALabel} local authority,{' '}
                   {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getFinancialYear(filteredDemographicData)}
+                  {locationNames.CountryLabel}
                 </>
               }
               source={
                 'Adult Social Care Activity and Finance Report from NHS England'
               }
               columnHeaders={locationNamesWithAverageLabels}
-              metricColumnName={metricColumnNames[0]}
               rowHeaders={{
                 edpsr_stlt_total_all_ages: 'Both short-term and long-term',
                 edpsr_lt_total_all_ages: 'Long-term',
@@ -268,9 +254,8 @@ export default function LAFundingPage() {
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
-                filename="social_care_funding_by_duration.csv"
+                filename="general_health_and_disability.csv"
                 xLabel=""
-                downloadType="LA spending on short-term and long-term adult social care for all age groups"
               />
             </>
           }
@@ -295,54 +280,64 @@ export default function LAFundingPage() {
             .
           </p>
         }
+      ></DataBox>
+
+      <div className="govuk-grid-row">
+        <div className="govuk-grid-column-two-thirds">
+          <h2 className="govuk-heading-l govuk-!-margin-top-9">Trends</h2>
+        </div>
+      </div>
+
+      <DataBox
+        dataTitle={
+          <>
+            <abbr title="Local Authority">LA</abbr> funding for long-term adult
+            social care – trends over time
+          </>
+        }
+        dataInfo={
+          <p className="govuk-body-m">
+            Find out{' '}
+            <a
+              href="/help/total-financial-spend-long-term-community-adult-social-care"
+              className="govuk-link"
+            >
+              how the financial spend on long-term adult social care is
+              calculated
+            </a>
+            .
+          </p>
+        }
       >
         <DataTabs
-          id="2"
+          id="3"
           table={
-            <SubCatergoryTable
-              tableref={tableref2}
+            <DataTable
+              tableref={tableref3}
               caption={
                 <>
-                  Table 2: <abbr title="Local Authority">LA</abbr> funding for
-                  long-term adult social care for all age groups –{' '}
-                  {locationNames.LALabel} local authority,{' '}
+                  Table 3: <abbr title="Local Authority">LA</abbr> funding for
+                  long-term adult social care (all types of adult social care)
+                  for all age groups – {locationNames.LALabel} local authority,{' '}
                   {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getFinancialYear(filteredDemographicData)}
+                  {locationNames.CountryLabel}
                 </>
               }
               source={
                 'Adult Social Care Activity and Finance Report from NHS England'
               }
               columnHeaders={locationNamesWithAverageLabels}
-              metricColumnName={metricColumnNames[1]}
+              metricColumnName={metricColumnNames[2]}
               rowHeaders={{
-                elss_all_types_of_adult_social_care_all_ages:
-                  'All types of adult social care',
-                elss_all_types_of_care_home_all_ages:
-                  'All types of care home, including residential and nursing',
-                elss_nursing_all_ages: 'Residential',
-                elss_residential_all_ages: 'Nursing',
-                elss_all_types_of_community_social_care_all_ages:
-                  'All types of community social care, including home care, supported living, community direct payments and other schemes',
-                elss_community_home_care_all_ages: 'Home care',
-                elss_community_supported_living_all_ages: 'Supported living',
-                elss_community_direct_payments_all_ages:
-                  'Community direct payments',
-                elss_community_other_long_term_care_all_ages: 'Other',
-                elss_supported_accommodation_all_ages: 'Supported accomodation',
+                2023_2024: '2023 to 2024',
+                2022_2023: '2022 to 2023',
+                2021_2022: '2021 to 2022',
               }}
               data={filteredDemographicData}
               showCareProvider={false}
               percentageRows={[]}
               currency={true}
-              totalsRows={[
-                'elss_all_types_of_adult_social_care_all_ages',
-                'elss_all_types_of_care_home_all_ages',
-                'elss_all_types_of_community_social_care_all_ages',
-                'elss_supported_accommodation_all_ages',
-              ]}
-            ></SubCatergoryTable>
+            ></DataTable>
           }
           download={
             <>
@@ -351,7 +346,6 @@ export default function LAFundingPage() {
                 tableref={tableref2}
                 filename="funding_for_long_term_adult_social_care.csv"
                 xLabel=""
-                downloadType="LA funding for long-term adult social care for all age groups"
               />
             </>
           }
