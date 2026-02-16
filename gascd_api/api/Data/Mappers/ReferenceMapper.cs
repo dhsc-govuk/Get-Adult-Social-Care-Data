@@ -121,18 +121,28 @@ public class ReferenceMapper
         };
     }
 
+    public GetCareProviderLocationNeighboursResponse CareProviderLocationsToGetCareProviderLocationNeighbourResponse(
+        CareProviderLocation cpl, List<GetCareProviderLocationNeighboursEndpoint.CareProviderLocationQueryResult> neighbours)
+    {
+        return new GetCareProviderLocationNeighboursResponse
+        {
+            Code = cpl.Code,
+            Locations = neighbours.Select(CareProviderLocationToCareProviderLocationNeighbour).ToList()
+        };
+    }
+
     public GetCareProviderLocationNeighboursResponse.CareProviderLocationNeighbour
-        CareProviderLocationToCareProviderLocationNeighbourResponse(CareProviderLocation cpl)
+        CareProviderLocationToCareProviderLocationNeighbour(GetCareProviderLocationNeighboursEndpoint.CareProviderLocationQueryResult n)
     {
         return new GetCareProviderLocationNeighboursResponse.CareProviderLocationNeighbour
         {
-            Distance = 1,
-            LocationDetails = CareProviderLocationToCareProviderLocationNeighbour(cpl)
+            Distance = n.Distance,
+            LocationDetails = CareProviderLocationToCareProviderLocation(n)
         };
     }
 
     public GetCareProviderLocationNeighboursResponse.CareProviderLocation
-        CareProviderLocationToCareProviderLocationNeighbour(CareProviderLocation cpl)
+        CareProviderLocationToCareProviderLocation(CareProviderLocation cpl)
     {
         return new GetCareProviderLocationNeighboursResponse.CareProviderLocation
         {
