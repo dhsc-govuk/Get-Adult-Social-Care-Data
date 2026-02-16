@@ -141,7 +141,7 @@ export default function DementaPrevalencePage() {
       breadcrumbs={breadcrumbs}
     >
       <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
+        <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">
             Dementia prevalence and estimated diagnosis rate
           </h1>

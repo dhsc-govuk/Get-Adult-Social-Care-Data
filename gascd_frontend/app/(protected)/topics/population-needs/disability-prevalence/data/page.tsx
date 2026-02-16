@@ -170,7 +170,7 @@ export default function DisabilityPrevalence() {
       breadcrumbs={breadcrumbs}
     >
       <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
+        <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">
             General health, disability and learning disability
           </h1>
