@@ -59,8 +59,7 @@ class LocationService {
 
   public static async getLocationNames(
     query: string,
-    careProvider: boolean,
-    label?: string
+    careProvider: boolean
   ): Promise<LocationNames> {
     const data = await this.getLocations(query);
 

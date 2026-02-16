@@ -130,12 +130,10 @@ export default function LAFundingPage() {
         try {
           const locationNames = await LocationService.getLocationNames(
             CPLocationId,
-            false,
-            'Duration of care'
+            false
           );
           setLocationNames(locationNames);
           setLocationNamesWithAverageLabels({
-            IndicatorLabel: 'Duration of care',
             CPLabel: locationNames.CPLabel!,
             LALabel: locationNames.LALabel,
             RegionLabel: `${locationNames.RegionLabel} - regional average`,
