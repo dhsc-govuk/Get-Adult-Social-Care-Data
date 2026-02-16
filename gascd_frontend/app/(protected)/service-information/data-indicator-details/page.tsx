@@ -40,6 +40,13 @@ export default function DataIndicatorDetailsPage() {
               url="/help/beds-per-100000-adult-population-over-time"
             />
             <DataLinkCard
+              label="Number of people receiving care from a community social care provider"
+              sources="Capacity Tracker"
+              updateFrequency="Daily updates"
+              limitations={true}
+              url="/help/number-people-receiving-care-from-community-social-care-provider"
+            />
+            <DataLinkCard
               label="Occupancy level percentages for adult social care beds"
               sources="Capacity Tracker"
               updateFrequency="Daily updates"
