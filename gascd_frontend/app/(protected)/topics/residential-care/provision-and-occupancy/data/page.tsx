@@ -40,7 +40,6 @@ export default function ProvisionAndOccupancyPage() {
 
   // location variables
   const [locationNamesCP, setLocationNamesCP] = useState<LocationNames>({
-    IndicatorLabel: 'Indicator',
     CPLabel: 'Loading...',
     LALabel: 'Loading...',
     RegionLabel: 'Loading...',
@@ -48,7 +47,6 @@ export default function ProvisionAndOccupancyPage() {
   } as LocationNames);
   const [locationNamesWithAverageLabels, setLocationNamesWithAverageLabels] =
     useState<LocationNames>({
-      IndicatorLabel: 'Indicator',
       CPLabel: 'Loading...',
       LALabel: 'Loading...',
       RegionLabel: 'Loading...',
@@ -252,7 +250,6 @@ export default function ProvisionAndOccupancyPage() {
           );
           setLocationNamesCP(locationNamesCP);
           setLocationNamesWithAverageLabels({
-            IndicatorLabel: 'Care home bed type',
             CPLabel: locationNamesCP.CPLabel!,
             LALabel: locationNamesCP.LALabel,
             RegionLabel: `${locationNamesCP.RegionLabel} (regional average)`,

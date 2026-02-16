@@ -65,7 +65,6 @@ class LocationService {
     const data = await this.getLocations(query);
 
     const locationNames: LocationNames = {
-      IndicatorLabel: label ?? 'Indicator',
       CPLabel:
         careProvider && data.provider_location_name
           ? data.provider_location_name

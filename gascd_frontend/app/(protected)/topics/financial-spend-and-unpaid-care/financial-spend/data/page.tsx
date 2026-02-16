@@ -387,7 +387,60 @@ export default function LAFundingPage() {
             .
           </p>
         }
-      ></DataBox>
+      >
+        <DataTabs
+          id="3"
+          table={
+            <DataTable
+              tableref={tableref3}
+              caption={
+                <>
+                  Table 3: <abbr title="Local Authority">LA</abbr> funding for
+                  long-term adult social care (all types of adult social care)
+                  for all age groups – {locationNames.LALabel} local authority,{' '}
+                  {locationNames.RegionLabel} region and{' '}
+                  {locationNames.CountryLabel}
+                </>
+              }
+              source={
+                'Adult Social Care Activity and Finance Report from NHS England'
+              }
+              columnHeaders={locationNamesWithAverageLabels}
+              metricColumnName={metricColumnNames[2]}
+              rowHeaders={{
+                elss_all_types_of_adult_social_care_all_ages:
+                  'All types of adult social care',
+                elss_all_types_of_care_home_all_ages:
+                  'All types of care home, including residential and nursing',
+                elss_nursing_all_ages: 'Residential',
+                elss_residential_all_ages: 'Nursing',
+                elss_all_types_of_community_social_care_all_ages:
+                  'All types of community social care, including home care, supported living, community direct payments and other schemes',
+                elss_community_home_care_all_ages: 'Home care',
+                elss_community_supported_living_all_ages: 'Supported living',
+                elss_community_direct_payments_all_ages:
+                  'Community direct payments',
+                elss_community_other_long_term_care_all_ages: 'Other',
+                elss_supported_accommodation_all_ages: 'Supported accomodation',
+              }}
+              data={filteredDemographicData}
+              showCareProvider={false}
+              percentageRows={[]}
+              currency={true}
+            ></DataTable>
+          }
+          download={
+            <>
+              <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref2}
+                filename="funding_for_long_term_adult_social_care.csv"
+                xLabel=""
+              />
+            </>
+          }
+        />
+      </DataBox>
 
       <DataIndicatorDetailsList>
         <DataLinkCard
