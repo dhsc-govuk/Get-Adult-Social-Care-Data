@@ -8,19 +8,21 @@ import DataIndicatorDetailsList from '@/components/data-components/DataIndicator
 import DataLinkCard from '@/components/data-components/DataLinkCard';
 import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
 import BackToTop from '@/components/data-components/BackToTop';
-import LocationService from '@/services/location/locationService';
-import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
+import DataTable from '@/components/tables/table';
+import SubCatergoryTable from '@/components/tables/SubCatergoryTable';
+import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
-import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import AnalyticsService from '@/services/analytics/analyticsService';
-import SubCatergoryTable from '@/components/tables/SubCatergoryTable';
+import LocationService from '@/services/location/locationService';
+import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 
 export default function LAFundingPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
   const tableref2 = useRef<HTMLTableElement>(null);
+  const tableref3 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
     LALabel: 'Loading...',
@@ -181,7 +183,7 @@ export default function LAFundingPage() {
       breadcrumbs={breadcrumbs}
     >
       <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
+        <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">
             <abbr title="Local Authority">LA</abbr> funding for adult social
             care

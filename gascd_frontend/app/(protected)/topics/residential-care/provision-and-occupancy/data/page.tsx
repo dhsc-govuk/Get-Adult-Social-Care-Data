@@ -668,6 +668,7 @@ export default function ProvisionAndOccupancyPage() {
                 ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, ` +
                 IndicatorService.getMostRecentDate(latestBedTypeData)
               }
+              metricColumnName="Care home bed type"
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
               }

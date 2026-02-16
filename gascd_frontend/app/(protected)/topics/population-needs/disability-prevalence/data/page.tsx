@@ -317,6 +317,7 @@ export default function DisabilityPrevalence() {
                 'Adult Social Care Activity and Finance Report from NHS England'
               }
               columnHeaders={locationNamesWithAverageLabels}
+              metricColumnName="Primary support reason"
               rowHeaders={{
                 learning_disability_support_18_and_over:
                   'Learning disability support',

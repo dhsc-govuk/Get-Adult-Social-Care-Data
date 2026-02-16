@@ -4,13 +4,13 @@ import { Indicator } from '@/data/interfaces/Indicator';
 type DataTableProps = {
   caption?: React.ReactNode;
   columnHeaders: Object;
-  metricColumnName: string;
+  metricColumnName?: string;
   rowHeaders: Object;
   data: Indicator[];
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
   percentageRows?: string[];
-  currency: boolean;
+  currency?: boolean;
   totalsRows?: string[];
   source?: string;
   last_updated?: string;
@@ -63,7 +63,7 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
   showCareProvider,
   careProviderMedianMetrics,
   percentageRows,
-  currency,
+  currency = false,
   totalsRows,
   children,
   source,
