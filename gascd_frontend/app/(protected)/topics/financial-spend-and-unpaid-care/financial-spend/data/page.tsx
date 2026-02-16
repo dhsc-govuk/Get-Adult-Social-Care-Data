@@ -350,7 +350,7 @@ export default function LAFundingPage() {
             <>
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
-                tableref={tableref1}
+                tableref={tableref2}
                 filename="funding_for_long_term_adult_social_care.csv"
                 xLabel=""
               />
