@@ -37,7 +37,6 @@ class LocationService {
       }
 
       let availableLocations = (await response.json()).data;
-      console.log('Available locations:', availableLocations);
       availableLocations = availableLocations.map((loc: AvailableLocation) => {
         return {
           ...loc,
@@ -49,7 +48,6 @@ class LocationService {
           a.location_name.localeCompare(b.location_name)
       );
     } catch (error: unknown) {
-      console.log;
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
       LogService.logEvent(`Error in getAvailableLocations: ${errorMessage}`);

@@ -4,7 +4,7 @@ import { Indicator } from '@/data/interfaces/Indicator';
 type DataTableProps = {
   caption?: React.ReactNode;
   columnHeaders: Object;
-  metricColumnName?: string;
+  metricColumnName: string;
   rowHeaders: Object;
   data: Indicator[];
   showCareProvider: boolean;
@@ -87,12 +87,9 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
         )}
         <thead className="govuk-table__head">
           <tr className="govuk-table__row">
-            {metricColumnName && (
-              <th key="0" scope="col" className={columnClass(0)}>
-                {metricColumnName}
-              </th>
-            )}
-
+            <th key="0" scope="col" className={columnClass(0)}>
+              {metricColumnName}
+            </th>
             {Object.entries(columnHeaders)
               .filter(
                 ([columnKey]) => !(columnKey === 'CPLabel' && !showCareProvider)
