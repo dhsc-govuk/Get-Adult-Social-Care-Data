@@ -24,14 +24,12 @@ export default function NumberPeopleReceivingCarePage() {
   const tableref1 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
-    IndicatorLabel: 'Indicator',
     LALabel: 'Loading...',
     RegionLabel: 'Loading...',
     CountryLabel: 'Loading...',
   } as LocationNames);
   const [locationNamesWithAverageLabels, setLocationNamesWithAverageLabels] =
     useState<LocationNames>({
-      IndicatorLabel: 'Indicator',
       CPLabel: 'Loading...',
       LALabel: 'Loading...',
       RegionLabel: 'Loading...',
@@ -87,7 +85,6 @@ export default function NumberPeopleReceivingCarePage() {
           );
           setLocationNames(locationNames);
           setLocationNamesWithAverageLabels({
-            IndicatorLabel: 'Indicator',
             CPLabel: locationNames.CPLabel!,
             LALabel: `Total for ${locationNames.LALabel}`,
             RegionLabel: `${locationNames.RegionLabel} (regional average)`,
