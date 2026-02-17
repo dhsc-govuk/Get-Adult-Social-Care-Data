@@ -8,5 +8,7 @@ public class CareProviderLocationNeighbour
     public required string LaCode;
     public required string LocationCategory;
     public required string Address;
-    public required double DistanceToNeighbour;
+    public required decimal DistanceToNeighbour;
+
+    public virtual decimal DistanceToNeighbourInKm => DistanceToNeighbour / 1000;
 }

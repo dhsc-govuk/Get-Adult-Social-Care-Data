@@ -38,7 +38,7 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context,
                 LaCode = n.LocalAuthority.Code,
                 LocationCategory = n.Category,
                 Address = n.Address,
-                DistanceToNeighbour = n.GeoData!.Coordinate.Distance(cpl.GeoData!.Coordinate)
+                DistanceToNeighbour = (decimal)n.GeoData!.Coordinate.Distance(cpl.GeoData!.Coordinate)
             })
             .OrderBy(l => l.DistanceToNeighbour)
             .Take(req.Limit)

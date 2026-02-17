@@ -6,7 +6,7 @@ public class GetCareProviderLocationNeighboursResponse
     public required List<CareProviderLocationNeighbour> Locations { get; init; }
     public record CareProviderLocationNeighbour
     {
-        public required double Distance { get; init; }
+        public required decimal Distance { get; init; }
         public required CareProviderLocation LocationDetails { get; init; }
     }
     public record CareProviderLocation

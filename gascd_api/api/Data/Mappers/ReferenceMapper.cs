@@ -137,7 +137,7 @@ public class ReferenceMapper
     {
         return new GetCareProviderLocationNeighboursResponse.CareProviderLocationNeighbour
         {
-            Distance = n.DistanceToNeighbour,
+            Distance = n.DistanceToNeighbourInKm,
             LocationDetails = CareProviderLocationToCareProviderLocation(n)
         };
     }
