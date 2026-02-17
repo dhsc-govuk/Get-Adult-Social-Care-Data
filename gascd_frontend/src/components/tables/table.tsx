@@ -45,6 +45,8 @@ const getFormattedDataPoint = (
     if (showAverageLabel)
       formatted += isPercentage ? ' (average)' : ' (median)';
     return formatted;
+  } else if (foundMetric && foundMetric.data_point === null) {
+    return '(*)';
   }
   return 'Loading...';
 };

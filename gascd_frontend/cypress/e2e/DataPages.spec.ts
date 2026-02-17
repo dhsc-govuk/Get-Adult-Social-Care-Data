@@ -151,6 +151,22 @@ describe('Data pages exist and contain data', () => {
     cy.url().should('include', '#download-2');
     cy.get('#download-2').should('be.visible');
     cy.get('#table-2').should('not.be.visible');
+
+    cy.contains(
+      'Primary reason for people to access long-term adult social care'
+    );
+
+    cy.get('a[href*="table-3"]').click();
+    cy.url().should('include', '#table-3');
+    cy.get('#table-3')
+      .should('be.visible')
+      .contains('Table 3: primary reason for');
+    cy.get('#download-3').should('not.be.visible');
+
+    cy.get('a[href*="download-3"]').click();
+    cy.url().should('include', '#download-3');
+    cy.get('#download-3').should('be.visible');
+    cy.get('#table-3').should('not.be.visible');
   });
 
   it('Should navigate to the Dementia prevalence and estimated diagnosis rate page and check the contents', () => {

@@ -7,6 +7,6 @@ export interface Indicator {
   numerator: number;
   multiplier: number;
   denominator: number;
-  data_point: number;
+  data_point: number | null;
   load_date_time: Date;
 }

@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
   logging: {
     incomingRequests: false,
   },
+  poweredByHeader: false,
   output: 'standalone',
   async headers() {
     return [
