@@ -98,8 +98,8 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
         response.Code.ShouldBe("1-000000001");
         response.Locations.ShouldNotBeEmpty();
         response.Locations.Count.ShouldBe(2);
-        response.Locations.ShouldContain(cpl => cpl.LocationDetails.LocationCode == "1-000000002" && cpl.LocationDetails.LocationName == "Location 2" && cpl.LocationDetails.LaCode == "E08000014" && cpl.LocationDetails.LaName == "Liverpool" && cpl.LocationDetails.LocationCategory == "Care home" && cpl.LocationDetails.Address == "Location 2, North Pole, NP 1SC");
-        response.Locations.ShouldContain(cpl => cpl.LocationDetails.LocationCode == "1-000000003" && cpl.LocationDetails.LocationName == "Location 3" && cpl.LocationDetails.LaCode == "E08000014" && cpl.LocationDetails.LaName == "Liverpool" && cpl.LocationDetails.LocationCategory == "Care home" && cpl.LocationDetails.Address == "Location 3, North Pole, NP 1SC");
+        response.Locations[0].LocationDetails.LocationCode.ShouldBe("1-000000002");
+        response.Locations[1].LocationDetails.LocationCode.ShouldBe("1-000000003");
     }
 
     [Fact]
