@@ -66,7 +66,7 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Locations.ShouldNotBeEmpty();
         response.Locations.Count.ShouldBe(1);
-        response.Locations.ShouldContain(cpl => cpl.LocationDetails.LocationCode == "1-000000002");
+        response.Locations[0].LocationDetails.LocationCode.ShouldBe("1-000000002");
     }
 
     [Fact]
