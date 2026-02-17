@@ -57,6 +57,62 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/geo/care_provider_location/{code}/neighbours": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the care provider locations within a provided distance (defaults to 1km).
+         * @description Retrieves the list of Care Provider locations that are within the provided distance.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description The distance in kilometres from the provided Care Provider Location to look for other Care Provider Locations. Defaults to 1 if none provided. */
+                    distance_in_km?: number;
+                    /** @description The upper limit of the number of returned care provider locations. Must be a positive integer. */
+                    limit?: number;
+                };
+                header?: never;
+                path: {
+                    /** @description The unique identifier for the care provider location. */
+                    code: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description A list of neighbouring Care Provider Locations */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description The unique identifier for the Care Provider Location */
+                            code?: string;
+                            /** @description A list of neighbouring Care Provider Locations within the specified distance of provided Care Provider Location */
+                            locations?: {
+                                /** @description The distance of this Care Provider Location neighbour from the Care Provider Location */
+                                distance?: number;
+                                location_details?: components["schemas"]["CareProviderLocationShort"];
+                            }[];
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/organisation/care_provider/{code}": {
         parameters: {
             query?: never;
@@ -92,20 +148,7 @@ export interface paths {
                             /** @description Display name of the Care Provider */
                             display_name?: string;
                             /** @description A list of Care provider locations belonging to this Care Provider */
-                            locations?: {
-                                /** @description The unique identifier of the location. */
-                                location_code?: string;
-                                /** @description The display name of the location. */
-                                location_name?: string;
-                                /** @description The name of the care provide location's Local Authority. */
-                                la_name?: string;
-                                /** @description The code of the care provide location's Local Authority. */
-                                la_code?: string;
-                                /** @description The category of the location. */
-                                location_category?: string;
-                                /** @description The address of the location. */
-                                address?: string;
-                            }[];
+                            locations?: components["schemas"]["CareProviderLocationShort"][];
                         };
                     };
                 };
@@ -547,6 +590,21 @@ export interface components {
             country_code?: string | null;
             /** @description The associated country name. */
             country_name?: string | null;
+        };
+        /** @description Represents a care provider location */
+        CareProviderLocationShort: {
+            /** @description The unique identifier of the location. */
+            location_code?: string;
+            /** @description The display name of the location. */
+            location_name?: string;
+            /** @description The name of the care provide location's Local Authority. */
+            la_name?: string;
+            /** @description The code of the care provide location's Local Authority. */
+            la_code?: string;
+            /** @description The category of the location. */
+            location_category?: string;
+            /** @description The address of the location. */
+            address?: string;
         };
         /** @description Represents a district */
         District: {
