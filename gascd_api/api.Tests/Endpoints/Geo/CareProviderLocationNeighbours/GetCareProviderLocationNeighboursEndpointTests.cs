@@ -1,8 +1,10 @@
 using api.Endpoints.Geo.CareProviderLocationNeighbours;
 using FastEndpoints;
 using FastEndpoints.Testing;
+using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
+using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.Geo.CareProviderLocationNeighbours;
 
@@ -119,6 +121,20 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
         response.Locations[0].LocationDetails.Address.ShouldBe("Location 2, North Pole, NP 1SC");
     }
 
-
+    [Fact]
+    public async Task GetCareProviderLocation_ReturnsExpectedCareProviderJsonObject()
+    {
+        var response = await app.Client.GetAsync("/api/geo/care_provider_location/1-000000001/neighbours?distance_in_km=1&limit=1", TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var jObject = await ParseJsonResponse<JObject>(response);
+        GetFromJson(jObject, "code").ShouldBe("1-000000001");
+        GetFromJson(jObject, "locations[0].distance").ShouldBe("0.11057461436");
+        GetFromJson(jObject, "locations[0].location_details.location_code").ShouldBe("1-000000002");
+        GetFromJson(jObject, "locations[0].location_details.location_name").ShouldBe("Location 2");
+        GetFromJson(jObject, "locations[0].location_details.la_code").ShouldBe("E08000014");
+        GetFromJson(jObject, "locations[0].location_details.la_name").ShouldBe("Liverpool");
+        GetFromJson(jObject, "locations[0].location_details.location_category").ShouldBe("Care home");
+        GetFromJson(jObject, "locations[0].location_details.address").ShouldBe("Location 2, North Pole, NP 1SC");
+    }
 
 }
