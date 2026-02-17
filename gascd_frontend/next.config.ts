@@ -4,7 +4,8 @@ import type { NextConfig } from 'next';
 // https://nextjs.org/docs/15/app/guides/content-security-policy#without-nonces
 const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline';
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' js.monitor.azure.com az416426.vo.msecnd.net;
+    connect-src 'self' *.applicationinsights.azure.com *.applicationinsights.microsoft.com *.services.visualstudio.com *.monitor.azure.com;
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
     font-src 'self';
