@@ -406,20 +406,9 @@ export default function LAFundingPage() {
               columnHeaders={locationNamesWithAverageLabels}
               metricColumnName={metricColumnNames[2]}
               rowHeaders={{
-                elss_all_types_of_adult_social_care_all_ages:
-                  'All types of adult social care',
-                elss_all_types_of_care_home_all_ages:
-                  'All types of care home, including residential and nursing',
-                elss_nursing_all_ages: 'Residential',
-                elss_residential_all_ages: 'Nursing',
-                elss_all_types_of_community_social_care_all_ages:
-                  'All types of community social care, including home care, supported living, community direct payments and other schemes',
-                elss_community_home_care_all_ages: 'Home care',
-                elss_community_supported_living_all_ages: 'Supported living',
-                elss_community_direct_payments_all_ages:
-                  'Community direct payments',
-                elss_community_other_long_term_care_all_ages: 'Other',
-                elss_supported_accommodation_all_ages: 'Supported accomodation',
+                2023_2024: '2023 to 2024',
+                2022_2023: '2022 to 2023',
+                2021_2022: '2021 to 2022',
               }}
               data={filteredDemographicData}
               showCareProvider={false}
