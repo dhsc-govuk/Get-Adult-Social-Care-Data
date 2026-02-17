@@ -1,4 +1,5 @@
 using api.Data.Models.Reference;
+using api.Data.QueryResults;
 using api.Endpoints.Geo.CareProviderLocationNeighbours;
 using api.Endpoints.Geo.Postcode;
 using api.Endpoints.MetricLocation.Countries;
@@ -122,7 +123,7 @@ public class ReferenceMapper
     }
 
     public GetCareProviderLocationNeighboursResponse CareProviderLocationsToGetCareProviderLocationNeighbourResponse(
-        CareProviderLocation cpl, List<GetCareProviderLocationNeighboursEndpoint.CareProviderLocationQueryResult> neighbours)
+        CareProviderLocation cpl, List<CareProviderLocationNeighbour> neighbours)
     {
         return new GetCareProviderLocationNeighboursResponse
         {
@@ -132,25 +133,25 @@ public class ReferenceMapper
     }
 
     public GetCareProviderLocationNeighboursResponse.CareProviderLocationNeighbour
-        CareProviderLocationToCareProviderLocationNeighbour(GetCareProviderLocationNeighboursEndpoint.CareProviderLocationQueryResult n)
+        CareProviderLocationToCareProviderLocationNeighbour(CareProviderLocationNeighbour n)
     {
         return new GetCareProviderLocationNeighboursResponse.CareProviderLocationNeighbour
         {
-            Distance = n.Distance,
+            Distance = n.DistanceToNeighbour,
             LocationDetails = CareProviderLocationToCareProviderLocation(n)
         };
     }
 
     public GetCareProviderLocationNeighboursResponse.CareProviderLocation
-        CareProviderLocationToCareProviderLocation(CareProviderLocation cpl)
+        CareProviderLocationToCareProviderLocation(CareProviderLocationNeighbour cpl)
     {
         return new GetCareProviderLocationNeighboursResponse.CareProviderLocation
         {
-            LocationName = cpl.Name,
-            LocationCode = cpl.Code,
-            LaName = cpl.LocalAuthority.Name,
-            LaCode = cpl.LocalAuthority.Code,
-            LocationCategory = cpl.Category,
+            LocationName = cpl.LocationName,
+            LocationCode = cpl.LocationCode,
+            LaName = cpl.LaName,
+            LaCode = cpl.LaCode,
+            LocationCategory = cpl.LocationCategory,
             Address = cpl.Address,
         };
     }

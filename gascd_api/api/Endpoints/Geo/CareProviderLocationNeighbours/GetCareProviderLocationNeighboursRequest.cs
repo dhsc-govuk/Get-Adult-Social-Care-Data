@@ -11,5 +11,7 @@ public class GetCareProviderLocationNeighboursRequest
     public int DistanceInKm { get; init; } = 5;
 
     [QueryParam]
-    public int? Limit { get; init; }
+    public int Limit { get; init; } = 100;
+
+    public virtual int DistanceInMetres => DistanceInKm * 1000;
 }
