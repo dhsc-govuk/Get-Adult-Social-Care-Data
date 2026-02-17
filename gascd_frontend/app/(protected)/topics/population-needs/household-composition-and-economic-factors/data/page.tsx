@@ -142,7 +142,7 @@ export default function ProvisionAndOccupancyPage() {
       breadcrumbs={breadcrumbs}
     >
       <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
+        <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">
             Economic factors and household composition
           </h1>
