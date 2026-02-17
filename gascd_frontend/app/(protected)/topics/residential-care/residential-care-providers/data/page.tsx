@@ -205,7 +205,7 @@ export default function ResidentialCareProvidersPage() {
               }
               source={'Care Directory from the Care Quality Commission (CQC)'}
               columnHeaders={locationNamesWithAverageLabels}
-              metricColumn="metric"
+              metricColumnName="metric"
               rowHeaders={{
                 npl_adult_social_care: 'Total adult social care providers',
                 npl_care_home: 'Care home providers',
