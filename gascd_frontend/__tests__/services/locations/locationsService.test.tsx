@@ -164,7 +164,6 @@ describe('LocationService', () => {
       expect(result).toEqual({
         CPLabel: 'N/A',
         CountryLabel: 'United Kingdom',
-        IndicatorLabel: 'Indicator',
         LALabel: 'Suffolk',
         RegionLabel: 'East of England',
       });
@@ -177,7 +176,6 @@ describe('LocationService', () => {
       expect(result).toEqual({
         CPLabel: 'Care Provider A',
         CountryLabel: 'United Kingdom',
-        IndicatorLabel: 'Indicator',
         LALabel: 'Suffolk',
         RegionLabel: 'East of England',
       });

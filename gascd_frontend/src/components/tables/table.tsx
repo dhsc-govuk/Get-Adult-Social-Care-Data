@@ -2,13 +2,15 @@ import React, { Ref } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
 
 type DataTableProps = {
-  caption?: string;
+  caption?: React.ReactNode;
   columnHeaders: Object;
+  metricColumnName?: string;
   rowHeaders: Object;
   data: Indicator[];
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
   percentageRows?: string[];
+  currency?: boolean;
   source?: string;
   last_updated?: string;
   children?: React.ReactNode;
@@ -28,6 +30,7 @@ const getFormattedDataPoint = (
   metricId: string,
   locationType: string,
   isPercentage: boolean = false,
+  isCurrency: boolean = false,
   showAverageLabel?: boolean
 ): string => {
   const foundMetric = data.find(
@@ -42,6 +45,7 @@ const getFormattedDataPoint = (
   ) {
     let formatted = Number(foundMetric.data_point).toLocaleString();
     if (isPercentage) formatted += '%';
+    if (isCurrency) formatted = '£' + formatted;
     if (showAverageLabel)
       formatted += isPercentage ? ' (average)' : ' (median)';
     return formatted;
@@ -54,11 +58,13 @@ const getFormattedDataPoint = (
 const DataTable: React.FC<DataTableProps> = ({
   caption,
   columnHeaders,
+  metricColumnName = 'Indicator',
   rowHeaders,
   data,
   showCareProvider,
   careProviderMedianMetrics,
   percentageRows,
+  currency,
   children,
   source,
   showAverageLabel = false,
@@ -81,15 +87,18 @@ const DataTable: React.FC<DataTableProps> = ({
         )}
         <thead className="govuk-table__head">
           <tr className="govuk-table__row">
+            <th key="0" scope="col" className={columnClass(0)}>
+              {metricColumnName}
+            </th>
             {Object.entries(columnHeaders)
               .filter(
                 ([columnKey]) => !(columnKey === 'CPLabel' && !showCareProvider)
               )
               .map(([columnKey, columnLabel], columnIndex) => (
                 <th
-                  key={columnKey}
+                  key={columnKey + 1}
                   scope="col"
-                  className={columnClass(columnIndex)}
+                  className={columnClass(columnIndex + 1)}
                 >
                   {columnLabel}
                 </th>
@@ -111,7 +120,8 @@ const DataTable: React.FC<DataTableProps> = ({
                     data,
                     getCareProviderKey(key, careProviderMedianMetrics),
                     'CareProviderLocation',
-                    percentageRows?.some((item) => item === key) ?? false
+                    percentageRows?.some((item) => item === key) ?? false,
+                    currency
                   )}
                 </td>
               )}
@@ -121,6 +131,7 @@ const DataTable: React.FC<DataTableProps> = ({
                   key,
                   'LA',
                   percentageRows?.some((item) => item === key) ?? false,
+                  currency,
                   showAverageLabel
                 )}
               </td>
@@ -130,6 +141,7 @@ const DataTable: React.FC<DataTableProps> = ({
                   key,
                   'Regional',
                   percentageRows?.some((item) => item === key) ?? false,
+                  currency,
                   showAverageLabel
                 )}
               </td>
@@ -139,6 +151,7 @@ const DataTable: React.FC<DataTableProps> = ({
                   key,
                   'National',
                   percentageRows?.some((item) => item === key) ?? false,
+                  currency,
                   showAverageLabel
                 )}
               </td>
