@@ -917,6 +917,11 @@ export default function ProvisionAndOccupancyPage() {
           description="Statistics on the people who provide unpaid care to family members, friends and neighbours."
           url="/topics/residential-care/unpaid-care/data"
         />
+        <DataLinkCard
+          label="Care providers: locations and services"
+          description="Data on residential care homes and nursing homes by location and service type."
+          url="/topics/residential-care/residential-care-providers/data"
+        />
       </RelatedDataList>
 
       <LocalMarketInformation
