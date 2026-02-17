@@ -13,11 +13,11 @@ public class GetCareProviderLocationNeighboursValidator : Validator<GetCareProvi
             .MaximumLength(15).WithMessage("Care provider location code has a maximum length of 15");
 
         RuleFor(x => x.DistanceInKm)
-            .Must(value => value >= 0)
+            .GreaterThan(0)
             .WithMessage("The distance must be greater than zero");
 
         RuleFor(x => x.Limit)
-            .Must(value => value >= 0)
+            .GreaterThan(0)
             .WithMessage("The limit must be greater than zero");
     }
 }

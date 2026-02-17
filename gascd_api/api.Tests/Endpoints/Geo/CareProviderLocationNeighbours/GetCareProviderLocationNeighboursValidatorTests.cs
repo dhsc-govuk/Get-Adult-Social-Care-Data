@@ -29,22 +29,24 @@ public class GetCareProviderLocationNeighboursValidatorTests
     }
 
     [Theory]
-    [InlineData(-5, "The distance must be greater than zero")]
-    public void InvalidDistance(int distanceInKm, string expectedErrorMessage)
+    [InlineData(0)]
+    [InlineData(-5)]
+    public void InvalidDistance(int distanceInKm)
     {
         var request = new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-222222222", DistanceInKm = distanceInKm };
         var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(r => r.DistanceInKm)
-            .WithErrorMessage(expectedErrorMessage);
+            .WithErrorMessage("The distance must be greater than zero");
     }
 
     [Theory]
-    [InlineData(-1, "The limit must be greater than zero")]
-    public void InvalidLimit(int limit, string expectedErrorMessage)
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void InvalidLimit(int limit)
     {
         var request = new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-222222222", DistanceInKm = 10000, Limit = limit };
         var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(r => r.Limit)
-            .WithErrorMessage(expectedErrorMessage);
+            .WithErrorMessage("The limit must be greater than zero");
     }
 }

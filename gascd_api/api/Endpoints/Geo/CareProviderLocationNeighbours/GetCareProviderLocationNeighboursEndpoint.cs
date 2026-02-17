@@ -21,7 +21,7 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context,
 
         if (cpl == null || cpl.GeoData == null)
         {
-            logger.LogInformation("Care provider location not found: {cpl}", req.CareProviderLocationCode);
+            logger.LogInformation("Geographic data not found for care provider location: {cpl}", req.CareProviderLocationCode);
             await Send.NotFoundAsync(ct);
             return;
         }
