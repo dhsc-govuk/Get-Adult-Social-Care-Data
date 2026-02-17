@@ -40,7 +40,6 @@ export default function ProvisionAndOccupancyPage() {
 
   // location variables
   const [locationNamesCP, setLocationNamesCP] = useState<LocationNames>({
-    IndicatorLabel: 'Indicator',
     CPLabel: 'Loading...',
     LALabel: 'Loading...',
     RegionLabel: 'Loading...',
@@ -48,7 +47,6 @@ export default function ProvisionAndOccupancyPage() {
   } as LocationNames);
   const [locationNamesWithAverageLabels, setLocationNamesWithAverageLabels] =
     useState<LocationNames>({
-      IndicatorLabel: 'Indicator',
       CPLabel: 'Loading...',
       LALabel: 'Loading...',
       RegionLabel: 'Loading...',
@@ -252,7 +250,6 @@ export default function ProvisionAndOccupancyPage() {
           );
           setLocationNamesCP(locationNamesCP);
           setLocationNamesWithAverageLabels({
-            IndicatorLabel: 'Care home bed type',
             CPLabel: locationNamesCP.CPLabel!,
             LALabel: locationNamesCP.LALabel,
             RegionLabel: `${locationNamesCP.RegionLabel} (regional average)`,
@@ -668,6 +665,7 @@ export default function ProvisionAndOccupancyPage() {
                 ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, ` +
                 IndicatorService.getMostRecentDate(latestBedTypeData)
               }
+              metricColumnName="Care home bed type"
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
               }

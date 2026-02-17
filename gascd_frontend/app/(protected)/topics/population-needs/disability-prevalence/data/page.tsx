@@ -26,14 +26,12 @@ export default function DisabilityPrevalence() {
   const tableref3 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
-    IndicatorLabel: 'Indicator',
     LALabel: 'Loading...',
     RegionLabel: 'Loading...',
     CountryLabel: 'Loading...',
   } as LocationNames);
   const [locationNamesWithAverageLabels, setLocationNamesWithAverageLabels] =
     useState<LocationNames>({
-      IndicatorLabel: 'Primary support reason',
       CPLabel: 'Loading...',
       LALabel: 'Loading...',
       RegionLabel: 'Loading...',
@@ -104,9 +102,7 @@ export default function DisabilityPrevalence() {
           );
           setLocationNames(locationNames);
           setLocationNamesWithAverageLabels({
-            IndicatorLabel: 'Primary support reason',
             CPLabel: locationNames.CPLabel!,
-
             LALabel: locationNames.LALabel,
             RegionLabel: `${locationNames.RegionLabel} (regional average)`,
             CountryLabel: `${locationNames.CountryLabel} (national average)`,
@@ -317,6 +313,7 @@ export default function DisabilityPrevalence() {
                 'Adult Social Care Activity and Finance Report from NHS England'
               }
               columnHeaders={locationNamesWithAverageLabels}
+              metricColumnName="Primary support reason"
               rowHeaders={{
                 learning_disability_support_18_and_over:
                   'Learning disability support',

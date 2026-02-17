@@ -4,12 +4,13 @@ import { Indicator } from '@/data/interfaces/Indicator';
 type DataTableProps = {
   caption?: React.ReactNode;
   columnHeaders: Object;
+  metricColumnName?: string;
   rowHeaders: Object;
   data: Indicator[];
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
   percentageRows?: string[];
-  currency: boolean;
+  currency?: boolean;
   totalsRows?: string[];
   source?: string;
   last_updated?: string;
@@ -56,12 +57,13 @@ const getFormattedDataPoint = (
 const SubCatergoryTable: React.FC<DataTableProps> = ({
   caption,
   columnHeaders,
+  metricColumnName,
   rowHeaders,
   data,
   showCareProvider,
   careProviderMedianMetrics,
   percentageRows,
-  currency,
+  currency = false,
   totalsRows,
   children,
   source,
@@ -85,17 +87,21 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
         )}
         <thead className="govuk-table__head">
           <tr className="govuk-table__row">
+            <th key="0" scope="col" className={columnClass(0)}>
+              {metricColumnName}
+            </th>
             {Object.entries(columnHeaders)
               .filter(
                 ([columnKey]) => !(columnKey === 'CPLabel' && !showCareProvider)
               )
               .map(([columnKey, columnLabel], columnIndex) => (
                 <th
-                  key={columnKey}
+                  key={columnKey + 1}
                   scope="col"
-                  className={columnClass(columnIndex)}
+                  className={columnClass(columnIndex + 1)}
                 >
                   {columnLabel}
+                  {currency && <p className="govuk-!-margin-0">(£ thousand)</p>}
                 </th>
               ))}
           </tr>
