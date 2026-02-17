@@ -191,8 +191,7 @@ export default function NumberPeopleReceivingCarePage() {
               }
               columnHeaders={locationNamesWithAverageLabels}
               rowHeaders={{
-                nccc_num_clients_comm_care:
-                  'People receiving community social care in October 2025',
+                nccc_num_clients_comm_care: `People receiving community social care in ${IndicatorService.getMostRecentMonthYear(filteredDemographicData)}`,
               }}
               data={filteredDemographicData}
               showCareProvider={false}

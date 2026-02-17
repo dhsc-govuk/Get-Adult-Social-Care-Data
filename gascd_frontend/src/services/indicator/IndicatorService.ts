@@ -237,6 +237,24 @@ class IndicatorService {
       return '';
     }
   }
+
+  public static getMostRecentMonthYear(
+    data: Indicator[],
+    metric_ids?: string[]
+  ): string {
+    const recentData = this.getMostRecentIndicator(data, metric_ids);
+    if (recentData) {
+      const date = this.parseDate(
+        data.find((d) => d.metric_date.toString() === recentData)!
+      );
+      return new Intl.DateTimeFormat('en-GB', {
+        month: 'long',
+        year: 'numeric',
+      }).format(date);
+    } else {
+      return '';
+    }
+  }
 }
 
 export default IndicatorService;
