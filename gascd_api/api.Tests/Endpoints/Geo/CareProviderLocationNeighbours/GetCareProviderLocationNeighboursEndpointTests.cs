@@ -118,4 +118,7 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
         response.Locations[0].LocationDetails.LocationCategory.ShouldBe("Care home");
         response.Locations[0].LocationDetails.Address.ShouldBe("Location 2, North Pole, NP 1SC");
     }
+
+
+
 }

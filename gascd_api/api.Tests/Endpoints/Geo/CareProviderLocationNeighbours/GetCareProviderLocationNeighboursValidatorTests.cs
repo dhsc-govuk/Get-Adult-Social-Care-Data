@@ -29,7 +29,7 @@ public class GetCareProviderLocationNeighboursValidatorTests
     }
 
     [Theory]
-    [InlineData(-5, "The distance must be zero or a positive integer")]
+    [InlineData(-5, "The distance must be greater than zero")]
     public void InvalidDistance(int distanceInKm, string expectedErrorMessage)
     {
         var request = new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-222222222", DistanceInKm = distanceInKm };
