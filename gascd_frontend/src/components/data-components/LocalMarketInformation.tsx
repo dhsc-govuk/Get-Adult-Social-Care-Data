@@ -21,7 +21,7 @@ const LocalMarketInformation: React.FC<Props> = ({
 
   return (
     <div className="govuk-grid-row">
-      <div className="govuk-grid-column-two-thirds">
+      <div className="govuk-grid-column-full">
         <h2 className="govuk-heading-l govuk-!-margin-top-9">
           Information on the local care market
         </h2>

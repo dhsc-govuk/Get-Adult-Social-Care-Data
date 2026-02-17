@@ -53,7 +53,7 @@ const Layout: React.FC<Props> = ({
           <div className="govuk-width-container">
             <PhaseBanner />
             <div className="govuk-grid-row">
-              <div className="govuk-grid-column-two-thirds">
+              <div className="govuk-grid-column-full">
                 <h1 className="x-govuk-masthead__title">
                   Get adult social care data
                 </h1>

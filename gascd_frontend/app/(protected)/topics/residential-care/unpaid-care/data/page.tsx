@@ -137,7 +137,7 @@ export default function UnpaidCarePage() {
       breadcrumbs={breadcrumbs}
     >
       <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
+        <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">Unpaid care</h1>
           <p className="govuk-body-l">
             Statistics on the people who provide unpaid care to family members,
