@@ -8,7 +8,6 @@ import DataIndicatorDetailsList from '@/components/data-components/DataIndicator
 import DataLinkCard from '@/components/data-components/DataLinkCard';
 import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
 import BackToTop from '@/components/data-components/BackToTop';
-import DataTable from '@/components/tables/table';
 import SubCatergoryTable from '@/components/tables/SubCatergoryTable';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { LocationNames } from '@/data/interfaces/LocationNames';
@@ -22,7 +21,6 @@ import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 export default function LAFundingPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
   const tableref2 = useRef<HTMLTableElement>(null);
-  const tableref3 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
     LALabel: 'Loading...',
@@ -46,11 +44,7 @@ export default function LAFundingPage() {
     location_ids: [],
   });
 
-  const metricColumnNames = [
-    'Duration of care',
-    'Care type or funding method',
-    'Financial year',
-  ];
+  const metricColumnNames = ['Duration of care', 'Care type or funding method'];
 
   const breadcrumbs = [
     {
@@ -345,76 +339,6 @@ export default function LAFundingPage() {
                 'elss_supported_accommodation_all_ages',
               ]}
             ></SubCatergoryTable>
-          }
-          download={
-            <>
-              <h4 className="govuk-heading-s">Download</h4>
-              <DownloadTableDataCSVLink
-                tableref={tableref2}
-                filename="funding_for_long_term_adult_social_care.csv"
-                xLabel=""
-              />
-            </>
-          }
-        />
-      </DataBox>
-
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
-          <h2 className="govuk-heading-l govuk-!-margin-top-9">Trends</h2>
-        </div>
-      </div>
-
-      <DataBox
-        dataTitle={
-          <>
-            <abbr title="Local Authority">LA</abbr> funding for long-term adult
-            social care – trends over time
-          </>
-        }
-        dataInfo={
-          <p className="govuk-body-m">
-            Find out{' '}
-            <a
-              href="/help/total-financial-spend-long-term-community-adult-social-care"
-              className="govuk-link"
-            >
-              how the financial spend on long-term adult social care is
-              calculated
-            </a>
-            .
-          </p>
-        }
-      >
-        <DataTabs
-          id="3"
-          table={
-            <DataTable
-              tableref={tableref3}
-              caption={
-                <>
-                  Table 3: <abbr title="Local Authority">LA</abbr> funding for
-                  long-term adult social care (all types of adult social care)
-                  for all age groups – {locationNames.LALabel} local authority,{' '}
-                  {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel}
-                </>
-              }
-              source={
-                'Adult Social Care Activity and Finance Report from NHS England'
-              }
-              columnHeaders={locationNamesWithAverageLabels}
-              metricColumnName={metricColumnNames[2]}
-              rowHeaders={{
-                2023_2024: '2023 to 2024',
-                2022_2023: '2022 to 2023',
-                2021_2022: '2021 to 2022',
-              }}
-              data={filteredDemographicData}
-              showCareProvider={false}
-              percentageRows={[]}
-              currency={true}
-            ></DataTable>
           }
           download={
             <>
