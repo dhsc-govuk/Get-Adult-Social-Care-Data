@@ -11,7 +11,25 @@ with open('data/metric_data.csv') as metric_data:
             'location_types': location_types.split('-'),
             'data_point_range': (float(minimum), float(maximum))
         }
+        
+LOCATION_ORDER = ['National', 'Regional', 'LA', 'Care provider', 'CareProviderLocation']
 
+LOCATION_DATA = {
+    'Regional': {
+        'parent_key': 'country',
+        'radius': 1
+    },
+    'LA': {
+        'parent_key': 'region',
+        'radius': 0.5
+    },
+    'CareProviderLocation': {
+        'parent_key': 'la',
+        'radius': 0.1
+    }
+}
+
+LOCATION_BOUNDS = {'test_nation': (55,1,50,-5)}
 
 LOCATIONS = {
     'CareProviderLocation': [{

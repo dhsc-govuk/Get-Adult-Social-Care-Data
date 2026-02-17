@@ -1,6 +1,7 @@
 import hashlib
 import random
-from configs.metric_config import METRIC_DEFINITIONS, LOCATIONS, DATE_RANGES
+from configs.metric_config import METRIC_DEFINITIONS, LOCATIONS, DATE_RANGES, LOCATION_ORDER, LOCATION_DATA, LOCATION_BOUNDS
+
 
 def generate_sql(table_name, records):
     column_names = sorted(records[0].keys())
@@ -207,21 +208,35 @@ def generate_location_sql(table_name, location_type, generate_record_callable):
     sql = generate_sql(table_name, records)
     return [table_sql, sql]
 
-def generate_coord(data):
-    seed = generate_deterministic_seed(data['code'], data['name'])
-    r = random.Random(seed)
-    x = r.randint(-300, 300) / 100
-    y = r.randint(4700, 5300) / 100
-    
-    polys = [(x+dx, y+dy) for dx, dy in ((-1,-1), (1,-1), (1,1), (-1, 1), (-1, -1))]
-    
+def get_random_in_range(r, minimum, maximum):
+    return r.randint(int(minimum)*100, int(maximum)*100) / 100
+
+def generate_coord(type, data):
+    if data['code'] in LOCATION_BOUNDS:
+        n,e,s,w = LOCATION_BOUNDS[data['code']]
+        x = (n+s)/2
+        y = (e+w)/2
+        
+    else:
+        location_data = LOCATION_DATA[type]
+        rad = location_data['radius']
+        parent_key = data[location_data['parent_key']]
+        bounds = LOCATION_BOUNDS[parent_key]
+        seed = generate_deterministic_seed(data['code'], data['name'])
+        r = random.Random(seed)
+        x = get_random_in_range(r, bounds[3], bounds[1])
+        y = get_random_in_range(r, bounds[2], bounds[0])
+        n,e,s,w = y+rad,x+rad,y-rad,x-rad
+
+    polys = ((w,n), (e,n), (e,s), (w,s), (w,n))
+    LOCATION_BOUNDS[data['code']] = (n,e,s,w)
     coord = f"ST_Point({x}, {y})"
-    polygon = f"ST_Polygon('LINESTRING({', '.join((f'{y} {x}' for x,y in polys))})'::geometry, 4326)"
+    polygon = f"ST_Polygon('LINESTRING({', '.join((f'{x} {y}' for x,y in polys))})'::geometry, 4326)"
     return coord, polygon
 
-def generate_geo_data_record(data, idx, gd_count):
+def generate_geo_data_record(type, data, idx, gd_count):
     data['geo_data'] = f"(select max(id) - {gd_count} + {idx} from geo_data)"
-    coord, polygon = generate_coord(data)
+    coord, polygon = generate_coord(type, data)
     return {
         'id': get_id_field_sql('geo_data', idx),
         'coordinate': coord,
@@ -239,12 +254,12 @@ def generate_geo_data_sql():
     
     idx = 1
     records = []
-    for location_type, data  in LOCATIONS.items():
+    for location_type in LOCATION_ORDER:
         if location_type == 'Care provider':
             continue
         
-        for datum in data:
-                record = generate_geo_data_record(datum, idx, gd_count)
+        for datum in LOCATIONS[location_type]:
+                record = generate_geo_data_record(location_type, datum, idx, gd_count)
                 records.append(record)
                 idx += 1
     

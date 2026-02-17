@@ -1,20 +1,20 @@
 with geo_data_id as (select coalesce(max(id),0) as id from geo_data)
 INSERT INTO geo_data (bounding_polygon, coordinate, id, loaded_datetime)
- VALUES (ST_Polygon('LINESTRING(51.82 1.98, 51.82 3.98, 53.82 3.98, 53.82 1.98, 51.82 1.98)'::geometry, 4326), ST_Point(2.98, 52.82), (select id + 1 from geo_data_id), CURRENT_TIMESTAMP),
-(ST_Polygon('LINESTRING(48.96 -3.85, 48.96 -1.85, 50.96 -1.85, 50.96 -3.85, 48.96 -3.85)'::geometry, 4326), ST_Point(-2.85, 49.96), (select id + 2 from geo_data_id), CURRENT_TIMESTAMP),
-(ST_Polygon('LINESTRING(48.68 -1.5699999999999998, 48.68 0.43000000000000005, 50.68 0.43000000000000005, 50.68 -1.5699999999999998, 48.68 -1.5699999999999998)'::geometry, 4326), ST_Point(-0.57, 49.68), (select id + 3 from geo_data_id), CURRENT_TIMESTAMP),
-(ST_Polygon('LINESTRING(48.13 -2.16, 48.13 -0.15999999999999992, 50.13 -0.15999999999999992, 50.13 -2.16, 48.13 -2.16)'::geometry, 4326), ST_Point(-1.16, 49.13), (select id + 4 from geo_data_id), CURRENT_TIMESTAMP),
-(ST_Polygon('LINESTRING(51.87 -3.5, 51.87 -1.5, 53.87 -1.5, 53.87 -3.5, 51.87 -3.5)'::geometry, 4326), ST_Point(-2.5, 52.87), (select id + 5 from geo_data_id), CURRENT_TIMESTAMP),
-(ST_Polygon('LINESTRING(47.93 -0.43000000000000005, 47.93 1.5699999999999998, 49.93 1.5699999999999998, 49.93 -0.43000000000000005, 47.93 -0.43000000000000005)'::geometry, 4326), ST_Point(0.57, 48.93), (select id + 6 from geo_data_id), CURRENT_TIMESTAMP),
-(ST_Polygon('LINESTRING(51.71 -0.7, 51.71 1.3, 53.71 1.3, 53.71 -0.7, 51.71 -0.7)'::geometry, 4326), ST_Point(0.3, 52.71), (select id + 7 from geo_data_id), CURRENT_TIMESTAMP),
-(ST_Polygon('LINESTRING(49.92 -2.2, 49.92 -0.19999999999999996, 51.92 -0.19999999999999996, 51.92 -2.2, 49.92 -2.2)'::geometry, 4326), ST_Point(-1.2, 50.92), (select id + 8 from geo_data_id), CURRENT_TIMESTAMP);
+ VALUES (ST_Polygon('LINESTRING(-5 55, 1 55, 1 50, -5 50, -5 55)'::geometry, 4326), ST_Point(52.5, -2.0), (select id + 1 from geo_data_id), CURRENT_TIMESTAMP),
+(ST_Polygon('LINESTRING(-2.4299999999999997 55.62, -0.42999999999999994 55.62, -0.42999999999999994 53.62, -2.4299999999999997 53.62, -2.4299999999999997 55.62)'::geometry, 4326), ST_Point(-1.43, 54.62), (select id + 2 from geo_data_id), CURRENT_TIMESTAMP),
+(ST_Polygon('LINESTRING(-2.7 53.85, -0.7 53.85, -0.7 51.85, -2.7 51.85, -2.7 53.85)'::geometry, 4326), ST_Point(-1.7, 52.85), (select id + 3 from geo_data_id), CURRENT_TIMESTAMP),
+(ST_Polygon('LINESTRING(-2.04 55.15, -1.04 55.15, -1.04 54.15, -2.04 54.15, -2.04 55.15)'::geometry, 4326), ST_Point(-1.54, 54.65), (select id + 4 from geo_data_id), CURRENT_TIMESTAMP),
+(ST_Polygon('LINESTRING(-2.38 52.96, -1.38 52.96, -1.38 51.96, -2.38 51.96, -2.38 52.96)'::geometry, 4326), ST_Point(-1.88, 52.46), (select id + 5 from geo_data_id), CURRENT_TIMESTAMP),
+(ST_Polygon('LINESTRING(-1.2000000000000002 54.84, -1.0 54.84, -1.0 54.64, -1.2000000000000002 54.64, -1.2000000000000002 54.84)'::geometry, 4326), ST_Point(-1.1, 54.74), (select id + 6 from geo_data_id), CURRENT_TIMESTAMP),
+(ST_Polygon('LINESTRING(-1.31 54.11, -1.1099999999999999 54.11, -1.1099999999999999 53.91, -1.31 53.91, -1.31 54.11)'::geometry, 4326), ST_Point(-1.21, 54.01), (select id + 7 from geo_data_id), CURRENT_TIMESTAMP),
+(ST_Polygon('LINESTRING(-1.8 51.43, -1.5999999999999999 51.43, -1.5999999999999999 51.23, -1.8 51.23, -1.8 51.43)'::geometry, 4326), ST_Point(-1.7, 51.33), (select id + 8 from geo_data_id), CURRENT_TIMESTAMP);
 with countries_id as (select coalesce(max(id),0) as id from countries)
 INSERT INTO countries (code, geo_data_fk, id, loaded_datetime, name)
- VALUES ('test_nation', (select max(id) - 8 + 8 from geo_data), (select id + 1 from countries_id), CURRENT_TIMESTAMP, 'Test Nation');
+ VALUES ('test_nation', (select max(id) - 8 + 1 from geo_data), (select id + 1 from countries_id), CURRENT_TIMESTAMP, 'Test Nation');
 with regions_id as (select coalesce(max(id),0) as id from regions)
 INSERT INTO regions (code, country_fk, geo_data_fk, id, loaded_datetime, name)
- VALUES ('test_region_1', (select id from countries where code = 'test_nation'), (select max(id) - 8 + 6 from geo_data), (select id + 1 from regions_id), CURRENT_TIMESTAMP, 'Test Region 1'),
-('test_region_2', (select id from countries where code = 'test_nation'), (select max(id) - 8 + 7 from geo_data), (select id + 2 from regions_id), CURRENT_TIMESTAMP, 'Test Region 2');
+ VALUES ('test_region_1', (select id from countries where code = 'test_nation'), (select max(id) - 8 + 2 from geo_data), (select id + 1 from regions_id), CURRENT_TIMESTAMP, 'Test Region 1'),
+('test_region_2', (select id from countries where code = 'test_nation'), (select max(id) - 8 + 3 from geo_data), (select id + 2 from regions_id), CURRENT_TIMESTAMP, 'Test Region 2');
 with local_authorities_id as (select coalesce(max(id),0) as id from local_authorities)
 INSERT INTO local_authorities (code, geo_data_fk, id, loaded_datetime, name, region_fk)
  VALUES ('test_la_1', (select max(id) - 8 + 4 from geo_data), (select id + 1 from local_authorities_id), CURRENT_TIMESTAMP, 'Test LA 1', (select id from regions where code = 'test_region_1')),
@@ -24,9 +24,9 @@ INSERT INTO care_providers (code, id, loaded_datetime, name)
  VALUES ('test_cp_1', (select id + 1 from care_providers_id), CURRENT_TIMESTAMP, 'Test Care Provider');
 with care_provider_locations_id as (select coalesce(max(id),0) as id from care_provider_locations)
 INSERT INTO care_provider_locations (address, care_provider_fk, category, code, geo_data_fk, id, loaded_datetime, local_authority_fk, name, nominated_individual)
- VALUES ('address', (select id from care_providers where code = 'test_cp_1'), 'category', 'test_cpl1', (select max(id) - 8 + 1 from geo_data), (select id + 1 from care_provider_locations_id), CURRENT_TIMESTAMP, (select id from local_authorities where code = 'test_la_1'), 'Test Care Provider Location 1', 'mr. ice cool'),
-('address', (select id from care_providers where code = 'test_cp_1'), 'category', 'test_cpl2', (select max(id) - 8 + 2 from geo_data), (select id + 2 from care_provider_locations_id), CURRENT_TIMESTAMP, (select id from local_authorities where code = 'test_la_1'), 'Test Care Provider Location 2', 'mr. ice cool'),
-('address', (select id from care_providers where code = 'test_cp_1'), 'category', 'test_cpl_3', (select max(id) - 8 + 3 from geo_data), (select id + 3 from care_provider_locations_id), CURRENT_TIMESTAMP, (select id from local_authorities where code = 'test_la_2'), 'Test Care Provider Location 3', 'mr. ice cool');
+ VALUES ('address', (select id from care_providers where code = 'test_cp_1'), 'category', 'test_cpl1', (select max(id) - 8 + 6 from geo_data), (select id + 1 from care_provider_locations_id), CURRENT_TIMESTAMP, (select id from local_authorities where code = 'test_la_1'), 'Test Care Provider Location 1', 'mr. ice cool'),
+('address', (select id from care_providers where code = 'test_cp_1'), 'category', 'test_cpl2', (select max(id) - 8 + 7 from geo_data), (select id + 2 from care_provider_locations_id), CURRENT_TIMESTAMP, (select id from local_authorities where code = 'test_la_1'), 'Test Care Provider Location 2', 'mr. ice cool'),
+('address', (select id from care_providers where code = 'test_cp_1'), 'category', 'test_cpl_3', (select max(id) - 8 + 8 from geo_data), (select id + 3 from care_provider_locations_id), CURRENT_TIMESTAMP, (select id from local_authorities where code = 'test_la_2'), 'Test Care Provider Location 3', 'mr. ice cool');
 do $$ begin if not exists (select id from metric_groups where code = 'bedcount') then INSERT INTO metric_groups (code, display_name, id, loaded_datetime)
  VALUES ('bedcount', 'bedcount', (select max(id)+1 from metric_groups), CURRENT_TIMESTAMP); end if; end $$;
 do $$ begin if not exists (select id from metrics where code = 'bedcount_total') then INSERT INTO metrics (code, data_source, data_type, denominator_description, filter_type, frequency, id, loaded_datetime, metric_group_fk, numerator_description)
