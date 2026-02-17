@@ -15,5 +15,9 @@ public class GetCareProviderLocationNeighboursValidator : Validator<GetCareProvi
         RuleFor(x => x.DistanceInKm)
             .Must(value => value >= 0)
             .WithMessage("The distance must be greater than zero");
+
+        RuleFor(x => x.Limit)
+            .Must(value => value >= 0)
+            .WithMessage("The limit must be greater than zero");
     }
 }

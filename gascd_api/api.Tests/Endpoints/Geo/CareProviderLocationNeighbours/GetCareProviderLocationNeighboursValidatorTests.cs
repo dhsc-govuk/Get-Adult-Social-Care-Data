@@ -37,4 +37,14 @@ public class GetCareProviderLocationNeighboursValidatorTests
         result.ShouldHaveValidationErrorFor(r => r.DistanceInKm)
             .WithErrorMessage(expectedErrorMessage);
     }
+
+    [Theory]
+    [InlineData(-1, "The limit must be greater than zero")]
+    public void InvalidLimit(int limit, string expectedErrorMessage)
+    {
+        var request = new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-222222222", DistanceInKm = 10000, Limit = limit };
+        var result = _validator.TestValidate(request);
+        result.ShouldHaveValidationErrorFor(r => r.Limit)
+            .WithErrorMessage(expectedErrorMessage);
+    }
 }
