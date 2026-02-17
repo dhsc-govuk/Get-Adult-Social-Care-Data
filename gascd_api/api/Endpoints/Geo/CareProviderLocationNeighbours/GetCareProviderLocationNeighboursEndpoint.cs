@@ -19,7 +19,7 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context,
             .Include(l => l.GeoData)
             .SingleOrDefault(l => l.Code == req.CareProviderLocationCode);
 
-        if (cpl == null)
+        if (cpl == null || cpl.GeoData == null)
         {
             logger.LogInformation("Care provider location not found: {cpl}", req.CareProviderLocationCode);
             await Send.NotFoundAsync(ct);
