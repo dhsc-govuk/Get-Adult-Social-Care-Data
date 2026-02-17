@@ -7,6 +7,7 @@ import { POST as GetMetricData } from '../../app/api/get_metric_data/route';
 import {
   mockSession,
   mockSessionCareProvider,
+  mockSessionLAUser,
   mockSessionInvalidLocationType,
   mockSessionUnregistered,
   mockSessionWithLocation,
@@ -65,7 +66,7 @@ describe('test handlers', () => {
       {
         checked: false,
         filter_bedtype: 'All bed types',
-        metric_id: 'bedcount_per_hundred_thousand_adults',
+        metric_id: 'bedcount_per_hundred_thousand_adults_total',
       },
       {
         checked: false,
@@ -269,6 +270,7 @@ describe('test available locations', () => {
         provider_name: organisation_data.display_name,
         la_name: item.la_name,
         location_display_name: item.location_name + ` (${item.la_name})`,
+        location_category: item.location_category,
       };
     });
     expect(data).toEqual({ data: location_listing });
@@ -357,6 +359,17 @@ describe('set selected locations', () => {
 
   it('blocks unknown user types', async () => {
     mockGetSession.mockReturnValue(mockSessionInvalidLocationType);
+
+    const req = new NextRequest('http://localhost/api/set_selected_location', {
+      method: 'POST',
+      body: JSON.stringify({ location_id: 'loc1' }),
+    });
+    const result = await SetSelectedLocation(req);
+    expect(result.status).toBe(401);
+  });
+
+  it('blocks LA users', async () => {
+    mockGetSession.mockReturnValue(mockSessionLAUser);
 
     const req = new NextRequest('http://localhost/api/set_selected_location', {
       method: 'POST',
