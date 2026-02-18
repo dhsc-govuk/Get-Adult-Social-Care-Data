@@ -265,14 +265,11 @@ class IndicatorService {
       const date = this.parseDate(
         data.find((d) => d.metric_date.toString() === recentData)!
       );
-      console.log(date);
       let yearString = new Intl.DateTimeFormat('en-GB', {
         year: 'numeric',
       }).format(date);
 
       let year = parseInt(yearString);
-
-      console.log(year);
 
       return `financial year ${year - 1} to ${year}`;
     } else {
