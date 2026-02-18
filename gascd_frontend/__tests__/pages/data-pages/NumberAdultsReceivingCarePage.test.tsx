@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import NumberAdultsReceivingCarePage from '../../../app/(protected)/topics/residential-care/number-of-people-receiving-care/data/page.tsx';
-import { authClient } from '@/lib/auth-client';
+import { useSession } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
 
 // Mock out things we are not testing at the moment to prevent them making api requests
@@ -10,14 +10,9 @@ vi.mock('@/services/indicator/IndicatorFetchService');
 vi.mock('@/services/location/LocationService');
 
 vi.mock('@/lib/auth-client', () => ({
-  authClient: {
-    getSession: vi.fn(),
-    useSession: vi.fn(),
-  },
+  useSession: vi.fn(),
 }));
-const mockGetSession = vi.mocked(authClient.getSession);
-const mockUseSession = vi.mocked(authClient.useSession);
-mockGetSession.mockReturnValue({ data: mockSession } as any);
+const mockUseSession = vi.mocked(useSession);
 mockUseSession.mockReturnValue({ data: mockSession } as any);
 
 describe('NumberAdultsReceivingCarePage', () => {
