@@ -1,13 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import NumberAdultsReceivingCarePage from '../../../app/(protected)/topics/residential-care/number-of-people-receiving-care/data/page.tsx';
-import { useSession } from '@/lib/auth-client';
+import { useSession, authClient } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
 
 // Mock out things we are not testing at the moment to prevent them making api requests
 vi.mock('@/components/common/buttons/logoutButton');
 vi.mock('@/services/logger/logService');
 vi.mock('@/services/indicator/IndicatorFetchService');
-vi.mock('@/services/location/LocationService');
+vi.mock('@/services/location/locationService');
 
 vi.mock('@/lib/auth-client', () => ({
   useSession: vi.fn(),
