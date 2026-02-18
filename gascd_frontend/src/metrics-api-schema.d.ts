@@ -71,9 +71,9 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description The distance in kilometres from the provided Care Provider Location to look for other Care Provider Locations. Defaults to 1 if none provided. */
+                    /** @description The distance in kilometres from the provided Care Provider Location to look for other Care Provider Locations. Defaults to 5 if none provided. */
                     distance_in_km?: number;
-                    /** @description The upper limit of the number of returned care provider locations. Must be a positive integer. */
+                    /** @description The upper limit of the number of returned care provider locations. Must be a positive integer. Defaults to 100 if none provided. */
                     limit?: number;
                 };
                 header?: never;
