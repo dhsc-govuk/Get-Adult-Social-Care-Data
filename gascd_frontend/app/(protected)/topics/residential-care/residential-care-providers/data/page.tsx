@@ -197,7 +197,7 @@ export default function ResidentialCareProvidersPage() {
               tableref={tableref2}
               caption={
                 <>
-                  Table 2: number of adult social care providers –{' '}
+                  Table 1: number of adult social care providers –{' '}
                   {locationNames.LALabel}{' '}
                   <abbr title="Local Authority">LA</abbr>,{' '}
                   {locationNames.RegionLabel} region and{' '}
