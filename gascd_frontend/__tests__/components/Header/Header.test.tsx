@@ -2,6 +2,11 @@ import { render, screen } from '@testing-library/react';
 import Header from '@/components/common/header/Header';
 import { mockSession } from '@/test-utils/test-utils';
 
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(),
+  usePathname: vi.fn(),
+}));
+
 describe('Header Component', () => {
   it('Renders the component correctly', () => {
     render(<Header />);

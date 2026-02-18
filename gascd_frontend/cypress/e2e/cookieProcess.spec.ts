@@ -6,7 +6,7 @@ describe('User can set cookies', () => {
     cy.visit('');
     cy.url().should('include', '/login');
 
-    cy.login();
+    cy.login_onelogin(Cypress.env('cpl_user'));
 
     // Load the homepage
     cy.url().should('include', '/home');
@@ -33,7 +33,7 @@ describe('User can set cookies', () => {
     cy.url().should('include', '/login');
 
     // Login with dummy auth
-    cy.login();
+    cy.login_onelogin(Cypress.env('cpl_user'));
 
     // Load the homepage
     cy.url().should('include', '/home');
@@ -58,7 +58,7 @@ describe('User can set cookies', () => {
     cy.visit('');
     cy.url().should('include', '/login');
 
-    cy.login();
+    cy.login_onelogin(Cypress.env('cpl_user'));
 
     // Load the homepage
     cy.url().should('include', '/home');
@@ -77,7 +77,7 @@ describe('User can set cookies', () => {
     cy.url().should('include', '/login');
 
     // Login with dummy auth
-    cy.login();
+    cy.login_onelogin(Cypress.env('cpl_user'));
 
     // Load the homepage
     cy.url().should('include', '/home');
