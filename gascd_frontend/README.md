@@ -120,6 +120,20 @@ MOCK_SERVER=true npm run start:testmode
 make test-e2e
 ```
 
+### Running individual E2E tests
+
+You can run cypress interactively when writing new tests:
+
+```bash
+npm run cypress
+```
+
+If you are regularly running cypress tests, you may hit issues with Better Auth's built-in rate limiting. This can be temporarily disabled by running NextJS with the `E2E_TESTING_MODE` env variable set:
+
+```bash
+E2E_TESTING_MODE=true npm run dev
+```
+
 ### CI/CD
 
 This project uses Azure DevOps Pipelines for continuous integration and deployment. There are currently two environments Dev and Production which we continuously integrate with. The CI/CD Pipeline has the following stages:
