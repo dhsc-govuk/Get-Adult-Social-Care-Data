@@ -3,6 +3,10 @@ import LogoutButton from '../../../src/components/common/buttons/logoutButton';
 import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
 
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(),
+}));
+
 const server = setupServer(
   http.post('/api/auth/logout', async () => {
     return HttpResponse.json({

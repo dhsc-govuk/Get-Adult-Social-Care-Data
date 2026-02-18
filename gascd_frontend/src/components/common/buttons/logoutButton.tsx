@@ -4,12 +4,14 @@ import React, { useEffect, useState } from 'react';
 import LogService from '@/services/logger/logService';
 import { Session } from '@/lib/auth-client';
 import { authClient } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   session: Session | null;
 };
 
 const LogoutButton: React.FC<Props> = ({ session }) => {
+  const router = useRouter();
   const [logoutUrl, setLogoutUrl] = useState('');
 
   useEffect(() => {
@@ -47,7 +49,8 @@ const LogoutButton: React.FC<Props> = ({ session }) => {
           if (logoutUrl) {
             window.location.href = logoutUrl;
           } else {
-            window.location.href = '/signed-out';
+            router.push('/signed-out');
+            router.refresh();
           }
         },
       },

@@ -30,6 +30,12 @@ export default function ResidentialCarePage() {
       url: '/topics/residential-care/provision-and-occupancy/data',
     },
     {
+      title: 'Number of adults receiving community social care',
+      description:
+        'Data on the number of people supported through community social care, including trends over time.',
+      url: '/topics/residential-care/number-of-people-receiving-care/data',
+    },
+    {
       title: 'Unpaid care',
       description:
         'Statistics on the people who provide unpaid care to family members, friends and neighbours.',

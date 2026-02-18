@@ -3,6 +3,7 @@ import {
   mockSessionWithLocationCareProvider,
   mockSessionUnregistered,
   mockSessionWithLocation,
+  mockSessionLAUser,
 } from '@/test-utils/test-utils';
 
 vi.mock('server-only', () => ({
@@ -17,11 +18,26 @@ beforeAll(() => {
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-const expected_locations = [
+const expected_locations_cp = [
   {
     location_code: 'testcpl1',
     location_type: 'CareProviderLocation',
   },
+  {
+    location_code: 'E08000024',
+    location_type: 'LA',
+  },
+  {
+    location_code: 'E12000001',
+    location_type: 'Regional',
+  },
+  {
+    location_code: 'E92000001',
+    location_type: 'National',
+  },
+];
+
+const expected_locations_la = [
   {
     location_code: 'E08000024',
     location_type: 'LA',
@@ -41,14 +57,19 @@ describe('getDefaultLocations', () => {
 
   it('should return locations for a valid user', async () => {
     const locations = await getDefaultLocations(mockSessionWithLocation.user);
-    expect(locations).toStrictEqual(expected_locations);
+    expect(locations).toStrictEqual(expected_locations_cp);
   });
 
   it('should return locations for a valid CP user', async () => {
     const locations = await getDefaultLocations(
       mockSessionWithLocationCareProvider.user
     );
-    expect(locations).toStrictEqual(expected_locations);
+    expect(locations).toStrictEqual(expected_locations_cp);
+  });
+
+  it('should return locations for a valid LA user', async () => {
+    const locations = await getDefaultLocations(mockSessionLAUser.user);
+    expect(locations).toStrictEqual(expected_locations_la);
   });
 
   it('should return no locations for unregistered user', async () => {

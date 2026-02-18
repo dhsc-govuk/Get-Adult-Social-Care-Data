@@ -2,7 +2,7 @@ export const metric_filters_data = {
   metric_group_id: 'bedcount_per_hundred_thousand_adults',
   metric_filters: [
     {
-      metric_code: 'bedcount_per_hundred_thousand_adults',
+      metric_code: 'bedcount_per_hundred_thousand_adults_total',
       filter_type: 'All bed types',
     },
     {
