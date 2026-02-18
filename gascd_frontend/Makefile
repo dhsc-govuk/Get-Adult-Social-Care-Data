@@ -18,6 +18,7 @@ test: node_modules
 	${NPM_COMMAND} run test
 
 test-e2e: node_modules
+	npm run test:setupusers
 	CYPRESS_BASE_URL=http://localhost:3000/ ${NPM_COMMAND} run cypress:headless
 
 # Docker utilities

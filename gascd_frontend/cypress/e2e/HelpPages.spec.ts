@@ -64,7 +64,7 @@ describe('Help pages exist and contain data', () => {
     cy.visit('');
     cy.url().should('include', '/login');
 
-    cy.login();
+    cy.login_onelogin(Cypress.env('cpl_user'));
 
     pages.forEach((page) => {
       cy.visit(page.url);

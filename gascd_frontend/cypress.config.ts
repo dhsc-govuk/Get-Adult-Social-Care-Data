@@ -1,14 +1,18 @@
 import { defineConfig } from 'cypress';
 import dotenv from 'dotenv';
+import { execSync } from 'child_process';
 
 dotenv.config();
 
 export default defineConfig({
   e2e: {
-    setupNodeEvents(on, config) {
-      config.env.AUTH_EMAIL = process.env.LOCAL_AUTH_EMAIL;
-      return config;
+    env: {
+      // These need to match the users in setup-test-users.ts
+      cpl_user: 'testcplocation@testing.com',
+      cp_user: 'testcp@testing.com',
+      la_user: 'testla@testing.com',
     },
+    setupNodeEvents(on, config) {},
     experimentalModifyObstructiveThirdPartyCode: true,
     baseUrl: process.env.CYPRESS_BASE_URL,
     specPattern: 'cypress/e2e/**/*.spec.{js,jsx,ts,tsx}',
