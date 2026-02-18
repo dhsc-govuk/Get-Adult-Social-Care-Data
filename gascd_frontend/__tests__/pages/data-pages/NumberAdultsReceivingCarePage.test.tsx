@@ -51,7 +51,7 @@ describe('NumberAdultsReceivingCarePage', () => {
     expect(bodyTextElement).toBeInTheDocument();
 
     const helpLink = screen.getAllByRole('link', {
-      name: /Number of adults receiving community social care/i,
+      name: /Number of people receiving care/i,
     });
     expect(helpLink[0]).toBeInTheDocument();
     expect(helpLink[0]).toHaveAttribute(
