@@ -9,25 +9,33 @@ import DataLinkCard from '@/components/data-components/DataLinkCard';
 import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
 import BackToTop from '@/components/data-components/BackToTop';
 import LocationService from '@/services/location/locationService';
-import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
-import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
+import SubCatergoryTable from '@/components/tables/SubCatergoryTable';
+import IndicatorService from '@/services/indicator/IndicatorService';
 
-export default function UnpaidCarePage() {
+export default function ResidentialCareProvidersPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
+  const tableref2 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
     LALabel: 'Loading...',
     RegionLabel: 'Loading...',
     CountryLabel: 'Loading...',
   } as LocationNames);
+  const [locationNamesWithAverageLabels, setLocationNamesWithAverageLabels] =
+    useState<LocationNames>({
+      CPLabel: 'Loading...',
+      LALabel: 'Loading...',
+      RegionLabel: 'Loading...',
+      CountryLabel: 'Loading...',
+    } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [filteredDemographicData, setFilteredDemographicData] = useState<
@@ -49,7 +57,17 @@ export default function UnpaidCarePage() {
     },
   ];
 
-  const demographicMetricIds = ['perc_unpaid_care_provider'];
+  const demographicMetricIds = [
+    'npl_adult_social_care',
+    'npl_care_home',
+    'npl_care_home_nursing',
+    'npl_care_home_residential',
+    'npl_community_care',
+    'npl_domiciliary_care',
+    'npl_extra_care_housing',
+    'npl_other_community_care',
+    'npl_supported_living',
+  ];
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -77,6 +95,12 @@ export default function UnpaidCarePage() {
             false
           );
           setLocationNames(locationNames);
+          setLocationNamesWithAverageLabels({
+            CPLabel: locationNames.CPLabel!,
+            LALabel: locationNames.LALabel,
+            RegionLabel: `${locationNames.RegionLabel} (regional average)`,
+            CountryLabel: `${locationNames.CountryLabel} (national average)`,
+          });
         } catch (error) {
           console.error('Error fetching location names:', error);
         }
@@ -129,18 +153,20 @@ export default function UnpaidCarePage() {
 
   return (
     <Layout
-      title="Unpaid care"
+      title="Care providers: locations and services"
       autoSpaceMainContent={false}
       showLoginInformation={true}
-      currentPage="unpaid-care"
+      currentPage="care-providers"
       breadcrumbs={breadcrumbs}
     >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
-          <h1 className="govuk-heading-xl">Unpaid care</h1>
+          <h1 className="govuk-heading-xl">
+            Care providers: locations and services
+          </h1>
           <p className="govuk-body-l">
-            Statistics on the people who provide unpaid care to family members,
-            friends and neighbours.
+            Data on care provision by location, service type and number of
+            providers.
           </p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview
@@ -148,46 +174,69 @@ export default function UnpaidCarePage() {
         </div>
       </div>
       <DataBox
-        dataTitle="People aged 5 and over who provide unpaid care"
+        dataTitle="Number of adult social care providers"
         dataInfo={
           <>
             <p className="govuk-body-m">
               Find out how{' '}
               <a
-                href="/help/percentage-people-aged-5-and-over-who-provide-unpaid-care"
+                href="/help/total-number-community-social-care-providers"
                 className="govuk-link"
               >
-                how unpaid care is measured.
-              </a>{' '}
+                how the number of adult social care providers is calculated
+              </a>
+              .
             </p>
           </>
         }
       >
         <DataTabs
-          id="1"
+          id="2"
           table={
-            <DataTable
-              tableref={tableref1}
-              caption={`Table 1: percentage of people aged 5 and over who provide unpaid care – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
-              source={
-                'Census 2021 from the Office for National Statistics (ONS)'
+            <SubCatergoryTable
+              tableref={tableref2}
+              caption={
+                <>
+                  Table 2: number of adult social care providers –{' '}
+                  {locationNames.LALabel}{' '}
+                  <abbr title="Local Authority">LA</abbr>,{' '}
+                  {locationNames.RegionLabel} region and{' '}
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getMostRecentMonthYear(
+                    filteredDemographicData
+                  )}
+                </>
               }
-              columnHeaders={locationNames}
+              source={'Care Directory from the Care Quality Commission (CQC)'}
+              columnHeaders={locationNamesWithAverageLabels}
+              metricColumnName="Service provider type"
               rowHeaders={{
-                perc_unpaid_care_provider:
-                  'Percentage of people aged 5 or over who provide unpaid care',
+                npl_adult_social_care: 'Total adult social care providers',
+                npl_care_home: 'Care home providers',
+                npl_care_home_nursing: 'Nursing',
+                npl_care_home_residential: 'Residental',
+                npl_community_care: 'Community social care providers',
+                npl_domiciliary_care: 'Home care providers',
+                npl_supported_living: 'Supported living providers',
+                npl_extra_care_housing: 'Extra care housing providers',
+                npl_other_community_care: 'Other community based care provider',
               }}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={['perc_unpaid_care_provider']}
-            ></DataTable>
+              percentageRows={[]}
+              totalsRows={[
+                'npl_adult_social_care',
+                'npl_care_home',
+                'npl_community_care',
+              ]}
+            ></SubCatergoryTable>
           }
           download={
             <>
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
-                tableref={tableref1}
-                filename="percent_unpaid_care.csv"
+                tableref={tableref2}
+                filename="number_of_adult_social_care_providers.csv"
                 xLabel=""
               />
             </>
@@ -196,20 +245,15 @@ export default function UnpaidCarePage() {
       </DataBox>
       <DataIndicatorDetailsList>
         <DataLinkCard
-          label="People aged 5 and over who provide unpaid care"
-          sources="Office for National Statistics."
-          updateFrequency="Updated every 10 years"
-          limitations={false}
-          url="/help/percentage-people-aged-5-and-over-who-provide-unpaid-care"
+          label="Number of community social care providers"
+          sources="Care Quality Commission"
+          updateFrequency="Monthly updates"
+          limitations={true}
+          url="/help/total-number-community-social-care-providers"
         />
       </DataIndicatorDetailsList>
 
       <RelatedDataList>
-        <DataLinkCard
-          label="Care providers: locations and services"
-          description="Data on residential care homes and nursing homes by location and service type."
-          url="/topics/residential-care/residential-care-providers/data"
-        />
         <DataLinkCard
           label="Care home beds and occupancy levels"
           description="Provision and capacity data for care homes, including local, regional and national statistics."
@@ -219,6 +263,11 @@ export default function UnpaidCarePage() {
           label="Number of adults receiving community social care"
           description="Data on the number of people supported through community social care, including trends over time."
           url="/topics/residential-care/number-of-people-receiving-care/data"
+        />
+        <DataLinkCard
+          label="Unpaid care"
+          description="Statistics on the people who provide unpaid care to family members, friends and neighbours."
+          url="/topics/residential-care/unpaid-care/data"
         />
       </RelatedDataList>
 
