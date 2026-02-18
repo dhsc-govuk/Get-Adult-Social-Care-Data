@@ -14,7 +14,7 @@ describe('Data pages exist and contain data', () => {
     cy.url().should('include', '#table-2');
     cy.get('#table-2')
       .should('be.visible')
-      .contains('Table 2: number of adult social care providers');
+      .contains('Table 1: number of adult social care providers');
     cy.get('#download-2').should('not.be.visible');
 
     cy.get('a[href*="download-2"]').click();
