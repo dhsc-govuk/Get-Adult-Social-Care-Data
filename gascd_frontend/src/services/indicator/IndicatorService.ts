@@ -4,7 +4,6 @@ import {
 } from '../charts/ChartService';
 import { BarchartData } from '../../data/interfaces/BarchartData';
 import { Indicator } from '../../data/interfaces/Indicator';
-import { MetricCardData } from '../../data/interfaces/MetricCardData';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { LinegraphData } from '@/data/interfaces/LinegraphData';
 import { Locations } from '@/data/interfaces/Locations';
