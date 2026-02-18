@@ -21,7 +21,7 @@ export default function ResidentialCarePage() {
       title: 'Care providers: locations and services',
       description:
         'Data on care provision by location, service type and number of providers.',
-      url: 'topics/residential-care/residential-care-providers/data',
+      url: '/topics/residential-care/residential-care-providers/data',
     },
     {
       title: 'Care home beds and occupancy levels',

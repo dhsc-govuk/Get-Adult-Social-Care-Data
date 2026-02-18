@@ -54,7 +54,7 @@ describe('CareProviderLocationsPage', () => {
     expect(bodyTextElement).toBeInTheDocument();
 
     const helpLink = screen.getAllByRole('link', {
-      name: /Data on care provision by location, service type and number of providers./i,
+      name: /Number of community social care providers/i,
     });
     expect(helpLink[0]).toBeInTheDocument();
     expect(helpLink[0]).toHaveAttribute(

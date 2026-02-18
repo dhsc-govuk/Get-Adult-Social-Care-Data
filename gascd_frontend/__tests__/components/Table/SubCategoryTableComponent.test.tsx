@@ -6,11 +6,8 @@ import {
   mockTableDataWithCareProvider,
   mockTableColumnHeaders,
   mockTableRowHeaders,
-  percentageMock,
   mockTableColumnHeadersCareProvider,
-  mockTableRowHeadersCareProvider,
-  mockCareProviderMedianMetrics,
-} from '../../../TestData/TableMockData';
+} from '../../../TestData/SubCategoryTableMockData';
 
 describe('Table component tests', () => {
   beforeEach(() => {
@@ -70,42 +67,13 @@ describe('Table component tests', () => {
         rowHeaders={mockTableRowHeaders}
         data={mockTableData}
         showCareProvider={false}
-        percentageRows={percentageMock}
-      ></SubCatergoryTable>
-    );
-
-    await waitFor(() => {
-      mockTableData.forEach((item) => {
-        const expectedDataPoint = `£${item.data_point}`;
-
-        expect(screen.getByText(expectedDataPoint)).toBeInTheDocument();
-      });
-    });
-  });
-
-  test('fetches data and displays correctly in the SubCatergoryTable component when there are percentage rows added', async () => {
-    vi.spyOn(IndicatorFetchService, 'getData').mockResolvedValue(mockTableData);
-
-    render(
-      <SubCatergoryTable
-        columnHeaders={mockTableColumnHeaders}
-        rowHeaders={mockTableRowHeaders}
-        data={mockTableData}
-        showCareProvider={false}
-        percentageRows={percentageMock}
         currency={true}
       ></SubCatergoryTable>
     );
 
     await waitFor(() => {
       mockTableData.forEach((item) => {
-        const shouldBePercentage = percentageMock.some(
-          (percentageRow: string) => percentageRow === item.metric_id
-        );
-
-        const expectedDataPoint = shouldBePercentage
-          ? `${item.data_point}%`
-          : item.data_point;
+        const expectedDataPoint = `£${item.data_point}`;
 
         expect(screen.getByText(expectedDataPoint)).toBeInTheDocument();
       });
@@ -120,9 +88,8 @@ describe('Table component tests', () => {
     render(
       <SubCatergoryTable
         columnHeaders={mockTableColumnHeadersCareProvider}
-        rowHeaders={mockTableRowHeadersCareProvider}
+        rowHeaders={mockTableRowHeaders}
         data={mockTableDataWithCareProvider}
-        careProviderMedianMetrics={mockCareProviderMedianMetrics}
         showCareProvider={true}
       ></SubCatergoryTable>
     );
@@ -130,7 +97,7 @@ describe('Table component tests', () => {
       mockTableColumnHeadersCareProvider.forEach((item) => {
         expect(screen.getByText(item)).toBeInTheDocument();
       });
-      Object.values(mockTableRowHeadersCareProvider).forEach((value) => {
+      Object.values(mockTableRowHeaders).forEach((value) => {
         if (typeof value === 'string') {
           expect(screen.getByText(value)).toBeInTheDocument();
         }

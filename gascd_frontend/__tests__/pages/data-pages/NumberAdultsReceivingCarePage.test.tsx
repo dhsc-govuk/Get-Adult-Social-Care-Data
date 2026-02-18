@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import NumberAdultsReceivingCarePage from '../../../app/(protected)/topics/residential-care/number-of-people-receiving-care/data';
+import NumberAdultsReceivingCarePage from '../../../app/(protected)/topics/residential-care/number-of-people-receiving-care/data/page.tsx';
 import { authClient } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
 
