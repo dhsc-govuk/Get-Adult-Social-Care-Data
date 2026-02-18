@@ -239,6 +239,11 @@ export default function NumberPeopleReceivingCarePage() {
 
       <RelatedDataList>
         <DataLinkCard
+          label="Care providers: locations and services"
+          description="Data on residential care homes and nursing homes by location and service type."
+          url="/topics/residential-care/residential-care-providers/data"
+        />
+        <DataLinkCard
           label="Unpaid care"
           description="Statistics on the people who provide unpaid care to family members, friends and neighbours."
           url="/topics/residential-care/unpaid-care/data"
