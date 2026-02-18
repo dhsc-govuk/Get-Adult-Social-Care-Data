@@ -47,14 +47,14 @@ paths:
         - name: distance_in_km
           in: query
           required: false
-          description: "The distance in kilometres from the provided Care Provider Location to look for other Care Provider Locations. Defaults to 1 if none provided."
+          description: "The distance in kilometres from the provided Care Provider Location to look for other Care Provider Locations. Defaults to 5 if none provided."
           schema:
             type: number
             example: 2     
         - name: limit
           in: query
           required: false
-          description: "The upper limit of the number of returned care provider locations. Must be a positive integer."
+          description: "The upper limit of the number of returned care provider locations. Must be a positive integer. Defaults to 100 if none provided."
           schema:
             type: number
             example: 10
