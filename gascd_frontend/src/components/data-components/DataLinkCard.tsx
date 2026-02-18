@@ -2,7 +2,7 @@ import React from 'react';
 import '../../../src/styles/cards.scss';
 
 type Props = {
-  label: string;
+  label: string | React.ReactNode;
   description?: string;
   sources?: String;
   updateFrequency?: string;

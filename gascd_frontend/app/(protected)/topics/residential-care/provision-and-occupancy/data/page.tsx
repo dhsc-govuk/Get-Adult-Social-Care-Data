@@ -50,7 +50,6 @@ export default function ProvisionAndOccupancyPage() {
 
   // location variables
   const [locationNamesCP, setLocationNamesCP] = useState<LocationNames>({
-    IndicatorLabel: 'Indicator',
     CPLabel: 'Loading...',
     LALabel: 'Loading...',
     RegionLabel: 'Loading...',
@@ -58,7 +57,6 @@ export default function ProvisionAndOccupancyPage() {
   } as LocationNames);
   const [locationNamesWithAverageLabels, setLocationNamesWithAverageLabels] =
     useState<LocationNames>({
-      IndicatorLabel: 'Indicator',
       CPLabel: 'Loading...',
       LALabel: 'Loading...',
       RegionLabel: 'Loading...',
@@ -262,7 +260,6 @@ export default function ProvisionAndOccupancyPage() {
           );
           setLocationNamesCP(locationNamesCP);
           setLocationNamesWithAverageLabels({
-            IndicatorLabel: 'Care home bed type',
             CPLabel: locationNamesCP.CPLabel!,
             LALabel: locationNamesCP.LALabel,
             RegionLabel: `${locationNamesCP.RegionLabel} (regional average)`,
@@ -556,7 +553,7 @@ export default function ProvisionAndOccupancyPage() {
       breadcrumbs={breadcrumbs}
     >
       <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
+        <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">
             Care home beds and occupancy levels
           </h1>
@@ -678,6 +675,7 @@ export default function ProvisionAndOccupancyPage() {
                 ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, ` +
                 IndicatorService.getMostRecentDate(latestBedTypeData)
               }
+              metricColumnName="Care home bed type"
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
               }
@@ -921,6 +919,16 @@ export default function ProvisionAndOccupancyPage() {
       </DataIndicatorDetailsList>
 
       <RelatedDataList>
+        <DataLinkCard
+          label="Care providers: locations and services"
+          description="Data on residential care homes and nursing homes by location and service type."
+          url="/topics/residential-care/residential-care-providers/data"
+        />
+        <DataLinkCard
+          label="Number of adults receiving community social care"
+          description="Data on the number of people supported through community social care, including trends over time."
+          url="/topics/residential-care/number-of-people-receiving-care/data"
+        />
         <DataLinkCard
           label="Unpaid care"
           description="Statistics on the people who provide unpaid care to family members, friends and neighbours."

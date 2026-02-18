@@ -33,5 +33,23 @@ describe('CareHomePage', () => {
       'href',
       '/topics/residential-care/unpaid-care/data'
     );
+
+    const locationsLinkElement = screen.getByRole('link', {
+      name: /Care providers: locations and services/i,
+    });
+    expect(locationsLinkElement).toBeInTheDocument();
+    expect(locationsLinkElement).toHaveAttribute(
+      'href',
+      '/topics/residential-care/residential-care-providers/data'
+    );
+
+    const numberOfAdultsLinkElement = screen.getByRole('link', {
+      name: /Number of adults receiving community social care/i,
+    });
+    expect(numberOfAdultsLinkElement).toBeInTheDocument();
+    expect(numberOfAdultsLinkElement).toHaveAttribute(
+      'href',
+      '/topics/residential-care/number-of-people-receiving-care/data'
+    );
   });
 });

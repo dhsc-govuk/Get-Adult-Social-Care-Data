@@ -1,4 +1,28 @@
 describe('Data pages exist and contain data', () => {
+  it('Should navigate to the Care Providers: Locations and services page and check the contents', () => {
+    cy.login_onelogin('testcplocation@testing.com');
+    cy.visit('/topics/residential-care/residential-care-providers/data');
+
+    cy.get('h1').should(
+      'contains.text',
+      'Care providers: locations and services'
+    );
+
+    cy.contains('Care providers: locations and services');
+
+    cy.get('a[href*="table-2"]').click();
+    cy.url().should('include', '#table-2');
+    cy.get('#table-2')
+      .should('be.visible')
+      .contains('Table 2: number of adult social care providers');
+    cy.get('#download-2').should('not.be.visible');
+
+    cy.get('a[href*="download-2"]').click();
+    cy.url().should('include', '#download-2');
+    cy.get('#download-2').should('be.visible');
+    cy.get('#table-2').should('not.be.visible');
+  });
+
   it('Should navigate to the Unpaid care page and check the contents', () => {
     cy.login_onelogin('testcplocation@testing.com');
     cy.visit('/topics/residential-care/unpaid-care/data');
@@ -13,6 +37,32 @@ describe('Data pages exist and contain data', () => {
       .should('be.visible')
       .contains(
         'Table 1: percentage of people aged 5 and over who provide unpaid care'
+      );
+    cy.get('#download-1').should('not.be.visible');
+
+    cy.get('a[href*="download-1"]').click();
+    cy.url().should('include', '#download-1');
+    cy.get('#download-1').should('be.visible');
+    cy.get('#table-1').should('not.be.visible');
+  });
+
+  it('Should navigate to the Number of adults receiving community social care page and check the contents', () => {
+    cy.login_onelogin('testcplocation@testing.com');
+    cy.visit('/topics/residential-care/number-of-people-receiving-care/data');
+
+    cy.get('h1').should(
+      'contains.text',
+      'Number of adults receiving community social care'
+    );
+
+    cy.contains('Number of adults receiving community social care');
+
+    cy.get('a[href*="table-1"]').click();
+    cy.url().should('include', '#table-1');
+    cy.get('#table-1')
+      .should('be.visible')
+      .contains(
+        'Table 1: number of people receiving community social care in the last month'
       );
     cy.get('#download-1').should('not.be.visible');
 

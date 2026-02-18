@@ -11,6 +11,7 @@ type DataTableProps = {
   careProviderMedianMetrics?: Record<string, string>;
   percentageRows?: string[];
   currency?: boolean;
+  totalsRows?: string[];
   source?: string;
   last_updated?: string;
   children?: React.ReactNode;
@@ -49,22 +50,21 @@ const getFormattedDataPoint = (
     if (showAverageLabel)
       formatted += isPercentage ? ' (average)' : ' (median)';
     return formatted;
-  } else if (foundMetric && foundMetric.data_point === null) {
-    return '(*)';
   }
   return 'Loading...';
 };
 
-const DataTable: React.FC<DataTableProps> = ({
+const SubCatergoryTable: React.FC<DataTableProps> = ({
   caption,
   columnHeaders,
-  metricColumnName = 'Indicator',
+  metricColumnName,
   rowHeaders,
   data,
   showCareProvider,
   careProviderMedianMetrics,
   percentageRows,
-  currency,
+  currency = false,
+  totalsRows,
   children,
   source,
   showAverageLabel = false,
@@ -101,21 +101,40 @@ const DataTable: React.FC<DataTableProps> = ({
                   className={columnClass(columnIndex + 1)}
                 >
                   {columnLabel}
+                  {currency && <p className="govuk-!-margin-0">(£ thousand)</p>}
                 </th>
               ))}
           </tr>
         </thead>
         <tbody className="govuk-table__body">
           {Object.entries(rowHeaders).map(([key, value]) => (
-            <tr key={key}>
-              <th
-                scope="row"
-                className="govuk-table__cell govuk-!-font-weight-regular"
-              >
-                {value}
-              </th>
+            <tr
+              key={key}
+              className={
+                totalsRows?.includes(key) && totalsRows[0] !== key
+                  ? 'table_totals-row'
+                  : ''
+              }
+            >
+              {totalsRows?.includes(key) ? (
+                <th
+                  scope="row"
+                  className="govuk-table__cell govuk-!-font-weight-bold"
+                >
+                  {totalsRows?.includes(key) && totalsRows[0] !== key && <br />}
+                  {value}
+                </th>
+              ) : (
+                <th
+                  scope="row"
+                  className="govuk-table__cell table-indent govuk-!-font-weight-regular"
+                >
+                  {value}
+                </th>
+              )}
               {showCareProvider && (
                 <td className="govuk-table__cell govuk-table__cell--numeric">
+                  {totalsRows?.includes(key) && totalsRows[0] !== key && <br />}
                   {getFormattedDataPoint(
                     data,
                     getCareProviderKey(key, careProviderMedianMetrics),
@@ -126,6 +145,7 @@ const DataTable: React.FC<DataTableProps> = ({
                 </td>
               )}
               <td className="govuk-table__cell govuk-table__cell--numeric">
+                {totalsRows?.includes(key) && totalsRows[0] !== key && <br />}
                 {getFormattedDataPoint(
                   data,
                   key,
@@ -136,6 +156,7 @@ const DataTable: React.FC<DataTableProps> = ({
                 )}
               </td>
               <td className="govuk-table__cell govuk-table__cell--numeric">
+                {totalsRows?.includes(key) && totalsRows[0] !== key && <br />}
                 {getFormattedDataPoint(
                   data,
                   key,
@@ -146,6 +167,7 @@ const DataTable: React.FC<DataTableProps> = ({
                 )}
               </td>
               <td className="govuk-table__cell govuk-table__cell--numeric">
+                {totalsRows?.includes(key) && totalsRows[0] !== key && <br />}
                 {getFormattedDataPoint(
                   data,
                   key,
@@ -165,4 +187,4 @@ const DataTable: React.FC<DataTableProps> = ({
   );
 };
 
-export default DataTable;
+export default SubCatergoryTable;

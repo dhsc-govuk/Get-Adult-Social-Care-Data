@@ -44,9 +44,9 @@ export default async function RootLayout({
     headers: await headers(),
   });
   return (
-    <html lang="en" className="govuk-template--rebranded">
+    <html lang="en" className="govuk-template govuk-template--rebranded">
       <Axe />
-      <body className="govuk-frontend-supported govuk-template__body">
+      <body className="govuk-template__body extra-page-width-1400 js-enabled govuk-frontend-supported">
         <AppInsightsInitializer
           connectionString={browserInsightsConnectionString}
           session={session}

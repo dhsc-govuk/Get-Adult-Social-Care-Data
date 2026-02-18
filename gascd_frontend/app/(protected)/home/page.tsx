@@ -20,16 +20,40 @@ const HomePage: React.FC = () => {
       url: 'topics/residential-care/subtopics',
       subtopics: [
         {
+          title: 'Care providers: locations and services',
+          description:
+            'Data on care provision by location, service type and number of providers.',
+          url: 'topics/residential-care/residential-care-providers/data',
+        },
+        {
           title: 'Care home beds and occupancy levels',
           description:
             'Provision and capacity data for care homes, including local, regional and national statistics.',
           url: 'topics/residential-care/provision-and-occupancy/data',
         },
         {
+          title: 'Number of adults receiving community social care',
+          description:
+            'Data on the number of people supported through community social care, including trends over time.',
+          url: '/topics/residential-care/number-of-people-receiving-care/data',
+        },
+        {
           title: 'Unpaid care',
           description:
             'Statistics on the people who provide unpaid care to family members, friends and neighbours.',
           url: '/topics/residential-care/unpaid-care/data',
+        },
+      ],
+    },
+    {
+      title: 'Funding',
+      url: 'topics/financial-spend-and-unpaid-care/subtopics',
+      subtopics: [
+        {
+          title: 'Local authority (LA) funding',
+          description:
+            'Data on funding for both short-term and long-term care, also funding by individual care type.',
+          url: 'topics/financial-spend-and-unpaid-care/financial-spend/data',
         },
       ],
     },

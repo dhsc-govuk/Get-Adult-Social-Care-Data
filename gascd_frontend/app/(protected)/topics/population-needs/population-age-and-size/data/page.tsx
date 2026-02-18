@@ -28,7 +28,6 @@ export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
-    IndicatorLabel: 'Indicator',
     LALabel: 'Loading...',
     RegionLabel: 'Loading...',
     CountryLabel: 'Loading...',
@@ -207,7 +206,7 @@ export default function ProvisionAndOccupancyPage() {
       breadcrumbs={breadcrumbs}
     >
       <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
+        <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">
             Population size and age group percentages
           </h1>
