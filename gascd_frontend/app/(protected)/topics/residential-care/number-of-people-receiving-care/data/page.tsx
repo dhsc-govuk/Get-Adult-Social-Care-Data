@@ -19,9 +19,23 @@ import DownloadTableDataCSVLink from '@/components/metric-components/download-ta
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
+import { ALLOWED_CP_USER_TYPES } from '@/constants';
+import { User, useSession } from '@/lib/auth-client';
+
+const CARE_HOME_COMM_CATEGORY = 'community';
+
+const showCPLevelData = (user: User | null | undefined) => {
+  return (
+    (user &&
+      ALLOWED_CP_USER_TYPES.includes(user.locationType || '') &&
+      user.selectedLocationCategory === CARE_HOME_COMM_CATEGORY) ||
+    false
+  );
+};
 
 export default function NumberPeopleReceivingCarePage() {
   const tableref1 = useRef<HTMLTableElement>(null);
+  const { data: session } = useSession();
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
     LALabel: 'Loading...',
@@ -81,7 +95,7 @@ export default function NumberPeopleReceivingCarePage() {
         try {
           const locationNames = await LocationService.getLocationNames(
             CPLocationId,
-            false
+            true
           );
           setLocationNames(locationNames);
           setLocationNamesWithAverageLabels({
@@ -129,7 +143,7 @@ export default function NumberPeopleReceivingCarePage() {
         try {
           const locationids = await LocationService.getLocationIds(
             CPLocationId,
-            false
+            true
           );
           setLocationIds(locationids);
         } catch (error) {
@@ -185,7 +199,7 @@ export default function NumberPeopleReceivingCarePage() {
           table={
             <DataTable
               tableref={tableref1}
-              caption={`Table 1: number of people receiving community social care in the last month – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
+              caption={`Table 1: number of people receiving community social care in the last month – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentMonthYear(filteredDemographicData)}`}
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC)'
               }
@@ -194,7 +208,10 @@ export default function NumberPeopleReceivingCarePage() {
                 nccc_num_clients_comm_care: `People receiving community social care in ${IndicatorService.getMostRecentMonthYear(filteredDemographicData)}`,
               }}
               data={filteredDemographicData}
-              showCareProvider={false}
+              showCareProvider={showCPLevelData(session?.user)}
+              careProviderMedianMetrics={{
+                nccc_num_clients_comm_care: 'nccc_num_clients_comm_care',
+              }}
               percentageRows={[]}
             ></DataTable>
           }
