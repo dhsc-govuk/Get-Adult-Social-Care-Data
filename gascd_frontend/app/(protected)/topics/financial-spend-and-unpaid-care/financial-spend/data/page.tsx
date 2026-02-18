@@ -17,6 +17,7 @@ import TableService from '@/services/Table/TableService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import LocationService from '@/services/location/locationService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
+import IndicatorService from '@/services/indicator/IndicatorService';
 
 export default function LAFundingPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -221,7 +222,8 @@ export default function LAFundingPage() {
                   short-term and long-term adult social care for all age groups
                   – {locationNames.LALabel} local authority,{' '}
                   {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel}
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getFinancialYear(filteredDemographicData)}
                 </>
               }
               source={
@@ -304,7 +306,8 @@ export default function LAFundingPage() {
                   long-term adult social care for all age groups –{' '}
                   {locationNames.LALabel} local authority,{' '}
                   {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel}
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getFinancialYear(filteredDemographicData)}
                 </>
               }
               source={

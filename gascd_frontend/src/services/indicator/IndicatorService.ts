@@ -255,6 +255,27 @@ class IndicatorService {
       return '';
     }
   }
+
+  public static getFinancialYear(
+    data: Indicator[],
+    metric_ids?: string[]
+  ): string {
+    const recentData = this.getMostRecentIndicator(data, metric_ids);
+    if (recentData) {
+      const date = this.parseDate(
+        data.find((d) => d.metric_date.toString() === recentData)!
+      );
+      let yearString = new Intl.DateTimeFormat('en-GB', {
+        year: 'numeric',
+      }).format(date);
+
+      let year = parseInt(yearString);
+
+      return `financial year ${year - 1} to ${year}`;
+    } else {
+      return '';
+    }
+  }
 }
 
 export default IndicatorService;

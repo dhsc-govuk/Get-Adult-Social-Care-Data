@@ -104,7 +104,6 @@ const FilterCheckboxGroup: React.FC<Props> = ({
       filter.filter_bedtype.toLowerCase().includes(searchTerm)
     );
     setSearchedFilters(searchedFilters);
-    console.log(filters);
   };
 
   const clearFilters = () => {
