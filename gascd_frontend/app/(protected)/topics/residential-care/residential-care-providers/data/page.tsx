@@ -18,6 +18,7 @@ import DownloadTableDataCSVLink from '@/components/metric-components/download-ta
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import SubCatergoryTable from '@/components/tables/SubCatergoryTable';
+import IndicatorService from '@/services/indicator/IndicatorService';
 
 export default function ResidentialCareProvidersPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -200,12 +201,15 @@ export default function ResidentialCareProvidersPage() {
                   {locationNames.LALabel}{' '}
                   <abbr title="Local Authority">LA</abbr>,{' '}
                   {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel}
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getMostRecentMonthYear(
+                    filteredDemographicData
+                  )}
                 </>
               }
               source={'Care Directory from the Care Quality Commission (CQC)'}
               columnHeaders={locationNamesWithAverageLabels}
-              metricColumnName="metric"
+              metricColumnName="Service provider type"
               rowHeaders={{
                 npl_adult_social_care: 'Total adult social care providers',
                 npl_care_home: 'Care home providers',
@@ -254,6 +258,11 @@ export default function ResidentialCareProvidersPage() {
           label="Care home beds and occupancy levels"
           description="Provision and capacity data for care homes, including local, regional and national statistics."
           url="/topics/residential-care/provision-and-occupancy/data"
+        />
+        <DataLinkCard
+          label="Number of adults receiving community social care"
+          description="Data on the number of people supported through community social care, including trends over time."
+          url="/topics/residential-care/number-of-people-receiving-care/data"
         />
         <DataLinkCard
           label="Unpaid care"
