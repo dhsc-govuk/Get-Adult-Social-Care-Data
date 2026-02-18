@@ -1,13 +1,13 @@
 with geo_data_id as (select coalesce(max(id),0) as id from geo_data)
 INSERT INTO geo_data (bounding_polygon, coordinate, id, loaded_datetime)
- VALUES (ST_Polygon('LINESTRING(-5 55, 1 55, 1 50, -5 50, -5 55)'::geometry, 4326), ST_Point(52.5, -2.0), (select id + 1 from geo_data_id), CURRENT_TIMESTAMP),
-(ST_Polygon('LINESTRING(-2.4299999999999997 55.62, -0.42999999999999994 55.62, -0.42999999999999994 53.62, -2.4299999999999997 53.62, -2.4299999999999997 55.62)'::geometry, 4326), ST_Point(-1.43, 54.62), (select id + 2 from geo_data_id), CURRENT_TIMESTAMP),
-(ST_Polygon('LINESTRING(-2.7 53.85, -0.7 53.85, -0.7 51.85, -2.7 51.85, -2.7 53.85)'::geometry, 4326), ST_Point(-1.7, 52.85), (select id + 3 from geo_data_id), CURRENT_TIMESTAMP),
-(ST_Polygon('LINESTRING(-2.04 55.15, -1.04 55.15, -1.04 54.15, -2.04 54.15, -2.04 55.15)'::geometry, 4326), ST_Point(-1.54, 54.65), (select id + 4 from geo_data_id), CURRENT_TIMESTAMP),
-(ST_Polygon('LINESTRING(-2.38 52.96, -1.38 52.96, -1.38 51.96, -2.38 51.96, -2.38 52.96)'::geometry, 4326), ST_Point(-1.88, 52.46), (select id + 5 from geo_data_id), CURRENT_TIMESTAMP),
-(ST_Polygon('LINESTRING(-1.2000000000000002 54.84, -1.0 54.84, -1.0 54.64, -1.2000000000000002 54.64, -1.2000000000000002 54.84)'::geometry, 4326), ST_Point(-1.1, 54.74), (select id + 6 from geo_data_id), CURRENT_TIMESTAMP),
-(ST_Polygon('LINESTRING(-1.31 54.11, -1.1099999999999999 54.11, -1.1099999999999999 53.91, -1.31 53.91, -1.31 54.11)'::geometry, 4326), ST_Point(-1.21, 54.01), (select id + 7 from geo_data_id), CURRENT_TIMESTAMP),
-(ST_Polygon('LINESTRING(-1.8 51.43, -1.5999999999999999 51.43, -1.5999999999999999 51.23, -1.8 51.23, -1.8 51.43)'::geometry, 4326), ST_Point(-1.7, 51.33), (select id + 8 from geo_data_id), CURRENT_TIMESTAMP);
+ VALUES (ST_GeographyFromText('SRID=4326;POLYGON((-5 55, 1 55, 1 50, -5 50, -5 55))'), ST_Point(52.5, -2.0, 4326)::geography, (select id + 1 from geo_data_id), CURRENT_TIMESTAMP),
+(ST_GeographyFromText('SRID=4326;POLYGON((-2.4299999999999997 55.62, -0.42999999999999994 55.62, -0.42999999999999994 53.62, -2.4299999999999997 53.62, -2.4299999999999997 55.62))'), ST_Point(-1.43, 54.62, 4326)::geography, (select id + 2 from geo_data_id), CURRENT_TIMESTAMP),
+(ST_GeographyFromText('SRID=4326;POLYGON((-2.7 53.85, -0.7 53.85, -0.7 51.85, -2.7 51.85, -2.7 53.85))'), ST_Point(-1.7, 52.85, 4326)::geography, (select id + 3 from geo_data_id), CURRENT_TIMESTAMP),
+(ST_GeographyFromText('SRID=4326;POLYGON((-2.04 55.15, -1.04 55.15, -1.04 54.15, -2.04 54.15, -2.04 55.15))'), ST_Point(-1.54, 54.65, 4326)::geography, (select id + 4 from geo_data_id), CURRENT_TIMESTAMP),
+(ST_GeographyFromText('SRID=4326;POLYGON((-2.38 52.96, -1.38 52.96, -1.38 51.96, -2.38 51.96, -2.38 52.96))'), ST_Point(-1.88, 52.46, 4326)::geography, (select id + 5 from geo_data_id), CURRENT_TIMESTAMP),
+(ST_GeographyFromText('SRID=4326;POLYGON((-1.2000000000000002 54.84, -1.0 54.84, -1.0 54.64, -1.2000000000000002 54.64, -1.2000000000000002 54.84))'), ST_Point(-1.1, 54.74, 4326)::geography, (select id + 6 from geo_data_id), CURRENT_TIMESTAMP),
+(ST_GeographyFromText('SRID=4326;POLYGON((-1.31 54.11, -1.1099999999999999 54.11, -1.1099999999999999 53.91, -1.31 53.91, -1.31 54.11))'), ST_Point(-1.21, 54.01, 4326)::geography, (select id + 7 from geo_data_id), CURRENT_TIMESTAMP),
+(ST_GeographyFromText('SRID=4326;POLYGON((-1.8 51.43, -1.5999999999999999 51.43, -1.5999999999999999 51.23, -1.8 51.23, -1.8 51.43))'), ST_Point(-1.7, 51.33, 4326)::geography, (select id + 8 from geo_data_id), CURRENT_TIMESTAMP);
 with countries_id as (select coalesce(max(id),0) as id from countries)
 INSERT INTO countries (code, geo_data_fk, id, loaded_datetime, name)
  VALUES ('test_nation', (select max(id) - 8 + 1 from geo_data), (select id + 1 from countries_id), CURRENT_TIMESTAMP, 'Test Nation');

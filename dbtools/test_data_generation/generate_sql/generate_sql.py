@@ -230,8 +230,8 @@ def generate_coord(type, data):
 
     polys = ((w,n), (e,n), (e,s), (w,s), (w,n))
     LOCATION_BOUNDS[data['code']] = (n,e,s,w)
-    coord = f"ST_Point({x}, {y})"
-    polygon = f"ST_Polygon('LINESTRING({', '.join((f'{x} {y}' for x,y in polys))})'::geometry, 4326)"
+    coord = f"ST_Point({x}, {y}, 4326)::geography"
+    polygon = f"ST_GeographyFromText('SRID=4326;POLYGON(({', '.join((f'{x} {y}' for x,y in polys))}))')"
     return coord, polygon
 
 def generate_geo_data_record(type, data, idx, gd_count):
