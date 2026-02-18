@@ -37,6 +37,4 @@ public class CareProviderLocation : SearchableEntity
     [Column("category"), StringLength(15)]
     public required string Category { get; init; }
 
-    [NotMapped]
-    public double DistanceToNeighbour { get; set; }
 }
