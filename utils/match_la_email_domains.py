@@ -20,6 +20,7 @@ import difflib
 
 FUZZY_THRESHOLD = 0.8  # 1.0 is perfect match, 0.0 is no match
 USER_EMAIL_COL = "Email address"
+USER_FULLNAME_COL = "Full Name"
 OUTPUT_FILE = "matched_users_output.csv"
 
 MANUAL_OVERRIDES = {
@@ -31,14 +32,18 @@ MANUAL_OVERRIDES = {
     "leics": "leicester",
     "newcastle": "newcastle-upon-tyne",
     "westberks": "west-berkshire",
-    "northnorthants": "northamptonshire",
     "dorsetcouncil": "dorset",
     "bcpcouncil": "bournemouth",
     "blackburn": "blackburn-with-darwen",
     "southglos": "south-gloucestershire",
-    "eastriding": "yorkshire",
+    "eastriding": "east-riding-of-yorkshire",
     "lbbd": "barking-and-dagenham",
 }
+
+# special cases (no slug at all)
+# westnorthants.gov.uk - E06000062
+# northnorthants.gov.uk - E06000061
+# cumberland.gov.uk - E06000063
 
 def extract_domain_slug(email):
     """
@@ -105,8 +110,9 @@ def main(LA_DATA_FILE, USER_DATA_FILE):
 
     # 5. Clean up and Export
     # Remove the helper columns used for the join
-    #final_output = results.drop(columns=['match_key', ])
-    final_output = results
+    COLUMNS_TO_KEEP = [USER_EMAIL_COL, USER_FULLNAME_COL, 'official-name', 'gss-code']
+    final_output = results[COLUMNS_TO_KEEP]
+    final_output = final_output.sort_values(by='official-name', ascending=True)
     final_output.to_csv(OUTPUT_FILE, index=False)
 
     # 6. Summary Report
