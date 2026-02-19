@@ -23,7 +23,7 @@ FUZZY_THRESHOLD = 0.8  # 1.0 is perfect match, 0.0 is no match
 USER_EMAIL_COL = "Email address"
 USER_FULLNAME_COL = "Full Name"
 OUTPUT_FILE = "matched_users_output.csv"
-JSON_MAP_FILE = "domain_map.json"
+JSON_MAP_FILE = "utils/domain_map.json"
 
 MANUAL_OVERRIDES = {
     "richmondandwandsworth": "richmond-upon-thames",
@@ -42,10 +42,18 @@ MANUAL_OVERRIDES = {
     "lbbd": "barking-and-dagenham",
 }
 
-# special cases (no slug at all)
-# westnorthants.gov.uk - E06000062
-# northnorthants.gov.uk - E06000061
-# cumberland.gov.uk - E06000063
+DIRECT_OVERRIDES = {
+    'westnorthants': 'E06000062',
+    'northnorthants': 'E06000061',
+    'cumberland': 'E06000063',
+    'dorsetcouncil': 'E06000059',
+    'bcpcouncil': 'E06000058',
+    'n-somerset': 'E06000024',
+    'northyorks': 'E06000065',
+    'cumbria': 'E06000063',
+    'sheffield': 'E08000039',
+    'barnsley': 'E08000038',
+}
 
 def extract_domain_slug(email):
     """
@@ -109,6 +117,12 @@ def main(LA_DATA_FILE, USER_DATA_FILE):
         right_on='gov-uk-slug', 
         how='left'
     )
+
+    print("Step 2: Applying direct domain-to-code overrides...")
+    for domain, manual_code in DIRECT_OVERRIDES.items():
+        mask = results['domain_slug'] == domain
+        if mask.any():
+            results.loc[mask, 'gss-code'] = manual_code
 
     # 5. Create JSON mapping (Domain Slug -> LA Code)
     # We drop duplicates so each domain appears only once in the JSON
