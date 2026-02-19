@@ -44,16 +44,22 @@ const GuidancePage = () => {
                 <p className="govuk-body">
                   The government collects and stores a significant amount of
                   adult social care data from sources including care providers
-                  and local authorities. This data is analysed for government
-                  purposes and is now being made available as a free, easy to
-                  access, robust and secure service to CQC-registered Adult
-                  Social Care (ASC) providers and local authorities (LA) to
-                  support strategic planning and operational purposes. The data
-                  is intended to support confident strategic decision-making.
-                  Also available are the Market Position Statements written by
-                  local authorities to help care providers make informed
-                  decisions in providing the right care provision for everyone
-                  needing support and care from adult social care services.
+                  and local authorities.
+                </p>
+                <p className="govuk-body">
+                  This data is analysed for government purposes and is now being
+                  made available as a free, easy to access, service to
+                  CQC-registered Adult Social Care (ASC) providers and local
+                  authorities (LA) to support strategic planning and operational
+                  purposes.
+                </p>
+                <p className="govuk-body">
+                  The data is intended to support confident strategic
+                  decision-making. Also available are the Market Position
+                  Statements written by local authorities to help care providers
+                  make informed decisions in providing the right care provision
+                  for everyone needing support and care from adult social care
+                  services.
                 </p>
                 <h2 className="govuk-heading-m" id="gascd-data">
                   What data is available
@@ -120,15 +126,15 @@ const GuidancePage = () => {
                       DHSC
                     </abbr>{' '}
                     does not accept any liability for decisions made by
-                    providers following use of this service. Further details are
-                    in the{' '}
+                    providers following use of this service. For further details
+                    read our{' '}
                     <a
-                      href="../../footer/disclaimer?backLink=false"
+                      href="/terms-of-use"
                       className="govuk-link"
                       rel="noreferrer noopener"
                       target="_blank"
                     >
-                      Full Disclaimer (opens in new tab)
+                      Terms of use (opens in a new tab)
                     </a>
                     .
                   </strong>
@@ -158,7 +164,10 @@ const GuidancePage = () => {
                   </a>{' '}
                   to sign in to this service, and it must be tied to your CQC
                   registered email address. You can{' '}
-                  <a href="../one-login/start" className="govuk-link">
+                  <a
+                    href="https://signin.account.gov.uk/sign-in-or-create"
+                    className="govuk-link"
+                  >
                     create one
                   </a>{' '}
                   if you do not already have one.
@@ -184,7 +193,7 @@ const GuidancePage = () => {
                 <p className="govuk-body">
                   View the GASCD service{' '}
                   <a
-                    href="../../footer/privacy-policy?backLink=false"
+                    href="/privacy-policy"
                     className="govuk-link"
                     rel="noreferrer noopener"
                     target="_blank"
