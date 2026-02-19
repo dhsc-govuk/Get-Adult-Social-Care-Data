@@ -17,11 +17,13 @@ import os
 import re
 import sys
 import difflib
+import json
 
 FUZZY_THRESHOLD = 0.8  # 1.0 is perfect match, 0.0 is no match
 USER_EMAIL_COL = "Email address"
 USER_FULLNAME_COL = "Full Name"
 OUTPUT_FILE = "matched_users_output.csv"
+JSON_MAP_FILE = "domain_map.json"
 
 MANUAL_OVERRIDES = {
     "richmondandwandsworth": "richmond-upon-thames",
@@ -55,7 +57,7 @@ def extract_domain_slug(email):
     
     domain = str(email).split("@")[-1].lower()
     # Strip common UK suffixes to match the 'local-authority-code' column
-    slug = re.sub(r"(\.gov\.uk|\.org\.uk|\.ac\.uk)$", "", domain)
+    slug = re.sub(r"(\.gov\.uk)$", "", domain)
     return slug
 
 def main(LA_DATA_FILE, USER_DATA_FILE):
@@ -107,6 +109,13 @@ def main(LA_DATA_FILE, USER_DATA_FILE):
         right_on='gov-uk-slug', 
         how='left'
     )
+
+    # 5. Create JSON mapping (Domain Slug -> LA Code)
+    # We drop duplicates so each domain appears only once in the JSON
+    mapping_dict = results.drop_duplicates('domain_slug').set_index('domain_slug')['gss-code'].to_dict()
+    
+    with open(JSON_MAP_FILE, 'w', encoding='utf-8') as f:
+        json.dump(mapping_dict, f, indent=4)
 
     # 5. Clean up and Export
     # Remove the helper columns used for the join
