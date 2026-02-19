@@ -75,11 +75,10 @@ const TermsOfUse: React.FC = () => {
           <li>any direct, indirect or consequential losses </li>
           <li>
             any loss or damage caused by civil wrongs (&apos;tort&apos;,
-            including negligence), breach of contract or otherwise{' '}
+            including negligence), breach of contract or otherwise
           </li>
           <li>
-            the use of GOV.UK and any websites that are linked to or from
-            it{' '}
+            the use of GOV.UK and any websites that are linked to or from it
           </li>
           <li>
             the inability to use GOV.UK and any websites that are linked to or
@@ -94,18 +93,18 @@ const TermsOfUse: React.FC = () => {
           This includes (but is not limited to) the loss of your:
         </p>
         <ul className="govuk-list govuk-list--bullet">
-          <li>income or revenue </li>
-          <li>salary, benefits or other payments </li>
-          <li>business </li>
-          <li>profits or contracts </li>
-          <li>opportunity </li>
-          <li>anticipated savings </li>
-          <li>data </li>
-          <li>goodwill or reputation </li>
-          <li>tangible property </li>
+          <li>income or revenue</li>
+          <li>salary, benefits or other payments</li>
+          <li>business</li>
+          <li>profits or contracts</li>
+          <li>opportunity</li>
+          <li>anticipated savings</li>
+          <li>data</li>
+          <li>goodwill or reputation</li>
+          <li>tangible property</li>
           <li>
             intangible property, including loss, corruption or damage to data or
-            any computer system{' '}
+            any computer system
           </li>
           <li>wasted management or office time </li>
         </ul>
@@ -123,7 +122,7 @@ const TermsOfUse: React.FC = () => {
         </p>
 
         <h2 className="govuk-heading-m">
-          Information about you and your visits to the GASCD service{' '}
+          Information about you and your visits to the GASCD service
         </h2>
         <p className="govuk-body">
           We collect information about you in accordance with our{' '}
@@ -145,7 +144,7 @@ const TermsOfUse: React.FC = () => {
           <li>the protection of any information you give to these websites </li>
           <li>
             any loss or damage that may come from your use of these websites, or
-            any other websites they link to{' '}
+            any other websites they link to
           </li>
         </ul>
         <p className="govuk-body">
@@ -172,11 +171,11 @@ const TermsOfUse: React.FC = () => {
           <li>a secure work-managed device </li>
           <li>
             a secure individual work email address that&apos;s protected with
-            multi-factor authentication (MFA){' '}
+            multi-factor authentication (MFA)
           </li>
           <li>
             a trusted internet connection - do not sign in using an untrusted
-            public Wi-Fi network{' '}
+            public Wi-Fi network
           </li>
         </ul>
 
@@ -193,9 +192,7 @@ const TermsOfUse: React.FC = () => {
           data or computer system that might happen when you use the service.
         </p>
 
-        <h2 className="govuk-heading-m">
-          Viruses, hacking and other offences{' '}
-        </h2>
+        <h2 className="govuk-heading-m">Viruses, hacking and other offences</h2>
         <p className="govuk-body">
           When using the service, you must not introduce viruses, trojans,
           worms, logic bombs or any other material that&apos;s malicious or
@@ -233,7 +230,7 @@ const TermsOfUse: React.FC = () => {
         </p>
 
         <h2 className="govuk-heading-m">
-          Changes to these terms and conditions{' '}
+          Changes to these terms and conditions
         </h2>
         <p className="govuk-body">
           Please check these terms and conditions regularly. We can update them
