@@ -117,8 +117,11 @@ const TermsOfUse: React.FC = () => {
           service emails containing service information, updates or any other
           service-based communication to support the critical operation of the
           service. We will send these service emails via GOV.UK Notify. For
-          further information read our{' '}
-          <a href="/privacy-policy">privacy policy</a>.
+          further information read{' '}
+          <a href="https://www.notifications.service.gov.uk/privacy">
+            GOV.UK Notify&apos;s privacy notice
+          </a>
+          .
         </p>
 
         <h2 className="govuk-heading-m">
