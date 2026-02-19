@@ -4,7 +4,6 @@ import {
 } from '../charts/ChartService';
 import { BarchartData } from '../../data/interfaces/BarchartData';
 import { Indicator } from '../../data/interfaces/Indicator';
-import { MetricCardData } from '../../data/interfaces/MetricCardData';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { LinegraphData } from '@/data/interfaces/LinegraphData';
 import { Locations } from '@/data/interfaces/Locations';
@@ -112,7 +111,7 @@ class IndicatorService {
       .map((entry: Indicator) => ({
         valueTag: entry.location_id,
         metric: entry.metric_id,
-        value: entry.data_point,
+        value: entry.data_point ?? 0, // this should never happen as we filter out nulls, but it won't build otherwise.
         selected: entry.location_id == selected_location_id ? true : false,
       }))
       .sort((a, b) => a.value - b.value);
@@ -156,7 +155,7 @@ class IndicatorService {
       .map((entry: Indicator) => ({
         valueTag: entry.metric_date.toString(),
         metric: entry.metric_id,
-        value: entry.data_point,
+        value: entry.data_point ?? 0, // this should never happen as we filter out nulls, but it won't build otherwise.
         date: IndicatorService.parseDate(entry),
       }))
       .sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -233,6 +232,45 @@ class IndicatorService {
     const recentData = this.getMostRecentIndicator(data, metric_ids);
     if (recentData) {
       return this.formatDate(recentData);
+    } else {
+      return '';
+    }
+  }
+
+  public static getMostRecentMonthYear(
+    data: Indicator[],
+    metric_ids?: string[]
+  ): string {
+    const recentData = this.getMostRecentIndicator(data, metric_ids);
+    if (recentData) {
+      const date = this.parseDate(
+        data.find((d) => d.metric_date.toString() === recentData)!
+      );
+      return new Intl.DateTimeFormat('en-GB', {
+        month: 'long',
+        year: 'numeric',
+      }).format(date);
+    } else {
+      return '';
+    }
+  }
+
+  public static getFinancialYear(
+    data: Indicator[],
+    metric_ids?: string[]
+  ): string {
+    const recentData = this.getMostRecentIndicator(data, metric_ids);
+    if (recentData) {
+      const date = this.parseDate(
+        data.find((d) => d.metric_date.toString() === recentData)!
+      );
+      let yearString = new Intl.DateTimeFormat('en-GB', {
+        year: 'numeric',
+      }).format(date);
+
+      let year = parseInt(yearString);
+
+      return `financial year ${year - 1} to ${year}`;
     } else {
       return '';
     }

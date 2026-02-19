@@ -65,7 +65,10 @@ describe('IndicatorFetchService', () => {
         json: vi.fn().mockResolvedValue(mockData),
       });
 
-      const query: IndicatorQuery = { metric_ids: [], location_ids: [] };
+      const query: IndicatorQuery = {
+        metric_ids: ['mymetric'],
+        location_ids: [],
+      };
       const result = await IndicatorFetchService.getData(query);
 
       expect(fetch).toHaveBeenCalledWith(
@@ -81,7 +84,10 @@ describe('IndicatorFetchService', () => {
         statusText: 'Service Unavailable',
       });
 
-      const query: IndicatorQuery = { metric_ids: [], location_ids: [] };
+      const query: IndicatorQuery = {
+        metric_ids: ['mymetric'],
+        location_ids: [],
+      };
       await expect(IndicatorFetchService.getData(query)).rejects.toThrow(
         'Failed to fetch data: Service Unavailable'
       );

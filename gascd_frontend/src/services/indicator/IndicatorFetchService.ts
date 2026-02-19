@@ -16,6 +16,10 @@ class IndicatorFetchService {
   }
 
   public static async getData(query: IndicatorQuery): Promise<Indicator[]> {
+    if (!query.metric_ids.length) {
+      // Shouldn't need this check, but react sometimes fires this too soon
+      return [];
+    }
     const filteredQuery = {
       metric_ids: query.metric_ids,
       // We don't send this to the backend anymore - still needs pulling out of the in-page queries

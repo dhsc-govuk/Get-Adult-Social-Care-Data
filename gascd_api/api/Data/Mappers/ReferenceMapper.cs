@@ -1,4 +1,6 @@
 using api.Data.Models.Reference;
+using api.Data.QueryResults;
+using api.Endpoints.Geo.CareProviderLocationNeighbours;
 using api.Endpoints.Geo.Postcode;
 using api.Endpoints.MetricLocation.Countries;
 using api.Endpoints.MetricLocation.LocalAuthorities;
@@ -67,14 +69,14 @@ public class ReferenceMapper
         };
     }
 
-    public GeoDataDto? GeoDataToGeoDataDto(GeoData? geoData)
+    private GeoDataDto? GeoDataToGeoDataDto(GeoData? geoData)
     {
         return geoData == null ? null : new GeoDataDto
         {
             Latitude = geoData.Coordinate.Y,
             Longitude = geoData.Coordinate.X,
             Polygon = geoData.BoundingPolygon?.Coordinates
-                .Select(c => new GeoDataDto.CoordinateDto { Latitude = c.X, Longitude = c.Y }).ToList() ?? new()
+                .Select(c => new GeoDataDto.CoordinateDto { Latitude = c.X, Longitude = c.Y }).ToList() ?? []
         };
     }
 
@@ -105,7 +107,7 @@ public class ReferenceMapper
         };
     }
 
-    public GetRegionResponse.LocalAuthority LocalAuthorityToRegionLocalAuthority(LocalAuthority la)
+    private GetRegionResponse.LocalAuthority LocalAuthorityToRegionLocalAuthority(LocalAuthority la)
     {
         return new GetRegionResponse.LocalAuthority { LaCode = la.Code, LaName = la.Name };
     }
@@ -117,6 +119,40 @@ public class ReferenceMapper
             Code = country.Code,
             DisplayName = country.Name,
             GeoData = GeoDataToGeoDataDto(country.GeoData),
+        };
+    }
+
+    public GetCareProviderLocationNeighboursResponse CareProviderLocationsToGetCareProviderLocationNeighbourResponse(
+        CareProviderLocation cpl, List<CareProviderLocationNeighbour> neighbours)
+    {
+        return new GetCareProviderLocationNeighboursResponse
+        {
+            Code = cpl.Code,
+            Locations = neighbours.Select(CareProviderLocationToCareProviderLocationNeighbour).ToList()
+        };
+    }
+
+    public GetCareProviderLocationNeighboursResponse.CareProviderLocationNeighbour
+        CareProviderLocationToCareProviderLocationNeighbour(CareProviderLocationNeighbour n)
+    {
+        return new GetCareProviderLocationNeighboursResponse.CareProviderLocationNeighbour
+        {
+            Distance = n.DistanceToNeighbourInKm,
+            LocationDetails = CareProviderLocationToCareProviderLocation(n)
+        };
+    }
+
+    public GetCareProviderLocationNeighboursResponse.CareProviderLocation
+        CareProviderLocationToCareProviderLocation(CareProviderLocationNeighbour cpl)
+    {
+        return new GetCareProviderLocationNeighboursResponse.CareProviderLocation
+        {
+            LocationName = cpl.LocationName,
+            LocationCode = cpl.LocationCode,
+            LaName = cpl.LaName,
+            LaCode = cpl.LaCode,
+            LocationCategory = cpl.LocationCategory,
+            Address = cpl.Address,
         };
     }
 }

@@ -18,10 +18,22 @@ export default function ResidentialCarePage() {
 
   const subtopics = [
     {
+      title: 'Care providers: locations and services',
+      description:
+        'Data on care provision by location, service type and number of providers.',
+      url: '/topics/residential-care/residential-care-providers/data',
+    },
+    {
       title: 'Care home beds and occupancy levels',
       description:
         'Provision and capacity data for care homes, including local, regional and national statistics.',
       url: '/topics/residential-care/provision-and-occupancy/data',
+    },
+    {
+      title: 'Number of adults receiving community social care',
+      description:
+        'Data on the number of people supported through community social care, including trends over time.',
+      url: '/topics/residential-care/number-of-people-receiving-care/data',
     },
     {
       title: 'Unpaid care',

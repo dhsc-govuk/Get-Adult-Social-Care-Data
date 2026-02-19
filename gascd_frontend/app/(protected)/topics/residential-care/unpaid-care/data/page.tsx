@@ -24,7 +24,6 @@ export default function UnpaidCarePage() {
   const tableref1 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
-    IndicatorLabel: 'Indicator',
     LALabel: 'Loading...',
     RegionLabel: 'Loading...',
     CountryLabel: 'Loading...',
@@ -137,7 +136,7 @@ export default function UnpaidCarePage() {
       breadcrumbs={breadcrumbs}
     >
       <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
+        <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">Unpaid care</h1>
           <p className="govuk-body-l">
             Statistics on the people who provide unpaid care to family members,
@@ -207,9 +206,19 @@ export default function UnpaidCarePage() {
 
       <RelatedDataList>
         <DataLinkCard
+          label="Care providers: locations and services"
+          description="Data on residential care homes and nursing homes by location and service type."
+          url="/topics/residential-care/residential-care-providers/data"
+        />
+        <DataLinkCard
           label="Care home beds and occupancy levels"
           description="Provision and capacity data for care homes, including local, regional and national statistics."
           url="/topics/residential-care/provision-and-occupancy/data"
+        />
+        <DataLinkCard
+          label="Number of adults receiving community social care"
+          description="Data on the number of people supported through community social care, including trends over time."
+          url="/topics/residential-care/number-of-people-receiving-care/data"
         />
       </RelatedDataList>
 

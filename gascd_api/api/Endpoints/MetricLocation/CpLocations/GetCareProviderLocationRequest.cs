@@ -5,8 +5,8 @@ namespace api.Endpoints.MetricLocation.CpLocations;
 public class GetCareProviderLocationRequest
 {
     [RouteParam]
-    public required string CareProviderLocationCode { get; set; }
+    public required string CareProviderLocationCode { get; init; }
 
     [QueryParam, BindFrom("include_parents")]
-    public bool IncludeParents { get; set; }
+    public bool IncludeParents { get; init; }
 }

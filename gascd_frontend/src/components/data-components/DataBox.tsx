@@ -1,7 +1,7 @@
 import React from 'react';
 
 type Props = {
-  dataTitle: string;
+  dataTitle: string | React.ReactNode;
   dataInfo: React.ReactNode;
   children?: React.ReactNode;
 };

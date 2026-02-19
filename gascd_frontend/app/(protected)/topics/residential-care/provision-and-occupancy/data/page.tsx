@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useSession } from '@/lib/auth-client';
+import { User, useSession } from '@/lib/auth-client';
 import Layout from '@/components/common/layout/Layout';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -29,8 +29,18 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import LocationService from '@/services/location/locationService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
+import { ALLOWED_CP_USER_TYPES } from '@/constants';
 
 const CARE_HOME_RESIDENTIAL_CATEGORY = 'residential';
+
+const showCPLevelData = (user: User | null | undefined) => {
+  return (
+    (user &&
+      ALLOWED_CP_USER_TYPES.includes(user.locationType || '') &&
+      user.selectedLocationCategory === CARE_HOME_RESIDENTIAL_CATEGORY) ||
+    false
+  );
+};
 
 export default function ProvisionAndOccupancyPage() {
   const { data: session } = useSession();
@@ -40,7 +50,6 @@ export default function ProvisionAndOccupancyPage() {
 
   // location variables
   const [locationNamesCP, setLocationNamesCP] = useState<LocationNames>({
-    IndicatorLabel: 'Indicator',
     CPLabel: 'Loading...',
     LALabel: 'Loading...',
     RegionLabel: 'Loading...',
@@ -48,7 +57,6 @@ export default function ProvisionAndOccupancyPage() {
   } as LocationNames);
   const [locationNamesWithAverageLabels, setLocationNamesWithAverageLabels] =
     useState<LocationNames>({
-      IndicatorLabel: 'Indicator',
       CPLabel: 'Loading...',
       LALabel: 'Loading...',
       RegionLabel: 'Loading...',
@@ -210,7 +218,7 @@ export default function ProvisionAndOccupancyPage() {
       const datapoints = filteredCareHomeBedNumbersData.filter(
         (item) => item.location_id === header[0]
       );
-      if (datapoints.length) {
+      if (datapoints.length && datapoints[0].data_point !== null) {
         values.push(datapoints[0].data_point);
       } else {
         values.push(0);
@@ -252,7 +260,6 @@ export default function ProvisionAndOccupancyPage() {
           );
           setLocationNamesCP(locationNamesCP);
           setLocationNamesWithAverageLabels({
-            IndicatorLabel: 'Care home bed type',
             CPLabel: locationNamesCP.CPLabel!,
             LALabel: locationNamesCP.LALabel,
             RegionLabel: `${locationNamesCP.RegionLabel} (regional average)`,
@@ -546,7 +553,7 @@ export default function ProvisionAndOccupancyPage() {
       breadcrumbs={breadcrumbs}
     >
       <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
+        <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">
             Care home beds and occupancy levels
           </h1>
@@ -668,6 +675,7 @@ export default function ProvisionAndOccupancyPage() {
                 ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, ` +
                 IndicatorService.getMostRecentDate(latestBedTypeData)
               }
+              metricColumnName="Care home bed type"
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
               }
@@ -761,8 +769,8 @@ export default function ProvisionAndOccupancyPage() {
               tableref={tableref3}
               caption={
                 `Table 3: care home bed numbers and occupancy levels – ` +
-                ((session?.user.selectedLocationCategory ===
-                  CARE_HOME_RESIDENTIAL_CATEGORY &&
+                ((session &&
+                  showCPLevelData(session.user) &&
                   `${locationNamesCP.CPLabel}, `) ||
                   '') +
                 `${locationNamesCP.LALabel} local authority, 
@@ -778,10 +786,7 @@ export default function ProvisionAndOccupancyPage() {
                 median_occupancy_total: 'Occupancy level',
               }}
               data={finalCpData}
-              showCareProvider={
-                session?.user.selectedLocationCategory ===
-                CARE_HOME_RESIDENTIAL_CATEGORY
-              }
+              showCareProvider={showCPLevelData(session?.user)}
               careProviderMedianMetrics={careProviderMedianMetrics}
               percentageRows={['median_occupancy_total']}
               showAverageLabel={true}
@@ -914,6 +919,16 @@ export default function ProvisionAndOccupancyPage() {
       </DataIndicatorDetailsList>
 
       <RelatedDataList>
+        <DataLinkCard
+          label="Care providers: locations and services"
+          description="Data on residential care homes and nursing homes by location and service type."
+          url="/topics/residential-care/residential-care-providers/data"
+        />
+        <DataLinkCard
+          label="Number of adults receiving community social care"
+          description="Data on the number of people supported through community social care, including trends over time."
+          url="/topics/residential-care/number-of-people-receiving-care/data"
+        />
         <DataLinkCard
           label="Unpaid care"
           description="Statistics on the people who provide unpaid care to family members, friends and neighbours."

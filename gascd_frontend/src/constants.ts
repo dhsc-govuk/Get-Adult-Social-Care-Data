@@ -14,3 +14,10 @@ export const DATA_TAB_CHANGE_EVENT = 'datatab-change';
 export const MPS_LINK_EVENT = 'mps-link';
 export const HELP_EMAIL_EVENT = 'help-email';
 export const DOWNLOAD_CSV_EVENT = 'download-csv';
+
+// User types
+export const ALLOWED_CP_USER_TYPES = [
+  'Care provider',
+  'Care provider location',
+];
+export const LA_USER_TYPE = 'LA';

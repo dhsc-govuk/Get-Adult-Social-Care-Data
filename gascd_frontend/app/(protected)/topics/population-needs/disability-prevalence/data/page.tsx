@@ -23,13 +23,20 @@ import RelatedDataList from '@/components/data-components/RelatedDataList';
 export default function DisabilityPrevalence() {
   const tableref1 = useRef<HTMLTableElement>(null);
   const tableref2 = useRef<HTMLTableElement>(null);
+  const tableref3 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
-    IndicatorLabel: 'Indicator',
     LALabel: 'Loading...',
     RegionLabel: 'Loading...',
     CountryLabel: 'Loading...',
   } as LocationNames);
+  const [locationNamesWithAverageLabels, setLocationNamesWithAverageLabels] =
+    useState<LocationNames>({
+      CPLabel: 'Loading...',
+      LALabel: 'Loading...',
+      RegionLabel: 'Loading...',
+      CountryLabel: 'Loading...',
+    } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [filteredDemographicData, setFilteredDemographicData] = useState<
@@ -55,6 +62,17 @@ export default function DisabilityPrevalence() {
     'perc_population_disability',
     'learning_disability_prevalence',
     'perc_general_health',
+    'access_and_mobility_only_physical_support_18_and_over',
+    'asylum_seeker_support_social_support_18_and_over',
+    'learning_disability_support_18_and_over',
+    'mental_health_support_18_and_over',
+    'personal_care_support_physical_support_18_and_over',
+    'substance_misuse_support_social_support_18_and_over',
+    'support_for_dual_impairment_sensory_support_18_and_over',
+    'support_for_hearing_impairment_sensory_support_18_and_over',
+    'support_for_social_isolation_other_social_support_18_and_over',
+    'support_for_visual_impairment_sensory_support_18_and_over',
+    'support_with_memory_and_cognition_18_and_over',
   ];
 
   useEffect(() => {
@@ -83,6 +101,12 @@ export default function DisabilityPrevalence() {
             false
           );
           setLocationNames(locationNames);
+          setLocationNamesWithAverageLabels({
+            CPLabel: locationNames.CPLabel!,
+            LALabel: locationNames.LALabel,
+            RegionLabel: `${locationNames.RegionLabel} (regional average)`,
+            CountryLabel: `${locationNames.CountryLabel} (national average)`,
+          });
         } catch (error) {
           console.error('Error fetching location names:', error);
         }
@@ -142,7 +166,7 @@ export default function DisabilityPrevalence() {
       breadcrumbs={breadcrumbs}
     >
       <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
+        <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">
             General health, disability and learning disability
           </h1>
@@ -222,7 +246,7 @@ export default function DisabilityPrevalence() {
                 href="/help/learning-disability-prevalence"
                 className="govuk-link"
               >
-                how learning disability prevalence is calculated
+                learning disability prevalence is calculated
               </a>
               .
             </p>
@@ -260,6 +284,77 @@ export default function DisabilityPrevalence() {
           }
         />
       </DataBox>
+
+      <DataBox
+        dataTitle="Primary reason for people to access long-term adult social care"
+        dataInfo={
+          <>
+            <p className="govuk-body-m">
+              Find out how{' '}
+              <a
+                href="/help/primary-reason-for-accessing-long-term-adult-social-care"
+                className="govuk-link"
+              >
+                primary reason for people to access long-term adult social care
+                is calculated.
+              </a>
+              .
+            </p>
+          </>
+        }
+      >
+        <DataTabs
+          id="3"
+          table={
+            <DataTable
+              tableref={tableref3}
+              caption={`Table 3: primary reason for all age groups to access long-term adult social care – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
+              source={
+                'Adult Social Care Activity and Finance Report from NHS England'
+              }
+              columnHeaders={locationNamesWithAverageLabels}
+              metricColumnName="Primary support reason"
+              rowHeaders={{
+                learning_disability_support_18_and_over:
+                  'Learning disability support',
+                mental_health_support_18_and_over: 'Mental health support',
+                access_and_mobility_only_physical_support_18_and_over:
+                  'Physical support: Access and mobility only',
+                personal_care_support_physical_support_18_and_over:
+                  'Physical support: Personal care support',
+                support_for_dual_impairment_sensory_support_18_and_over:
+                  'Sensory support: Support for dual impairment',
+                support_for_hearing_impairment_sensory_support_18_and_over:
+                  'Sensory support: Support for hearing impairment',
+                support_for_visual_impairment_sensory_support_18_and_over:
+                  'Sensory support: Support for visual impairment',
+                asylum_seeker_support_social_support_18_and_over:
+                  'Social support: Asylum seeker support',
+                substance_misuse_support_social_support_18_and_over:
+                  'Social support: Substance misuse support',
+                support_for_social_isolation_other_social_support_18_and_over:
+                  'Social support: Support for social isolation or other reason',
+                support_with_memory_and_cognition_18_and_over:
+                  'Support with memory and cognition',
+              }}
+              data={filteredDemographicData}
+              showCareProvider={false}
+            >
+              <p className="govuk-body-m">(*) denotes less than 5</p>
+            </DataTable>
+          }
+          download={
+            <>
+              <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref3}
+                filename="primary_reasons_for_accessing_care.csv"
+                xLabel=""
+              />
+            </>
+          }
+        />
+      </DataBox>
       <DataIndicatorDetailsList>
         <DataLinkCard
           label="Disability prevalence"
@@ -281,6 +376,13 @@ export default function DisabilityPrevalence() {
           updateFrequency="Updated every 10 years"
           limitations={false}
           url="/help/people-who-reported-bad-or-very-bad-health"
+        />
+        <DataLinkCard
+          label="Primary reason for people to access long-term adult social care"
+          sources="NHS England"
+          updateFrequency="Yearly updates"
+          limitations={false}
+          url="/help/primary-reason-for-accessing-long-term-adult-social-care"
         />
       </DataIndicatorDetailsList>
 

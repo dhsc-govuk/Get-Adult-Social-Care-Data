@@ -11,5 +11,6 @@ public class MetricGroup : EntityBase
 
     [Column("display_name"), StringLength(255)]
     public required string DisplayName { get; init; }
+
     public virtual ICollection<Metric> Metrics { get; init; } = new List<Metric>();
 }

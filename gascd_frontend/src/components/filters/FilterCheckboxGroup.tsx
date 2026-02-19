@@ -58,6 +58,11 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     setShowClearAll(selectedFilters.length > 0);
   }, [selectedFilters]);
 
+  const handleShowHideToggle = (showFilters: boolean) => {
+    setSearchedFilters(filters);
+    setShowFilters(showFilters);
+  };
+
   const handleCheckboxChange = (metric_id: string, checked: boolean) => {
     const newFilters: TotalBedsFilters[] = [...filters];
     let newItem = newFilters.findIndex((item) => item.metric_id === metric_id);
@@ -72,20 +77,29 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           filter_bedtype: filter.filter_bedtype,
         }))
     );
+    handleSearch();
   };
 
   const handleSubmit = () => {
+    if (selectedFilters.length === 0) {
+      clearFilters();
+      return;
+    }
     localStorage.setItem(filterType, JSON.stringify(selectedFilters));
     setShowFilters(false);
     setShowActiveFilters(true);
     setDisplayFilters(
       selectedFilters?.map((filter) => filter.filter_bedtype) ?? null
     );
-    updateMethod();
+    resetGroup();
   };
 
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
+  const handleSearch = (): void => {
+    const searchBox = document.getElementById(
+      'input-bedtype-search'
+    ) as HTMLInputElement | null;
+    if (!searchBox) return;
+    const searchTerm = searchBox.value.toLowerCase() ?? '';
     const searchedFilters = filters.filter((filter) =>
       filter.filter_bedtype.toLowerCase().includes(searchTerm)
     );
@@ -94,12 +108,11 @@ const FilterCheckboxGroup: React.FC<Props> = ({
 
   const clearFilters = () => {
     localStorage.removeItem(filterType);
-    setShowFilters(false);
     setShowActiveFilters(false);
     setDisplayFilters(null);
     setSelectedFilters([]);
     filters.map((filter) => (filter.checked = false));
-    updateMethod();
+    resetGroup();
   };
 
   const clearFilter = (filterName: string) => {
@@ -123,6 +136,12 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     }
   };
 
+  const resetGroup = () => {
+    setSearchedFilters(filters);
+    setShowFilters(false);
+    updateMethod();
+  };
+
   return (
     <div className="govuk-!-padding-bottom-4 govuk-!-padding-top-4">
       <div className="dhsc-filter--action">
@@ -134,8 +153,8 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           aria-label={`${showFilters ? 'Hide' : 'Show'} ${filterLabel} filters`}
           onClick={
             showFilters
-              ? () => setShowFilters(false)
-              : () => setShowFilters(true)
+              ? () => handleShowHideToggle(false)
+              : () => handleShowHideToggle(true)
           }
         >
           <span
@@ -160,28 +179,46 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           )}
           {filters.length > 0 && (
             <>
-              <div
-                id="checkboxes-search"
-                className="app-c-option-select__container js-options-container"
-              >
-                <label
-                  htmlFor="input-bedtype-checkboxes"
-                  className="govuk-label govuk-visually-hidden"
-                >
+              <div className="js-container-heading">
+                <h3 className="govuk-heading-s searchable-filters-heading">
                   Bed type
-                </label>
-                <input
-                  id="input-bedtype-checkboxes"
-                  className="app-c-option-select__filter-input govuk-input"
-                  type="text"
-                  onKeyUp={handleSearch}
-                />
+                </h3>
+                {selectedFilters.length > 0 && (
+                  <p className="app-c-option-select__selected-counter js-selected-counter searchable-filters-heading">
+                    {selectedFilters.length} selected
+                  </p>
+                )}
+              </div>
+              <div
+                id="radios-search"
+                className="app-c-option-select__filter"
+                hidden
+                style={{ display: 'block' }}
+              >
+                <div
+                  id="checkboxes-search"
+                  className="app-c-option-select__container js-options-container"
+                >
+                  <label
+                    htmlFor="input-bedtype-search"
+                    className="govuk-label govuk-visually-hidden"
+                  >
+                    Bed type
+                  </label>
+                  <input
+                    id="input-bedtype-search"
+                    className="app-c-option-select__filter-input govuk-input"
+                    type="text"
+                    onKeyUp={handleSearch}
+                  />
+                </div>
               </div>
               <div
                 role="group"
                 aria-labelledby="option-select-title-status-checkboxes"
                 className="app-c-option-select__container js-options-container"
                 tabIndex={-1}
+                style={{ height: 255.333 + 'px' }}
               >
                 <div className="app-c-option-select__container-inner js-auto-height-inner">
                   <div className="gem-c-checkboxes govuk-form-group govuk-checkboxes--small">
@@ -198,7 +235,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                               name="Table filter"
                               type="checkbox"
                               value={filter.metric_id}
-                              defaultChecked={filter.checked || false}
+                              checked={filter.checked || false}
                               onChange={(e) =>
                                 handleCheckboxChange(
                                   e.target.value,

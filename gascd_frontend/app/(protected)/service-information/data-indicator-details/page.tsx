@@ -40,6 +40,20 @@ export default function DataIndicatorDetailsPage() {
               url="/help/beds-per-100000-adult-population-over-time"
             />
             <DataLinkCard
+              label="Number of community social care providers"
+              sources="Care Quality Commission"
+              updateFrequency="Monthly updates"
+              limitations={true}
+              url="/help/total-number-community-social-care-providers"
+            />
+            <DataLinkCard
+              label="Number of people receiving care from a community social care provider"
+              sources="Capacity Tracker"
+              updateFrequency="Daily updates"
+              limitations={true}
+              url="/help/number-people-receiving-care-from-community-social-care-provider"
+            />
+            <DataLinkCard
               label="Occupancy level percentages for adult social care beds"
               sources="Capacity Tracker"
               updateFrequency="Daily updates"
@@ -52,6 +66,47 @@ export default function DataIndicatorDetailsPage() {
               updateFrequency="Updated every 10 years"
               limitations={false}
               url="/help/percentage-people-aged-5-and-over-who-provide-unpaid-care"
+            />
+          </ul>
+          <h2 className="govuk-heading-m govuk-!-margin-top-9">
+            Funding data indicators
+          </h2>
+          <ul className="gem-c-cards__list gem-c-cards__list--one-column">
+            <DataLinkCard
+              label={
+                <>
+                  <abbr title="Local Authority">LA</abbr> funding for adult
+                  social care
+                </>
+              }
+              sources="NHS England"
+              updateFrequency="Yearly updates"
+              limitations={false}
+              url="/help/total-financial-spend-adult-social-care"
+            />
+            <DataLinkCard
+              label={
+                <>
+                  <abbr title="Local Authority">LA</abbr> funding for long-term
+                  community adult social care
+                </>
+              }
+              sources="NHS England"
+              updateFrequency="Yearly updates"
+              limitations={false}
+              url="/help/total-financial-spend-long-term-community-adult-social-care"
+            />
+            <DataLinkCard
+              label={
+                <>
+                  <abbr title="Local Authority">LA</abbr> funding for short-term
+                  and long term adult social care
+                </>
+              }
+              sources="NHS England"
+              updateFrequency="Yearly updates"
+              limitations={false}
+              url="/help/percentages-financial-spend-long-term-and-short-term-care"
             />
           </ul>
           <h2 className="govuk-heading-m govuk-!-margin-top-9">

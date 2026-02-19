@@ -22,7 +22,11 @@ const REQUIRED_FIELDS = [
   'location_type',
   'source',
 ];
-const ALLOWED_LOCATION_TYPES = ['Care provider', 'Care provider location'];
+const ALLOWED_LOCATION_TYPES = [
+  'Care provider',
+  'Care provider location',
+  'LA',
+];
 
 async function run() {
   const csvPath = process.env.CSV_PATH;
@@ -44,6 +48,7 @@ async function run() {
 
   let import_errors = false;
   let rowcount = 1;
+  let found_emails: string[] = [];
   for (const row of records) {
     rowcount += 1;
     const email_lower = row.email.toLowerCase();
@@ -72,6 +77,12 @@ async function run() {
       );
       import_errors = true;
     }
+    if (found_emails.includes(email_lower)) {
+      console.error('Duplicate email in CSV: ', email_redacted, rowcount);
+      import_errors = true;
+    } else {
+      found_emails.push(email_lower);
+    }
   }
 
   if (import_errors) {
@@ -86,6 +97,12 @@ async function run() {
     }
 
     const userid = generateId();
+    let selectedLocationId = null;
+    if (row.location_type == 'LA') {
+      // LA users get their LA selected by default
+      selectedLocationId = row.location_id;
+    }
+
     await authDB
       .insertInto(USER_DATABASE_NAME)
       .values({
@@ -98,6 +115,7 @@ async function run() {
         emailVerified: 1,
         locationId: row.location_id,
         locationType: row.location_type,
+        selectedLocationId: selectedLocationId,
         source: row.source,
         role: 'member',
       })

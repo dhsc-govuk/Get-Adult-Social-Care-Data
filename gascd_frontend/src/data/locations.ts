@@ -2,22 +2,9 @@ import 'server-only';
 import { getAPIClient } from './dataAPI';
 import { User } from '@/lib/auth';
 import logger from '@/utils/logger';
+import { ALLOWED_CP_USER_TYPES, LA_USER_TYPE } from '@/constants';
 
-const ALLOWED_CP_USER_TYPES = ['Care provider', 'Care provider location'];
-
-export const getDefaultLocations = async (user: User) => {
-  let selected_location_id = user.selectedLocationId;
-  let location_type = user.locationType;
-
-  if (!(selected_location_id && location_type)) {
-    logger.error(`No location details for user`);
-    return [];
-  }
-  if (!ALLOWED_CP_USER_TYPES.includes(location_type)) {
-    logger.error(`User is not a care provider or care provider location`);
-    return [];
-  }
-
+export const getDefaultLocationsCP = async (cp_location_id: string) => {
   const client = getAPIClient();
   // Look up details for the selected location, including all parent locations
   const { data: cpdata, error } = await client.GET(
@@ -25,7 +12,7 @@ export const getDefaultLocations = async (user: User) => {
     {
       params: {
         path: {
-          code: selected_location_id,
+          code: cp_location_id,
         },
         query: {
           include_parents: true,
@@ -53,6 +40,59 @@ export const getDefaultLocations = async (user: User) => {
       },
     ];
     return default_locations;
+  }
+};
+
+export const getDefaultLocationsLA = async (la_location_id: string) => {
+  const client = getAPIClient();
+  // Look up details for the selected location, including all parent locations
+  const { data: ladata, error } = await client.GET(
+    '/metric_locations/local_authorities/{code}',
+    {
+      params: {
+        path: {
+          code: la_location_id,
+        },
+        query: {
+          include_parents: true,
+        },
+      },
+    }
+  );
+  if (ladata) {
+    const default_locations = [
+      {
+        location_code: ladata.code,
+        location_type: 'LA',
+      },
+      {
+        location_code: ladata.region_code,
+        location_type: 'Regional',
+      },
+      {
+        location_code: ladata.country_code,
+        location_type: 'National',
+      },
+    ];
+    return default_locations;
+  }
+};
+
+export const getDefaultLocations = async (user: User) => {
+  let selected_location_id = user.selectedLocationId;
+  let location_type = user.locationType;
+
+  if (!(selected_location_id && location_type)) {
+    logger.error(`No location details for user`);
+    return [];
+  }
+  if (ALLOWED_CP_USER_TYPES.includes(location_type)) {
+    return getDefaultLocationsCP(selected_location_id);
+  } else if (location_type == LA_USER_TYPE) {
+    return getDefaultLocationsLA(selected_location_id);
+  } else {
+    logger.error(`Unknown user type: ` + location_type);
+    return [];
   }
 };
 
@@ -129,3 +169,15 @@ export const getAllowedLocations = async (
   });
   return available_locations;
 };
+
+/**
+ * Validates and sanitizes a list of string IDs.
+ * Returns only the IDs that pass the alphanumeric + underscore check.
+ */
+export function validateMetricIds(ids: string[]): string[] {
+  const validPattern = /^[a-zA-Z0-9_]+$/;
+
+  return ids
+    .map((id) => id.trim()) // Remove accidental whitespace
+    .filter((id) => id.length > 0 && validPattern.test(id));
+}

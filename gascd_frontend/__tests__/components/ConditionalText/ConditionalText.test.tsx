@@ -7,7 +7,6 @@ import { LocationNames } from '@/data/interfaces/LocationNames';
 
 describe('Tests for the conditional text component', () => {
   const locationNamesWithCareProvider = {
-    IndicatorLabel: 'Indicator',
     CPLabel: 'Test Care Provider',
     LALabel: 'Northumberland',
     RegionLabel: 'North East',

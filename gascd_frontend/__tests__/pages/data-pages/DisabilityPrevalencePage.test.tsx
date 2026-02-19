@@ -44,6 +44,7 @@ describe('DisabilityPrevalencePage', () => {
     const dataBoxHeadings = [
       'Disability prevalence',
       'Learning disability prevalence',
+      'Primary reason for people to access long-term adult social care',
     ];
     for (let dataBoxHeadingText of dataBoxHeadings) {
       expect(
@@ -59,15 +60,42 @@ describe('DisabilityPrevalencePage', () => {
     );
     expect(bodyTextElement).toBeInTheDocument();
 
-    const helpLink = screen.getAllByRole('link', {
+    const disabilityHelpLinks = screen.getAllByRole('link', {
       name: /disability prevalence/,
     });
-    expect(helpLink[0]).toBeInTheDocument();
-    expect(helpLink[0]).toHaveAttribute('href', '/help/disability-prevalence');
+    expect(disabilityHelpLinks[0]).toBeInTheDocument();
+    expect(disabilityHelpLinks[0]).toHaveAttribute(
+      'href',
+      '/help/disability-prevalence'
+    );
+    expect(disabilityHelpLinks[1]).toBeInTheDocument();
+    expect(disabilityHelpLinks[1]).toHaveAttribute(
+      'href',
+      '/help/learning-disability-prevalence'
+    );
+
+    const healthHelpLink = screen.getAllByRole('link', {
+      name: /People who reported bad or very bad health/,
+    });
+    expect(healthHelpLink[0]).toBeInTheDocument();
+    expect(healthHelpLink[0]).toHaveAttribute(
+      'href',
+      '/help/people-who-reported-bad-or-very-bad-health'
+    );
+
+    const reasonHelpLink = screen.getAllByRole('link', {
+      name: /Primary reason for people to access long-term adult social care/,
+    });
+    expect(reasonHelpLink[0]).toBeInTheDocument();
+    expect(reasonHelpLink[0]).toHaveAttribute(
+      'href',
+      '/help/primary-reason-for-accessing-long-term-adult-social-care'
+    );
 
     const tables = [
       /Table 1: self-reporting on general health and disability – /i,
       /Table 2: learning disability prevalence – /i,
+      /Table 3: primary reason for /i,
     ];
     for (let table of tables) {
       expect(screen.getByRole('table', { name: table })).toBeInTheDocument();

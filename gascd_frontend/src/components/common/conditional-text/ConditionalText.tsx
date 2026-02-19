@@ -44,6 +44,14 @@ const compareDriversConditionals = (
     return 'Loading...';
   }
 
+  if (
+    localAuthority.data_point === null ||
+    region.data_point === null ||
+    country.data_point === null
+  ) {
+    return 'Data not available';
+  }
+
   if (section === 'Drivers') {
     if (localAuthority.data_point > country.data_point) {
       return (

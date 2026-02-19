@@ -12,6 +12,9 @@ import { Kysely } from 'kysely';
 export const authDB = new Kysely<any>({ dialect: msdialect });
 
 export const auth = betterAuth({
+  rateLimit: {
+    enabled: process.env.E2E_TESTING_MODE !== 'true',
+  },
   session: {
     cookieCache: {
       enabled: true,

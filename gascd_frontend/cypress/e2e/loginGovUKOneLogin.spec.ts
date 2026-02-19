@@ -4,7 +4,7 @@ describe('User can log in and log out with One Login', () => {
     cy.visit('');
     cy.url().should('include', '/login');
 
-    cy.login_onelogin('testuser1', Cypress.env('AUTH_EMAIL'));
+    cy.login_onelogin(Cypress.env('cpl_user'));
 
     // Logged in
     cy.url().should('include', '/home');
@@ -31,7 +31,7 @@ describe('User can log in and log out with One Login', () => {
     cy.visit('');
     cy.url().should('include', '/login');
 
-    cy.login_onelogin('unknownuser', 'unknown@unknown.com');
+    cy.login_onelogin('unknown@unknown.com');
 
     cy.url().should('include', '/access-denied');
     cy.get('h1').should(

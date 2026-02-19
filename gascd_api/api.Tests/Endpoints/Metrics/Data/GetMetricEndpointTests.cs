@@ -1,7 +1,7 @@
 using api.Data.Shared;
 using api.Endpoints.Metrics.Data;
-using api.Tests.Fixtures;
 using FastEndpoints;
+using FastEndpoints.Testing;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using System.Net;
@@ -12,28 +12,18 @@ using static api.Tests.Fixtures.TestUtils;
 
 namespace api.Tests.Endpoints.Metrics.Data;
 
-public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
+[Collection("Sequential")]
+public class GetMetricEndpointTests(App app) : TestBase<App>
 {
-    private readonly HttpClient _client;
-
-    public GetMetricEndpointTests(IntegrationTestFixture fixture)
-    {
-        var factory = new CustomWebAppFactory(fixture.PostgresContainer);
-        _client = factory.CreateClient();
-    }
-
     [Fact]
     public async Task GetMetric_ReturnsOk()
     {
         var (httpCode, _) =
-            await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+            await app.Client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
                 new GetMetricRequest
                 {
                     MetricCode = bedcount_total,
-                    Locations = new()
-                    {
-                        new GetMetricRequest.Location { LocationCode = "1-123456789", LocationType = National }
-                    }
+                    Locations = [new() { LocationCode = "1-123456789", LocationType = National }]
                 });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -43,13 +33,12 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetMetric_Bedcount_ReturnsExpectedData()
     {
         var (httpCode, response) =
-            await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+            await app.Client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
                 new GetMetricRequest
                 {
                     MetricCode = bedcount_total,
-                    Locations = new() { new GetMetricRequest.Location { LocationCode = "1-123456789", LocationType = National } }
+                    Locations = [new() { LocationCode = "1-123456789", LocationType = National }]
                 });
-
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
@@ -66,13 +55,13 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetMetric_Bedcount_AnotherLocationReturnsExpectedData()
     {
-        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
-            new GetMetricRequest
-            {
-                MetricCode = bedcount_total,
-                Locations = new() { new GetMetricRequest.Location { LocationCode = "E92000001", LocationType = Regional } }
-            });
-
+        var (httpCode, response) =
+            await app.Client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+                new GetMetricRequest
+                {
+                    MetricCode = bedcount_total,
+                    Locations = [new GetMetricRequest.Location { LocationCode = "E92000001", LocationType = Regional }]
+                });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
@@ -91,29 +80,31 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     [MemberData(nameof(MetricCodeTimeSeriesCombinations))]
     public async Task GetMetric_NonExistentLocationCode_Returns404(MetricCodeEnum metricCode, decimal _)
     {
-        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
-            new GetMetricRequest
-            {
-                MetricCode = metricCode,
-                Locations = new() { new GetMetricRequest.Location { LocationCode = "nonexistent", LocationType = National } }
-            });
+        var (httpCode, _) =
+            await app.Client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+                new GetMetricRequest
+                {
+                    MetricCode = metricCode,
+                    Locations = [new() { LocationCode = "nonexistent", LocationType = National }]
+                });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
     [Fact]
     public async Task GetMetric_MultipleNonExistentLocationCodes_Returns404()
     {
-        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
-            new GetMetricRequest
-            {
-                MetricCode = bedcount_per_hundred_thousand_adults_total,
-                Locations = new()
+        var (httpCode, _) =
+            await app.Client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+                new GetMetricRequest
                 {
-                    new GetMetricRequest.Location { LocationCode = "nonexistent", LocationType = National },
-                    new GetMetricRequest.Location { LocationCode = "nonexistent2", LocationType = Regional },
-                    new GetMetricRequest.Location { LocationCode = "nonexistent3", LocationType = LA }
-                }
-            });
+                    MetricCode = bedcount_per_hundred_thousand_adults_total,
+                    Locations =
+                    [
+                        new() { LocationCode = "nonexistent", LocationType = National },
+                        new() { LocationCode = "nonexistent2", LocationType = Regional },
+                        new() { LocationCode = "nonexistent3", LocationType = LA }
+                    ]
+                });
         httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
@@ -122,8 +113,9 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     [MemberData(nameof(MetricCodeTimeSeriesCombinations))]
     public async Task GetMetric_NonExistentLocationType_Returns404(MetricCodeEnum metricCode, decimal _)
     {
-        HttpContent content = new StringContent("[ { \"location_code\": \"E92000001\", \"location_type\": \"nonexistent\" } ]", Encoding.UTF8, "application/json");
-        var response = await _client.PostAsync($"api/metrics/{metricCode}/data", content, TestContext.Current.CancellationToken);
+        HttpContent content = new StringContent("[ { \"location_code\": \"E92000001\", \"location_type\": \"nonexistent\" } ]",
+            Encoding.UTF8, "application/json");
+        var response = await app.Client.PostAsync($"api/metrics/{metricCode}/data", content, TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
         JObject? json = await ParseJsonResponse<JObject>(response);
@@ -136,11 +128,11 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     public async Task GetMetric_Invalid_LocationCode_Input(MetricCodeEnum metricCode, string locationCode, string expectedErrorMessage)
     {
         var (httpResponse, problemDetails) =
-            await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, ProblemDetails>(
+            await app.Client.POSTAsync<GetMetricEndpoint, GetMetricRequest, ProblemDetails>(
                 new GetMetricRequest
                 {
                     MetricCode = metricCode,
-                    Locations = new() { new GetMetricRequest.Location { LocationCode = locationCode, LocationType = Regional } }
+                    Locations = [new() { LocationCode = locationCode, LocationType = Regional }]
                 });
         httpResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         problemDetails.Errors.Count().ShouldBe(1);
@@ -164,8 +156,9 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetMetric_NonExistent_MetricCodeInput()
     {
-        HttpContent content = new StringContent("[ { \"location_code\": \"E92000001\", \"location_type\": 0 } ]", Encoding.UTF8, "application/json");
-        var response = await _client.PostAsync("api/metrics/nonexistent/data", content, TestContext.Current.CancellationToken);
+        HttpContent content = new StringContent("[ { \"location_code\": \"E92000001\", \"location_type\": 0 } ]",
+            Encoding.UTF8, "application/json");
+        var response = await app.Client.PostAsync("api/metrics/nonexistent/data", content, TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
         JObject? json = await ParseJsonResponse<JObject>(response);
@@ -178,13 +171,13 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     [MemberData(nameof(MetricCodeTimeSeriesCombinations))]
     public async Task GetMetric_EachMetricCode_ReturnsExpectedData(MetricCodeEnum metricCode, decimal lastValue)
     {
-        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
-            new GetMetricRequest
-            {
-                MetricCode = metricCode,
-                Locations = new() { new GetMetricRequest.Location { LocationCode = "E92000001", LocationType = Regional } }
-            });
-
+        var (httpCode, response) =
+            await app.Client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+                new GetMetricRequest
+                {
+                    MetricCode = metricCode,
+                    Locations = [new() { LocationCode = "E92000001", LocationType = Regional }]
+                });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
@@ -201,14 +194,14 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetMetric_BedcountWithTimeSeries_ReturnsExpectedData()
     {
-        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
-            new GetMetricRequest
-            {
-                MetricCode = bedcount_total,
-                TimeSeries = true,
-                Locations = new() { new GetMetricRequest.Location { LocationCode = "1-123456789", LocationType = National } }
-            });
-
+        var (httpCode, response) =
+            await app.Client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+                new GetMetricRequest
+                {
+                    MetricCode = bedcount_total,
+                    TimeSeries = true,
+                    Locations = [new() { LocationCode = "1-123456789", LocationType = National }]
+                });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
@@ -226,14 +219,14 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     [MemberData(nameof(MetricCodeTimeSeriesCombinations))]
     public async Task GetMetric_AllMetricsWithTimeSeries_ReturnsExpectedData(MetricCodeEnum metricCode, decimal lastValue)
     {
-        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
-            new GetMetricRequest
-            {
-                MetricCode = metricCode,
-                TimeSeries = true,
-                Locations = new() { new GetMetricRequest.Location { LocationCode = "E92000001", LocationType = Regional } }
-            });
-
+        var (httpCode, response) =
+            await app.Client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+                new GetMetricRequest
+                {
+                    MetricCode = metricCode,
+                    TimeSeries = true,
+                    Locations = [new() { LocationCode = "E92000001", LocationType = Regional }]
+                });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
@@ -250,17 +243,17 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetMetric_TwoLocations_Bedcount_ReturnsExpectedData()
     {
-        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
-            new GetMetricRequest
-            {
-                MetricCode = bedcount_total,
-                Locations = new List<GetMetricRequest.Location>
+        var (httpCode, response) =
+            await app.Client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+                new GetMetricRequest
                 {
-                    new() { LocationCode = "1-123456789", LocationType = National },
-                    new() { LocationCode = "E92000001", LocationType = Regional }
-                }
-            });
-
+                    MetricCode = bedcount_total,
+                    Locations =
+                    [
+                        new() { LocationCode = "1-123456789", LocationType = National },
+                        new() { LocationCode = "E92000001", LocationType = Regional }
+                    ]
+                });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
@@ -285,18 +278,18 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetMetric_TwoLocations_TimeSeriesTrue_ReturnsExpectedData()
     {
-        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
-            new GetMetricRequest
-            {
-                MetricCode = bedcount_total,
-                Locations = new List<GetMetricRequest.Location>
+        var (httpCode, response) =
+            await app.Client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+                new GetMetricRequest
                 {
-                    new() { LocationCode = "1-123456789", LocationType = National },
-                    new() { LocationCode = "E92000001", LocationType = Regional }
-                },
-                TimeSeries = true
-            });
-
+                    MetricCode = bedcount_total,
+                    Locations =
+                    [
+                        new() { LocationCode = "1-123456789", LocationType = National },
+                        new() { LocationCode = "E92000001", LocationType = Regional }
+                    ],
+                    TimeSeries = true
+                });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
@@ -321,17 +314,18 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task GetMetric_MultipleLocations_OneDoesntExist_TimeSeriesTrue_ReturnsExpectedData()
     {
-        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
-            new GetMetricRequest
-            {
-                MetricCode = bedcount_total,
-                Locations = new List<GetMetricRequest.Location>
+        var (httpCode, response) =
+            await app.Client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+                new GetMetricRequest
                 {
-                    new() { LocationCode = "1-123456789", LocationType = National },
-                    new() { LocationCode = "non-existent", LocationType = Regional }
-                },
-                TimeSeries = true
-            });
+                    MetricCode = bedcount_total,
+                    Locations =
+                    [
+                        new() { LocationCode = "1-123456789", LocationType = National },
+                        new() { LocationCode = "non-existent", LocationType = Regional }
+                    ],
+                    TimeSeries = true
+                });
 
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -344,16 +338,16 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[0].SeriesEndDate.ShouldBe(new DateOnly(2025, 01, 01));
         response[0].SeriesFrequency.ShouldBe("Daily");
         response[0].Values.ShouldBe([1.1m, 2.2m, 3.3m, 4.4m, 5.5m]);
-
     }
-
 
     [Fact]
     public async Task GetMetric_TwoLocations_TimeSeriesTrue_ReturnsExpectedJsonData()
     {
 
-        HttpContent content = new StringContent($"[ {{ \"location_code\": \"1-123456789\", \"location_type\": \"{National}\" }} ,{{ \"location_code\": \"E92000001\", \"location_type\": \"{Regional}\" }} ]", Encoding.UTF8, "application/json");
-        var response = await _client.PostAsync($"api/metrics/{bedcount_total}/data?time_series=true", content, TestContext.Current.CancellationToken);
+        HttpContent content = new StringContent($"[ {{ \"location_code\": \"1-123456789\", \"location_type\": \"{National}\" }} " +
+                                                $",{{ \"location_code\": \"E92000001\", \"location_type\": \"{Regional}\" }} ]",
+            Encoding.UTF8, "application/json");
+        var response = await app.Client.PostAsync($"api/metrics/{bedcount_total}/data?time_series=true", content, TestContext.Current.CancellationToken);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var jArray = await ParseJsonResponse<JArray>(response);
@@ -381,22 +375,19 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         GetFromJson(jArray, "[1].values[2]").ShouldBe("4.4");
         GetFromJson(jArray, "[1].values[3]").ShouldBe("5.5");
         GetFromJson(jArray, "[1].values[4]").ShouldBe("6.6");
-
     }
-
-
 
     [Fact]
     public async Task GetMetric_WithNullTimeSeriesValues_ReturnsExpectedData()
     {
-        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
-            new GetMetricRequest
-            {
-                MetricCode = bedcount_per_hundred_thousand_adults_total,
-                TimeSeries = true,
-                Locations = new() { new GetMetricRequest.Location { LocationCode = "1-123456789", LocationType = National } }
-            });
-
+        var (httpCode, response) =
+            await app.Client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+                new GetMetricRequest
+                {
+                    MetricCode = bedcount_per_hundred_thousand_adults_total,
+                    TimeSeries = true,
+                    Locations = [new() { LocationCode = "1-123456789", LocationType = National }]
+                });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
@@ -410,19 +401,18 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
         response[0].Values.ShouldBe([22.2m, null, 44.4m, null, 32.1m]);
     }
 
-
     [Theory]
     [MemberData(nameof(LocationTypeCombinations))]
     public async Task GetMetric_MetricsWithDifferentLocationCodes_ReturnsExpectedData(LocationTypeEnum locationType, decimal lastValue)
     {
-        var (httpCode, response) = await _client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
-            new GetMetricRequest
-            {
-                MetricCode = bedcount_total,
-                TimeSeries = true,
-                Locations = new() { new GetMetricRequest.Location { LocationCode = "E92000001", LocationType = locationType } }
-            });
-
+        var (httpCode, response) =
+            await app.Client.POSTAsync<GetMetricEndpoint, GetMetricRequest, List<GetMetricResponse>>(
+                new GetMetricRequest
+                {
+                    MetricCode = bedcount_total,
+                    TimeSeries = true,
+                    Locations = [new() { LocationCode = "E92000001", LocationType = locationType }]
+                });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
 
@@ -446,7 +436,6 @@ public class GetMetricEndpointTests : IClassFixture<IntegrationTestFixture>
             yield return [National, 9.9m];
         }
     }
-
 
     public static IEnumerable<object[]> MetricCodeTimeSeriesCombinations
     {

@@ -10,7 +10,7 @@ const Plotly = dynamic(() => import('react-plotly.js'), { ssr: false });
 
 export interface DataPoint {
   date: string; // ISO date string (e.g., '2025-01-01')
-  value: number;
+  value: number | null;
 }
 
 export interface Series {
