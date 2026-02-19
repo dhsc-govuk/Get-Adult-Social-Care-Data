@@ -61,17 +61,19 @@ const LoginPage: React.FC = () => {
               authority officer.
             </p>
 
-            <h2 className="govuk-heading-m">Important</h2>
-            <p className="govuk-body">
-              Note this service provides information only and does not
-              constitute advice. DHSC does not accept any liability for
-              decisions made by providers following use of this service. For
-              further details read our{' '}
-              <a href="/terms-of-use" target="_blank">
-                Terms of use (opens in a new tab)
-              </a>
-              .
-            </p>
+            <div className="govuk-inset-text">
+              <h2 className="govuk-heading-m">Important</h2>
+              <p className="govuk-body">
+                Note this service provides information only and does not
+                constitute advice. DHSC does not accept any liability for
+                decisions made by providers following use of this service. For
+                further details read our{' '}
+                <a href="/terms-of-use" target="_blank">
+                  Terms of use (opens in a new tab)
+                </a>
+                .
+              </p>
+            </div>
 
             <h2 className="govuk-heading-m">Before you start</h2>
             <p className="govuk-body">
