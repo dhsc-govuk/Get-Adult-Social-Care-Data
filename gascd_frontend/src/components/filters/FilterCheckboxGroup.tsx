@@ -87,7 +87,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
 
   const handleSearch = (): void => {
     const searchBox = document.getElementById(
-      'input-bedtype-search'
+      'input-filter-search'
     ) as HTMLInputElement | null;
     if (!searchBox) return;
     const searchTerm = searchBox.value.toLowerCase() ?? '';
@@ -191,13 +191,13 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                   className="app-c-option-select__container js-options-container"
                 >
                   <label
-                    htmlFor="input-bedtype-search"
+                    htmlFor="input-filter-search"
                     className="govuk-label govuk-visually-hidden"
                   >
                     Bed type
                   </label>
                   <input
-                    id="input-bedtype-search"
+                    id="input-filter-search"
                     className="app-c-option-select__filter-input govuk-input"
                     type="text"
                     onKeyUp={handleSearch}
@@ -280,7 +280,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
       )}
       {displayFilters && showActiveFilters && (
         <div className="app-c-filter-summary">
-          <h5 className="app-c-filter-summary__heading">Active filters</h5>
+          <h4 className="app-c-filter-summary__heading">Active filters</h4>
           <ul className="app-c-filter-summary__remove-filters">
             {displayFilters.map((filterName, index) => (
               <li key={index}>

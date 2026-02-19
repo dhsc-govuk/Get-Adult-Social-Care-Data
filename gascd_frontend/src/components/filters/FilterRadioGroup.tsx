@@ -219,7 +219,7 @@ const FilterRadioGroup: React.FC<Props> = ({
       )}
       {displayFilter && showActiveFilters && (
         <div className="app-c-filter-summary">
-          <h5 className="app-c-filter-summary__heading">Active filters</h5>
+          <h4 className="app-c-filter-summary__heading">Active filters</h4>
           <ul className="app-c-filter-summary__remove-filters">
             <li>
               <button
