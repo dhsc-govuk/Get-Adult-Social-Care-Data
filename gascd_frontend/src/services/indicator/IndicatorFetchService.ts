@@ -1,20 +1,7 @@
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
-import { Filters } from '@/data/interfaces/Filters';
 
 class IndicatorFetchService {
-  public static async getFilters() {
-    const response = await fetch('/api/get_all_total_beds_filters');
-    if (!response.ok) {
-      throw new Error(`Failed to fetch data: ${response.statusText}`);
-    }
-    const data = await response.json();
-
-    return data.sort((a: Filters, b: Filters) =>
-      a.filter_label.localeCompare(b.filter_label)
-    );
-  }
-
   public static async getData(query: IndicatorQuery): Promise<Indicator[]> {
     if (!query.metric_ids.length) {
       // Shouldn't need this check, but react sometimes fires this too soon

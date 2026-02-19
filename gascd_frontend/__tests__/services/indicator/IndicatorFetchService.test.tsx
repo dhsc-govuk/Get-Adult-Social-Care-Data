@@ -1,47 +1,12 @@
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { Indicator } from '@/data/interfaces/Indicator';
-import { Location } from '@/data/interfaces/Location';
-import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
-import { TotalBedsFilters } from '@/data/interfaces/Filters';
 
 global.fetch = vi.fn();
 
 describe('IndicatorFetchService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-  });
-
-  describe('getFilters', () => {
-    it('fetches and sorts filter data', async () => {
-      const mockFilters: TotalBedsFilters[] = [
-        { metric_id: '2', filter_bedtype: 'Nursing', checked: false },
-        { metric_id: '1', filter_bedtype: 'General', checked: false },
-      ];
-      (fetch as vi.Mock).mockResolvedValue({
-        ok: true,
-        json: vi.fn().mockResolvedValue(mockFilters),
-      });
-
-      const result = await IndicatorFetchService.getFilters('metric1');
-
-      expect(fetch).toHaveBeenCalledWith('/api/get_all_total_beds_filters');
-      expect(result).toEqual([
-        { metric_id: '1', filter_bedtype: 'General', checked: false },
-        { metric_id: '2', filter_bedtype: 'Nursing', checked: false },
-      ]);
-    });
-
-    it('throws error on failed fetch', async () => {
-      (fetch as vi.Mock).mockResolvedValue({
-        ok: false,
-        statusText: 'Not Found',
-      });
-
-      await expect(IndicatorFetchService.getFilters('metric1')).rejects.toThrow(
-        'Failed to fetch data: Not Found'
-      );
-    });
   });
 
   describe('getData', () => {
