@@ -16,9 +16,29 @@ import pandas as pd
 import os
 import re
 import sys
+import difflib
 
-# Update these filenames if yours are named differently
+FUZZY_THRESHOLD = 0.8  # 1.0 is perfect match, 0.0 is no match
+USER_EMAIL_COL = "Email address"
 OUTPUT_FILE = "matched_users_output.csv"
+
+MANUAL_OVERRIDES = {
+    "richmondandwandsworth": "richmond-upon-thames",
+    "rbwm": "windsor-and-maidenhead",
+    "durham": "county-durham",
+    "kingston": "kingston-upon-thames",
+    "nottscc": "nottingham",
+    "leics": "leicester",
+    "newcastle": "newcastle-upon-tyne",
+    "westberks": "west-berkshire",
+    "northnorthants": "northamptonshire",
+    "dorsetcouncil": "dorset",
+    "bcpcouncil": "bournemouth",
+    "blackburn": "blackburn-with-darwen",
+    "southglos": "south-gloucestershire",
+    "eastriding": "yorkshire",
+    "lbbd": "barking-and-dagenham",
+}
 
 def extract_domain_slug(email):
     """
@@ -44,15 +64,34 @@ def main(LA_DATA_FILE, USER_DATA_FILE):
         return
 
     # 2. Load the data
-    print(f"Loading {LA_DATA_FILE}...")
+    print(f"Loading LA data from  {LA_DATA_FILE}...")
     la_df = pd.read_excel(LA_DATA_FILE, sheet_name="uk_local_authorities_current")
-    
-    print(f"Loading {USER_DATA_FILE}...")
+    la_df = la_df.dropna(subset=['gov-uk-slug'])
+
+    # Create a list of valid slugs for fuzzy matching
+    valid_slugs = la_df['gov-uk-slug'].astype(str).tolist()
+
+    # 2. Load User data
+    print(f"Loading user data from {USER_DATA_FILE}...")
     users_df = pd.read_csv(USER_DATA_FILE)
+    users_df['domain_slug'] = users_df[USER_EMAIL_COL].apply(extract_domain_slug)
+
+    # 3. Fuzzy Match Logic
+    def get_best_match(slug):
+        if not slug: return None
+        # manual overrides
+        if slug in MANUAL_OVERRIDES:
+            return MANUAL_OVERRIDES[slug]
+        # Check for exact match 
+        if slug in valid_slugs:
+            return slug
+        # Otherwise, find the closest string
+        matches = difflib.get_close_matches(slug, valid_slugs, n=1, cutoff=FUZZY_THRESHOLD)
+        return matches[0] if matches else None
 
     # 3. Process domains for matching
     # We create a temporary key to match against the mySociety 'local-authority-code'
-    users_df['match_key'] = users_df['email'].apply(extract_domain_slug)
+    users_df['match_key'] = users_df['domain_slug'].apply(get_best_match)
 
     # 4. Perform the Left Join
     # This keeps every user from your CSV, filling in LA info where a match is found.
@@ -66,7 +105,8 @@ def main(LA_DATA_FILE, USER_DATA_FILE):
 
     # 5. Clean up and Export
     # Remove the helper columns used for the join
-    final_output = results.drop(columns=['match_key', ])
+    #final_output = results.drop(columns=['match_key', ])
+    final_output = results
     final_output.to_csv(OUTPUT_FILE, index=False)
 
     # 6. Summary Report
@@ -80,7 +120,7 @@ def main(LA_DATA_FILE, USER_DATA_FILE):
     if matched < total:
         print("\nCommon unmatched domains (check if these need manual mapping):")
         unmatched = final_output[final_output['gss-code'].isna()]
-        domains = unmatched['email'].str.split('@').str[-1]
+        domains = unmatched[USER_EMAIL_COL].str.split('@').str[-1]
         print(domains.value_counts().head(5))
 
 if __name__ == "__main__":
