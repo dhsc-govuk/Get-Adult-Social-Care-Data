@@ -1,6 +1,6 @@
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
-import { TotalBedsFilters } from '@/data/interfaces/Filters';
+import { Filters } from '@/data/interfaces/Filters';
 
 class IndicatorFetchService {
   public static async getFilters() {
@@ -10,8 +10,8 @@ class IndicatorFetchService {
     }
     const data = await response.json();
 
-    return data.sort((a: TotalBedsFilters, b: TotalBedsFilters) =>
-      a.filter_bedtype.localeCompare(b.filter_bedtype)
+    return data.sort((a: Filters, b: Filters) =>
+      a.filter_label.localeCompare(b.filter_label)
     );
   }
 
