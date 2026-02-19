@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
 
@@ -33,6 +35,12 @@ const GuidancePage = () => {
               <li>Data sources and methodology</li>
               <li>Useful links</li>
             </ol>
+            <button
+              className="govuk-button govuk-button--secondary"
+              onClick={() => window.print()}
+            >
+              Print this page
+            </button>
             <div
               data-module="govspeak"
               className="gem-c-govspeak govuk-govspeak govuk-!-margin-bottom-0"
