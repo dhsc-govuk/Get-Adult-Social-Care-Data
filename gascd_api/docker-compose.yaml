@@ -11,6 +11,13 @@
       - "5050:5050"
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
+  
+  
+  generate-sql:
+    build: ./DataGeneration
+    container_name: generate-sql
+    volumes:
+      - shared-volume:/output/
 
   postgres:
     image: postgis/postgis:18-3.6-alpine
@@ -19,9 +26,15 @@
       - "5431:5431"
     volumes:
       - ./api.Tests/TestData/test-seed.sql:/docker-entrypoint-initdb.d/1-test-seed.sql
-      - ./api.Tests/TestData/test-seed-supplementary.sql:/docker-entrypoint-initdb.d/2-test-seed-supplementary.sql
+      - shared-volume:/docker-entrypoint-initdb.d/
     environment:
       - POSTGRES_USER=mr-ice-cool
       - POSTGRES_PASSWORD=is-rockin
       - POSTGRES_DB=gascd_data
       - PGPORT=5431
+    depends_on:
+      generate-sql:
+        condition: service_completed_successfully
+        
+volumes:
+  shared-volume:

@@ -282,7 +282,9 @@ def generate_all_sql():
 
     return ref_sql + metric_sql
 
-
-for sql in generate_all_sql():
-    print(sql)
-
+if __name__ == "__main__":
+    sql = generate_all_sql()
+    
+    with open('/output/2-supplementary-data.sql', 'w') as f:
+        for line in sql:
+            f.write(line)
