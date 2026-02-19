@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Filters } from '@/data/interfaces/Filters';
+import { TotalBedsFilters } from '@/data/interfaces/Filters';
+import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import FilterBox from './FilterBox';
 import { filter_helptext } from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/helptext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,37 +9,44 @@ import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 type Props = {
   filterType: string;
   filterLabel: string;
-  filters: Filters[];
   updateMethod: () => void;
 };
 
 const FilterRadioGroup: React.FC<Props> = ({
   filterType,
   filterLabel,
-  filters,
   updateMethod,
 }) => {
   const [showFilters, setShowFilters] = React.useState(false);
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
-  const [selectedFilter, setSelectedFilter] = useState<Filters>();
-  const [searchedFilters, setSearchedFilters] = useState<Filters[]>([]);
+  const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
+  const [selectedFilter, setSelectedFilter] = useState<TotalBedsFilters>();
+  const [searchedFilters, setSearchedFilters] = useState<TotalBedsFilters[]>(
+    []
+  );
   const [displayFilter, setDisplayFilter] = useState<string | null>('');
 
   useEffect(() => {
-    setSearchedFilters(filters);
+    const getFilters = async () => {
+      const filters: TotalBedsFilters[] =
+        await IndicatorFetchService.getFilters();
+      setFilters(filters);
+      setSearchedFilters(filters);
 
-    const storedData = localStorage.getItem(filterType);
-    if (storedData) {
-      let filterFromStorage: Filters = {
-        metric_id: JSON.parse(storedData).metric_id,
-        filter_label: JSON.parse(storedData).filter_label,
-      };
-      setSelectedFilter(filterFromStorage);
-      setDisplayFilter(JSON.parse(storedData).filter_label);
-      setShowActiveFilters(true);
-    } else {
-      setDefaultFilter();
-    }
+      const storedData = localStorage.getItem(filterType);
+      if (storedData) {
+        let filterFromStorage: TotalBedsFilters = {
+          metric_id: JSON.parse(storedData).metric_id,
+          filter_bedtype: JSON.parse(storedData).filter_bedtype,
+        };
+        setSelectedFilter(filterFromStorage);
+        setDisplayFilter(JSON.parse(storedData).filter_bedtype);
+        setShowActiveFilters(true);
+      } else {
+        setDefaultFilter();
+      }
+    };
+    getFilters();
   }, []);
 
   const handleShowHideToggle = (showFilters: boolean) => {
@@ -46,10 +54,10 @@ const FilterRadioGroup: React.FC<Props> = ({
     setShowFilters(showFilters);
   };
 
-  const handleChange = (metric_id: string, filter_label: string) => {
-    let newFilter: Filters = {
+  const handleChange = (metric_id: string, filter_bedtype: string) => {
+    let newFilter: TotalBedsFilters = {
       metric_id: metric_id,
-      filter_label: filter_label,
+      filter_bedtype: filter_bedtype,
     };
     setSelectedFilter(newFilter);
   };
@@ -58,14 +66,14 @@ const FilterRadioGroup: React.FC<Props> = ({
     localStorage.setItem(filterType, JSON.stringify(selectedFilter));
     setShowFilters(false);
     setShowActiveFilters(true);
-    setDisplayFilter(selectedFilter?.filter_label ?? null);
+    setDisplayFilter(selectedFilter?.filter_bedtype ?? null);
     updateMethod();
   };
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
     const searchedFilters = filters.filter((filter) =>
-      filter.filter_label.toLowerCase().includes(searchTerm)
+      filter.filter_bedtype.toLowerCase().includes(searchTerm)
     );
     setSearchedFilters(searchedFilters);
   };
@@ -82,7 +90,7 @@ const FilterRadioGroup: React.FC<Props> = ({
   const setDefaultFilter = () => {
     setSelectedFilter({
       metric_id: 'bedcount_per_hundred_thousand_adults_total',
-      filter_label: 'All bed types',
+      filter_bedtype: 'All bed types',
     });
   };
 
@@ -171,7 +179,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                               onChange={() =>
                                 handleChange(
                                   filter.metric_id,
-                                  filter.filter_label
+                                  filter.filter_bedtype
                                 )
                               }
                             />
@@ -179,7 +187,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                               className="govuk-label govuk-radios__label"
                               htmlFor={filter.metric_id}
                             >
-                              {filter.filter_label}
+                              {filter.filter_bedtype}
                             </label>
                             {filter_helptext[filter.metric_id] && (
                               <div className="govuk-hint govuk-radios__hint">

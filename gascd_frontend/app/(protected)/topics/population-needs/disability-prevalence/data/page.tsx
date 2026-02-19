@@ -19,6 +19,8 @@ import DownloadTableDataCSVLink from '@/components/metric-components/download-ta
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
+import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
+import { Filters } from '@/data/interfaces/Filters';
 
 export default function DisabilityPrevalence() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -73,6 +75,73 @@ export default function DisabilityPrevalence() {
     'support_for_social_isolation_other_social_support_18_and_over',
     'support_for_visual_impairment_sensory_support_18_and_over',
     'support_with_memory_and_cognition_18_and_over',
+  ];
+
+  const bedTypeFilters: Filters[] = [
+    {
+      metric_id:
+        'bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled',
+      filter_label: 'Young physically disabled',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_transitional',
+      filter_label: 'Transitional',
+      checked: false,
+    },
+    {
+      metric_id:
+        'bedcount_per_hundred_thousand_adults_mental_health_residential',
+      filter_label: 'Mental health residential',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_mental_health_nursing',
+      filter_label: 'Mental health nursing',
+      checked: false,
+    },
+    {
+      metric_id:
+        'bedcount_per_hundred_thousand_adults_learning_disability_residential',
+      filter_label: 'Learning disability residential',
+      checked: false,
+    },
+    {
+      metric_id:
+        'bedcount_per_hundred_thousand_adults_learning_disability_nursing',
+      filter_label: 'Learning disability nursing',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_general_residential',
+      filter_label: 'General residential',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_general_nursing',
+      filter_label: 'General nursing',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_dementia_residential',
+      filter_label: 'Dementia residential',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_dementia_nursing',
+      filter_label: 'Dementia nursing',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_community_care',
+      filter_label: 'Community care',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_total',
+      filter_label: 'All bed types',
+      checked: false,
+    },
   ];
 
   useEffect(() => {
@@ -156,6 +225,19 @@ export default function DisabilityPrevalence() {
     };
     fetchLocationIds();
   }, [CPLocationId]);
+
+  const updatePrimaryReasonMetrics = () => {
+    const storedData = localStorage.getItem('primary-reason-metrics');
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      setDemographicQuery((prevQuery) => ({
+        ...prevQuery,
+        metric_ids: demographicMetricIds.map((metricId) =>
+          parsedData.metric_id === metricId ? parsedData.metric_id : metricId
+        ),
+      }));
+    }
+  };
 
   return (
     <Layout
@@ -305,6 +387,12 @@ export default function DisabilityPrevalence() {
           </>
         }
       >
+        <FilterCheckboxGroup
+          filterType="primary-reason-metrics"
+          filterLabel="Primary support reason"
+          filters={bedTypeFilters}
+          updateMethod={updatePrimaryReasonMetrics}
+        />
         <DataTabs
           id="3"
           table={

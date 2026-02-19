@@ -1,6 +1,6 @@
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
-import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
+import { TotalBedsFilters } from '@/data/interfaces/Filters';
 
 class IndicatorFetchService {
   public static async getFilters() {

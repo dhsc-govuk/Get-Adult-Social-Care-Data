@@ -3,7 +3,7 @@ import { Indicator } from '@/data/interfaces/Indicator';
 import { Location } from '@/data/interfaces/Location';
 import { IndicatorDisplay } from '@/data/interfaces/IndicatorDisplay';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
-import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
+import { TotalBedsFilters } from '@/data/interfaces/Filters';
 
 global.fetch = vi.fn();
 
