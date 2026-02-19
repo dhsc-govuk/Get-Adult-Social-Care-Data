@@ -24,6 +24,7 @@ import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { Indicator } from '@/data/interfaces/Indicator';
+import { Filters } from '@/data/interfaces/Filters';
 import TableService from '@/services/Table/TableService';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
@@ -173,6 +174,73 @@ export default function ProvisionAndOccupancyPage() {
     'bedcount_per_hundred_thousand_adults_mental_health_residential',
     'bedcount_per_hundred_thousand_adults_transitional',
     'bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled',
+  ];
+
+  const bedTypeFilters: Filters[] = [
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_total',
+      filter_label: 'All bed types',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_community_care',
+      filter_label: 'Community care',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_dementia_nursing',
+      filter_label: 'Dementia nursing',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_dementia_residential',
+      filter_label: 'Dementia residential',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_general_nursing',
+      filter_label: 'General nursing',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_general_residential',
+      filter_label: 'General residential',
+      checked: false,
+    },
+    {
+      metric_id:
+        'bedcount_per_hundred_thousand_adults_learning_disability_nursing',
+      filter_label: 'Learning disability nursing',
+      checked: false,
+    },
+    {
+      metric_id:
+        'bedcount_per_hundred_thousand_adults_learning_disability_residential',
+      filter_label: 'Learning disability residential',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_mental_health_nursing',
+      filter_label: 'Mental health nursing',
+      checked: false,
+    },
+    {
+      metric_id:
+        'bedcount_per_hundred_thousand_adults_mental_health_residential',
+      filter_label: 'Mental health residential',
+      checked: false,
+    },
+    {
+      metric_id: 'bedcount_per_hundred_thousand_adults_total_transitional',
+      filter_label: 'Transitional',
+      checked: false,
+    },
+    {
+      metric_id:
+        'bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled',
+      filter_label: 'Young physically disabled',
+      checked: false,
+    },
   ];
 
   const bedNumberMetricIds = ['bedcount_per_hundred_thousand_adults_total'];
@@ -449,9 +517,8 @@ export default function ProvisionAndOccupancyPage() {
           setFilteredCareHomeBedTypesData(
             latestBedTypeData.filter((item) => ids.includes(item.metric_id))
           );
-
           const map: any = {};
-          parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
+          parsedData.map((item) => (map[item.metric_id] = item.filter_label));
           setBedTypeRowHeaders(map);
         }
       } catch (error) {
@@ -474,7 +541,7 @@ export default function ProvisionAndOccupancyPage() {
       const parsedData = JSON.parse(storedData);
       if (parsedData) {
         const id = parsedData.metric_id;
-        const name = parsedData.filter_bedtype;
+        const name = parsedData.filter_label;
         setFilteredCareHomeBedNumbersData(
           bedNumbersData.filter((item) => id === item.metric_id)
         );
@@ -504,7 +571,7 @@ export default function ProvisionAndOccupancyPage() {
     if (storedData) {
       const filters = JSON.parse(storedData);
       const map: any = {};
-      filters.map((item: any) => (map[item.metric_id] = item.filter_bedtype));
+      filters.map((item: any) => (map[item.metric_id] = item.filter_label));
       headers = map;
     }
     // Make some time series data based on the bed type row headers
@@ -583,7 +650,8 @@ export default function ProvisionAndOccupancyPage() {
       >
         <FilterRadioGroup
           filterType="numbers-table-metrics"
-          filterLabel="Bed numbers"
+          filterLabel="Bed type"
+          filters={bedTypeFilters}
           updateMethod={updateNumbersTableMetrics}
         />
         <DataTabs
@@ -663,7 +731,8 @@ export default function ProvisionAndOccupancyPage() {
       >
         <FilterCheckboxGroup
           filterType="type-table-metrics"
-          filterLabel="Bed types"
+          filterLabel="Bed type"
+          filters={bedTypeFilters}
           updateMethod={updateTypesTableMetrics}
         />
         <DataTabs
@@ -871,7 +940,8 @@ export default function ProvisionAndOccupancyPage() {
       >
         <FilterCheckboxGroup
           filterType="type-chart-metrics"
-          filterLabel="Bed types over time"
+          filterLabel="Bed type"
+          filters={bedTypeFilters}
           updateMethod={updateTypesChartMetrics}
         />
         <DataTabs

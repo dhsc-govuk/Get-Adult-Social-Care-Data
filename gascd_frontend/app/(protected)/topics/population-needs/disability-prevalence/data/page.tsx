@@ -41,10 +41,20 @@ export default function DisabilityPrevalence() {
     } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
-  const [filteredDemographicData, setFilteredDemographicData] = useState<
+  const [filteredDisabilityData, setFilteredDisabilityData] = useState<
     Indicator[]
   >([]);
-  const [demographicQuery, setDemographicQuery] = useState<IndicatorQuery>({
+  const [primarySupportReasonData, setPrimarySupportReasonData] = useState<
+    Indicator[]
+  >([]);
+  const [filteredPrimaryReasonData, setFilteredPrimaryReasonData] = useState<
+    Indicator[]
+  >([]);
+  const [disabilityQuery, setDisabilityQuery] = useState<IndicatorQuery>({
+    metric_ids: [],
+    location_ids: [],
+  });
+  const [supportReasonQuery, setSupportReasonQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
   });
@@ -60,10 +70,7 @@ export default function DisabilityPrevalence() {
     },
   ];
 
-  const demographicMetricIds = [
-    'perc_population_disability',
-    'learning_disability_prevalence',
-    'perc_general_health',
+  const supportReasonMetricIds = [
     'access_and_mobility_only_physical_support_18_and_over',
     'asylum_seeker_support_social_support_18_and_over',
     'learning_disability_support_18_and_over',
@@ -77,69 +84,95 @@ export default function DisabilityPrevalence() {
     'support_with_memory_and_cognition_18_and_over',
   ];
 
-  const bedTypeFilters: Filters[] = [
+  const disabilityMetricIds = [
+    'perc_population_disability',
+    'learning_disability_prevalence',
+    'perc_general_health',
+  ];
+
+  const supportReasonRowHeadersDefault = {
+    learning_disability_support_18_and_over: 'Learning disability support',
+    mental_health_support_18_and_over: 'Mental health support',
+    access_and_mobility_only_physical_support_18_and_over:
+      'Physical support: Access and mobility only',
+    personal_care_support_physical_support_18_and_over:
+      'Physical support: Personal care support',
+    support_for_dual_impairment_sensory_support_18_and_over:
+      'Sensory support: Support for dual impairment',
+    support_for_hearing_impairment_sensory_support_18_and_over:
+      'Sensory support: Support for hearing impairment',
+    support_for_visual_impairment_sensory_support_18_and_over:
+      'Sensory support: Support for visual impairment',
+    asylum_seeker_support_social_support_18_and_over:
+      'Social support: Asylum seeker support',
+    substance_misuse_support_social_support_18_and_over:
+      'Social support: Substance misuse support',
+    support_for_social_isolation_other_social_support_18_and_over:
+      'Social support: Support for social isolation or other reason',
+    support_with_memory_and_cognition_18_and_over:
+      'Support with memory and cognition',
+  };
+
+  const [supportReasonRowHeaders, setSupportReasonRowHeaders] = useState<any>(
+    supportReasonRowHeadersDefault
+  );
+
+  const supportTypeFilters: Filters[] = [
+    {
+      metric_id: 'learning_disability_support_18_and_over',
+      filter_label: 'Learning disability support',
+      checked: false,
+    },
+    {
+      metric_id: 'mental_health_support_18_and_over',
+      filter_label: 'Mental health support',
+      checked: false,
+    },
+    {
+      metric_id: 'access_and_mobility_only_physical_support_18_and_over',
+      filter_label: 'Physical support: Access and mobility only',
+      checked: false,
+    },
+    {
+      metric_id: 'personal_care_support_physical_support_18_and_over',
+      filter_label: 'Physical support: Personal care support',
+      checked: false,
+    },
+    {
+      metric_id: 'support_for_dual_impairment_sensory_support_18_and_over',
+      filter_label: 'Sensory support: Support for dual impairment',
+      checked: false,
+    },
+    {
+      metric_id: 'support_for_hearing_impairment_sensory_support_18_and_over',
+      filter_label: 'Sensory support: Support for hearing impairment',
+      checked: false,
+    },
+    {
+      metric_id: 'support_for_visual_impairment_sensory_support_18_and_over',
+      filter_label: 'Sensory support: Support for visual impairment',
+      checked: false,
+    },
+    {
+      metric_id: 'asylum_seeker_support_social_support_18_and_over',
+      filter_label: 'Social support: Asylum seeker support',
+      checked: false,
+    },
+    {
+      metric_id: 'substance_misuse_support_social_support_18_and_over',
+      filter_label: 'Social support: Substance misuse support',
+      checked: false,
+    },
     {
       metric_id:
-        'bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled',
-      filter_label: 'Young physically disabled',
+        'support_for_social_isolation_other_social_support_18_and_over',
+      filter_label:
+        'Social support: Support for social isolation or other reason',
       checked: false,
     },
     {
-      metric_id: 'bedcount_per_hundred_thousand_adults_transitional',
-      filter_label: 'Transitional',
-      checked: false,
-    },
-    {
-      metric_id:
-        'bedcount_per_hundred_thousand_adults_mental_health_residential',
-      filter_label: 'Mental health residential',
-      checked: false,
-    },
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_mental_health_nursing',
-      filter_label: 'Mental health nursing',
-      checked: false,
-    },
-    {
-      metric_id:
-        'bedcount_per_hundred_thousand_adults_learning_disability_residential',
-      filter_label: 'Learning disability residential',
-      checked: false,
-    },
-    {
-      metric_id:
-        'bedcount_per_hundred_thousand_adults_learning_disability_nursing',
-      filter_label: 'Learning disability nursing',
-      checked: false,
-    },
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_general_residential',
-      filter_label: 'General residential',
-      checked: false,
-    },
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_general_nursing',
-      filter_label: 'General nursing',
-      checked: false,
-    },
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_dementia_residential',
-      filter_label: 'Dementia residential',
-      checked: false,
-    },
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_dementia_nursing',
-      filter_label: 'Dementia nursing',
-      checked: false,
-    },
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_community_care',
-      filter_label: 'Community care',
-      checked: false,
-    },
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_total',
-      filter_label: 'All bed types',
+      metric_id: 'support_with_memory_and_cognition_18_and_over',
+      filter_label: 'Support with memory and cognition',
       checked: false,
     },
   ];
@@ -156,7 +189,10 @@ export default function DisabilityPrevalence() {
     fetchSelectedLocation();
 
     // Track all metrics on this page
-    demographicMetricIds.forEach((metric_id) => {
+    disabilityMetricIds.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+    supportReasonMetricIds.forEach((metric_id) => {
       AnalyticsService.trackMetricView(metric_id);
     });
   }, []);
@@ -186,28 +222,47 @@ export default function DisabilityPrevalence() {
 
   useEffect(() => {
     if (locationIds.length > 0) {
-      setDemographicQuery(() => ({
-        metric_ids: demographicMetricIds,
+      setDisabilityQuery(() => ({
+        metric_ids: disabilityMetricIds,
+        location_ids: locationIds,
+      }));
+      setSupportReasonQuery(() => ({
+        metric_ids: supportReasonMetricIds,
         location_ids: locationIds,
       }));
     }
   }, [locationIds]);
 
   useEffect(() => {
-    const fetchAllData = async () => {
+    const fetchDisabilityData = async () => {
       if (!CPLocationId) return;
       try {
-        const demographicData: Indicator[] =
-          await IndicatorFetchService.getData(demographicQuery);
-        const filteredDemographicData =
-          TableService.filterDate(demographicData);
-        setFilteredDemographicData(filteredDemographicData);
+        const disabilityData: Indicator[] =
+          await IndicatorFetchService.getData(disabilityQuery);
+        const filteredDisabilityData = TableService.filterDate(disabilityData);
+        setFilteredDisabilityData(filteredDisabilityData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-    fetchAllData();
-  }, [demographicQuery]);
+    fetchDisabilityData();
+  }, [disabilityQuery]);
+
+  useEffect(() => {
+    const fetchReasonData = async () => {
+      if (!CPLocationId) return;
+      try {
+        const supportReasonData: Indicator[] =
+          await IndicatorFetchService.getData(supportReasonQuery);
+        const filteredSupportReasonData =
+          TableService.filterDate(supportReasonData);
+        setPrimarySupportReasonData(filteredSupportReasonData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchReasonData();
+  }, [supportReasonQuery]);
 
   useEffect(() => {
     const fetchLocationIds = async () => {
@@ -226,16 +281,28 @@ export default function DisabilityPrevalence() {
     fetchLocationIds();
   }, [CPLocationId]);
 
+  useEffect(() => {
+    updatePrimaryReasonMetrics();
+  }, [filteredPrimaryReasonData]);
+
   const updatePrimaryReasonMetrics = () => {
     const storedData = localStorage.getItem('primary-reason-metrics');
     if (storedData) {
       const parsedData = JSON.parse(storedData);
-      setDemographicQuery((prevQuery) => ({
-        ...prevQuery,
-        metric_ids: demographicMetricIds.map((metricId) =>
-          parsedData.metric_id === metricId ? parsedData.metric_id : metricId
-        ),
-      }));
+      if (Array.isArray(parsedData)) {
+        const ids = parsedData.map((item) => item.metric_id);
+        setFilteredPrimaryReasonData(
+          primarySupportReasonData.filter((item) =>
+            ids.includes(item.metric_id)
+          )
+        );
+        const map: any = {};
+        parsedData.map((item) => (map[item.metric_id] = item.filter_label));
+        setSupportReasonRowHeaders(map);
+      }
+    } else {
+      setFilteredPrimaryReasonData(primarySupportReasonData);
+      setSupportReasonRowHeaders(supportReasonRowHeadersDefault);
     }
   };
 
@@ -298,7 +365,7 @@ export default function DisabilityPrevalence() {
                 perc_population_disability:
                   'Disability prevalence – people who reported a long-term physical or mental health condition, or illness that limits day-to-day activities',
               }}
-              data={filteredDemographicData}
+              data={filteredDisabilityData}
               showCareProvider={false}
               percentageRows={[
                 'perc_general_health',
@@ -341,7 +408,7 @@ export default function DisabilityPrevalence() {
           table={
             <DataTable
               tableref={tableref2}
-              caption={`Table 2: learning disability prevalence – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
+              caption={`Table 2: learning disability prevalence – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDisabilityData)}`}
               source={
                 'Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
               }
@@ -350,7 +417,7 @@ export default function DisabilityPrevalence() {
                 learning_disability_prevalence:
                   'Learning disability prevalence',
               }}
-              data={filteredDemographicData}
+              data={filteredDisabilityData}
               showCareProvider={false}
               percentageRows={['learning_disability_prevalence']}
             ></DataTable>
@@ -390,7 +457,7 @@ export default function DisabilityPrevalence() {
         <FilterCheckboxGroup
           filterType="primary-reason-metrics"
           filterLabel="Primary support reason"
-          filters={bedTypeFilters}
+          filters={supportTypeFilters}
           updateMethod={updatePrimaryReasonMetrics}
         />
         <DataTabs
@@ -398,36 +465,14 @@ export default function DisabilityPrevalence() {
           table={
             <DataTable
               tableref={tableref3}
-              caption={`Table 3: primary reason for all age groups to access long-term adult social care – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
+              caption={`Table 3: primary reason for all age groups to access long-term adult social care – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDisabilityData)}`}
               source={
                 'Adult Social Care Activity and Finance Report from NHS England'
               }
               columnHeaders={locationNamesWithAverageLabels}
               metricColumnName="Primary support reason"
-              rowHeaders={{
-                learning_disability_support_18_and_over:
-                  'Learning disability support',
-                mental_health_support_18_and_over: 'Mental health support',
-                access_and_mobility_only_physical_support_18_and_over:
-                  'Physical support: Access and mobility only',
-                personal_care_support_physical_support_18_and_over:
-                  'Physical support: Personal care support',
-                support_for_dual_impairment_sensory_support_18_and_over:
-                  'Sensory support: Support for dual impairment',
-                support_for_hearing_impairment_sensory_support_18_and_over:
-                  'Sensory support: Support for hearing impairment',
-                support_for_visual_impairment_sensory_support_18_and_over:
-                  'Sensory support: Support for visual impairment',
-                asylum_seeker_support_social_support_18_and_over:
-                  'Social support: Asylum seeker support',
-                substance_misuse_support_social_support_18_and_over:
-                  'Social support: Substance misuse support',
-                support_for_social_isolation_other_social_support_18_and_over:
-                  'Social support: Support for social isolation or other reason',
-                support_with_memory_and_cognition_18_and_over:
-                  'Support with memory and cognition',
-              }}
-              data={filteredDemographicData}
+              rowHeaders={supportReasonRowHeaders}
+              data={filteredPrimaryReasonData}
               showCareProvider={false}
             >
               <p className="govuk-body-m">(*) denotes less than 5</p>
