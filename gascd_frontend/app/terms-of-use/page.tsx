@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from '@/components/common/layout/Layout';
 import TermsOfUse from '@/components/terms-of-use/TermsOfUse';
 
-const DisclaimerPage: React.FC = () => {
+const TermsOfUsePage: React.FC = () => {
   return (
     <>
       <Layout
@@ -17,4 +17,4 @@ const DisclaimerPage: React.FC = () => {
   );
 };
 
-export default DisclaimerPage;
+export default TermsOfUsePage;

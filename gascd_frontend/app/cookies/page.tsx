@@ -41,7 +41,7 @@ const CookiesPage = () => {
       <Layout
         title="Cookies on Get adult social care data"
         showLoginInformation={false}
-        currentPage="disclaimer"
+        currentPage="cookies"
         showNavBar={false}
       >
         <div className="govuk-grid-row">

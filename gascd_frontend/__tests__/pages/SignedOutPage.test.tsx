@@ -3,7 +3,7 @@ import SignedOutPage from '../../app/(authentication)/signed-out/page';
 import { FALLBACK_FEEDBACK_URL } from '@/components/common/feedback/Feedback';
 
 describe('SignedOutPage', () => {
-  it('should render the heading, some body text, and disclaimer link', () => {
+  it('should render the heading, some body text, and feedback link', () => {
     render(<SignedOutPage />);
 
     const headingElement = screen.getByRole('heading', {

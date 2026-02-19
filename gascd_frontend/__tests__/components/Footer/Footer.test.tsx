@@ -15,12 +15,12 @@ describe('Footer', () => {
     );
   });
 
-  it('renders disclaimer link', () => {
+  it('renders terms of use link', () => {
     render(<Footer />);
-    const disclaimer = screen.getByRole('link', {
-      name: 'Disclaimer',
+    const termsOfUse = screen.getByRole('link', {
+      name: 'Terms of use',
     });
-    expect(disclaimer).toHaveAttribute('href', '/disclaimer');
+    expect(termsOfUse).toHaveAttribute('href', '/terms-of-use');
   });
 
   it('renders version numbers', () => {
@@ -32,10 +32,10 @@ describe('Footer', () => {
 
   it('renders privacy link', () => {
     render(<Footer />);
-    const disclaimer = screen.getByRole('link', {
+    const privacy = screen.getByRole('link', {
       name: 'Privacy',
     });
-    expect(disclaimer).toHaveAttribute('href', '/privacy-policy');
+    expect(privacy).toHaveAttribute('href', '/privacy-policy');
   });
 
   it('renders feedback link', () => {
@@ -50,9 +50,9 @@ describe('Footer', () => {
 
   it('renders help link', () => {
     render(<Footer />);
-    const disclaimer = screen.getByRole('link', {
+    const help = screen.getByRole('link', {
       name: 'Help',
     });
-    expect(disclaimer).toHaveAttribute('href', '/help');
+    expect(help).toHaveAttribute('href', '/help');
   });
 });
