@@ -172,7 +172,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
             <>
               <div className="js-container-heading">
                 <h3 className="govuk-heading-s searchable-filters-heading">
-                  Bed type
+                  {filterLabel}
                 </h3>
                 {selectedFilters.length > 0 && (
                   <p className="app-c-option-select__selected-counter js-selected-counter searchable-filters-heading">
@@ -194,7 +194,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                     htmlFor="input-filter-search"
                     className="govuk-label govuk-visually-hidden"
                   >
-                    Bed type
+                    {filterLabel}
                   </label>
                   <input
                     id="input-filter-search"
@@ -215,7 +215,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                   <div className="gem-c-checkboxes govuk-form-group govuk-checkboxes--small">
                     <fieldset className="govuk-fieldset">
                       <legend className="govuk-fieldset__legend govuk-fieldset__legend--m gem-c-checkboxes__legend--hidden">
-                        Bed type
+                        {filterLabel}
                       </legend>
                       <ul className="govuk-checkboxes gem-c-checkboxes__list">
                         {searchedFilters.map((filter: any, index) => (
@@ -289,7 +289,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                   onClick={() => clearFilter(filterName)}
                 >
                   <span className="govuk-visually-hidden">Remove filter</span>
-                  Bed type: {filterName}
+                  {filterLabel}: {filterName}
                 </button>
               </li>
             ))}

@@ -80,10 +80,12 @@ const FilterRadioGroup: React.FC<Props> = ({
   };
 
   const setDefaultFilter = () => {
-    setSelectedFilter({
-      metric_id: 'bedcount_per_hundred_thousand_adults_total',
-      filter_label: 'All bed types',
-    });
+    if (filterType === 'numbers-table-metrics') {
+      setSelectedFilter({
+        metric_id: 'bedcount_per_hundred_thousand_adults_total',
+        filter_label: 'All bed types',
+      });
+    }
   };
 
   return (
@@ -122,7 +124,7 @@ const FilterRadioGroup: React.FC<Props> = ({
             <>
               <div className="js-container-heading">
                 <h3 className="govuk-heading-s searchable-filters-heading">
-                  Bed type
+                  {filterLabel}
                 </h3>
               </div>
               <div
@@ -135,7 +137,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                   htmlFor="input-bedtype-radios"
                   className="govuk-label govuk-visually-hidden"
                 >
-                  Bed type
+                  {filterLabel}
                 </label>
                 <input
                   id="input-bedtype-radios"
@@ -154,7 +156,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                   <div className="govuk-radios govuk-form-group govuk-radios--small">
                     <fieldset className="govuk-fieldset">
                       <legend className="govuk-fieldset__legend gem-c-radios govuk-fieldset__legend--m govuk-visually-hidden">
-                        Bed type
+                        {filterLabel}
                       </legend>
                       <ul className="govuk-radios__list gem-c-radios__list">
                         {searchedFilters.map((filter: any, index) => (
@@ -227,7 +229,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                 onClick={() => clearFilters()}
               >
                 <span className="govuk-visually-hidden">Remove filter</span>
-                Bed type: {displayFilter}
+                {filterLabel}: {displayFilter}
               </button>
             </li>
           </ul>
