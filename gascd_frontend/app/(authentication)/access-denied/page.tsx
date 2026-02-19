@@ -11,10 +11,15 @@ const AccessDeniedPage: React.FC = () => {
             <h1 className="govuk-heading-xl">
               You do not have access to this service
             </h1>
-            <h2 className="govuk-heading-m">People with access</h2>
-
             <div className="govuk-inset-text">
-              CQC nominated individuals with a CQC registered email addresses
+              <h2 className="govuk-heading-m">People with access</h2>
+              <ul className="govuk-list govuk-list--bullet">
+                <li>
+                  CQC nominated individuals with a CQC registered email
+                  addresses
+                </li>
+                <li>Local Authority ASC representatives</li>
+              </ul>
             </div>
 
             <p className="govuk-body">
@@ -42,7 +47,18 @@ const AccessDeniedPage: React.FC = () => {
               <li>organisation name</li>
               <li>CQC registration number</li>
               <li>CQC registered email address</li>
+              <li>gov.uk email address</li>
             </ul>
+
+            <p className="govuk-body">
+              Get support from:{' '}
+              <a
+                href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
+                className="govuk-link"
+              >
+                getadultsocialcaredata.team@dhsc.gov.uk
+              </a>
+            </p>
           </div>
         </div>
       </Layout>
