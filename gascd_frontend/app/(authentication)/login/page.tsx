@@ -134,7 +134,7 @@ const LoginPage: React.FC = () => {
             <h2 className="govuk-heading-m">More information</h2>
             <p className="govuk-body">
               Find out more about the{' '}
-              <a href="/guidence">Get adult social care data service</a>.
+              <a href="/guidance">Get adult social care data service</a>.
             </p>
             <p className="govuk-body">
               For enquiries about the service, please contact the GASCD team at{' '}
