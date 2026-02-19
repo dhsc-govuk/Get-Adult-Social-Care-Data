@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import DisclaimerPage from '../../app/disclaimer/page';
+import DisclaimerPage from '../../app/terms-of-use/page';
 
 describe('DisclaimerPage', () => {
   it('should render the heading, and some body text', () => {

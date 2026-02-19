@@ -7,7 +7,7 @@ const PrivacyPage = () => {
       <Layout
         title="Privacy notice"
         showLoginInformation={false}
-        currentPage="disclaimer"
+        currentPage="privacy-policy"
         showNavBar={false}
       >
         <div className="govuk-grid-row">
