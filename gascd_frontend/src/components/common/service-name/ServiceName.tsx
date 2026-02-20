@@ -157,6 +157,7 @@ const ServiceName: React.FC<Props> = ({ session }) => {
         <div
           id="super-navigation-menu"
           className="gem-c-layout-super-navigation-header__navigation-dropdown-menu"
+          aria-hidden="true"
           style={{ display: 'none' }}
         >
           <div className="govuk-width-container">

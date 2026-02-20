@@ -88,7 +88,6 @@ const Header: React.FC<Props> = ({ session, account_url }) => {
                 data-open-class="rebranded-cross-service-header__toggle--open"
                 data-label-for-show="Show GOV.UK One Login menu"
                 data-label-for-hide="Hide GOV.UK One Login menu"
-                aria-expanded="false"
                 className="rebranded-cross-service-header__toggle js-x-header-toggle"
                 onClick={toggleOLNav}
               >
