@@ -47,8 +47,8 @@ const Footer: React.FC<Props> = ({ version_tag, version_hash }) => {
 
             <ul className="govuk-footer__inline-list">
               <li className="govuk-footer__inline-list-item">
-                <a className="govuk-footer__link" href="/disclaimer">
-                  Disclaimer
+                <a className="govuk-footer__link" href="/terms-of-use">
+                  Terms of use
                 </a>
               </li>
               <li className="govuk-footer__inline-list-item">

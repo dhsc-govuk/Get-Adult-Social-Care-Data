@@ -1,17 +1,17 @@
 import { render, screen } from '@testing-library/react';
-import DisclaimerPage from '../../app/disclaimer/page';
+import TermsOfUsePage from '../../app/terms-of-use/page';
 
-describe('DisclaimerPage', () => {
+describe('TermsOfUsePage', () => {
   it('should render the heading, and some body text', () => {
-    render(<DisclaimerPage />);
+    render(<TermsOfUsePage />);
 
     const headingElement = screen.getByRole('heading', {
-      name: /Disclaimer/i,
+      name: /Terms of use/i,
     });
     expect(headingElement).toBeInTheDocument();
 
     const bodyTextElement = screen.getByText(
-      /Get adult social care data is in a beta testing phase/i
+      /This page explains the Get Adult Social Care Data/i
     );
     expect(bodyTextElement).toBeInTheDocument();
   });
