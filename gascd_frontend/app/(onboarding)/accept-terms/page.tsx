@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
-import TermsOfUse from '@/components/terms-of-use/TermsOfUse';
 
 const ConsentPage: React.FC = () => {
   const router = useRouter();
