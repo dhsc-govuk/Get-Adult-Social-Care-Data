@@ -56,8 +56,8 @@ describe('UnpaidCarePage', () => {
     const helpLink = screen.getAllByRole('link', {
       name: /People aged 5 and over who provide unpaid care/i,
     });
-    expect(helpLink[0]).toBeInTheDocument();
-    expect(helpLink[0]).toHaveAttribute(
+    expect(helpLink[1]).toBeInTheDocument();
+    expect(helpLink[1]).toHaveAttribute(
       'href',
       '/help/percentage-people-aged-5-and-over-who-provide-unpaid-care'
     );

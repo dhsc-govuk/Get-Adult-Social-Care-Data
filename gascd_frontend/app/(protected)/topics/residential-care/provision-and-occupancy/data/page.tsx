@@ -640,6 +640,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref1}
                 filename="care_home_bed_numbers.csv"
                 xLabel=""
+                downloadType="care home bed numbers per 100,000 adult population for regional local authorities"
               />
             </>
           }
@@ -724,6 +725,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref2}
                 filename="care_home_bed_types.csv"
                 xLabel=""
+                downloadType="care home bed numbers per 100,000 adult population"
               />
             </>
           }
@@ -838,6 +840,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref3}
                 filename="care_home_bed_numbers_and_occupancy.csv"
                 xLabel=""
+                downloadType="care home bed numbers and occupancy levels"
               />
             </>
           }

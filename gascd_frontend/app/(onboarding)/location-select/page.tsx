@@ -71,7 +71,7 @@ const LocationSelectPage: React.FC = () => {
   return (
     <>
       <Layout
-        title="Choose a location from your care provider group"
+        title="Select a location from your care provider group"
         showLoginInformation={false}
         currentPage="location-select"
         showNavBar={false}
@@ -132,6 +132,7 @@ const LocationSelectPage: React.FC = () => {
                       >
                         <input
                           id={`location-${index}`}
+                          aria-describedby={`radio-hint-${index}`}
                           name="availableLocation"
                           className="govuk-radios__input"
                           type="radio"
@@ -150,7 +151,10 @@ const LocationSelectPage: React.FC = () => {
                         >
                           {location.location_name}
                         </label>
-                        <div className="govuk-hint govuk-radios__hint">
+                        <div
+                          id={`radio-hint-${index}`}
+                          className="govuk-hint govuk-radios__hint"
+                        >
                           Address: {location.address}
                           <br />
                           Provider: {location.provider_name}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Session, User } from '@/lib/auth-client';
 import { ALLOWED_CP_USER_TYPES, LA_USER_TYPE } from '@/constants';
@@ -12,6 +12,7 @@ type Props = {
 
 const ServiceName: React.FC<Props> = ({ session }) => {
   const [selectedLocationName, setSelectedLocationName] = useState<string>('');
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchNames = async () => {
@@ -40,8 +41,8 @@ const ServiceName: React.FC<Props> = ({ session }) => {
     );
     if (nav) {
       if (nav.style.display === 'block') {
+        setMenuOpen(false);
         nav.style.display = 'none';
-        nav.ariaExpanded = 'false';
         navLastChild?.classList.remove(
           'govuk-service-navigation__item--active'
         );
@@ -49,8 +50,8 @@ const ServiceName: React.FC<Props> = ({ session }) => {
           'gem-c-layout-super-navigation-header__open-button'
         );
       } else {
+        setMenuOpen(true);
         nav.style.display = 'block';
-        nav.ariaExpanded = 'true';
         navLastChild?.classList.add('govuk-service-navigation__item--active');
         menuButton?.classList.add(
           'gem-c-layout-super-navigation-header__open-button'
@@ -136,6 +137,7 @@ const ServiceName: React.FC<Props> = ({ session }) => {
                       id="super-navigation-menu-toggle"
                       className="gem-c-layout-super-navigation-header__navigation-top-toggle-button"
                       onClick={() => toggleNav()}
+                      aria-expanded={menuOpen}
                     >
                       <span className="gem-c-layout-super-navigation-header__navigation-top-toggle-button-inner">
                         Menu
@@ -153,7 +155,6 @@ const ServiceName: React.FC<Props> = ({ session }) => {
         <div
           id="super-navigation-menu"
           className="gem-c-layout-super-navigation-header__navigation-dropdown-menu"
-          aria-hidden="true"
           style={{ display: 'none' }}
         >
           <div className="govuk-width-container">

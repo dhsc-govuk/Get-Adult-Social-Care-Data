@@ -270,6 +270,7 @@ export default function LAFundingPage() {
                 tableref={tableref1}
                 filename="social_care_funding_by_duration.csv"
                 xLabel=""
+                downloadType="LA spending on short-term and long-term adult social care for all age groups"
               />
             </>
           }
@@ -350,6 +351,7 @@ export default function LAFundingPage() {
                 tableref={tableref2}
                 filename="funding_for_long_term_adult_social_care.csv"
                 xLabel=""
+                downloadType="LA funding for long-term adult social care for all age groups"
               />
             </>
           }

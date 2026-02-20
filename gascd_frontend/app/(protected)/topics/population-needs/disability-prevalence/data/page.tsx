@@ -231,6 +231,7 @@ export default function DisabilityPrevalence() {
                 tableref={tableref1}
                 filename="general_health_and_disability.csv"
                 xLabel=""
+                downloadType="self-reporting on general health and disability"
               />
             </>
           }
@@ -279,6 +280,7 @@ export default function DisabilityPrevalence() {
                 tableref={tableref2}
                 filename="learning_disability_prevalence.csv"
                 xLabel=""
+                downloadType="learning disability prevalence"
               />
             </>
           }
@@ -350,6 +352,7 @@ export default function DisabilityPrevalence() {
                 tableref={tableref3}
                 filename="primary_reasons_for_accessing_care.csv"
                 xLabel=""
+                downloadType="primary reason for all age groups to access long-term adult social care"
               />
             </>
           }
