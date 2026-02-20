@@ -105,7 +105,7 @@ const LoginPage: React.FC = () => {
                 data-module="govuk-button"
                 disabled={isPending}
               >
-                {isPending ? 'Signing in...' : 'Start Now'}
+                {isPending ? 'Signing in...' : 'Start now'}
                 {!isPending && (
                   <svg
                     className="govuk-button__start-icon"
