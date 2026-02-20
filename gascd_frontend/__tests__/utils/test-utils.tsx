@@ -10,6 +10,7 @@ export const mockSession: any = {
     locationId: 'testlocation1',
     smartInsights: false,
     marketingConsent: true,
+    termsAccepted: true,
   },
 };
 
@@ -17,6 +18,13 @@ export const mockSessionNoConsent: any = {
   user: {
     ...mockSession.user,
     marketingConsent: null,
+  },
+};
+
+export const mockSessionNoTerms: any = {
+  user: {
+    ...mockSession.user,
+    termsAccepted: null,
   },
 };
 

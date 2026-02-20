@@ -56,6 +56,7 @@ const setupTestUsers = async () => {
         selectedLocationDisplayName: null,
         selectedLocationCategory: user.selectedLocationCategory,
         marketingConsent: true,
+        termsAccepted: true,
         source: TESTING_SOURCE,
         role: 'member',
       })
