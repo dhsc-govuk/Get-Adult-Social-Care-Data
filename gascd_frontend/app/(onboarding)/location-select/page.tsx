@@ -71,7 +71,7 @@ const LocationSelectPage: React.FC = () => {
   return (
     <>
       <Layout
-        title="Choose a location from your care provider group"
+        title="Select a location from your care provider group"
         showLoginInformation={false}
         currentPage="location-select"
         showNavBar={false}
