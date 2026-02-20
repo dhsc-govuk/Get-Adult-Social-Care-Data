@@ -44,7 +44,7 @@ const Header: React.FC<Props> = ({ session, account_url }) => {
           <div className="rebranded-one-login-header__container govuk-width-container">
             <div className="rebranded-one-login-header__logo">
               <Link
-                href="/"
+                href="https://www.gov.uk/"
                 className="rebranded-one-login-header__link rebranded-one-login-header__link--homepage"
               >
                 <svg
