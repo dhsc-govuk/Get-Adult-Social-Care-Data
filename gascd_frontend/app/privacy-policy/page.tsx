@@ -43,7 +43,6 @@ const PrivacyPage = () => {
               <li>your name</li>
               <li>your CQC registered or GOV.UK email address</li>
               <li>name and location of your employer or organisation.</li>
-              <li>your mobile phone number</li>
               <li>the IP address you use to access the GASCD service</li>
             </ul>
 
@@ -154,9 +153,7 @@ const PrivacyPage = () => {
             </p>
             <ul className="govuk-list govuk-list--bullet">
               <li>name</li>
-              <li>mobile phone number</li>
               <li>name and location of your employer or organisation.</li>
-              <li>GASCD service password</li>
             </ul>
             <p className="govuk-body">
               So that we can carry out security audits, we&apos;ll keep your
