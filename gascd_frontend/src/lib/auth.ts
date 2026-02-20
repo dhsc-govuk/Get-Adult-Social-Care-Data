@@ -106,6 +106,18 @@ export const auth = betterAuth({
         // This can be set by users
         input: true,
       },
+      termsAccepted: {
+        type: 'boolean',
+        required: false,
+        // This can be set by users
+        input: true,
+      },
+      termsAcceptedDate: {
+        type: 'date',
+        required: false,
+        // This can be set by users
+        input: true,
+      },
     },
   },
   plugins: [
