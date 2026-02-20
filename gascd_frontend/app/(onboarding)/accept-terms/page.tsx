@@ -19,21 +19,36 @@ const ConsentPage: React.FC = () => {
 
   return (
     <Layout
-      title="Agree to our terms of use"
+      title="You must agree to our Terms of use"
       showLoginInformation={false}
       currentPage="accept-terms"
     >
-      <p className="govuk-body">
-        You need to agree to the ToS before using this service.
-      </p>
+      <div className="govuk-grid-row">
+        <div className="govuk-grid-column-two-thirds">
+          <h1 className="govuk-heading-xl">Terms of use</h1>
 
-      <button
-        type="button"
-        className="govuk-button"
-        onClick={() => handleSubmit()}
-      >
-        Accept terms and continue
-      </button>
+          <p className="govuk-body">
+            You must agree to agree to our{' '}
+            <a
+              className="govuk-link"
+              href="/terms-of-use"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Terms of use (opens in new window)
+            </a>{' '}
+            to use this service.
+          </p>
+
+          <button
+            type="button"
+            className="govuk-button"
+            onClick={() => handleSubmit()}
+          >
+            Agree
+          </button>
+        </div>
+      </div>
     </Layout>
   );
 };

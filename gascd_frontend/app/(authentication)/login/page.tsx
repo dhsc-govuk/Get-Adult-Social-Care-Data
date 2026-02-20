@@ -140,15 +140,15 @@ const LoginPage: React.FC = () => {
             </form>
             <h2 className="govuk-heading-m">About using this service</h2>
             <p className="govuk-body">
-              By using this service, you are agreeing to our{' '}
+              You will be asked to agree to the{' '}
               <a className="govuk-link" href="/terms-of-use">
                 terms of use
               </a>{' '}
-              and{' '}
+              when you create a GASCD account. You can read our{' '}
               <a className="govuk-link" href="/privacy-policy">
                 privacy policy
-              </a>
-              .
+              </a>{' '}
+              to find out how we use your information.
             </p>
             <h2 className="govuk-heading-m">More information</h2>
             <p className="govuk-body">
