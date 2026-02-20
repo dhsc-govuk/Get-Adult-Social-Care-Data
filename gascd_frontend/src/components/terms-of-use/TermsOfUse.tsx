@@ -20,15 +20,21 @@ const TermsOfUse: React.FC = () => {
           care sector access to adult social care data in one place.
         </p>
 
-        <h2 className="govuk-heading-m">Using the GASCD service</h2>
+        <h2 className="govuk-heading-m">
+          Using the <abbr title="Get adult social care data">GASCD</abbr>{' '}
+          service
+        </h2>
         <p className="govuk-body">
-          You agree to use the GASCD service only for lawful purposes. You must
-          also use it in a way that does not infringe the rights of, or restrict
-          or inhibit the use and enjoyment of, this service by anyone else.
+          You agree to use the{' '}
+          <abbr title="Get adult social care data">GASCD</abbr> service only for
+          lawful purposes. You must also use it in a way that does not infringe
+          the rights of, or restrict or inhibit the use and enjoyment of, this
+          service by anyone else.
         </p>
         <p className="govuk-body">
-          We update the GASCD service regularly. We can change or remove content
-          at any time without notice.
+          We update the <abbr title="Get adult social care data">GASCD</abbr>{' '}
+          service regularly. We can change or remove content at any time without
+          notice.
         </p>
 
         <h2 className="govuk-heading-m">GOV.UK One Login</h2>
@@ -70,7 +76,8 @@ const TermsOfUse: React.FC = () => {
         </ul>
         <p className="govuk-body">
           You should get professional or specialist advice before doing anything
-          based on the content in the GASCD service.
+          based on the content in the{' '}
+          <abbr title="Get adult social care data">GASCD</abbr> service.
         </p>
         <p className="govuk-body">
           We&apos;re not liable for any loss or damage that may come from using
@@ -118,11 +125,12 @@ const TermsOfUse: React.FC = () => {
         <p className="govuk-body">
           From time to time, we may need to send you service emails, these are
           strictly operational communications and will never include marketing
-          content. By signing up for a GASCD account you consent to receiving
-          service emails containing service information, updates or any other
-          service-based communication to support the critical operation of the
-          service. We will send these service emails via GOV.UK Notify. For
-          further information read{' '}
+          content. By signing up for a{' '}
+          <abbr title="Get adult social care data">GASCD</abbr> account you
+          consent to receiving service emails containing service information,
+          updates or any other service-based communication to support the
+          critical operation of the service. We will send these service emails
+          via GOV.UK Notify. For further information read{' '}
           <a
             href="https://www.notifications.service.gov.uk/privacy"
             className="govuk-link"
@@ -135,7 +143,8 @@ const TermsOfUse: React.FC = () => {
         </p>
 
         <h2 className="govuk-heading-m">
-          Information about you and your visits to the GASCD service
+          Information about you and your visits to the{' '}
+          <abbr title="Get adult social care data">GASCD</abbr> service
         </h2>
         <p className="govuk-body">
           We collect information about you in accordance with our{' '}
@@ -156,16 +165,20 @@ const TermsOfUse: React.FC = () => {
           >
             cookie policy (opens in new tab)
           </a>
-          . By using the GASCD service, you agree to us collecting this
-          information and confirm that any data you provide is accurate.
+          . By using the <abbr title="Get adult social care data">GASCD</abbr>{' '}
+          service, you agree to us collecting this information and confirm that
+          any data you provide is accurate.
         </p>
 
-        <h2 className="govuk-heading-m">Linking from the GASCD service </h2>
+        <h2 className="govuk-heading-m">
+          Linking from the <abbr title="Get adult social care data">GASCD</abbr>{' '}
+          service{' '}
+        </h2>
         <p className="govuk-body">
-          The GASCD service links to websites that are managed by other
-          government departments and agencies, service providers or other
-          organisations. We don&apos;t have any control over the content on
-          these websites.
+          The <abbr title="Get adult social care data">GASCD</abbr> service
+          links to websites that are managed by other government departments and
+          agencies, service providers or other organisations. We don&apos;t have
+          any control over the content on these websites.
         </p>
         <p className="govuk-body">We&apos;re not responsible for:</p>
         <ul className="govuk-list govuk-list--bullet">
@@ -193,7 +206,8 @@ const TermsOfUse: React.FC = () => {
 
         <h2 className="govuk-heading-m">Accessing the platform </h2>
         <p className="govuk-body">
-          You must sign in to the GASCD service using:
+          You must sign in to the{' '}
+          <abbr title="Get adult social care data">GASCD</abbr> service using:
         </p>
         <ul className="govuk-list govuk-list--bullet">
           <li>a secure work-managed device </li>
@@ -241,7 +255,9 @@ const TermsOfUse: React.FC = () => {
           about you with them.
         </p>
 
-        <h2 className="govuk-heading-m">Leaving GASCD </h2>
+        <h2 className="govuk-heading-m">
+          Leaving <abbr title="Get adult social care data">GASCD</abbr>{' '}
+        </h2>
         <p className="govuk-body">
           You can{' '}
           <a
@@ -272,8 +288,9 @@ const TermsOfUse: React.FC = () => {
           at any time without notice.
         </p>
         <p className="govuk-body">
-          You&apos;ll agree to any changes if you continue to use the GASCD
-          service after the terms and conditions have been updated.
+          You&apos;ll agree to any changes if you continue to use the{' '}
+          <abbr title="Get adult social care data">GASCD</abbr> service after
+          the terms and conditions have been updated.
         </p>
       </div>
     </div>
