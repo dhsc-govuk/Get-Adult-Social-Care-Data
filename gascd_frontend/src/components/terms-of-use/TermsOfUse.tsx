@@ -245,7 +245,7 @@ const TermsOfUse: React.FC = () => {
         <p className="govuk-body">
           You can{' '}
           <a
-            href="mailto:getadultsocialcaredata.team@dhsc.gov.uk."
+            href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
             className="govuk-link govuk-link--no-underline"
           >
             contact us
