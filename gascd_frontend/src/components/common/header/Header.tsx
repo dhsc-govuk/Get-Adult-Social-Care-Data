@@ -32,11 +32,11 @@ const Header: React.FC<Props> = ({ session, account_url }) => {
 
   return (
     <>
-      <a href="#main-content" className="govuk-skip-link">
-        Skip to main content
-      </a>
       <header className="rebranded-cross-service-header">
         <CookieBanner />
+        <a href="#main-content" className="govuk-skip-link">
+          Skip to main content
+        </a>
         <div
           className="rebranded-one-login-header toggle-enabled"
           data-one-login-header-nav=""
