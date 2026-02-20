@@ -283,6 +283,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref1}
                 filename="population_size_and_age.csv"
                 xLabel=""
+                downloadType="population size and age group percentages"
               />
             </>
           }
