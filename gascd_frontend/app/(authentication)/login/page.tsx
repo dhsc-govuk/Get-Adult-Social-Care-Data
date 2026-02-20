@@ -30,7 +30,7 @@ const LoginPage: React.FC = () => {
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
-            <h1 className="govuk-heading-l">
+            <h1 className="govuk-heading-xl">
               Get adult social care data service
             </h1>
             <p className="govuk-body">
@@ -68,7 +68,12 @@ const LoginPage: React.FC = () => {
                 constitute advice. DHSC does not accept any liability for
                 decisions made by providers following use of this service. For
                 further details read our{' '}
-                <a href="/terms-of-use" target="_blank">
+                <a
+                  className="govuk-link"
+                  href="/terms-of-use"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
                   Terms of use (opens in a new tab)
                 </a>
                 .
@@ -78,13 +83,19 @@ const LoginPage: React.FC = () => {
             <h2 className="govuk-heading-m">Before you start</h2>
             <p className="govuk-body">
               You need a{' '}
-              <a href="https://www.gov.uk/using-your-gov-uk-one-login">
+              <a
+                className="govuk-link"
+                href="https://www.gov.uk/using-your-gov-uk-one-login"
+              >
                 GOV.UK One Login
               </a>{' '}
               to sign in to this service, and it must be tied to your CQC
               registered email address or your gov.uk email address if you are a
               local authority officer. You can{' '}
-              <a href="https://signin.account.gov.uk/sign-in-or-create">
+              <a
+                className="govuk-link"
+                href="https://signin.account.gov.uk/sign-in-or-create"
+              >
                 create one
               </a>{' '}
               if you do not already have one.
@@ -96,7 +107,9 @@ const LoginPage: React.FC = () => {
             </p>
             <p className="govuk-body">
               Find out why you need a{' '}
-              <a href="/terms-of-use">GOV.UK One Login</a>
+              <a className="govuk-link" href="/terms-of-use">
+                GOV.UK One Login
+              </a>
             </p>
             <form action={formAction}>
               <button
@@ -128,13 +141,22 @@ const LoginPage: React.FC = () => {
             <h2 className="govuk-heading-m">About using this service</h2>
             <p className="govuk-body">
               By using this service, you are agreeing to our{' '}
-              <a href="/terms-of-use">terms of use</a> and{' '}
-              <a href="/privacy-policy">privacy policy</a>.
+              <a className="govuk-link" href="/terms-of-use">
+                terms of use
+              </a>{' '}
+              and{' '}
+              <a className="govuk-link" href="/privacy-policy">
+                privacy policy
+              </a>
+              .
             </p>
             <h2 className="govuk-heading-m">More information</h2>
             <p className="govuk-body">
               Find out more about the{' '}
-              <a href="/guidance">Get adult social care data service</a>.
+              <a className="govuk-link" href="/guidance">
+                Get adult social care data service
+              </a>
+              .
             </p>
             <p className="govuk-body">
               For enquiries about the service, please contact the GASCD team at{' '}

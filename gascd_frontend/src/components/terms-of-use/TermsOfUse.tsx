@@ -4,9 +4,9 @@ const TermsOfUse: React.FC = () => {
   return (
     <div className="govuk-grid-row">
       <div className="govuk-grid-column-two-thirds">
-        <h1 className="govuk-heading-l">Terms of use </h1>
+        <h1 className="govuk-heading-xl">Terms of use </h1>
         <p className="govuk-body">First published: 19 February 2026</p>
-        <p className="govuk-body">Last updated:</p>
+        <p className="govuk-body">Last updated: 19 February 2026</p>
         <p className="govuk-body">
           This page explains the Get Adult Social Care Data (GASCD) service
           terms of use. You must agree to these to use the service.
@@ -38,8 +38,13 @@ const TermsOfUse: React.FC = () => {
         </p>
         <p className="govuk-body">
           GOV.UK One Login is a new way of{' '}
-          <a href="https://www.gov.uk/using-your-gov-uk-one-login/services">
-            signing in to government services
+          <a
+            href="https://www.gov.uk/using-your-gov-uk-one-login/services"
+            className="govuk-link"
+            rel="noreferrer noopener"
+            target="_blank"
+          >
+            signing in to government services (opens in new tab)
           </a>
           . It provides a simple way for you to sign in and prove your identity
           using an email address and password.
@@ -118,8 +123,13 @@ const TermsOfUse: React.FC = () => {
           service-based communication to support the critical operation of the
           service. We will send these service emails via GOV.UK Notify. For
           further information read{' '}
-          <a href="https://www.notifications.service.gov.uk/privacy">
-            GOV.UK Notify&apos;s privacy notice
+          <a
+            href="https://www.notifications.service.gov.uk/privacy"
+            className="govuk-link"
+            rel="noreferrer noopener"
+            target="_blank"
+          >
+            GOV.UK Notify&apos;s privacy notice (opens in new tab)
           </a>
           .
         </p>
@@ -129,10 +139,25 @@ const TermsOfUse: React.FC = () => {
         </h2>
         <p className="govuk-body">
           We collect information about you in accordance with our{' '}
-          <a href="/privacy-policy">privacy policy</a> and our{' '}
-          <a href="/cookies">cookie policy</a>. By using the GASCD service, you
-          agree to us collecting this information and confirm that any data you
-          provide is accurate.
+          <a
+            href="/privacy-policy"
+            className="govuk-link"
+            rel="noreferrer noopener"
+            target="_blank"
+          >
+            privacy policy (opens in new tab)
+          </a>{' '}
+          and our{' '}
+          <a
+            href="/cookies"
+            className="govuk-link"
+            rel="noreferrer noopener"
+            target="_blank"
+          >
+            cookie policy (opens in new tab)
+          </a>
+          . By using the GASCD service, you agree to us collecting this
+          information and confirm that any data you provide is accurate.
         </p>
 
         <h2 className="govuk-heading-m">Linking from the GASCD service </h2>
@@ -229,7 +254,14 @@ const TermsOfUse: React.FC = () => {
         </p>
         <p className="govuk-body">
           Check our privacy notice to find out{' '}
-          <a href="/privacy-policy">how long we keep your personal data</a>
+          <a
+            className="govuk-link"
+            href="/privacy-policy"
+            rel="noreferrer noopener"
+            target="_blank"
+          >
+            how long we keep your personal data (opens in new tab)
+          </a>
         </p>
 
         <h2 className="govuk-heading-m">
