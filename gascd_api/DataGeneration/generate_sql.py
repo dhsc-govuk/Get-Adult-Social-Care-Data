@@ -2,7 +2,6 @@ import hashlib
 import random
 from configs.metric_config import METRIC_DEFINITIONS, LOCATIONS, DATE_RANGES, LOCATION_ORDER, LOCATION_DATA, LOCATION_BOUNDS
 
-
 def generate_sql(table_name, records):
     column_names = sorted(records[0].keys())
     column_names_string = ', '.join(column_names)
@@ -18,18 +17,8 @@ def generate_sql(table_name, records):
 def format_date(date_obj):
     return date_obj.strftime('%Y-%m-%d')
 
-def generate_metric_record(table_name, record_idx, metric_code, location_code, location_type, start_date, end_date, time_series):
-    return  {
-        "id": f"(select id + {record_idx} from {table_name}_id)",
-        "metric_fk": get_id_by_code_sql('metrics', metric_code),
-        "location_code": f"'{location_code}'",
-        "location_type": f"'{location_type}'",
-        "start_date": f"'{format_date(start_date)}'",
-        "end_date": f"'{format_date(end_date)}'",
-        "time_series": f"ARRAY [{', '.join(str(x) for x in time_series)}]",
-        "latest_value": time_series[-1],
-        "loaded_datetime": "CURRENT_TIMESTAMP"
-    }
+def format_string(s):
+    return f"'{s}'"
 
 def get_id_for_table_sql(table_name):
     return f"with {table_name}_id as (select coalesce(max(id),0) as id from {table_name})"
@@ -40,8 +29,14 @@ def get_id_by_code_sql(table, code):
 def get_id_field_sql(table, idx):
     return f"(select id + {idx} from {table}_id)"
 
-def format_string(s):
-    return f"'{s}'"
+def get_max_id_plus_one_sql(tn):
+    return f"(select max(id)+1 from {tn})"
+
+def get_insert_if_not_exists_sql(condition, insert_sql):
+    return f"do $$ begin if not exists {condition} then {insert_sql} end if; end $$;"
+
+def get_geo_data_count():
+    return sum(len(v) for k,v in LOCATIONS.items() if k != 'Care provider')
 
 def get_datapoint_count(start, end, frequency):
     delta = end - start
@@ -70,7 +65,6 @@ def generate_time_series(metric_group, metric, location_code, count, data_range)
 
     return [rng.randint(int(min_val*100), int(max_val*100))/100 for _ in range(count)]
 
-
 def generate_records_for_metric(metric_group, metric, data, idx):
     frequency = data['metric_date_type']
     location_types = data['location_types']
@@ -82,26 +76,36 @@ def generate_records_for_metric(metric_group, metric, data, idx):
     for location_type in location_types:
         for location_data in LOCATIONS[location_type]:
             time_series = generate_time_series(metric_group, metric, location_data['code'], datapoint_count, data['data_point_range'])
-            record = generate_metric_record(metric_group, idx, metric, location_data['code'], location_type, start_date, end_date, time_series)
+            record = generate_time_series_record(metric_group, idx, metric, location_data['code'], location_type, start_date, end_date, time_series)
             records.append(record)
             idx += 1
 
     return records, idx
 
-def get_mg_record(mg):
+def generate_time_series_record(table_name, record_idx, metric_code, location_code, location_type, start_date, end_date, time_series):
+    return  {
+        "id": f"(select id + {record_idx} from {table_name}_id)",
+        "metric_fk": get_id_by_code_sql('metrics', metric_code),
+        "location_code": f"'{location_code}'",
+        "location_type": f"'{location_type}'",
+        "start_date": f"'{format_date(start_date)}'",
+        "end_date": f"'{format_date(end_date)}'",
+        "time_series": f"ARRAY [{', '.join(str(x) for x in time_series)}]",
+        "latest_value": time_series[-1],
+        "loaded_datetime": "CURRENT_TIMESTAMP"
+    }
+
+def get_metric_group_record(mg):
     return {
-        'id': get_max_id_sql('metric_groups'),
+        'id': get_max_id_plus_one_sql('metric_groups'),
         'code': format_string(mg),
         'display_name': format_string(mg),
         'loaded_datetime': 'CURRENT_TIMESTAMP'
     }
 
-def get_max_id_sql(tn):
-    return f"(select max(id)+1 from {tn})"
-
-def get_m_record(mg, m):
+def get_metric_record(mg, m):
     return {
-        'id': get_max_id_sql('metrics'),
+        'id': get_max_id_plus_one_sql('metrics'),
         'code': format_string(m),
         'metric_group_fk': get_id_by_code_sql('metric_groups', mg),
         'filter_type': format_string('filter_type'),
@@ -113,41 +117,10 @@ def get_m_record(mg, m):
         'loaded_datetime': 'CURRENT_TIMESTAMP'
     }
 
-def get_create_metric_group_if_not_exists_sql(mg):
-    mg_record = get_mg_record(mg)
-    insert_mg_sql = generate_sql('metric_groups', [mg_record])
-    return get_insert_if_not_exists_sql(get_id_by_code_sql('metric_groups', mg), insert_mg_sql)
-
-def get_insert_if_not_exists_sql(condition, insert_sql):
-    return f"do $$ begin if not exists {condition} then {insert_sql} end if; end $$;"
-
-def get_create_metric_if_not_exists_sql(mg, m):
-    m_record = get_m_record(mg, m)
-    insert_m_sql = generate_sql('metrics', [m_record])
-    return get_insert_if_not_exists_sql(get_id_by_code_sql('metrics', m), insert_m_sql)
-
-def generate_metric_sql():
-    sqls = []
-    for metric_group, metric_data in METRIC_DEFINITIONS.items():
-        mg_sql = get_create_metric_group_if_not_exists_sql(metric_group)
-        sqls.append(mg_sql)
-        table_sql = get_id_for_table_sql(metric_group)
-        idx = 1
-
-        for metric, data in metric_data.items():
-            metric_sql = get_create_metric_if_not_exists_sql(metric_group, metric)
-            sqls.append(metric_sql)
-            records, idx = generate_records_for_metric(metric_group, metric, data, idx)
-            sqls.append(table_sql)
-            sql = generate_sql(metric_group, records)
-            sqls.append(sql)
-
-    return sqls
-
 def generate_country_record(data, idx):
     return {
-        'name': f"'{data['name']}'",
-        'code': f"'{data['code']}'",
+        'name': format_string(data['name']),
+        'code': format_string(data['code']),
         'id': get_id_field_sql('countries', idx),
         'geo_data_fk': data['geo_data'],
         'loaded_datetime': 'CURRENT_TIMESTAMP'
@@ -156,8 +129,8 @@ def generate_country_record(data, idx):
 def generate_region_record(data, idx):
     return {
         'id': get_id_field_sql('regions', idx),
-        'code': f"'{data['code']}'",
-        'name': f"'{data['name']}'",
+        'code': format_string(data['code']),
+        'name': format_string(data['name']),
         'country_fk': get_id_by_code_sql('countries', data['country']),
         'geo_data_fk': data['geo_data'],
         'loaded_datetime': 'CURRENT_TIMESTAMP'
@@ -195,28 +168,22 @@ def generate_cpl_record(data, idx):
         'loaded_datetime': 'CURRENT_TIMESTAMP'
     }
 
-def generate_location_sql(table_name, location_type, generate_record_callable):
-    table_sql = get_id_for_table_sql(table_name)
-
-    idx = 1
-    records = []
-    for data in LOCATIONS[location_type]:
-        record = generate_record_callable(data, idx)
-        records.append(record)
-        idx += 1
-
-    sql = generate_sql(table_name, records)
-    return [table_sql, sql]
-
-def get_random_in_range(r, minimum, maximum):
-    return r.randint(int(minimum)*100, int(maximum)*100) / 100
+def generate_geo_data_record(type, data, idx, gd_count):
+    data['geo_data'] = f"(select max(id) - {gd_count} + {idx} from geo_data)"
+    coord, polygon = generate_coord(type, data)
+    return {
+        'id': get_id_field_sql('geo_data', idx),
+        'coordinate': coord,
+        'bounding_polygon': polygon,
+        'loaded_datetime': 'CURRENT_TIMESTAMP'
+    }
 
 def generate_coord(type, data):
     if data['code'] in LOCATION_BOUNDS:
         n,e,s,w = LOCATION_BOUNDS[data['code']]
         x = (n+s)/2
         y = (e+w)/2
-        
+
     else:
         location_data = LOCATION_DATA[type]
         rad = location_data['radius']
@@ -234,22 +201,52 @@ def generate_coord(type, data):
     polygon = f"ST_GeographyFromText('SRID=4326;POLYGON(({', '.join((f'{x} {y}' for x,y in polys))}))')"
     return coord, polygon
 
-def generate_geo_data_record(type, data, idx, gd_count):
-    data['geo_data'] = f"(select max(id) - {gd_count} + {idx} from geo_data)"
-    coord, polygon = generate_coord(type, data)
-    return {
-        'id': get_id_field_sql('geo_data', idx),
-        'coordinate': coord,
-        'bounding_polygon': polygon,
-        'loaded_datetime': 'CURRENT_TIMESTAMP'
-    }
+def get_create_metric_group_if_not_exists_sql(mg):
+    mg_record = get_metric_group_record(mg)
+    insert_mg_sql = generate_sql('metric_groups', [mg_record])
+    return get_insert_if_not_exists_sql(get_id_by_code_sql('metric_groups', mg), insert_mg_sql)
 
-def get_geo_data_count():
-    return sum(len(v) for k,v in LOCATIONS.items() if k != 'Care provider')
+def get_create_metric_if_not_exists_sql(mg, m):
+    m_record = get_metric_record(mg, m)
+    insert_m_sql = generate_sql('metrics', [m_record])
+    return get_insert_if_not_exists_sql(get_id_by_code_sql('metrics', m), insert_m_sql)
+
+def generate_metric_sql():
+    sqls = []
+    for metric_group, metric_data in METRIC_DEFINITIONS.items():
+        mg_sql = get_create_metric_group_if_not_exists_sql(metric_group)
+        sqls.append(mg_sql)
+        table_sql = get_id_for_table_sql(metric_group)
+        idx = 1
+
+        for metric, data in metric_data.items():
+            metric_sql = get_create_metric_if_not_exists_sql(metric_group, metric)
+            sqls.append(metric_sql)
+            records, idx = generate_records_for_metric(metric_group, metric, data, idx)
+            sqls.append(table_sql)
+            sql = generate_sql(metric_group, records)
+            sqls.append(sql)
+
+    return sqls
+
+def generate_location_sql(table_name, location_type, generate_record_callable):
+    table_sql = get_id_for_table_sql(table_name)
+
+    idx = 1
+    records = []
+    for data in LOCATIONS[location_type]:
+        record = generate_record_callable(data, idx)
+        records.append(record)
+        idx += 1
+
+    sql = generate_sql(table_name, records)
+    return [table_sql, sql]
+
+def get_random_in_range(r, minimum, maximum):
+    return r.randint(int(minimum)*100, int(maximum)*100) / 100
 
 def generate_geo_data_sql():
     table_sql = get_id_for_table_sql('geo_data')
-    
     gd_count = get_geo_data_count()
     
     idx = 1
@@ -284,7 +281,7 @@ def generate_all_sql():
 
 if __name__ == "__main__":
     sql = generate_all_sql()
-    
+
     with open('/output/2-supplementary-data.sql', 'w') as f:
         for line in sql:
             f.write(line)
