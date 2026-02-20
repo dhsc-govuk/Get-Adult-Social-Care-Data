@@ -43,7 +43,6 @@ const ServiceName: React.FC<Props> = ({ session }) => {
       if (nav.style.display === 'block') {
         setMenuOpen(false);
         nav.style.display = 'none';
-        nav.ariaExpanded = 'false';
         navLastChild?.classList.remove(
           'govuk-service-navigation__item--active'
         );
@@ -53,7 +52,6 @@ const ServiceName: React.FC<Props> = ({ session }) => {
       } else {
         setMenuOpen(true);
         nav.style.display = 'block';
-        nav.ariaExpanded = 'true';
         navLastChild?.classList.add('govuk-service-navigation__item--active');
         menuButton?.classList.add(
           'gem-c-layout-super-navigation-header__open-button'
@@ -157,7 +155,6 @@ const ServiceName: React.FC<Props> = ({ session }) => {
         <div
           id="super-navigation-menu"
           className="gem-c-layout-super-navigation-header__navigation-dropdown-menu"
-          aria-hidden="true"
           style={{ display: 'none' }}
         >
           <div className="govuk-width-container">
