@@ -135,9 +135,9 @@ const FilterRadioGroup: React.FC<Props> = ({
           {componentFilters.length > 0 && (
             <>
               <div className="js-container-heading">
-                <h3 className="govuk-heading-s searchable-filters-heading">
+                <h4 className="govuk-heading-s searchable-filters-heading">
                   {filterLabel}
-                </h3>
+                </h4>
               </div>
               <div
                 id="radios-search"
