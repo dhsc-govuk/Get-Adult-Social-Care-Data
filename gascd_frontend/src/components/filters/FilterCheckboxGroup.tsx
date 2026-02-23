@@ -149,7 +149,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           className="govuk-button"
           type="button"
           aria-expanded={`${showFilters ? true : false}`}
-          aria-label={`${showFilters ? 'Hide' : 'Show'} ${filterLabel} filters`}
+          aria-label={`${showFilters ? 'Hide' : 'Show'} filters`}
           onClick={
             showFilters
               ? () => handleShowHideToggle(false)
