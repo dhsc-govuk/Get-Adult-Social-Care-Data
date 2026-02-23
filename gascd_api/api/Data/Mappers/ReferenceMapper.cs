@@ -123,12 +123,12 @@ public class ReferenceMapper
     }
 
     public GetCareProviderLocationNeighboursResponse CareProviderLocationsToGetCareProviderLocationNeighbourResponse(
-        CareProviderLocation cpl, List<CareProviderLocationNeighbour> neighbours)
+        CareProviderLocationWithNeighbours cpl)
     {
         return new GetCareProviderLocationNeighboursResponse
         {
-            Code = cpl.Code,
-            Locations = neighbours.Select(CareProviderLocationToCareProviderLocationNeighbour).ToList()
+            Code = cpl.LocationCode,
+            Locations = cpl.Neighbours.Select(CareProviderLocationToCareProviderLocationNeighbour).ToList()
         };
     }
 
