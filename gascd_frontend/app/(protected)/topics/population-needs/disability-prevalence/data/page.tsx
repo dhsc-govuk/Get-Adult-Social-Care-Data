@@ -117,66 +117,6 @@ export default function DisabilityPrevalence() {
     supportReasonRowHeadersDefault
   );
 
-  const supportTypeFilters: Filters[] = [
-    {
-      metric_id: 'learning_disability_support_18_and_over',
-      filter_label: 'Learning disability support',
-      checked: false,
-    },
-    {
-      metric_id: 'mental_health_support_18_and_over',
-      filter_label: 'Mental health support',
-      checked: false,
-    },
-    {
-      metric_id: 'access_and_mobility_only_physical_support_18_and_over',
-      filter_label: 'Physical support: Access and mobility only',
-      checked: false,
-    },
-    {
-      metric_id: 'personal_care_support_physical_support_18_and_over',
-      filter_label: 'Physical support: Personal care support',
-      checked: false,
-    },
-    {
-      metric_id: 'support_for_dual_impairment_sensory_support_18_and_over',
-      filter_label: 'Sensory support: Support for dual impairment',
-      checked: false,
-    },
-    {
-      metric_id: 'support_for_hearing_impairment_sensory_support_18_and_over',
-      filter_label: 'Sensory support: Support for hearing impairment',
-      checked: false,
-    },
-    {
-      metric_id: 'support_for_visual_impairment_sensory_support_18_and_over',
-      filter_label: 'Sensory support: Support for visual impairment',
-      checked: false,
-    },
-    {
-      metric_id: 'asylum_seeker_support_social_support_18_and_over',
-      filter_label: 'Social support: Asylum seeker support',
-      checked: false,
-    },
-    {
-      metric_id: 'substance_misuse_support_social_support_18_and_over',
-      filter_label: 'Social support: Substance misuse support',
-      checked: false,
-    },
-    {
-      metric_id:
-        'support_for_social_isolation_other_social_support_18_and_over',
-      filter_label:
-        'Social support: Support for social isolation or other reason',
-      checked: false,
-    },
-    {
-      metric_id: 'support_with_memory_and_cognition_18_and_over',
-      filter_label: 'Support with memory and cognition',
-      checked: false,
-    },
-  ];
-
   useEffect(() => {
     const fetchSelectedLocation = async () => {
       const userLocationId = await LocationService.getSelectedLocation();
@@ -283,7 +223,7 @@ export default function DisabilityPrevalence() {
 
   useEffect(() => {
     updatePrimaryReasonMetrics();
-  }, [filteredPrimaryReasonData]);
+  }, [primarySupportReasonData]);
 
   const updatePrimaryReasonMetrics = () => {
     const storedData = localStorage.getItem('primary-reason-metrics');
@@ -457,7 +397,7 @@ export default function DisabilityPrevalence() {
         <FilterCheckboxGroup
           filterType="primary-reason-metrics"
           filterLabel="Primary support reason"
-          filters={supportTypeFilters}
+          filters={supportReasonRowHeadersDefault}
           updateMethod={updatePrimaryReasonMetrics}
         />
         <DataTabs

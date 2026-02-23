@@ -4,11 +4,12 @@ import FilterBox from './FilterBox';
 import { filter_helptext } from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/helptext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { set } from 'better-auth';
 
 type Props = {
   filterType: string;
   filterLabel: string;
-  filters: Filters[];
+  filters: Object;
   updateMethod: () => void;
 };
 
@@ -20,7 +21,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
 }) => {
   const [showFilters, setShowFilters] = React.useState(false);
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
-  const [propFilters, setPropFilters] = useState<Filters[]>(filters);
+  const [componentFilters, setComponentFilters] = useState<Filters[]>([]);
 
   const [selectedFilters, setSelectedFilters] = useState<Filters[]>([]);
   const [searchedFilters, setSearchedFilters] = useState<Filters[]>([]);
@@ -28,37 +29,48 @@ const FilterCheckboxGroup: React.FC<Props> = ({
   const [showClearAll, setShowClearAll] = useState(false);
 
   useEffect(() => {
-    setSearchedFilters(filters);
-    const storedData = localStorage.getItem(filterType);
-    if (storedData && storedData !== '[]') {
-      const parsedData: Filters[] = JSON.parse(storedData);
-      setSelectedFilters(parsedData);
-      setDisplayFilters(parsedData.map((filter) => filter.filter_label));
-      propFilters.forEach((filter) => {
-        if (
-          parsedData.some((stored) => stored.metric_id === filter.metric_id)
-        ) {
-          filter.checked = true;
-        }
-      });
-      setShowActiveFilters(true);
-    }
+    setLocalFilters();
+    setSelectedFilters(componentFilters.filter((filter) => filter.checked));
+    setSearchedFilters(componentFilters);
   }, []);
 
   useEffect(() => {
     setShowClearAll(selectedFilters.length > 0);
   }, [selectedFilters]);
 
+  const setLocalFilters = () => {
+    let localFilters: Filters[] = Object.entries(filters).map(
+      ([key, value]) => {
+        return { metric_id: key, filter_label: value, checked: false };
+      }
+    );
+
+    const storedData = localStorage.getItem(filterType);
+    if (storedData && storedData !== '[]') {
+      const parsedData: Filters[] = JSON.parse(storedData);
+      localFilters.forEach((filter) => {
+        if (
+          parsedData.some((stored) => stored.metric_id === filter.metric_id)
+        ) {
+          filter.checked = true;
+        }
+      });
+      setDisplayFilters(parsedData.map((filter) => filter.filter_label));
+      setShowActiveFilters(true);
+    }
+    setComponentFilters(localFilters);
+  };
+
   const handleShowHideToggle = (showFilters: boolean) => {
-    setSearchedFilters(propFilters);
+    setSearchedFilters(componentFilters);
     setShowFilters(showFilters);
   };
 
   const handleCheckboxChange = (metric_id: string, checked: boolean) => {
-    const newFilters: Filters[] = [...propFilters];
+    const newFilters: Filters[] = [...componentFilters];
     let newItem = newFilters.findIndex((item) => item.metric_id === metric_id);
     newFilters[newItem].checked = checked;
-    setPropFilters(newFilters);
+    setComponentFilters(newFilters);
     setSelectedFilters(
       newFilters
         .filter((filter) => filter.checked)
@@ -91,7 +103,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     ) as HTMLInputElement | null;
     if (!searchBox) return;
     const searchTerm = searchBox.value.toLowerCase() ?? '';
-    const searchedFilters = propFilters.filter((filter) =>
+    const searchedFilters = componentFilters.filter((filter) =>
       filter.filter_label.toLowerCase().includes(searchTerm)
     );
     setSearchedFilters(searchedFilters);
@@ -102,7 +114,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     setShowActiveFilters(false);
     setDisplayFilters(null);
     setSelectedFilters([]);
-    propFilters.map((filter) => (filter.checked = false));
+    componentFilters.map((filter) => (filter.checked = false));
     resetGroup();
   };
 
@@ -110,7 +122,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     const updatedSelectedFilters = selectedFilters.filter(
       (filter) => filter.filter_label !== filterName
     );
-    propFilters.map((filter) =>
+    componentFilters.map((filter) =>
       filter.filter_label === filterName
         ? (filter.checked = false)
         : (filter.checked = filter.checked)
@@ -128,7 +140,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
   };
 
   const resetGroup = () => {
-    setSearchedFilters(filters);
+    setSearchedFilters(componentFilters);
     setShowFilters(false);
     updateMethod();
   };
@@ -163,12 +175,12 @@ const FilterCheckboxGroup: React.FC<Props> = ({
       </div>
       {showFilters && (
         <FilterBox>
-          {filters.length === 0 && (
+          {componentFilters.length === 0 && (
             <p className="govuk-body govuk-!-padding-left-3">
               Loading filters...
             </p>
           )}
-          {filters.length > 0 && (
+          {componentFilters.length > 0 && (
             <>
               <div className="js-container-heading">
                 <h3 className="govuk-heading-s searchable-filters-heading">
