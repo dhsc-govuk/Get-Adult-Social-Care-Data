@@ -233,21 +233,19 @@ const FilterRadioGroup: React.FC<Props> = ({
       )}
       {displayFilter && showActiveFilters && (
         <div className="app-c-filter-summary">
-          <h4 className="app-c-filter-summary__heading">Active filters</h4>
-          <ul className="app-c-filter-summary__remove-filters">
-            <li>
-              <button
-                className="app-c-filter-summary__remove-filter govuk-link govuk-body-m govuk-!-margin-bottom-0"
-                onClick={() => clearFilters()}
-              >
-                <span className="govuk-visually-hidden">Remove filter</span>
-                {filterLabel}: {displayFilter}
-              </button>
-            </li>
-          </ul>
+          <h5 className="app-c-filter-summary__heading">Active filters</h5>
+          <div className="app-c-filter-summary__remove-filters">
+            <button
+              className="app-c-filter-summary__remove-filter govuk-link govuk-body-m"
+              onClick={() => clearFilters()}
+            >
+              <span className="govuk-visually-hidden">Remove filter</span>
+              Bed type: {displayFilter}
+            </button>
+          </div>
           <div>
             <button
-              className="govuk-button govuk-button--secondary govuk-button--inverse "
+              className="govuk-button govuk-button--secondary govuk-button--inverse"
               onClick={() => clearFilters()}
             >
               Clear all filters
