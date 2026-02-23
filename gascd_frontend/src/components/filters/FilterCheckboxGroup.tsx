@@ -146,7 +146,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
       <div className="dhsc-filter--action">
         <button
           id={`${filterType}-button`}
-          className="govuk-button"
+          className={`govuk-button ${showFilters ? 'dhsc-filter--open' : 'dhsc-filter--closed'}`}
           type="button"
           aria-expanded={`${showFilters ? true : false}`}
           aria-label={`${showFilters ? 'Hide' : 'Show'} filters`}
@@ -214,7 +214,6 @@ const FilterCheckboxGroup: React.FC<Props> = ({
               </div>
               <div
                 role="group"
-                aria-labelledby="option-select-title-status-checkboxes"
                 className="app-c-option-select__container js-options-container"
                 tabIndex={-1}
                 style={{ height: 255.333 + 'px' }}
