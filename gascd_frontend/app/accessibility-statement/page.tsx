@@ -12,7 +12,9 @@ const AccessibilityStatementPage: React.FC = () => {
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
-            <h1 className="govuk-heading-xl">Accessibility statement</h1>
+            <h1 className="govuk-heading-xl">
+              Accessibility statement for Get adult social care data{' '}
+            </h1>
             <p className="govuk-body">
               This accessibility statement applies to the Get Adult Social Care
               (GASCD) service at{' '}
