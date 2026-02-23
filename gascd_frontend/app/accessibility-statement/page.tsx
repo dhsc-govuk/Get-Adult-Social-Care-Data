@@ -259,7 +259,7 @@ const AccessibilityStatementPage: React.FC = () => {
               </li>
             </ol>
             <p className="govuk-body">
-              We plan to resolve this by the 01 July 2026.
+              We plan to resolve this by the 1 July 2026.
             </p>
 
             <h2 className="govuk-heading-m">
