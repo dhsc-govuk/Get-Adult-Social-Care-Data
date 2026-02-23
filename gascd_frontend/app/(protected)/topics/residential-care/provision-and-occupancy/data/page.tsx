@@ -176,73 +176,6 @@ export default function ProvisionAndOccupancyPage() {
     'bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled',
   ];
 
-  const bedTypeFilters: Filters[] = [
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_total',
-      filter_label: 'All bed types',
-      checked: false,
-    },
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_community_care',
-      filter_label: 'Community care',
-      checked: false,
-    },
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_dementia_nursing',
-      filter_label: 'Dementia nursing',
-      checked: false,
-    },
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_dementia_residential',
-      filter_label: 'Dementia residential',
-      checked: false,
-    },
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_general_nursing',
-      filter_label: 'General nursing',
-      checked: false,
-    },
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_general_residential',
-      filter_label: 'General residential',
-      checked: false,
-    },
-    {
-      metric_id:
-        'bedcount_per_hundred_thousand_adults_learning_disability_nursing',
-      filter_label: 'Learning disability nursing',
-      checked: false,
-    },
-    {
-      metric_id:
-        'bedcount_per_hundred_thousand_adults_learning_disability_residential',
-      filter_label: 'Learning disability residential',
-      checked: false,
-    },
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_mental_health_nursing',
-      filter_label: 'Mental health nursing',
-      checked: false,
-    },
-    {
-      metric_id:
-        'bedcount_per_hundred_thousand_adults_mental_health_residential',
-      filter_label: 'Mental health residential',
-      checked: false,
-    },
-    {
-      metric_id: 'bedcount_per_hundred_thousand_adults_total_transitional',
-      filter_label: 'Transitional',
-      checked: false,
-    },
-    {
-      metric_id:
-        'bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled',
-      filter_label: 'Young physically disabled',
-      checked: false,
-    },
-  ];
-
   const bedNumberMetricIds = ['bedcount_per_hundred_thousand_adults_total'];
 
   const breadcrumbs = [
@@ -651,7 +584,7 @@ export default function ProvisionAndOccupancyPage() {
         <FilterRadioGroup
           filterType="numbers-table-metrics"
           filterLabel="Bed type"
-          filters={bedTypeFilters}
+          filters={bedTypeRowHeadersDefault}
           updateMethod={updateNumbersTableMetrics}
         />
         <DataTabs
@@ -732,7 +665,7 @@ export default function ProvisionAndOccupancyPage() {
         <FilterCheckboxGroup
           filterType="type-table-metrics"
           filterLabel="Bed type"
-          filters={bedTypeFilters}
+          filters={bedTypeRowHeadersDefault}
           updateMethod={updateTypesTableMetrics}
         />
         <DataTabs
@@ -941,7 +874,7 @@ export default function ProvisionAndOccupancyPage() {
         <FilterCheckboxGroup
           filterType="type-chart-metrics"
           filterLabel="Bed type"
-          filters={bedTypeFilters}
+          filters={bedTypeRowHeadersDefault}
           updateMethod={updateTypesChartMetrics}
         />
         <DataTabs

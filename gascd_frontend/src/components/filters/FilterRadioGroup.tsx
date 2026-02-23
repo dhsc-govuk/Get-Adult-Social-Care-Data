@@ -4,11 +4,12 @@ import FilterBox from './FilterBox';
 import { filter_helptext } from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/helptext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { set } from 'better-auth';
 
 type Props = {
   filterType: string;
   filterLabel: string;
-  filters: Filters[];
+  filters: Object;
   updateMethod: () => void;
 };
 
@@ -20,12 +21,23 @@ const FilterRadioGroup: React.FC<Props> = ({
 }) => {
   const [showFilters, setShowFilters] = React.useState(false);
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
+  const [componentFilters, setComponentFilters] = useState<Filters[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<Filters>();
   const [searchedFilters, setSearchedFilters] = useState<Filters[]>([]);
-  const [displayFilter, setDisplayFilter] = useState<string | null>('');
+  const [displayFilter, setDisplayFilter] = useState<string | null>(null);
+  const [showClearAll, setShowClearAll] = useState(false);
 
   useEffect(() => {
-    setSearchedFilters(filters);
+    setLocalFilters();
+    setSearchedFilters(componentFilters);
+  }, []);
+
+  const setLocalFilters = () => {
+    let localFilters: Filters[] = Object.entries(filters).map(
+      ([key, value]) => {
+        return { metric_id: key, filter_label: value, checked: false };
+      }
+    );
 
     const storedData = localStorage.getItem(filterType);
     if (storedData) {
@@ -39,10 +51,11 @@ const FilterRadioGroup: React.FC<Props> = ({
     } else {
       setDefaultFilter();
     }
-  }, []);
+    setComponentFilters(localFilters);
+  };
 
   const handleShowHideToggle = (showFilters: boolean) => {
-    setSearchedFilters(filters);
+    setSearchedFilters(componentFilters);
     setShowFilters(showFilters);
   };
 
@@ -64,7 +77,7 @@ const FilterRadioGroup: React.FC<Props> = ({
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
-    const searchedFilters = filters.filter((filter) =>
+    const searchedFilters = componentFilters.filter((filter) =>
       filter.filter_label.toLowerCase().includes(searchTerm)
     );
     setSearchedFilters(searchedFilters);
@@ -115,12 +128,12 @@ const FilterRadioGroup: React.FC<Props> = ({
       </div>
       {showFilters && (
         <FilterBox>
-          {filters.length === 0 && (
+          {componentFilters.length === 0 && (
             <p className="govuk-body govuk-!-padding-left-3">
               Loading filters...
             </p>
           )}
-          {filters.length > 0 && (
+          {componentFilters.length > 0 && (
             <>
               <div className="js-container-heading">
                 <h3 className="govuk-heading-s searchable-filters-heading">

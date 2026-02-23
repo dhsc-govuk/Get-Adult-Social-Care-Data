@@ -4,7 +4,6 @@ import FilterBox from './FilterBox';
 import { filter_helptext } from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/helptext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
-import { set } from 'better-auth';
 
 type Props = {
   filterType: string;
