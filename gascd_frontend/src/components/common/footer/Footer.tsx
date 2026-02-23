@@ -66,6 +66,14 @@ const Footer: React.FC<Props> = ({ version_tag, version_hash }) => {
                   Cookies
                 </a>
               </li>
+              <li className="govuk-footer__inline-list-item">
+                <a
+                  className="govuk-footer__link"
+                  href="/accessibility-statement"
+                >
+                  Accessibility statement
+                </a>
+              </li>
               {feedback_url && (
                 <li className="govuk-footer__inline-list-item">
                   <a className="govuk-footer__link" href={feedback_url}>
