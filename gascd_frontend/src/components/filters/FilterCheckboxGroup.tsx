@@ -21,7 +21,6 @@ const FilterCheckboxGroup: React.FC<Props> = ({
   const [showFilters, setShowFilters] = React.useState(false);
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
   const [componentFilters, setComponentFilters] = useState<Filters[]>([]);
-
   const [selectedFilters, setSelectedFilters] = useState<Filters[]>([]);
   const [searchedFilters, setSearchedFilters] = useState<Filters[]>([]);
   const [displayFilters, setDisplayFilters] = useState<string[] | null>(null);

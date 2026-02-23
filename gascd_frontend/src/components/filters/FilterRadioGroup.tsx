@@ -25,7 +25,6 @@ const FilterRadioGroup: React.FC<Props> = ({
   const [selectedFilter, setSelectedFilter] = useState<Filters>();
   const [searchedFilters, setSearchedFilters] = useState<Filters[]>([]);
   const [displayFilter, setDisplayFilter] = useState<string | null>(null);
-  const [showClearAll, setShowClearAll] = useState(false);
 
   useEffect(() => {
     setLocalFilters();
