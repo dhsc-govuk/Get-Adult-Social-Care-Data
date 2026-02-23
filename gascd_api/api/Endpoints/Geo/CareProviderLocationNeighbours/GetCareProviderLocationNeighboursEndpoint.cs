@@ -22,8 +22,7 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context,
             {
                 LocationCode = l.Code,
                 Neighbours = context.CareProviderLocations
-                    .Where(n => n.GeoData!.Coordinate.IsWithinDistance(l.GeoData!.Coordinate, req.DistanceInMetres) &&
-                                n.Code != req.CareProviderLocationCode)
+                    .Where(n => l != n && n.GeoData!.Coordinate.IsWithinDistance(l.GeoData!.Coordinate, req.DistanceInMetres))
                     .Include(n => n.GeoData)
                     .Select(n => new CareProviderLocationNeighbour
                     {
