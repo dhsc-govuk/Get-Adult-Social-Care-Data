@@ -202,7 +202,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                     htmlFor="input-filter-search"
                     className="govuk-label govuk-visually-hidden"
                   >
-                    {filterLabel}
+                    {filterLabel} search
                   </label>
                   <input
                     id="input-filter-search"
@@ -229,7 +229,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                           <li className="govuk-checkboxes__item" key={index}>
                             <input
                               className="govuk-checkboxes__input"
-                              id={filter.metric_id}
+                              id={filterType + filter.metric_id}
                               name="Table filter"
                               type="checkbox"
                               value={filter.metric_id}
@@ -243,7 +243,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                             />
                             <label
                               className="govuk-label govuk-checkboxes__label"
-                              htmlFor={filter.metric_id}
+                              htmlFor={filterType + filter.metric_id}
                             >
                               {filter.filter_label}
                             </label>

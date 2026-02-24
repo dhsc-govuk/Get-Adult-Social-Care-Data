@@ -149,7 +149,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                   htmlFor="input-bedtype-radios"
                   className="govuk-label govuk-visually-hidden"
                 >
-                  {filterLabel}
+                  {filterLabel} search
                 </label>
                 <input
                   id="input-bedtype-radios"
@@ -174,7 +174,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                           <li className="govuk-radios__item" key={index}>
                             <input
                               className="govuk-radios__input"
-                              id={filter.metric_id}
+                              id={filterType + filter.metric_id}
                               name="Table filter"
                               type="radio"
                               value={filter.metric_id}
@@ -190,7 +190,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                             />
                             <label
                               className="govuk-label govuk-radios__label"
-                              htmlFor={filter.metric_id}
+                              htmlFor={filterType + filter.metric_id}
                             >
                               {filter.filter_label}
                             </label>
