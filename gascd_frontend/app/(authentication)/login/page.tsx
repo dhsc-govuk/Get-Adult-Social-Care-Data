@@ -92,10 +92,7 @@ const LoginPage: React.FC = () => {
               to sign in to this service, and it must be tied to your CQC
               registered email address or your gov.uk email address if you are a
               local authority officer. You can{' '}
-              <a
-                className="govuk-link"
-                href="https://signin.account.gov.uk/sign-in-or-create"
-              >
+              <a className="govuk-link" href="https://www.gov.uk/account">
                 create one
               </a>{' '}
               if you do not already have one.
