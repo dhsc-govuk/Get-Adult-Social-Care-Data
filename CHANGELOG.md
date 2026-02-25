@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.4] - 2026-02-25
+
+Additional filter and content updates
+
+### Changes
+
+Frontend
+- Fix links to GOV.UK One login from login/guidance pages
+- Additional filtering on primary reason table
 
 ## [1.3.3] - 2026-02-23
 
