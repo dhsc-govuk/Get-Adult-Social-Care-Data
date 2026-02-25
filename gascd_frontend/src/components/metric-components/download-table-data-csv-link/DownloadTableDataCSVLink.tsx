@@ -11,6 +11,7 @@ type Props = {
   rawdata?: any[];
   filename?: string;
   xLabel: string;
+  downloadType: string;
 };
 
 const DownloadTableDataCSVLink: React.FC<Props> = ({
@@ -18,6 +19,7 @@ const DownloadTableDataCSVLink: React.FC<Props> = ({
   rawdata,
   filename = 'data.csv',
   xLabel,
+  downloadType,
 }) => {
   const handleDownloadClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -40,7 +42,7 @@ const DownloadTableDataCSVLink: React.FC<Props> = ({
         className="govuk-link govuk-body"
         onClick={handleDownloadClick}
       >
-        Export table data (CSV)
+        Export {downloadType} table data (CSV)
       </Link>
     </>
   );

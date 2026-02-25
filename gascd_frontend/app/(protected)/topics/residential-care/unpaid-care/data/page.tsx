@@ -189,6 +189,7 @@ export default function UnpaidCarePage() {
                 tableref={tableref1}
                 filename="percent_unpaid_care.csv"
                 xLabel=""
+                downloadType="percentage of people aged 5 and over who provide unpaid care"
               />
             </>
           }

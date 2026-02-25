@@ -238,6 +238,7 @@ export default function ResidentialCareProvidersPage() {
                 tableref={tableref2}
                 filename="number_of_adult_social_care_providers.csv"
                 xLabel=""
+                downloadType="number of adult social care providers"
               />
             </>
           }

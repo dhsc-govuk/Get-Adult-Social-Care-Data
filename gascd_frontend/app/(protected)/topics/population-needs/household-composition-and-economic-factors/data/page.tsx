@@ -227,6 +227,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref1}
                 filename="households_deprived_in_4_dimensions.csv"
                 xLabel=""
+                downloadType="percentage of households classified as 'deprived in 4 dimensions'"
               />
             </>
           }
@@ -279,6 +280,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref2}
                 filename="property_owned_outright.csv"
                 xLabel=""
+                downloadType="percentage of households where the property is owned outright"
               />
             </>
           }
@@ -328,6 +330,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref3}
                 filename="one_person_households_over_65.csv"
                 xLabel=""
+                downloadType="percentage of one-person households where the person is aged 65 or over"
               />
             </>
           }

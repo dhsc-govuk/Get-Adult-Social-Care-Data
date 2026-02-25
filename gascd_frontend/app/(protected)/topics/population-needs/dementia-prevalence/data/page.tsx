@@ -234,6 +234,7 @@ export default function DementaPrevalencePage() {
                 tableref={tableref1}
                 filename="dementia_prevalence_and_diagnosis_rate.csv"
                 xLabel=""
+                downloadType="dementia prevalence and the dementia diagnosis rate"
               />
             </>
           }

@@ -58,10 +58,8 @@ describe('DementiaPrevalencePage', () => {
     const helpLink = screen.getAllByRole('link', {
       name: /dementia prevalence/i,
     });
-    expect(helpLink[0]).toBeInTheDocument();
-    expect(helpLink[0]).toHaveAttribute('href', '/help/dementia-prevalence');
-    expect(helpLink[1]).toBeInTheDocument();
-    expect(helpLink[1]).toHaveAttribute('href', '/help/dementia-prevalence');
+    expect(helpLink[2]).toBeInTheDocument();
+    expect(helpLink[2]).toHaveAttribute('href', '/help/dementia-prevalence');
 
     const tableElement = screen.getByRole('table');
     expect(tableElement).toBeInTheDocument();

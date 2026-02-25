@@ -19,6 +19,8 @@ import DownloadTableDataCSVLink from '@/components/metric-components/download-ta
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
+import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
+import { Filters } from '@/data/interfaces/Filters';
 
 export default function DisabilityPrevalence() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -39,10 +41,20 @@ export default function DisabilityPrevalence() {
     } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
-  const [filteredDemographicData, setFilteredDemographicData] = useState<
+  const [filteredDisabilityData, setFilteredDisabilityData] = useState<
     Indicator[]
   >([]);
-  const [demographicQuery, setDemographicQuery] = useState<IndicatorQuery>({
+  const [primarySupportReasonData, setPrimarySupportReasonData] = useState<
+    Indicator[]
+  >([]);
+  const [filteredPrimaryReasonData, setFilteredPrimaryReasonData] = useState<
+    Indicator[]
+  >([]);
+  const [disabilityQuery, setDisabilityQuery] = useState<IndicatorQuery>({
+    metric_ids: [],
+    location_ids: [],
+  });
+  const [supportReasonQuery, setSupportReasonQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
   });
@@ -58,10 +70,7 @@ export default function DisabilityPrevalence() {
     },
   ];
 
-  const demographicMetricIds = [
-    'perc_population_disability',
-    'learning_disability_prevalence',
-    'perc_general_health',
+  const supportReasonMetricIds = [
     'access_and_mobility_only_physical_support_18_and_over',
     'asylum_seeker_support_social_support_18_and_over',
     'learning_disability_support_18_and_over',
@@ -75,6 +84,39 @@ export default function DisabilityPrevalence() {
     'support_with_memory_and_cognition_18_and_over',
   ];
 
+  const disabilityMetricIds = [
+    'perc_population_disability',
+    'learning_disability_prevalence',
+    'perc_general_health',
+  ];
+
+  const supportReasonRowHeadersDefault = {
+    learning_disability_support_18_and_over: 'Learning disability support',
+    mental_health_support_18_and_over: 'Mental health support',
+    access_and_mobility_only_physical_support_18_and_over:
+      'Physical support: Access and mobility only',
+    personal_care_support_physical_support_18_and_over:
+      'Physical support: Personal care support',
+    support_for_dual_impairment_sensory_support_18_and_over:
+      'Sensory support: Support for dual impairment',
+    support_for_hearing_impairment_sensory_support_18_and_over:
+      'Sensory support: Support for hearing impairment',
+    support_for_visual_impairment_sensory_support_18_and_over:
+      'Sensory support: Support for visual impairment',
+    asylum_seeker_support_social_support_18_and_over:
+      'Social support: Asylum seeker support',
+    substance_misuse_support_social_support_18_and_over:
+      'Social support: Substance misuse support',
+    support_for_social_isolation_other_social_support_18_and_over:
+      'Social support: Support for social isolation or other reason',
+    support_with_memory_and_cognition_18_and_over:
+      'Support with memory and cognition',
+  };
+
+  const [supportReasonRowHeaders, setSupportReasonRowHeaders] = useState<any>(
+    supportReasonRowHeadersDefault
+  );
+
   useEffect(() => {
     const fetchSelectedLocation = async () => {
       const userLocationId = await LocationService.getSelectedLocation();
@@ -87,7 +129,10 @@ export default function DisabilityPrevalence() {
     fetchSelectedLocation();
 
     // Track all metrics on this page
-    demographicMetricIds.forEach((metric_id) => {
+    disabilityMetricIds.forEach((metric_id) => {
+      AnalyticsService.trackMetricView(metric_id);
+    });
+    supportReasonMetricIds.forEach((metric_id) => {
       AnalyticsService.trackMetricView(metric_id);
     });
   }, []);
@@ -117,28 +162,47 @@ export default function DisabilityPrevalence() {
 
   useEffect(() => {
     if (locationIds.length > 0) {
-      setDemographicQuery(() => ({
-        metric_ids: demographicMetricIds,
+      setDisabilityQuery(() => ({
+        metric_ids: disabilityMetricIds,
+        location_ids: locationIds,
+      }));
+      setSupportReasonQuery(() => ({
+        metric_ids: supportReasonMetricIds,
         location_ids: locationIds,
       }));
     }
   }, [locationIds]);
 
   useEffect(() => {
-    const fetchAllData = async () => {
+    const fetchDisabilityData = async () => {
       if (!CPLocationId) return;
       try {
-        const demographicData: Indicator[] =
-          await IndicatorFetchService.getData(demographicQuery);
-        const filteredDemographicData =
-          TableService.filterDate(demographicData);
-        setFilteredDemographicData(filteredDemographicData);
+        const disabilityData: Indicator[] =
+          await IndicatorFetchService.getData(disabilityQuery);
+        const filteredDisabilityData = TableService.filterDate(disabilityData);
+        setFilteredDisabilityData(filteredDisabilityData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-    fetchAllData();
-  }, [demographicQuery]);
+    fetchDisabilityData();
+  }, [disabilityQuery]);
+
+  useEffect(() => {
+    const fetchReasonData = async () => {
+      if (!CPLocationId) return;
+      try {
+        const supportReasonData: Indicator[] =
+          await IndicatorFetchService.getData(supportReasonQuery);
+        const filteredSupportReasonData =
+          TableService.filterDate(supportReasonData);
+        setPrimarySupportReasonData(filteredSupportReasonData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchReasonData();
+  }, [supportReasonQuery]);
 
   useEffect(() => {
     const fetchLocationIds = async () => {
@@ -156,6 +220,31 @@ export default function DisabilityPrevalence() {
     };
     fetchLocationIds();
   }, [CPLocationId]);
+
+  useEffect(() => {
+    updatePrimaryReasonMetrics();
+  }, [primarySupportReasonData]);
+
+  const updatePrimaryReasonMetrics = () => {
+    const storedData = localStorage.getItem('primary-reason-metrics');
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      if (Array.isArray(parsedData)) {
+        const ids = parsedData.map((item) => item.metric_id);
+        setFilteredPrimaryReasonData(
+          primarySupportReasonData.filter((item) =>
+            ids.includes(item.metric_id)
+          )
+        );
+        const map: any = {};
+        parsedData.map((item) => (map[item.metric_id] = item.filter_label));
+        setSupportReasonRowHeaders(map);
+      }
+    } else {
+      setFilteredPrimaryReasonData(primarySupportReasonData);
+      setSupportReasonRowHeaders(supportReasonRowHeadersDefault);
+    }
+  };
 
   return (
     <Layout
@@ -216,7 +305,7 @@ export default function DisabilityPrevalence() {
                 perc_population_disability:
                   'Disability prevalence – people who reported a long-term physical or mental health condition, or illness that limits day-to-day activities',
               }}
-              data={filteredDemographicData}
+              data={filteredDisabilityData}
               showCareProvider={false}
               percentageRows={[
                 'perc_general_health',
@@ -231,6 +320,7 @@ export default function DisabilityPrevalence() {
                 tableref={tableref1}
                 filename="general_health_and_disability.csv"
                 xLabel=""
+                downloadType="self-reporting on general health and disability"
               />
             </>
           }
@@ -258,7 +348,7 @@ export default function DisabilityPrevalence() {
           table={
             <DataTable
               tableref={tableref2}
-              caption={`Table 2: learning disability prevalence – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
+              caption={`Table 2: learning disability prevalence – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDisabilityData)}`}
               source={
                 'Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
               }
@@ -267,7 +357,7 @@ export default function DisabilityPrevalence() {
                 learning_disability_prevalence:
                   'Learning disability prevalence',
               }}
-              data={filteredDemographicData}
+              data={filteredDisabilityData}
               showCareProvider={false}
               percentageRows={['learning_disability_prevalence']}
             ></DataTable>
@@ -279,6 +369,7 @@ export default function DisabilityPrevalence() {
                 tableref={tableref2}
                 filename="learning_disability_prevalence.csv"
                 xLabel=""
+                downloadType="learning disability prevalence"
               />
             </>
           }
@@ -303,41 +394,25 @@ export default function DisabilityPrevalence() {
           </>
         }
       >
+        <FilterCheckboxGroup
+          filterType="primary-reason-metrics"
+          filterLabel="Primary support reason"
+          filters={supportReasonRowHeadersDefault}
+          updateMethod={updatePrimaryReasonMetrics}
+        />
         <DataTabs
           id="3"
           table={
             <DataTable
               tableref={tableref3}
-              caption={`Table 3: primary reason for all age groups to access long-term adult social care – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
+              caption={`Table 3: primary reason for all age groups to access long-term adult social care – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDisabilityData)}`}
               source={
                 'Adult Social Care Activity and Finance Report from NHS England'
               }
               columnHeaders={locationNamesWithAverageLabels}
               metricColumnName="Primary support reason"
-              rowHeaders={{
-                learning_disability_support_18_and_over:
-                  'Learning disability support',
-                mental_health_support_18_and_over: 'Mental health support',
-                access_and_mobility_only_physical_support_18_and_over:
-                  'Physical support: Access and mobility only',
-                personal_care_support_physical_support_18_and_over:
-                  'Physical support: Personal care support',
-                support_for_dual_impairment_sensory_support_18_and_over:
-                  'Sensory support: Support for dual impairment',
-                support_for_hearing_impairment_sensory_support_18_and_over:
-                  'Sensory support: Support for hearing impairment',
-                support_for_visual_impairment_sensory_support_18_and_over:
-                  'Sensory support: Support for visual impairment',
-                asylum_seeker_support_social_support_18_and_over:
-                  'Social support: Asylum seeker support',
-                substance_misuse_support_social_support_18_and_over:
-                  'Social support: Substance misuse support',
-                support_for_social_isolation_other_social_support_18_and_over:
-                  'Social support: Support for social isolation or other reason',
-                support_with_memory_and_cognition_18_and_over:
-                  'Support with memory and cognition',
-              }}
-              data={filteredDemographicData}
+              rowHeaders={supportReasonRowHeaders}
+              data={filteredPrimaryReasonData}
               showCareProvider={false}
             >
               <p className="govuk-body-m">(*) denotes less than 5</p>
@@ -350,6 +425,7 @@ export default function DisabilityPrevalence() {
                 tableref={tableref3}
                 filename="primary_reasons_for_accessing_care.csv"
                 xLabel=""
+                downloadType="primary reason for all age groups to access long-term adult social care"
               />
             </>
           }

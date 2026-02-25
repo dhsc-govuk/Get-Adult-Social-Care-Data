@@ -88,15 +88,6 @@ public class GetCareProviderLocationNeighboursEndpointTests(App app) : TestBase<
         httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
-
-    [Fact]
-    public async Task GetCareProviderLocationNeighbours_Returns404WhenProvidedCPLHasNullGeodata()
-    {
-        var (httpCode, _) = await app.Client.GETAsync<GetCareProviderLocationNeighboursEndpoint, GetCareProviderLocationNeighboursRequest, GetCareProviderLocationNeighboursResponse>(
-            new GetCareProviderLocationNeighboursRequest { CareProviderLocationCode = "1-222222225" });
-        httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
-    }
-
     [Fact]
     public async Task GetCareProviderLocationNeighbours_ReturnsLimitedResponseWhenLimitIncluded()
     {

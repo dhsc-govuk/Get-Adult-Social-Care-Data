@@ -6,17 +6,17 @@ describe('PrivacyPage', () => {
     render(<PrivacyPage />);
 
     const headingElement = screen.getByRole('heading', {
-      name: /Privacy notice/i,
+      name: /Our privacy notice/i,
     });
     expect(headingElement).toBeInTheDocument();
 
     const subheadingElement = screen.getByRole('heading', {
-      name: /How we use your data/i,
+      name: /Who we are/i,
     });
     expect(subheadingElement).toBeInTheDocument();
 
     const bodyTextElement = screen.getByText(
-      /This privacy notice is kept under regular review/i
+      /We collect your personal data to:/i
     );
     expect(bodyTextElement).toBeInTheDocument();
 

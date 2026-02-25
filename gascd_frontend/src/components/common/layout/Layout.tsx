@@ -77,6 +77,13 @@ const Layout: React.FC<Props> = ({
             {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
           </div>
         </div>
+        {backURL && (
+          <div className="backlink-wrapper">
+            <a href={backURL} className="govuk-back-link">
+              Back
+            </a>
+          </div>
+        )}
         <main
           id="main-content"
           className={
@@ -85,13 +92,6 @@ const Layout: React.FC<Props> = ({
               : 'govuk-main-wrapper'
           }
         >
-          {backURL && (
-            <div className="backlink-wrapper">
-              <a href={backURL} className="govuk-back-link">
-                Back
-              </a>
-            </div>
-          )}
           {children}
         </main>
       </div>

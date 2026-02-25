@@ -7,33 +7,25 @@ const PrivacyPage = () => {
       <Layout
         title="Privacy notice"
         showLoginInformation={false}
-        currentPage="disclaimer"
+        currentPage="privacy-policy"
         showNavBar={false}
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
-            <h1 className="govuk-heading-xl">Privacy notice</h1>
-
-            <h2 className="govuk-heading-m">Summary of initiative or policy</h2>
+            <h1 className="govuk-heading-xl">Our privacy notice</h1>
+            <p className="govuk-body">Last updated 19 February 2026</p>
             <p className="govuk-body">
-              The Data Access Project includes the design, development and
-              delivery of a new digital service called &quot;Get Adult Social
-              Care Data&quot; to improve access to adult social care data for
-              all key stakeholders in the sector (i.e. care providers, local
-              authorities, academic researchers and government analysts) who
-              need it to make better decisions to improve the quality of care
-              for individuals. The service processes information drawn through
-              APIs from existing data sets to show ready-made analytical insight
-              on one place on GOV.UK and provides easy access to the data held
-              on different sites.
+              Your privacy is important to us. This privacy policy covers what
+              we collect and how we use it.
             </p>
+
+            <h2 className="govuk-heading-m">Who we are</h2>
             <p className="govuk-body">
-              In order to ensure that users of the service can only access
-              information that they are legally allowed to see under current
-              data sharing agreements, we ask users to apply for a user account.
-              To create and maintain the account, we collect some personal
-              information from them and store this on the tool. This information
-              is submitted by the user who wishes to have an account.
+              Get Adult Social Care Data (GASCD) is a new service provided by
+              the Department for Health and Social Care as part of the Data
+              Access Project. The GASCD service gives key stakeholders in the
+              adult social care sector access to adult social care data in one
+              place.
             </p>
 
             <h2 className="govuk-heading-m">Data controller</h2>
@@ -42,143 +34,203 @@ const PrivacyPage = () => {
               controller for the GASCD service.
             </p>
 
-            <h2 className="govuk-heading-m">What personal data we collect</h2>
+            <h2 className="govuk-heading-m">What data we collect from you </h2>
             <p className="govuk-body">
-              The following information is collected when you register for a
-              user account with GASCD: your name, your email address, the name
-              and location of your employer or organisation.
-            </p>
-            <p className="govuk-body">
-              Users may be prompted to complete surveys before and/or after
-              accessing the service, as part of the survey, name and email
-              address will be collected for each user.
-            </p>
-            <h2 className="govuk-heading-m">How we use your data (purposes)</h2>
-            <p className="govuk-body">
-              We collect your personal information directly from you (via email)
-              and it is saved in a spreadsheet so that we can create your user
-              account to access GASCD and provide you with access to the secure
-              platform. We also use your personal information for data analysis
-              to understand user demographics of GASCD.
-            </p>
-            <p className="govuk-body">
-              We may also ask you to complete surveys to gather feedback on
-              GASCD, which will prompt you to provide your name and email
-              address.
-            </p>
-
-            <h2 className="govuk-heading-m">
-              Legal basis for processing personal data
-            </h2>
-            <p className="govuk-body">
-              Under Article 6 of the United Kingdom General Data Protection
-              Regulation (UK GDPR), the lawful bases we rely on for processing
-              personal data are:
+              The personal data we collect from you when you create a GASCD
+              service account includes:
             </p>
             <ul className="govuk-list govuk-list--bullet">
-              <li>
-                (e) the processing is necessary to perform a task or function in
-                the public interest or for our official functions and the task
-                or function has a clear basis in law
-              </li>
+              <li>your name</li>
+              <li>your CQC registered or GOV.UK email address</li>
+              <li>name and location of your employer or organisation.</li>
+              <li>the IP address you use to access the GASCD service</li>
             </ul>
 
             <h2 className="govuk-heading-m">
-              Data processors and other recipients of personal data
+              When you subscribe to our mailing list{' '}
             </h2>
             <p className="govuk-body">
-              We share your personal information with our technical supplier who
-              is approved by{' '}
-              <abbr title="Department of Health and Social Care">DHSC</abbr> and
-              is bound by data protection and security obligations. The supplier
-              uses this information to create user accounts which will allow
-              access to the GASCD service and they will also access the survey
-              results to process and analyse them.
+              If you subscribe to the GASCD service mailing list, we&apos;ll
+              collect your:
+            </p>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>email address</li>
+              <li>organisation</li>
+            </ul>
+            <p className="govuk-body">
+              We use the GOV.UK Notify platform to send updates and requests.
+              This involves us sharing your email address with the platform
+              provider, Government Digital Service (GDS) as the data processor.
+              For more information, you can read the{' '}
+              <a href="https://www.notifications.service.gov.uk/privacy">
+                GOV.UK Notify privacy notice
+              </a>
+              .
+            </p>
+
+            <h2 className="govuk-heading-m">When you contact us</h2>
+            <p className="govuk-body">
+              If you contact us about the GASCD service, we&apos;ll collect your
+              name, email address and any other personal information you choose
+              to include in your message.
+            </p>
+
+            <h2 className="govuk-heading-m">Why we need your data</h2>
+            <p className="govuk-body">We collect your personal data to:</p>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>allow you to access the GASCD service</li>
+              <li>understand who is using the service</li>
+              <li>gather feedback to improve our services</li>
+              <li>
+                respond to any feedback you send us, if you$&apos;ve asked us to
+              </li>
+              <li>send email alerts to users who request them</li>
+              <li>monitor use of the service to identify security threats</li>
+              <li>understand who is using the service</li>
+              <li>
+                monitor the performance of the service to identify
+                inefficiencies and errors
+              </li>
+              <li>
+                analyse the information we collect using Google Analytics to see
+                how you use the GASCD service and to see how well it performs on
+                your device.
+              </li>
+            </ul>
+            <p className="govuk-body">We do this to help:</p>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>
+                make sure the GASCD service is meeting the needs of our intended
+                users
+              </li>
+              <li>make performance improvements to the service</li>
+            </ul>
+
+            <h2 className="govuk-heading-m">
+              Our legal basis for processing your data
+            </h2>
+            <p className="govuk-body">
+              The legal basis for processing your personal data is Public
+              Interest.
+            </p>
+            <p className="govuk-body">
+              The legal basis for processing data collected with Google
+              Analytics and government digital services is your consent. For
+              more information you can read about the{' '}
+              <a href="/cookies">cookies we use</a>.
+            </p>
+
+            <h2 className="govuk-heading-m">What we do with your data </h2>
+            <p className="govuk-body">
+              We use your data to check that you are allowed to access the GASCD
+              service and to carry out the purposes mentioned earlier.
+            </p>
+            <p className="govuk-body">We will not:</p>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>sell or rent your data to third parties</li>
+              <li>share your data with third parties for marketing purposes</li>
+            </ul>
+            <p className="govuk-body">
+              We will share your data if we are required to do so by law – for
+              example, by court order, or to prevent fraud or other crime.
+            </p>
+
+            <h2 className="govuk-heading-m">How long we keep your data </h2>
+            <p className="govuk-body">
+              we&apos;ll keep your personal data for as long as you have a GASCD
+              service account.
+            </p>
+            <p className="govuk-body">
+              We review accounts every six months. If you have not logged into
+              your account for more than a year, your account will be deleted.
+            </p>
+            <p className="govuk-body">
+              When you ask us to close your account, we will delete your data
+              within 1 year.
+            </p>
+            <p className="govuk-body">
+              When we close your account, we&apos;ll delete your:
+            </p>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>name</li>
+              <li>name and location of your employer or organisation.</li>
+            </ul>
+            <p className="govuk-body">
+              So that we can carry out security audits, we&apos;ll keep your
+              email address and IP addresses for 1 year before we delete them.
             </p>
 
             <h2 className="govuk-heading-m">
-              International data transfers and storage locations
+              Where your data is processed and stored{' '}
             </h2>
             <p className="govuk-body">
-              We will process your personal information in the UK. We will not
-              transfer your data outside of the UK.
+              We design, build and run our systems to make sure that your data
+              is as safe as possible at any stage, both while it&apos;s
+              processed and when it&apos;s stored.
+            </p>
+            <p className="govuk-body">
+              Your personal data will be processed in the UK only.{' '}
             </p>
 
-            <h2 className="govuk-heading-m">Retention and disposal policy</h2>
+            <h2 className="govuk-heading-m">
+              How we protect your data and keep it secure{' '}
+            </h2>
             <p className="govuk-body">
-              We keep your data for up to one year after your last sign-in. We
-              review accounts every 6 months. If you have not signed in during
-              the past year, your account and data will be deleted.
-            </p>
-            <p className="govuk-body">
-              The personal data collected through surveys will be kept for up to
-              one year to ensure your survey responses are analysed and
-              processed appropriately.
-            </p>
-
-            <h2 className="govuk-heading-m">How we keep your data secure</h2>
-            <p className="govuk-body">
-              We receive your data via email which is only accessible by
-              individuals working on the data access project. We save your
-              personal information in an Excel spreadsheet which has restricted
-              access; this means that only our technical supplier and{' '}
-              <abbr title="Department of Health and Social Care">DHSC</abbr>{' '}
-              employees working on GASCD are able to access it.
-            </p>
-            <p className="govuk-body">
-              Similarly, your personal data submitted through the survey is
-              saved on an Excel spreadsheet which is only accessed by our
-              technical supplier and{' '}
-              <abbr title="Department of Health and Social Care">DHSC</abbr>{' '}
-              employees.
+              We are committed to doing all that we can to keep your data
+              secure. To prevent unauthorised access or disclosure we have put
+              in place technical and organisational procedures to secure the
+              data we collect about you – for example, we protect your data
+              using varying levels of encryption. We also make sure that any
+              third parties that we deal with have an obligation to keep all
+              personal data they process on our behalf secure.
             </p>
 
-            <h2 className="govuk-heading-m">Your rights as a data subject</h2>
+            <h2 className="govuk-heading-m">What are your rights </h2>
+            <p className="govuk-body">You have the right to:</p>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>
+                get copies of information - individuals have the right to ask
+                for a copy of any information about them that is used
+              </li>
+              <li>
+                limit how the information is used - individuals have the right
+                to ask for any of the information held about them to be
+                restricted - for example, if they think inaccurate information
+                is being used
+              </li>
+              <li>
+                get information corrected - individuals have the right to ask
+                for any information held about them that they think is
+                inaccurate to be corrected - this is not an absolute right under
+                UK GDPR and will be assessed on a case-by-case basis
+              </li>
+              <li>
+                object to the information being used - individuals can ask for
+                any information held about them to not be used - this is not an
+                absolute right under UK GDPR and will be assessed on a
+                case-by-case basis
+              </li>
+              <li>
+                get information deleted - this is not an absolute right under UK
+                GDPR and will be assessed on a case-by-case basis
+              </li>
+            </ul>
             <p className="govuk-body">
-              By law, data subjects have a number of rights, and this processing
-              does not take away or reduce these rights under the UK General
-              Data Protection Regulation and the UK Data Protection Act 2018
-              applies.
+              If you have any of these requests, get in contact with our Data
+              Protection Officer, you can find their contact details below.
             </p>
-            <p className="govuk-body">These rights are:</p>
-            <ol className="govuk-list govuk-list--number">
-              <li>
-                The right to get copies of information &ndash; individuals have
-                the right to ask for a copy of any information about them that
-                is used.
-              </li>
-              <li>
-                The right to get information corrected &ndash; individuals have
-                the right to ask for any information held about them that they
-                think is inaccurate, to be corrected.
-              </li>
-              <li>
-                The right to limit how the information is used &ndash;
-                individuals have the right to ask for any of the information
-                held about them to be restricted, for example, if they think
-                inaccurate information is being used.
-              </li>
-              <li>
-                The right to object to the information being used &ndash;
-                individuals can ask for any information held about them to not
-                be used. However, this is not an absolute right, and continued
-                use of the information may be necessary, with individuals being
-                advised if this is the case.
-              </li>
-              <li>
-                The right to get information deleted &ndash; this is not an
-                absolute right, and continued use of the information may be
-                necessary, with individuals being advised if this is the case.
-              </li>
-            </ol>
 
-            <h2 className="govuk-heading-m">Comments or complaints</h2>
+            <h2 className="govuk-heading-m">Questions or complaints </h2>
             <p className="govuk-body">
-              Anyone unhappy or wishing to complain about how personal data is
-              used as part of this programme should contact{' '}
-              <abbr title="Department of Health and Social Care">DHSC</abbr>
-              &apos;s Data Protection Officer:
+              Contact the DHSC&apos;s Data Protection Team if you either:
             </p>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>have questions about anything in this document</li>
+              <li>
+                think that your personal data has been misused or mishandled
+              </li>
+            </ul>
+            <p className="govuk-body">DHSC&apos;s Data Protection Officer </p>
             <p className="govuk-body">
               Email:{' '}
               <a
@@ -222,20 +274,15 @@ const PrivacyPage = () => {
               SK9 5AF
             </p>
 
-            <h2 className="govuk-heading-m">
-              Automated decision making or profiling
-            </h2>
+            <h2 className="govuk-heading-m">Changes to this notice</h2>
             <p className="govuk-body">
-              No decision will be made about individuals solely based on
-              automated decision making (where a decision is taken about them
-              using an electronic system without human involvement) which has a
-              significant impact on them.
-            </p>
-
-            <h2 className="govuk-heading-m">Changes to this policy</h2>
-            <p className="govuk-body">
-              This privacy notice is kept under regular review. This privacy
-              notice was last updated on 12th January 2026.
+              We may modify or amend this privacy notice at our discretion at
+              any time. When we make changes to this notice, we will amend the
+              last modified date at the top of this page. Any modification or
+              amendment to this privacy notice will be applied to you and your
+              data as of that revision date. We encourage you to periodically
+              review this privacy notice to be informed about how we are
+              protecting your data.
             </p>
           </div>
         </div>

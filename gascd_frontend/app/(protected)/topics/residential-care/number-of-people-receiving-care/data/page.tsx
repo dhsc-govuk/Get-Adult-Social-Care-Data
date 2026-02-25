@@ -222,6 +222,7 @@ export default function NumberPeopleReceivingCarePage() {
                 tableref={tableref1}
                 filename="number_of_people_receiving_community_social_care.csv"
                 xLabel=""
+                downloadType="number of people receiving community social care in the last month"
               />
             </>
           }

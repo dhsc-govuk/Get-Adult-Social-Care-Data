@@ -1,0 +1,3 @@
+# Source_URL Destination_URL
+git@github.com:madetech/dhsc-gascd-frontend.git git@github.com:dhsc-govuk/Get-Adult-Social-Care-Data.git
+git@github.com:madetech/dhsc-gascd-prototype.git git@github.com:dhsc-govuk/Get-Adult-Social-Care-Data_Prototype.git

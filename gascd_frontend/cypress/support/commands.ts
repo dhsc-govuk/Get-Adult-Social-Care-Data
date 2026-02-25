@@ -11,7 +11,7 @@ Cypress.Commands.add('metatag', (name: string) => {
 
 Cypress.Commands.add('login_onelogin', (email: string) => {
   cy.visit('/login');
-  cy.get('button').contains('Agree and sign in').click();
+  cy.get('button').contains('Start now').click();
   cy.get('input#sub').clear().type(email);
   cy.get('input#email').clear().type(email);
   cy.get('button').contains('Continue').click();

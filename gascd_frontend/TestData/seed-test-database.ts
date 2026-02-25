@@ -50,6 +50,7 @@ const seedDevelopmentUser = async () => {
       locationId: process.env.LOCAL_AUTH_LOCATION_ID,
       locationType: process.env.LOCAL_AUTH_LOCATION_TYPE,
       selectedLocationId: selectedLocationId,
+      role: 'member',
       // These are reset deliberately to start the dev user afresh
       selectedLocationDisplayName: null,
       selectedLocationCategory: null,

@@ -1,0 +1,59 @@
+parameters:
+- name: repositories
+  type: object
+  default:
+    - name: 'Frontend'
+      sourceUrl: 'git@github.com:madetech/dhsc-gascd-frontend.git'
+      targetUrl: 'git@github.com:dhsc-govuk/Get-Adult-Social-Care-Data.git'
+    - name: 'Prototype'
+      sourceUrl: 'git@github.com:madetech/dhsc-gascd-prototype.git'
+      targetUrl: 'git@github.com:dhsc-govuk/Get-Adult-Social-Care-Data_Prototype.git'
+
+variables:
+  - group: ssh_mirror_keys
+
+trigger: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: InstallSSHKey@0
+  displayName: 'Configure SSH Authentication'
+  inputs:
+    knownHostsEntry: $(known_hosts)
+    sshPublicKey: $(ssh_public_key)
+    sshKeySecureFile: 'repo_mirror_rsa'
+
+- ${{ each repo in parameters.repositories }}:
+  - script: |
+      set -e
+      REPO_DIR=$(echo "${{ repo.name }}" | tr -cd '[:alnum:]')
+
+      echo "------------------------------------------------"
+      echo "Processing: ${{ repo.name }}"
+      echo "------------------------------------------------"
+
+      # 1. Clone Mirror (Automatically includes ALL tags and branches)
+      # --mirror is equivalent to specifying both --branches and --tags
+      echo "Step 1: Cloning source with all tags..."
+      git clone --mirror "${{ repo.sourceUrl }}" "$REPO_DIR"
+      
+      cd "$REPO_DIR"
+
+      echo "------------------------------------------------"
+      echo "Verifying Tags present in Clone:"
+      git tag -l | head -n 10 # Lists first 10 tags to keep logs clean
+      echo "... (and others)"
+      echo "------------------------------------------------"
+
+      echo "Step 2: Pushing tags and branches to destination..."
+      git push --mirror "${{ repo.targetUrl }}"
+
+      # Cleanup
+      cd ..
+      rm -rf "$REPO_DIR"
+      echo "Sync complete."
+
+    displayName: 'Sync ${{ repo.name }} (Branches & Tags)'
+    continueOnError: true

@@ -13,6 +13,7 @@ import {
   mockSessionEmailMismatch,
   mockSessionEmailMatchCase,
   mockSessionNoConsent,
+  mockSessionNoTerms,
   mockSessionLAUser,
 } from '@/test-utils/test-utils';
 
@@ -62,6 +63,12 @@ describe('Auth Layout', () => {
     mockGetSession.mockResolvedValue(mockSessionNoConsent);
     await AuthLayout({ children: mockChildren });
     expect(mockedRedirect).toHaveBeenCalledWith('/consent');
+  });
+
+  test('redirects to terms page if no consent', async () => {
+    mockGetSession.mockResolvedValue(mockSessionNoTerms);
+    await AuthLayout({ children: mockChildren });
+    expect(mockedRedirect).toHaveBeenCalledWith('/accept-terms');
   });
 
   test('redirects to unregistered page if emails do not match', async () => {

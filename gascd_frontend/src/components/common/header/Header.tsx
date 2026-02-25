@@ -32,11 +32,11 @@ const Header: React.FC<Props> = ({ session, account_url }) => {
 
   return (
     <>
-      <a href="#main-content" className="govuk-skip-link">
-        Skip to main content
-      </a>
       <header className="rebranded-cross-service-header">
         <CookieBanner />
+        <a href="#main-content" className="govuk-skip-link">
+          Skip to main content
+        </a>
         <div
           className="rebranded-one-login-header toggle-enabled"
           data-one-login-header-nav=""
@@ -44,7 +44,7 @@ const Header: React.FC<Props> = ({ session, account_url }) => {
           <div className="rebranded-one-login-header__container govuk-width-container">
             <div className="rebranded-one-login-header__logo">
               <Link
-                href="/"
+                href="https://www.gov.uk/"
                 className="rebranded-one-login-header__link rebranded-one-login-header__link--homepage"
               >
                 <svg
@@ -88,7 +88,6 @@ const Header: React.FC<Props> = ({ session, account_url }) => {
                 data-open-class="rebranded-cross-service-header__toggle--open"
                 data-label-for-show="Show GOV.UK One Login menu"
                 data-label-for-hide="Hide GOV.UK One Login menu"
-                aria-expanded="false"
                 className="rebranded-cross-service-header__toggle js-x-header-toggle"
                 onClick={toggleOLNav}
               >
