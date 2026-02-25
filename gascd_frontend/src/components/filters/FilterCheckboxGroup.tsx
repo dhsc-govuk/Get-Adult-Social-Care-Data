@@ -27,22 +27,11 @@ const FilterCheckboxGroup: React.FC<Props> = ({
   const [showClearAll, setShowClearAll] = useState(false);
 
   useEffect(() => {
-    setLocalFilters();
-    setSelectedFilters(componentFilters.filter((filter) => filter.checked));
-    setSearchedFilters(componentFilters);
-  }, []);
-
-  useEffect(() => {
-    setShowClearAll(selectedFilters.length > 0);
-  }, [selectedFilters]);
-
-  const setLocalFilters = () => {
     let localFilters: Filters[] = Object.entries(filters).map(
       ([key, value]) => {
         return { metric_id: key, filter_label: value, checked: false };
       }
     );
-
     const storedData = localStorage.getItem(filterType);
     if (storedData && storedData !== '[]') {
       const parsedData: Filters[] = JSON.parse(storedData);
@@ -57,7 +46,16 @@ const FilterCheckboxGroup: React.FC<Props> = ({
       setShowActiveFilters(true);
     }
     setComponentFilters(localFilters);
-  };
+    setSearchedFilters(localFilters);
+  }, []);
+
+  useEffect(() => {
+    setSelectedFilters(componentFilters.filter((filter) => filter.checked));
+  }, [componentFilters]);
+
+  useEffect(() => {
+    setShowClearAll(selectedFilters.length > 0);
+  }, [selectedFilters]);
 
   const handleShowHideToggle = (showFilters: boolean) => {
     setSearchedFilters(componentFilters);
