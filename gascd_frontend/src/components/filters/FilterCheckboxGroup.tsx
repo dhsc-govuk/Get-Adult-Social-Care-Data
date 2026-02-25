@@ -287,7 +287,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
       )}
       {displayFilters && showActiveFilters && (
         <div className="app-c-filter-summary">
-          <h4 className="app-c-filter-summary__heading">Active filters</h4>
+          <h5 className="app-c-filter-summary__heading">Active filters</h5>
           <ul className="app-c-filter-summary__remove-filters">
             {displayFilters.map((filterName, index) => (
               <li key={index}>
