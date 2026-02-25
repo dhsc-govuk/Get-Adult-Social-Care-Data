@@ -750,14 +750,10 @@ BEGIN
            (gd_cpl, ST_Point(-2.88, 53.425, 4326)::geography, ST_GeographyFromText('SRID=4326;POLYGON((55.26 -3.3, 52.26 -2.55, 53.73 -2.65, 54.73 -3.3, 55.26 -3.3))'), CURRENT_TIMESTAMP),
            (gd_cpl_2, ST_Point(-2.38, 52.425, 4326)::geography, null, CURRENT_TIMESTAMP),
            (gd_cpl_3, ST_Point(-2.83, 53.425, 4326)::geography, null, CURRENT_TIMESTAMP),
-           
            (gd_cpl_4, ST_Point(-1.00, 1.000, 4326)::geography, null, CURRENT_TIMESTAMP),
            (gd_cpl_5, ST_Point(-1.00, 1.001, 4326)::geography, null, CURRENT_TIMESTAMP),
            (gd_cpl_6, ST_Point(-1.00, 1.036, 4326)::geography, null, CURRENT_TIMESTAMP),
-
            (gd_cpl_7, ST_Point(89.12, 44.99, 4326)::geography, null, CURRENT_TIMESTAMP),
-
-
            (gd_postcode, ST_Point(-0.349629386, 51.33954856349381)::geography, ST_GeographyFromText('SRID=4326;POLYGON((55.26 -3.3, 59.6 -2.55, 54.73 -2.95, 52.73 -3.1, 55.26 -3.3))'), CURRENT_TIMESTAMP),
            (gd_postcode_2, ST_Point(0.7260691453143282, 51.32988801568501 )::geography, null, CURRENT_TIMESTAMP),
            (gd_postcode_3, ST_Point(0.7283745919593453, 51.32954649874547)::geography, null, CURRENT_TIMESTAMP),
@@ -796,19 +792,12 @@ BEGIN
            (care_provider_location_id_3, 'Katherines Eyes','Residential', care_provider_id_2, gd_cpl_3, 'Katherines Eyes, Liverpool, ME10 1QY', 'Katherine', la_id, '1-222222224', CURRENT_TIMESTAMP),
            (care_provider_location_id_4, 'Katherines Ears','Care home', care_provider_id_4, null, 'Katherines Ears, Liverpool, ME10 1QZ', 'Katherine', la_id, '1-222222225', CURRENT_TIMESTAMP),
            (care_provider_location_id_5, 'Katherines Noses','Care home', care_provider_id_4, null, 'Katherines Noses, Liverpool, ME11 1QZ', null, la_id, '1-222222226', CURRENT_TIMESTAMP),
-          
            (care_provider_location_id_6, 'Location 1','Care home', care_provider_id_5, gd_cpl_4, 'Location 1, North Pole, NP 1SC', null, la_id, '1-000000001', CURRENT_TIMESTAMP),
            (care_provider_location_id_7, 'Location 2','Care home', care_provider_id_5, gd_cpl_5, 'Location 2, North Pole, NP 1SC', null, la_id, '1-000000002', CURRENT_TIMESTAMP),
            (care_provider_location_id_8, 'Location 3','Care home', care_provider_id_5, gd_cpl_6, 'Location 3, North Pole, NP 1SC', null, la_id, '1-000000003', CURRENT_TIMESTAMP),
-
            (care_provider_location_id_9, 'Location 4','Care home', care_provider_id_5, gd_cpl_7, 'Location 4, South Pole, SP 1SC', null, la_id, '1-000000004', CURRENT_TIMESTAMP);
 
-
-
-
-
-
-INSERT INTO metric_groups (id, code, loaded_datetime, display_name)
+    INSERT INTO metric_groups (id, code, loaded_datetime, display_name)
     VALUES (metric_group_id, 'metric_group_code', CURRENT_TIMESTAMP, 'Metric group display name' ),
            (metric_group_id_2, 'metric_group_code_2', CURRENT_TIMESTAMP, 'Metric group 2 display name' ),
            (metric_group_id_3, 'metric_group_code_3', CURRENT_TIMESTAMP,'Metric group 3 display name'  ),
@@ -914,14 +903,14 @@ INSERT INTO metric_groups (id, code, loaded_datetime, display_name)
            (5, dementia_qof_prevalence_metric_id, '1-222222222', 'CareProviderLocation', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP);
 
     INSERT INTO dementia_register_65over_per100k (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
-        VALUES (1, dementia_register_65over_per100k_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.12], 6.12, CURRENT_TIMESTAMP),
-               (2, dementia_register_65over_per100k_metric_id, 'E92000002', 'National', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.7], 6.7, CURRENT_TIMESTAMP),
-               (3, dementia_register_65over_per100k_metric_id, 'E12000003', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP),
-               (4, dementia_register_65over_per100k_metric_id, 'E08000014', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP),
-               (5, dementia_register_65over_per100k_metric_id, '1-222222222', 'CareProviderLocation', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP);
+    VALUES (1, dementia_register_65over_per100k_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.12], 6.12, CURRENT_TIMESTAMP),
+           (2, dementia_register_65over_per100k_metric_id, 'E92000002', 'National', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.7], 6.7, CURRENT_TIMESTAMP),
+           (3, dementia_register_65over_per100k_metric_id, 'E12000003', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP),
+           (4, dementia_register_65over_per100k_metric_id, 'E08000014', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP),
+           (5, dementia_register_65over_per100k_metric_id, '1-222222222', 'CareProviderLocation', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.8], 6.8, CURRENT_TIMESTAMP);
     
     INSERT INTO learning_disability_prevalence (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
-        VALUES (1, learning_disability_prevalence_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.13], 6.13, CURRENT_TIMESTAMP);
+    VALUES (1, learning_disability_prevalence_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.13], 6.13, CURRENT_TIMESTAMP);
     
     INSERT INTO median_bed_count (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, median_bed_count_total_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.6], 6.6, CURRENT_TIMESTAMP),

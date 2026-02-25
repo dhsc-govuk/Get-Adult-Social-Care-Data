@@ -16,35 +16,37 @@ public class GetCareProviderLocationNeighboursEndpoint(GascdDataContext context,
     public override async Task HandleAsync(GetCareProviderLocationNeighboursRequest req, CancellationToken ct)
     {
         var cpl = context.CareProviderLocations
+            .Where(l => l.Code == req.CareProviderLocationCode)
             .Include(l => l.GeoData)
-            .SingleOrDefault(l => l.Code == req.CareProviderLocationCode);
+            .Select(l => new CareProviderLocationWithNeighbours
+            {
+                LocationCode = l.Code,
+                Neighbours = context.CareProviderLocations
+                    .Where(n => l != n && n.GeoData!.Coordinate.IsWithinDistance(l.GeoData!.Coordinate, req.DistanceInMetres))
+                    .Include(n => n.GeoData)
+                    .Select(n => new CareProviderLocationNeighbour
+                    {
+                        LocationName = n.Name,
+                        LocationCode = n.Code,
+                        LaName = n.LocalAuthority.Name,
+                        LaCode = n.LocalAuthority.Code,
+                        LocationCategory = n.Category,
+                        Address = n.Address,
+                        DistanceToNeighbour = (decimal)n.GeoData!.Coordinate.Distance(l.GeoData!.Coordinate)
+                    })
+                    .OrderBy(n => n.DistanceToNeighbour)
+                    .Take(req.Limit)
+                    .ToList()
+            }).SingleOrDefault();
 
-        if (cpl == null || cpl.GeoData == null)
+        if (cpl == null)
         {
             logger.LogInformation("Geographic data not found for care provider location: {cpl}", req.CareProviderLocationCode);
             await Send.NotFoundAsync(ct);
             return;
         }
 
-        var cplNeighbours = context.CareProviderLocations
-            .Where(l => l.GeoData!.Coordinate.IsWithinDistance(cpl.GeoData!.Coordinate, req.DistanceInMetres) &&
-                        l.Code != req.CareProviderLocationCode)
-            .Include(l => l.GeoData)
-            .Select(n => new CareProviderLocationNeighbour
-            {
-                LocationName = n.Name,
-                LocationCode = n.Code,
-                LaName = n.LocalAuthority.Name,
-                LaCode = n.LocalAuthority.Code,
-                LocationCategory = n.Category,
-                Address = n.Address,
-                DistanceToNeighbour = (decimal)n.GeoData!.Coordinate.Distance(cpl.GeoData!.Coordinate)
-            })
-            .OrderBy(l => l.DistanceToNeighbour)
-            .Take(req.Limit)
-            .ToList();
-
-        var response = mapper.CareProviderLocationsToGetCareProviderLocationNeighbourResponse(cpl, cplNeighbours);
+        var response = mapper.CareProviderLocationsToGetCareProviderLocationNeighbourResponse(cpl);
 
         await Send.OkAsync(response, ct);
     }
