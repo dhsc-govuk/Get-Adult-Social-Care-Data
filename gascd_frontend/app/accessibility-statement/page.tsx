@@ -154,18 +154,6 @@ const AccessibilityStatementPage: React.FC = () => {
             </h3>
             <ol className="govuk-list govuk-list--number">
               <li>
-                In the provision and occupancy topic a filter box where only one
-                filter can be applied currently gives screen reader users
-                unnecessary list information. This fails WCAG 2.2 success
-                criterion 1.3.1 (Info and Relationships).
-              </li>
-              <li>
-                In the provision and occupancy topic there is an incorrect
-                heading structure causing confusion in some filter boxes for
-                screen reader users. This fails WCAG 2.2 success criterion 1.3.1
-                (Info and Relationships).
-              </li>
-              <li>
                 On the location select page, there is currently incomplete error
                 messaging when users try to submit with mandatory fields left
                 empty. This fails WCAG 2.2 success criterion 3.3.1 (Error
@@ -178,20 +166,12 @@ const AccessibilityStatementPage: React.FC = () => {
                 criterion 2.4.1 (Bypass Blocks).
               </li>
               <li>
-                In the provision and occupancy topic a filter button &apos;show
-                bed numbers&apos; currently has the wrong voice command attached
-                to it. This affects voice activation users. This fails WCAG 2.2
-                success criterion 2.5.3 (Label in Name).
-              </li>
-              <li>
                 In the provision and occupancy topic the &apos;bed type&apos;
                 search feature presented has been programmed incorrectly. Some
                 search inputs have duplicate ids meaning that some voice
                 activation software cannot select all options. Search results
                 may also be presented in a nested form to screen reader users.
-                There are some duplicate ids between filter functions on the
-                same page which may lead to unexpected filtering results. The
-                clear all button within some search features may result in
+                The clear all button within some search features may result in
                 unexpected change of focus on the page making keyboard
                 navigation difficult. This is affecting a variety of assistive
                 technology users. This fails WCAG 2.2 success criterion 1.3.1
