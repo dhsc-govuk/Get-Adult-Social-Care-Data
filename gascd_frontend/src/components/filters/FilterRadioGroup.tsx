@@ -1,63 +1,67 @@
 import React, { useEffect, useState } from 'react';
-import { TotalBedsFilters } from '@/data/interfaces/TotalBedsFilters';
-import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
+import { Filters } from '@/data/interfaces/Filters';
 import FilterBox from './FilterBox';
 import { filter_helptext } from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/helptext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { set } from 'better-auth';
 
 type Props = {
   filterType: string;
   filterLabel: string;
+  filters: Object;
   updateMethod: () => void;
 };
 
 const FilterRadioGroup: React.FC<Props> = ({
   filterType,
   filterLabel,
+  filters,
   updateMethod,
 }) => {
   const [showFilters, setShowFilters] = React.useState(false);
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
-  const [filters, setFilters] = useState<TotalBedsFilters[]>([]);
-  const [selectedFilter, setSelectedFilter] = useState<TotalBedsFilters>();
-  const [searchedFilters, setSearchedFilters] = useState<TotalBedsFilters[]>(
-    []
-  );
-  const [displayFilter, setDisplayFilter] = useState<string | null>('');
+  const [componentFilters, setComponentFilters] = useState<Filters[]>([]);
+  const [selectedFilter, setSelectedFilter] = useState<Filters>();
+  const [searchedFilters, setSearchedFilters] = useState<Filters[]>([]);
+  const [displayFilter, setDisplayFilter] = useState<string | null>(null);
 
   useEffect(() => {
-    const getFilters = async () => {
-      const filters: TotalBedsFilters[] =
-        await IndicatorFetchService.getFilters();
-      setFilters(filters);
-      setSearchedFilters(filters);
-
-      const storedData = localStorage.getItem(filterType);
-      if (storedData) {
-        let filterFromStorage: TotalBedsFilters = {
-          metric_id: JSON.parse(storedData).metric_id,
-          filter_bedtype: JSON.parse(storedData).filter_bedtype,
-        };
-        setSelectedFilter(filterFromStorage);
-        setDisplayFilter(JSON.parse(storedData).filter_bedtype);
-        setShowActiveFilters(true);
-      } else {
-        setDefaultFilter();
-      }
-    };
-    getFilters();
+    setLocalFilters();
+    setSearchedFilters(componentFilters);
   }, []);
 
+  const setLocalFilters = () => {
+    let localFilters: Filters[] = Object.entries(filters).map(
+      ([key, value]) => {
+        return { metric_id: key, filter_label: value, checked: false };
+      }
+    );
+
+    const storedData = localStorage.getItem(filterType);
+    if (storedData) {
+      let filterFromStorage: Filters = {
+        metric_id: JSON.parse(storedData).metric_id,
+        filter_label: JSON.parse(storedData).filter_label,
+      };
+      setSelectedFilter(filterFromStorage);
+      setDisplayFilter(JSON.parse(storedData).filter_label);
+      setShowActiveFilters(true);
+    } else {
+      setDefaultFilter();
+    }
+    setComponentFilters(localFilters);
+  };
+
   const handleShowHideToggle = (showFilters: boolean) => {
-    setSearchedFilters(filters);
+    setSearchedFilters(componentFilters);
     setShowFilters(showFilters);
   };
 
-  const handleChange = (metric_id: string, filter_bedtype: string) => {
-    let newFilter: TotalBedsFilters = {
+  const handleChange = (metric_id: string, filter_label: string) => {
+    let newFilter: Filters = {
       metric_id: metric_id,
-      filter_bedtype: filter_bedtype,
+      filter_label: filter_label,
     };
     setSelectedFilter(newFilter);
   };
@@ -66,14 +70,14 @@ const FilterRadioGroup: React.FC<Props> = ({
     localStorage.setItem(filterType, JSON.stringify(selectedFilter));
     setShowFilters(false);
     setShowActiveFilters(true);
-    setDisplayFilter(selectedFilter?.filter_bedtype ?? null);
+    setDisplayFilter(selectedFilter?.filter_label ?? null);
     updateMethod();
   };
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
-    const searchedFilters = filters.filter((filter) =>
-      filter.filter_bedtype.toLowerCase().includes(searchTerm)
+    const searchedFilters = componentFilters.filter((filter) =>
+      filter.filter_label.toLowerCase().includes(searchTerm)
     );
     setSearchedFilters(searchedFilters);
   };
@@ -88,10 +92,12 @@ const FilterRadioGroup: React.FC<Props> = ({
   };
 
   const setDefaultFilter = () => {
-    setSelectedFilter({
-      metric_id: 'bedcount_per_hundred_thousand_adults_total',
-      filter_bedtype: 'All bed types',
-    });
+    if (filterType === 'numbers-table-metrics') {
+      setSelectedFilter({
+        metric_id: 'bedcount_per_hundred_thousand_adults_total',
+        filter_label: 'All bed types',
+      });
+    }
   };
 
   return (
@@ -121,16 +127,16 @@ const FilterRadioGroup: React.FC<Props> = ({
       </div>
       {showFilters && (
         <FilterBox>
-          {filters.length === 0 && (
+          {componentFilters.length === 0 && (
             <p className="govuk-body govuk-!-padding-left-3">
               Loading filters...
             </p>
           )}
-          {filters.length > 0 && (
+          {componentFilters.length > 0 && (
             <>
               <div className="js-container-heading">
                 <h3 className="govuk-heading-s searchable-filters-heading">
-                  Bed type
+                  {filterLabel}
                 </h3>
               </div>
               <div
@@ -143,7 +149,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                   htmlFor="input-bedtype-radios"
                   className="govuk-label govuk-visually-hidden"
                 >
-                  Bed type
+                  {filterLabel}
                 </label>
                 <input
                   id="input-bedtype-radios"
@@ -162,7 +168,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                   <div className="govuk-radios govuk-form-group govuk-radios--small">
                     <fieldset className="govuk-fieldset">
                       <legend className="govuk-fieldset__legend gem-c-radios govuk-fieldset__legend--m govuk-visually-hidden">
-                        Bed type
+                        {filterLabel}
                       </legend>
                       <ul className="govuk-radios__list gem-c-radios__list">
                         {searchedFilters.map((filter: any, index) => (
@@ -179,7 +185,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                               onChange={() =>
                                 handleChange(
                                   filter.metric_id,
-                                  filter.filter_bedtype
+                                  filter.filter_label
                                 )
                               }
                             />
@@ -187,7 +193,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                               className="govuk-label govuk-radios__label"
                               htmlFor={filter.metric_id}
                             >
-                              {filter.filter_bedtype}
+                              {filter.filter_label}
                             </label>
                             {filter_helptext[filter.metric_id] && (
                               <div className="govuk-hint govuk-radios__hint">
@@ -227,7 +233,7 @@ const FilterRadioGroup: React.FC<Props> = ({
       )}
       {displayFilter && showActiveFilters && (
         <div className="app-c-filter-summary">
-          <h5 className="app-c-filter-summary__heading">Active filters</h5>
+          <h4 className="app-c-filter-summary__heading">Active filters</h4>
           <ul className="app-c-filter-summary__remove-filters">
             <li>
               <button
@@ -235,7 +241,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                 onClick={() => clearFilters()}
               >
                 <span className="govuk-visually-hidden">Remove filter</span>
-                Bed type: {displayFilter}
+                {filterLabel}: {displayFilter}
               </button>
             </li>
           </ul>
