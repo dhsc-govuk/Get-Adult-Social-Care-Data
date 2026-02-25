@@ -172,10 +172,7 @@ const GuidancePage = () => {
                   </a>{' '}
                   to sign in to this service, and it must be tied to your CQC
                   registered email address. You can{' '}
-                  <a
-                    href="https://signin.account.gov.uk/sign-in-or-create"
-                    className="govuk-link"
-                  >
+                  <a href="https://www.gov.uk/account" className="govuk-link">
                     create one
                   </a>{' '}
                   if you do not already have one.
