@@ -743,18 +743,18 @@ DECLARE
 
 BEGIN
     INSERT INTO geo_data(id, coordinate, bounding_polygon, loaded_datetime)
-    VALUES (gd_country, ST_Point(-1.464854, 52.561928, 4326)::geography, ST_GeographyFromText('SRID=4326;POLYGON((50.0 -3.8, 53.9 -1.8, 55.25 -1.8, 52.25 -3.9, 50.0 -3.8))'), CURRENT_TIMESTAMP),
-           (gd_region, ST_Point(-2.75, 54.075, 4326)::geography,ST_GeographyFromText('SRID=4326;POLYGON((52.9 -3.8, 52.9 -1.8, 55.25 -1.8, 55.25 -3.8, 52.9 -3.8))'), CURRENT_TIMESTAMP),
-           (gd_la, ST_Point(-2.98, 53.405, 4326)::geography,ST_GeographyFromText('SRID=4326;POLYGON((53.26 -3.3, 53.26 -2.55, 53.73 -2.55, 53.73 -3.3, 53.26 -3.3))'), CURRENT_TIMESTAMP),
-           (gd_la_2, ST_Point(-2.55, 52.600, 4326)::geography,ST_GeographyFromText('SRID=4326;POLYGON((51.26 -3.4, 53.26 -2.95, 53.73 -2.75, 55.73 -3.3, 51.26 -3.4))'), CURRENT_TIMESTAMP),
-           (gd_cpl, ST_Point(-2.88, 53.425, 4326)::geography, ST_GeographyFromText('SRID=4326;POLYGON((55.26 -3.3, 52.26 -2.55, 53.73 -2.65, 54.73 -3.3, 55.26 -3.3))'), CURRENT_TIMESTAMP),
+    VALUES (gd_country, ST_Point(-1.464854, 52.561928, 4326)::geography, ST_GeographyFromText('SRID=4326;POLYGON((-3.8 50.0, -1.8 53.9, -1.8 55.25, -3.9 52.25, -3.8 50.0))'), CURRENT_TIMESTAMP),
+           (gd_region, ST_Point(-2.75, 54.075, 4326)::geography,ST_GeographyFromText('SRID=4326;POLYGON((-3.8 52.9, -1.8 52.9, -1.8 55.25, -3.8 55.25, -3.8 52.9))'), CURRENT_TIMESTAMP),
+           (gd_la, ST_Point(-2.98, 53.405, 4326)::geography,ST_GeographyFromText('SRID=4326;POLYGON((-3.3 53.26, -2.55 53.26, -2.55 53.73, -3.3 53.73, -3.3 53.26))'), CURRENT_TIMESTAMP),
+           (gd_la_2, ST_Point(-2.55, 52.600, 4326)::geography,ST_GeographyFromText('SRID=4326;POLYGON((-3.4 51.26, -2.95 53.26, -2.75 53.73, -3.3 55.73, -3.4 51.26))'), CURRENT_TIMESTAMP),
+           (gd_cpl, ST_Point(-2.88, 53.425, 4326)::geography, ST_GeographyFromText('SRID=4326;POLYGON((-3.3 55.26, -2.55 52.26, -2.65 53.73, -3.3 54.73, -3.3 55.26))'), CURRENT_TIMESTAMP),
            (gd_cpl_2, ST_Point(-2.38, 52.425, 4326)::geography, null, CURRENT_TIMESTAMP),
            (gd_cpl_3, ST_Point(-2.83, 53.425, 4326)::geography, null, CURRENT_TIMESTAMP),
            (gd_cpl_4, ST_Point(-1.00, 1.000, 4326)::geography, null, CURRENT_TIMESTAMP),
            (gd_cpl_5, ST_Point(-1.00, 1.001, 4326)::geography, null, CURRENT_TIMESTAMP),
            (gd_cpl_6, ST_Point(-1.00, 1.036, 4326)::geography, null, CURRENT_TIMESTAMP),
            (gd_cpl_7, ST_Point(89.12, 44.99, 4326)::geography, null, CURRENT_TIMESTAMP),
-           (gd_postcode, ST_Point(-0.349629386, 51.33954856349381)::geography, ST_GeographyFromText('SRID=4326;POLYGON((55.26 -3.3, 59.6 -2.55, 54.73 -2.95, 52.73 -3.1, 55.26 -3.3))'), CURRENT_TIMESTAMP),
+           (gd_postcode, ST_Point(-0.349629386, 51.33954856349381)::geography, ST_GeographyFromText('SRID=4326;POLYGON((-3.3 55.26, -2.55 59.6, -2.95 54.73, -3.1 52.73, -3.3 55.26))'), CURRENT_TIMESTAMP),
            (gd_postcode_2, ST_Point(0.7260691453143282, 51.32988801568501 )::geography, null, CURRENT_TIMESTAMP),
            (gd_postcode_3, ST_Point(0.7283745919593453, 51.32954649874547)::geography, null, CURRENT_TIMESTAMP),
            (gd_postcode_4, ST_Point(-1.445481473,52.43602168912626)::geography, null, CURRENT_TIMESTAMP);
