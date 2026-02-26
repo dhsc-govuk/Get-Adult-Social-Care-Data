@@ -5,6 +5,7 @@ import { filter_helptext } from '../../../app/(protected)/topics/residential-car
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { set } from 'better-auth';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 type Props = {
   filterType: string;
@@ -72,6 +73,10 @@ const FilterRadioGroup: React.FC<Props> = ({
     setShowActiveFilters(true);
     setDisplayFilter(selectedFilter?.filter_label ?? null);
     updateMethod();
+    AnalyticsService.trackFilterApply(
+      [selectedFilter?.filter_label ?? ''],
+      filterType
+    );
   };
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -89,6 +94,10 @@ const FilterRadioGroup: React.FC<Props> = ({
     setShowActiveFilters(false);
     setDisplayFilter(null);
     updateMethod();
+    AnalyticsService.trackFilterClear(
+      selectedFilter?.filter_label ?? '',
+      filterType
+    );
   };
 
   const setDefaultFilter = () => {
