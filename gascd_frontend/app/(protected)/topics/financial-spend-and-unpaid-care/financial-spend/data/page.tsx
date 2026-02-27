@@ -18,6 +18,7 @@ import TableService from '@/services/Table/TableService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import LocationService from '@/services/location/locationService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
+import IndicatorService from '@/services/indicator/IndicatorService';
 
 export default function LAFundingPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -57,6 +58,12 @@ export default function LAFundingPage() {
     },
   ];
 
+  const metricColumnNames = [
+    'Duration of care',
+    'Care type or funding method',
+    'Financial year',
+  ];
+
   const demographicMetricIds = [
     'edpsr_lt_learning_disability_support_all_ages',
     'edpsr_lt_mental_health_support_all_ages',
@@ -71,6 +78,17 @@ export default function LAFundingPage() {
     'edpsr_st_support_with_memory_and_cognition_all_ages',
     'edpsr_st_total_all_ages',
     'edpsr_stlt_total_all_ages',
+
+    'elss_all_types_of_care_home_all_ages',
+    'elss_all_types_of_adult_social_care_all_ages',
+    'elss_all_types_of_community_social_care_all_ages',
+    'elss_community_direct_payments_all_ages',
+    'elss_community_home_care_all_ages',
+    'elss_community_other_long_term_care_all_ages',
+    'elss_community_supported_living_all_ages',
+    'elss_nursing_all_ages',
+    'elss_residential_all_ages',
+    'elss_supported_accommodation_all_ages',
   ];
 
   useEffect(() => {
@@ -210,13 +228,15 @@ export default function LAFundingPage() {
                   short-term and long-term adult social care for all age groups
                   – {locationNames.LALabel} local authority,{' '}
                   {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel}
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getFinancialYear(filteredDemographicData)}
                 </>
               }
               source={
                 'Adult Social Care Activity and Finance Report from NHS England'
               }
               columnHeaders={locationNamesWithAverageLabels}
+              metricColumnName={metricColumnNames[0]}
               rowHeaders={{
                 edpsr_stlt_total_all_ages: 'Both short-term and long-term',
                 edpsr_lt_total_all_ages: 'Long-term',
@@ -254,8 +274,9 @@ export default function LAFundingPage() {
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
-                filename="general_health_and_disability.csv"
+                filename="social_care_funding_by_duration.csv"
                 xLabel=""
+                downloadType="LA spending on short-term and long-term adult social care for all age groups"
               />
             </>
           }
@@ -346,6 +367,7 @@ export default function LAFundingPage() {
                 tableref={tableref2}
                 filename="funding_for_long_term_adult_social_care.csv"
                 xLabel=""
+                downloadType="LA funding for long-term adult social care for all age groups - trends over time"
               />
             </>
           }
