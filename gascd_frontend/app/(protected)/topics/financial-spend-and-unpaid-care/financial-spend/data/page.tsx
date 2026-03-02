@@ -42,10 +42,31 @@ export default function LAFundingPage() {
   const [filteredDemographicData, setFilteredDemographicData] = useState<
     Indicator[]
   >([]);
+  const [rawLaFundingOverTimeData, setRawLaFundingOverTimeData] = useState<
+    Indicator[]
+  >([]);
+  const [laFundingOverTimeDataForTable, setLAFundingOverTimeDataForTable] =
+    useState<Indicator[]>([]);
+
+  const [laFundingTableRowHeaders, setLAFundingTableRowHeaders] = useState<{
+    [key: string]: string;
+  }>({});
+
   const [demographicQuery, setDemographicQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
   });
+
+  const [laFundingOverTimeDataQuery, setLAFundingOverTimeDataQuery] =
+    useState<IndicatorQuery>({
+      metric_ids: [],
+      location_ids: [],
+    });
+
+  const [chartData, setChartData] = useState<{
+    categories: string[];
+    values: number[];
+  }>({ categories: [], values: [] });
 
   const breadcrumbs = [
     {
@@ -154,6 +175,11 @@ export default function LAFundingPage() {
         metric_ids: demographicMetricIds,
         location_ids: locationIds,
       }));
+      setLAFundingOverTimeDataQuery(() => ({
+        metric_ids: ['elss_all_types_of_adult_social_care_all_ages'],
+        location_ids: locationIds,
+        query_type: 'MultiLocationTimeseriesQuery',
+      }));
     }
   }, [locationIds]);
 
@@ -172,6 +198,50 @@ export default function LAFundingPage() {
     };
     fetchAllData();
   }, [demographicQuery]);
+
+  useEffect(() => {
+    const fetchLaFundingOverTimeData = async () => {
+      if (!CPLocationId || !locationIds) return;
+      try {
+        if (laFundingOverTimeDataQuery.location_ids.length) {
+          const laFundingOverTimeData: Indicator[] =
+            await IndicatorFetchService.getData(laFundingOverTimeDataQuery);
+          setRawLaFundingOverTimeData(laFundingOverTimeData);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchLaFundingOverTimeData();
+  }, [laFundingOverTimeDataQuery]);
+
+  useEffect(() => {
+    if (rawLaFundingOverTimeData.length > 0) {
+      createTimeSeriesForTable();
+    }
+  }, [rawLaFundingOverTimeData]);
+
+  const createTimeSeriesForTable = () => {
+    let metricIds: any[] = [];
+    rawLaFundingOverTimeData.map((indicator) => {
+      const indicatorDate = indicator.metric_date;
+      if (indicatorDate) {
+        const year = indicatorDate.substring(0, 4);
+        indicator.metric_id = `elss_all_types_of_adult_social_care_all_ages_${year}`;
+        if (!metricIds.find((m) => m.id === indicator.metric_id)) {
+          metricIds.push({
+            id: `elss_all_types_of_adult_social_care_all_ages_${year}`,
+            name: `${year - 1} to ${year}`,
+          });
+        }
+      }
+    });
+
+    setLAFundingOverTimeDataForTable(rawLaFundingOverTimeData);
+    setLAFundingTableRowHeaders(
+      Object.fromEntries(metricIds.map((m) => [m.id, m.name]))
+    );
+  };
 
   return (
     <Layout
@@ -229,7 +299,10 @@ export default function LAFundingPage() {
                   – {locationNames.LALabel} local authority,{' '}
                   {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getFinancialYear(filteredDemographicData)}
+                  {IndicatorService.getFinancialYear(
+                    filteredDemographicData,
+                    1
+                  )}
                 </>
               }
               source={
@@ -314,7 +387,10 @@ export default function LAFundingPage() {
                   {locationNames.LALabel} local authority,{' '}
                   {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getFinancialYear(filteredDemographicData)}
+                  {IndicatorService.getFinancialYear(
+                    filteredDemographicData,
+                    1
+                  )}
                 </>
               }
               source={
@@ -402,7 +478,12 @@ export default function LAFundingPage() {
                   long-term adult social care (all types of adult social care)
                   for all age groups – {locationNames.LALabel} local authority,{' '}
                   {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel}
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getFinancialYear(
+                    filteredDemographicData,
+                    3
+                  )}{' '}
+                  (£ thousand)
                 </>
               }
               source={
@@ -410,12 +491,8 @@ export default function LAFundingPage() {
               }
               columnHeaders={locationNamesWithAverageLabels}
               metricColumnName={metricColumnNames[2]}
-              rowHeaders={{
-                2023_2024: '2023 to 2024',
-                2022_2023: '2022 to 2023',
-                2021_2022: '2021 to 2022',
-              }}
-              data={filteredDemographicData}
+              rowHeaders={laFundingTableRowHeaders}
+              data={laFundingOverTimeDataForTable}
               showCareProvider={false}
               percentageRows={[]}
               currency={true}
