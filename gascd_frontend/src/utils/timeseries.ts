@@ -36,6 +36,25 @@ export const transformSeriesData = (
         value: val,
       };
     });
+  } else if (series_frequency === 'Yearly') {
+    const startYear = parseInt(series_start_date);
+    const endYear = parseInt(series_end_date);
+
+    const expectedLength = endYear - startYear + 1;
+
+    if (values.length !== expectedLength) {
+      throw new Error(
+        `Data mismatch: Expected ${expectedLength} values for the year range, but received ${values.length}.`
+      );
+    }
+
+    return values.reverse().map((val, index) => {
+      const year = endYear - index;
+      return {
+        date: year.toString(),
+        value: val,
+      };
+    });
   } else {
     throw new Error('Unknown series frequency: ' + series_frequency);
   }

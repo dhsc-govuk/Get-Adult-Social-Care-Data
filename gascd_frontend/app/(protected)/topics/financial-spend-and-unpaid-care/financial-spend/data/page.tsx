@@ -226,12 +226,11 @@ export default function LAFundingPage() {
     rawLaFundingOverTimeData.map((indicator) => {
       const indicatorDate = indicator.metric_date;
       if (indicatorDate) {
-        const year = indicatorDate.substring(0, 4);
-        indicator.metric_id = `elss_all_types_of_adult_social_care_all_ages_${year}`;
+        indicator.metric_id = `elss_all_types_of_adult_social_care_all_ages_${indicatorDate}`;
         if (!metricIds.find((m) => m.id === indicator.metric_id)) {
           metricIds.push({
-            id: `elss_all_types_of_adult_social_care_all_ages_${year}`,
-            name: `${year - 1} to ${year}`,
+            id: `elss_all_types_of_adult_social_care_all_ages_${indicatorDate}`,
+            name: `${indicatorDate - 1} to ${indicatorDate}`,
           });
         }
       }
@@ -481,7 +480,7 @@ export default function LAFundingPage() {
                   {locationNames.CountryLabel},{' '}
                   {IndicatorService.getFinancialYear(
                     filteredDemographicData,
-                    3
+                    Object.keys(laFundingTableRowHeaders).length
                   )}{' '}
                   (£ thousand)
                 </>
