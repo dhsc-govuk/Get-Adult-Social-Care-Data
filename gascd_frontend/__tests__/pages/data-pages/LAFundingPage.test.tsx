@@ -43,9 +43,9 @@ describe('LAFundingPage', () => {
     }
 
     const dataBoxHeadings = [
-      'adult social care funding by duration of care',
-      'funding for long-term adult social care',
-      'funding for long-term adult social care – trends over time',
+      'LA adult social care funding by duration of care',
+      'LA funding for long-term adult social care',
+      'LA funding for long-term adult social care – trends over time',
     ];
     for (let dataBoxHeadingText of dataBoxHeadings) {
       expect(
@@ -59,15 +59,19 @@ describe('LAFundingPage', () => {
     expect(bodyTextElement).toBeInTheDocument();
 
     const helpLink = screen.getAllByRole('link', {
-      name: / funding for adult social care/i,
+      name: /LA funding for adult social care/i,
     });
-    expect(helpLink[1]).toBeInTheDocument();
-    expect(helpLink[1]).toHaveAttribute(
+    expect(helpLink[0]).toBeInTheDocument();
+    expect(helpLink[0]).toHaveAttribute(
       'href',
       '/help/total-financial-spend-adult-social-care'
     );
 
-    const tables = [/Table 1: /i, /Table 2: /i, /Table 3: /i];
+    const tables = [
+      /Table 1: LA spending on short-term and long-term adult social care for all age groups/i,
+      /Table 2: LA funding for long-term adult social care for all age groups /i,
+      /Table 3: LA funding for long-term adult social care (all types of adult social care) for all age groups/i,
+    ];
     for (let table of tables) {
       expect(screen.getByRole('table', { name: table })).toBeInTheDocument();
     }
