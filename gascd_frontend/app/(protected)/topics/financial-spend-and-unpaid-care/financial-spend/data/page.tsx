@@ -67,11 +67,6 @@ export default function LAFundingPage() {
       location_ids: [],
     });
 
-  const [chartData, setChartData] = useState<{
-    categories: string[];
-    values: number[];
-  }>({ categories: [], values: [] });
-
   const breadcrumbs = [
     {
       text: 'Home',
