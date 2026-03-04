@@ -6,19 +6,39 @@
 
 - Copy `.env.template` to `.env`
 - Enter a random string for `BETTER_AUTH_SECRET` in `.env` (must be over 32 characters)
-- Enter a random string for `USER_DB_PASSWORD`and `LOCAL_AUTH_PASSWORD` in `.env`
+- Enter a password for `LOCAL_AUTH_PASSWORD` in `.env`
+- Enter a password for `USER_DB_PASSWORD` in `.env` (search MS SQL server sa password requirements using your
+  favourite search engine)
 
 2. Run the backend API in Docker:
 
 - See the backend [README](../gascd_api/README.md) on how to get the API running in Docker (using `docker compose up`)
 
 3. Create the user database:
+   1. Build and run the db container:
 
-- Build and run the sql server (and create the database) - run `docker compose up userdb -d`
-- Set up the Better Auth tables (pause first to give the container above time to spin up) - run `npm run db:migrate`
-- Add the test user to the database - run `npm run db:test:seed`
+   ```
+   docker compose up userdb -d
+   ```
 
-4. Run the frontend app - run `make docker-up`
+   2. Set up the Better Auth tables (pause first to give the container above time to spin up):
+
+   ```
+   npm run db:migrate
+   ```
+
+   3. Add the test user to the database:
+
+   ```
+   npm run db:test:seed
+   ```
+
+4. Run the frontend app:
+
+```
+make docker-up
+```
+
 5. Navigate to the web page `http://localhost:3000/api/auth/local`
 
 ## Usage
