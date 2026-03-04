@@ -69,8 +69,8 @@ describe('LAFundingPage', () => {
 
     const tables = [
       /Table 1: LA spending on short-term and long-term adult social care for all age groups/i,
-      /Table 2: LA funding for long-term adult social care for all age groups /i,
-      /Table 3: LA funding for long-term adult social care (all types of adult social care) for all age groups/i,
+      /Table 2: LA funding for long-term adult social care for all age groups/i,
+      /Table 3: LA funding for long-term adult social care/i,
     ];
     for (let table of tables) {
       expect(screen.getByRole('table', { name: table })).toBeInTheDocument();
