@@ -19,6 +19,10 @@ import AnalyticsService from '@/services/analytics/analyticsService';
 import LocationService from '@/services/location/locationService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import IndicatorService from '@/services/indicator/IndicatorService';
+import TimeSeriesChart, {
+  DataPoint,
+  Series,
+} from '@/components/charts/TimeSeriesChart';
 
 export default function LAFundingPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -218,6 +222,7 @@ export default function LAFundingPage() {
   useEffect(() => {
     if (rawLaFundingOverTimeData.length > 0) {
       createTimeSeriesForTable();
+      createTimeSeries();
     }
   }, [rawLaFundingOverTimeData]);
 
@@ -240,6 +245,47 @@ export default function LAFundingPage() {
     setLAFundingTableRowHeaders(
       Object.fromEntries(metricIds.map((m) => [m.id, m.name]))
     );
+  };
+
+  const [timeSeriesDataForGraph, setTimeSeriesDataForGraph] = useState<
+    Series[]
+  >([]);
+
+  const createTimeSeries = () => {
+    let series: Series[] = [];
+    let lineLabels = [
+      locationNames.LALabel,
+      locationNames.RegionLabel,
+      locationNames.CountryLabel,
+    ];
+    let locatiionIDsForLines = [locationIds[1], locationIds[2], locationIds[3]];
+    locatiionIDsForLines.forEach((locationID: string, index: number) => {
+      const id = locationID;
+      const metric_items = rawLaFundingOverTimeData.filter((item) => {
+        return item.location_id === id;
+      });
+      // Turn into the correct time series format
+      const values: DataPoint[] = metric_items.map((item) => {
+        return {
+          date: IndicatorService.parseDate(item).toISOString(),
+          value: item.data_point,
+        };
+      });
+      // Sort by date
+      values.sort((a, b) => {
+        if (a.date > b.date) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+      series.push({
+        name: lineLabels[index],
+        data: values,
+      });
+    });
+    console.log('series', series);
+    setTimeSeriesDataForGraph(series);
   };
 
   return (
@@ -468,6 +514,35 @@ export default function LAFundingPage() {
       >
         <DataTabs
           id="3"
+          graph={
+            <>
+              <h4 className="govuk-heading-s">
+                Figure 1: graph of <abbr title="Local Authority">LA</abbr>{' '}
+                funding for long-term adult social care (all types of adult
+                social care) for all age groups – {locationNames.LALabel}{' '}
+                <abbr title="Local Authority">LA</abbr>,{' '}
+                {locationNames.RegionLabel} region and{' '}
+                {locationNames.CountryLabel},{' '}
+                {IndicatorService.getFinancialYear(
+                  filteredDemographicData,
+                  Object.keys(laFundingTableRowHeaders).length
+                )}{' '}
+                (£ thousand)
+              </h4>
+              {(timeSeriesDataForGraph.length > 0 && (
+                <div style={{ width: '100%', height: `500px` }}>
+                  <TimeSeriesChart
+                    series={timeSeriesDataForGraph}
+                    dateFormat="%Y"
+                  />
+                </div>
+              )) || <p>Loading graph</p>}
+              <p className="govuk-body">
+                Source: Adult Social Care Activity and Finance Report from NHS
+                England
+              </p>
+            </>
+          }
           table={
             <DataTable
               tableref={tableref3}

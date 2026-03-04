@@ -21,11 +21,15 @@ export interface Series {
 
 interface TimeSeriesChartProps {
   series: Series[];
+  dateFormat?: string;
 }
 
 // --- Component ---
 
-const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ series = [] }) => {
+const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
+  series = [],
+  dateFormat = '%b %y',
+}) => {
   const DEFAULT_COLORS = [
     '#F29F41', // Orange
     '#12344D', // Dark Navy
@@ -76,7 +80,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ series = [] }) => {
     },
     xaxis: {
       type: 'date',
-      tickformat: '%b %y', // Shows "Jan", "Feb", etc.
+      tickformat: `${dateFormat}`, // Shows "Jan", "Feb", etc.
       showgrid: false, // No vertical grid lines
       tickfont: {
         family: '"GDS Transport", Arial, sans-serif',
