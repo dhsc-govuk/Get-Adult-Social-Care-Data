@@ -35,7 +35,7 @@ describe('CareHomePage', () => {
     );
 
     const locationsLinkElement = screen.getByRole('link', {
-      name: /Care providers: locations and services/i,
+      name: /Care provider services/i,
     });
     expect(locationsLinkElement).toBeInTheDocument();
     expect(locationsLinkElement).toHaveAttribute(
