@@ -124,10 +124,10 @@ const FilterRadioGroup: React.FC<Props> = ({
       <div className="dhsc-filter--action">
         <button
           id={`${filterType}-button`}
-          className="govuk-button"
+          className={`govuk-button ${showFilters ? 'dhsc-filter--open' : 'dhsc-filter--closed'}`}
           type="button"
           aria-expanded={`${showFilters ? true : false}`}
-          aria-label={`${showFilters ? 'Hide' : 'Show'} ${filterLabel} filters`}
+          aria-label={`${showFilters ? 'Hide' : 'Show'} filters`}
           onClick={
             showFilters
               ? () => handleShowHideToggle(false)
@@ -154,9 +154,9 @@ const FilterRadioGroup: React.FC<Props> = ({
           {componentFilters.length > 0 && (
             <>
               <div className="js-container-heading">
-                <h3 className="govuk-heading-s searchable-filters-heading">
+                <h4 className="govuk-heading-s searchable-filters-heading">
                   {filterLabel}
-                </h3>
+                </h4>
               </div>
               <div
                 id="radios-search"
@@ -168,7 +168,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                   htmlFor="input-bedtype-radios"
                   className="govuk-label govuk-visually-hidden"
                 >
-                  {filterLabel}
+                  {filterLabel} search
                 </label>
                 <input
                   id="input-bedtype-radios"
@@ -179,7 +179,6 @@ const FilterRadioGroup: React.FC<Props> = ({
               </div>
               <div
                 role="group"
-                aria-labelledby="option-select-title-status-radios"
                 className="app-c-option-select__container js-options-container"
                 tabIndex={-1}
               >
@@ -194,7 +193,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                           <li className="govuk-radios__item" key={index}>
                             <input
                               className="govuk-radios__input"
-                              id={filter.metric_id}
+                              id={filterType + filter.metric_id}
                               name="Table filter"
                               type="radio"
                               value={filter.metric_id}
@@ -210,7 +209,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                             />
                             <label
                               className="govuk-label govuk-radios__label"
-                              htmlFor={filter.metric_id}
+                              htmlFor={filterType + filter.metric_id}
                             >
                               {filter.filter_label}
                             </label>
@@ -252,21 +251,19 @@ const FilterRadioGroup: React.FC<Props> = ({
       )}
       {displayFilter && showActiveFilters && (
         <div className="app-c-filter-summary">
-          <h4 className="app-c-filter-summary__heading">Active filters</h4>
-          <ul className="app-c-filter-summary__remove-filters">
-            <li>
-              <button
-                className="app-c-filter-summary__remove-filter govuk-link govuk-body-m govuk-!-margin-bottom-0"
-                onClick={() => removeFilter(displayFilter)}
-              >
-                <span className="govuk-visually-hidden">Remove filter</span>
-                {filterLabel}: {displayFilter}
-              </button>
-            </li>
-          </ul>
+          <h5 className="app-c-filter-summary__heading">Active filters</h5>
+          <div className="app-c-filter-summary__remove-filters">
+            <button
+              className="app-c-filter-summary__remove-filter govuk-link govuk-body-m"
+              onClick={() => removeFilter(displayFilter)}
+            >
+              <span className="govuk-visually-hidden">Remove filter</span>
+              {filterLabel}: {displayFilter}
+            </button>
+          </div>
           <div>
             <button
-              className="govuk-button govuk-button--secondary govuk-button--inverse "
+              className="govuk-button govuk-button--secondary govuk-button--inverse"
               onClick={() => clearAllFilters()}
             >
               Clear all filters

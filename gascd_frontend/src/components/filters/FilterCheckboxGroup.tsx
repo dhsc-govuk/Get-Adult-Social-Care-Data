@@ -153,10 +153,10 @@ const FilterCheckboxGroup: React.FC<Props> = ({
       <div className="dhsc-filter--action">
         <button
           id={`${filterType}-button`}
-          className="govuk-button"
+          className={`govuk-button ${showFilters ? 'dhsc-filter--open' : 'dhsc-filter--closed'}`}
           type="button"
           aria-expanded={`${showFilters ? true : false}`}
-          aria-label={`${showFilters ? 'Hide' : 'Show'} ${filterLabel} filters`}
+          aria-label={`${showFilters ? 'Hide' : 'Show'} filters`}
           onClick={
             showFilters
               ? () => handleShowHideToggle(false)
@@ -186,9 +186,9 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           {componentFilters.length > 0 && (
             <>
               <div className="js-container-heading">
-                <h3 className="govuk-heading-s searchable-filters-heading">
+                <h4 className="govuk-heading-s searchable-filters-heading">
                   {filterLabel}
-                </h3>
+                </h4>
                 {selectedFilters.length > 0 && (
                   <p className="app-c-option-select__selected-counter js-selected-counter searchable-filters-heading">
                     {selectedFilters.length} selected
@@ -209,7 +209,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                     htmlFor="input-filter-search"
                     className="govuk-label govuk-visually-hidden"
                   >
-                    {filterLabel}
+                    {filterLabel} search
                   </label>
                   <input
                     id="input-filter-search"
@@ -221,7 +221,6 @@ const FilterCheckboxGroup: React.FC<Props> = ({
               </div>
               <div
                 role="group"
-                aria-labelledby="option-select-title-status-checkboxes"
                 className="app-c-option-select__container js-options-container"
                 tabIndex={-1}
                 style={{ height: 255.333 + 'px' }}
@@ -237,7 +236,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                           <li className="govuk-checkboxes__item" key={index}>
                             <input
                               className="govuk-checkboxes__input"
-                              id={filter.metric_id}
+                              id={filterType + filter.metric_id}
                               name="Table filter"
                               type="checkbox"
                               value={filter.metric_id}
@@ -251,7 +250,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                             />
                             <label
                               className="govuk-label govuk-checkboxes__label"
-                              htmlFor={filter.metric_id}
+                              htmlFor={filterType + filter.metric_id}
                             >
                               {filter.filter_label}
                             </label>
@@ -295,7 +294,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
       )}
       {displayFilters && showActiveFilters && (
         <div className="app-c-filter-summary">
-          <h4 className="app-c-filter-summary__heading">Active filters</h4>
+          <h5 className="app-c-filter-summary__heading">Active filters</h5>
           <ul className="app-c-filter-summary__remove-filters">
             {displayFilters.map((filterName, index) => (
               <li key={index}>
