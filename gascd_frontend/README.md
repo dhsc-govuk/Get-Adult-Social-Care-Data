@@ -3,16 +3,14 @@
 ## Quickstart
 
 1. Set up environment variables:
-
-- Copy `.env.template` to `.env`
-- Enter a random string for `BETTER_AUTH_SECRET` in `.env` (must be over 32 characters)
-- Enter a password for `LOCAL_AUTH_PASSWORD` in `.env`
-- Enter a password for `USER_DB_PASSWORD` in `.env` (search MS SQL server sa password requirements using your
-  favourite search engine)
+   - Copy `.env.template` to `.env`
+   - Enter a random string for `BETTER_AUTH_SECRET` in `.env` (must be over 32 characters)
+   - Enter a password for `LOCAL_AUTH_PASSWORD` in `.env`
+   - Enter a password for `USER_DB_PASSWORD` in `.env` (search MS SQL server sa password requirements using your
+     favourite search engine)
 
 2. Run the backend API in Docker:
-
-- See the backend [README](../gascd_api/README.md) on how to get the API running in Docker (using `docker compose up`)
+   - See the backend [README](../gascd_api/README.md) on how to get the API running in Docker (using `docker compose up`)
 
 3. Create the user database:
    1. Build and run the db container:
@@ -35,9 +33,9 @@
 
 4. Run the frontend app:
 
-```
-make docker-up
-```
+   ```
+   make docker-up
+   ```
 
 5. Navigate to the web page `http://localhost:3000/api/auth/local`
 
