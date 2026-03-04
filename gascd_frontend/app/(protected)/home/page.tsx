@@ -20,10 +20,10 @@ const HomePage: React.FC = () => {
       url: 'topics/residential-care/subtopics',
       subtopics: [
         {
-          title: 'Care providers: locations and services',
+          title: 'Care provider services',
           description:
-            'Data on care provision by location, service type and number of providers.',
-          url: 'topics/residential-care/residential-care-providers/data',
+            'Data on care provision by service type and number of providers.',
+          url: '/topics/residential-care/residential-care-providers/data',
         },
         {
           title: 'Care home beds and occupancy levels',

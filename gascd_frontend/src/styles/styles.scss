@@ -770,9 +770,14 @@
 
 .dhsc-filter--open .govuk-button {
   box-shadow: none !important;
-  background-color: #1d70b8 !important;
+  background-color: #1d70b8;
   color: #ffffff !important;
 }
+
+.dhsc-filter--closed:hover {
+  background-color: #084275;
+}
+
 
 /* Declarations to deal with all related JavaScript progressive enhancements (START) */
 .js-enabled .dhsc-filter--button-content {
