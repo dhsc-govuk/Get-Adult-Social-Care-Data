@@ -1,11 +1,45 @@
 # GASCD frontend app
 
-## Setting up environment variables
+## Quickstart
 
-Create an initial environment file as follows:
+1. Set up environment variables:
+   - Copy `.env.template` to `.env`
+   - Enter a random string for `BETTER_AUTH_SECRET` in `.env` (must be over 32 characters)
+   - Enter a password for `LOCAL_AUTH_PASSWORD` in `.env`
+   - Enter a password for `USER_DB_PASSWORD` in `.env` (search MS SQL server sa password requirements using your
+     favourite search engine)
 
-- Copy `.env.template` to `.env`
-- Enter a random string for `BETTER_AUTH_SECRET` in `.env`
+2. Run the backend API in Docker:
+   - See the backend [README](../gascd_api/README.md) on how to get the API running in Docker (using `docker compose up`)
+
+3. Create the user database:
+   1. Build and run the db container:
+
+   ```
+   docker compose up userdb -d
+   ```
+
+   2. Set up the Better Auth tables (pause first to give the container above time to spin up):
+
+   ```
+   npm run db:migrate
+   ```
+
+   3. Add the test user to the database:
+
+   ```
+   npm run db:test:seed
+   ```
+
+4. Run the frontend app:
+
+   ```
+   make docker-up
+   ```
+
+5. Navigate to http://localhost:3000/api/auth/local
+   - This will log you in automatically using the credentials in `.env`
+   - Note: this is only available if `LOCAL_AUTH=true`
 
 ## Usage
 
@@ -27,47 +61,9 @@ NEXT_PUBLIC_GASCD_GIT_TAG=$(git describe --tags --abbrev=0 --always) \
 make run-dev
 ```
 
-### Setting up a development/testing User Database
-
-For Authentication we are using 'Better Auth' which requires a user database. There is a local auth setup for development and testing, which you can use as follows:
-
-- Add the following to your `.env` file
-
-```bash
-  # Set up a user for testing
-  LOCAL_AUTH = true
-  LOCAL_AUTH_EMAIL = "test@gascd.local"
-  LOCAL_AUTH_PASSWORD = <my-ace-password>
-  LOCAL_AUTH_LOCATION_TYPE = Care provider location
-  LOCAL_AUTH_LOCATION_ID = testcpl1
-
-  # Local user database
-  USER_DATABASE = User_DB
-  # User database uses non-default mssql port in development
-  USER_DB_PORT = 1444
-  USER_DB_SERVER = localhost
-  USER_DB_USERNAME = sa
-  # See below for password complexity requirements
-  USER_DB_PASSWORD = <a-password-for-the-db>
-```
-
-- Then run the following commands to build the sql server and bootstrap it with your test user:
-
-```bash
-  # Build and run the sql server (and create the database)
-  docker compose up userdb -d
-  # Set up the Better Auth tables
-  npm run db:migrate
-  # Add the test user to the database
-  npm run db:test:seed
-```
-
-- Start the app and load the following development login URL (only available if `LOCAL_AUTH=true`):
-  - http://localhost:3000/api/auth/local
-- This will log you in automatically using the credentials you set up above.
-
 ### Running the GOV.UK One login simulator in development
 
+This won't currently work using Docker to run the frontend application, so instead use Node by running `make run-dev`.
 As well as using the magic development login URL above, you can also use the GOV.UK One Login simulator:
 
 - Copy the `ONELOGIN_` env variables from `.env.template` into your `.env` file
@@ -84,13 +80,13 @@ As well as using the magic development login URL above, you can also use the GOV
 
 ### Development Metrics API
 
-To get a local copy of the Metrics API running, please see the READM.md in the `gascd_api` folder of this repository.
+If you are running the application in Node, to get a local copy of the Metrics API running, please see the README.md in the `gascd_api` folder of this repository.
 
-Ensure your `.env` is updated to match the dotnet `appsettings.Local.json`:
+Ensure your `.env` is updated to match the dotnet `appsettings.Docker.json`:
 
 ```bash
 DATA_API_ROOT=http://localhost:5050
-DATA_API_KEY=<your-local-api-secret>
+DATA_API_KEY=secret-key
 ```
 
 ### Mock service worker support
