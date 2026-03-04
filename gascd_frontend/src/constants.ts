@@ -15,6 +15,7 @@ export const MPS_LINK_EVENT = 'mps-link';
 export const HELP_EMAIL_EVENT = 'help-email';
 export const DOWNLOAD_CSV_EVENT = 'download-csv';
 export const FILTER_APPLY_EVENT = 'filter-apply';
+export const FILTER_REMOVE_EVENT = 'filter-remove';
 export const FILTER_CLEAR_EVENT = 'filter-clear';
 
 // User types

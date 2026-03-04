@@ -87,14 +87,24 @@ const FilterRadioGroup: React.FC<Props> = ({
     setSearchedFilters(searchedFilters);
   };
 
-  const clearFilters = () => {
+  const removeFilter = (filter_name: string) => {
+    AnalyticsService.trackFilterRemove(filterType, filter_name);
+    _clearFilters();
+  };
+
+  const clearAllFilters = () => {
+    AnalyticsService.trackFilterClear(filterType);
+    _clearFilters();
+  };
+
+  const _clearFilters = () => {
     localStorage.removeItem(filterType);
     setDefaultFilter();
     setShowFilters(false);
     setShowActiveFilters(false);
     setDisplayFilter(null);
     updateMethod();
-    AnalyticsService.trackFilterClear(
+    AnalyticsService.trackFilterRemove(
       selectedFilter?.filter_label ?? '',
       filterType
     );
@@ -229,7 +239,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                     </button>
                     <button
                       className="govuk-button govuk-button--secondary"
-                      onClick={() => clearFilters()}
+                      onClick={() => clearAllFilters()}
                     >
                       Clear all
                     </button>
@@ -247,7 +257,7 @@ const FilterRadioGroup: React.FC<Props> = ({
             <li>
               <button
                 className="app-c-filter-summary__remove-filter govuk-link govuk-body-m govuk-!-margin-bottom-0"
-                onClick={() => clearFilters()}
+                onClick={() => removeFilter(displayFilter)}
               >
                 <span className="govuk-visually-hidden">Remove filter</span>
                 {filterLabel}: {displayFilter}
@@ -257,7 +267,7 @@ const FilterRadioGroup: React.FC<Props> = ({
           <div>
             <button
               className="govuk-button govuk-button--secondary govuk-button--inverse "
-              onClick={() => clearFilters()}
+              onClick={() => clearAllFilters()}
             >
               Clear all filters
             </button>

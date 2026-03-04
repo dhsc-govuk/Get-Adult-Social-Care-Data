@@ -7,6 +7,7 @@ import {
   HELP_EMAIL_EVENT,
   DOWNLOAD_CSV_EVENT,
   FILTER_APPLY_EVENT,
+  FILTER_REMOVE_EVENT,
   FILTER_CLEAR_EVENT,
 } from '@/constants';
 import { ICustomProperties } from '@microsoft/applicationinsights-web';
@@ -66,10 +67,15 @@ class AnalyticsService {
     });
   }
 
-  public static trackFilterClear(filter_name: string, metric_id: string) {
-    this._track(FILTER_CLEAR_EVENT, {
+  public static trackFilterRemove(filter_name: string, metric_id: string) {
+    this._track(FILTER_REMOVE_EVENT, {
       metric_id: metric_id,
       filter_name: filter_name,
+    });
+  }
+  public static trackFilterClear(metric_id: string) {
+    this._track(FILTER_CLEAR_EVENT, {
+      metric_id: metric_id,
     });
   }
 

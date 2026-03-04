@@ -111,6 +111,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
   };
 
   const clearFilters = () => {
+    AnalyticsService.trackFilterClear(filterType);
     localStorage.removeItem(filterType);
     setShowActiveFilters(false);
     setDisplayFilters(null);
@@ -128,7 +129,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
         ? (filter.checked = false)
         : (filter.checked = filter.checked)
     );
-    AnalyticsService.trackFilterClear(filterName, filterType);
+    AnalyticsService.trackFilterRemove(filterName, filterType);
     if (updatedSelectedFilters.length === 0) {
       clearFilters();
     } else {
