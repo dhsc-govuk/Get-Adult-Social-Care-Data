@@ -82,6 +82,10 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
       type: 'date',
       tickformat: `${dateFormat}`, // Shows "Jan", "Feb", etc.
       showgrid: false, // No vertical grid lines
+      nticks:
+        dateFormat === '%b %y'
+          ? Math.ceil(series[0].data.length / 48)
+          : series[0].data.length,
       tickfont: {
         family: '"GDS Transport", Arial, sans-serif',
         size: 14,
