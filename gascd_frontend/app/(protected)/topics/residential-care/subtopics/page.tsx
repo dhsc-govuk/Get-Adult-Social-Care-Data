@@ -18,9 +18,9 @@ export default function ResidentialCarePage() {
 
   const subtopics = [
     {
-      title: 'Care providers: locations and services',
+      title: 'Care provider services',
       description:
-        'Data on care provision by location, service type and number of providers.',
+        'Data on care provision by service type and number of providers.',
       url: '/topics/residential-care/residential-care-providers/data',
     },
     {
