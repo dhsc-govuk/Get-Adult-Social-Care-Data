@@ -37,7 +37,9 @@
    make docker-up
    ```
 
-5. Navigate to the web page `http://localhost:3000/api/auth/local`
+5. Navigate to http://localhost:3000/api/auth/local
+   - This will log you in automatically using the credentials in `.env`
+   - Note: this is only available if `LOCAL_AUTH=true`
 
 ## Usage
 
