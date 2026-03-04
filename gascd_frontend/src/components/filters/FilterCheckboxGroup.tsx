@@ -93,7 +93,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     );
     resetGroup();
     AnalyticsService.trackFilterApply(
-      selectedFilters.map((filter) => filter.filter_label),
+      selectedFilters.map((filter) => filter.metric_id),
       filterType
     );
   };
@@ -129,7 +129,12 @@ const FilterCheckboxGroup: React.FC<Props> = ({
         ? (filter.checked = false)
         : (filter.checked = filter.checked)
     );
-    AnalyticsService.trackFilterRemove(filterName, filterType);
+    const metricId = componentFilters.find(
+      (filter) => filter.filter_bedtype === filterName
+    )?.metric_id;
+    if (metricId) {
+      AnalyticsService.trackFilterRemove(metricId, filterType);
+    }
     if (updatedSelectedFilters.length === 0) {
       clearFilters();
     } else {

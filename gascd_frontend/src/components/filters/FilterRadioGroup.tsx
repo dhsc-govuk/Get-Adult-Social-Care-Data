@@ -4,7 +4,6 @@ import FilterBox from './FilterBox';
 import { filter_helptext } from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/helptext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
-import { set } from 'better-auth';
 import AnalyticsService from '@/services/analytics/analyticsService';
 
 type Props = {
@@ -74,7 +73,7 @@ const FilterRadioGroup: React.FC<Props> = ({
     setDisplayFilter(selectedFilter?.filter_bedtype ?? null);
     updateMethod();
     AnalyticsService.trackFilterApply(
-      [selectedFilter?.filter_label ?? ''],
+      [selectedFilter?.metric_id ?? ''],
       filterType
     );
   };
@@ -87,17 +86,7 @@ const FilterRadioGroup: React.FC<Props> = ({
     setSearchedFilters(searchedFilters);
   };
 
-  const removeFilter = (filter_name: string) => {
-    AnalyticsService.trackFilterRemove(filterType, filter_name);
-    _clearFilters();
-  };
-
-  const clearAllFilters = () => {
-    AnalyticsService.trackFilterClear(filterType);
-    _clearFilters();
-  };
-
-  const _clearFilters = () => {
+  const clearFilters = () => {
     localStorage.removeItem(filterType);
     setDefaultFilter();
     setShowFilters(false);
@@ -105,7 +94,7 @@ const FilterRadioGroup: React.FC<Props> = ({
     setDisplayFilter(null);
     updateMethod();
     AnalyticsService.trackFilterRemove(
-      selectedFilter?.filter_label ?? '',
+      selectedFilter?.metric_id ?? '',
       filterType
     );
   };
@@ -238,7 +227,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                     </button>
                     <button
                       className="govuk-button govuk-button--secondary"
-                      onClick={() => clearAllFilters()}
+                      onClick={() => clearFilters()}
                     >
                       Clear all
                     </button>
@@ -255,7 +244,7 @@ const FilterRadioGroup: React.FC<Props> = ({
           <div className="app-c-filter-summary__remove-filters">
             <button
               className="app-c-filter-summary__remove-filter govuk-link govuk-body-m"
-              onClick={() => removeFilter(displayFilter)}
+              onClick={() => clearFilters()}
             >
               <span className="govuk-visually-hidden">Remove filter</span>
               {filterLabel}: {displayFilter}
@@ -264,7 +253,7 @@ const FilterRadioGroup: React.FC<Props> = ({
           <div>
             <button
               className="govuk-button govuk-button--secondary govuk-button--inverse"
-              onClick={() => clearAllFilters()}
+              onClick={() => clearFilters()}
             >
               Clear all filters
             </button>
