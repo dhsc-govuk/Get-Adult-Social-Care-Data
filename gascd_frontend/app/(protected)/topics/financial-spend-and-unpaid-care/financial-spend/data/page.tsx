@@ -284,7 +284,6 @@ export default function LAFundingPage() {
         data: values,
       });
     });
-    console.log('series', series);
     setTimeSeriesDataForGraph(series);
   };
 
