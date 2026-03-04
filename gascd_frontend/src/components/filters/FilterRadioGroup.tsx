@@ -35,7 +35,7 @@ const FilterRadioGroup: React.FC<Props> = ({
   const setLocalFilters = () => {
     let localFilters: Filters[] = Object.entries(filters).map(
       ([key, value]) => {
-        return { metric_id: key, filter_label: value, checked: false };
+        return { metric_id: key, filter_bedtype: value, checked: false };
       }
     );
 
@@ -43,10 +43,10 @@ const FilterRadioGroup: React.FC<Props> = ({
     if (storedData) {
       let filterFromStorage: Filters = {
         metric_id: JSON.parse(storedData).metric_id,
-        filter_label: JSON.parse(storedData).filter_label,
+        filter_bedtype: JSON.parse(storedData).filter_bedtype,
       };
       setSelectedFilter(filterFromStorage);
-      setDisplayFilter(JSON.parse(storedData).filter_label);
+      setDisplayFilter(JSON.parse(storedData).filter_bedtype);
       setShowActiveFilters(true);
     } else {
       setDefaultFilter();
@@ -59,10 +59,10 @@ const FilterRadioGroup: React.FC<Props> = ({
     setShowFilters(showFilters);
   };
 
-  const handleChange = (metric_id: string, filter_label: string) => {
+  const handleChange = (metric_id: string, filter_bedtype: string) => {
     let newFilter: Filters = {
       metric_id: metric_id,
-      filter_label: filter_label,
+      filter_bedtype: filter_bedtype,
     };
     setSelectedFilter(newFilter);
   };
@@ -71,7 +71,7 @@ const FilterRadioGroup: React.FC<Props> = ({
     localStorage.setItem(filterType, JSON.stringify(selectedFilter));
     setShowFilters(false);
     setShowActiveFilters(true);
-    setDisplayFilter(selectedFilter?.filter_label ?? null);
+    setDisplayFilter(selectedFilter?.filter_bedtype ?? null);
     updateMethod();
     AnalyticsService.trackFilterApply(
       [selectedFilter?.filter_label ?? ''],
@@ -82,7 +82,7 @@ const FilterRadioGroup: React.FC<Props> = ({
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
     const searchedFilters = componentFilters.filter((filter) =>
-      filter.filter_label.toLowerCase().includes(searchTerm)
+      filter.filter_bedtype.toLowerCase().includes(searchTerm)
     );
     setSearchedFilters(searchedFilters);
   };
@@ -114,7 +114,7 @@ const FilterRadioGroup: React.FC<Props> = ({
     if (filterType === 'numbers-table-metrics') {
       setSelectedFilter({
         metric_id: 'bedcount_per_hundred_thousand_adults_total',
-        filter_label: 'All bed types',
+        filter_bedtype: 'All bed types',
       });
     }
   };
@@ -203,7 +203,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                               onChange={() =>
                                 handleChange(
                                   filter.metric_id,
-                                  filter.filter_label
+                                  filter.filter_bedtype
                                 )
                               }
                             />
@@ -211,7 +211,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                               className="govuk-label govuk-radios__label"
                               htmlFor={filterType + filter.metric_id}
                             >
-                              {filter.filter_label}
+                              {filter.filter_bedtype}
                             </label>
                             {filter_helptext[filter.metric_id] && (
                               <div className="govuk-hint govuk-radios__hint">

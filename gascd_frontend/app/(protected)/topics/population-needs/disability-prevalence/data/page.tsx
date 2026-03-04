@@ -237,7 +237,7 @@ export default function DisabilityPrevalence() {
           )
         );
         const map: any = {};
-        parsedData.map((item) => (map[item.metric_id] = item.filter_label));
+        parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
         setSupportReasonRowHeaders(map);
       }
     } else {

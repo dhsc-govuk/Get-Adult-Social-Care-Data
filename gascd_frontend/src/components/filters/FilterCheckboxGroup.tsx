@@ -30,7 +30,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
   useEffect(() => {
     let localFilters: Filters[] = Object.entries(filters).map(
       ([key, value]) => {
-        return { metric_id: key, filter_label: value, checked: false };
+        return { metric_id: key, filter_bedtype: value, checked: false };
       }
     );
     const storedData = localStorage.getItem(filterType);
@@ -43,7 +43,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           filter.checked = true;
         }
       });
-      setDisplayFilters(parsedData.map((filter) => filter.filter_label));
+      setDisplayFilters(parsedData.map((filter) => filter.filter_bedtype));
       setShowActiveFilters(true);
     }
     setComponentFilters(localFilters);
@@ -74,7 +74,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
         .map((filter) => ({
           checked: filter.checked,
           metric_id: filter.metric_id,
-          filter_label: filter.filter_label,
+          filter_bedtype: filter.filter_bedtype,
         }))
     );
     handleSearch();
@@ -89,7 +89,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     setShowFilters(false);
     setShowActiveFilters(true);
     setDisplayFilters(
-      selectedFilters?.map((filter) => filter.filter_label) ?? null
+      selectedFilters?.map((filter) => filter.filter_bedtype) ?? null
     );
     resetGroup();
     AnalyticsService.trackFilterApply(
@@ -105,7 +105,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     if (!searchBox) return;
     const searchTerm = searchBox.value.toLowerCase() ?? '';
     const searchedFilters = componentFilters.filter((filter) =>
-      filter.filter_label.toLowerCase().includes(searchTerm)
+      filter.filter_bedtype.toLowerCase().includes(searchTerm)
     );
     setSearchedFilters(searchedFilters);
   };
@@ -122,10 +122,10 @@ const FilterCheckboxGroup: React.FC<Props> = ({
 
   const clearFilter = (filterName: string) => {
     const updatedSelectedFilters = selectedFilters.filter(
-      (filter) => filter.filter_label !== filterName
+      (filter) => filter.filter_bedtype !== filterName
     );
     componentFilters.map((filter) =>
-      filter.filter_label === filterName
+      filter.filter_bedtype === filterName
         ? (filter.checked = false)
         : (filter.checked = filter.checked)
     );
@@ -136,7 +136,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
       setSelectedFilters(updatedSelectedFilters);
       localStorage.setItem(filterType, JSON.stringify(updatedSelectedFilters));
       setDisplayFilters(
-        updatedSelectedFilters.map((filter) => filter.filter_label)
+        updatedSelectedFilters.map((filter) => filter.filter_bedtype)
       );
       updateMethod();
     }
@@ -252,7 +252,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                               className="govuk-label govuk-checkboxes__label"
                               htmlFor={filterType + filter.metric_id}
                             >
-                              {filter.filter_label}
+                              {filter.filter_bedtype}
                             </label>
                             {filter_helptext[filter.metric_id] && (
                               <div className="govuk-hint govuk-checkboxes__hint">
