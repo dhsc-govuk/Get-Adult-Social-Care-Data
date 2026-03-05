@@ -4,6 +4,7 @@ import FilterBox from './FilterBox';
 import { filter_helptext } from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/helptext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 type Props = {
   filterType: string;
@@ -91,6 +92,10 @@ const FilterCheckboxGroup: React.FC<Props> = ({
       selectedFilters?.map((filter) => filter.filter_bedtype) ?? null
     );
     resetGroup();
+    AnalyticsService.trackFilterApply(
+      selectedFilters.map((filter) => filter.metric_id),
+      filterType
+    );
   };
 
   const handleSearch = (): void => {
@@ -106,6 +111,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
   };
 
   const clearFilters = () => {
+    AnalyticsService.trackFilterClear(filterType);
     localStorage.removeItem(filterType);
     setShowActiveFilters(false);
     setDisplayFilters(null);
@@ -123,6 +129,12 @@ const FilterCheckboxGroup: React.FC<Props> = ({
         ? (filter.checked = false)
         : (filter.checked = filter.checked)
     );
+    const metricId = componentFilters.find(
+      (filter) => filter.filter_bedtype === filterName
+    )?.metric_id;
+    if (metricId) {
+      AnalyticsService.trackFilterRemove(metricId, filterType);
+    }
     if (updatedSelectedFilters.length === 0) {
       clearFilters();
     } else {
