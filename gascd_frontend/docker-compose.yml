@@ -18,6 +18,7 @@ services:
             # Override hosts if running in docker
             - USER_DB_SERVER=host.docker.internal
             - DB_SERVER=host.docker.internal
+            - DATA_API_ROOT=http://host.docker.internal:5050
     userdb:
         container_name: gascd_frontend_userdb
         image: gascd_userdb_image

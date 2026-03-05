@@ -451,7 +451,7 @@ export default function ProvisionAndOccupancyPage() {
             latestBedTypeData.filter((item) => ids.includes(item.metric_id))
           );
           const map: any = {};
-          parsedData.map((item) => (map[item.metric_id] = item.filter_label));
+          parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
           setBedTypeRowHeaders(map);
         }
       } catch (error) {
@@ -474,7 +474,7 @@ export default function ProvisionAndOccupancyPage() {
       const parsedData = JSON.parse(storedData);
       if (parsedData) {
         const id = parsedData.metric_id;
-        const name = parsedData.filter_label;
+        const name = parsedData.filter_bedtype;
         setFilteredCareHomeBedNumbersData(
           bedNumbersData.filter((item) => id === item.metric_id)
         );
@@ -504,7 +504,7 @@ export default function ProvisionAndOccupancyPage() {
     if (storedData) {
       const filters = JSON.parse(storedData);
       const map: any = {};
-      filters.map((item: any) => (map[item.metric_id] = item.filter_label));
+      filters.map((item: any) => (map[item.metric_id] = item.filter_bedtype));
       headers = map;
     }
     // Make some time series data based on the bed type row headers

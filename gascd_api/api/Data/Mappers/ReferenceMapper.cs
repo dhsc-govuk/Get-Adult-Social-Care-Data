@@ -76,7 +76,7 @@ public class ReferenceMapper
             Latitude = geoData.Coordinate.Y,
             Longitude = geoData.Coordinate.X,
             Polygon = geoData.BoundingPolygon?.Coordinates
-                .Select(c => new GeoDataDto.CoordinateDto { Latitude = c.X, Longitude = c.Y }).ToList() ?? []
+                .Select(c => new GeoDataDto.CoordinateDto { Latitude = c.Y, Longitude = c.X }).ToList() ?? []
         };
     }
 
