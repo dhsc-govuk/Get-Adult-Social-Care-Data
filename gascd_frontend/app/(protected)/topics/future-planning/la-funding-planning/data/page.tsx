@@ -12,7 +12,6 @@ import LocationService from '@/services/location/locationService';
 import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { LocationNames } from '@/data/interfaces/LocationNames';
-import Link from 'next/link';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
@@ -20,6 +19,7 @@ import DownloadTableDataCSVLink from '@/components/metric-components/download-ta
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
+import TimeSeriesTable from '@/components/tables/TimeSeriesTable';
 
 export default function LAFundingPlanningPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -50,9 +50,24 @@ export default function LAFundingPlanningPage() {
     },
   ];
 
+  // These are made up and need to be replaced by the read IDs when we have them
   const demographicMetricIds = [
-    'dementia_qof_prevalence',
-    'dementia_estimated_diagnosis_rate_65over',
+    'total_population_30_64_with_early_onset_dementia',
+    'total_population_18_64_with_learning_disability',
+    'total_population_18_64_with_autism',
+  ];
+
+  // Replace with dynamic dates when we have them, this is just to show the table structure for now
+  const columnDates = [
+    '2025',
+    '2026',
+    '2027',
+    '2028',
+    '2029',
+    '2030',
+    '2035',
+    '2040',
+    '2045',
   ];
 
   useEffect(() => {
@@ -93,7 +108,8 @@ export default function LAFundingPlanningPage() {
     if (locationIds.length > 0) {
       setDemographicQuery(() => ({
         metric_ids: demographicMetricIds,
-        location_ids: locationIds,
+        location_ids: [locationIds[1]],
+        query_type: 'LATimeseriesQuery',
       }));
     }
   }, [locationIds]);
@@ -158,7 +174,46 @@ export default function LAFundingPlanningPage() {
             <p className="govuk-body-m">Add later</p>
           </>
         }
-      ></DataBox>
+      >
+        <DataTabs
+          id="1"
+          table={
+            <TimeSeriesTable
+              tableref={tableref1}
+              caption={
+                <>
+                  Table 1: comparison of estimated population with selected
+                  health conditions over time within Local Authority area
+                </>
+              }
+              source={'PANSI'}
+              columnHeaders={columnDates}
+              rowHeaders={{
+                total_population_30_64_with_early_onset_dementia:
+                  'Total population aged 30-64 to have early onset dementia',
+                total_population_18_64_with_learning_disability:
+                  'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
+                total_population_18_64_with_autism:
+                  'Total population aged 18-64 predicted to have autistic spectrum disorders',
+              }}
+              data={filteredDemographicData}
+              percentageRows={[]}
+              currency={true}
+            ></TimeSeriesTable>
+          }
+          download={
+            <>
+              <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref1}
+                filename="estimated_population_with_selected_health_conditions.csv"
+                xLabel=""
+                downloadType="Comparison of estimated population with selected health conditions over time"
+              />
+            </>
+          }
+        />
+      </DataBox>
 
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
