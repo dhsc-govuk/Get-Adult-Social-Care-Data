@@ -60,17 +60,17 @@ class AnalyticsService {
     });
   }
 
-  public static trackFilterApply(filter_names: string[], metric_id: string) {
+  public static trackFilterApply(filter_ids: string[], metric_id: string) {
     this._track(FILTER_APPLY_EVENT, {
       metric_id: metric_id,
-      filter_names: filter_names,
+      filter_ids: filter_ids,
     });
   }
 
-  public static trackFilterRemove(filter_name: string, metric_id: string) {
+  public static trackFilterRemove(filter_id: string, metric_id: string) {
     this._track(FILTER_REMOVE_EVENT, {
       metric_id: metric_id,
-      filter_name: filter_name,
+      filter_id: filter_id,
     });
   }
   public static trackFilterClear(metric_id: string) {
