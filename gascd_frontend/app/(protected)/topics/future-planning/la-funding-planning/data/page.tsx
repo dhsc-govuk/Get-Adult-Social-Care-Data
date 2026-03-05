@@ -45,8 +45,8 @@ export default function LAFundingPlanningPage() {
       url: '/home',
     },
     {
-      text: 'Population needs',
-      url: '/topics/population-needs/subtopics',
+      text: 'Future planning',
+      url: '/topics/future-planning/subtopics',
     },
   ];
 
