@@ -5,7 +5,8 @@
 #     "duckdb",
 # ]
 # ///
-# Join CQC and waitlist files using duckdb, grouping 
+# Join CQC and waitlist files using duckdb, grouping by email
+# - performs a left join so that non-matched emails are also included (by location list will be blank)
 
 import duckdb
 import os
@@ -36,14 +37,14 @@ def join_data(outfilename):
     )
 
     select
-        nis.name,
-        nis.ni_email,
-        contacts.locations,
+        nis.name as name,
+        nis.ni_email as email,
+        contacts.locations as location_id,
         'Care provider' as location_type,
         'CQC-NI-LIST' as source
     from nis
-    inner join contacts on nis.ni_email = contacts.email
-    -- where email not in (select email from existing)
+    -- Left join means that we include the non-matched items as well
+    left join contacts on nis.ni_email = contacts.email
     """
 
     CSV_SQL = f"""COPY ({SQL}) TO '{outfilename}' (HEADER, DELIMITER ',')"""
