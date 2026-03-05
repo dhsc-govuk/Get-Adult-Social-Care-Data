@@ -87,6 +87,18 @@ const HomePage: React.FC = () => {
         },
       ],
     },
+    {
+      title: 'Future planning',
+      url: 'topics/future-planning/subtopics',
+      subtopics: [
+        {
+          title: 'Local authority funding planning',
+          description:
+            'Consolidated estimated data on population with selected conditions within a LA area.',
+          url: 'topics/future-planning/la-funding-planning/data',
+        },
+      ],
+    },
   ];
 
   return (
