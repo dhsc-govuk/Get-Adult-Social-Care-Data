@@ -192,6 +192,7 @@ export default function LAFundingPage() {
         const filteredDemographicData =
           TableService.filterDate(demographicData);
 
+        // This is a short term solution
         filteredDemographicData.forEach((indicator) => {
           if (indicator.data_point !== null) indicator.data_point *= 1000;
         });
