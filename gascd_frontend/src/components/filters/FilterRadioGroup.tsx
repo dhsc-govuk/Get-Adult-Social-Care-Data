@@ -4,7 +4,7 @@ import FilterBox from './FilterBox';
 import { filter_helptext } from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/helptext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
-import { set } from 'better-auth';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 type Props = {
   filterType: string;
@@ -72,6 +72,10 @@ const FilterRadioGroup: React.FC<Props> = ({
     setShowActiveFilters(true);
     setDisplayFilter(selectedFilter?.filter_bedtype ?? null);
     updateMethod();
+    AnalyticsService.trackFilterApply(
+      [selectedFilter?.metric_id ?? ''],
+      filterType
+    );
   };
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -89,6 +93,10 @@ const FilterRadioGroup: React.FC<Props> = ({
     setShowActiveFilters(false);
     setDisplayFilter(null);
     updateMethod();
+    AnalyticsService.trackFilterRemove(
+      selectedFilter?.metric_id ?? '',
+      filterType
+    );
   };
 
   const setDefaultFilter = () => {
@@ -239,7 +247,7 @@ const FilterRadioGroup: React.FC<Props> = ({
               onClick={() => clearFilters()}
             >
               <span className="govuk-visually-hidden">Remove filter</span>
-              Bed type: {displayFilter}
+              {filterLabel}: {displayFilter}
             </button>
           </div>
           <div>

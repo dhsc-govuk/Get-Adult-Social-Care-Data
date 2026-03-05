@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.5] - 2026-03-05
+
+Fixes and additional tracking
+
+### Changes
+
+Frontend
+- [GASCDS-996] Add tracking to filters (#441)
+- [GASCDS-1023] frontend readme improvements (#446)
+- [GASCDS-1007] Issue with filters saved before version 1.3.4 (#447)
+- Fix case insensitive mock issues (#444)
+- [GASCDS-1002] Rename "care providers: locations and services" to just "care provider services" (#445)
+- [GASCDS-997]: fix incorrect mapping and test data (#440)
+- [GASCDS-962] Fix filter accessibility (#439)
+- Bump rollup from 4.52.5 to 4.59.0 in /gascd_frontend (#442)
+
 ## [1.3.4] - 2026-02-25
 
 Additional filter and content updates
