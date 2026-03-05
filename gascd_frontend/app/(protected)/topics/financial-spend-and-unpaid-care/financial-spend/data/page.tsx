@@ -191,6 +191,10 @@ export default function LAFundingPage() {
           await IndicatorFetchService.getData(demographicQuery);
         const filteredDemographicData =
           TableService.filterDate(demographicData);
+
+        filteredDemographicData.forEach((indicator) => {
+          if (indicator.data_point !== null) indicator.data_point *= 1000;
+        });
         setFilteredDemographicData(filteredDemographicData);
       } catch (error) {
         console.error('Error fetching data:', error);
