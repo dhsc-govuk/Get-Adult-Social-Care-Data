@@ -1,5 +1,6 @@
 $govuk-assets-path: "/govuk-frontend/";
 $govuk-fonts-path: "/govuk-frontend/fonts/";
+$static: "/govuk-frontend/";
 
 @forward "node_modules/@ministryofjustice/frontend/moj/all";
 @import "govuk-frontend/dist/govuk/index";
@@ -8,6 +9,12 @@ $govuk-fonts-path: "/govuk-frontend/fonts/";
 @import "./styles.scss";
 // Service header pulled from https://github.com/govuk-one-login/service-header/tree/main/dist/styles
 @import "./service-header-no-imports.scss";
+@import 'node_modules/@ons/design-system/scss/vars/index';
+@import 'node_modules/@ons/design-system/scss/helpers/index';
+@import 'node_modules/@ons/design-system/scss/utilities/index';
+@import 'node_modules/@ons/design-system/scss/base/index';
+@import 'node_modules/@ons/design-system/scss/objects/index';
+@import 'node_modules/@ons/design-system/components/chart/chart';
 
 html, body {
     margin: 0;
