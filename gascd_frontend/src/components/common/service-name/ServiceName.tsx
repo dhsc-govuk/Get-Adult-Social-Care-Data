@@ -82,6 +82,12 @@ const ServiceName: React.FC<Props> = ({ session }) => {
         'Find data on a range of care need indicators, such as household economic factors and disability prevalence.',
       url: '/topics/population-needs/subtopics',
     },
+    {
+      name: 'Future planning',
+      description:
+        'Find estimated and experimental data on future population needs.',
+      url: '/topics/future-planning/subtopics',
+    },
   ];
 
   const serviceInformationLinks = [
