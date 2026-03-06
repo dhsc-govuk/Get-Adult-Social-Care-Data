@@ -140,7 +140,8 @@ export const mockTableData = [
     numerator: 50,
     denominator: 50,
     multiplier: 50,
-    data_point: 112,
+    // check that null values are handled correctly
+    data_point: null,
     load_date_time: new Date('2025-03-02T20:12:22.550Z') as Date,
   },
   {
