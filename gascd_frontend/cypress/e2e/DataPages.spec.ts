@@ -244,7 +244,7 @@ describe('Data pages exist and contain data', () => {
   });
 
   it('Should navigate to the LA funding planning page and check the contents', () => {
-    cy.login_onelogin(Cypress.env('cpl_user'));
+    cy.login_onelogin(Cypress.env('la_user'));
     cy.visit('/topics/future-planning/la-funding-planning/data');
 
     cy.get('h1').should('contains.text', 'Local Authority funding planning');
