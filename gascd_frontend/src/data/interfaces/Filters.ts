@@ -1,5 +1,5 @@
 export interface Filters {
   checked?: boolean;
   metric_id: string;
-  filter_label: string;
+  filter_bedtype: string;
 }
