@@ -198,7 +198,7 @@ export default function LAFundingPlanningPage() {
               }}
               data={filteredDemographicData}
               percentageRows={[]}
-              currency={true}
+              currency={false}
             ></TimeSeriesTable>
           }
           download={
