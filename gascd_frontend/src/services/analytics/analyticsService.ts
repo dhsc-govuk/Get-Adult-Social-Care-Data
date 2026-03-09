@@ -6,6 +6,9 @@ import {
   MPS_LINK_EVENT,
   HELP_EMAIL_EVENT,
   DOWNLOAD_CSV_EVENT,
+  FILTER_APPLY_EVENT,
+  FILTER_REMOVE_EVENT,
+  FILTER_CLEAR_EVENT,
 } from '@/constants';
 import { ICustomProperties } from '@microsoft/applicationinsights-web';
 
@@ -54,6 +57,25 @@ class AnalyticsService {
   public static trackDownloadCSV(filename: string) {
     this._track(DOWNLOAD_CSV_EVENT, {
       filename: filename,
+    });
+  }
+
+  public static trackFilterApply(filter_ids: string[], metric_id: string) {
+    this._track(FILTER_APPLY_EVENT, {
+      metric_id: metric_id,
+      filter_ids: filter_ids,
+    });
+  }
+
+  public static trackFilterRemove(filter_id: string, metric_id: string) {
+    this._track(FILTER_REMOVE_EVENT, {
+      metric_id: metric_id,
+      filter_id: filter_id,
+    });
+  }
+  public static trackFilterClear(metric_id: string) {
+    this._track(FILTER_CLEAR_EVENT, {
+      metric_id: metric_id,
     });
   }
 

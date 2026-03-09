@@ -50,8 +50,13 @@ const getFormattedDataPoint = (
     if (showAverageLabel)
       formatted += isPercentage ? ' (average)' : ' (median)';
     return formatted;
+  } else if (data && data.length) {
+    // data exists but we couldn't find a matching value
+    return '--';
+  } else {
+    // Data is not actually available, so we assume we're loading
+    return 'Loading...';
   }
-  return 'Loading...';
 };
 
 const SubCatergoryTable: React.FC<DataTableProps> = ({

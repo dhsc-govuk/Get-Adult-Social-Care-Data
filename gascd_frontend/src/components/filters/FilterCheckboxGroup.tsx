@@ -4,6 +4,7 @@ import FilterBox from './FilterBox';
 import { filter_helptext } from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/helptext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 type Props = {
   filterType: string;
@@ -29,7 +30,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
   useEffect(() => {
     let localFilters: Filters[] = Object.entries(filters).map(
       ([key, value]) => {
-        return { metric_id: key, filter_label: value, checked: false };
+        return { metric_id: key, filter_bedtype: value, checked: false };
       }
     );
     const storedData = localStorage.getItem(filterType);
@@ -42,7 +43,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           filter.checked = true;
         }
       });
-      setDisplayFilters(parsedData.map((filter) => filter.filter_label));
+      setDisplayFilters(parsedData.map((filter) => filter.filter_bedtype));
       setShowActiveFilters(true);
     }
     setComponentFilters(localFilters);
@@ -73,7 +74,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
         .map((filter) => ({
           checked: filter.checked,
           metric_id: filter.metric_id,
-          filter_label: filter.filter_label,
+          filter_bedtype: filter.filter_bedtype,
         }))
     );
     handleSearch();
@@ -88,9 +89,13 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     setShowFilters(false);
     setShowActiveFilters(true);
     setDisplayFilters(
-      selectedFilters?.map((filter) => filter.filter_label) ?? null
+      selectedFilters?.map((filter) => filter.filter_bedtype) ?? null
     );
     resetGroup();
+    AnalyticsService.trackFilterApply(
+      selectedFilters.map((filter) => filter.metric_id),
+      filterType
+    );
   };
 
   const handleSearch = (): void => {
@@ -100,12 +105,13 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     if (!searchBox) return;
     const searchTerm = searchBox.value.toLowerCase() ?? '';
     const searchedFilters = componentFilters.filter((filter) =>
-      filter.filter_label.toLowerCase().includes(searchTerm)
+      filter.filter_bedtype.toLowerCase().includes(searchTerm)
     );
     setSearchedFilters(searchedFilters);
   };
 
   const clearFilters = () => {
+    AnalyticsService.trackFilterClear(filterType);
     localStorage.removeItem(filterType);
     setShowActiveFilters(false);
     setDisplayFilters(null);
@@ -116,20 +122,26 @@ const FilterCheckboxGroup: React.FC<Props> = ({
 
   const clearFilter = (filterName: string) => {
     const updatedSelectedFilters = selectedFilters.filter(
-      (filter) => filter.filter_label !== filterName
+      (filter) => filter.filter_bedtype !== filterName
     );
     componentFilters.map((filter) =>
-      filter.filter_label === filterName
+      filter.filter_bedtype === filterName
         ? (filter.checked = false)
         : (filter.checked = filter.checked)
     );
+    const metricId = componentFilters.find(
+      (filter) => filter.filter_bedtype === filterName
+    )?.metric_id;
+    if (metricId) {
+      AnalyticsService.trackFilterRemove(metricId, filterType);
+    }
     if (updatedSelectedFilters.length === 0) {
       clearFilters();
     } else {
       setSelectedFilters(updatedSelectedFilters);
       localStorage.setItem(filterType, JSON.stringify(updatedSelectedFilters));
       setDisplayFilters(
-        updatedSelectedFilters.map((filter) => filter.filter_label)
+        updatedSelectedFilters.map((filter) => filter.filter_bedtype)
       );
       updateMethod();
     }
@@ -146,10 +158,10 @@ const FilterCheckboxGroup: React.FC<Props> = ({
       <div className="dhsc-filter--action">
         <button
           id={`${filterType}-button`}
-          className="govuk-button"
+          className={`govuk-button ${showFilters ? 'dhsc-filter--open' : 'dhsc-filter--closed'}`}
           type="button"
           aria-expanded={`${showFilters ? true : false}`}
-          aria-label={`${showFilters ? 'Hide' : 'Show'} ${filterLabel} filters`}
+          aria-label={`${showFilters ? 'Hide' : 'Show'} filters`}
           onClick={
             showFilters
               ? () => handleShowHideToggle(false)
@@ -179,9 +191,9 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           {componentFilters.length > 0 && (
             <>
               <div className="js-container-heading">
-                <h3 className="govuk-heading-s searchable-filters-heading">
+                <h4 className="govuk-heading-s searchable-filters-heading">
                   {filterLabel}
-                </h3>
+                </h4>
                 {selectedFilters.length > 0 && (
                   <p className="app-c-option-select__selected-counter js-selected-counter searchable-filters-heading">
                     {selectedFilters.length} selected
@@ -202,7 +214,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                     htmlFor="input-filter-search"
                     className="govuk-label govuk-visually-hidden"
                   >
-                    {filterLabel}
+                    {filterLabel} search
                   </label>
                   <input
                     id="input-filter-search"
@@ -214,7 +226,6 @@ const FilterCheckboxGroup: React.FC<Props> = ({
               </div>
               <div
                 role="group"
-                aria-labelledby="option-select-title-status-checkboxes"
                 className="app-c-option-select__container js-options-container"
                 tabIndex={-1}
                 style={{ height: 255.333 + 'px' }}
@@ -230,7 +241,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                           <li className="govuk-checkboxes__item" key={index}>
                             <input
                               className="govuk-checkboxes__input"
-                              id={filter.metric_id}
+                              id={filterType + filter.metric_id}
                               name="Table filter"
                               type="checkbox"
                               value={filter.metric_id}
@@ -244,9 +255,9 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                             />
                             <label
                               className="govuk-label govuk-checkboxes__label"
-                              htmlFor={filter.metric_id}
+                              htmlFor={filterType + filter.metric_id}
                             >
-                              {filter.filter_label}
+                              {filter.filter_bedtype}
                             </label>
                             {filter_helptext[filter.metric_id] && (
                               <div className="govuk-hint govuk-checkboxes__hint">
@@ -288,7 +299,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
       )}
       {displayFilters && showActiveFilters && (
         <div className="app-c-filter-summary">
-          <h4 className="app-c-filter-summary__heading">Active filters</h4>
+          <h5 className="app-c-filter-summary__heading">Active filters</h5>
           <ul className="app-c-filter-summary__remove-filters">
             {displayFilters.map((filterName, index) => (
               <li key={index}>
