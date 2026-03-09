@@ -414,6 +414,7 @@ export default function DisabilityPrevalence() {
               rowHeaders={supportReasonRowHeaders}
               data={filteredPrimaryReasonData}
               showCareProvider={false}
+              smallNumberSuppression={true}
             >
               <p className="govuk-body-m">(*) denotes less than 5</p>
             </DataTable>
