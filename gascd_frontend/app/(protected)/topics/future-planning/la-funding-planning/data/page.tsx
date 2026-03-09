@@ -52,9 +52,13 @@ export default function LAFundingPlanningPage() {
 
   // These are made up and need to be replaced by the read IDs when we have them
   const demographicMetricIds = [
-    'total_population_30_64_with_early_onset_dementia',
-    'total_population_18_64_with_learning_disability',
-    'total_population_18_64_with_autism',
+    'pansi_pred_pop_early_dem_aged_30_64',
+    'pansi_pred_pop_challenging_behaviour_aged_18_64',
+    'pansi_pred_pop_asd_aged_18_64',
+
+    'pansi_pred_pop_early_dem_aged_30_64_perc_change',
+    'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change',
+    'pansi_pred_pop_asd_aged_18_64_perc_change',
   ];
 
   // Replace with dynamic dates when we have them, this is just to show the table structure for now
@@ -177,6 +181,7 @@ export default function LAFundingPlanningPage() {
       >
         <DataTabs
           id="1"
+          chart={<p>Add later</p>}
           table={
             <TimeSeriesTable
               tableref={tableref1}
@@ -189,11 +194,11 @@ export default function LAFundingPlanningPage() {
               source={'PANSI'}
               columnHeaders={columnDates}
               rowHeaders={{
-                total_population_30_64_with_early_onset_dementia:
+                pansi_pred_pop_early_dem_aged_30_64:
                   'Total population aged 30-64 to have early onset dementia',
-                total_population_18_64_with_learning_disability:
+                pansi_pred_pop_challenging_behaviour_aged_18_64:
                   'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
-                total_population_18_64_with_autism:
+                pansi_pred_pop_asd_aged_18_64:
                   'Total population aged 18-64 predicted to have autistic spectrum disorders',
               }}
               data={filteredDemographicData}
@@ -223,8 +228,52 @@ export default function LAFundingPlanningPage() {
 
       <DataBox
         dataTitle="Estimated percentage change in population with selected health conditions - trends over time"
-        dataInfo={<p className="govuk-body">Add later</p>}
-      ></DataBox>
+        dataInfo={
+          <>
+            <p className="govuk-body-m">Add later</p>
+          </>
+        }
+      >
+        <DataTabs
+          id="1"
+          table={
+            <TimeSeriesTable
+              tableref={tableref1}
+              caption={
+                <>
+                  Table 2: estimated percentage change in population with
+                  selected health conditions compared with similar Local
+                  Authorities
+                </>
+              }
+              source={'PANSI'}
+              columnHeaders={columnDates}
+              rowHeaders={{
+                pansi_pred_pop_early_dem_aged_30_64_perc_change:
+                  'Total population aged 30-64 to have early onset dementia',
+                pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change:
+                  'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
+                pansi_pred_pop_asd_aged_18_64_perc_change:
+                  'Total population aged 18-64 predicted to have autistic spectrum disorders',
+              }}
+              data={filteredDemographicData}
+              percentageRows={[]}
+              currency={false}
+            ></TimeSeriesTable>
+          }
+          download={
+            <>
+              <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref1}
+                filename="estimated_population_with_selected_health_conditions.csv"
+                xLabel=""
+                downloadType="Comparison of estimated population with selected health conditions over time"
+              />
+            </>
+          }
+        />
+      </DataBox>
 
       <DataIndicatorDetailsList>
         <DataLinkCard
