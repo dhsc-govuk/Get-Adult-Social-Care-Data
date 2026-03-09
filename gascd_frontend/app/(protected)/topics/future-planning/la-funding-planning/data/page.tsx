@@ -181,7 +181,6 @@ export default function LAFundingPlanningPage() {
       >
         <DataTabs
           id="1"
-          chart={<p>Add later</p>}
           table={
             <TimeSeriesTable
               tableref={tableref1}
@@ -235,7 +234,8 @@ export default function LAFundingPlanningPage() {
         }
       >
         <DataTabs
-          id="1"
+          id="2"
+          chart={<p>Add later</p>}
           table={
             <TimeSeriesTable
               tableref={tableref1}
