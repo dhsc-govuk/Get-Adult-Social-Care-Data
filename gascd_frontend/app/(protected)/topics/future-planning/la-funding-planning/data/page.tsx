@@ -266,9 +266,9 @@ export default function LAFundingPlanningPage() {
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
-                filename="estimated_population_with_selected_health_conditions.csv"
+                filename="estimated_percentage_change_in_population_with_selected_health_conditions.csv"
                 xLabel=""
-                downloadType="Comparison of estimated population with selected health conditions over time"
+                downloadType="Estimated percentage change in population with selected health conditions - trends over time"
               />
             </>
           }
