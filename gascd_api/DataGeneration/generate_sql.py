@@ -44,10 +44,12 @@ def get_datapoint_count(start, end, frequency):
         return delta.days + 1
     elif frequency == 'Monthly':
         return (delta.days // 30) + 1
-    elif frequency in ('Yearly', 'Financial yearly'):
+    elif frequency in ('Yearly', 'Financial yearly', '5 years'):
         return (delta.days // 365) + 1
     elif frequency == 'Census':
         return 1
+    else:
+        raise Exception('unrecognised frequency')
 
 def generate_deterministic_seed(*args):
     combined_string = f"GASCD_metrics|{'|'.join(args)}"
