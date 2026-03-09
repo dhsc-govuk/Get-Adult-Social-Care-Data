@@ -232,7 +232,7 @@ export default function LAFundingPlanningPage() {
           sources="PANSI"
           updateFrequency="TBC"
           limitations={true}
-          url="TBC"
+          url="/help/la-funding-planning"
         />
       </DataIndicatorDetailsList>
 

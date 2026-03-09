@@ -242,4 +242,27 @@ describe('Data pages exist and contain data', () => {
     cy.get('#download-1').should('be.visible');
     cy.get('#table-1').should('not.be.visible');
   });
+
+  it('Should navigate to the LA funding planning page and check the contents', () => {
+    cy.login_onelogin(Cypress.env('la_user'));
+    cy.visit('/topics/future-planning/la-funding-planning/data');
+
+    cy.get('h1').should('contains.text', 'Local Authority funding planning');
+
+    cy.contains('Local Authority funding planning');
+
+    cy.get('a[href*="table-1"]').click();
+    cy.url().should('include', '#table-1');
+    cy.get('#table-1')
+      .should('be.visible')
+      .contains(
+        'Table 1: comparison of estimated population with selected health conditions over time within Local Authority area'
+      );
+    cy.get('#download-1').should('not.be.visible');
+
+    cy.get('a[href*="download-1"]').click();
+    cy.url().should('include', '#download-1');
+    cy.get('#download-1').should('be.visible');
+    cy.get('#table-1').should('not.be.visible');
+  });
 });
