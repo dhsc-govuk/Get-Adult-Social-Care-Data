@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { addUserTelemetry } from '@/helpers/telemetry/usertelemetry';
 import { getAPIClient } from '@/data/dataAPI';
 import { getDefaultLocations } from '@/data/locations';
-import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
+import {
+  canAccessMetric,
+  getCurrentUser,
+  isUserRegistered,
+} from '@/lib/permissions';
 import { transformSeriesData, SeriesPoint } from '@/utils/timeseries';
 import { validateMetricIds } from '@/data/locations';
 import logger from '@/utils/logger';
@@ -29,6 +33,15 @@ export async function POST(req: NextRequest) {
   if (!metric_ids.length) {
     logger.error('No valid metric IDs provided');
     return NextResponse.json({ error: `No metric ids` }, { status: 400 });
+  }
+
+  for (let metric_id of metric_ids) {
+    if (!canAccessMetric(user, metric_id)) {
+      return NextResponse.json(
+        { error: `Metric access disallowed` },
+        { status: 401 }
+      );
+    }
   }
 
   const user_location_data = await getDefaultLocations(user);

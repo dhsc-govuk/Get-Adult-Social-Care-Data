@@ -133,11 +133,13 @@ describe('test handlers', () => {
 });
 
 describe('test get metrics', () => {
+  const get_metric_url = 'http://localhost/api/get_metric_data';
+
   beforeEach(() => vi.clearAllMocks());
   it('throws error if no user', async () => {
     mockGetSession.mockReturnValue(null as any);
     const req = {
-      url: `http://localhost/api/get_metric_data`,
+      url: get_metric_url,
     } as NextRequest;
 
     const result = await GetMetricData(req);
@@ -148,7 +150,7 @@ describe('test get metrics', () => {
 
   it('throws error if no metrics', async () => {
     mockGetSession.mockReturnValue(mockSessionWithLocation);
-    const req = new NextRequest('http://localhost/api/get_metric_data', {
+    const req = new NextRequest(get_metric_url, {
       method: 'POST',
       body: JSON.stringify({ query_type: 'UserQuery' }),
     });
@@ -161,7 +163,7 @@ describe('test get metrics', () => {
 
   it('throws error if no metrics', async () => {
     mockGetSession.mockReturnValue(mockSessionWithLocation);
-    const req = new NextRequest('http://localhost/api/get_metric_data', {
+    const req = new NextRequest(get_metric_url, {
       method: 'POST',
       body: JSON.stringify({
         query_type: 'NotAQuery',
@@ -177,7 +179,7 @@ describe('test get metrics', () => {
 
   it('throws error if metric ids are invalid', async () => {
     mockGetSession.mockReturnValue(mockSessionWithLocation);
-    const req = new NextRequest('http://localhost/api/get_metric_data', {
+    const req = new NextRequest(get_metric_url, {
       method: 'POST',
       body: JSON.stringify({
         query_type: 'UserQuery',
@@ -193,7 +195,7 @@ describe('test get metrics', () => {
 
   it('passes on user query type and metrics', async () => {
     mockGetSession.mockReturnValue(mockSessionWithLocation);
-    const req = new NextRequest('http://localhost/api/get_metric_data', {
+    const req = new NextRequest(get_metric_url, {
       method: 'POST',
       body: JSON.stringify({
         query_type: 'UserQuery',
@@ -238,6 +240,41 @@ describe('test get metrics', () => {
     ];
 
     expect(data).toEqual(expected_data);
+  });
+
+  it('throws error if metric ids are not allowed for this user', async () => {
+    mockGetSession.mockReturnValue(mockSessionCareProvider);
+    const req = new NextRequest(get_metric_url, {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'UserQuery',
+        metric_ids: ['pansi_metric_one', 'something_else'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(401);
+    const data = await result.json();
+    expect(data).toEqual({ error: 'Metric access disallowed' });
+  });
+
+  it('passes metric ids are allowed for this user', async () => {
+    mockGetSession.mockReturnValue(mockSessionLAUser);
+    const req = new NextRequest(get_metric_url, {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'UserQuery',
+        metric_ids: ['pansi_metric_one', 'something_else'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    // Returns the expected metrics
+    for (let item of data) {
+      expect(['pansi_metric_one', 'something_else']).toContain(item.metric_id);
+    }
   });
 });
 
