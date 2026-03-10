@@ -23,6 +23,7 @@ import TimeSeriesTable from '@/components/tables/TimeSeriesTable';
 
 export default function LAFundingPlanningPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
+  const tableref2 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
     LALabel: 'Loading...',
@@ -238,7 +239,7 @@ export default function LAFundingPlanningPage() {
           chart={<p>Add later</p>}
           table={
             <TimeSeriesTable
-              tableref={tableref1}
+              tableref={tableref2}
               caption={
                 <>
                   Table 2: estimated percentage change in population with
@@ -265,7 +266,7 @@ export default function LAFundingPlanningPage() {
             <>
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
-                tableref={tableref1}
+                tableref={tableref2}
                 filename="estimated_percentage_change_in_population_with_selected_health_conditions.csv"
                 xLabel=""
                 downloadType="Estimated percentage change in population with selected health conditions - trends over time"
