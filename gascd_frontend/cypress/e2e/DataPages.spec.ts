@@ -247,9 +247,12 @@ describe('Data pages exist and contain data', () => {
     cy.login_onelogin(Cypress.env('la_user'));
     cy.visit('/topics/future-planning/la-funding-planning/data');
 
-    cy.get('h1').should('contains.text', 'Local Authority funding planning');
+    cy.get('h1').should(
+      'contains.text',
+      'Local Authority funding projected demand'
+    );
 
-    cy.contains('Local Authority funding planning');
+    cy.contains('Local Authority funding projected demand');
 
     cy.get('a[href*="table-1"]').click();
     cy.url().should('include', '#table-1');

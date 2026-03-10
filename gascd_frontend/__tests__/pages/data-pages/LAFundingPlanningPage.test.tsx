@@ -24,7 +24,7 @@ describe('LAFundingPage', () => {
     render(<LAFundingPage />);
 
     const mainHeading = screen.getByRole('heading', {
-      name: /Local Authority funding planning/i,
+      name: /Local Authority funding projected demand/i,
       level: 1,
     });
     expect(mainHeading).toBeInTheDocument();
@@ -55,7 +55,7 @@ describe('LAFundingPage', () => {
     expect(bodyTextElement).toBeInTheDocument();
 
     const helpLink = screen.getAllByRole('link', {
-      name: /local authority funding planning/i,
+      name: /local authority funding projected demand/i,
     });
     expect(helpLink[0]).toBeInTheDocument();
     expect(helpLink[0]).toHaveAttribute('href', '/help/la-funding-planning');
