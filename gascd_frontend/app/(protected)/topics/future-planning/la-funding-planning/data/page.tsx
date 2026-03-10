@@ -247,7 +247,11 @@ export default function LAFundingPlanningPage() {
                   'Total population aged 18-64 predicted to have autistic spectrum disorders',
               }}
               data={filteredDemographicData}
-              percentageRows={[]}
+              percentageRows={[
+                'pansi_pred_pop_early_dem_aged_30_64_perc_change',
+                'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change',
+                'pansi_pred_pop_asd_aged_18_64_perc_change',
+              ]}
               currency={false}
             ></TimeSeriesTable>
           }
