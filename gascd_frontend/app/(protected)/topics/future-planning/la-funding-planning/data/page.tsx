@@ -9,16 +9,13 @@ import DataLinkCard from '@/components/data-components/DataLinkCard';
 import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
 import BackToTop from '@/components/data-components/BackToTop';
 import LocationService from '@/services/location/locationService';
-import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
-import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
-import RelatedDataList from '@/components/data-components/RelatedDataList';
 import TimeSeriesTable from '@/components/tables/TimeSeriesTable';
 
 export default function LAFundingPlanningPage() {
@@ -228,11 +225,11 @@ export default function LAFundingPlanningPage() {
 
       <DataIndicatorDetailsList>
         <DataLinkCard
-          label="Local Authority funding planning"
-          sources="PANSI"
+          label="Total population aged 30-64 to have early onset dementia"
+          sources="Office for National Statistics"
           updateFrequency="TBC"
           limitations={true}
-          url="/help/la-funding-planning"
+          url="/help/estimated-population-early-onset-dementia"
         />
       </DataIndicatorDetailsList>
 
