@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import LAFundingPage from '../../../app/(protected)/topics/financial-spend-and-unpaid-care/financial-spend/data/page';
+import LAFundingPage from '../../../app/(protected)/topics/future-planning/la-funding-planning/data/page';
 import { authClient } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
 
@@ -7,7 +7,6 @@ import { mockSession } from '@/test-utils/test-utils';
 vi.mock('@/components/common/buttons/logoutButton');
 vi.mock('@/services/logger/logService');
 vi.mock('@/services/indicator/IndicatorFetchService');
-vi.mock('@/services/location/LocationService');
 
 vi.mock('@/lib/auth-client', () => ({
   authClient: {
@@ -25,14 +24,13 @@ describe('LAFundingPage', () => {
     render(<LAFundingPage />);
 
     const mainHeading = screen.getByRole('heading', {
-      name: /funding for adult social care/i,
+      name: /Local Authority funding planning/i,
       level: 1,
     });
     expect(mainHeading).toBeInTheDocument();
 
     const subHeadings = [
       'Data overview',
-      'Trends',
       'Data indicator details',
       'Information on the local care market',
     ];
@@ -43,9 +41,7 @@ describe('LAFundingPage', () => {
     }
 
     const dataBoxHeadings = [
-      'LA adult social care funding by duration of care',
-      'LA funding for long-term adult social care',
-      'LA funding for long-term adult social care – trends over time',
+      'Comparison of estimated population with selected health conditions over time',
     ];
     for (let dataBoxHeadingText of dataBoxHeadings) {
       expect(
@@ -54,26 +50,17 @@ describe('LAFundingPage', () => {
     }
 
     const bodyTextElement = screen.getByText(
-      /Data on funding for both short-term and long-term care, also funding by individual care type./i
+      /Consolidated estimated data on population with selected conditions within a Local Authority area./i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
     const helpLink = screen.getAllByRole('link', {
-      name: /LA funding for adult social care/i,
+      name: /local authority funding planning/i,
     });
     expect(helpLink[0]).toBeInTheDocument();
-    expect(helpLink[0]).toHaveAttribute(
-      'href',
-      '/help/total-financial-spend-adult-social-care'
-    );
+    expect(helpLink[0]).toHaveAttribute('href', '/help/la-funding-planning');
 
-    const tables = [
-      /Table 1: LA spending on short-term and long-term adult social care for all age groups/i,
-      /Table 2: LA funding for long-term adult social care for all age groups/i,
-      /Table 3: LA funding for long-term adult social care/i,
-    ];
-    for (let table of tables) {
-      expect(screen.getByRole('table', { name: table })).toBeInTheDocument();
-    }
+    const tableElement = screen.getByRole('table');
+    expect(tableElement).toBeInTheDocument();
   });
 });

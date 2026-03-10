@@ -9,6 +9,7 @@ import logger from '@/utils/logger';
 
 const REGIONAL_QUERYTYPE = 'RegionQuery';
 const LA_TIMESERIES = 'LATimeseriesQuery';
+const MULTI_LOCATION_TIMESERIES = 'MultiLocationTimeseriesQuery';
 const USER_QUERY = 'UserQuery';
 
 export async function POST(req: NextRequest) {
@@ -95,7 +96,10 @@ export async function POST(req: NextRequest) {
         location_type: 'LA',
       },
     ];
-  } else if (query_type === USER_QUERY) {
+  } else if (
+    query_type === USER_QUERY ||
+    query_type === MULTI_LOCATION_TIMESERIES
+  ) {
     // Get user's default locations
     location_data = user_location_data;
   } else {
@@ -122,14 +126,20 @@ export async function POST(req: NextRequest) {
           metric_code: metric_id,
         },
         query: {
-          time_series: query_type === LA_TIMESERIES,
+          time_series:
+            query_type === LA_TIMESERIES ||
+            query_type === MULTI_LOCATION_TIMESERIES,
         },
       },
       body: location_data as any,
     });
+
     if (data) {
       data.map((metric) => {
-        if (query_type === LA_TIMESERIES) {
+        if (
+          query_type === LA_TIMESERIES ||
+          query_type === MULTI_LOCATION_TIMESERIES
+        ) {
           let series: SeriesPoint[];
           try {
             series = transformSeriesData(
