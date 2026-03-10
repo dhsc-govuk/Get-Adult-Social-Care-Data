@@ -92,7 +92,7 @@ const HomePage: React.FC = () => {
       url: 'topics/future-planning/subtopics',
       subtopics: [
         {
-          title: 'Local authority funding planning',
+          title: 'Local authority funding projected demand',
           description:
             'Consolidated estimated data on population with selected conditions within a LA area.',
           url: 'topics/future-planning/la-funding-planning/data',

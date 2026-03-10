@@ -18,7 +18,7 @@ export default function FuturePlanningPage() {
 
   const subtopics = [
     {
-      title: 'Local Authority funding planning',
+      title: 'Local Authority funding projected demand',
       description:
         'Consolidated estimated data on population with selected conditions within a LA area.',
       url: '/topics/future-planning/la-funding-planning/data',

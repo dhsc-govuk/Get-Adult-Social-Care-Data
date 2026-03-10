@@ -121,7 +121,6 @@ export default function LAFundingPlanningPage() {
       }
     };
     fetchAllData();
-    
   }, [demographicQuery]);
 
   useEffect(() => {
@@ -143,7 +142,7 @@ export default function LAFundingPlanningPage() {
 
   return (
     <Layout
-      title="Local Authority funding planning"
+      title="Local Authority funding projected demand"
       autoSpaceMainContent={false}
       showLoginInformation={true}
       currentPage="la-funding-planning"
@@ -151,7 +150,9 @@ export default function LAFundingPlanningPage() {
     >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
-          <h1 className="govuk-heading-xl">Local Authority funding planning</h1>
+          <h1 className="govuk-heading-xl">
+            Local Authority funding projected demand
+          </h1>
           <p className="govuk-body-l">
             Consolidated estimated data on population with selected conditions
             within a Local Authority area.
@@ -271,7 +272,7 @@ export default function LAFundingPlanningPage() {
 
       <DataIndicatorDetailsList>
         <DataLinkCard
-          label="Local Authority funding planning"
+          label="Local Authority funding projected demand"
           sources="PANSI"
           updateFrequency="TBC"
           limitations={true}
