@@ -63,17 +63,7 @@ export default function LAFundingPlanningPage() {
   ];
 
   // Replace with dynamic dates when we have them, this is just to show the table structure for now
-  const columnDates = [
-    '2025',
-    '2026',
-    '2027',
-    '2028',
-    '2029',
-    '2030',
-    '2035',
-    '2040',
-    '2045',
-  ];
+  const columnDates = ['2025', '2030', '2035', '2040', '2045'];
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -125,14 +115,13 @@ export default function LAFundingPlanningPage() {
       try {
         const demographicData: Indicator[] =
           await IndicatorFetchService.getData(demographicQuery);
-        const filteredDemographicData =
-          TableService.filterDate(demographicData);
-        setFilteredDemographicData(filteredDemographicData);
+        setFilteredDemographicData(demographicData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchAllData();
+    console.log(filteredDemographicData, 'filtered demographic data');
   }, [demographicQuery]);
 
   useEffect(() => {
