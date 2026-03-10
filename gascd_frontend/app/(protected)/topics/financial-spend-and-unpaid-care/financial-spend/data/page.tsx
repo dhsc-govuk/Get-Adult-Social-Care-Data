@@ -8,6 +8,7 @@ import DataIndicatorDetailsList from '@/components/data-components/DataIndicator
 import DataLinkCard from '@/components/data-components/DataLinkCard';
 import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
 import BackToTop from '@/components/data-components/BackToTop';
+import DataTable from '@/components/tables/table';
 import SubCatergoryTable from '@/components/tables/SubCatergoryTable';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { LocationNames } from '@/data/interfaces/LocationNames';
@@ -22,6 +23,7 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 export default function LAFundingPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
   const tableref2 = useRef<HTMLTableElement>(null);
+  const tableref3 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
     LALabel: 'Loading...',
@@ -40,12 +42,31 @@ export default function LAFundingPage() {
   const [filteredDemographicData, setFilteredDemographicData] = useState<
     Indicator[]
   >([]);
+  const [rawLaFundingOverTimeData, setRawLaFundingOverTimeData] = useState<
+    Indicator[]
+  >([]);
+  const [laFundingOverTimeDataForTable, setLAFundingOverTimeDataForTable] =
+    useState<Indicator[]>([]);
+
+  const [laFundingTableRowHeaders, setLAFundingTableRowHeaders] = useState<{
+    [key: string]: string;
+  }>({});
+
   const [demographicQuery, setDemographicQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
   });
 
-  const metricColumnNames = ['Duration of care', 'Care type or funding method'];
+  const [laFundingOverTimeDataQuery, setLAFundingOverTimeDataQuery] =
+    useState<IndicatorQuery>({
+      metric_ids: [],
+      location_ids: [],
+    });
+
+  const [chartData, setChartData] = useState<{
+    categories: string[];
+    values: number[];
+  }>({ categories: [], values: [] });
 
   const breadcrumbs = [
     {
@@ -56,6 +77,12 @@ export default function LAFundingPage() {
       text: 'Funding',
       url: '/topics/Funding/subtopics',
     },
+  ];
+
+  const metricColumnNames = [
+    'Duration of care',
+    'Care type or funding method',
+    'Financial year',
   ];
 
   const demographicMetricIds = [
@@ -148,6 +175,11 @@ export default function LAFundingPage() {
         metric_ids: demographicMetricIds,
         location_ids: locationIds,
       }));
+      setLAFundingOverTimeDataQuery(() => ({
+        metric_ids: ['elss_all_types_of_adult_social_care_all_ages'],
+        location_ids: locationIds,
+        query_type: 'MultiLocationTimeseriesQuery',
+      }));
     }
   }, [locationIds]);
 
@@ -166,6 +198,49 @@ export default function LAFundingPage() {
     };
     fetchAllData();
   }, [demographicQuery]);
+
+  useEffect(() => {
+    const fetchLaFundingOverTimeData = async () => {
+      if (!CPLocationId || !locationIds) return;
+      try {
+        if (laFundingOverTimeDataQuery.location_ids.length) {
+          const laFundingOverTimeData: Indicator[] =
+            await IndicatorFetchService.getData(laFundingOverTimeDataQuery);
+          setRawLaFundingOverTimeData(laFundingOverTimeData);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchLaFundingOverTimeData();
+  }, [laFundingOverTimeDataQuery]);
+
+  useEffect(() => {
+    if (rawLaFundingOverTimeData.length > 0) {
+      createTimeSeriesForTable();
+    }
+  }, [rawLaFundingOverTimeData]);
+
+  const createTimeSeriesForTable = () => {
+    let metricIds: any[] = [];
+    rawLaFundingOverTimeData.map((indicator) => {
+      const indicatorDate = indicator.metric_date;
+      if (indicatorDate) {
+        indicator.metric_id = `elss_all_types_of_adult_social_care_all_ages_${indicatorDate}`;
+        if (!metricIds.find((m) => m.id === indicator.metric_id)) {
+          metricIds.push({
+            id: `elss_all_types_of_adult_social_care_all_ages_${indicatorDate}`,
+            name: `${indicatorDate - 1} to ${indicatorDate}`,
+          });
+        }
+      }
+    });
+
+    setLAFundingOverTimeDataForTable(rawLaFundingOverTimeData);
+    setLAFundingTableRowHeaders(
+      Object.fromEntries(metricIds.map((m) => [m.id, m.name]))
+    );
+  };
 
   return (
     <Layout
@@ -223,7 +298,10 @@ export default function LAFundingPage() {
                   – {locationNames.LALabel} local authority,{' '}
                   {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getFinancialYear(filteredDemographicData)}
+                  {IndicatorService.getFinancialYear(
+                    filteredDemographicData,
+                    1
+                  )}
                 </>
               }
               source={
@@ -308,7 +386,10 @@ export default function LAFundingPage() {
                   {locationNames.LALabel} local authority,{' '}
                   {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getFinancialYear(filteredDemographicData)}
+                  {IndicatorService.getFinancialYear(
+                    filteredDemographicData,
+                    1
+                  )}
                 </>
               }
               source={
@@ -352,6 +433,78 @@ export default function LAFundingPage() {
                 filename="funding_for_long_term_adult_social_care.csv"
                 xLabel=""
                 downloadType="LA funding for long-term adult social care for all age groups"
+              />
+            </>
+          }
+        />
+      </DataBox>
+
+      <div className="govuk-grid-row">
+        <div className="govuk-grid-column-two-thirds">
+          <h2 className="govuk-heading-l govuk-!-margin-top-9">Trends</h2>
+        </div>
+      </div>
+
+      <DataBox
+        dataTitle={
+          <>
+            <abbr title="Local Authority">LA</abbr> funding for long-term adult
+            social care – trends over time
+          </>
+        }
+        dataInfo={
+          <p className="govuk-body-m">
+            Find out{' '}
+            <a
+              href="/help/total-financial-spend-long-term-community-adult-social-care"
+              className="govuk-link"
+            >
+              how the financial spend on long-term adult social care is
+              calculated
+            </a>
+            .
+          </p>
+        }
+      >
+        <DataTabs
+          id="3"
+          table={
+            <DataTable
+              tableref={tableref3}
+              caption={
+                <>
+                  Table 3: <abbr title="Local Authority">LA</abbr> funding for
+                  long-term adult social care (all types of adult social care)
+                  for all age groups – {locationNames.LALabel} local authority,{' '}
+                  {locationNames.RegionLabel} region and{' '}
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getFinancialYear(
+                    filteredDemographicData,
+                    Object.keys(laFundingTableRowHeaders).length
+                  )}{' '}
+                  (£ thousand)
+                </>
+              }
+              source={
+                'Adult Social Care Activity and Finance Report from NHS England'
+              }
+              columnHeaders={locationNamesWithAverageLabels}
+              metricColumnName={metricColumnNames[2]}
+              rowHeaders={laFundingTableRowHeaders}
+              data={laFundingOverTimeDataForTable}
+              showCareProvider={false}
+              percentageRows={[]}
+              currency={true}
+            ></DataTable>
+          }
+          download={
+            <>
+              <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref2}
+                filename="funding_for_long_term_adult_social_care.csv"
+                xLabel=""
+                downloadType="LA funding for long-term adult social care for all age groups - trends over time"
               />
             </>
           }

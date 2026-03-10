@@ -257,6 +257,7 @@ class IndicatorService {
 
   public static getFinancialYear(
     data: Indicator[],
+    spread: number,
     metric_ids?: string[]
   ): string {
     const recentData = this.getMostRecentIndicator(data, metric_ids);
@@ -270,7 +271,7 @@ class IndicatorService {
 
       let year = parseInt(yearString);
 
-      return `financial year ${year - 1} to ${year}`;
+      return `financial year ${year - spread} to ${year}`;
     } else {
       return '';
     }

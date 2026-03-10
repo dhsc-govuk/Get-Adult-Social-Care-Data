@@ -351,6 +351,18 @@ public enum MetricCodeEnum
     occupancy_rate_transitional,
     [MetricGroup(typeof(OccupancyRate))]
     occupancy_rate_ypd_young_physically_disabled,
+    [MetricGroup(typeof(Pansi))]
+    pansi_pred_pop_asd_aged_18_64,
+    [MetricGroup(typeof(Pansi))]
+    pansi_pred_pop_asd_aged_18_64_perc_change,
+    [MetricGroup(typeof(Pansi))]
+    pansi_pred_pop_challenging_behaviour_aged_18_64,
+    [MetricGroup(typeof(Pansi))]
+    pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change,
+    [MetricGroup(typeof(Pansi))]
+    pansi_pred_pop_early_dem_aged_30_64,
+    [MetricGroup(typeof(Pansi))]
+    pansi_pred_pop_early_dem_aged_30_64_perc_change,
     [MetricGroup(typeof(Perc1864))]
     perc_18_64,
     [MetricGroup(typeof(Perc65Over))]
