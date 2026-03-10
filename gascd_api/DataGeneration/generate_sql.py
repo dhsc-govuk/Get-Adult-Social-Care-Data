@@ -44,10 +44,12 @@ def get_datapoint_count(start, end, frequency):
         return delta.days + 1
     elif frequency == 'Monthly':
         return (delta.days // 30) + 1
-    elif frequency in ('Yearly', 'Financial yearly', '5 years'):
+    elif frequency in ('Yearly', 'Financial yearly'):
         return (delta.days // 365) + 1
     elif frequency == 'Census':
         return 1
+    elif frequency == '5 years':
+        return (delta.days // (365 * 5)) + 1
     else:
         raise Exception('unrecognised frequency')
 
