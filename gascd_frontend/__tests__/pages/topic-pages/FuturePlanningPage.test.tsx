@@ -17,7 +17,7 @@ describe('FuturePlanningPage', () => {
     expect(bodyTextElement).toBeInTheDocument();
 
     const laFundingPlanningLink = screen.getByRole('link', {
-      name: /Local Authority funding planning/i,
+      name: /Local Authority funding projected demand/i,
     });
     expect(laFundingPlanningLink).toBeInTheDocument();
     expect(laFundingPlanningLink).toHaveAttribute(

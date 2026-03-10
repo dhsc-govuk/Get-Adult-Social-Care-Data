@@ -24,7 +24,7 @@ describe('LAFundingPage', () => {
     render(<LAFundingPage />);
 
     const mainHeading = screen.getByRole('heading', {
-      name: /Local Authority funding planning/i,
+      name: /Local Authority funding projected demand/i,
       level: 1,
     });
     expect(mainHeading).toBeInTheDocument();
@@ -63,7 +63,8 @@ describe('LAFundingPage', () => {
       '/help/estimated-population-early-onset-dementia'
     );
 
-    const tableElement = screen.getByRole('table');
-    expect(tableElement).toBeInTheDocument();
+    const tableElement = screen.getAllByRole('table');
+    expect(tableElement[0]).toBeInTheDocument();
+    expect(tableElement[1]).toBeInTheDocument();
   });
 });
