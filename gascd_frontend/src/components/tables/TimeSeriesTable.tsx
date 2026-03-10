@@ -4,7 +4,7 @@ import { Indicator } from '@/data/interfaces/Indicator';
 type DataTableProps = {
   caption?: React.ReactNode;
   metricColumnName?: string;
-  columnHeaders: Object;
+  columnHeaders: Array<string>;
   rowHeaders: Object;
   data: Indicator[];
   percentageRows?: string[];
@@ -21,9 +21,12 @@ const getFormattedDataPoint = (
   metricId: string,
   isPercentage: boolean = false,
   isCurrency: boolean = false,
+  rowDate: string,
   showAverageLabel?: boolean
 ): string => {
-  const foundMetric = data.find((metric) => metric.metric_id === metricId);
+  const foundMetric = data.find((metric) => {
+    return metric.metric_id === metricId && metric.metric_date === rowDate;
+  });
 
   if (
     foundMetric &&
@@ -62,6 +65,7 @@ const DataTable: React.FC<DataTableProps> = ({
       return 'govuk-table__header govuk-table__cell--numeric';
     }
   };
+
   return (
     <div>
       <table className="govuk-table" ref={tableref}>
@@ -97,7 +101,7 @@ const DataTable: React.FC<DataTableProps> = ({
               >
                 {value}
               </th>
-              {Object.entries(columnHeaders).map(([columnKey]) => (
+              {columnHeaders.map((columnKey) => (
                 <td
                   key={columnKey + 1}
                   className="govuk-table__cell govuk-table__cell--numeric"
@@ -107,6 +111,7 @@ const DataTable: React.FC<DataTableProps> = ({
                     key,
                     percentageRows?.some((item) => item === key) ?? false,
                     currency,
+                    columnKey,
                     showAverageLabel
                   )}
                 </td>

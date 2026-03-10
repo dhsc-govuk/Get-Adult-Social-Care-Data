@@ -60,7 +60,8 @@ describe('LAFundingPage', () => {
     expect(helpLink[0]).toBeInTheDocument();
     expect(helpLink[0]).toHaveAttribute('href', '/help/la-funding-planning');
 
-    const tableElement = screen.getByRole('table');
-    expect(tableElement).toBeInTheDocument();
+    const tableElement = screen.getAllByRole('table');
+    expect(tableElement[0]).toBeInTheDocument();
+    expect(tableElement[1]).toBeInTheDocument();
   });
 });
