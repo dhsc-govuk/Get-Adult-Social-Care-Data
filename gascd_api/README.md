@@ -68,5 +68,6 @@ Adding a new metric group to the API requires following these steps. To add a ne
     ```
     dotnet ef migrations script --project api
     ```
+    - note that this produces SQL for all migrations using transactions, new additions will be at the end. The test-seed.sql file does not use transactions.
 5. Add new metrics with metric group tags to [MetricCodeEnum.cs](api/Data/Shared/MetricCodeEnum.cs)
 6. To add dummy data for this metric to the dockerised version of the API see the DataGeneration [README.md](DataGeneration/README.md)
