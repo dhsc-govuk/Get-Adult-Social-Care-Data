@@ -100,5 +100,9 @@ DATE_RANGES = {
     'Financial yearly': {
         'start': date(2021,4,1),
         'end': date(2024,4,1),
+    },
+    '5 years': {
+        'start': date(2025,1,1),
+        'end': date(2045,1,1),
     }
 }
