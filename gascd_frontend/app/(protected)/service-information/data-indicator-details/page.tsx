@@ -196,6 +196,13 @@ export default function DataIndicatorDetailsPage() {
           </h2>
           <ul className="gem-c-cards__list gem-c-cards__list--one-column">
             <DataLinkCard
+              label="Total population aged 18-64 with a learning disability, predicted to display challenging behaviour"
+              sources="Office for National Statistics"
+              updateFrequency="TBC"
+              limitations={false}
+              url="/help/estimated-population-learning-disability"
+            />
+            <DataLinkCard
               label="Total population aged 30-64 to have early onset dementia"
               sources="Office for National Statistics"
               updateFrequency="TBC"

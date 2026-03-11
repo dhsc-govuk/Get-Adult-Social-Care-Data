@@ -275,6 +275,13 @@ export default function LAFundingPlanningPage() {
           limitations={true}
           url="/help/estimated-population-early-onset-dementia"
         />
+        <DataLinkCard
+          label="Total population aged 18-64 with a learning disability, predicted to display challenging behaviour"
+          sources="Office for National Statistics"
+          updateFrequency="TBC"
+          limitations={false}
+          url="/help/estimated-population-learning-disability"
+        />
       </DataIndicatorDetailsList>
 
       <LocalMarketInformation

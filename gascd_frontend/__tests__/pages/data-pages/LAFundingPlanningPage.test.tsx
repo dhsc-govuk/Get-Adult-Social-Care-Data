@@ -63,6 +63,15 @@ describe('LAFundingPage', () => {
       '/help/estimated-population-early-onset-dementia'
     );
 
+    const learningDisabilityLink = screen.getAllByRole('link', {
+      name: /Total population aged 18-64 with a learning disability, predicted to display challenging behaviour/i,
+    });
+    expect(learningDisabilityLink[0]).toBeInTheDocument();
+    expect(learningDisabilityLink[0]).toHaveAttribute(
+      'href',
+      '/help/estimated-population-learning-disability'
+    );
+
     const tableElement = screen.getAllByRole('table');
     expect(tableElement[0]).toBeInTheDocument();
     expect(tableElement[1]).toBeInTheDocument();
