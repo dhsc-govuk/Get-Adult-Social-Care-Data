@@ -190,6 +190,11 @@ export default function LAFundingPage() {
           await IndicatorFetchService.getData(demographicQuery);
         const filteredDemographicData =
           TableService.filterDate(demographicData);
+
+        // This is a short term solution
+        filteredDemographicData.forEach((indicator) => {
+          if (indicator.data_point !== null) indicator.data_point *= 1000;
+        });
         setFilteredDemographicData(filteredDemographicData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -205,6 +210,11 @@ export default function LAFundingPage() {
         if (laFundingOverTimeDataQuery.location_ids.length) {
           const laFundingOverTimeData: Indicator[] =
             await IndicatorFetchService.getData(laFundingOverTimeDataQuery);
+
+          // This is a short term solution
+          laFundingOverTimeData.forEach((indicator) => {
+            if (indicator.data_point !== null) indicator.data_point *= 1000;
+          });
           setRawLaFundingOverTimeData(laFundingOverTimeData);
         }
       } catch (error) {
@@ -553,8 +563,7 @@ export default function LAFundingPage() {
                   {IndicatorService.getFinancialYear(
                     filteredDemographicData,
                     Object.keys(laFundingTableRowHeaders).length
-                  )}{' '}
-                  (£ thousand)
+                  )}
                 </>
               }
               source={
@@ -573,7 +582,7 @@ export default function LAFundingPage() {
             <>
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
-                tableref={tableref2}
+                tableref={tableref3}
                 filename="funding_for_long_term_adult_social_care.csv"
                 xLabel=""
                 downloadType="LA funding for long-term adult social care for all age groups - trends over time"
