@@ -231,11 +231,14 @@ export default function LAFundingPage() {
           metricIds.push({
             id: `elss_all_types_of_adult_social_care_all_ages_${indicatorDate}`,
             name: `${indicatorDate - 1} to ${indicatorDate}`,
+            endDate: indicatorDate,
           });
         }
       }
     });
 
+    // Make sure headers appear in date order
+    metricIds.sort((item1, item2) => item1.endDate - item2.endDate);
     setLAFundingOverTimeDataForTable(rawLaFundingOverTimeData);
     setLAFundingTableRowHeaders(
       Object.fromEntries(metricIds.map((m) => [m.id, m.name]))
