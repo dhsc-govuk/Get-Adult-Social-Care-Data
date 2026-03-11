@@ -272,11 +272,11 @@ export default function LAFundingPlanningPage() {
 
       <DataIndicatorDetailsList>
         <DataLinkCard
-          label="Local Authority funding projected demand"
-          sources="PANSI"
+          label="Total population aged 18-64 predicted to have autistic spectrum disorders"
+          sources="Office for National Statistics."
           updateFrequency="TBC"
           limitations={true}
-          url="/help/la-funding-planning"
+          url="/help/estimated-population-asd"
         />
       </DataIndicatorDetailsList>
 
