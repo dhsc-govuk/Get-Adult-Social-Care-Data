@@ -21,6 +21,7 @@ export interface Series {
 
 interface TimeSeriesChartProps {
   series: Series[];
+  yPrefix?: string;
   dateFormat?: string;
 }
 
@@ -28,6 +29,7 @@ interface TimeSeriesChartProps {
 
 const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   series = [],
+  yPrefix = '',
   dateFormat = '%b %y',
 }) => {
   const DEFAULT_COLORS = [
@@ -107,6 +109,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
       rangemode: 'tozero', // Ensures 0 is always visible
       fixedrange: true, // prevents zooming
       automargin: true,
+      tickprefix: yPrefix,
     },
     margin: { l: 60, t: 50, r: 20, b: 50 }, // Adjust margins for axis labels
     hovermode: 'x unified', // Shows all values for a specific month on hover
