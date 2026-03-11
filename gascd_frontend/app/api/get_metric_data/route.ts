@@ -15,6 +15,7 @@ const REGIONAL_QUERYTYPE = 'RegionQuery';
 const LA_TIMESERIES = 'LATimeseriesQuery';
 const MULTI_LOCATION_TIMESERIES = 'MultiLocationTimeseriesQuery';
 const USER_QUERY = 'UserQuery';
+const TIME_SERIES_QUERIES = [LA_TIMESERIES, MULTI_LOCATION_TIMESERIES];
 
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
@@ -131,6 +132,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const is_timeseries = TIME_SERIES_QUERIES.includes(query_type);
   let all_metrics: any[] = [];
   for (let metric_id of metric_ids) {
     const { data, error } = await client.POST('/metrics/{metric_code}/data', {
@@ -139,9 +141,7 @@ export async function POST(req: NextRequest) {
           metric_code: metric_id,
         },
         query: {
-          time_series:
-            query_type === LA_TIMESERIES ||
-            query_type === MULTI_LOCATION_TIMESERIES,
+          time_series: true,
         },
       },
       body: location_data as any,
@@ -149,10 +149,7 @@ export async function POST(req: NextRequest) {
 
     if (data) {
       data.map((metric) => {
-        if (
-          query_type === LA_TIMESERIES ||
-          query_type === MULTI_LOCATION_TIMESERIES
-        ) {
+        if (is_timeseries) {
           let series: SeriesPoint[];
           try {
             series = transformSeriesData(

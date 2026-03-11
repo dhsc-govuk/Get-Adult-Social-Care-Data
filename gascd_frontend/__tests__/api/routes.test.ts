@@ -276,6 +276,23 @@ describe('test get metrics', () => {
       expect(['pansi_metric_one', 'something_else']).toContain(item.metric_id);
     }
   });
+
+  it('supports time series queries', async () => {
+    mockGetSession.mockReturnValue(mockSessionLAUser);
+    const req = new NextRequest(get_metric_url, {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'LATimeseriesQuery',
+        metric_ids: ['my_metric'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    const data_points = data.map((item: any) => item.data_point);
+    expect(data_points).toEqual(['100', '200', '300', '200', '150']);
+  });
 });
 
 describe('test available locations', () => {
