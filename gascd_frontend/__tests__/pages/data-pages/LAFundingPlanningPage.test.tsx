@@ -54,11 +54,21 @@ describe('LAFundingPage', () => {
     );
     expect(bodyTextElement).toBeInTheDocument();
 
-    const helpLink = screen.getAllByRole('link', {
+    const asdHelpLink = screen.getAllByRole('link', {
+      name: /Total population aged 18-64 predicted to have autistic spectrum disorders/i,
+    });
+
+    expect(asdHelpLink[0]).toBeInTheDocument();
+    expect(asdHelpLink[0]).toHaveAttribute(
+      'href',
+      '/help/estimated-population-asd'
+    );
+
+    const dementiaHelpLink = screen.getAllByRole('link', {
       name: /Total population aged 30-64 to have early onset dementia/i,
     });
-    expect(helpLink[0]).toBeInTheDocument();
-    expect(helpLink[0]).toHaveAttribute(
+    expect(dementiaHelpLink[0]).toBeInTheDocument();
+    expect(dementiaHelpLink[0]).toHaveAttribute(
       'href',
       '/help/estimated-population-early-onset-dementia'
     );

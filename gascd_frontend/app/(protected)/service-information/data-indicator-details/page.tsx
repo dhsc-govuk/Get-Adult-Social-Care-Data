@@ -203,6 +203,13 @@ export default function DataIndicatorDetailsPage() {
               url="/help/estimated-population-learning-disability"
             />
             <DataLinkCard
+              label="Total population aged 18-64 predicted to have autistic spectrum disorders"
+              sources="Office for National Statistics"
+              updateFrequency="TBC"
+              limitations={true}
+              url="/help/estimated-population-asd"
+            />
+            <DataLinkCard
               label="Total population aged 30-64 to have early onset dementia"
               sources="Office for National Statistics"
               updateFrequency="TBC"
