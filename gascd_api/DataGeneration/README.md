@@ -14,3 +14,7 @@ metric_group code, metric code, frequency, location types (separated by hyphens)
 The `metric_data.csv` file was created using a SQL query. It queries the metric_group, metric, and every time series 
 table for data on each metric. The SQL query was generated using [generate_metric_data.py](generate_metric_data.py). 
 This script uses [metric_groups.csv](data/metric_groups.csv).
+
+### Adding a new metric
+
+To add fake data for a new metric it will need to be included in [metric_data.csv](data/metric_data.csv). This can be added manually or can be queried for from dev if it exists there.

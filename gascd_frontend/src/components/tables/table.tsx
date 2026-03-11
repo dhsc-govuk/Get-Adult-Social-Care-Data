@@ -16,6 +16,7 @@ type DataTableProps = {
   children?: React.ReactNode;
   showAverageLabel?: boolean;
   tableref?: Ref<HTMLTableElement>;
+  smallNumberSuppression?: boolean;
 };
 
 const getCareProviderKey = (
@@ -23,36 +24,6 @@ const getCareProviderKey = (
   careProviderMedianMetrics?: Record<string, string>
 ): string => {
   return careProviderMedianMetrics ? careProviderMedianMetrics[key] : ' ';
-};
-
-const getFormattedDataPoint = (
-  data: Indicator[],
-  metricId: string,
-  locationType: string,
-  isPercentage: boolean = false,
-  isCurrency: boolean = false,
-  showAverageLabel?: boolean
-): string => {
-  const foundMetric = data.find(
-    (metric) =>
-      metric.metric_id === metricId && metric.location_type === locationType
-  );
-
-  if (
-    foundMetric &&
-    foundMetric.data_point !== null &&
-    !isNaN(Number(foundMetric.data_point))
-  ) {
-    let formatted = Number(foundMetric.data_point).toLocaleString();
-    if (isPercentage) formatted += '%';
-    if (isCurrency) formatted = '£' + formatted;
-    if (showAverageLabel)
-      formatted += isPercentage ? ' (average)' : ' (median)';
-    return formatted;
-  } else if (foundMetric && foundMetric.data_point === null) {
-    return '(*)';
-  }
-  return 'Loading...';
 };
 
 const DataTable: React.FC<DataTableProps> = ({
@@ -69,6 +40,7 @@ const DataTable: React.FC<DataTableProps> = ({
   source,
   showAverageLabel = false,
   tableref = undefined,
+  smallNumberSuppression = false,
 }) => {
   const columnClass = (columnIndex: number) => {
     if (columnIndex === 0) {
@@ -77,6 +49,47 @@ const DataTable: React.FC<DataTableProps> = ({
       return 'govuk-table__header govuk-table__cell--numeric';
     }
   };
+
+  const getFormattedDataPoint = (
+    data: Indicator[],
+    metricId: string,
+    locationType: string,
+    isPercentage: boolean = false,
+    isCurrency: boolean = false,
+    showAverageLabel?: boolean
+  ): string => {
+    const foundMetric = data.find(
+      (metric) =>
+        metric.metric_id === metricId && metric.location_type === locationType
+    );
+
+    if (
+      foundMetric &&
+      foundMetric.data_point !== null &&
+      !isNaN(Number(foundMetric.data_point))
+    ) {
+      let formatted = Number(foundMetric.data_point).toLocaleString();
+      if (isPercentage) formatted += '%';
+      if (isCurrency) formatted = '£' + formatted;
+      if (showAverageLabel)
+        formatted += isPercentage ? ' (average)' : ' (median)';
+      return formatted;
+    } else if (
+      foundMetric &&
+      foundMetric.data_point === null &&
+      smallNumberSuppression
+    ) {
+      // Small number suppression support
+      return '(*)';
+    } else if (data && data.length) {
+      // data exists but we couldn't find a matching value
+      return '--';
+    } else {
+      // Data is not actually available, so we assume we're loading
+      return 'Loading...';
+    }
+  };
+
   return (
     <div>
       <table className="govuk-table" ref={tableref}>
@@ -101,6 +114,7 @@ const DataTable: React.FC<DataTableProps> = ({
                   className={columnClass(columnIndex + 1)}
                 >
                   {columnLabel}
+                  {currency && <p className="govuk-!-margin-0">(£ thousand)</p>}
                 </th>
               ))}
           </tr>

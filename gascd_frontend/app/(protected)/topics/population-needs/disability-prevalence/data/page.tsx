@@ -237,7 +237,7 @@ export default function DisabilityPrevalence() {
           )
         );
         const map: any = {};
-        parsedData.map((item) => (map[item.metric_id] = item.filter_label));
+        parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
         setSupportReasonRowHeaders(map);
       }
     } else {
@@ -414,6 +414,7 @@ export default function DisabilityPrevalence() {
               rowHeaders={supportReasonRowHeaders}
               data={filteredPrimaryReasonData}
               showCareProvider={false}
+              smallNumberSuppression={true}
             >
               <p className="govuk-body-m">(*) denotes less than 5</p>
             </DataTable>

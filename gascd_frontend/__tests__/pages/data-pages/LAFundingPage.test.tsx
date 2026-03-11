@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import PopulationPage from '../../../app/(protected)/topics/population-needs/population-age-and-size/data/page';
+import LAFundingPage from '../../../app/(protected)/topics/financial-spend-and-unpaid-care/financial-spend/data/page';
 import { authClient } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
 
@@ -7,6 +7,7 @@ import { mockSession } from '@/test-utils/test-utils';
 vi.mock('@/components/common/buttons/logoutButton');
 vi.mock('@/services/logger/logService');
 vi.mock('@/services/indicator/IndicatorFetchService');
+vi.mock('@/services/location/LocationService');
 
 vi.mock('@/lib/auth-client', () => ({
   authClient: {
@@ -19,18 +20,19 @@ const mockUseSession = vi.mocked(authClient.useSession);
 mockGetSession.mockReturnValue({ data: mockSession } as any);
 mockUseSession.mockReturnValue({ data: mockSession } as any);
 
-describe('PopulationPage', () => {
+describe('LAFundingPage', () => {
   it('should render the heading, body text, and data tables', () => {
-    render(<PopulationPage />);
+    render(<LAFundingPage />);
 
     const mainHeading = screen.getByRole('heading', {
-      name: /Population size and age group percentages/i,
+      name: /funding for adult social care/i,
       level: 1,
     });
     expect(mainHeading).toBeInTheDocument();
 
     const subHeadings = [
       'Data overview',
+      'Trends',
       'Data indicator details',
       'Information on the local care market',
     ];
@@ -41,7 +43,9 @@ describe('PopulationPage', () => {
     }
 
     const dataBoxHeadings = [
-      'Adult population size with age group percentages',
+      'LA adult social care funding by duration of care',
+      'LA funding for long-term adult social care',
+      'LA funding for long-term adult social care – trends over time',
     ];
     for (let dataBoxHeadingText of dataBoxHeadings) {
       expect(
@@ -50,17 +54,24 @@ describe('PopulationPage', () => {
     }
 
     const bodyTextElement = screen.getByText(
-      /Population data at district, local authority, regional and national levels for England./i
+      /Data on funding for both short-term and long-term care, also funding by individual care type./i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
     const helpLink = screen.getAllByRole('link', {
-      name: /population size/i,
+      name: /LA funding for adult social care/i,
     });
     expect(helpLink[0]).toBeInTheDocument();
-    expect(helpLink[0]).toHaveAttribute('href', '/help/population-size');
+    expect(helpLink[0]).toHaveAttribute(
+      'href',
+      '/help/total-financial-spend-adult-social-care'
+    );
 
-    const tables = [/Table 1: population size and age group percentages/i];
+    const tables = [
+      /Table 1: LA spending on short-term and long-term adult social care for all age groups/i,
+      /Table 2: LA funding for long-term adult social care for all age groups/i,
+      /Table 3: LA funding for long-term adult social care/i,
+    ];
     for (let table of tables) {
       expect(screen.getByRole('table', { name: table })).toBeInTheDocument();
     }
