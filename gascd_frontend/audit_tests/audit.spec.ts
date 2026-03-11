@@ -2,12 +2,14 @@ import { test, expect } from '@playwright/test';
 
 // Password only required if connecting to live
 const PROT_PW = process.env.PROTOTYPE_PASSWORD || '';
+// Run local prototype with
+// PORT=8000 npm run dev
 const PROTOTYPE_HOME = 'http://localhost:8000';
 const PROTOTYPE_BASE = PROTOTYPE_HOME + '/private-beta/2026/february';
 const DEV_BASE = 'http://localhost:3000';
 const INDEX_URL = `${PROTOTYPE_BASE}/pages`;
 const DEV_AUTH_URL = `${DEV_BASE}/api/auth/local`;
-const INCLUDED_PATHS = ['/help/'];
+const INCLUDED_PATHS = ['/help/', '/topics/'];
 
 // Cleanup to remove differences we don't care about
 const cleanAndSanitize = (text: string) => {
@@ -60,6 +62,7 @@ test('Audit prototype against implementation', async ({ page }) => {
     }
 
     // 3. Capture Prototype Content
+    console.log('Checking page: ', cleanPath);
     await page.goto(`${PROTOTYPE_BASE}${cleanPath}`);
     const protoContent = await page.locator('main').innerText();
 
