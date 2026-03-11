@@ -505,7 +505,7 @@ export default function LAFundingPage() {
             <>
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
-                tableref={tableref2}
+                tableref={tableref3}
                 filename="funding_for_long_term_adult_social_care.csv"
                 xLabel=""
                 downloadType="LA funding for long-term adult social care for all age groups - trends over time"
