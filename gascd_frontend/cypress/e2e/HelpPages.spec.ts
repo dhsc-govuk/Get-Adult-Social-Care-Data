@@ -98,6 +98,11 @@ describe('Help pages exist and contain data', () => {
         url: '/help/estimated-population-early-onset-dementia',
         heading: 'Total population aged 30-64 to have early onset dementia',
       },
+      {
+        url: '/help/estimated-population-learning-disability',
+        heading:
+          'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
+      },
     ];
     cy.visit('');
     cy.url().should('include', '/login');
