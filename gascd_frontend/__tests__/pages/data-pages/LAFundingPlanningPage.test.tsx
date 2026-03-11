@@ -55,10 +55,13 @@ describe('LAFundingPage', () => {
     expect(bodyTextElement).toBeInTheDocument();
 
     const helpLink = screen.getAllByRole('link', {
-      name: /local authority funding projected demand/i,
+      name: /Total population aged 18-64 predicted to have autistic spectrum disorders/i,
     });
     expect(helpLink[0]).toBeInTheDocument();
-    expect(helpLink[0]).toHaveAttribute('href', '/help/la-funding-planning');
+    expect(helpLink[0]).toHaveAttribute(
+      'href',
+      '/help/estimated-population-asd'
+    );
 
     const tableElement = screen.getAllByRole('table');
     expect(tableElement[0]).toBeInTheDocument();
