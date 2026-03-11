@@ -1,0 +1,78 @@
+import { test, expect } from '@playwright/test';
+
+// Password only required if connecting to live
+const PROT_PW = process.env.PROTOTYPE_PASSWORD || '';
+const PROTOTYPE_HOME = 'http://localhost:8000';
+const PROTOTYPE_BASE = PROTOTYPE_HOME + '/private-beta/2026/february';
+const DEV_BASE = 'http://localhost:3000';
+const INDEX_URL = `${PROTOTYPE_BASE}/pages`;
+const DEV_AUTH_URL = `${DEV_BASE}/api/auth/local`;
+const INCLUDED_PATHS = ['/help/'];
+
+// Cleanup to remove differences we don't care about
+const cleanAndSanitize = (text: string) => {
+  return text
+    .replace(
+      /Data correct as of\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}/gi,
+      ''
+    )
+    .replace(/Data correct as of\s+[\d/]+(\s+[A-Za-z]+)?(\s+\d+)?/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+};
+
+test('Audit prototype against implementation', async ({ page }) => {
+  test.setTimeout(120_000);
+
+  // 1. Authenticate with Dev instance
+  await page.goto(DEV_AUTH_URL);
+
+  // 1. Authenticate to prototype
+  await page.goto(PROTOTYPE_HOME);
+  if (await page.isVisible('input[type="password"]')) {
+    await page.fill('input[type="password"]', PROT_PW);
+    await page.click('button');
+  }
+  // 2. Go to the "All Pages" list and get the links
+  await page.goto(INDEX_URL);
+  const paths = await page
+    .locator('main a')
+    .evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+
+  // 3. Filter out any nulls, external links, or anchor tags (#)
+  const validPaths = paths.filter((path) => path && !path.startsWith('http'));
+  expect(validPaths.length).not.toBe(0);
+
+  let done = 0;
+  for (const path of validPaths) {
+    // Normalize the path (ensure it starts with /)
+    let cleanPath = path.startsWith('/') ? path : `/${path}`;
+
+    let is_included = false;
+    for (let included_path of INCLUDED_PATHS) {
+      if (cleanPath && cleanPath.includes(included_path)) {
+        is_included = true;
+        break;
+      }
+    }
+    if (!is_included) {
+      continue;
+    }
+
+    // 3. Capture Prototype Content
+    await page.goto(`${PROTOTYPE_BASE}${cleanPath}`);
+    const protoContent = await page.locator('main').innerText();
+
+    let devPath = cleanPath?.replace('/signed-in', '');
+    // 4. Capture Dev Content
+    await page.goto(`${DEV_BASE}${devPath}`);
+    const devContent = await page.locator('main').innerText();
+
+    // 5. Compare
+    // Using a soft assertion so the test doesn't stop at the first error
+    test.expect
+      .soft(cleanAndSanitize(devContent), `Text mismatch on ${cleanPath}`)
+      .toBe(cleanAndSanitize(protoContent));
+    done += 1;
+  }
+});
