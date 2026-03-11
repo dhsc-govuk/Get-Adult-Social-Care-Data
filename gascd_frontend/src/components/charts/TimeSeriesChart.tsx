@@ -58,7 +58,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
           color: s.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
           width: 5,
         },
-        hovertemplate: '<b>%{y:,.0f}</b><br>%{x|%d %b %Y}<extra></extra>',
+        hovertemplate: `<b>${yPrefix}%{y:,.0f}</b><br>%{x|%d %b %Y}<extra></extra>`,
       };
 
       return trace as Data;
