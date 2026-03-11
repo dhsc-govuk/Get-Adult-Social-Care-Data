@@ -63,11 +63,6 @@ export default function LAFundingPage() {
       location_ids: [],
     });
 
-  const [chartData, setChartData] = useState<{
-    categories: string[];
-    values: number[];
-  }>({ categories: [], values: [] });
-
   const breadcrumbs = [
     {
       text: 'Home',
@@ -211,6 +206,11 @@ export default function LAFundingPage() {
         if (laFundingOverTimeDataQuery.location_ids.length) {
           const laFundingOverTimeData: Indicator[] =
             await IndicatorFetchService.getData(laFundingOverTimeDataQuery);
+
+          // This is a short term solution
+          laFundingOverTimeData.forEach((indicator) => {
+            if (indicator.data_point !== null) indicator.data_point *= 1000;
+          });
           setRawLaFundingOverTimeData(laFundingOverTimeData);
         }
       } catch (error) {
@@ -486,8 +486,7 @@ export default function LAFundingPage() {
                   {IndicatorService.getFinancialYear(
                     filteredDemographicData,
                     Object.keys(laFundingTableRowHeaders).length
-                  )}{' '}
-                  (£ thousand)
+                  )}
                 </>
               }
               source={
