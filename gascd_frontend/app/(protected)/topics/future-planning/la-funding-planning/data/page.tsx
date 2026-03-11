@@ -273,7 +273,7 @@ export default function LAFundingPlanningPage() {
       <DataIndicatorDetailsList>
         <DataLinkCard
           label="Total population aged 18-64 predicted to have autistic spectrum disorders"
-          sources="Office for National Statistics."
+          sources="Office for National Statistics"
           updateFrequency="TBC"
           limitations={true}
           url="/help/estimated-population-asd"

@@ -191,6 +191,18 @@ export default function DataIndicatorDetailsPage() {
               url="/help/primary-reason-for-accessing-long-term-adult-social-care"
             />
           </ul>
+          <h2 className="govuk-heading-m govuk-!-margin-top-9">
+            Future planning data indicators
+          </h2>
+          <ul className="gem-c-cards__list gem-c-cards__list--one-column">
+            <DataLinkCard
+              label="Total population aged 18-64 predicted to have autistic spectrum disorders"
+              sources="Office for National Statistics"
+              updateFrequency="TBC"
+              limitations={true}
+              url="/help/estimated-population-asd"
+            />
+          </ul>
         </div>
       </div>
     </Layout>
