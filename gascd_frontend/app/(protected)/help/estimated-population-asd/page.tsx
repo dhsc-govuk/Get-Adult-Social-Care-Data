@@ -7,7 +7,7 @@ const EstimatedPopulationASD = () => {
     <>
       <Layout
         title="Total population aged 18-64 predicted to have ASD"
-        backURL="/topics/population-needs/dementia-prevalence/data"
+        backURL="/topics/future-planning/la-funding-planning/data"
       >
         <DataIndicatorDetails
           title="Total population aged 18-64 predicted to have ASD"
