@@ -157,7 +157,7 @@ export default function DementaPrevalencePage() {
             <p className="govuk-body">
               Find out{' '}
               <a
-                href="../../../help/dementia-prevalence"
+                href="/help/dementia-prevalence"
                 className="govuk-link"
               >
                 how dementia prevalence is calculated
