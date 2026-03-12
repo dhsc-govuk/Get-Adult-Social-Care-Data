@@ -24,7 +24,7 @@ describe('DementiaPrevalencePage', () => {
     render(<DementiaPrevalencePage />);
 
     const mainHeading = screen.getByRole('heading', {
-      name: /Dementia prevalence and estimated diagnosis rate/i,
+      name: /Dementia prevalence/i,
       level: 1,
     });
     expect(mainHeading).toBeInTheDocument();
@@ -50,7 +50,7 @@ describe('DementiaPrevalencePage', () => {
     }
 
     const bodyTextElement = screen.getByText(
-      /Data on registered dementia diagnoses with estimates for undiagnosed dementia./i
+      /Data estimates for undiagnosed dementia./i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
