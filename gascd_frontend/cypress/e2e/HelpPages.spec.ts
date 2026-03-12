@@ -28,13 +28,8 @@ describe('Help pages exist and contain data', () => {
         heading: 'People aged 5 or over who provide unpaid care',
       },
       {
-        url: '/help/total-financial-spend-adult-social-care',
-        heading: 'LA funding for adult social care',
-      },
-      {
         url: '/help/total-financial-spend-long-term-community-adult-social-care',
-        heading:
-          'Total financial spend on long-term community adult social care',
+        heading: 'Local Authority funding for long-term adult social care',
       },
       {
         url: '/help/percentages-financial-spend-long-term-and-short-term-care',
