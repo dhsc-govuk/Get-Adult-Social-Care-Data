@@ -212,19 +212,43 @@ export default function ProvisionAndOccupancyPage() {
     if (!filteredCareHomeBedNumbersData.length) {
       return;
     }
-    let categories: string[] = [];
-    let values: number[] = [];
-    Object.entries(bedNumberRowHeaders).map((header: any) => {
-      categories.push(header[1]);
-      const datapoints = filteredCareHomeBedNumbersData.filter(
-        (item) => item.location_id === header[0]
-      );
-      if (datapoints.length && datapoints[0].data_point !== null) {
-        values.push(datapoints[0].data_point);
-      } else {
-        values.push(0);
-      }
-    });
+    const data = Object.fromEntries(
+      Object.entries(bedNumberRowHeaders).map((header: any) => {
+        const datapoints = filteredCareHomeBedNumbersData.filter(
+          (item) => item.location_id === header[0]
+        );
+        const value =
+          datapoints.length && datapoints[0].data_point !== null
+            ? datapoints[0].data_point
+            : 0;
+        return [header[1], value];
+      })
+    );
+
+    const sorted = Object.entries(data).sort(
+      (a, b) => (b[1] as number) - (a[1] as number)
+    );
+    const region = sorted.filter((e) =>
+      [locationNamesWithAverageLabels.RegionLabel].includes(e[0])
+    );
+    const country = sorted.filter((e) =>
+      [locationNamesWithAverageLabels.CountryLabel].includes(e[0])
+    );
+    const localAuthoritys = sorted.filter(
+      (e) =>
+        ![
+          locationNamesWithAverageLabels.CountryLabel,
+          locationNamesWithAverageLabels.RegionLabel,
+        ].includes(e[0])
+    );
+
+    const categories = [...country, ...region, ...localAuthoritys].map(
+      (e) => e[0]
+    );
+    const values = [...country, ...region, ...localAuthoritys].map(
+      (e) => e[1] as number
+    );
+
     setChartData({
       categories: categories,
       values: values,

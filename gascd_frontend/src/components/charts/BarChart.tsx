@@ -20,11 +20,11 @@ const BarChart: React.FC<BarChartProps> = ({
   darkBlueCount = 2,
 }) => {
   // Top highlight colours
-  const TOP_HIGHLIGHT_COL = '#12344D';
+  const TOP_HIGHLIGHT_COL = '#959495';
   // Main highlight row
-  const MAIN_HIGHLIGHT_COL = '#F29F41';
+  const MAIN_HIGHLIGHT_COL = '#1f6095';
   // All other rows
-  const DEFAULT_ROW_COL = '#7670AC';
+  const DEFAULT_ROW_COL = '#959495';
 
   // Map row colours
   const { barColors, formattedLabels } = useMemo(() => {
@@ -109,6 +109,7 @@ const BarChart: React.FC<BarChartProps> = ({
       font: {
         size: 18, // Increase this number to make the text larger
         family: '"GDS Transport", Arial, sans-serif',
+        color: '#ffffff',
       },
     },
     shapes: shapes,
