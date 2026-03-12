@@ -179,7 +179,7 @@ export default function LAFundingPlanningPage() {
                 </>
               }
               source={
-                'Source: Projected Adult Needs and Service Information (PANSI) v15 August 2025 from the Institute of Public Care'
+                'Projected Adult Needs and Service Information (PANSI) v15 August 2025 from the Institute of Public Care'
               }
               columnHeaders={columnDates}
               rowHeaders={{
@@ -237,7 +237,7 @@ export default function LAFundingPlanningPage() {
                 </>
               }
               source={
-                'Source: Projected Adult Needs and Service Information (PANSI) v15 August 2025 from the Institute of Public Care'
+                'Projected Adult Needs and Service Information (PANSI) v15 August 2025 from the Institute of Public Care'
               }
               columnHeaders={columnDates}
               rowHeaders={{
