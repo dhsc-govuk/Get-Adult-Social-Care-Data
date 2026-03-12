@@ -79,12 +79,16 @@ test('Audit prototype against implementation', async ({ page }) => {
     });
 
     let devPath = cleanPath?.replace('/signed-in', '');
-    devPath = cleanPath?.replace('/footer', '');
+    devPath = devPath?.replace('/footer', '');
     // 4. Capture Dev Content
-    await page.goto(`${DEV_BASE}${devPath}`, {
+    const devResponse = await page.goto(`${DEV_BASE}${devPath}`, {
       // not recommended by docs - workaround for react loading
       waitUntil: 'networkidle',
     });
+
+    test.expect
+      .soft(devResponse?.status(), `Page not implemented: ${path}`)
+      .toBe(200);
 
     const devContent = await page.evaluate(() => {
       const main = document.querySelector('main');
