@@ -34,7 +34,7 @@ const PrivacyPage = () => {
               controller for the GASCD service.
             </p>
 
-            <h2 className="govuk-heading-m">What data we collect from you </h2>
+            <h2 className="govuk-heading-m">What data we collect from you</h2>
             <p className="govuk-body">
               The personal data we collect from you when you create a GASCD
               service account includes:
@@ -45,6 +45,32 @@ const PrivacyPage = () => {
               <li>name and location of your employer or organisation.</li>
               <li>the IP address you use to access the GASCD service</li>
             </ul>
+
+            <h2 className="govuk-heading-m">
+              What data we collect from other sources
+            </h2>
+            <p className="govuk-body">
+              We work closely with trusted partners such as the Care Quality
+              Commission (CQC) who provide us with information on:
+            </p>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>name of registered CQC nominated individuals</li>
+              <li>email address of CQC nominated individuals</li>
+              <li>
+                name and location of the CQC registered care provider
+                organisation.
+              </li>
+            </ul>
+            <p className="govuk-body">
+              We use this information for verification and pre-authorisation to
+              allow access to the data the DHSC provides through its free Get
+              Adult Social Care Data service. To find out more about how the CQC
+              shares your data with us read the{' '}
+              <a href="https://www.cqc.org.uk/about-us/our-policies/privacy-statement">
+                CQC&apos;s privacy statement
+              </a>
+              .
+            </p>
 
             <h2 className="govuk-heading-m">
               When you subscribe to our mailing list{' '}
