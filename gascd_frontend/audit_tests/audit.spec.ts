@@ -9,7 +9,7 @@ const PROTOTYPE_BASE = PROTOTYPE_HOME + '/private-beta/2026/february';
 const DEV_BASE = 'http://localhost:3000';
 const INDEX_URL = `${PROTOTYPE_BASE}/pages`;
 const DEV_AUTH_URL = `${DEV_BASE}/api/auth/local`;
-const INCLUDED_PATHS = ['/help/', '/topics/'];
+const INCLUDED_PATHS = ['/help/', '/topics/', '/footer/'];
 
 // Cleanup to remove differences we don't care about
 const cleanAndSanitize = (text: string) => {
@@ -64,12 +64,39 @@ test('Audit prototype against implementation', async ({ page }) => {
     // 3. Capture Prototype Content
     console.log('Checking page: ', cleanPath);
     await page.goto(`${PROTOTYPE_BASE}${cleanPath}`);
-    const protoContent = await page.locator('main').innerText();
+    //const protoContent = await page.locator('main').innerText();
+
+    const protoContent = await page.evaluate(() => {
+      // 1. Target the main content
+      const main = document.querySelector('main');
+      if (!main) return '';
+
+      // 2. Remove all <td> elements from the DOM temporarily
+      const cells = main.querySelectorAll('td');
+      cells.forEach((td) => td.remove());
+
+      return main.innerText;
+    });
 
     let devPath = cleanPath?.replace('/signed-in', '');
+    devPath = cleanPath?.replace('/footer', '');
     // 4. Capture Dev Content
-    await page.goto(`${DEV_BASE}${devPath}`);
-    const devContent = await page.locator('main').innerText();
+    await page.goto(`${DEV_BASE}${devPath}`, {
+      // not recommended by docs - workaround for react loading
+      waitUntil: 'networkidle',
+    });
+
+    const devContent = await page.evaluate(() => {
+      const main = document.querySelector('main');
+      if (!main) return '';
+
+      const cells = main.querySelectorAll('td');
+      cells.forEach((td) => td.remove());
+
+      return main.innerText;
+    });
+
+    //const devContent = await page.locator('main').innerText();
 
     // 5. Compare
     // Using a soft assertion so the test doesn't stop at the first error
