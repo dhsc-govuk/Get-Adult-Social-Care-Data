@@ -40,9 +40,7 @@ describe('DementiaPrevalencePage', () => {
       ).toBeInTheDocument();
     }
 
-    const dataBoxHeadings = [
-      'Dementia prevalence and estimated diagnosis rate',
-    ];
+    const dataBoxHeadings = ['Dementia prevalence'];
     for (let dataBoxHeadingText of dataBoxHeadings) {
       expect(
         screen.getByRole('heading', { name: dataBoxHeadingText, level: 3 })
