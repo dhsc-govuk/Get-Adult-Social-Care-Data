@@ -228,25 +228,25 @@ export default function ProvisionAndOccupancyPage() {
     const sorted = Object.entries(data).sort(
       (a, b) => (b[1] as number) - (a[1] as number)
     );
-    const region = sorted.filter((e) =>
-      [locationNamesWithAverageLabels.RegionLabel].includes(e[0])
+    const region = sorted.filter((location) =>
+      [locationNamesWithAverageLabels.RegionLabel].includes(location[0])
     );
-    const country = sorted.filter((e) =>
-      [locationNamesWithAverageLabels.CountryLabel].includes(e[0])
+    const country = sorted.filter((location) =>
+      [locationNamesWithAverageLabels.CountryLabel].includes(location[0])
     );
     const localAuthoritys = sorted.filter(
-      (e) =>
+      (location) =>
         ![
           locationNamesWithAverageLabels.CountryLabel,
           locationNamesWithAverageLabels.RegionLabel,
-        ].includes(e[0])
+        ].includes(location[0])
     );
 
     const categories = [...country, ...region, ...localAuthoritys].map(
-      (e) => e[0]
+      (location) => location[0]
     );
     const values = [...country, ...region, ...localAuthoritys].map(
-      (e) => e[1] as number
+      (location) => location[1] as number
     );
 
     setChartData({
@@ -568,6 +568,16 @@ export default function ProvisionAndOccupancyPage() {
     return series;
   };
 
+  const getFilterName = (filterType: string) => {
+    let json = localStorage.getItem(filterType);
+    if (json) {
+      const filter = JSON.parse(json);
+      return filter.filter_bedtype;
+    } else {
+      return 'All bed types';
+    }
+  };
+
   return (
     <Layout
       title="Provision and occupancy"
@@ -616,8 +626,10 @@ export default function ProvisionAndOccupancyPage() {
           chart={
             <>
               <h3 className="govuk-heading-s">
-                Figure 1: chart of care home beds per 100,000 adult population -
-                local authorities in {locationNamesCP.RegionLabel},{' '}
+                Figure 1: chart of care home beds per 100,000 adult population (
+                {getFilterName('numbers-table-metrics')}) -
+                <abbr title="local authority">LA</abbr>s in{' '}
+                {locationNamesCP.RegionLabel},{' '}
                 {IndicatorService.getMostRecentDate(bedNumbersData)}
               </h3>
               {(chartData.categories.length > 0 &&
@@ -642,9 +654,13 @@ export default function ProvisionAndOccupancyPage() {
             <VerticalLocationTable
               tableref={tableref1}
               caption={
-                `Table 1: care home bed numbers per 100,000 adult population for regional local authorities -
-                ${locationNamesCP.RegionLabel}, ` +
-                IndicatorService.getMostRecentDate(bedNumbersData)
+                <>
+                  Table 1: care home bed numbers per 100,000 adult population (
+                  {getFilterName('numbers-table-metrics')}) for regional{' '}
+                  <abbr title="local authority">LA</abbr>s -{' '}
+                  {locationNamesCP.RegionLabel},{' '}
+                  {IndicatorService.getMostRecentDate(bedNumbersData)}
+                </>
               }
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
