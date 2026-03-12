@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import LAFundingPage from '../../../app/(protected)/topics/future-planning/la-funding-planning/data/page';
+import LAFundingPage from '../../../app/(protected)/topics/(protected-la-metrics)/future-planning/la-funding-planning/data/page';
 import { authClient } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
 
