@@ -178,7 +178,9 @@ export default function LAFundingPlanningPage() {
                   health conditions over time within Local Authority area
                 </>
               }
-              source={'PANSI'}
+              source={
+                'Source: Projected Adult Needs and Service Information (PANSI) v15 August 2025 from the Institute of Public Care'
+              }
               columnHeaders={columnDates}
               rowHeaders={{
                 pansi_pred_pop_early_dem_aged_30_64:
@@ -234,7 +236,9 @@ export default function LAFundingPlanningPage() {
                   Authorities
                 </>
               }
-              source={'PANSI'}
+              source={
+                'Source: Projected Adult Needs and Service Information (PANSI) v15 August 2025 from the Institute of Public Care'
+              }
               columnHeaders={columnDates}
               rowHeaders={{
                 pansi_pred_pop_early_dem_aged_30_64_perc_change:
