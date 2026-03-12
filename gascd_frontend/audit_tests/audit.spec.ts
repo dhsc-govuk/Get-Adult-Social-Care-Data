@@ -26,29 +26,29 @@ const cleanAndSanitize = (text: string) => {
 test('Audit prototype against implementation', async ({ page }) => {
   test.setTimeout(120_000);
 
-  // 1. Authenticate with Dev instance
+  // Authenticate with Dev instance
   await page.goto(DEV_AUTH_URL);
 
-  // 1. Authenticate to prototype
+  // Authenticate to prototype
   await page.goto(PROTOTYPE_HOME);
   if (await page.isVisible('input[type="password"]')) {
     await page.fill('input[type="password"]', PROT_PW);
     await page.click('button');
   }
-  // 2. Go to the "All Pages" list and get the links
+  // Go to the "All Pages" list and get the links
   await page.goto(INDEX_URL);
   const paths = await page
     .locator('main a')
     .evaluateAll((links) => links.map((link) => link.getAttribute('href')));
 
-  // 3. Filter out any nulls, external links, or anchor tags (#)
+  // Filter out any nulls, external links
   const validPaths = paths.filter((path) => path && !path.startsWith('http'));
   expect(validPaths.length).not.toBe(0);
 
   let done = 0;
   for (const path of validPaths) {
     // Normalize the path (ensure it starts with /)
-    let cleanPath = path.startsWith('/') ? path : `/${path}`;
+    let cleanPath = path?.startsWith('/') ? path : `/${path}`;
 
     let is_included = false;
     for (let included_path of INCLUDED_PATHS) {
@@ -61,17 +61,16 @@ test('Audit prototype against implementation', async ({ page }) => {
       continue;
     }
 
-    // 3. Capture Prototype Content
+    // Capture Prototype Content
     console.log('Checking page: ', cleanPath);
     await page.goto(`${PROTOTYPE_BASE}${cleanPath}`);
     //const protoContent = await page.locator('main').innerText();
 
     const protoContent = await page.evaluate(() => {
-      // 1. Target the main content
       const main = document.querySelector('main');
       if (!main) return '';
 
-      // 2. Remove all <td> elements from the DOM temporarily
+      // Remove all <td> elements from the DOM temporarily
       const cells = main.querySelectorAll('td');
       cells.forEach((td) => td.remove());
 
@@ -80,12 +79,13 @@ test('Audit prototype against implementation', async ({ page }) => {
 
     let devPath = cleanPath?.replace('/signed-in', '');
     devPath = devPath?.replace('/footer', '');
-    // 4. Capture Dev Content
+    // Capture Dev Content
     const devResponse = await page.goto(`${DEV_BASE}${devPath}`, {
       // not recommended by docs - workaround for react loading
       waitUntil: 'networkidle',
     });
 
+    // Check page exists in dev
     test.expect
       .soft(devResponse?.status(), `Page not implemented: ${path}`)
       .toBe(200);
@@ -102,7 +102,6 @@ test('Audit prototype against implementation', async ({ page }) => {
 
     //const devContent = await page.locator('main').innerText();
 
-    // 5. Compare
     // Using a soft assertion so the test doesn't stop at the first error
     test.expect
       .soft(cleanAndSanitize(devContent), `Text mismatch on ${cleanPath}`)
