@@ -151,7 +151,7 @@ export default function DementaPrevalencePage() {
         </div>
       </div>
       <DataBox
-        dataTitle="Dementia prevalence and estimated diagnosis rate"
+        dataTitle="Dementia prevalence"
         dataInfo={
           <>
             <p className="govuk-body">
