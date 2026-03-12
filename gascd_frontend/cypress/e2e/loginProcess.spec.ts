@@ -15,6 +15,8 @@ describe('User can log in and log out', () => {
     // Check homepage links
     cy.get('h2').should('contains.text', 'Care provision');
     cy.get('h2').should('contains.text', 'Population needs');
+    // Future planning is LA specific
+    cy.get('h2').should('not.contains.text', 'Future planning');
 
     // Sign out
     cy.logout();
@@ -42,6 +44,8 @@ describe('User can log in and log out', () => {
     // Check homepage links
     cy.get('h2').should('contains.text', 'Care provision');
     cy.get('h2').should('contains.text', 'Population needs');
+    // Future planning is LA specific
+    cy.get('h2').should('contains.text', 'Future planning');
 
     // Sign out
     cy.logout();
