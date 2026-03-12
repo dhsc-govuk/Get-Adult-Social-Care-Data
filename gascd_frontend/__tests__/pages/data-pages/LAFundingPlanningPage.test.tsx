@@ -24,7 +24,7 @@ describe('LAFundingPage', () => {
     render(<LAFundingPage />);
 
     const mainHeading = screen.getByRole('heading', {
-      name: /Local Authority funding planning/i,
+      name: /Local Authority funding projected demand/i,
       level: 1,
     });
     expect(mainHeading).toBeInTheDocument();
@@ -54,13 +54,36 @@ describe('LAFundingPage', () => {
     );
     expect(bodyTextElement).toBeInTheDocument();
 
-    const helpLink = screen.getAllByRole('link', {
-      name: /local authority funding planning/i,
+    const asdHelpLink = screen.getAllByRole('link', {
+      name: /Total population aged 18-64 predicted to have autistic spectrum disorders/i,
     });
-    expect(helpLink[0]).toBeInTheDocument();
-    expect(helpLink[0]).toHaveAttribute('href', '/help/la-funding-planning');
 
-    const tableElement = screen.getByRole('table');
-    expect(tableElement).toBeInTheDocument();
+    expect(asdHelpLink[0]).toBeInTheDocument();
+    expect(asdHelpLink[0]).toHaveAttribute(
+      'href',
+      '/help/estimated-population-asd'
+    );
+
+    const dementiaHelpLink = screen.getAllByRole('link', {
+      name: /Total population aged 30-64 to have early onset dementia/i,
+    });
+    expect(dementiaHelpLink[0]).toBeInTheDocument();
+    expect(dementiaHelpLink[0]).toHaveAttribute(
+      'href',
+      '/help/estimated-population-early-onset-dementia'
+    );
+
+    const learningDisabilityLink = screen.getAllByRole('link', {
+      name: /Total population aged 18-64 with a learning disability, predicted to display challenging behaviour/i,
+    });
+    expect(learningDisabilityLink[0]).toBeInTheDocument();
+    expect(learningDisabilityLink[0]).toHaveAttribute(
+      'href',
+      '/help/estimated-population-learning-disability'
+    );
+
+    const tableElement = screen.getAllByRole('table');
+    expect(tableElement[0]).toBeInTheDocument();
+    expect(tableElement[1]).toBeInTheDocument();
   });
 });

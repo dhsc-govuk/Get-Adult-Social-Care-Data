@@ -90,6 +90,19 @@ describe('Help pages exist and contain data', () => {
         heading:
           'Primary reason for people to access long-term adult social care',
       },
+      {
+        url: '/help/estimated-population-asd',
+        heading: 'Total population aged 18-64 predicted to have ASD',
+      },
+      {
+        url: '/help/estimated-population-early-onset-dementia',
+        heading: 'Total population aged 30-64 to have early onset dementia',
+      },
+      {
+        url: '/help/estimated-population-learning-disability',
+        heading:
+          'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
+      },
     ];
     cy.visit('');
     cy.url().should('include', '/login');

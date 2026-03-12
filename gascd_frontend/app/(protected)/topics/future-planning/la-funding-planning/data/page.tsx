@@ -9,20 +9,18 @@ import DataLinkCard from '@/components/data-components/DataLinkCard';
 import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
 import BackToTop from '@/components/data-components/BackToTop';
 import LocationService from '@/services/location/locationService';
-import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
-import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
-import RelatedDataList from '@/components/data-components/RelatedDataList';
 import TimeSeriesTable from '@/components/tables/TimeSeriesTable';
 
 export default function LAFundingPlanningPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
+  const tableref2 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
     LALabel: 'Loading...',
@@ -52,23 +50,17 @@ export default function LAFundingPlanningPage() {
 
   // These are made up and need to be replaced by the read IDs when we have them
   const demographicMetricIds = [
-    'total_population_30_64_with_early_onset_dementia',
-    'total_population_18_64_with_learning_disability',
-    'total_population_18_64_with_autism',
+    'pansi_pred_pop_early_dem_aged_30_64',
+    'pansi_pred_pop_challenging_behaviour_aged_18_64',
+    'pansi_pred_pop_asd_aged_18_64',
+
+    'pansi_pred_pop_early_dem_aged_30_64_perc_change',
+    'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change',
+    'pansi_pred_pop_asd_aged_18_64_perc_change',
   ];
 
   // Replace with dynamic dates when we have them, this is just to show the table structure for now
-  const columnDates = [
-    '2025',
-    '2026',
-    '2027',
-    '2028',
-    '2029',
-    '2030',
-    '2035',
-    '2040',
-    '2045',
-  ];
+  const columnDates = ['2025', '2030', '2035', '2040', '2045'];
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -120,9 +112,7 @@ export default function LAFundingPlanningPage() {
       try {
         const demographicData: Indicator[] =
           await IndicatorFetchService.getData(demographicQuery);
-        const filteredDemographicData =
-          TableService.filterDate(demographicData);
-        setFilteredDemographicData(filteredDemographicData);
+        setFilteredDemographicData(demographicData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -149,7 +139,7 @@ export default function LAFundingPlanningPage() {
 
   return (
     <Layout
-      title="Local Authority funding planning"
+      title="Local Authority funding projected demand"
       autoSpaceMainContent={false}
       showLoginInformation={true}
       currentPage="la-funding-planning"
@@ -157,7 +147,9 @@ export default function LAFundingPlanningPage() {
     >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
-          <h1 className="govuk-heading-xl">Local Authority funding planning</h1>
+          <h1 className="govuk-heading-xl">
+            Local Authority funding projected demand
+          </h1>
           <p className="govuk-body-l">
             Consolidated estimated data on population with selected conditions
             within a Local Authority area.
@@ -186,14 +178,16 @@ export default function LAFundingPlanningPage() {
                   health conditions over time within Local Authority area
                 </>
               }
-              source={'PANSI'}
+              source={
+                'Projected Adult Needs and Service Information (PANSI) v15 August 2025 from the Institute of Public Care'
+              }
               columnHeaders={columnDates}
               rowHeaders={{
-                total_population_30_64_with_early_onset_dementia:
+                pansi_pred_pop_early_dem_aged_30_64:
                   'Total population aged 30-64 to have early onset dementia',
-                total_population_18_64_with_learning_disability:
+                pansi_pred_pop_challenging_behaviour_aged_18_64:
                   'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
-                total_population_18_64_with_autism:
+                pansi_pred_pop_asd_aged_18_64:
                   'Total population aged 18-64 predicted to have autistic spectrum disorders',
               }}
               data={filteredDemographicData}
@@ -223,16 +217,81 @@ export default function LAFundingPlanningPage() {
 
       <DataBox
         dataTitle="Estimated percentage change in population with selected health conditions - trends over time"
-        dataInfo={<p className="govuk-body">Add later</p>}
-      ></DataBox>
+        dataInfo={
+          <>
+            <p className="govuk-body-m">Add later</p>
+          </>
+        }
+      >
+        <DataTabs
+          id="2"
+          chart={<p>Add later</p>}
+          table={
+            <TimeSeriesTable
+              tableref={tableref2}
+              caption={
+                <>
+                  Table 2: estimated percentage change in population with
+                  selected health conditions compared with similar Local
+                  Authorities
+                </>
+              }
+              source={
+                'Projected Adult Needs and Service Information (PANSI) v15 August 2025 from the Institute of Public Care'
+              }
+              columnHeaders={columnDates}
+              rowHeaders={{
+                pansi_pred_pop_early_dem_aged_30_64_perc_change:
+                  'Total population aged 30-64 to have early onset dementia',
+                pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change:
+                  'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
+                pansi_pred_pop_asd_aged_18_64_perc_change:
+                  'Total population aged 18-64 predicted to have autistic spectrum disorders',
+              }}
+              data={filteredDemographicData}
+              percentageRows={[
+                'pansi_pred_pop_early_dem_aged_30_64_perc_change',
+                'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change',
+                'pansi_pred_pop_asd_aged_18_64_perc_change',
+              ]}
+              currency={false}
+            ></TimeSeriesTable>
+          }
+          download={
+            <>
+              <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref2}
+                filename="estimated_percentage_change_in_population_with_selected_health_conditions.csv"
+                xLabel=""
+                downloadType="Estimated percentage change in population with selected health conditions - trends over time"
+              />
+            </>
+          }
+        />
+      </DataBox>
 
       <DataIndicatorDetailsList>
         <DataLinkCard
-          label="Local Authority funding planning"
-          sources="PANSI"
+          label="Total population aged 18-64 predicted to have autistic spectrum disorders"
+          sources="Office for National Statistics"
           updateFrequency="TBC"
           limitations={true}
-          url="/help/la-funding-planning"
+          url="/help/estimated-population-asd"
+        />
+        <DataLinkCard
+          label="Total population aged 30-64 to have early onset dementia"
+          sources="Office for National Statistics"
+          updateFrequency="TBC"
+          limitations={true}
+          url="/help/estimated-population-early-onset-dementia"
+        />
+        <DataLinkCard
+          label="Total population aged 18-64 with a learning disability, predicted to display challenging behaviour"
+          sources="Office for National Statistics"
+          updateFrequency="TBC"
+          limitations={false}
+          url="/help/estimated-population-learning-disability"
         />
       </DataIndicatorDetailsList>
 
