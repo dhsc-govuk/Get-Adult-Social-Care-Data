@@ -934,6 +934,9 @@ export default function ProvisionAndOccupancyPage() {
                 </div>
               )) || <p>Loading graph</p>}
               <p className="govuk-body">
+                Note: small numbers have been suppressed and will appear as zero
+              </p>
+              <p className="govuk-body">
                 Source: Capacity Tracker from the Department of Health and
                 Social Care (DHSC), population estimates from the Office for
                 National Statistics (ONS)
