@@ -133,7 +133,7 @@ export default function DementaPrevalencePage() {
 
   return (
     <Layout
-      title="Dementia prevalence and estimated diagnosis rate"
+      title="Dementia prevalence"
       autoSpaceMainContent={false}
       showLoginInformation={true}
       currentPage="economic-factors-and-household-composition"
@@ -141,12 +141,9 @@ export default function DementaPrevalencePage() {
     >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
-          <h1 className="govuk-heading-xl">
-            Dementia prevalence and estimated diagnosis rate
-          </h1>
+          <h1 className="govuk-heading-xl">Dementia prevalence</h1>
           <p className="govuk-body-l">
-            Data on registered dementia diagnoses with estimates for undiagnosed
-            dementia.
+            Data estimates for undiagnosed dementia.
           </p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview
@@ -154,61 +151,28 @@ export default function DementaPrevalencePage() {
         </div>
       </div>
       <DataBox
-        dataTitle="Dementia prevalence and estimated diagnosis rate"
+        dataTitle="Dementia prevalence"
         dataInfo={
           <>
-            <p className="govuk-body-m">
-              Find out how{' '}
-              <a href="/help/dementia-prevalence" className="govuk-link">
-                dementia prevalence
-              </a>{' '}
-              and the{' '}
+            <p className="govuk-body">
+              Find out{' '}
               <a
-                href="/help/estimated-dementia-diagnosis-rate-aged-65-and-over"
+                href="/help/dementia-prevalence"
                 className="govuk-link"
               >
-                estimated dementia diagnosis rate for people aged 65 and over
-              </a>{' '}
-              are calculated.
+                how dementia prevalence is calculated
+              </a>
+              .
             </p>
           </>
         }
       >
-        <details className="govuk-details">
-          <summary className="govuk-details__summary">
-            <span className="govuk-details__summary-text">
-              What &lsquo;dementia diagnosis rate&rsquo; means
-            </span>
-          </summary>
-          <div className="govuk-details__text">
-            <p>
-              The &lsquo;dementia diagnosis rate&rsquo; is found by dividing the
-              number of people with a formal diagnosis of dementia by the
-              estimated number of people expected to have dementia.
-            </p>
-            <p>
-              The estimated number of people expected to have dementia is worked
-              out by combining:
-            </p>
-            <ul className="govuk-list govuk-list--bullet">
-              <li>the characteristics of the local registered population</li>
-              <li>studies on dementia prevalence by age and sex</li>
-            </ul>
-            <Link
-              className="govuk-link"
-              href="https://fingertips.phe.org.uk/dementia#page/6/gid/1938132811/ati/15/iid/92949/age/27/sex/4/cat/-1/ctp/-1/yrr/1/cid/4/tbm/1"
-            >
-              Read a more detailed explanation of how &lsquo;dementia diagnosis
-              rate&rsquo; is calculated (opens in new tab).
-            </Link>
-          </div>
-        </details>
         <DataTabs
           id="1"
           table={
             <DataTable
               tableref={tableref1}
-              caption={`Table 1: dementia prevalence and the dementia diagnosis rate – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
+              caption={`Table 1: dementia prevalence – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
               source={
                 'Fingertips from the Department of Health and Social Care (DHSC)'
               }
@@ -216,15 +180,10 @@ export default function DementaPrevalencePage() {
               rowHeaders={{
                 dementia_qof_prevalence:
                   'Dementia prevalence - all ages, as a proportion of people registered at GP practices',
-                dementia_estimated_diagnosis_rate_65over:
-                  'Estimated dementia diagnosis rate for people aged 65 and over',
               }}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={[
-                'dementia_qof_prevalence',
-                'dementia_estimated_diagnosis_rate_65over',
-              ]}
+              percentageRows={['dementia_qof_prevalence']}
             ></DataTable>
           }
           download={
@@ -247,13 +206,6 @@ export default function DementaPrevalencePage() {
           updateFrequency="Yearly updates"
           limitations={true}
           url="/help/dementia-prevalence"
-        />
-        <DataLinkCard
-          label="Estimated dementia diagnosis rate for people aged 65 and over"
-          sources="Department of Health and Social Care"
-          updateFrequency="Yearly updates"
-          limitations={true}
-          url="/help/estimated-dementia-diagnosis-rate-aged-65-and-over"
         />
       </DataIndicatorDetailsList>
 

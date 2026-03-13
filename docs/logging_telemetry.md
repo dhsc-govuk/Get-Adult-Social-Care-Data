@@ -65,28 +65,3 @@ Application logs can be found in the `traces` table of Azure App Insights.
 
 In production, App Insights resources are backed by Azure Log Analytics workspaces, which means that all of the above are also available in the following Log Analytics tables: `AppRequests`, `AppExceptions`, `AppTraces` and `AppDependencies`.
 
-## 🔍 Dashboards & Workbooks
-
-### Shared Dashboards
-
-Shared Azure dashboards used by the team for monitoring metrics and logs are available at the following link:
-
-[Azure Shared Dashboards](https://portal.azure.com/#view/HubsExtension/AssetMenuBlade/~/sharedDashboards/assetName/DashboardHub/extensionName/Microsoft_Azure_PortalDashboard)
-
-These dashboards typically surface key metrics from Application Insights, App Service, and Log Analytics.
-
-### Workbooks
-
-Workbooks provide detailed, interactive views into logs and telemetry from Application Insights.
-
-- **Production Application Insights Workbooks:**  
-  https://portal.azure.com/#@DHSCSCDAPAlpha.onmicrosoft.com/resource/subscriptions/<Subscription ID>/resourceGroups/dapalpha-log-analytics-prod-rg/providers/microsoft.insights/components/dapalpha-web-app-insights-<Env>/workbooks
-
-- **Additional Workbooks:**
-  [More Resources](https://portal.azure.com/#view/Microsoft_Azure_Monitoring/AzureMonitoringBrowseBlade/~/workbooks) Including MSQL.
-
-> **Note:** Useful workbooks are often linked directly from within the shared dashboards for easier access.
-
-When building out workbooks consider the [Four golden signals](https://sre.google/sre-book/monitoring-distributed-systems/#:~:text=is%20fairly%20useless.-,The%20Four%20Golden%20Signals,-The%20four%20golden)
-
-Microsoft provides a range of [public workbooks](https://github.com/microsoft/Application-Insights-Workbooks/tree/master/Workbooks) templates to adapt.

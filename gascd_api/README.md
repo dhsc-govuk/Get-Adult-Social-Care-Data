@@ -53,3 +53,21 @@ Run linting manually using `mise run lint`
 
 Auth is done using an API key which can be configured in the `appsettings.json` file.
 
+## Adding a new metric group and metrics to the API
+
+Adding a new metric group to the API requires following these steps. To add a new metric to an existing group you can jump to step 5 
+
+1. Add a new class that inherits from MetricTimeSeries, make sure the table name matches the metric group name - see [Bedcount.cs](api/Data/Models/Metrics/TimeSeries/Bedcount.cs)
+2. Add a DbSet for the new class to [GascdDataContext.cs](api/Data/GascdDataContext.cs)
+    - This is needed so EF will know the class represents an entity
+3. Create a migration for the schema change adding a migration title by running the command
+    ```
+    dotnet ef migrations add <title of migration without spaces> --project api
+    ```
+4. Add SQL to create this new table to [test-seed.sql](api.Tests/TestData/test-seed.sql). SQL to follow all the migrations can be obtained from the following command
+    ```
+    dotnet ef migrations script --project api
+    ```
+    - note that this produces SQL for all migrations using transactions, new additions will be at the end. The test-seed.sql file does not use transactions.
+5. Add new metrics with metric group tags to [MetricCodeEnum.cs](api/Data/Shared/MetricCodeEnum.cs)
+6. To add dummy data for this metric to the dockerised version of the API see the DataGeneration [README.md](DataGeneration/README.md)
