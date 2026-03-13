@@ -42,18 +42,18 @@ describe('LocationSelectPage', () => {
     render(<LocationSelectPage />);
 
     const headingElement = screen.getByRole('heading', {
-      name: /Select a location from your care provider group/i,
+      name: /Select your CQC registered office address for your care provider organisation/i,
       level: 1,
     });
     expect(headingElement).toBeInTheDocument();
 
     const bodyTextElement = screen.getByText(
-      /We use the selected location to show you:/i
+      /We use the selected address to show you:/i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
     const locationSelectInput = screen.getByRole('group', {
-      name: /Select a location from your care provider group/i,
+      name: /Select an address from your care provider group/i,
     });
     expect(locationSelectInput).toBeInTheDocument();
   });
