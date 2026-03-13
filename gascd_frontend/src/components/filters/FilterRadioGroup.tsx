@@ -5,7 +5,6 @@ import { filter_helptext } from '../../../app/(protected)/topics/residential-car
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import AnalyticsService from '@/services/analytics/analyticsService';
-import { filter } from 'd3';
 
 type Props = {
   filterType: string;
