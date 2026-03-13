@@ -1,6 +1,7 @@
 import AuthLayout from '../../app/(protected)/layout';
 import NoAuthLayout from '../../app/(authentication)/layout';
 import OnboardingLayout from '../../app/(onboarding)/layout';
+import ProtectedLALayout from '../../app/(protected)/topics/(protected-la-metrics)/future-planning/layout';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -125,10 +126,35 @@ describe('Login Layout', () => {
     vi.clearAllMocks();
   });
 
-  test('redirects to login page if no session', async () => {
+  test('renders pages normally with no session', async () => {
     mockGetSession.mockResolvedValue(null);
     const response = await NoAuthLayout({ children: mockChildren });
+    expect(mockedRedirect).not.toHaveBeenCalled();
     const renderedMarkup = renderToStaticMarkup(response);
     expect(renderedMarkup).toContain('Mock Component');
+  });
+});
+
+describe('LA Layout', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  test('redirects to login page if no session', async () => {
+    mockGetSession.mockResolvedValue(null);
+    const response = await ProtectedLALayout({ children: mockChildren });
+    expect(mockedRedirect).toHaveBeenCalledWith('/login');
+  });
+
+  test('redirects to home page if not an LA', async () => {
+    mockGetSession.mockResolvedValue(mockSession);
+    const response = await ProtectedLALayout({ children: mockChildren });
+    expect(mockedRedirect).toHaveBeenCalledWith('/');
+  });
+
+  test('renders normally if not LA', async () => {
+    mockGetSession.mockResolvedValue(mockSessionLAUser);
+    const response = await ProtectedLALayout({ children: mockChildren });
+    expect(mockedRedirect).not.toHaveBeenCalled();
   });
 });
