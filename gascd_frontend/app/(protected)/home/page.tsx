@@ -1,7 +1,14 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
+import { LA_USER_TYPE } from '@/constants';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
-const HomePage: React.FC = () => {
+const HomePage: React.FC = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   type Subtopic = {
     title: string;
     description: string;
@@ -14,7 +21,7 @@ const HomePage: React.FC = () => {
     subtopics: Subtopic[];
   };
 
-  const topics: Topic[] = [
+  let topics: Topic[] = [
     {
       title: 'Care provision',
       url: 'topics/residential-care/subtopics',
@@ -87,7 +94,10 @@ const HomePage: React.FC = () => {
         },
       ],
     },
-    {
+  ];
+
+  if (session?.user.locationType == LA_USER_TYPE) {
+    topics.push({
       title: 'Future planning',
       url: 'topics/future-planning/subtopics',
       subtopics: [
@@ -98,8 +108,8 @@ const HomePage: React.FC = () => {
           url: 'topics/future-planning/la-funding-planning/data',
         },
       ],
-    },
-  ];
+    });
+  }
 
   return (
     <>

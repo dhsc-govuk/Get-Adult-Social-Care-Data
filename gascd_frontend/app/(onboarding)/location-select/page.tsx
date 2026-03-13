@@ -71,7 +71,7 @@ const LocationSelectPage: React.FC = () => {
   return (
     <>
       <Layout
-        title="Select a location from your care provider group"
+        title="Select your CQC registered office address for your care provider organisation"
         showLoginInformation={false}
         currentPage="location-select"
         showNavBar={false}
@@ -79,17 +79,18 @@ const LocationSelectPage: React.FC = () => {
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-xl">
-              Select a location from your care provider group
+              Select your CQC registered office address for your care provider
+              organisation
             </h1>
             <p className="govuk-body">
-              We use the selected location to show you:
+              We use the selected address to show you:
             </p>
             <ul className="govuk-list govuk-list--bullet">
-              <li>data about the location</li>
-              <li>local and regional data based on that location</li>
+              <li>data about the address</li>
+              <li>local and regional data based on that address</li>
             </ul>
             <p className="govuk-body">
-              You can change to another location in your care provider group at
+              You can change to another address in your care provider group at
               any time.
             </p>
             <form>
@@ -101,7 +102,7 @@ const LocationSelectPage: React.FC = () => {
                   >
                     <div className="search-input">
                       <label className="govuk-label" htmlFor="search-location">
-                        Search for a location
+                        Search for an address
                       </label>
                       <input
                         className="govuk-input"
@@ -116,7 +117,7 @@ const LocationSelectPage: React.FC = () => {
 
                 <fieldset className="govuk-fieldset">
                   <legend className="govuk-visually-hidden">
-                    Select a location from your care provider group
+                    Select an address from your care provider group
                   </legend>
                   {selectedLocation && (
                     <p className="govuk-heading-m">

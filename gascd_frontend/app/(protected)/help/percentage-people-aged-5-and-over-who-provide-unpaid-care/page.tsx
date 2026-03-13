@@ -47,9 +47,6 @@ const PeopleProvidingUnpaidCare: React.FC = () => {
           limitations={
             <p className="govuk-!-margin-top-0">See data source for details.</p>
           }
-          dataDefinitions={
-            <p className="govuk-!-margin-top-0">See data source for details.</p>
-          }
         />
       </Layout>
     </>
