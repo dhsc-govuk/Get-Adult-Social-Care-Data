@@ -540,6 +540,16 @@ export default function ProvisionAndOccupancyPage() {
     return series;
   };
 
+  const getFilterName = (filterType: string) => {
+    let json = localStorage.getItem(filterType);
+    if (json) {
+      const filter = JSON.parse(json);
+      return filter.filter_bedtype;
+    } else {
+      return 'All bed types';
+    }
+  };
+
   return (
     <Layout
       title="Provision and occupancy"
@@ -879,7 +889,8 @@ export default function ProvisionAndOccupancyPage() {
             <>
               <h3 className="govuk-heading-s">
                 Figure 2: graph of care home bed numbers per 100,000 adult
-                population - {locationNamesCP.LALabel} local authority
+                population ({getFilterName('single-type-chart-metric')}) -{' '}
+                {locationNamesCP.LALabel} local authority
               </h3>
               {(timeData.length > 0 && (
                 <div style={{ width: '100%', height: `500px` }}>
