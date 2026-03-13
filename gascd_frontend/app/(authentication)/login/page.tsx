@@ -82,31 +82,16 @@ const LoginPage: React.FC = () => {
 
             <h2 className="govuk-heading-m">Before you start</h2>
             <p className="govuk-body">
-              You need a{' '}
-              <a
-                className="govuk-link"
-                href="https://www.gov.uk/using-your-gov-uk-one-login"
-              >
-                GOV.UK One Login
-              </a>{' '}
-              to sign in to this service, and it must be tied to your CQC
-              registered email address or your gov.uk email address if you are a
-              local authority officer. You can{' '}
-              <a className="govuk-link" href="https://www.gov.uk/account">
-                create one
-              </a>{' '}
-              if you do not already have one.
+              You need a GOV.UK One Login to sign in to this service, and it
+              must be tied to your CQC registered email address or your gov.uk
+              email address if you are a local authority officer. You can create
+              one if you do not already have one.
             </p>
             <p className="govuk-body">
               You can have more than one GOV.UK One login, for example, a work
               account in addition to your personal account, so you can create
-              one to access this service.
-            </p>
-            <p className="govuk-body">
-              Find out why you need a{' '}
-              <a className="govuk-link" href="/terms-of-use">
-                GOV.UK One Login
-              </a>
+              one to access this service. You will be given the option to create
+              a new account when you click start now below.
             </p>
             <form action={formAction}>
               <button

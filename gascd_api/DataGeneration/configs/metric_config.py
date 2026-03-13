@@ -80,25 +80,25 @@ DATE_RANGES = {
     'Daily': {
         'start': date(2024, 1, 1),
         'end': date(2024, 2, 1),
-        'format': 'YYYY-MM-DD'
     },
     'Monthly': {
         'start': date(2023, 1, 1),
         'end': date(2024, 12, 1),
-        'format': 'YYYY-MM-01'
     },
     'Yearly': {
         'start': date(2020, 1, 1),
         'end': date(2025, 1, 1),
-        'format': 'YYYY-01-01'
     },
     'Census': {
         'start': date(2021, 1, 1),
         'end': date(2021, 1, 1),
-        'format': 'YYYY-01-01'
     },
     'Financial yearly': {
         'start': date(2021,4,1),
         'end': date(2024,4,1),
+    },
+    '5 years': {
+        'start': date(2025,1,1),
+        'end': date(2045,1,1),
     }
 }

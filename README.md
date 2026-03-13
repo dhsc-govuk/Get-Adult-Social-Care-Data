@@ -2,61 +2,79 @@
 
 ## About This Project
 
-This is the Repo/Code for the DHSC Data Access Platform Frontend. This application primarily utilises the following technologies:
+This repository contains the Get Adult Social Care Data (GASCD) platform, made up of:
 
-- [NextJS](https://nextjs.org)
-- [React](https://react.dev/)
-- [govuk-frontend](https://github.com/alphagov/govuk-frontend)
-- [Azure](https://azure.microsoft.com/en-gb)
-  - [Web](https://azure.microsoft.com/en-gb/products/app-service/web)
-  - [Function App](https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview?pivots=programming-language-csharp)
-  - [Pipelines](https://azure.microsoft.com/en-us/products/devops/pipelines)
+- A Next.js web frontend
+- A .NET data API that serves metrics to the frontend
 
-With this project we aim to:
+The platform aims to improve the quality, efficiency, and sharing of adult social care data and insights across local, regional, and national levels.
 
-- To improve both quality and efficiency of data and insight analysis at a local, regional and national level
-- To enable better decision making across all stakeholders to improve the delivery of high-quality care across the sector
-- To reduce siloed data sharing and alleviate cost and effort inefficiencies
-- To enhance data and insights sharing within the adult social care sector using NHS as a ‘baseline’
+## Repository Structure
 
-## Project architecture
+- `gascd_frontend` — Next.js web frontend (React, GOV.UK Frontend)
+- `gascd_api` — ASP.NET data API (FastEndpoints, PostgreSQL)
+- `docs` — shared documentation
+- `utils` — helper scripts and tools
 
-For more details about the separate parts of this app, please see the relevant subdirectories:
+Each part has a dedicated README with detailed setup and usage:
 
-- `gascd_frontend` - NextJS web frontend
-- `gascd_api` - .net internal data API which serves metrics to the frontend
+- Frontend: `gascd_frontend/README.md`
+- API: `gascd_api/README.md`
 
-
-## Setup
+## Quick Start
 
 ### Requirements
 
-This project requires the following pre-requisites:
+- [Mise](https://mise.jdx.dev/getting-started.html)
+- [Make](https://makefiletutorial.com/)
+- [Docker](https://www.docker.com/)
 
-1. [Mise](https://mise.jdx.dev/getting-started.html)
-2. [Make](https://makefiletutorial.com/)
-3. [Docker](https://www.docker.com/)
+### Install Dependencies
 
-#### Installing project dependencies
+1. Clone the repository.
+2. Run `mise install` to install toolchain versions
+3. Follow the instructions to [activate mise](https://mise.jdx.dev/getting-started.html#activate-mise) to ensure that the correct tools are by default.
 
-1. Clone the repo to your chosen directory
-2. Run `mise install` to install the correct dependency versions (you may need to [activate](https://mise.jdx.dev/cli/activate.html) mise)
-3. From the `gascd_frontend` folder you can run `make` to build the NodeJS app
+### Configure Environment Files (Required)
 
-## Running git commit hooks
+Neither service will start correctly without local environment configuration.
 
-This project uses [hk](https://hk.jdx.dev/) to implement git hooks, outlined in the `hk.pkl` file. You will need to run the following command to initialise this:
+Before running anything:
+
+1. Complete the frontend environment setup in `gascd_frontend/README.md` (for example creating `.env` from `.env.template`).
+2. Complete the API environment setup in `gascd_api/README.md` (for example creating local appsettings and API key configuration).
+
+### Run the Frontend (After Environment Setup)
+
+From `gascd_frontend`:
+
+- `make docker-up` to run via Docker
+- `make run-dev` to run locally
+
+### Run the API (After Environment Setup)
+
+From `gascd_api`:
+
+- `docker compose up` to run the API and local database
+- Visit `http://localhost:5050/swagger` for API documentation
+
+For full setup and configuration details, use the subproject READMEs:
+
+- `gascd_frontend/README.md`
+- `gascd_api/README.md`
+
+## Git Hooks
+
+This repo uses `hk` for git hooks configured in `hk.pkl`.
 
 ```bash
-  hk install
-  # If you used previous git hooks set up in this repo you may need to run this as well:
-  git config unset core.hooksPath
+hk install
+# If you used previous git hooks set up in this repo you may need to run this as well:
+git config unset core.hooksPath
 ```
 
-Run linting checks for frontend and backend repos by running
+Run linting checks (only on staged changes):
 
 `hk run check`
 
-These will only run against the front/backend if there are staged changes. These checks will also be run upon committing.
-
-N.B. Changes to these hooks can be made to the `hk.pkl` file, make sure to run `hk install` after any changes to the file.
+If you update `hk.pkl`, run `hk install` again.

@@ -106,7 +106,6 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
                   className={columnClass(columnIndex + 1)}
                 >
                   {columnLabel}
-                  {currency && <p className="govuk-!-margin-0">(£ thousand)</p>}
                 </th>
               ))}
           </tr>
