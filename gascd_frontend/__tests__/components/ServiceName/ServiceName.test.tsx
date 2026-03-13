@@ -1,6 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import ServiceName from '@/components/common/service-name/ServiceName';
-import { mockSession, mockSessionWithLocation } from '@/test-utils/test-utils';
+import {
+  mockSession,
+  mockSessionLAUser,
+  mockSessionWithLocation,
+} from '@/test-utils/test-utils';
+
+vi.mock('@/services/logger/logService');
+vi.mock('@/services/indicator/IndicatorFetchService');
+vi.mock('@/services/location/LocationService');
 
 describe('Service Component', () => {
   it('Renders the component correctly', () => {
@@ -32,5 +40,20 @@ describe('Service Component', () => {
       name: 'Change',
     });
     expect(changeLink).not.toBeInTheDocument();
+  });
+
+  it('Does not show LA topics to CP users', async () => {
+    render(<ServiceName session={mockSession} />);
+    const lalink = screen.queryByText('Future planning');
+    expect(lalink).not.toBeInTheDocument();
+  });
+
+  it('Shows LA topics to LA users', async () => {
+    render(<ServiceName session={mockSessionLAUser} />);
+    const lalink = screen.queryByText('Future planning');
+    expect(lalink).toBeInTheDocument();
+    expect(lalink?.getAttribute('href')).toBe(
+      '/topics/future-planning/subtopics'
+    );
   });
 });

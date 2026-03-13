@@ -13,6 +13,7 @@ type Props = {
 const ServiceName: React.FC<Props> = ({ session }) => {
   const [selectedLocationName, setSelectedLocationName] = useState<string>('');
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const [topicLinks, setTopicLinks] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchNames = async () => {
@@ -21,10 +22,47 @@ const ServiceName: React.FC<Props> = ({ session }) => {
       } else if (session?.user.locationType == LA_USER_TYPE) {
         // LA names are looked up dynamically
         const lnames = await LocationService.getLocationNames('', false);
-        setSelectedLocationName(lnames.LALabel);
+        if (lnames?.LALabel) {
+          setSelectedLocationName(lnames.LALabel);
+        }
       }
     };
     fetchNames();
+  }, [session]);
+
+  useEffect(() => {
+    let links = [
+      {
+        name: 'Care Provision',
+        description:
+          'Find data on care provision and the support provided by unpaid carers across England.',
+        url: '/topics/residential-care/subtopics',
+      },
+      {
+        name: 'Funding',
+        description: (
+          <>
+            Find data on <abbr title="Local Authority">LA</abbr> funding.
+          </>
+        ),
+        url: '/topics/financial-spend-and-unpaid-care/subtopics',
+      },
+      {
+        name: 'Population needs',
+        description:
+          'Find data on a range of care need indicators, such as household economic factors and disability prevalence.',
+        url: '/topics/population-needs/subtopics',
+      },
+    ];
+    if (session?.user.locationType === LA_USER_TYPE) {
+      links.push({
+        name: 'Future planning',
+        description:
+          'Find estimated and experimental data on future population needs.',
+        url: '/topics/future-planning/subtopics',
+      });
+    }
+    setTopicLinks(links);
   }, [session]);
 
   const canChangeLocation = (user: User) => {
@@ -59,36 +97,6 @@ const ServiceName: React.FC<Props> = ({ session }) => {
       }
     }
   };
-
-  const topicLinks = [
-    {
-      name: 'Care Provision',
-      description:
-        'Find data on care provision and the support provided by unpaid carers across England.',
-      url: '/topics/residential-care/subtopics',
-    },
-    {
-      name: 'Funding',
-      description: (
-        <>
-          Find data on <abbr title="Local Authority">LA</abbr> funding.
-        </>
-      ),
-      url: '/topics/financial-spend-and-unpaid-care/subtopics',
-    },
-    {
-      name: 'Population needs',
-      description:
-        'Find data on a range of care need indicators, such as household economic factors and disability prevalence.',
-      url: '/topics/population-needs/subtopics',
-    },
-    {
-      name: 'Future planning',
-      description:
-        'Find estimated and experimental data on future population needs.',
-      url: '/topics/future-planning/subtopics',
-    },
-  ];
 
   const serviceInformationLinks = [
     {
