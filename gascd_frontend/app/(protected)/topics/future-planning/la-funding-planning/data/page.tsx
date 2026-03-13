@@ -13,6 +13,7 @@ import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
+import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import TimeSeriesTable from '@/components/tables/TimeSeriesTable';
