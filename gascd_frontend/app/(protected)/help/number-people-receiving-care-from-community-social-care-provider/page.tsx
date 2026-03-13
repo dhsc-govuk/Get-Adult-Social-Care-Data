@@ -6,13 +6,13 @@ const ReceivingCareFromCommCare: React.FC = () => {
   return (
     <>
       <Layout
-        title="Number of people receiving care in the last month from a community social care provider"
+        title="Number of people receiving care from a community social care provider"
         showLoginInformation={false}
         currentPage={'primary-reason-for-accessing-care'}
         backURL="/service-information/data-indicator-details"
       >
         <DataIndicatorDetails
-          title="Number of people receiving care in the last month from a community social care provider"
+          title="Number of people receiving care from a community social care provider"
           whatThisMeasures={
             <p className="govuk-!-margin-top-0">
               The total number of people receiving care from care providers
@@ -33,22 +33,33 @@ const ReceivingCareFromCommCare: React.FC = () => {
           updateFrequency="Daily"
           methodology={
             <>
-              <p className="govuk-!-margin-top-0">
+              <p className="govuk-body">
                 This is calculated by summing the total number of people
                 receiving care within each provider registered as a community
-                social care provider with the Care Quality Commission (CQC).
+                social care provider with the{' '}
+                <abbr title="Care Quality Commission">CQC</abbr>.
               </p>
-              <p className="govuk-!-margin-top-0">
-                Care providers registered with the CQC must update this
-                information at least monthly using the Capacity Tracker tool.
-                The mandated reporting period is between the 8th and 14th every
-                month, or the next working day if the 14th falls on a weekend or
-                holiday.
+              <p className="govuk-body">
+                Regional and national averages are calculated by summing total
+                figures and dividing by number of{' '}
+                <abbr title="Local Authority">LA</abbr>s relevant to the area.
               </p>
-              <p className="govuk-!-margin-top-0">
-                Small number suppression is applied. All providers with less
-                than 6 service users are suppressed and removed from aggregate
-                counts to avoid identification.
+              <p className="govuk-body">
+                Care providers registered with the{' '}
+                <abbr title="Care Quality Commission">CQC</abbr> must update
+                this information at least monthly using the Capacity Tracker
+                tool. The mandated reporting period is between the 8th and 14th
+                every month, or the next working day if the 14th falls on a
+                weekend or holiday.
+              </p>
+              <p className="govuk-body">
+                Service user counts are suppressed at provider level where they
+                fall below 6, to protect the confidentiality of individuals. At
+                local authority, regional, and national level, figures are also
+                suppressed where there are too few care providers contributing
+                to a total, to avoid identification of individual provider
+                figures by subtraction. Suppressed values appear as 0. The Isles
+                of Scilly are excluded at all geographic levels.
               </p>
             </>
           }
