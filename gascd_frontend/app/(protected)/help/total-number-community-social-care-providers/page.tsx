@@ -6,13 +6,13 @@ const TotalNumberCommunitySocialCareProvidersPage: React.FC = () => {
   return (
     <>
       <Layout
-        title="Number of community social care providers"
+        title="Number of adult social care providers"
         showLoginInformation={false}
         currentPage={'number-community-social-care-providers'}
         backURL="/service-information/data-indicator-details"
       >
         <DataIndicatorDetails
-          title="Number of community social care providers"
+          title="Number of adult social care providers"
           whatThisMeasures={
             <p className="govuk-!-margin-top-0">
               The total number of care providers registered as adult social care
@@ -60,11 +60,12 @@ const TotalNumberCommunitySocialCareProvidersPage: React.FC = () => {
                 These categories are not mutually exclusive. A single provider
                 may be registered to deliver more than one type of adult social
                 care and will therefore appear in multiple category counts. For
-                example, a provider registered with CQC as offering both extra
-                care housing and supported living will be counted within both
-                the extra care housing and supported living figures. Similarly,
-                a care home provider registered to deliver both residential and
-                nursing care will appear in both categories.
+                example, a provider registered with{' '}
+                <abbr title="Care Quality Commission">CQC</abbr> as offering
+                both extra care housing and supported living will be counted
+                within both the extra care housing and supported living figures.
+                Similarly, a care home provider registered to deliver both
+                residential and nursing care will appear in both categories.
               </p>
               <p className="govuk-body">
                 As a result, the sum of individual category counts will exceed
