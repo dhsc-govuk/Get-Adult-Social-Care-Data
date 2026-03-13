@@ -37,9 +37,8 @@ describe('BarChart Component', () => {
     // Index 2 (Suffolk): Orange (Highlighted)
     // Index 3 (Norfolk): Purple (Standard)
 
-    const COLOR_NAVY = '#12344D';
-    const COLOR_ORANGE = '#F29F41';
-    const COLOR_PURPLE = '#7670AC';
+    const COLOR_NAVY = '#1f6095';
+    const COLOR_GRAY = '#959495';
 
     render(
       <BarChart
@@ -59,8 +58,8 @@ describe('BarChart Component', () => {
     // Check colors
     expect(trace.marker.color[0]).toBe(COLOR_NAVY);
     expect(trace.marker.color[1]).toBe(COLOR_NAVY);
-    expect(trace.marker.color[2]).toBe(COLOR_ORANGE);
-    expect(trace.marker.color[3]).toBe(COLOR_PURPLE);
+    expect(trace.marker.color[2]).toBe(COLOR_GRAY);
+    expect(trace.marker.color[3]).toBe(COLOR_GRAY);
   });
 
   it('bolds the text for Highlighted and Top N categories', async () => {
