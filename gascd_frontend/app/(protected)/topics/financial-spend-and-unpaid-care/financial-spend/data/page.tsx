@@ -249,7 +249,7 @@ export default function LAFundingPage() {
 
   return (
     <Layout
-      title="Local Authority funding for adult social care"
+      title="LA funding for adult social care"
       autoSpaceMainContent={false}
       showLoginInformation={true}
       currentPage="economic-factors-and-household-composition"
@@ -300,7 +300,8 @@ export default function LAFundingPage() {
                 <>
                   Table 1: <abbr title="Local Authority">LA</abbr> spending on
                   short-term and long-term adult social care for all age groups
-                  – {locationNames.LALabel} local authority,{' '}
+                  – {locationNames.LALabel}{' '}
+                  <abbr title="Local Authority">LA</abbr>,{' '}
                   {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}
                   {IndicatorService.getFinancialYear(
@@ -388,7 +389,8 @@ export default function LAFundingPage() {
                 <>
                   Table 2: <abbr title="Local Authority">LA</abbr> funding for
                   long-term adult social care for all age groups –{' '}
-                  {locationNames.LALabel} local authority,{' '}
+                  {locationNames.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr>,{' '}
                   {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}
                   {IndicatorService.getFinancialYear(
@@ -480,7 +482,8 @@ export default function LAFundingPage() {
                 <>
                   Table 3: <abbr title="Local Authority">LA</abbr> funding for
                   long-term adult social care (all types of adult social care)
-                  for all age groups – {locationNames.LALabel} local authority,{' '}
+                  for all age groups – {locationNames.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr>,{' '}
                   {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}
                   {IndicatorService.getFinancialYear(

@@ -50,7 +50,7 @@ const HomePage: React.FC = () => {
       url: 'topics/financial-spend-and-unpaid-care/subtopics',
       subtopics: [
         {
-          title: 'Local authority (LA) funding',
+          title: 'Local authority (LA) funding for adult social care',
           description:
             'Data on funding for both short-term and long-term care, also funding by individual care type.',
           url: 'topics/financial-spend-and-unpaid-care/financial-spend/data',
@@ -64,7 +64,7 @@ const HomePage: React.FC = () => {
         {
           title: 'Population size and age group percentages',
           description:
-            'Population data at district, local authority, regional and national levels for England.',
+            'Population data at district, LA, regional and national levels for England.',
           url: 'topics/population-needs/population-age-and-size/data',
         },
         {

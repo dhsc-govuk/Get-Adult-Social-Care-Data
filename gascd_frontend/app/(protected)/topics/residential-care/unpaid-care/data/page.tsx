@@ -168,7 +168,16 @@ export default function UnpaidCarePage() {
           table={
             <DataTable
               tableref={tableref1}
-              caption={`Table 1: percentage of people aged 5 and over who provide unpaid care – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
+              caption={
+                <>
+                  Table 1: percentage of people aged 5 and over who provide
+                  unpaid care – {locationNames.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr>,{' '}
+                  {locationNames.RegionLabel} region and{' '}
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getMostRecentDate(filteredDemographicData)}
+                </>
+              }
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
