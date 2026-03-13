@@ -92,7 +92,7 @@ const BarChart: React.FC<BarChartProps> = ({
       color: '#000',
     },
     xaxis: {
-      side: 'top',
+      side: 'bottom',
       zeroline: true,
       fixedrange: true, // prevents zooming
     },
@@ -113,7 +113,7 @@ const BarChart: React.FC<BarChartProps> = ({
       },
     },
     shapes: shapes,
-    margin: { l: 200, t: 50, r: 20, b: 20 }, // minimum margin buffer
+    margin: { l: 200, t: 20, r: 20, b: 50 }, // minimum margin buffer
     showlegend: false,
     autosize: true,
   };
