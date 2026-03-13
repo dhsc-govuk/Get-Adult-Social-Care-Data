@@ -8,7 +8,7 @@ import {
 
 vi.mock('@/services/logger/logService');
 vi.mock('@/services/indicator/IndicatorFetchService');
-vi.mock('@/services/location/LocationService');
+vi.mock('@/services/location/locationService');
 
 describe('Service Component', () => {
   it('Renders the component correctly', () => {
