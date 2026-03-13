@@ -35,7 +35,7 @@ const TotalFinancialSpendLongTermCommunityAdultSocialCare: React.FC = () => {
           updateFrequency="Yearly (by financial year)"
           methodology={
             <>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 The total financial spend on long-term adult social care is
                 calculated by summing the financial spend over the previous
                 financial year for the following categories:
@@ -49,7 +49,7 @@ const TotalFinancialSpendLongTermCommunityAdultSocialCare: React.FC = () => {
                 <li>other long-term community care</li>
                 <li>supported accomodation</li>
               </ul>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 The data only covers <abbr title="Local Authority">LA</abbr>{' '}
                 funded long-term social care. It does not include NHS funded
                 care or care funded privately by individuals.

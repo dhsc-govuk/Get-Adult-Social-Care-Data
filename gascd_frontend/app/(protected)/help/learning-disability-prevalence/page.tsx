@@ -34,22 +34,21 @@ const LearningDisabilityPrevalence = () => {
               Based on Quality and Outcomes Framework (QOF) data, this measure
               calculates the proportion of patients recorded on GP practice
               registers as having a learning disability. The data is aggregated
-              to local authority level using the postcode of the GP practice,
-              rather than the patient&apos;s place of residence.
+              to <abbr title="Local Authority">LA</abbr> level using the
+              postcode of the GP practice, rather than the patient&apos;s place
+              of residence.
             </p>
           }
           limitations={
             <p className="govuk-!-margin-top-0">
               The measure is intended to show the prevalence of learning
-              disabilities among residents of each local authority area.
-              However, data by place of residence is not available. Instead, a
-              proxy is used based on GP registrations, assigning individuals to
-              a local authority according to the postcode of their GP practice
-              rather than their home address.
+              disabilities among residents of each{' '}
+              <abbr title="Local Authority">LA</abbr> area. However, data by
+              place of residence is not available. Instead, a proxy is used
+              based on GP registrations, assigning individuals to a{' '}
+              <abbr title="Local Authority">LA</abbr> according to the postcode
+              of their GP practice rather than their home address.
             </p>
-          }
-          dataDefinitions={
-            <p className="govuk-!-margin-top-0">See data source for details.</p>
           }
         />
       </Layout>
