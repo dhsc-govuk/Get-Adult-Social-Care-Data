@@ -35,7 +35,7 @@ const PopulationLearningDisability = () => {
           updateFrequency="Every 5 years"
           methodology={
             <>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 The projected of the number of people aged 18-64 with a learning
                 disability, predicted to display challenging behaviours, is
                 calculated by:

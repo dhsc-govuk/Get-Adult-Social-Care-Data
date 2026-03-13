@@ -36,14 +36,14 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
           updateFrequency="Yearly (by financial year)"
           methodology={
             <>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 The total financial figures are calculated by summing the
                 financial spend on long-term and short-term care over the
                 previous financial year and then dividing these figures by the
                 total financial spend on adult social care over the previous
                 financial year, split by primary support reason.
               </p>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 The data covers only <abbr title="Local Authority">LA</abbr>{' '}
                 funded long-term social care. It does not include NHS funded
                 care or care funded privately by individuals.

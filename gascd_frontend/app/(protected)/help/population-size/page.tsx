@@ -32,11 +32,11 @@ const PopulationSize: React.FC = () => {
           updateFrequency="Yearly"
           methodology={
             <>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 This data is from the Office for National Statistics mid-2023
                 population estimates for England and Wales.
               </p>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 All adult age groups (aged 18 and over) are included in the
                 population size.
               </p>

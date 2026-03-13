@@ -33,18 +33,18 @@ const ReceivingCareFromCommCare: React.FC = () => {
           updateFrequency="Daily"
           methodology={
             <>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 This is calculated by summing the total number of people
                 receiving care within each provider registered as a community
                 social care provider with the{' '}
                 <abbr title="Care Quality Commission">CQC</abbr>.
               </p>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 Regional and national averages are calculated by summing total
                 figures and dividing by number of{' '}
                 <abbr title="Local Authority">LA</abbr>s relevant to the area.
               </p>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 Care providers registered with the{' '}
                 <abbr title="Care Quality Commission">CQC</abbr> must update
                 this information at least monthly using the Capacity Tracker
@@ -52,7 +52,7 @@ const ReceivingCareFromCommCare: React.FC = () => {
                 every month, or the next working day if the 14th falls on a
                 weekend or holiday.
               </p>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 Service user counts are suppressed at provider level where they
                 fall below 6, to protect the confidentiality of individuals. At
                 local authority, regional, and national level, figures are also

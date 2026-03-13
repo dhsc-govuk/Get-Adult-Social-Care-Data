@@ -34,7 +34,7 @@ const DementiaPrediction = () => {
           updateFrequency="Every 5 years"
           methodology={
             <>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 The projected of the number of people aged 30-64 predicted to
                 have early onset dementia, by age, projected to 2045, is
                 calculated by:
@@ -75,7 +75,7 @@ const DementiaPrediction = () => {
           }
           limitations={
             <>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 The 2014 Dementia UK survey did not identify any further UK
                 studies on the prevalence of early-onset dementia (defined as
                 age less than 65 years), and therefore uses the estimates
@@ -90,7 +90,7 @@ const DementiaPrediction = () => {
                 tendency for such studies to underestimate the true prevalence
                 of early-onset dementia.
               </p>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 The assumptions used in population projections are based on past
                 trends. However, demographic behaviour is inherently uncertain,
                 so projections become increasingly uncertain the further they

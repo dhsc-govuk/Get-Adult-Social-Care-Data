@@ -44,7 +44,7 @@ const BedsPer100000AdultPopulation: React.FC = () => {
           updateFrequency="Daily"
           methodology={
             <>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 This indicator counts all beds reported by care providers that
                 are related to adult social care, including the following
                 categories:
@@ -62,18 +62,18 @@ const BedsPer100000AdultPopulation: React.FC = () => {
                 <li>transitional care</li>
                 <li>young physically disabled</li>
               </ul>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 The data covers both self-funded and{' '}
                 <abbr title="Local Authority">LA</abbr>-funded beds.
               </p>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 Care providers registered with the Care Quality Commission (CQC)
                 must update this information at least monthly using the Capacity
                 Tracker tool. The mandated reporting period is between the 8th
                 and 14th every month, or the next working day if the 14th falls
                 on a weekend or holiday.
               </p>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 Bed counts are suppressed at provider location level where they
                 fall below 6, to protect the confidentiality of individuals. At
                 local authority, regional, and national level, figures are also
@@ -87,24 +87,24 @@ const BedsPer100000AdultPopulation: React.FC = () => {
           }
           limitations={
             <>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 Care providers may update their Capacity Tracker data at
                 different times outside the reporting period.
               </p>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 As a result, the data does not provide a snapshot of all
                 providers at the same time. It reflects the most recent
                 information available when the data was retrieved.
               </p>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 The data is self-reported and not independently verified.
               </p>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 When adult social care beds are vacant, they can be used
                 flexibly across a range of bed types. We are exploring ways to
                 reflect this in the data.
               </p>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 The current bed types are not clearly defined and may be
                 interpreted differently by care providers submitting data. To
                 improve consistency, we are working with Capacity Tracker to

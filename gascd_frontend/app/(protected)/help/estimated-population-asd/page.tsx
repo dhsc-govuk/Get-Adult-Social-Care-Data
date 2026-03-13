@@ -34,7 +34,7 @@ const EstimatedPopulationASD = () => {
           updateFrequency="Every 5 years"
           methodology={
             <>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 The projected of the number of people aged 18-64 with a learning
                 disability, predicted to display challenging behaviours, is
                 calculated by:
@@ -59,7 +59,7 @@ const EstimatedPopulationASD = () => {
           }
           limitations={
             <>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 The National Autistic Society states that ‘estimates of the
                 proportion of people with autistic spectrum disorders who have a
                 learning disability, (IQ less than 70) vary considerably, and it
@@ -74,7 +74,7 @@ const EstimatedPopulationASD = () => {
                 impairment they have of social interaction hampers their chances
                 of employment and achieving independence.’
               </p>
-              <p className="govuk-body">
+              <p className="govuk-!-margin-top-0">
                 The assumptions used in population projections are based on past
                 trends. However, demographic behaviour is inherently uncertain,
                 so projections become increasingly uncertain the further they
