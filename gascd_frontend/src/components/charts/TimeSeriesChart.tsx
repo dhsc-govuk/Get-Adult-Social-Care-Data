@@ -86,8 +86,8 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
       showgrid: false, // No vertical grid lines
       nticks:
         dateFormat === '%b %y'
-          ? Math.ceil(series[0].data.length / 48)
-          : series[0].data.length,
+          ? Math.ceil(series[series.length - 1].data.length / 48)
+          : series[series.length - 1].data.length, // uses last item in series which is usually national
       tickfont: {
         family: '"GDS Transport", Arial, sans-serif',
         size: 14,
