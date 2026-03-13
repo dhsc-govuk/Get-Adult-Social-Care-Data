@@ -139,7 +139,7 @@ export default function LAFundingPlanningPage() {
 
   return (
     <Layout
-      title="Population projections within local authorities"
+      title="Local Authority funding projected demand"
       autoSpaceMainContent={false}
       showLoginInformation={true}
       currentPage="la-funding-planning"
@@ -148,11 +148,11 @@ export default function LAFundingPlanningPage() {
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">
-            Population projections within local authorities
+            Local Authority funding projected demand
           </h1>
           <p className="govuk-body-l">
-            Data estimates on the prevalence of conditions that may require a
-            social care response.
+            Consolidated estimated data on population with selected conditions
+            within a Local Authority area.
           </p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview
@@ -175,8 +175,7 @@ export default function LAFundingPlanningPage() {
               caption={
                 <>
                   Table 1: comparison of estimated population with selected
-                  needs over time within <abbr title="local authority">LA</abbr>{' '}
-                  area
+                  health conditions over time within Local Authority area
                 </>
               }
               source={
@@ -232,8 +231,9 @@ export default function LAFundingPlanningPage() {
               tableref={tableref2}
               caption={
                 <>
-                  estimated percentage change in population with selected needs
-                  over time within <abbr title="local authority">LA</abbr> area
+                  Table 2: estimated percentage change in population with
+                  selected health conditions compared with similar Local
+                  Authorities
                 </>
               }
               source={
