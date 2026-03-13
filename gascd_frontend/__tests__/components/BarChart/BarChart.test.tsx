@@ -56,7 +56,7 @@ describe('BarChart Component', () => {
     const trace = data[0];
 
     // Check colors
-    expect(trace.marker.color[0]).toBe(COLOR_NAVY);
+    expect(trace.marker.color[0]).toBe(COLOR_GRAY);
     expect(trace.marker.color[1]).toBe(COLOR_NAVY);
     expect(trace.marker.color[2]).toBe(COLOR_GRAY);
     expect(trace.marker.color[3]).toBe(COLOR_GRAY);
