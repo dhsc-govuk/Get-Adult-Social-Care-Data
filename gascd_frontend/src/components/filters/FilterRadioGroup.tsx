@@ -5,6 +5,7 @@ import { filter_helptext } from '../../../app/(protected)/topics/residential-car
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import AnalyticsService from '@/services/analytics/analyticsService';
+import { filter } from 'd3';
 
 type Props = {
   filterType: string;
@@ -100,7 +101,10 @@ const FilterRadioGroup: React.FC<Props> = ({
   };
 
   const setDefaultFilter = () => {
-    if (filterType === 'numbers-table-metrics') {
+    if (
+      filterType === 'numbers-table-metrics' ||
+      filterType === 'single-type-chart-metric'
+    ) {
       setSelectedFilter({
         metric_id: 'bedcount_per_hundred_thousand_adults_total',
         filter_bedtype: 'All bed types',

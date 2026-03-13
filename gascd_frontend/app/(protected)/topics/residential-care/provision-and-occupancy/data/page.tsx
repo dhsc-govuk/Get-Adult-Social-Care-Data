@@ -141,11 +141,9 @@ export default function ProvisionAndOccupancyPage() {
     bedTypeRowHeadersDefault
   );
 
-  const bedTypeChartHeadersDefault = {
-    bedcount_per_hundred_thousand_adults_total: 'All bed types',
-    bedcount_per_hundred_thousand_adults_dementia_nursing: 'Dementia nursing',
-    bedcount_per_hundred_thousand_adults_dementia_residential:
-      'Dementia residential',
+  const bedTypeChartHeaderDefault = {
+    metric_id: 'bedcount_per_hundred_thousand_adults_total',
+    filter_bedtype: 'All bed types',
   };
 
   const [bedNumberRowHeaders, setBedNumberRowHeaders] = useState<Object[]>([]);
@@ -499,47 +497,45 @@ export default function ProvisionAndOccupancyPage() {
   const updateTypesChartMetrics = () => {
     if (!bedTypeOverTimeData.length) return;
 
-    const storedData = localStorage.getItem('type-chart-metrics');
-    let headers = bedTypeChartHeadersDefault;
+    const storedData = localStorage.getItem('single-type-chart-metric');
+    let header = bedTypeChartHeaderDefault;
     if (storedData) {
-      const filters = JSON.parse(storedData);
-      const map: any = {};
-      filters.map((item: any) => (map[item.metric_id] = item.filter_bedtype));
-      headers = map;
+      const filter = JSON.parse(storedData);
+      header = filter;
     }
     // Make some time series data based on the bed type row headers
-    let series: Series[] = createTimeSeries(headers);
+    let series: Series[] = createTimeSeries(header);
     setTimedata(series);
   };
 
-  const createTimeSeries = (headers: any) => {
+  const createTimeSeries = (header: any) => {
     let series: Series[] = [];
-    Object.entries(headers).forEach((header: any) => {
-      const metric_id = header[0];
-      const name = header[1];
-      // Filter to the current metric ID, for the LA only
-      const metric_items = bedTypeOverTimeData.filter(
-        (item) => item.metric_id === metric_id
-      );
-      // Turn into the correct time series format
-      const values: DataPoint[] = metric_items.map((item) => {
-        return {
-          date: IndicatorService.parseDate(item).toISOString(),
-          value: item.data_point,
-        };
-      });
-      // Sort by date
-      values.sort((a, b) => {
-        if (a.date > b.date) {
-          return 1;
-        } else {
-          return -1;
-        }
-      });
-      series.push({
-        name: name,
-        data: values,
-      });
+
+    const metric_id = header.metric_id;
+    const name = header.filter_bedtype;
+    // Filter to the current metric ID, for the LA only
+    const metric_items = bedTypeOverTimeData.filter(
+      (item) => item.metric_id === metric_id
+    );
+
+    // Turn into the correct time series format
+    const values: DataPoint[] = metric_items.map((item) => {
+      return {
+        date: IndicatorService.parseDate(item).toISOString(),
+        value: item.data_point,
+      };
+    });
+    // Sort by date
+    values.sort((a, b) => {
+      if (a.date > b.date) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+    series.push({
+      name: name,
+      data: values,
     });
     return series;
   };
@@ -871,8 +867,8 @@ export default function ProvisionAndOccupancyPage() {
           </p>
         }
       >
-        <FilterCheckboxGroup
-          filterType="type-chart-metrics"
+        <FilterRadioGroup
+          filterType="single-type-chart-metric"
           filterLabel="Bed type"
           filters={bedTypeRowHeadersDefault}
           updateMethod={updateTypesChartMetrics}
@@ -883,7 +879,7 @@ export default function ProvisionAndOccupancyPage() {
             <>
               <h3 className="govuk-heading-s">
                 Figure 2: graph of care home bed numbers per 100,000 adult
-                population &mdash; {locationNamesCP.LALabel} local authority
+                population - {locationNamesCP.LALabel} local authority
               </h3>
               {(timeData.length > 0 && (
                 <div style={{ width: '100%', height: `500px` }}>

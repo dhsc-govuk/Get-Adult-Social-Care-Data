@@ -27,6 +27,7 @@ interface TimeSeriesChartProps {
 
 const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ series = [] }) => {
   const DEFAULT_COLORS = [
+    '#206095', // Blue
     '#F29F41', // Orange
     '#12344D', // Dark Navy
     '#56B4E9', // Light Blue
