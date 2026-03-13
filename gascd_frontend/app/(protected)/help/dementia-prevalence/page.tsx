@@ -41,15 +41,12 @@ const DementiaPrevalence = () => {
           limitations={
             <p className="govuk-!-margin-top-0">
               The measure is intended to show the prevalence of dementia among
-              residents of each local authority area. However, data by place of
-              residence is not available. Instead, a proxy is used based on GP
-              registrations, assigning individuals to a local authority
-              according to the postcode of their GP practice rather than their
-              home address.
+              residents of each <abbr title="Local Authority">LA</abbr> area.
+              However, data by place of residence is not available. Instead, a
+              proxy is used based on GP registrations, assigning individuals to
+              a <abbr title="Local Authority">LA</abbr> according to the
+              postcode of their GP practice rather than their home address.
             </p>
-          }
-          dataDefinitions={
-            <p className="govuk-!-margin-top-0">See data source for details.</p>
           }
         />
       </Layout>
