@@ -59,12 +59,12 @@ describe('LAFundingPage', () => {
     expect(bodyTextElement).toBeInTheDocument();
 
     const helpLink = screen.getAllByRole('link', {
-      name: /LA funding for adult social care/i,
+      name: /LA funding for short-term and long term adult social care/i,
     });
     expect(helpLink[0]).toBeInTheDocument();
     expect(helpLink[0]).toHaveAttribute(
       'href',
-      '/help/total-financial-spend-adult-social-care'
+      '/help/percentages-financial-spend-long-term-and-short-term-care'
     );
 
     const tables = [

@@ -515,20 +515,8 @@ export default function LAFundingPage() {
         <DataLinkCard
           label={
             <>
-              <abbr title="Local Authority">LA</abbr> funding for adult social
-              care
-            </>
-          }
-          sources="NHS England"
-          updateFrequency="Yearly updates"
-          limitations={false}
-          url="/help/total-financial-spend-adult-social-care"
-        />
-        <DataLinkCard
-          label={
-            <>
               <abbr title="Local Authority">LA</abbr> funding for long-term
-              community adult social care
+              adult social care
             </>
           }
           sources="NHS England"
