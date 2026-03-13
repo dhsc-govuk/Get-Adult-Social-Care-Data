@@ -68,19 +68,6 @@ export default function PopulationNeedsPage() {
               />
             ))}
           </ul>
-          <h2 className="govuk-heading-m govuk-!-margin-top-4" id="drivers">
-            Drivers of population needs
-          </h2>
-          <p className="govuk-body">
-            Population needs for adult social care are influenced by a range of
-            factors, including the population&apos;s age structure, disability
-            profile and rate of dementia diagnosis.
-          </p>
-          <p className="govuk-body">
-            Areas with a higher proportion of older adults, people with
-            disabilities or rates of dementia diagnosis typically experience
-            greater pressure on services.
-          </p>
         </div>
       </div>
     </Layout>
