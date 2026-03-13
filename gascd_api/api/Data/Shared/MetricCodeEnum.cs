@@ -354,15 +354,27 @@ public enum MetricCodeEnum
     [MetricGroup(typeof(Pansi))]
     pansi_pred_pop_asd_aged_18_64,
     [MetricGroup(typeof(Pansi))]
+    pansi_pred_pop_asd_aged_18_64_yearly,
+    [MetricGroup(typeof(Pansi))]
     pansi_pred_pop_asd_aged_18_64_perc_change,
+    [MetricGroup(typeof(Pansi))]
+    pansi_pred_pop_asd_aged_18_64_perc_change_yearly,
     [MetricGroup(typeof(Pansi))]
     pansi_pred_pop_challenging_behaviour_aged_18_64,
     [MetricGroup(typeof(Pansi))]
+    pansi_pred_pop_challenging_behaviour_aged_18_64_yearly,
+    [MetricGroup(typeof(Pansi))]
     pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change,
+    [MetricGroup(typeof(Pansi))]
+    pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change_yearly,
     [MetricGroup(typeof(Pansi))]
     pansi_pred_pop_early_dem_aged_30_64,
     [MetricGroup(typeof(Pansi))]
+    pansi_pred_pop_early_dem_aged_30_64_yearly,
+    [MetricGroup(typeof(Pansi))]
     pansi_pred_pop_early_dem_aged_30_64_perc_change,
+    [MetricGroup(typeof(Pansi))]
+    pansi_pred_pop_early_dem_aged_30_64_perc_change_yearly,
     [MetricGroup(typeof(Perc1864))]
     perc_18_64,
     [MetricGroup(typeof(Perc65Over))]
