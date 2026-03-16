@@ -888,9 +888,11 @@ export default function ProvisionAndOccupancyPage() {
           graph={
             <>
               <h3 className="govuk-heading-s">
-                Figure 2: graph of care home bed numbers per 100,000 adult
-                population ({getFilterName('single-type-chart-metric')}) -{' '}
-                {locationNamesCP.LALabel} local authority
+                Figure 2: care home bed numbers per 100,000 adult population (
+                {getFilterName('single-type-chart-metric')}) -{' '}
+                {locationNamesCP.LALabel} local authority,{' '}
+                {IndicatorService.getEarliestDate(bedTypeOverTimeData)} to{' '}
+                {IndicatorService.getMostRecentDate(bedTypeOverTimeData)}
               </h3>
               {(timeData.length > 0 && (
                 <div style={{ width: '100%', height: `500px` }}>
