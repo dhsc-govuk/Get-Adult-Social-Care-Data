@@ -13,7 +13,6 @@ import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
-import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import TimeSeriesTable from '@/components/tables/TimeSeriesTable';
@@ -139,7 +138,7 @@ export default function LAFundingPlanningPage() {
 
   return (
     <Layout
-      title="Local Authority funding projected demand"
+      title="Population projections within local authorities"
       autoSpaceMainContent={false}
       showLoginInformation={true}
       currentPage="la-funding-planning"
@@ -148,11 +147,11 @@ export default function LAFundingPlanningPage() {
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">
-            Local Authority funding projected demand
+            Population projections within local authorities
           </h1>
           <p className="govuk-body-l">
-            Consolidated estimated data on population with selected conditions
-            within a Local Authority area.
+            Data estimates on the prevalence of conditions that may require a
+            social care response.
           </p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview
@@ -175,7 +174,8 @@ export default function LAFundingPlanningPage() {
               caption={
                 <>
                   Table 1: comparison of estimated population with selected
-                  health conditions over time within Local Authority area
+                  needs over time within <abbr title="local authority">LA</abbr>{' '}
+                  area
                 </>
               }
               source={
@@ -232,8 +232,8 @@ export default function LAFundingPlanningPage() {
               caption={
                 <>
                   Table 2: estimated percentage change in population with
-                  selected health conditions compared with similar Local
-                  Authorities
+                  selected needs over time within{' '}
+                  <abbr title="local authority">LA</abbr> area
                 </>
               }
               source={
