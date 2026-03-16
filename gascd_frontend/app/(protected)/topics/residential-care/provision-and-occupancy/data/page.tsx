@@ -626,7 +626,7 @@ export default function ProvisionAndOccupancyPage() {
           chart={
             <>
               <h3 className="govuk-heading-s">
-                Figure 1: chart of care home beds per 100,000 adult population (
+                Figure 1: care home bed numbers per 100,000 adult population (
                 {getFilterName('numbers-table-metrics')}) -
                 <abbr title="local authority">LA</abbr>s in{' '}
                 {locationNamesCP.RegionLabel},{' '}
