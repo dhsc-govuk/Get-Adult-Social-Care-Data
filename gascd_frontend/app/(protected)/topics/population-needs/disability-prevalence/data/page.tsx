@@ -299,7 +299,10 @@ export default function DisabilityPrevalence() {
                   {locationNames.LALabel}{' '}
                   <abbr title="local authority">LA</abbr>,{' '}
                   {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel}, March 2021
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getMostRecentMonthYear(
+                    filteredDisabilityData
+                  )}
                 </>
               }
               source={

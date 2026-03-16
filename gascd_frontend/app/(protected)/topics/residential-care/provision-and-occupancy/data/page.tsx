@@ -713,9 +713,14 @@ export default function ProvisionAndOccupancyPage() {
             <DataTable
               tableref={tableref2}
               caption={
-                `Table 2: care home bed numbers per 100,000 adult population – ${locationNamesCP.LALabel} local authority, 
-                ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, ` +
-                IndicatorService.getMostRecentDate(latestBedTypeData)
+                <>
+                  Table 2: care home bed numbers per 100,000 adult population –{' '}
+                  {locationNamesCP.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr>,{' '}
+                  {locationNamesCP.RegionLabel} region and{' '}
+                  {locationNamesCP.CountryLabel},{' '}
+                  {IndicatorService.getMostRecentDate(latestBedTypeData)}
+                </>
               }
               metricColumnName="Care home bed type"
               source={
@@ -811,14 +816,17 @@ export default function ProvisionAndOccupancyPage() {
             <DataTable
               tableref={tableref3}
               caption={
-                `Table 3: care home bed numbers and occupancy levels – ` +
-                ((session &&
-                  showCPLevelData(session.user) &&
-                  `${locationNamesCP.CPLabel}, `) ||
-                  '') +
-                `${locationNamesCP.LALabel} local authority, 
-                ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, ` +
-                IndicatorService.getMostRecentDate(finalCpData)
+                <>
+                  Table 3: care home bed numbers and occupancy levels –{' '}
+                  {session && showCPLevelData(session.user)
+                    ? locationNamesCP.CPLabel + ','
+                    : ''}{' '}
+                  {locationNamesCP.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr>,{' '}
+                  {locationNamesCP.RegionLabel} region and{' '}
+                  {locationNamesCP.CountryLabel},{' '}
+                  {IndicatorService.getMostRecentDate(finalCpData)}
+                </>
               }
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC)'
@@ -921,9 +929,12 @@ export default function ProvisionAndOccupancyPage() {
           graph={
             <>
               <h3 className="govuk-heading-s">
-                Figure 2: graph of care home bed numbers per 100,000 adult
-                population ({getFilterName('single-type-chart-metric')}) -{' '}
-                {locationNamesCP.LALabel} local authority
+                Figure 2: care home bed numbers per 100,000 adult population (
+                {getFilterName('single-type-chart-metric')}) -{' '}
+                {locationNamesCP.LALabel}{' '}
+                <abbr title="local authority">LA</abbr>,{' '}
+                {IndicatorService.getEarliestDate(bedTypeOverTimeData)} to{' '}
+                {IndicatorService.getMostRecentDate(bedTypeOverTimeData)}
               </h3>
               {(timeData.length > 0 && (
                 <div style={{ width: '100%', height: `500px` }}>

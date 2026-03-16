@@ -12,6 +12,7 @@ import LocationService from '@/services/location/locationService';
 import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { LocationNames } from '@/data/interfaces/LocationNames';
+import Link from 'next/link';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
