@@ -24,8 +24,6 @@ import TimeSeriesChart, {
   Series,
 } from '@/components/charts/TimeSeriesChart';
 import FilterSelectGroup from '@/components/filters/FilterSelectGroup';
-import { update } from 'plotly.js';
-import { get } from 'http';
 
 export default function LAFundingPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
