@@ -658,7 +658,7 @@ export default function ProvisionAndOccupancyPage() {
               tableref={tableref1}
               caption={
                 <>
-                  Table 1: care home bed numbers per 100,000 adult population (
+                  Table 1: care home beds per 100,000 adult population (
                   {getFilterName('numbers-table-metrics')}) for regional{' '}
                   <abbr title="local authority">LA</abbr>s -{' '}
                   {locationNamesCP.RegionLabel},{' '}
