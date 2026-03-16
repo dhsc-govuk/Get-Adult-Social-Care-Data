@@ -12,7 +12,7 @@ describe('Help pages exist and contain data', () => {
       },
       {
         url: '/help/total-number-community-social-care-providers',
-        heading: 'Number of community social care providers',
+        heading: 'Number of adult social care providers',
       },
       {
         url: '/help/number-people-receiving-care-from-community-social-care-provider',

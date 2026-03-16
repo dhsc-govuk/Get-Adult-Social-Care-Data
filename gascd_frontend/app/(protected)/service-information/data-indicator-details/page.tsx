@@ -40,7 +40,7 @@ export default function DataIndicatorDetailsPage() {
               url="/help/beds-per-100000-adult-population-over-time"
             />
             <DataLinkCard
-              label="Number of community social care providers"
+              label="Number of adult social care providers"
               sources="Care Quality Commission"
               updateFrequency="Monthly updates"
               limitations={true}
