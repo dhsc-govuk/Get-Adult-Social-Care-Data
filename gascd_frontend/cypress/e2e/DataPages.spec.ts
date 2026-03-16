@@ -243,6 +243,69 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-1').should('not.be.visible');
   });
 
+  it('Should navigate to the LA funding for adult social care page and check the contents', () => {
+    cy.login_onelogin('testcplocation@testing.com');
+    cy.visit('/topics/financial-spend-and-unpaid-care/financial-spend/data');
+
+    cy.get('h1').should('contains.text', 'LA funding for adult social care');
+
+    cy.contains('LA funding for adult social care');
+
+    cy.get('a[href*="table-1"]').click();
+    cy.url().should('include', '#table-1');
+    cy.get('#table-1')
+      .should('be.visible')
+      .contains(
+        'Table 1: LA spending on short-term and long-term adult social care for all age groups'
+      );
+    cy.get('#download-1').should('not.be.visible');
+
+    cy.get('a[href*="download-1"]').click();
+    cy.url().should('include', '#download-1');
+    cy.get('#download-1').should('be.visible');
+    cy.get('#table-1').should('not.be.visible');
+
+    cy.get('a[href*="table-2"]').click();
+    cy.url().should('include', '#table-2');
+    cy.get('#table-2')
+      .should('be.visible')
+      .contains(
+        'Table 2: LA funding for long-term adult social care for all age groups'
+      );
+    cy.get('#download-2').should('not.be.visible');
+
+    cy.get('a[href*="download-2"]').click();
+    cy.url().should('include', '#download-2');
+    cy.get('#download-2').should('be.visible');
+    cy.get('#table-2').should('not.be.visible');
+
+    cy.get('a[href*="graph-3"]').click();
+    cy.url().should('include', '#graph-3');
+    cy.get('#graph-3')
+      .should('be.visible')
+      .contains(
+        'Figure 1: graph of LA funding for long-term adult social care (all types of adult social care) for all age groups'
+      );
+    cy.get('#table-3').should('not.be.visible');
+    cy.get('#download-3').should('not.be.visible');
+
+    cy.get('a[href*="table-3"]').click();
+    cy.url().should('include', '#table-3');
+    cy.get('#table-3')
+      .should('be.visible')
+      .contains(
+        'Table 3: LA funding for long-term adult social care (all types of adult social care) for all age groups'
+      );
+    cy.get('#graph-3').should('not.be.visible');
+    cy.get('#download-3').should('not.be.visible');
+
+    cy.get('a[href*="download-3"]').click();
+    cy.url().should('include', '#download-3');
+    cy.get('#download-3').should('be.visible');
+    cy.get('#graph-3').should('not.be.visible');
+    cy.get('#table-3').should('not.be.visible');
+  });
+
   it('Should navigate to the LA funding planning page and check the contents', () => {
     cy.login_onelogin(Cypress.env('la_user'));
     cy.visit('/topics/future-planning/la-funding-planning/data');
@@ -253,7 +316,6 @@ describe('Data pages exist and contain data', () => {
     );
 
     cy.contains('Local Authority funding projected demand');
-
     cy.get('a[href*="table-1"]').click();
     cy.url().should('include', '#table-1');
     cy.get('#table-1')
