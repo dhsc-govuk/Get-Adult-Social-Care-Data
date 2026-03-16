@@ -659,7 +659,7 @@ export default function ProvisionAndOccupancyPage() {
               caption={
                 <>
                   Table 1: care home beds per 100,000 adult population (
-                  {getFilterName('numbers-table-metrics')}) for regional{' '}
+                  {getFilterName('numbers-table-metrics').toLowerCase()}) for regional{' '}
                   <abbr title="local authority">LA</abbr>s -{' '}
                   {locationNamesCP.RegionLabel},{' '}
                   {IndicatorService.getMostRecentDate(bedNumbersData)}
