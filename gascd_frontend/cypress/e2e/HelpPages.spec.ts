@@ -87,11 +87,13 @@ describe('Help pages exist and contain data', () => {
       },
       {
         url: '/help/estimated-population-asd',
-        heading: 'Total population aged 18-64 predicted to have ASD',
+        heading:
+          'People aged 18-64 predicted to have autistic spectrum disorders, projected to 2045',
       },
       {
         url: '/help/estimated-population-early-onset-dementia',
-        heading: 'Total population aged 30-64 to have early onset dementia',
+        heading:
+          'People aged 30-64 predicted to have early onset dementia, projected to 2045',
       },
       {
         url: '/help/estimated-population-learning-disability',

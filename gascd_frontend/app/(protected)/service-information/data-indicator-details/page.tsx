@@ -184,7 +184,7 @@ export default function DataIndicatorDetailsPage() {
           </h2>
           <ul className="gem-c-cards__list gem-c-cards__list--one-column">
             <DataLinkCard
-              label="Total population aged 18-64 predicted to have autistic spectrum disorders"
+              label="People aged 18-64 predicted to have autistic spectrum disorders, projected to 2045"
               sources="Institute of Public Care"
               updateFrequency="Updated every 5 years"
               limitations={true}
@@ -198,7 +198,7 @@ export default function DataIndicatorDetailsPage() {
               url="/help/estimated-population-learning-disability"
             />
             <DataLinkCard
-              label="Total population aged 30-64 to have early onset dementia"
+              label="People aged 30-64 predicted to have early onset dementia, projected to 2045"
               sources="Institute of Public Care"
               updateFrequency="Updated every 5 years"
               limitations={true}

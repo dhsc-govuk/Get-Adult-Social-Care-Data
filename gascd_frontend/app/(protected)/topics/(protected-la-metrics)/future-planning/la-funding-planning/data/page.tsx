@@ -273,14 +273,14 @@ export default function LAFundingPlanningPage() {
 
       <DataIndicatorDetailsList>
         <DataLinkCard
-          label="Total population aged 18-64 predicted to have autistic spectrum disorders"
+          label="People aged 18-64 predicted to have autistic spectrum disorders, projected to 2045"
           sources="Institute of Public Care"
           updateFrequency="Updated every 5 years"
           limitations={true}
           url="/help/estimated-population-asd"
         />
         <DataLinkCard
-          label="Total population aged 30-64 to have early onset dementia"
+          label="People aged 30-64 predicted to have early onset dementia, projected to 2045"
           sources="Institute of Public Care"
           updateFrequency="Updated every 5 years"
           limitations={true}
