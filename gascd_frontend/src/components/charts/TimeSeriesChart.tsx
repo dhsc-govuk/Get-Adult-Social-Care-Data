@@ -21,11 +21,17 @@ export interface Series {
 
 interface TimeSeriesChartProps {
   series: Series[];
+  yPrefix?: string;
+  dateFormat?: string;
 }
 
 // --- Component ---
 
-const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ series = [] }) => {
+const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
+  series = [],
+  yPrefix = '',
+  dateFormat = '%b %y',
+}) => {
   const DEFAULT_COLORS = [
     '#206095', // Blue
     '#F29F41', // Orange
@@ -53,7 +59,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ series = [] }) => {
           color: s.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
           width: 5,
         },
-        hovertemplate: '<b>%{y:,.0f}</b><br>%{x|%d %b %Y}<extra></extra>',
+        hovertemplate: `<b>${yPrefix}%{y:,.0f}</b><br>%{x|%d %b %Y}<extra></extra>`,
       };
 
       return trace as Data;
@@ -77,8 +83,12 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ series = [] }) => {
     },
     xaxis: {
       type: 'date',
-      tickformat: '%b %y', // Shows "Jan", "Feb", etc.
+      tickformat: `${dateFormat}`, // Shows "Jan", "Feb", etc.
       showgrid: false, // No vertical grid lines
+      nticks:
+        dateFormat === '%b %y'
+          ? Math.ceil(series[series.length - 1].data.length / 48)
+          : series[series.length - 1].data.length, // uses last item in series which is usually national
       tickfont: {
         family: '"GDS Transport", Arial, sans-serif',
         size: 14,
@@ -100,6 +110,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ series = [] }) => {
       rangemode: 'tozero', // Ensures 0 is always visible
       fixedrange: true, // prevents zooming
       automargin: true,
+      tickprefix: yPrefix,
     },
     margin: { l: 60, t: 50, r: 20, b: 50 }, // Adjust margins for axis labels
     hovermode: 'x unified', // Shows all values for a specific month on hover

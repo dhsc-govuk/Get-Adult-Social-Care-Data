@@ -9,7 +9,10 @@ describe('User can set location', () => {
     cy.url().should('include', '/location-select');
 
     // Verify that we are on the location select page
-    cy.get('h1').should('contains.text', 'Select a location');
+    cy.get('h1').should(
+      'contains.text',
+      'Select your CQC registered office address for your care provider organisation'
+    );
     cy.get('label').contains('Test Care Provider Location 1').click();
     cy.get('button').contains('Apply changes').click();
 
@@ -29,7 +32,10 @@ describe('User can set location', () => {
     cy.visit('/location-select');
 
     // Verify that we are on the location select page
-    cy.get('h1').should('contains.text', 'Select a location');
+    cy.get('h1').should(
+      'contains.text',
+      'Select your CQC registered office address for your care provider organisation'
+    );
     cy.get('label').contains('Test Care Provider Location 1').click();
     cy.get('button').contains('Apply changes').click();
 

@@ -1,9 +1,30 @@
 import { render, screen } from '@testing-library/react';
 import HomePage from '../../app/(protected)/home/page';
+import { auth } from '@/lib/auth';
+import { mockSession, mockSessionLAUser } from '@/test-utils/test-utils';
+
+vi.mock('next/headers', () => ({
+  headers: vi.fn(),
+}));
+vi.mock('@/lib/auth', () => ({
+  auth: {
+    api: {
+      getSession: vi.fn(),
+    },
+  },
+}));
+const mockGetSession = vi.mocked(auth.api.getSession);
 
 describe('HomePage', () => {
-  it('should render the heading, body text, and a link', () => {
-    render(<HomePage />);
+  beforeAll(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should render the heading, body text, and a link', async () => {
+    // render(<HomePage />);
+    // This is a server component page, so we need to render it slightly differently
+    const ResolvedPage = await HomePage({});
+    render(ResolvedPage);
 
     // 1. Check for the main heading
     // We use getByRole to find the heading element. The 'name' option is an
@@ -37,5 +58,33 @@ describe('HomePage', () => {
       'href',
       'topics/population-needs/subtopics'
     );
+  });
+
+  it('should not render LA links to CP users', async () => {
+    mockGetSession.mockResolvedValue(mockSession);
+    // render(<HomePage />);
+    // This is a server component page, so we need to render it slightly differently
+    const ResolvedPage = await HomePage({});
+    render(ResolvedPage);
+
+    const laLink = screen.queryByRole('link', {
+      name: /Future planning/i,
+    });
+    expect(laLink).not.toBeInTheDocument();
+  });
+
+  it('should render LA links to LA users', async () => {
+    mockGetSession.mockResolvedValue(mockSessionLAUser);
+
+    // render(<HomePage />);
+    // This is a server component page, so we need to render it slightly differently
+    const ResolvedPage = await HomePage({});
+    render(ResolvedPage);
+
+    const laLink = screen.getByRole('link', {
+      name: /Future planning/i,
+    });
+    expect(laLink).toBeInTheDocument();
+    expect(laLink).toHaveAttribute('href', 'topics/future-planning/subtopics');
   });
 });

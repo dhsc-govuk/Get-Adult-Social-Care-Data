@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import FuturePlanningPage from '../../../app/(protected)/topics/future-planning/subtopics/page';
+import FuturePlanningPage from '../../../app/(protected)/topics/(protected-la-metrics)/future-planning/subtopics/page';
 
 describe('FuturePlanningPage', () => {
   it('should render the heading, body text, and topic links', () => {

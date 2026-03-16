@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import LAFundingPage from '../../../app/(protected)/topics/future-planning/la-funding-planning/data/page';
+import LAFundingPage from '../../../app/(protected)/topics/(protected-la-metrics)/future-planning/la-funding-planning/data/page';
 import { authClient } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
 
@@ -24,7 +24,7 @@ describe('LAFundingPage', () => {
     render(<LAFundingPage />);
 
     const mainHeading = screen.getByRole('heading', {
-      name: /Local Authority funding projected demand/i,
+      name: /Population projections within local authorities/i,
       level: 1,
     });
     expect(mainHeading).toBeInTheDocument();
@@ -50,7 +50,7 @@ describe('LAFundingPage', () => {
     }
 
     const bodyTextElement = screen.getByText(
-      /Consolidated estimated data on population with selected conditions within a Local Authority area./i
+      /Data estimates on the prevalence of conditions that may require a social care response./i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
