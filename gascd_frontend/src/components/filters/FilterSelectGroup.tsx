@@ -134,43 +134,28 @@ const FilterRadioGroup: React.FC<Props> = ({
             </p>
           )}
           {componentFilters.length > 0 && (
-            <>
-              <div className="js-container-heading">
-                <h4 className="govuk-label govuk-label--s govuk-label-wrapper">
-                  {filterLabel}
-                </h4>
-              </div>
-              <div
-                role="group"
-                className="app-c-option-select__container js-options-container"
-                tabIndex={-1}
+            <div className="govuk-form-group govuk-!-padding-left-4">
+              <h4
+                className="govuk-label govuk-label--s govuk-label-wrapper"
+                id={`${filterType}-label`}
               >
-                <div className="app-c-option-select__container-inner js-auto-height-inner">
-                  <div className="govuk-radios govuk-form-group govuk-radios--small">
-                    <fieldset className="govuk-fieldset">
-                      <legend className="govuk-fieldset__legend gem-c-radios govuk-fieldset__legend--m govuk-visually-hidden">
-                        {filterLabel}
-                      </legend>
-                      <select
-                        className="govuk-select"
-                        onChange={(e) => handleChange(e)}
-                      >
-                        {componentFilters.map((filter: any, index) => (
-                          <option
-                            key={index}
-                            value={filter.metric_id}
-                            selected={
-                              selectedFilter?.metric_id === filter.metric_id
-                            }
-                          >
-                            {filter.filter_bedtype}
-                          </option>
-                        ))}
-                      </select>
-                    </fieldset>
-                  </div>
-                </div>
-              </div>
+                {filterLabel}
+              </h4>
+              <select
+                aria-labelledby={`${filterType}-label`}
+                className="govuk-select"
+                onChange={(e) => handleChange(e)}
+              >
+                {componentFilters.map((filter: any, index) => (
+                  <option
+                    key={index}
+                    value={filter.metric_id}
+                    selected={selectedFilter?.metric_id === filter.metric_id}
+                  >
+                    {filter.filter_bedtype}
+                  </option>
+                ))}
+              </select>
               <div className="govuk-grid-row govuk-!-margin-top-4">
                 <div className="govuk-grid-column-full">
                   <div className="govuk-button-group">
@@ -191,7 +176,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                   </div>
                 </div>
               </div>
-            </>
+            </div>
           )}
         </FilterBox>
       )}
