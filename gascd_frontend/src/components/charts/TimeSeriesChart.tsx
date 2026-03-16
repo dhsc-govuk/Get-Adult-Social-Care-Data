@@ -33,6 +33,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   dateFormat = '%b %y',
 }) => {
   const DEFAULT_COLORS = [
+    '#206095', // Blue
     '#F29F41', // Orange
     '#12344D', // Dark Navy
     '#56B4E9', // Light Blue

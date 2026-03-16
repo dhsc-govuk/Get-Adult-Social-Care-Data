@@ -100,7 +100,10 @@ const FilterRadioGroup: React.FC<Props> = ({
   };
 
   const setDefaultFilter = () => {
-    if (filterType === 'numbers-table-metrics') {
+    if (
+      filterType === 'numbers-table-metrics' ||
+      filterType === 'single-type-chart-metric'
+    ) {
       setSelectedFilter({
         metric_id: 'bedcount_per_hundred_thousand_adults_total',
         filter_bedtype: 'All bed types',

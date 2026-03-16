@@ -50,7 +50,7 @@ describe('PopulationPage', () => {
     }
 
     const bodyTextElement = screen.getByText(
-      /Population data at district, local authority, regional and national levels for England./i
+      /regional and national levels for England./i
     );
     expect(bodyTextElement).toBeInTheDocument();
 

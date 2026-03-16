@@ -211,8 +211,8 @@ export default function ProvisionAndOccupancyPage() {
             Population size and age group percentages
           </h1>
           <p className="govuk-body-l">
-            Population data at district, local authority, regional and national
-            levels for England.
+            Population data at <abbr title="local authority">LA</abbr>, regional
+            and national levels for England.
           </p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview
@@ -240,9 +240,16 @@ export default function ProvisionAndOccupancyPage() {
           table={
             <DataTable
               tableref={tableref1}
-              caption={`Table 1: population size and age group percentages – 
-                ${locationNames.LALabel} local authority, 
-                ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
+              caption={
+                <>
+                  Table 1: population size and age group percentages –
+                  {locationNames.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr>,
+                  {locationNames.RegionLabel} region and{' '}
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getMostRecentDate(filteredDemographicData)}
+                </>
+              }
               source={
                 'Population estimates from the Office for National Statistics (ONS)'
               }
