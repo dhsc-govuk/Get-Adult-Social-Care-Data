@@ -74,7 +74,7 @@ describe('LAFundingPage', () => {
     );
 
     const learningDisabilityLink = screen.getAllByRole('link', {
-      name: /Total population aged 18-64 with a learning disability, predicted to display challenging behaviour/i,
+      name: /People aged 18-64 with a learning disability, predicted to display challenging behaviour, projected to 2045/i,
     });
     expect(learningDisabilityLink[0]).toBeInTheDocument();
     expect(learningDisabilityLink[0]).toHaveAttribute(

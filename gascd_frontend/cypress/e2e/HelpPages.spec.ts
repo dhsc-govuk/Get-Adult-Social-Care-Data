@@ -96,7 +96,7 @@ describe('Help pages exist and contain data', () => {
       {
         url: '/help/estimated-population-learning-disability',
         heading:
-          'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
+          'People aged 18-64 with a learning disability, predicted to display challenging behaviour, projected to 2045',
       },
     ];
     cy.visit('');
