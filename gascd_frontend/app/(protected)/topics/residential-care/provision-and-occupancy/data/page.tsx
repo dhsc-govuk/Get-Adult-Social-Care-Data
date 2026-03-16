@@ -210,19 +210,43 @@ export default function ProvisionAndOccupancyPage() {
     if (!filteredCareHomeBedNumbersData.length) {
       return;
     }
-    let categories: string[] = [];
-    let values: number[] = [];
-    Object.entries(bedNumberRowHeaders).map((header: any) => {
-      categories.push(header[1]);
-      const datapoints = filteredCareHomeBedNumbersData.filter(
-        (item) => item.location_id === header[0]
-      );
-      if (datapoints.length && datapoints[0].data_point !== null) {
-        values.push(datapoints[0].data_point);
-      } else {
-        values.push(0);
-      }
-    });
+    const data = Object.fromEntries(
+      Object.entries(bedNumberRowHeaders).map((header: any) => {
+        const datapoints = filteredCareHomeBedNumbersData.filter(
+          (item) => item.location_id === header[0]
+        );
+        const value =
+          datapoints.length && datapoints[0].data_point !== null
+            ? datapoints[0].data_point
+            : 0;
+        return [header[1], value];
+      })
+    );
+
+    const sorted = Object.entries(data).sort(
+      (a, b) => (b[1] as number) - (a[1] as number)
+    );
+    const region = sorted.filter((location) =>
+      [locationNamesWithAverageLabels.RegionLabel].includes(location[0])
+    );
+    const country = sorted.filter((location) =>
+      [locationNamesWithAverageLabels.CountryLabel].includes(location[0])
+    );
+    const localAuthorities = sorted.filter(
+      (location) =>
+        ![
+          locationNamesWithAverageLabels.CountryLabel,
+          locationNamesWithAverageLabels.RegionLabel,
+        ].includes(location[0])
+    );
+
+    const categories = [...country, ...region, ...localAuthorities].map(
+      (location) => location[0]
+    );
+    const values = [...country, ...region, ...localAuthorities].map(
+      (location) => location[1] as number
+    );
+
     setChartData({
       categories: categories,
       values: values,
@@ -598,8 +622,10 @@ export default function ProvisionAndOccupancyPage() {
           chart={
             <>
               <h3 className="govuk-heading-s">
-                Figure 1: chart of care home beds per 100,000 adult population -
-                local authorities in {locationNamesCP.RegionLabel},{' '}
+                Figure 1: care home bed numbers per 100,000 adult population (
+                {getFilterName('numbers-table-metrics').toLowerCase()}) –{' '}
+                <abbr title="local authority">LA</abbr>s in{' '}
+                {locationNamesCP.RegionLabel},{' '}
                 {IndicatorService.getMostRecentDate(bedNumbersData)}
               </h3>
               {(chartData.categories.length > 0 &&
@@ -614,6 +640,9 @@ export default function ProvisionAndOccupancyPage() {
                   </div>
                 )) || <p>Loading chart...</p>}
               <p className="govuk-body">
+                Note: small numbers have been suppressed and will appear as zero
+              </p>
+              <p className="govuk-body">
                 Source: Capacity Tracker from the Department of Health and
                 Social Care (DHSC), population estimates from the Office for
                 National Statistics (ONS)
@@ -624,9 +653,13 @@ export default function ProvisionAndOccupancyPage() {
             <VerticalLocationTable
               tableref={tableref1}
               caption={
-                `Table 1: care home bed numbers per 100,000 adult population for regional local authorities -
-                ${locationNamesCP.RegionLabel}, ` +
-                IndicatorService.getMostRecentDate(bedNumbersData)
+                <>
+                  Table 1: care home beds per 100,000 adult population (
+                  {getFilterName('numbers-table-metrics').toLowerCase()}) for
+                  regional <abbr title="local authority">LA</abbr>s –{' '}
+                  {locationNamesCP.RegionLabel},{' '}
+                  {IndicatorService.getMostRecentDate(bedNumbersData)}
+                </>
               }
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
@@ -899,6 +932,9 @@ export default function ProvisionAndOccupancyPage() {
                   <TimeSeriesChart series={timeData} />
                 </div>
               )) || <p>Loading graph</p>}
+              <p className="govuk-body">
+                Note: small numbers have been suppressed and will appear as zero
+              </p>
               <p className="govuk-body">
                 Source: Capacity Tracker from the Department of Health and
                 Social Care (DHSC), population estimates from the Office for
