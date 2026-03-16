@@ -298,7 +298,6 @@ export default function LAFundingPage() {
         }
       }
     });
-    console.log(metricIds);
 
     // Make sure headers appear in date order
     metricIds.sort((item1, item2) => item1.endDate - item2.endDate);

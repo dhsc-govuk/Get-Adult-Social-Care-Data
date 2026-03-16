@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Filters } from '@/data/interfaces/Filters';
 import FilterBox from './FilterBox';
-import { filter_helptext } from '../../../app/(protected)/topics/residential-care/provision-and-occupancy/helptext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import AnalyticsService from '@/services/analytics/analyticsService';
@@ -23,12 +22,10 @@ const FilterRadioGroup: React.FC<Props> = ({
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
   const [componentFilters, setComponentFilters] = useState<Filters[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<Filters>();
-  const [searchedFilters, setSearchedFilters] = useState<Filters[]>([]);
   const [displayFilter, setDisplayFilter] = useState<string | null>(null);
 
   useEffect(() => {
     setLocalFilters();
-    setSearchedFilters(componentFilters);
   }, []);
 
   const setLocalFilters = () => {
@@ -54,11 +51,15 @@ const FilterRadioGroup: React.FC<Props> = ({
   };
 
   const handleShowHideToggle = (showFilters: boolean) => {
-    setSearchedFilters(componentFilters);
     setShowFilters(showFilters);
   };
 
-  const handleChange = (metric_id: string, filter_bedtype: string) => {
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const metric_id = event.target.value;
+    const filter_bedtype =
+      componentFilters.find((filter) => filter.metric_id === metric_id)
+        ?.filter_bedtype || '';
+
     let newFilter: Filters = {
       metric_id: metric_id,
       filter_bedtype: filter_bedtype,
@@ -78,14 +79,6 @@ const FilterRadioGroup: React.FC<Props> = ({
     );
   };
 
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
-    const searchedFilters = componentFilters.filter((filter) =>
-      filter.filter_bedtype.toLowerCase().includes(searchTerm)
-    );
-    setSearchedFilters(searchedFilters);
-  };
-
   const clearFilters = () => {
     localStorage.removeItem(filterType);
     setDefaultFilter();
@@ -100,10 +93,10 @@ const FilterRadioGroup: React.FC<Props> = ({
   };
 
   const setDefaultFilter = () => {
-    if (filterType === 'numbers-table-metrics') {
+    if (filterType === 'long-term-funding-support-type') {
       setSelectedFilter({
-        metric_id: 'bedcount_per_hundred_thousand_adults_total',
-        filter_bedtype: 'All bed types',
+        metric_id: 'elss_all_types_of_care_home_all_ages',
+        filter_bedtype: 'All types of care home',
       });
     }
   };
@@ -143,28 +136,9 @@ const FilterRadioGroup: React.FC<Props> = ({
           {componentFilters.length > 0 && (
             <>
               <div className="js-container-heading">
-                <h4 className="govuk-heading-s searchable-filters-heading">
+                <h4 className="govuk-label govuk-label--s govuk-label-wrapper">
                   {filterLabel}
                 </h4>
-              </div>
-              <div
-                id="radios-search"
-                className="app-c-option-select__filter"
-                hidden
-                style={{ display: 'block' }}
-              >
-                <label
-                  htmlFor="input-bedtype-radios"
-                  className="govuk-label govuk-visually-hidden"
-                >
-                  {filterLabel} search
-                </label>
-                <input
-                  id="input-bedtype-radios"
-                  className="app-c-option-select__filter-input govuk-input"
-                  type="text"
-                  onKeyUp={handleSearch}
-                />
               </div>
               <div
                 role="group"
@@ -177,39 +151,22 @@ const FilterRadioGroup: React.FC<Props> = ({
                       <legend className="govuk-fieldset__legend gem-c-radios govuk-fieldset__legend--m govuk-visually-hidden">
                         {filterLabel}
                       </legend>
-                      <ul className="govuk-radios__list gem-c-radios__list">
-                        {searchedFilters.map((filter: any, index) => (
-                          <li className="govuk-radios__item" key={index}>
-                            <input
-                              className="govuk-radios__input"
-                              id={filterType + filter.metric_id}
-                              name="Table filter"
-                              type="radio"
-                              value={filter.metric_id}
-                              checked={
-                                selectedFilter?.metric_id === filter.metric_id
-                              }
-                              onChange={() =>
-                                handleChange(
-                                  filter.metric_id,
-                                  filter.filter_bedtype
-                                )
-                              }
-                            />
-                            <label
-                              className="govuk-label govuk-radios__label"
-                              htmlFor={filterType + filter.metric_id}
-                            >
-                              {filter.filter_bedtype}
-                            </label>
-                            {filter_helptext[filter.metric_id] && (
-                              <div className="govuk-hint govuk-radios__hint">
-                                {filter_helptext[filter.metric_id]}
-                              </div>
-                            )}
-                          </li>
+                      <select
+                        className="govuk-select"
+                        onChange={(e) => handleChange(e)}
+                      >
+                        {componentFilters.map((filter: any, index) => (
+                          <option
+                            key={index}
+                            value={filter.metric_id}
+                            selected={
+                              selectedFilter?.metric_id === filter.metric_id
+                            }
+                          >
+                            {filter.filter_bedtype}
+                          </option>
                         ))}
-                      </ul>
+                      </select>
                     </fieldset>
                   </div>
                 </div>
