@@ -234,7 +234,7 @@ export default function ProvisionAndOccupancyPage() {
     const country = sorted.filter((location) =>
       [locationNamesWithAverageLabels.CountryLabel].includes(location[0])
     );
-    const localAuthoritys = sorted.filter(
+    const localAuthorities = sorted.filter(
       (location) =>
         ![
           locationNamesWithAverageLabels.CountryLabel,
@@ -242,10 +242,10 @@ export default function ProvisionAndOccupancyPage() {
         ].includes(location[0])
     );
 
-    const categories = [...country, ...region, ...localAuthoritys].map(
+    const categories = [...country, ...region, ...localAuthorities].map(
       (location) => location[0]
     );
-    const values = [...country, ...region, ...localAuthoritys].map(
+    const values = [...country, ...region, ...localAuthorities].map(
       (location) => location[1] as number
     );
 
@@ -627,7 +627,7 @@ export default function ProvisionAndOccupancyPage() {
             <>
               <h3 className="govuk-heading-s">
                 Figure 1: care home bed numbers per 100,000 adult population (
-                {getFilterName('numbers-table-metrics').toLowerCase()}) –{' '} 
+                {getFilterName('numbers-table-metrics').toLowerCase()}) –{' '}
                 <abbr title="local authority">LA</abbr>s in{' '}
                 {locationNamesCP.RegionLabel},{' '}
                 {IndicatorService.getMostRecentDate(bedNumbersData)}
@@ -659,8 +659,8 @@ export default function ProvisionAndOccupancyPage() {
               caption={
                 <>
                   Table 1: care home beds per 100,000 adult population (
-                  {getFilterName('numbers-table-metrics').toLowerCase()}) for regional{' '}
-                  <abbr title="local authority">LA</abbr>s –{' '}
+                  {getFilterName('numbers-table-metrics').toLowerCase()}) for
+                  regional <abbr title="local authority">LA</abbr>s –{' '}
                   {locationNamesCP.RegionLabel},{' '}
                   {IndicatorService.getMostRecentDate(bedNumbersData)}
                 </>
