@@ -23,6 +23,9 @@ import TimeSeriesChart, {
   DataPoint,
   Series,
 } from '@/components/charts/TimeSeriesChart';
+import FilterSelectGroup from '@/components/filters/FilterSelectGroup';
+import { update } from 'plotly.js';
+import { get } from 'http';
 
 export default function LAFundingPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -111,6 +114,26 @@ export default function LAFundingPage() {
     'elss_supported_accommodation_all_ages',
   ];
 
+  const supportSettingsForFundingTrendsDefault = {
+    metric_id: 'elss_all_types_of_care_home_all_ages',
+    filter_bedtype: 'All types of care home',
+  };
+
+  const supportSettingsForFundingTrends = {
+    elss_all_types_of_care_home_all_ages: 'All types of care home',
+    elss_all_types_of_adult_social_care_all_ages:
+      'All types of adult social care',
+    elss_all_types_of_community_social_care_all_ages:
+      'All types of community social care',
+    elss_community_direct_payments_all_ages: 'Community direct payments',
+    elss_community_home_care_all_ages: 'Home care',
+    elss_community_other_long_term_care_all_ages: 'Other',
+    elss_community_supported_living_all_ages: 'Supported living',
+    elss_nursing_all_ages: 'Nursing',
+    elss_residential_all_ages: 'Residential',
+    elss_supported_accommodation_all_ages: 'Supported accomodation',
+  };
+
   useEffect(() => {
     const fetchSelectedLocation = async () => {
       const userLocationId = await LocationService.getSelectedLocation();
@@ -175,7 +198,18 @@ export default function LAFundingPage() {
         location_ids: locationIds,
       }));
       setLAFundingOverTimeDataQuery(() => ({
-        metric_ids: ['elss_all_types_of_adult_social_care_all_ages'],
+        metric_ids: [
+          'elss_all_types_of_care_home_all_ages',
+          'elss_all_types_of_adult_social_care_all_ages',
+          'elss_all_types_of_community_social_care_all_ages',
+          'elss_community_direct_payments_all_ages',
+          'elss_community_home_care_all_ages',
+          'elss_community_other_long_term_care_all_ages',
+          'elss_community_supported_living_all_ages',
+          'elss_nursing_all_ages',
+          'elss_residential_all_ages',
+          'elss_supported_accommodation_all_ages',
+        ],
         location_ids: locationIds,
         query_type: 'MultiLocationTimeseriesQuery',
       }));
@@ -231,25 +265,44 @@ export default function LAFundingPage() {
     }
   }, [rawLaFundingOverTimeData]);
 
+  const updateLAFundingOverTimeFilter = () => {
+    createTimeSeriesForTable();
+    createTimeSeries();
+  };
+
+  const getSupportTypeFilter = () => {
+    const storedData = localStorage.getItem('long-term-funding-support-type');
+    let dataType = supportSettingsForFundingTrendsDefault;
+    if (storedData) {
+      dataType = JSON.parse(storedData);
+    }
+    return dataType;
+  };
+
   const createTimeSeriesForTable = () => {
     let metricIds: any[] = [];
-    rawLaFundingOverTimeData.map((indicator) => {
+    const supportTypeData = rawLaFundingOverTimeData.filter((indicator) => {
+      return indicator.metric_id === getSupportTypeFilter().metric_id;
+    });
+
+    supportTypeData.map((indicator) => {
       const indicatorDate = indicator.metric_date;
       if (indicatorDate) {
-        indicator.metric_id = `elss_all_types_of_adult_social_care_all_ages_${indicatorDate}`;
+        indicator.metric_id = `${indicator.metric_id}_${indicatorDate}`;
         if (!metricIds.find((m) => m.id === indicator.metric_id)) {
           metricIds.push({
-            id: `elss_all_types_of_adult_social_care_all_ages_${indicatorDate}`,
+            id: `${indicator.metric_id}`,
             name: `${indicatorDate - 1} to ${indicatorDate}`,
             endDate: indicatorDate,
           });
         }
       }
     });
+    console.log(metricIds);
 
     // Make sure headers appear in date order
     metricIds.sort((item1, item2) => item1.endDate - item2.endDate);
-    setLAFundingOverTimeDataForTable(rawLaFundingOverTimeData);
+    setLAFundingOverTimeDataForTable(supportTypeData);
     setLAFundingTableRowHeaders(
       Object.fromEntries(metricIds.map((m) => [m.id, m.name]))
     );
@@ -266,10 +319,13 @@ export default function LAFundingPage() {
       locationNames.RegionLabel,
       locationNames.CountryLabel,
     ];
-    let locatiionIDsForLines = [locationIds[1], locationIds[2], locationIds[3]];
-    locatiionIDsForLines.forEach((locationID: string, index: number) => {
+    const supportTypeData = rawLaFundingOverTimeData.filter((indicator) => {
+      return indicator.metric_id.includes(getSupportTypeFilter().metric_id);
+    });
+    let locationIDsForLines = [locationIds[1], locationIds[2], locationIds[3]];
+    locationIDsForLines.forEach((locationID: string, index: number) => {
       const id = locationID;
-      const metric_items = rawLaFundingOverTimeData.filter((item) => {
+      const metric_items = supportTypeData.filter((item) => {
         return item.location_id === id;
       });
       // Turn into the correct time series format
@@ -293,6 +349,16 @@ export default function LAFundingPage() {
       });
     });
     setTimeSeriesDataForGraph(series);
+  };
+
+  const getFilterName = (filterType: string) => {
+    let json = localStorage.getItem(filterType);
+    if (json) {
+      const filter = JSON.parse(json);
+      return filter.filter_bedtype;
+    } else {
+      return 'all types of adult social care';
+    }
   };
 
   return (
@@ -521,14 +587,21 @@ export default function LAFundingPage() {
           </p>
         }
       >
+        <FilterSelectGroup
+          filterType="long-term-funding-support-type"
+          filterLabel="Support setting"
+          filters={supportSettingsForFundingTrends}
+          updateMethod={updateLAFundingOverTimeFilter}
+        />
         <DataTabs
           id="3"
           graph={
             <>
               <h4 className="govuk-heading-s">
                 Figure 1: graph of <abbr title="Local Authority">LA</abbr>{' '}
-                funding for long-term adult social care (all types of adult
-                social care) for all age groups – {locationNames.LALabel}{' '}
+                funding for long-term adult social care (
+                {getFilterName('long-term-funding-support-type')}) for all age
+                groups – {locationNames.LALabel}{' '}
                 <abbr title="Local Authority">LA</abbr>,{' '}
                 {locationNames.RegionLabel} region and{' '}
                 {locationNames.CountryLabel},{' '}
@@ -558,8 +631,9 @@ export default function LAFundingPage() {
               caption={
                 <>
                   Table 3: <abbr title="Local Authority">LA</abbr> funding for
-                  long-term adult social care (all types of adult social care)
-                  for all age groups – {locationNames.LALabel}{' '}
+                  long-term adult social care (
+                  {getFilterName('long-term-funding-support-type')}) for all age
+                  groups – {locationNames.LALabel}{' '}
                   <abbr title="local authority">LA</abbr>,{' '}
                   {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}

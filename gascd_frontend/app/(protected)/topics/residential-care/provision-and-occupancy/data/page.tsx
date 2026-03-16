@@ -24,7 +24,6 @@ import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { Indicator } from '@/data/interfaces/Indicator';
-import { Filters } from '@/data/interfaces/Filters';
 import TableService from '@/services/Table/TableService';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
