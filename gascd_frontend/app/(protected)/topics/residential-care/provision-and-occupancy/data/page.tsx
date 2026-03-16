@@ -930,7 +930,7 @@ export default function ProvisionAndOccupancyPage() {
             <>
               <h3 className="govuk-heading-s">
                 Figure 2: care home bed numbers per 100,000 adult population (
-                {getFilterName('single-type-chart-metric')}) -{' '}
+                {getFilterName('single-type-chart-metric').toLowerCase()}) –{' '}
                 {locationNamesCP.LALabel}{' '}
                 <abbr title="local authority">LA</abbr>,{' '}
                 {IndicatorService.getEarliestDate(bedTypeOverTimeData)} to{' '}
