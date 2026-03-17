@@ -21,14 +21,22 @@ const INDEX_URL = `${PROTOTYPE_BASE}/pages`;
 
 // Cleanup to remove differences we don't care about
 const cleanAndSanitize = (text: string) => {
-  return text
-    .replace(
-      /Data correct as of\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}/gi,
-      ''
-    )
-    .replace(/Data correct as of\s+[\d/]+(\s+[A-Za-z]+)?(\s+\d+)?/gi, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return (
+    text
+      // Ignore dynamic dates
+      .replace(
+        /Data correct as of\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}/gi,
+        ''
+      )
+      .replace(/Data correct as of\s+[\d/]+(\s+[A-Za-z]+)?(\s+\d+)?/gi, '')
+      // Replace mock data with prototype data
+      .replace(/Sunderland/g, 'Suffolk')
+      .replace(/North East/g, 'East of England')
+      // Replace smart quotes
+      .replace(/’/g, "'")
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
 };
 
 test('Audit prototype against implementation', async ({ page }) => {
@@ -54,9 +62,17 @@ test('Audit prototype against implementation', async ({ page }) => {
   expect(validPaths.length).not.toBe(0);
 
   let done = 0;
+  let seen: string[] = [];
   for (const path of validPaths) {
     // Normalize the path (ensure it starts with /)
     let cleanPath = path?.startsWith('/') ? path : `/${path}`;
+    // Remove qs
+    cleanPath = cleanPath.split('?')[0];
+
+    if (seen.includes(cleanPath)) {
+      // Don't repeat pages
+      continue;
+    }
 
     let is_included = false;
     for (let included_path of INCLUDED_PATHS) {
@@ -69,6 +85,7 @@ test('Audit prototype against implementation', async ({ page }) => {
       continue;
     }
 
+    seen.push(cleanPath);
     // Capture Prototype Content
     console.log('Checking page: ', cleanPath);
     await page.goto(`${PROTOTYPE_BASE}${cleanPath}`);
@@ -80,6 +97,10 @@ test('Audit prototype against implementation', async ({ page }) => {
       // Remove all <td> elements from the DOM temporarily
       const cells = main.querySelectorAll('td');
       cells.forEach((td) => td.remove());
+
+      // Remove any ONS charts for now
+      const charts = main.querySelectorAll('.ons-chart__container');
+      charts.forEach((chart) => chart.remove());
 
       return main.innerText;
     });
