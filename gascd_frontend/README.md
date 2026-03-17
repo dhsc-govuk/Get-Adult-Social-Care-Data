@@ -97,6 +97,14 @@ You can also mock the metrics API by enabling the Mock Service worker when runni
 
 ## Continuous Integration, Development and Deployment
 
+### Unit/integration tests
+
+Unit and integration tests are built with Vitest. You can run them with:
+
+```bash
+make test
+```
+
 ### E2E tests
 
 End to end tests are built in cypress, which you can run against a local production build before a release.
@@ -138,6 +146,19 @@ This project uses Azure DevOps Pipelines for continuous integration and deployme
 - Build and Push: This steps builds a docker image and pushes to container registry
 - Deploy: This step deploys the application to Azure Web App
 
+### Prototype audit utility
+
+The frontend is designed in a UCD approach using a separate prototype project: https://github.com/dhsc-govuk/Get-Adult-Social-Care-Data_Prototype
+
+There is an audit utility built with playwright, which compares key pages in the NextJS against their prototype counterparts:
+
+```bash
+# Check out the prototype and run it separately with
+PORT=8000 npm run dev
+# Run the playright tests from this repo (starts NextJS up automatically)
+npm run audit
+```
+
 ### Generating Metrics API types
 
 The project uses `openapi-typescript` and `openapi-fetch` to generate types for the metrics API from our internal openapi spec.
@@ -147,7 +168,7 @@ If the openapi spec changes, these types need regenerating as follows:
 
 ## Checks
 
-The NextJS app is configured with two checks:
+The NextJS app is configured with two checks. These are used by Azure Container apps to support scaling and blue/green deployments:
 
 Liveness check
 

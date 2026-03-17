@@ -53,7 +53,7 @@ describe('CareProviderLocationsPage', () => {
     expect(bodyTextElement).toBeInTheDocument();
 
     const helpLink = screen.getAllByRole('link', {
-      name: /Number of community social care providers/i,
+      name: /Number of adult social care providers/i,
     });
     expect(helpLink[0]).toBeInTheDocument();
     expect(helpLink[0]).toHaveAttribute(
