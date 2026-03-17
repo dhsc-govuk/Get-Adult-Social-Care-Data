@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "format": "prettier --write",
     "lint-staged": "lint-staged",
+    "audit": "playwright test",
     "test": "vitest run --coverage",
     "test:nocov": "vitest run",
     "test:watch": "vitest",
@@ -105,7 +106,9 @@
     "vitest": "^4.0.16"
   },
   "optionalDependencies": {
-    "cypress": "^13.17.0"
+    "cypress": "^13.17.0",
+    "playwright": "^1.58.2",
+    "@playwright/test": "^1.58.2"
   },
   "overrides": {
     "@types/react": "19.1.12",
