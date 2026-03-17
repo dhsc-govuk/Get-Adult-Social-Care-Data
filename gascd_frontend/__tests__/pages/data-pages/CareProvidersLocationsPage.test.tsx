@@ -24,7 +24,7 @@ describe('CareProviderLocationsPage', () => {
     render(<CareProviderLocationsPage />);
 
     const mainHeading = screen.getByRole('heading', {
-      name: /Care providers: locations and services/i,
+      name: /Care provider services/i,
       level: 1,
     });
     expect(mainHeading).toBeInTheDocument();

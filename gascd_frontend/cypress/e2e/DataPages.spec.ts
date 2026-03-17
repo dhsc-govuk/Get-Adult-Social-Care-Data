@@ -3,12 +3,7 @@ describe('Data pages exist and contain data', () => {
     cy.login_onelogin('testcplocation@testing.com');
     cy.visit('/topics/residential-care/residential-care-providers/data');
 
-    cy.get('h1').should(
-      'contains.text',
-      'Care providers: locations and services'
-    );
-
-    cy.contains('Care providers: locations and services');
+    cy.get('h1').should('contains.text', 'Care provider services');
 
     cy.get('a[href*="table-2"]').click();
     cy.url().should('include', '#table-2');
