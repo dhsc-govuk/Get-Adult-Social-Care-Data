@@ -6,7 +6,6 @@ const PROT_PW = process.env.PROTOTYPE_PASSWORD || '';
 // PORT=8000 npm run dev
 const PROTOTYPE_HOME = 'http://localhost:8000';
 const DEV_BASE = 'http://localhost:3000';
-const INDEX_URL = `${PROTOTYPE_BASE}/pages`;
 const DEV_AUTH_URL = `${DEV_BASE}/api/auth/local`;
 
 // Update this to match the version of the prototype
@@ -18,6 +17,7 @@ const INCLUDED_PATHS = [
   '/footer/',
   '/service-information/',
 ];
+const INDEX_URL = `${PROTOTYPE_BASE}/pages`;
 
 // Cleanup to remove differences we don't care about
 const cleanAndSanitize = (text: string) => {
