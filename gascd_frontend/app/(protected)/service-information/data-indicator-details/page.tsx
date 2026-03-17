@@ -40,7 +40,7 @@ export default function DataIndicatorDetailsPage() {
               url="/help/beds-per-100000-adult-population-over-time"
             />
             <DataLinkCard
-              label="Number of community social care providers"
+              label="Number of adult social care providers"
               sources="Care Quality Commission"
               updateFrequency="Monthly updates"
               limitations={true}
@@ -184,23 +184,23 @@ export default function DataIndicatorDetailsPage() {
           </h2>
           <ul className="gem-c-cards__list gem-c-cards__list--one-column">
             <DataLinkCard
-              label="Total population aged 18-64 with a learning disability, predicted to display challenging behaviour"
-              sources="Office for National Statistics"
-              updateFrequency="TBC"
-              limitations={false}
-              url="/help/estimated-population-learning-disability"
-            />
-            <DataLinkCard
-              label="Total population aged 18-64 predicted to have autistic spectrum disorders"
-              sources="Office for National Statistics"
-              updateFrequency="TBC"
+              label="People aged 18-64 predicted to have autistic spectrum disorders, projected to 2045"
+              sources="Institute of Public Care"
+              updateFrequency="Updated every 5 years"
               limitations={true}
               url="/help/estimated-population-asd"
             />
             <DataLinkCard
-              label="Total population aged 30-64 to have early onset dementia"
-              sources="Office for National Statistics"
-              updateFrequency="TBC"
+              label="People aged 18-64 with a learning disability, predicted to display challenging behaviour, projected to 2045"
+              sources="Institute of Public Care"
+              updateFrequency="Updated every 5 years"
+              limitations={false}
+              url="/help/estimated-population-learning-disability"
+            />
+            <DataLinkCard
+              label="People aged 30-64 predicted to have early onset dementia, projected to 2045"
+              sources="Institute of Public Care"
+              updateFrequency="Updated every 5 years"
               limitations={true}
               url="/help/estimated-population-early-onset-dementia"
             />

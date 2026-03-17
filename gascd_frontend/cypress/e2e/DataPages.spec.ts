@@ -223,18 +223,15 @@ describe('Data pages exist and contain data', () => {
     cy.login_onelogin(Cypress.env('cpl_user'));
     cy.visit('/topics/population-needs/dementia-prevalence/data');
 
-    cy.get('h1').should(
-      'contains.text',
-      'Dementia prevalence and estimated diagnosis rate'
-    );
+    cy.get('h1').should('contains.text', 'Dementia prevalence');
 
-    cy.contains('Dementia prevalence and estimated diagnosis rate');
+    cy.contains('Dementia prevalence');
 
     cy.get('a[href*="table-1"]').click();
     cy.url().should('include', '#table-1');
     cy.get('#table-1')
       .should('be.visible')
-      .contains('Table 1: dementia prevalence and the dementia diagnosis rate');
+      .contains('Table 1: dementia prevalence');
     cy.get('#download-1').should('not.be.visible');
 
     cy.get('a[href*="download-1"]').click();
@@ -312,16 +309,16 @@ describe('Data pages exist and contain data', () => {
 
     cy.get('h1').should(
       'contains.text',
-      'Local Authority funding projected demand'
+      'Population projections within local authorities'
     );
 
-    cy.contains('Local Authority funding projected demand');
+    cy.contains('Population projections within local authorities');
     cy.get('a[href*="table-1"]').click();
     cy.url().should('include', '#table-1');
     cy.get('#table-1')
       .should('be.visible')
       .contains(
-        'Table 1: comparison of estimated population with selected health conditions over time within Local Authority area'
+        'Table 1: comparison of estimated population with selected needs over time within LA area'
       );
     cy.get('#download-1').should('not.be.visible');
 

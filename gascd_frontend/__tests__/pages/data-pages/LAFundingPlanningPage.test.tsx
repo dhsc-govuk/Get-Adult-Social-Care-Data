@@ -55,7 +55,7 @@ describe('LAFundingPage', () => {
     expect(bodyTextElement).toBeInTheDocument();
 
     const asdHelpLink = screen.getAllByRole('link', {
-      name: /Total population aged 18-64 predicted to have autistic spectrum disorders/i,
+      name: /People aged 18-64 predicted to have autistic spectrum disorders, projected to 2045/i,
     });
 
     expect(asdHelpLink[0]).toBeInTheDocument();
@@ -65,7 +65,7 @@ describe('LAFundingPage', () => {
     );
 
     const dementiaHelpLink = screen.getAllByRole('link', {
-      name: /Total population aged 30-64 to have early onset dementia/i,
+      name: /People aged 30-64 predicted to have early onset dementia, projected to 2045/i,
     });
     expect(dementiaHelpLink[0]).toBeInTheDocument();
     expect(dementiaHelpLink[0]).toHaveAttribute(
@@ -74,7 +74,7 @@ describe('LAFundingPage', () => {
     );
 
     const learningDisabilityLink = screen.getAllByRole('link', {
-      name: /Total population aged 18-64 with a learning disability, predicted to display challenging behaviour/i,
+      name: /People aged 18-64 with a learning disability, predicted to display challenging behaviour, projected to 2045/i,
     });
     expect(learningDisabilityLink[0]).toBeInTheDocument();
     expect(learningDisabilityLink[0]).toHaveAttribute(

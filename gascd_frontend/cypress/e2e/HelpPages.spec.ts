@@ -12,12 +12,12 @@ describe('Help pages exist and contain data', () => {
       },
       {
         url: '/help/total-number-community-social-care-providers',
-        heading: 'Number of community social care providers',
+        heading: 'Number of adult social care providers',
       },
       {
         url: '/help/number-people-receiving-care-from-community-social-care-provider',
         heading:
-          'Number of people receiving care in the last month from a community social care provider',
+          'Number of people receiving care from a community social care provider',
       },
       {
         url: '/help/percentage-beds-occupied',
@@ -87,16 +87,18 @@ describe('Help pages exist and contain data', () => {
       },
       {
         url: '/help/estimated-population-asd',
-        heading: 'Total population aged 18-64 predicted to have ASD',
+        heading:
+          'People aged 18-64 predicted to have autistic spectrum disorders, projected to 2045',
       },
       {
         url: '/help/estimated-population-early-onset-dementia',
-        heading: 'Total population aged 30-64 to have early onset dementia',
+        heading:
+          'People aged 30-64 predicted to have early onset dementia, projected to 2045',
       },
       {
         url: '/help/estimated-population-learning-disability',
         heading:
-          'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
+          'People aged 18-64 with a learning disability, predicted to display challenging behaviour, projected to 2045',
       },
     ];
     cy.visit('');

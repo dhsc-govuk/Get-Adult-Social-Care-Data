@@ -3,7 +3,10 @@ describe('Care Home pages exist and contain data', () => {
     cy.login_onelogin(Cypress.env('cpl_user'));
 
     cy.visit('/location-select');
-    cy.get('h1').should('contains.text', 'Select a location');
+    cy.get('h1').should(
+      'contains.text',
+      'Select your CQC registered office address for your care provider organisation'
+    );
     cy.get('label').contains('Test Care Provider Location 1').click();
     cy.get('button').contains('Apply changes').click();
 

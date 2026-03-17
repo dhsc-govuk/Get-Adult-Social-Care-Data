@@ -246,7 +246,7 @@ export default function ResidentialCareProvidersPage() {
       </DataBox>
       <DataIndicatorDetailsList>
         <DataLinkCard
-          label="Number of community social care providers"
+          label="Number of adult social care providers"
           sources="Care Quality Commission"
           updateFrequency="Monthly updates"
           limitations={true}
