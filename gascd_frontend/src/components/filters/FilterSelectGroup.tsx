@@ -95,8 +95,8 @@ const FilterRadioGroup: React.FC<Props> = ({
   const setDefaultFilter = () => {
     if (filterType === 'long-term-funding-support-type') {
       setSelectedFilter({
-        metric_id: 'elss_all_types_of_care_home_all_ages',
-        filter_bedtype: 'All types of care home',
+        metric_id: 'elss_all_types_of_adult_social_care_all_ages',
+        filter_bedtype: 'All types of adult social care',
       });
     }
   };

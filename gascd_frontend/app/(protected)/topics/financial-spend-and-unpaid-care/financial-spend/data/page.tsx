@@ -595,9 +595,8 @@ export default function LAFundingPage() {
           graph={
             <>
               <h4 className="govuk-heading-s">
-                Figure 1: graph of <abbr title="Local Authority">LA</abbr>{' '}
-                funding for long-term adult social care (
-                {getFilterName('long-term-funding-support-type')}) for all age
+                Figure 1: Total funding for long-term adult social care for{' '}
+                {getFilterName('long-term-funding-support-type')} for all age
                 groups – {locationNames.LALabel}{' '}
                 <abbr title="Local Authority">LA</abbr>,{' '}
                 {locationNames.RegionLabel} region and{' '}
