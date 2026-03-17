@@ -1,9 +1,10 @@
+using core.Reader;
 using Shouldly;
 using System;
 using System.IO;
 using Xunit;
 
-namespace core.Tests.ExcelReader;
+namespace core.Tests.Reader;
 
 public class ExcelReaderTests : IDisposable
 {
@@ -12,14 +13,14 @@ public class ExcelReaderTests : IDisposable
     [Fact]
     public void CanCreateExcelReader()
     {
-        Reader.ExcelReader excelReader = new Reader.ExcelReader(GetTestFileStream());
+        ExcelReader excelReader = new ExcelReader(GetTestFileStream());
         Assert.NotNull(excelReader);
     }
 
     [Fact]
     public void CanReadExcelFile()
     {
-        Reader.ExcelReader excelReader = new Reader.ExcelReader(GetTestFileStream());
+        ExcelReader excelReader = new ExcelReader(GetTestFileStream());
         int? sheetCount = excelReader.GetSheetCount();
         sheetCount.ShouldBe(3);
     }
