@@ -1,0 +1,13 @@
+[tools]
+dotnet = "10.0.201"  # use your SDK version
+
+[tasks.lint]
+description = "Run .NET code formatting and static analysis"
+run = """
+dotnet restore
+dotnet format --verify-no-changes --severity warn
+dotnet build --no-restore -warnaserror
+"""
+
+[tasks.test]
+run = "dotnet test"
