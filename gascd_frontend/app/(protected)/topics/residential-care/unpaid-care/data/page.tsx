@@ -152,7 +152,7 @@ export default function UnpaidCarePage() {
         dataInfo={
           <>
             <p className="govuk-body-m">
-              Find out how{' '}
+              Find out{' '}
               <a
                 href="/help/percentage-people-aged-5-and-over-who-provide-unpaid-care"
                 className="govuk-link"

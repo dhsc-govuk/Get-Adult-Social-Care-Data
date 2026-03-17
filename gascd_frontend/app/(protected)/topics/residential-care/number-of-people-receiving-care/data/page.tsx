@@ -181,7 +181,7 @@ export default function NumberPeopleReceivingCarePage() {
         dataInfo={
           <>
             <p className="govuk-body-m">
-              Find out how{' '}
+              Find out{' '}
               <a
                 href="/help/number-people-receiving-care-from-community-social-care-provider"
                 className="govuk-link"
