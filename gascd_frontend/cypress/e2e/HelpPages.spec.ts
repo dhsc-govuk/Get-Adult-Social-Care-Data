@@ -17,7 +17,7 @@ describe('Help pages exist and contain data', () => {
       {
         url: '/help/number-people-receiving-care-from-community-social-care-provider',
         heading:
-          'Number of people receiving care in the last month from a community social care provider',
+          'Number of people receiving care from a community social care provider',
       },
       {
         url: '/help/percentage-beds-occupied',
