@@ -39,13 +39,14 @@ const LocalMarketInformation: React.FC<Props> = ({
           </p>
         )}
         <p className="govuk-body">
-          Most local authorities in England publish Market Position Statements
-          (MPS) to help care providers understand the local care market.
+          Most <abbr title="Local Authority">LA</abbr>s in England publish
+          Market Position Statements (MPS) to help care providers understand the
+          local care market.
         </p>
         <p className="govuk-body">
           You can usually find these{' '}
-          <abbr title="Market Position Statement">MPS</abbr> documents on local
-          authority websites.
+          <abbr title="Market Position Statement">MPS</abbr> documents on{' '}
+          <abbr title="Local Authority">LA</abbr> websites.
         </p>
         <p className="govuk-body">
           <abbr title="Market Position Statement">MPS</abbr> documents include
@@ -57,12 +58,13 @@ const LocalMarketInformation: React.FC<Props> = ({
             forecasts of future supply and demand for adult social care services
           </li>
           <li>
-            how the local authority will support the local care market to meet
-            demand
+            how the <abbr title="Local Authority">LA</abbr> will support the
+            local care market to meet demand
           </li>
           <li>
-            how the local authority will engage with care providers on
-            challenges in the sector, such as funding pressures
+            how the <abbr title="Local Authority">LA</abbr> will engage with
+            care providers on challenges in the sector, such as funding
+            pressures
           </li>
         </ul>
       </div>
