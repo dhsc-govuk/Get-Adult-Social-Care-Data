@@ -5,11 +5,19 @@ const PROT_PW = process.env.PROTOTYPE_PASSWORD || '';
 // Run local prototype with
 // PORT=8000 npm run dev
 const PROTOTYPE_HOME = 'http://localhost:8000';
-const PROTOTYPE_BASE = PROTOTYPE_HOME + '/private-beta/2026/february';
 const DEV_BASE = 'http://localhost:3000';
 const INDEX_URL = `${PROTOTYPE_BASE}/pages`;
 const DEV_AUTH_URL = `${DEV_BASE}/api/auth/local`;
-const INCLUDED_PATHS = ['/help/', '/topics/', '/footer/'];
+
+// Update this to match the version of the prototype
+const PROTOTYPE_BASE = PROTOTYPE_HOME + '/private-beta/2026/march';
+// Explicit list of prototype paths to check against
+const INCLUDED_PATHS = [
+  '/help/',
+  '/topics/',
+  '/footer/',
+  '/service-information/',
+];
 
 // Cleanup to remove differences we don't care about
 const cleanAndSanitize = (text: string) => {
@@ -64,7 +72,6 @@ test('Audit prototype against implementation', async ({ page }) => {
     // Capture Prototype Content
     console.log('Checking page: ', cleanPath);
     await page.goto(`${PROTOTYPE_BASE}${cleanPath}`);
-    //const protoContent = await page.locator('main').innerText();
 
     const protoContent = await page.evaluate(() => {
       const main = document.querySelector('main');
@@ -81,7 +88,7 @@ test('Audit prototype against implementation', async ({ page }) => {
     devPath = devPath?.replace('/footer', '');
     // Capture Dev Content
     const devResponse = await page.goto(`${DEV_BASE}${devPath}`, {
-      // not recommended by docs - workaround for react loading
+      // not recommended by docs - workaround for react loading issues
       waitUntil: 'networkidle',
     });
 
@@ -99,8 +106,6 @@ test('Audit prototype against implementation', async ({ page }) => {
 
       return main.innerText;
     });
-
-    //const devContent = await page.locator('main').innerText();
 
     // Using a soft assertion so the test doesn't stop at the first error
     test.expect
