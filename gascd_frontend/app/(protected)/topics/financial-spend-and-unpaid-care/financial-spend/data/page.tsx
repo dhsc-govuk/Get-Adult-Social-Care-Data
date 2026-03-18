@@ -627,12 +627,13 @@ export default function LAFundingPage() {
               tableref={tableref3}
               caption={
                 <>
-                  Table 3: <abbr title="Local Authority">LA</abbr> funding for
-                  long-term adult social care (
-                  {getFilterName('long-term-funding-support-type')}) for all age
-                  groups – {locationNames.LALabel}{' '}
+                  Table 3: Total funding for long-term adult social care for
+                  {getFilterName(
+                    'long-term-funding-support-type'
+                  ).toLowerCase()}{' '}
+                  for all age groups – {locationNames.LALabel}{' '}
                   <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} region and{' '}
+                  {locationNames.RegionLabel} of England region and{' '}
                   {locationNames.CountryLabel},{' '}
                   {IndicatorService.getFinancialYear(
                     filteredDemographicData,
