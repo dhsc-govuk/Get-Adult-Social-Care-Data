@@ -31,6 +31,7 @@ export const handlers = [
 
       let metrics: any[] = [];
 
+      const fake_data = ['100', '200', '300', '200', '150'];
       for (let location of locations) {
         let fake_metric: any = {
           metric_code: metric_id,
@@ -38,11 +39,12 @@ export const handlers = [
           location_type: location.location_type,
           series_end_date: '2024-01-05',
           series_frequency: 'Daily',
-          values: ['100'],
+          // Mimic data API by returning the last value by default
+          values: [fake_data[fake_data.length - 1]],
         };
         if (time_series) {
           fake_metric.series_start_date = '2024-01-01';
-          fake_metric.values = ['100', '200', '300', '200', '150'];
+          fake_metric.values = fake_data;
         }
         metrics.push(fake_metric);
       }

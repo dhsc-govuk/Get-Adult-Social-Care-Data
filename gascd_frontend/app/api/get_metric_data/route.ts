@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
           metric_code: metric_id,
         },
         query: {
-          time_series: true,
+          time_series: is_timeseries,
         },
       },
       body: location_data as any,

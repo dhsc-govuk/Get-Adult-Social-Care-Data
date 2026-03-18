@@ -210,28 +210,28 @@ describe('test get metrics', () => {
     // This should match the user's CP and associated location
     const expected_data = [
       {
-        data_point: '100',
+        data_point: '150',
         location_id: 'testcpl1',
         location_type: 'CareProviderLocation',
         metric_date: '2024-01-05',
         metric_id: 'bedcount_total',
       },
       {
-        data_point: '100',
+        data_point: '150',
         location_id: 'E08000024',
         location_type: 'LA',
         metric_date: '2024-01-05',
         metric_id: 'bedcount_total',
       },
       {
-        data_point: '100',
+        data_point: '150',
         location_id: 'E12000001',
         location_type: 'Regional',
         metric_date: '2024-01-05',
         metric_id: 'bedcount_total',
       },
       {
-        data_point: '100',
+        data_point: '150',
         location_id: 'E92000001',
         location_type: 'National',
         metric_date: '2024-01-05',
