@@ -91,7 +91,7 @@ const TermsOfUse: React.FC = () => {
           the Get Adult Social Care Data service, this includes:
         </p>
         <ul className="govuk-list govuk-list--bullet">
-          <li>any direct, indirect or consequential losses </li>
+          <li>any direct, indirect, or consequential losses </li>
           <li>
             any loss or damage caused by civil wrongs (&apos;tort&apos;,
             including negligence), breach of contract or otherwise
@@ -283,7 +283,7 @@ const TermsOfUse: React.FC = () => {
             rel="noreferrer noopener"
             target="_blank"
           >
-            how long we keep your personal data (opens in new tab)
+            how long we keep your personal data (opens in new tab).
           </a>
         </p>
 
