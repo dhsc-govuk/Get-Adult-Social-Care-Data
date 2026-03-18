@@ -977,8 +977,8 @@ export default function ProvisionAndOccupancyPage() {
 
       <RelatedDataList>
         <DataLinkCard
-          label="Care providers: locations and services"
-          description="Data on residential care homes and nursing homes by location and service type."
+          label="Care provider services"
+          description="Data on residential care homes and nursing homes by service type."
           url="/topics/residential-care/residential-care-providers/data"
         />
         <DataLinkCard

@@ -48,7 +48,7 @@ describe('CareProviderLocationsPage', () => {
     }
 
     const bodyTextElement = screen.getByText(
-      /Data on care provision by location, service type and number of providers./i
+      /Data on care provision by service type and number of providers./i
     );
     expect(bodyTextElement).toBeInTheDocument();
 

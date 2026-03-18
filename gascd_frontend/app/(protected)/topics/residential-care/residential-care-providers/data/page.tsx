@@ -163,8 +163,7 @@ export default function ResidentialCareProvidersPage() {
         <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">Care provider services</h1>
           <p className="govuk-body-l">
-            Data on care provision by location, service type and number of
-            providers.
+            Data on care provision by service type and number of providers.
           </p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview

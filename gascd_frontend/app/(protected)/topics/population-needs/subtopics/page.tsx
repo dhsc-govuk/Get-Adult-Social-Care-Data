@@ -37,7 +37,7 @@ export default function PopulationNeedsPage() {
     {
       title: 'Population size and age group percentages',
       description:
-        'Population data at district, LA, regional and national levels for England.',
+        'Population data at LA, regional and national levels for England.',
       url: '/topics/population-needs/population-age-and-size/data',
     },
   ];
