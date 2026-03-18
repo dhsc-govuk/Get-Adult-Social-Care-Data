@@ -34,6 +34,9 @@ const LocationSelectPage: React.FC = () => {
       if (currentSelectedLocation) {
         setSelectedLocation(currentSelectedLocation);
         setSelectedLocationName(currentSelectedLocationName);
+      } else {
+        setSelectedLocation(availableLocations[0].location_id);
+        setSelectedLocationName(availableLocations[0].location_name);
       }
     };
 
