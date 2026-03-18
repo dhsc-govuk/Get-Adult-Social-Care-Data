@@ -205,7 +205,7 @@ export default function ProvisionAndOccupancyPage() {
           table={
             <DataTable
               tableref={tableref1}
-              caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
+              caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
@@ -258,7 +258,7 @@ export default function ProvisionAndOccupancyPage() {
           table={
             <DataTable
               tableref={tableref2}
-              caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
+              caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
@@ -308,7 +308,7 @@ export default function ProvisionAndOccupancyPage() {
           table={
             <DataTable
               tableref={tableref3}
-              caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
+              caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
@@ -373,7 +373,7 @@ export default function ProvisionAndOccupancyPage() {
         />
         <DataLinkCard
           label="Population size and age group percentages"
-          description="Population data at district, local authority, regional and national levels for England."
+          description="Population data at LA, regional and national levels for England."
           url="/topics/population-needs/population-age-and-size/data"
         />
       </RelatedDataList>

@@ -12,6 +12,7 @@ const DEV_AUTH_URL = `${DEV_BASE}/api/auth/local`;
 const PROTOTYPE_BASE = PROTOTYPE_HOME + '/private-beta/2026/march';
 // Explicit list of prototype paths to check against
 const INCLUDED_PATHS = [
+  '/home',
   '/start',
   '/help/',
   '/topics/',
@@ -121,6 +122,9 @@ test('Audit prototype against implementation', async ({ page }) => {
     test.expect
       .soft(devResponse?.status(), `Page not implemented: ${devPath}`)
       .toBe(200);
+    if (devResponse?.status() === 404) {
+      continue;
+    }
 
     const devContent = await page.evaluate(() => {
       const main = document.querySelector('main');

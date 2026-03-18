@@ -35,6 +35,7 @@
   ],
   "exclude": [
     "./cypress.config.ts",
+    "./playwright.config.ts",
     "node_modules",
     "cypress",
     "./scripts/import-users.ts"

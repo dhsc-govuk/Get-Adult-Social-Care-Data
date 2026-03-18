@@ -83,7 +83,7 @@ const TotalNumberCommunitySocialCareProvidersPage: React.FC = () => {
                 Registered office location: A provider&apos;s registered
                 location with <abbr title="Care Quality Commission">CQC</abbr>{' '}
                 is the location of their registered office, and this is how
-                providers are allocated to a given local authority and/or
+                providers are allocated to a given <abbr>LA</abbr> and/or
                 region. This may not reflect the actual location where adult
                 social care is delivered, as not all providers operate in the
                 same area as their registered office.

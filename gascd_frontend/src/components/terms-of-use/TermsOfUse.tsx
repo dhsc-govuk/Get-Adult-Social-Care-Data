@@ -6,7 +6,7 @@ const TermsOfUse: React.FC = () => {
       <div className="govuk-grid-column-two-thirds">
         <h1 className="govuk-heading-xl">Terms of use </h1>
         <p className="govuk-body">First published: 19 February 2026</p>
-        <p className="govuk-body">Last updated: 19 February 2026</p>
+        <p className="govuk-body">Last updated: 18 March 2026</p>
         <p className="govuk-body">
           This page explains the Get Adult Social Care Data (GASCD) service
           terms of use. You will be asked to agree to these terms of use when

@@ -216,14 +216,14 @@ export default function UnpaidCarePage() {
 
       <RelatedDataList>
         <DataLinkCard
-          label="Care providers: locations and services"
-          description="Data on residential care homes and nursing homes by location and service type."
-          url="/topics/residential-care/residential-care-providers/data"
-        />
-        <DataLinkCard
           label="Care home beds and occupancy levels"
           description="Provision and capacity data for care homes, including local, regional and national statistics."
           url="/topics/residential-care/provision-and-occupancy/data"
+        />
+        <DataLinkCard
+          label="Care provider services"
+          description="Data on residential care homes and nursing homes by service type."
+          url="/topics/residential-care/residential-care-providers/data"
         />
         <DataLinkCard
           label="Number of adults receiving community social care"

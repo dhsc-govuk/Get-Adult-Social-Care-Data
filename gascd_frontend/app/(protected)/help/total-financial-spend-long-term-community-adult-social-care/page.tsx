@@ -6,7 +6,7 @@ const TotalFinancialSpendLongTermCommunityAdultSocialCare: React.FC = () => {
   return (
     <>
       <Layout
-        title="Local Authority funding for long-term adult social care"
+        title="LA funding for long-term adult social care"
         showLoginInformation={false}
         currentPage={
           'total-financial-spend-long-term-community-adult-social-care'
@@ -14,7 +14,7 @@ const TotalFinancialSpendLongTermCommunityAdultSocialCare: React.FC = () => {
         backURL="/service-information/data-indicator-details"
       >
         <DataIndicatorDetails
-          title="Local Authority funding for long-term adult social care"
+          title="LA funding for long-term adult social care"
           whatThisMeasures={
             <p className="govuk-!-margin-top-0">
               The total financial spend on long-term adult social care as funded
