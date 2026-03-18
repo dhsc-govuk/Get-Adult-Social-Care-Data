@@ -31,6 +31,8 @@ export default function LAFundingPage() {
   const tableref2 = useRef<HTMLTableElement>(null);
   const tableref3 = useRef<HTMLTableElement>(null);
 
+  const [supportTypeFilterName, setSupportTypeFilterName] =
+    useState<string>('');
   const [locationNames, setLocationNames] = useState<LocationNames>({
     LALabel: 'Loading...',
     RegionLabel: 'Loading...',
@@ -275,6 +277,7 @@ export default function LAFundingPage() {
     if (storedData) {
       dataType = JSON.parse(storedData);
     }
+    setSupportTypeFilterName(dataType.filter_bedtype);
     return dataType;
   };
 
@@ -348,16 +351,6 @@ export default function LAFundingPage() {
       });
     });
     setTimeSeriesDataForGraph(series);
-  };
-
-  const getFilterName = (filterType: string) => {
-    let json = localStorage.getItem(filterType);
-    if (json) {
-      const filter = JSON.parse(json);
-      return filter.filter_bedtype;
-    } else {
-      return 'all types of adult social care';
-    }
   };
 
   return (
@@ -599,9 +592,8 @@ export default function LAFundingPage() {
             <>
               <h4 className="govuk-heading-s">
                 Figure 1: Total funding for long-term adult social care for{' '}
-                {getFilterName('long-term-funding-support-type').toLowerCase()}{' '}
-                for all age groups – {locationNames.LALabel}{' '}
-                <abbr title="Local Authority">LA</abbr>,{' '}
+                {supportTypeFilterName.toLowerCase()} for all age groups –{' '}
+                {locationNames.LALabel} <abbr title="Local Authority">LA</abbr>,{' '}
                 {locationNames.RegionLabel} region and{' '}
                 {locationNames.CountryLabel},{' '}
                 {IndicatorService.getFinancialYear(
@@ -629,11 +621,9 @@ export default function LAFundingPage() {
               tableref={tableref3}
               caption={
                 <>
-                  Table 3: Total funding for long-term adult social care for
-                  {getFilterName(
-                    'long-term-funding-support-type'
-                  ).toLowerCase()}{' '}
-                  for all age groups – {locationNames.LALabel}{' '}
+                  Table 3: Total funding for long-term adult social care for{' '}
+                  {supportTypeFilterName.toLowerCase()} for all age groups –{' '}
+                  {locationNames.LALabel}{' '}
                   <abbr title="local authority">LA</abbr>,{' '}
                   {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}
