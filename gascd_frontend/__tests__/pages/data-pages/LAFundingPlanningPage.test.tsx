@@ -41,7 +41,7 @@ describe('LAFundingPage', () => {
     }
 
     const dataBoxHeadings = [
-      'Comparison of estimated population with selected health conditions over time',
+      'Comparison of estimated population with selected needs over time',
     ];
     for (let dataBoxHeadingText of dataBoxHeadings) {
       expect(
