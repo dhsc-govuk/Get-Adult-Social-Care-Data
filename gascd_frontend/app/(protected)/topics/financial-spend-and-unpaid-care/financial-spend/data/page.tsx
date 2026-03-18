@@ -523,8 +523,8 @@ export default function LAFundingPage() {
                   'All types of adult social care',
                 elss_all_types_of_care_home_all_ages:
                   'All types of care home, including residential and nursing',
-                elss_nursing_all_ages: 'Residential',
-                elss_residential_all_ages: 'Nursing',
+                elss_nursing_all_ages: 'Nursing',
+                elss_residential_all_ages: 'Residential',
                 elss_all_types_of_community_social_care_all_ages:
                   'All types of community social care, including home care, supported living, community direct payments and other schemes',
                 elss_community_home_care_all_ages: 'Home care',
