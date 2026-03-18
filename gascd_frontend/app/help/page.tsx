@@ -20,8 +20,8 @@ const HelpPage = () => {
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-xl">Get help with this service</h1>
             <p className="govuk-body">
-              If you have any questions or need support with this service, email
-              us at{' '}
+              If you have any questions or need support with using this service,
+              email us at{' '}
               <a
                 href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
                 className="govuk-link"

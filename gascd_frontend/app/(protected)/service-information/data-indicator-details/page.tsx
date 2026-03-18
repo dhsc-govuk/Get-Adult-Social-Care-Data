@@ -62,7 +62,7 @@ export default function DataIndicatorDetailsPage() {
             />
             <DataLinkCard
               label="People aged 5 and over who provide unpaid care"
-              sources="Office for National Statistics."
+              sources="Office for National Statistics"
               updateFrequency="Updated every 10 years"
               limitations={false}
               url="/help/percentage-people-aged-5-and-over-who-provide-unpaid-care"
@@ -88,7 +88,7 @@ export default function DataIndicatorDetailsPage() {
               label={
                 <>
                   <abbr title="Local Authority">LA</abbr> funding for short-term
-                  and long term adult social care
+                  and long-term adult social care
                 </>
               }
               sources="NHS England"
@@ -121,13 +121,6 @@ export default function DataIndicatorDetailsPage() {
               updateFrequency="Updated every 10 years"
               limitations={false}
               url="/help/disability-prevalence"
-            />
-            <DataLinkCard
-              label="Estimated dementia diagnosis rate for people aged 65 and over"
-              sources="Department of Health and Social Care"
-              updateFrequency="Yearly updates"
-              limitations={true}
-              url="/help/estimated-dementia-diagnosis-rate-aged-65-and-over"
             />
             <DataLinkCard
               label="Households &lsquo;deprived in 4 dimensions&rsquo;"
@@ -194,7 +187,7 @@ export default function DataIndicatorDetailsPage() {
               label="People aged 18-64 with a learning disability, predicted to display challenging behaviour, projected to 2045"
               sources="Institute of Public Care"
               updateFrequency="Updated every 5 years"
-              limitations={false}
+              limitations={true}
               url="/help/estimated-population-learning-disability"
             />
             <DataLinkCard

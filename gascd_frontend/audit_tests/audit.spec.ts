@@ -12,6 +12,7 @@ const DEV_AUTH_URL = `${DEV_BASE}/api/auth/local`;
 const PROTOTYPE_BASE = PROTOTYPE_HOME + '/private-beta/2026/march';
 // Explicit list of prototype paths to check against
 const INCLUDED_PATHS = [
+  '/start',
   '/help/',
   '/topics/',
   '/footer/',
@@ -34,6 +35,8 @@ const cleanAndSanitize = (text: string) => {
       .replace(/North East/g, 'East of England')
       // Replace smart quotes
       .replace(/’/g, "'")
+      .replace(/‘/g, "'")
+      // Trim whitespace
       .replace(/\s+/g, ' ')
       .trim()
   );
@@ -95,7 +98,7 @@ test('Audit prototype against implementation', async ({ page }) => {
       if (!main) return '';
 
       // Remove all <td> elements from the DOM temporarily
-      const cells = main.querySelectorAll('td');
+      const cells = main.querySelectorAll('tr');
       cells.forEach((td) => td.remove());
 
       // Remove any ONS charts for now
@@ -107,6 +110,7 @@ test('Audit prototype against implementation', async ({ page }) => {
 
     let devPath = cleanPath?.replace('/signed-in', '');
     devPath = devPath?.replace('/footer', '');
+    devPath = devPath?.replace('/start', '/login');
     // Capture Dev Content
     const devResponse = await page.goto(`${DEV_BASE}${devPath}`, {
       // not recommended by docs - workaround for react loading issues
@@ -115,14 +119,14 @@ test('Audit prototype against implementation', async ({ page }) => {
 
     // Check page exists in dev
     test.expect
-      .soft(devResponse?.status(), `Page not implemented: ${path}`)
+      .soft(devResponse?.status(), `Page not implemented: ${devPath}`)
       .toBe(200);
 
     const devContent = await page.evaluate(() => {
       const main = document.querySelector('main');
       if (!main) return '';
 
-      const cells = main.querySelectorAll('td');
+      const cells = main.querySelectorAll('tr');
       cells.forEach((td) => td.remove());
 
       return main.innerText;

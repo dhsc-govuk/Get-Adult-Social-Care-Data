@@ -362,8 +362,8 @@ export default function ProvisionAndOccupancyPage() {
 
       <RelatedDataList>
         <DataLinkCard
-          label="Dementia prevalence and estimated diagnosis rate"
-          description="Data on registered dementia diagnoses with estimates for undiagnosed dementia."
+          label="Dementia prevalence"
+          description="Data estimates for undiagnosed dementia."
           url="/topics/population-needs/dementia-prevalence/data"
         />
         <DataLinkCard

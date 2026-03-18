@@ -211,7 +211,7 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-3').should('not.be.visible');
   });
 
-  it('Should navigate to the Dementia prevalence and estimated diagnosis rate page and check the contents', () => {
+  it('Should navigate to the Dementia prevalence page and check the contents', () => {
     cy.login_onelogin(Cypress.env('cpl_user'));
     cy.visit('/topics/population-needs/dementia-prevalence/data');
 
