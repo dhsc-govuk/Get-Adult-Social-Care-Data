@@ -273,7 +273,7 @@ describe('Data pages exist and contain data', () => {
     cy.get('#graph-3')
       .should('be.visible')
       .contains(
-        'Figure 1: graph of LA funding for long-term adult social care (all types of adult social care) for all age groups'
+        'Figure 1: Total funding for long-term adult social care for all types of adult social care for all age groups'
       );
     cy.get('#table-3').should('not.be.visible');
     cy.get('#download-3').should('not.be.visible');
@@ -283,7 +283,7 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-3')
       .should('be.visible')
       .contains(
-        'Table 3: LA funding for long-term adult social care (all types of adult social care) for all age groups'
+        'Table 3: Total funding for long-term adult social care for all types of adult social care for all age groups'
       );
     cy.get('#graph-3').should('not.be.visible');
     cy.get('#download-3').should('not.be.visible');
