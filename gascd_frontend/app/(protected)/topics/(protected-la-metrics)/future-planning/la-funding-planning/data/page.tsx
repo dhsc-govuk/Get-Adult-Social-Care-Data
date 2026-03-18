@@ -159,10 +159,34 @@ export default function LAFundingPlanningPage() {
         </div>
       </div>
       <DataBox
-        dataTitle="Comparison of estimated population with selected health conditions over time"
+        dataTitle="Comparison of estimated population with selected needs over time"
         dataInfo={
           <>
-            <p className="govuk-body-m">Add later</p>
+            <p className="govuk-body">
+              Find out how{' '}
+              <a
+                href="../../../help/estimated-population-early-onset-dementia"
+                className="govuk-link"
+              >
+                people aged 30-64 predicted to have early onset dementia
+              </a>
+              ,{' '}
+              <a
+                href="../../../help/estimated-population-learning-disability"
+                className="govuk-link"
+              >
+                people aged 18-64 with a learning disability, predicted to
+                display challenging behaviour
+              </a>{' '}
+              and{' '}
+              <a
+                href="../../../help/estimated-population-asd"
+                className="govuk-link"
+              >
+                people aged 18-64 predicted to have autistic spectrum disorders
+              </a>{' '}
+              are calculated.
+            </p>
           </>
         }
       >
@@ -216,10 +240,34 @@ export default function LAFundingPlanningPage() {
       </div>
 
       <DataBox
-        dataTitle="Estimated percentage change in population with selected health conditions - trends over time"
+        dataTitle="Estimated change in population with selected needs - trends over time"
         dataInfo={
           <>
-            <p className="govuk-body-m">Add later</p>
+            <p className="govuk-body">
+              Find out how{' '}
+              <a
+                href="../../../help/estimated-population-early-onset-dementia"
+                className="govuk-link"
+              >
+                people aged 30-64 predicted to have early onset dementia
+              </a>
+              ,{' '}
+              <a
+                href="../../../help/estimated-population-learning-disability"
+                className="govuk-link"
+              >
+                people aged 18-64 with a learning disability, predicted to
+                display challenging behaviour
+              </a>{' '}
+              and{' '}
+              <a
+                href="../../../help/estimated-population-asd"
+                className="govuk-link"
+              >
+                people aged 18-64 predicted to have autistic spectrum disorders
+              </a>{' '}
+              are calculated.
+            </p>
           </>
         }
       >
