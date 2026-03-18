@@ -41,7 +41,10 @@ const PrivacyPage = () => {
             </p>
             <ul className="govuk-list govuk-list--bullet">
               <li>your name</li>
-              <li>your CQC registered or GOV.UK email address</li>
+              <li>
+                your Care Quality Commission (CQC) registered or GOV.UK email
+                address
+              </li>
               <li>name and location of your employer or organisation.</li>
               <li>the IP address you use to access the GASCD service</li>
             </ul>
@@ -63,9 +66,9 @@ const PrivacyPage = () => {
             </ul>
             <p className="govuk-body">
               We use this information for verification and pre-authorisation to
-              allow access to the data the DHSC provides through its free Get
-              Adult Social Care Data service. To find out more about how the CQC
-              shares your data with us read the{' '}
+              allow access to the data the DHSC provides through its free GASCD
+              service. To find out more about how the CQC shares your data with
+              us read the{' '}
               <a href="https://www.cqc.org.uk/about-us/our-policies/privacy-statement">
                 CQC&apos;s privacy statement
               </a>
@@ -108,19 +111,18 @@ const PrivacyPage = () => {
               <li>understand who is using the service</li>
               <li>gather feedback to improve our services</li>
               <li>
-                respond to any feedback you send us, if you$&apos;ve asked us to
+                respond to any feedback you send us, if you&apos;ve asked us to
               </li>
               <li>send email alerts to users who request them</li>
               <li>monitor use of the service to identify security threats</li>
-              <li>understand who is using the service</li>
               <li>
                 monitor the performance of the service to identify
                 inefficiencies and errors
               </li>
               <li>
-                analyse the information we collect using Google Analytics to see
-                how you use the GASCD service and to see how well it performs on
-                your device.
+                analyse the information we collect using Azure App Insights to
+                see how you use the GASCD service and to see how well it
+                performs on your device.
               </li>
             </ul>
             <p className="govuk-body">We do this to help:</p>
@@ -163,7 +165,7 @@ const PrivacyPage = () => {
 
             <h2 className="govuk-heading-m">How long we keep your data </h2>
             <p className="govuk-body">
-              we&apos;ll keep your personal data for as long as you have a GASCD
+              We&apos;ll keep your personal data for as long as you have a GASCD
               service account.
             </p>
             <p className="govuk-body">
@@ -179,7 +181,7 @@ const PrivacyPage = () => {
             </p>
             <ul className="govuk-list govuk-list--bullet">
               <li>name</li>
-              <li>name and location of your employer or organisation.</li>
+              <li>name and location of your employer or organisation</li>
             </ul>
             <p className="govuk-body">
               So that we can carry out security audits, we&apos;ll keep your
@@ -209,6 +211,32 @@ const PrivacyPage = () => {
               using varying levels of encryption. We also make sure that any
               third parties that we deal with have an obligation to keep all
               personal data they process on our behalf secure.
+            </p>
+
+            <h2 className="govuk-heading-m">
+              Performance analysis and cookies
+            </h2>
+            <p className="govuk-body">
+              We also carry out performance analysis to see how you use the{' '}
+              <abbr title="Get adult social care data">GASCD</abbr> service and
+              how well the site performs on your device during your visit. We do
+              this to make sure it’s meeting the needs of its users and to
+              improve it.
+            </p>
+            <p className="govuk-body">
+              The legal basis for performing web analytics is your consent. When
+              you first visit the service, you will be asked whether you consent
+              to optional analytics cookies. If you do not give your consent,
+              you will still be able to use the service. If you do give consent
+              and change your mind, you can update your cookie settings at any
+              time.
+            </p>
+            <p className="govuk-body">
+              For more information you can read about the{' '}
+              <a href="/cookies" className="govuk-link">
+                cookies we use
+              </a>
+              .
             </p>
 
             <h2 className="govuk-heading-m">What are your rights </h2>

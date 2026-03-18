@@ -26,6 +26,12 @@ const TermsOfUse: React.FC = () => {
           service
         </h2>
         <p className="govuk-body">
+          You agree to keep your{' '}
+          <abbr title="Get adult social care data">GASCD</abbr> sign in details
+          secure and not share them with anyone, including other colleagues in
+          your organisation.
+        </p>
+        <p className="govuk-body">
           You agree to use the{' '}
           <abbr title="Get adult social care data">GASCD</abbr> service only for
           lawful purposes. You must also use it in a way that does not infringe
