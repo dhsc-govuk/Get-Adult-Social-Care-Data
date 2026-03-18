@@ -11,7 +11,7 @@ describe('HelpPage', () => {
     expect(headingElement).toBeInTheDocument();
 
     const bodyTextElement = screen.getByText(
-      /If you have any questions or need support with this service/i
+      /If you have any questions or need support with using this service/i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
