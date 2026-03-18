@@ -48,6 +48,9 @@ export default function ProvisionAndOccupancyPage() {
   const tableref2 = useRef<HTMLTableElement>(null);
   const tableref3 = useRef<HTMLTableElement>(null);
 
+  const [numbersTableFilterName, setNumbersTableFilterName] =
+    useState<string>('');
+  const [typesChartFilterName, setTypesChartFilterName] = useState<string>('');
   // location variables
   const [locationNamesCP, setLocationNamesCP] = useState<LocationNames>({
     CPLabel: 'Loading...',
@@ -496,12 +499,14 @@ export default function ProvisionAndOccupancyPage() {
       if (parsedData) {
         const id = parsedData.metric_id;
         const name = parsedData.filter_bedtype;
+        setNumbersTableFilterName(name);
         setFilteredCareHomeBedNumbersData(
           bedNumbersData.filter((item) => id === item.metric_id)
         );
         AnalyticsService.trackMetricView(id);
       }
     } else {
+      setNumbersTableFilterName('All bed types');
       setFilteredCareHomeBedNumbersData(
         bedNumbersData.filter(
           (item) =>
@@ -525,6 +530,9 @@ export default function ProvisionAndOccupancyPage() {
     if (storedData) {
       const filter = JSON.parse(storedData);
       header = filter;
+      setTypesChartFilterName(header.filter_bedtype);
+    } else {
+      setTypesChartFilterName('All bed types');
     }
     // Make some time series data based on the bed type row headers
     let series: Series[] = createTimeSeries(header);
@@ -561,16 +569,6 @@ export default function ProvisionAndOccupancyPage() {
       data: values,
     });
     return series;
-  };
-
-  const getFilterName = (filterType: string) => {
-    let json = localStorage.getItem(filterType);
-    if (json) {
-      const filter = JSON.parse(json);
-      return filter.filter_bedtype;
-    } else {
-      return 'All bed types';
-    }
   };
 
   return (
@@ -622,7 +620,7 @@ export default function ProvisionAndOccupancyPage() {
             <>
               <h3 className="govuk-heading-s">
                 Figure 1: care home bed numbers per 100,000 adult population (
-                {getFilterName('numbers-table-metrics').toLowerCase()}) –{' '}
+                {numbersTableFilterName.toLowerCase()}) –{' '}
                 <abbr title="local authority">LA</abbr>s in the{' '}
                 {locationNamesCP.RegionLabel},{' '}
                 {IndicatorService.getMostRecentDate(bedNumbersData)}
@@ -654,8 +652,8 @@ export default function ProvisionAndOccupancyPage() {
               caption={
                 <>
                   Table 1: care home beds per 100,000 adult population (
-                  {getFilterName('numbers-table-metrics').toLowerCase()}) for
-                  regional <abbr title="local authority">LA</abbr>s –{' '}
+                  {numbersTableFilterName.toLowerCase()}) for regional{' '}
+                  <abbr title="local authority">LA</abbr>s –{' '}
                   {locationNamesCP.RegionLabel},{' '}
                   {IndicatorService.getMostRecentDate(bedNumbersData)}
                 </>
@@ -929,7 +927,7 @@ export default function ProvisionAndOccupancyPage() {
             <>
               <h3 className="govuk-heading-s">
                 Figure 2: care home bed numbers per 100,000 adult population (
-                {getFilterName('single-type-chart-metric').toLowerCase()}) –{' '}
+                {typesChartFilterName.toLowerCase()}) –{' '}
                 {locationNamesCP.LALabel}{' '}
                 <abbr title="local authority">LA</abbr>,{' '}
                 {IndicatorService.getEarliestDate(bedTypeOverTimeData)} to{' '}

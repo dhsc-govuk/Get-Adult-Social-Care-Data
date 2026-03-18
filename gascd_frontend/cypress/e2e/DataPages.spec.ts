@@ -245,7 +245,7 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-1')
       .should('be.visible')
       .contains(
-        'Table 1: LA spending on short-term and long-term adult social care for all age groups'
+        'Table 1: Total LA spending on long and short-term adult social care for all primary support reasons and all age groups'
       );
     cy.get('#download-1').should('not.be.visible');
 
@@ -259,7 +259,7 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-2')
       .should('be.visible')
       .contains(
-        'Table 2: LA funding for long-term adult social care for all age groups'
+        'Table 2: Total LA funding for long-term adult social care by support setting for all age groups '
       );
     cy.get('#download-2').should('not.be.visible');
 
@@ -273,7 +273,7 @@ describe('Data pages exist and contain data', () => {
     cy.get('#graph-3')
       .should('be.visible')
       .contains(
-        'Figure 1: graph of LA funding for long-term adult social care (all types of adult social care) for all age groups'
+        'Figure 1: Total funding for long-term adult social care for all types of adult social care for all age groups'
       );
     cy.get('#table-3').should('not.be.visible');
     cy.get('#download-3').should('not.be.visible');
@@ -283,7 +283,7 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-3')
       .should('be.visible')
       .contains(
-        'Table 3: LA funding for long-term adult social care (all types of adult social care) for all age groups'
+        'Table 3: Total funding for long-term adult social care for all types of adult social care for all age groups'
       );
     cy.get('#graph-3').should('not.be.visible');
     cy.get('#download-3').should('not.be.visible');
@@ -310,7 +310,7 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-1')
       .should('be.visible')
       .contains(
-        'Table 1: comparison of estimated population with selected needs over time within LA area'
+        'Table 1: comparison of estimated population with selected needs over time within'
       );
     cy.get('#download-1').should('not.be.visible');
 
