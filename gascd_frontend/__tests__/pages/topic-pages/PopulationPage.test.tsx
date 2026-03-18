@@ -35,7 +35,7 @@ describe('PopulationNeedsPage', () => {
     );
 
     const healthLinkElement = screen.getByRole('link', {
-      name: /General health, disability and learning disability/i,
+      name: /General health and disability/i,
     });
     expect(healthLinkElement).toBeInTheDocument();
     expect(healthLinkElement).toHaveAttribute(

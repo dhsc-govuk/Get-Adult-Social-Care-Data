@@ -160,14 +160,11 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-3').should('not.be.visible');
   });
 
-  it('Should navigate to the General health, disability and learning disability page and check the contents', () => {
+  it('Should navigate to the General health and disability page and check the contents', () => {
     cy.login_onelogin(Cypress.env('cpl_user'));
     cy.visit('/topics/population-needs/disability-prevalence/data');
 
-    cy.get('h1').should(
-      'contains.text',
-      'General health, disability and learning disability'
-    );
+    cy.get('h1').should('contains.text', 'General health and disability');
 
     cy.contains('Disability prevalence');
 

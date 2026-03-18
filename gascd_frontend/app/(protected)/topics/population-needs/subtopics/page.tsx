@@ -30,7 +30,7 @@ export default function PopulationNeedsPage() {
       url: '/topics/population-needs/household-composition-and-economic-factors/data',
     },
     {
-      title: 'General health, disability and learning disability',
+      title: 'General health and disability',
       description:
         'Data on disability prevalence, learning disability diagnoses and reasons for accessing care.',
       url: '/topics/population-needs/disability-prevalence/data',
