@@ -178,8 +178,8 @@ export default function LAFundingPage() {
           setLocationNamesWithAverageLabels({
             CPLabel: locationNames.CPLabel!,
             LALabel: locationNames.LALabel,
-            RegionLabel: `${locationNames.RegionLabel} - regional average`,
-            CountryLabel: `${locationNames.CountryLabel} - national average`,
+            RegionLabel: `${locationNames.RegionLabel} (regional average)`,
+            CountryLabel: `${locationNames.CountryLabel} (national average)`,
           });
         } catch (error) {
           console.error('Error fetching location names:', error);
@@ -409,9 +409,10 @@ export default function LAFundingPage() {
               tableref={tableref1}
               caption={
                 <>
-                  Table 1: <abbr title="Local Authority">LA</abbr> spending on
-                  short-term and long-term adult social care for all age groups
-                  – {locationNames.LALabel}{' '}
+                  Table 1: Total <abbr title="Local Authority">LA</abbr>{' '}
+                  spending on long and short-term adult social care for all
+                  primary support reasons and all age groups –{' '}
+                  {locationNames.LALabel}{' '}
                   <abbr title="Local Authority">LA</abbr>,{' '}
                   {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}
@@ -498,9 +499,9 @@ export default function LAFundingPage() {
               tableref={tableref2}
               caption={
                 <>
-                  Table 2: <abbr title="Local Authority">LA</abbr> funding for
-                  long-term adult social care for all age groups –{' '}
-                  {locationNames.LALabel}{' '}
+                  Table 2: Total <abbr title="Local Authority">LA</abbr> funding
+                  for long-term adult social care by support setting for all age
+                  groups – {locationNames.LALabel}{' '}
                   <abbr title="local authority">LA</abbr>,{' '}
                   {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}
@@ -596,8 +597,8 @@ export default function LAFundingPage() {
             <>
               <h4 className="govuk-heading-s">
                 Figure 1: Total funding for long-term adult social care for{' '}
-                {getFilterName('long-term-funding-support-type')} for all age
-                groups – {locationNames.LALabel}{' '}
+                {getFilterName('long-term-funding-support-type').toLowerCase()}{' '}
+                for all age groups – {locationNames.LALabel}{' '}
                 <abbr title="Local Authority">LA</abbr>,{' '}
                 {locationNames.RegionLabel} region and{' '}
                 {locationNames.CountryLabel},{' '}
@@ -626,10 +627,11 @@ export default function LAFundingPage() {
               tableref={tableref3}
               caption={
                 <>
-                  Table 3: <abbr title="Local Authority">LA</abbr> funding for
-                  long-term adult social care (
-                  {getFilterName('long-term-funding-support-type')}) for all age
-                  groups – {locationNames.LALabel}{' '}
+                  Table 3: Total funding for long-term adult social care for
+                  {getFilterName(
+                    'long-term-funding-support-type'
+                  ).toLowerCase()}{' '}
+                  for all age groups – {locationNames.LALabel}{' '}
                   <abbr title="local authority">LA</abbr>,{' '}
                   {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}
