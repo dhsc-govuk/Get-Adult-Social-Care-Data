@@ -29,7 +29,7 @@ describe('Help pages exist and contain data', () => {
       },
       {
         url: '/help/total-financial-spend-long-term-community-adult-social-care',
-        heading: 'Local Authority funding for long-term adult social care',
+        heading: 'LA funding for long-term adult social care',
       },
       {
         url: '/help/percentages-financial-spend-long-term-and-short-term-care',
