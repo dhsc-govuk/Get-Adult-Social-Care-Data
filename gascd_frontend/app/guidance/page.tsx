@@ -100,7 +100,7 @@ const GuidancePage = () => {
                 <ul className="govuk-list govuk-list--bullet">
                   <li>dementia prevalence and estimated diagnosis rate</li>
                   <li>economic factors and household composition</li>
-                  <li>general health, disability and learning disability</li>
+                  <li>general health and disability</li>
                   <li>population size and age group percentages</li>
                 </ul>
                 <p className="govuk-body">

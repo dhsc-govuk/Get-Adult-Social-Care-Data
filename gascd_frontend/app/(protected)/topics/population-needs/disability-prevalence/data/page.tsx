@@ -247,7 +247,7 @@ export default function DisabilityPrevalence() {
 
   return (
     <Layout
-      title="General health, disability and learning disability"
+      title="General health and disability"
       autoSpaceMainContent={false}
       showLoginInformation={true}
       currentPage="disability-prevalence"
@@ -255,9 +255,7 @@ export default function DisabilityPrevalence() {
     >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
-          <h1 className="govuk-heading-xl">
-            General health, disability and learning disability
-          </h1>
+          <h1 className="govuk-heading-xl">General health and disability</h1>
           <p className="govuk-body-l">
             Data on disability prevalence, learning disability diagnoses and
             reasons for accessing care.
