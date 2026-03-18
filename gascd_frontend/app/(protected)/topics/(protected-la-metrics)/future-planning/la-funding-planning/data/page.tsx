@@ -197,8 +197,8 @@ export default function LAFundingPlanningPage() {
               caption={
                 <>
                   Table 1: comparison of estimated population with selected
-                  needs over time within <abbr title="local authority">LA</abbr>{' '}
-                  area
+                  needs over time within {locationNames.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr> area
                 </>
               }
               source={
@@ -279,7 +279,7 @@ export default function LAFundingPlanningPage() {
               caption={
                 <>
                   Table 2: estimated percentage change in population with
-                  selected needs over time within{' '}
+                  selected needs over time within {locationNames.LALabel}{' '}
                   <abbr title="local authority">LA</abbr> area
                 </>
               }
