@@ -24,7 +24,7 @@ describe('DisabilityPrevalencePage', () => {
     render(<DisabilityPrevalencePage />);
 
     const mainHeading = screen.getByRole('heading', {
-      name: /General health, disability and learning disability/i,
+      name: /General health and disability/i,
       level: 1,
     });
     expect(mainHeading).toBeInTheDocument();

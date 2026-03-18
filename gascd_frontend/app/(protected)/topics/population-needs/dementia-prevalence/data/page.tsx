@@ -221,7 +221,7 @@ export default function DementaPrevalencePage() {
           url="/topics/population-needs/household-composition-and-economic-factors/data"
         />
         <DataLinkCard
-          label="General health, disability and learning disability"
+          label="General health and disability"
           description="Data on disability prevalence, learning disability diagnoses and reasons for accessing care."
           url="/topics/population-needs/disability-prevalence/data"
         />
