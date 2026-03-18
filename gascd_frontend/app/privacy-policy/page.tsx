@@ -21,7 +21,7 @@ const PrivacyPage = () => {
 
             <h2 className="govuk-heading-m">Who we are</h2>
             <p className="govuk-body">
-              Get Adult Social Care Data (GASCD) is a new service provided by
+              Get adult social care data (GASCD) is a new service provided by
               the Department for Health and Social Care as part of the Data
               Access Project. The GASCD service gives key stakeholders in the
               adult social care sector access to adult social care data in one
@@ -53,8 +53,8 @@ const PrivacyPage = () => {
               What data we collect from other sources
             </h2>
             <p className="govuk-body">
-              We work closely with trusted partners such as the Care Quality
-              Commission (CQC) who provide us with information on:
+              We work closely with trusted partners such as the CQC who provide
+              us with information on:
             </p>
             <ul className="govuk-list govuk-list--bullet">
               <li>name of registered CQC nominated individuals</li>
