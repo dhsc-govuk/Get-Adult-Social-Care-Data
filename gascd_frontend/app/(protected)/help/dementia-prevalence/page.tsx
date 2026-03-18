@@ -33,7 +33,7 @@ const DementiaPrevalence = () => {
             <p className="govuk-!-margin-top-0">
               Based on Quality and Outcomes Framework (QOF) data, this measure
               calculates the proportion of patients on GP practice registers
-              with a recorded diagnosis of dementia. Figures are aggregated to
+              with a recorded diagnosis of dementia. Figures are aggregated to{' '}
               <abbr title="Local Authority">LA</abbr> level using the postcode
               of the GP practice, not the patient&apos;s home address.
             </p>

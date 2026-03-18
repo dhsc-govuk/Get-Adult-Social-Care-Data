@@ -17,7 +17,7 @@ const AccessibilityStatementPage: React.FC = () => {
             </h1>
             <p className="govuk-body">
               This accessibility statement applies to the Get adult social care
-              (GASCD) service at{' '}
+              data (GASCD) service at{' '}
               <a
                 href="https://getadultsocialcaredata.com"
                 className="govuk-link"

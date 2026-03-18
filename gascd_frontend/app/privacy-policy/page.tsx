@@ -61,7 +61,7 @@ const PrivacyPage = () => {
               <li>email address of CQC nominated individuals</li>
               <li>
                 name and location of the CQC registered care provider
-                organisation.
+                organisation
               </li>
             </ul>
             <p className="govuk-body">
@@ -122,7 +122,7 @@ const PrivacyPage = () => {
               <li>
                 analyse the information we collect using Azure App Insights to
                 see how you use the GASCD service and to see how well it
-                performs on your device.
+                performs on your device
               </li>
             </ul>
             <p className="govuk-body">We do this to help:</p>
