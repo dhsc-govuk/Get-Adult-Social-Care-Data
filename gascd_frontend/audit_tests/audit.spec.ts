@@ -110,6 +110,7 @@ test('Audit prototype against implementation', async ({ page }) => {
 
     let devPath = cleanPath?.replace('/signed-in', '');
     devPath = devPath?.replace('/footer', '');
+    devPath = devPath?.replace('/start', '/login');
     // Capture Dev Content
     const devResponse = await page.goto(`${DEV_BASE}${devPath}`, {
       // not recommended by docs - workaround for react loading issues
