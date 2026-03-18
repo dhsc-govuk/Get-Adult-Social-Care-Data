@@ -24,6 +24,7 @@ import TimeSeriesChart, {
   Series,
 } from '@/components/charts/TimeSeriesChart';
 import FilterSelectGroup from '@/components/filters/FilterSelectGroup';
+import { cloneDeep } from 'lodash';
 
 export default function LAFundingPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -100,8 +101,8 @@ export default function LAFundingPage() {
     'edpsr_st_total_all_ages',
     'edpsr_stlt_total_all_ages',
 
-    'elss_all_types_of_care_home_all_ages',
     'elss_all_types_of_adult_social_care_all_ages',
+    'elss_all_types_of_care_home_all_ages',
     'elss_all_types_of_community_social_care_all_ages',
     'elss_community_direct_payments_all_ages',
     'elss_community_home_care_all_ages',
@@ -113,14 +114,14 @@ export default function LAFundingPage() {
   ];
 
   const supportSettingsForFundingTrendsDefault = {
-    metric_id: 'elss_all_types_of_care_home_all_ages',
-    filter_bedtype: 'All types of care home',
+    metric_id: 'elss_all_types_of_adult_social_care_all_ages',
+    filter_bedtype: 'All types of adult social care',
   };
 
   const supportSettingsForFundingTrends = {
-    elss_all_types_of_care_home_all_ages: 'All types of care home',
     elss_all_types_of_adult_social_care_all_ages:
       'All types of adult social care',
+    elss_all_types_of_care_home_all_ages: 'All types of care home',
     elss_all_types_of_community_social_care_all_ages:
       'All types of community social care',
     elss_community_direct_payments_all_ages: 'Community direct payments',
@@ -279,8 +280,11 @@ export default function LAFundingPage() {
 
   const createTimeSeriesForTable = () => {
     let metricIds: any[] = [];
-    const supportTypeData = rawLaFundingOverTimeData.filter((indicator) => {
-      return indicator.metric_id === getSupportTypeFilter().metric_id;
+    const supportTypeData: Indicator[] = [];
+    rawLaFundingOverTimeData.forEach((indicator) => {
+      if (indicator.metric_id === getSupportTypeFilter().metric_id) {
+        supportTypeData.push(cloneDeep(indicator));
+      }
     });
 
     supportTypeData.map((indicator) => {
@@ -297,8 +301,6 @@ export default function LAFundingPage() {
       }
     });
 
-    // Make sure headers appear in date order
-    metricIds.sort((item1, item2) => item1.endDate - item2.endDate);
     setLAFundingOverTimeDataForTable(supportTypeData);
     setLAFundingTableRowHeaders(
       Object.fromEntries(metricIds.map((m) => [m.id, m.name]))
