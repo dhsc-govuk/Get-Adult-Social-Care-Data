@@ -47,19 +47,18 @@ export default function LAFundingPlanningPage() {
     },
   ];
 
-  // These are made up and need to be replaced by the read IDs when we have them
   const demographicMetricIds = [
-    'pansi_pred_pop_early_dem_aged_30_64',
-    'pansi_pred_pop_challenging_behaviour_aged_18_64',
-    'pansi_pred_pop_asd_aged_18_64',
+    'pansi_pred_pop_early_dem_aged_30_64_yearly',
+    'pansi_pred_pop_challenging_behaviour_aged_18_64_yearly',
+    'pansi_pred_pop_asd_aged_18_64_yearly',
 
-    'pansi_pred_pop_early_dem_aged_30_64_perc_change',
-    'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change',
-    'pansi_pred_pop_asd_aged_18_64_perc_change',
+    'pansi_pred_pop_early_dem_aged_30_64_perc_change_yearly',
+    'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change_yearly',
+    'pansi_pred_pop_asd_aged_18_64_perc_change_yearly',
   ];
 
   // Replace with dynamic dates when we have them, this is just to show the table structure for now
-  const columnDates = ['2025', '2030', '2035', '2040', '2045'];
+  const columnDates = ['2025', '2026', '2027', '2028', '2029'];
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -198,8 +197,8 @@ export default function LAFundingPlanningPage() {
               caption={
                 <>
                   Table 1: comparison of estimated population with selected
-                  needs over time within <abbr title="local authority">LA</abbr>{' '}
-                  area
+                  needs over time within {locationNames.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr> area
                 </>
               }
               source={
@@ -207,11 +206,11 @@ export default function LAFundingPlanningPage() {
               }
               columnHeaders={columnDates}
               rowHeaders={{
-                pansi_pred_pop_early_dem_aged_30_64:
+                pansi_pred_pop_early_dem_aged_30_64_yearly:
                   'Total population aged 30-64 to have early onset dementia',
-                pansi_pred_pop_challenging_behaviour_aged_18_64:
+                pansi_pred_pop_challenging_behaviour_aged_18_64_yearly:
                   'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
-                pansi_pred_pop_asd_aged_18_64:
+                pansi_pred_pop_asd_aged_18_64_yearly:
                   'Total population aged 18-64 predicted to have autistic spectrum disorders',
               }}
               data={filteredDemographicData}
@@ -280,7 +279,7 @@ export default function LAFundingPlanningPage() {
               caption={
                 <>
                   Table 2: estimated percentage change in population with
-                  selected needs over time within{' '}
+                  selected needs over time within {locationNames.LALabel}{' '}
                   <abbr title="local authority">LA</abbr> area
                 </>
               }
@@ -289,18 +288,18 @@ export default function LAFundingPlanningPage() {
               }
               columnHeaders={columnDates}
               rowHeaders={{
-                pansi_pred_pop_early_dem_aged_30_64_perc_change:
+                pansi_pred_pop_early_dem_aged_30_64_perc_change_yearly:
                   'Total population aged 30-64 to have early onset dementia',
-                pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change:
+                pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change_yearly:
                   'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
-                pansi_pred_pop_asd_aged_18_64_perc_change:
+                pansi_pred_pop_asd_aged_18_64_perc_change_yearly:
                   'Total population aged 18-64 predicted to have autistic spectrum disorders',
               }}
               data={filteredDemographicData}
               percentageRows={[
-                'pansi_pred_pop_early_dem_aged_30_64_perc_change',
-                'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change',
-                'pansi_pred_pop_asd_aged_18_64_perc_change',
+                'pansi_pred_pop_early_dem_aged_30_64_perc_change_yearly',
+                'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change_yearly',
+                'pansi_pred_pop_asd_aged_18_64_perc_change_yearly',
               ]}
               currency={false}
             ></TimeSeriesTable>
