@@ -16,6 +16,11 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import TimeSeriesTable from '@/components/tables/TimeSeriesTable';
+import TimeSeriesChart, {
+  DataPoint,
+  Series,
+} from '@/components/charts/TimeSeriesChart';
+import IndicatorService from '@/services/indicator/IndicatorService';
 
 export default function LAFundingPlanningPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -56,6 +61,15 @@ export default function LAFundingPlanningPage() {
     'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change_yearly',
     'pansi_pred_pop_asd_aged_18_64_perc_change_yearly',
   ];
+
+  const percChangeHeaders = {
+    pansi_pred_pop_early_dem_aged_30_64_perc_change_yearly:
+      'Total population aged 30-64 to have early onset dementia',
+    pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change_yearly:
+      'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
+    pansi_pred_pop_asd_aged_18_64_perc_change_yearly:
+      'Total population aged 18-64 predicted to have autistic spectrum disorders',
+  };
 
   // Replace with dynamic dates when we have them, this is just to show the table structure for now
   const columnDates = ['2025', '2026', '2027', '2028', '2029'];
@@ -98,7 +112,7 @@ export default function LAFundingPlanningPage() {
     if (locationIds.length > 0) {
       setDemographicQuery(() => ({
         metric_ids: demographicMetricIds,
-        location_ids: [locationIds[1]],
+        location_ids: [],
         query_type: 'LATimeseriesQuery',
       }));
     }
@@ -134,6 +148,45 @@ export default function LAFundingPlanningPage() {
     };
     fetchLocationIds();
   }, [CPLocationId]);
+
+  const [timeSeriesDataForGraph, setTimeSeriesDataForGraph] = useState<
+    Series[]
+  >([]);
+
+  useEffect(() => {
+    const series = createTimeSeries(percChangeHeaders, filteredDemographicData);
+    setTimeSeriesDataForGraph(series);
+  }, [filteredDemographicData]);
+
+  const createTimeSeries = (headers: any, data: Indicator[]) => {
+    let series: Series[] = [];
+    Object.entries(headers).forEach((header: any) => {
+      const metric_id = header[0];
+      const name = header[1];
+      // Filter to the current metric ID
+      const metric_items = data.filter((item) => item.metric_id === metric_id);
+      // Turn into the correct time series format
+      const values: DataPoint[] = metric_items.map((item) => {
+        return {
+          date: IndicatorService.parseDate(item).toISOString(),
+          value: item.data_point,
+        };
+      });
+      // Sort by date
+      values.sort((a, b) => {
+        if (a.date > b.date) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+      series.push({
+        name: name,
+        data: values,
+      });
+    });
+    return series;
+  };
 
   return (
     <Layout
@@ -272,7 +325,29 @@ export default function LAFundingPlanningPage() {
       >
         <DataTabs
           id="2"
-          chart={<p>Add later</p>}
+          chart={
+            <>
+              <h4 className="govuk-heading-s">
+                Figure 1: estimated percentage change in population with
+                selected needs over time within {locationNames.LALabel}{' '}
+                <abbr title="local authority">LA</abbr> area
+              </h4>
+              {(timeSeriesDataForGraph.length > 0 && (
+                <div style={{ width: '100%', height: `500px` }}>
+                  <TimeSeriesChart
+                    series={timeSeriesDataForGraph}
+                    dateFormat="%Y"
+                    ySuffix="%"
+                    decimalPoints={2}
+                  />
+                </div>
+              )) || <p>Loading graph</p>}
+              <p className="govuk-body">
+                Source: Adult Social Care Activity and Finance Report from NHS
+                England
+              </p>
+            </>
+          }
           table={
             <TimeSeriesTable
               tableref={tableref2}
@@ -287,14 +362,7 @@ export default function LAFundingPlanningPage() {
                 'Projected Adult Needs and Service Information (PANSI) v15 August 2025 from the Institute of Public Care'
               }
               columnHeaders={columnDates}
-              rowHeaders={{
-                pansi_pred_pop_early_dem_aged_30_64_perc_change_yearly:
-                  'Total population aged 30-64 to have early onset dementia',
-                pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change_yearly:
-                  'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
-                pansi_pred_pop_asd_aged_18_64_perc_change_yearly:
-                  'Total population aged 18-64 predicted to have autistic spectrum disorders',
-              }}
+              rowHeaders={percChangeHeaders}
               data={filteredDemographicData}
               percentageRows={[
                 'pansi_pred_pop_early_dem_aged_30_64_perc_change_yearly',
