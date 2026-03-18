@@ -623,8 +623,8 @@ export default function ProvisionAndOccupancyPage() {
               <h3 className="govuk-heading-s">
                 Figure 1: care home bed numbers per 100,000 adult population (
                 {getFilterName('numbers-table-metrics').toLowerCase()}) –{' '}
-                <abbr title="local authority">LA</abbr>s in{' '}
-                {locationNamesCP.RegionLabel} of England,{' '}
+                <abbr title="local authority">LA</abbr>s in the{' '}
+                {locationNamesCP.RegionLabel},{' '}
                 {IndicatorService.getMostRecentDate(bedNumbersData)}
               </h3>
               {(chartData.categories.length > 0 &&
@@ -656,7 +656,7 @@ export default function ProvisionAndOccupancyPage() {
                   Table 1: care home beds per 100,000 adult population (
                   {getFilterName('numbers-table-metrics').toLowerCase()}) for
                   regional <abbr title="local authority">LA</abbr>s –{' '}
-                  {locationNamesCP.RegionLabel} of England,{' '}
+                  {locationNamesCP.RegionLabel},{' '}
                   {IndicatorService.getMostRecentDate(bedNumbersData)}
                 </>
               }

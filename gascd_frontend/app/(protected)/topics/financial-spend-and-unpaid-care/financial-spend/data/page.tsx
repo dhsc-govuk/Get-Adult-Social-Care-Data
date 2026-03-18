@@ -178,8 +178,8 @@ export default function LAFundingPage() {
           setLocationNamesWithAverageLabels({
             CPLabel: locationNames.CPLabel!,
             LALabel: locationNames.LALabel,
-            RegionLabel: `${locationNames.RegionLabel} - regional average`,
-            CountryLabel: `${locationNames.CountryLabel} - national average`,
+            RegionLabel: `${locationNames.RegionLabel} (regional average)`,
+            CountryLabel: `${locationNames.CountryLabel} (national average)`,
           });
         } catch (error) {
           console.error('Error fetching location names:', error);
@@ -414,7 +414,7 @@ export default function LAFundingPage() {
                   primary support reasons and all age groups –{' '}
                   {locationNames.LALabel}{' '}
                   <abbr title="Local Authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} of England region and{' '}
+                  {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}
                   {IndicatorService.getFinancialYear(
                     filteredDemographicData,
@@ -503,7 +503,7 @@ export default function LAFundingPage() {
                   for long-term adult social care by support setting for all age
                   groups – {locationNames.LALabel}{' '}
                   <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} of England region and{' '}
+                  {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}
                   {IndicatorService.getFinancialYear(
                     filteredDemographicData,
@@ -600,7 +600,7 @@ export default function LAFundingPage() {
                 {getFilterName('long-term-funding-support-type').toLowerCase()}{' '}
                 for all age groups – {locationNames.LALabel}{' '}
                 <abbr title="Local Authority">LA</abbr>,{' '}
-                {locationNames.RegionLabel} of England region and{' '}
+                {locationNames.RegionLabel} region and{' '}
                 {locationNames.CountryLabel},{' '}
                 {IndicatorService.getFinancialYear(
                   filteredDemographicData,
@@ -633,7 +633,7 @@ export default function LAFundingPage() {
                   ).toLowerCase()}{' '}
                   for all age groups – {locationNames.LALabel}{' '}
                   <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} of England region and{' '}
+                  {locationNames.RegionLabel} region and{' '}
                   {locationNames.CountryLabel},{' '}
                   {IndicatorService.getFinancialYear(
                     filteredDemographicData,
