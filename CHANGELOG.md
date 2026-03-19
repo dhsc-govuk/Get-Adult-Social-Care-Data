@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changes
+
+Frontend
+- Simplify and improve accuracy of project-wide README (#466)
+- [GASCDS-1073] March release misc content changes (#498)
+- [GASCDS-1036] Graph for estimated percentage future planning (#497)
+- [GASCDS-1063] Add error state to Location select page for no location (#487)
+- [GASCDS-900] Filters: LA funding for long-term adult social care – trends over time (#485)
+- [GASCDS-1080] Set up playwright prototype audit utility (#488)
+- [GASCDS-1074] Ensure usage of 'LA' vs 'Local authority' matches the prototype (#480)
+- [GASCDS-916] Chart: LA funding for long-term adult social care – trends over time (#457)
+- [GASCDS-1047] Protection for LA pansi metrics (#472)
+- [GASCDS-1072] Update privacy notice text (#470)
+- [GASCDS-1071] Update start page text (#468)
+- [GASCDS-1028] Remove thousand notation from LA financials (#449)
+- [GASCDS-665] Clean up CQC matching scripts (#451)
+- [GASCDS-899] Table: LA funding for long-term adult social care – trends over time (#443)
+- [GASCDS-1035] Table: Comparison of estimated population with selected health conditions over time (#454)
+
+Backend:
+- GASCDS-1049: add pansi table and metrics (#456)
+
+Security:
+- Upgrade to NextJS 15.5.13 (#499)
+- Bump flatted from 3.3.2 to 3.4.1 in /gascd_frontend (#483)
+- Bump undici from 6.23.0 to 6.24.1 in /gascd_frontend (#482)
+- Bump fast-xml-parser from 5.4.2 to 5.5.6 in /gascd_frontend (#489)
+- Bump kysely from 0.28.8 to 0.28.12 in /gascd_frontend (#495)
+- Bump immutable from 5.0.3 to 5.1.5 in /gascd_frontend (#448)
+
+
 ## [1.3.5] - 2026-03-05
 
 Fixes and additional tracking
