@@ -15,7 +15,7 @@ public class ExcelReaderTests : IDisposable
     public void CanCreateExcelReader()
     {
         ExcelReader excelReader = new ExcelReader(GetTestFileStream());
-        Assert.NotNull(excelReader);
+        excelReader.ShouldNotBeNull();
     }
 
     [Fact]
