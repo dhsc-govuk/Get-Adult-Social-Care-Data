@@ -22,7 +22,9 @@ export interface Series {
 interface TimeSeriesChartProps {
   series: Series[];
   yPrefix?: string;
+  ySuffix?: string;
   dateFormat?: string;
+  decimalPoints?: number;
 }
 
 // --- Component ---
@@ -30,14 +32,19 @@ interface TimeSeriesChartProps {
 const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   series = [],
   yPrefix = '',
+  ySuffix = '',
   dateFormat = '%b %y',
+  decimalPoints = 0,
 }) => {
   const DEFAULT_COLORS = [
-    '#F29F41', // Orange
-    '#12344D', // Dark Navy
-    '#56B4E9', // Light Blue
-    '#009E73', // Green (Extra)
-    '#CC79A7', // Pink (Extra)
+    // Colour pallete from
+    // https://service-manual.ons.gov.uk/data-visualisation/colours/using-colours-in-charts#multiple-colours
+    '#206095',
+    '#a8bd3a',
+    '#871a5b',
+    '#f66068',
+    '#05341a',
+    '#27a0cc',
   ];
 
   // 1. Transform props into Plotly Data Traces
@@ -58,7 +65,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
           color: s.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
           width: 5,
         },
-        hovertemplate: `<b>${yPrefix}%{y:,.0f}</b><br>%{x|%d %b %Y}<extra></extra>`,
+        hovertemplate: `<b>${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}</b><br>%{x|%d %b %Y}<extra></extra>`,
       };
 
       return trace as Data;
@@ -110,6 +117,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
       fixedrange: true, // prevents zooming
       automargin: true,
       tickprefix: yPrefix,
+      ticksuffix: ySuffix,
     },
     margin: { l: 60, t: 50, r: 20, b: 50 }, // Adjust margins for axis labels
     hovermode: 'x unified', // Shows all values for a specific month on hover

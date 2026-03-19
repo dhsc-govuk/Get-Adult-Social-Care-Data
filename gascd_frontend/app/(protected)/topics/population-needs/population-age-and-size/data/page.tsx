@@ -211,8 +211,8 @@ export default function ProvisionAndOccupancyPage() {
             Population size and age group percentages
           </h1>
           <p className="govuk-body-l">
-            Population data at district, local authority, regional and national
-            levels for England.
+            Population data at <abbr title="local authority">LA</abbr>, regional
+            and national levels for England.
           </p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview
@@ -240,9 +240,16 @@ export default function ProvisionAndOccupancyPage() {
           table={
             <DataTable
               tableref={tableref1}
-              caption={`Table 1: population size and age group percentages – 
-                ${locationNames.LALabel} local authority, 
-                ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
+              caption={
+                <>
+                  Table 1: population size and age group percentages –
+                  {locationNames.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr>,
+                  {locationNames.RegionLabel} region and{' '}
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getMostRecentDate(filteredDemographicData)}
+                </>
+              }
               source={
                 'Population estimates from the Office for National Statistics (ONS)'
               }
@@ -289,144 +296,6 @@ export default function ProvisionAndOccupancyPage() {
           }
         />
       </DataBox>
-      {/* <DataBox
-          dataTitle="Age group percentages at district and Middle Layer Super Output Area (MSOA) level"
-          dataInfo={
-            <>
-              Find out how{' '}
-              <a href="/help/population-age" className="govuk-link">
-                how age group percentages are calculated
-              </a>
-              .
-            </>
-          }
-        >
-          {mapAvailable && (
-            <form action="population-age#map" method="post">
-              <div className="govuk-form-block">
-                <fieldset className="govuk-fieldset">
-                  <legend className="govuk-fieldset__legend govuk-fieldset__legend--s">
-                    <h3 className="govuk-fieldset__heading">Select age group</h3>
-                  </legend>
-
-                  <div
-                    className="govuk-radios govuk-radios--inline govuk-radios--small"
-                    data-module="govuk-radios"
-                    data-govuk-radios-init=""
-                  >
-                    <div className="govuk-radios__item">
-                      <input
-                        className="govuk-radios__input"
-                        id="mapAgeGroup-2"
-                        name="mapAgeGroup"
-                        type="radio"
-                        onChange={handleAgeChange}
-                        checked={selectedAge === 'aged-65-to-74-years'}
-                        value="aged-65-to-74-years"
-                      />
-                      <label
-                        className="govuk-label govuk-radios__label"
-                        htmlFor="mapAgeGroup-2"
-                      >
-                        Aged 65 to 74
-                      </label>
-                    </div>
-
-                    <div className="govuk-radios__item">
-                      <input
-                        className="govuk-radios__input"
-                        id="mapAgeGroup-3"
-                        name="mapAgeGroup"
-                        type="radio"
-                        onChange={handleAgeChange}
-                        checked={selectedAge === 'aged-75-to-84-years'}
-                        value="aged-75-to-84-years"
-                      />
-                      <label
-                        className="govuk-label govuk-radios__label"
-                        htmlFor="mapAgeGroup-3"
-                      >
-                        Aged 75 to 84
-                      </label>
-                    </div>
-
-                    <div className="govuk-radios__item">
-                      <input
-                        className="govuk-radios__input"
-                        id="mapAgeGroup-4"
-                        name="mapAgeGroup"
-                        type="radio"
-                        onChange={handleAgeChange}
-                        checked={selectedAge === 'aged-85-years-and-over'}
-                        value="aged-85-years-and-over"
-                      />
-                      <label
-                        className="govuk-label govuk-radios__label"
-                        htmlFor="mapAgeGroup-4"
-                      >
-                        Aged 85 and over
-                      </label>
-                    </div>
-                  </div>
-
-                  <button
-                    className="govuk-button govuk-!-margin-top-2"
-                    onClick={handleUpdateClick}
-                  >
-                    Apply age group filter
-                  </button>
-                </fieldset>
-              </div>
-            </form>
-          )}
-
-          {!mapAvailable && (
-            <div>
-              <p className="govuk-body">
-                Map data is not currently available for your care home location.
-              </p>
-              <p className="govuk-body">
-                <a
-                  href={mapAlternative}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="govuk-link"
-                >
-                  View the map on the Office for National Statistics website
-                  (opens in new tab)
-                </a>
-              </p>
-            </div>
-          )}
-
-          {mapUrl && (
-            <div className="govuk-form-group">
-              <h3 className="govuk-heading-s">
-                Figure 1: map of age group percentages for older age groups –
-                local authority districts and MSOAs in England, mid-2024
-              </h3>
-              <iframe
-                style={{ border: 0, width: '100%' }}
-                key={mapStateKey}
-                data-testid="map-frame"
-                height="600px"
-                title="ONS Census Maps"
-                src={mapUrl}
-              ></iframe>
-            </div>
-          )}
-
-          {mapAvailable && !mapUrl && (
-            <p className="govuk-body">Loading map...</p>
-          )}
-
-          {mapAvailable && (
-            <p className="govuk-body govuk-!-margin-top-4">
-              Source: Population estimates from the Office for National Statistics
-              (ONS)
-            </p>
-          )}
-        </DataBox> */}
 
       <DataIndicatorDetailsList>
         <DataLinkCard
@@ -447,8 +316,8 @@ export default function ProvisionAndOccupancyPage() {
 
       <RelatedDataList>
         <DataLinkCard
-          label="Dementia prevalence and estimated diagnosis rate"
-          description="Data on registered dementia diagnoses with estimates for undiagnosed dementia."
+          label="Dementia prevalence"
+          description="Data estimates for undiagnosed dementia."
           url="/topics/population-needs/dementia-prevalence/data"
         />
         <DataLinkCard
@@ -457,7 +326,7 @@ export default function ProvisionAndOccupancyPage() {
           url="/topics/population-needs/household-composition-and-economic-factors/data"
         />
         <DataLinkCard
-          label="General health, disability and learning disability"
+          label="General health and disability"
           description="Data on disability prevalence, learning disability diagnoses and reasons for accessing care."
           url="/topics/population-needs/disability-prevalence/data"
         />

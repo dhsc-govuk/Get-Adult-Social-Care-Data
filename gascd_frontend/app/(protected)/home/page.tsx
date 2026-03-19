@@ -1,7 +1,14 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
+import { LA_USER_TYPE } from '@/constants';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
-const HomePage: React.FC = () => {
+const HomePage: React.FC = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   type Subtopic = {
     title: string;
     description: string;
@@ -14,7 +21,7 @@ const HomePage: React.FC = () => {
     subtopics: Subtopic[];
   };
 
-  const topics: Topic[] = [
+  let topics: Topic[] = [
     {
       title: 'Care provision',
       url: 'topics/residential-care/subtopics',
@@ -50,7 +57,7 @@ const HomePage: React.FC = () => {
       url: 'topics/financial-spend-and-unpaid-care/subtopics',
       subtopics: [
         {
-          title: 'Local authority (LA) funding',
+          title: 'Local authority (LA) funding for adult social care',
           description:
             'Data on funding for both short-term and long-term care, also funding by individual care type.',
           url: 'topics/financial-spend-and-unpaid-care/financial-spend/data',
@@ -64,7 +71,7 @@ const HomePage: React.FC = () => {
         {
           title: 'Population size and age group percentages',
           description:
-            'Population data at district, local authority, regional and national levels for England.',
+            'Population data at LA, regional and national levels for England.',
           url: 'topics/population-needs/population-age-and-size/data',
         },
         {
@@ -74,20 +81,34 @@ const HomePage: React.FC = () => {
           url: 'topics/population-needs/household-composition-and-economic-factors/data',
         },
         {
-          title: 'General health, disability and learning disability',
+          title: 'General health and disability',
           description:
             'Data on disability prevalence, learning disability diagnoses and reasons for accessing care.',
           url: 'topics/population-needs/disability-prevalence/data',
         },
         {
-          title: 'Dementia prevalence and estimated diagnosis rate',
-          description:
-            'Data on registered dementia diagnoses with estimates for undiagnosed dementia.',
+          title: 'Dementia prevalence',
+          description: 'Data estimates for undiagnosed dementia.',
           url: 'topics/population-needs/dementia-prevalence/data',
         },
       ],
     },
   ];
+
+  if (session?.user.locationType == LA_USER_TYPE) {
+    topics.push({
+      title: 'Future planning',
+      url: 'topics/future-planning/subtopics',
+      subtopics: [
+        {
+          title: 'Local authority funding projected demand',
+          description:
+            'Data estimates on the prevalence of conditions that may require a social care response.',
+          url: 'topics/future-planning/la-funding-planning/data',
+        },
+      ],
+    });
+  }
 
   return (
     <>

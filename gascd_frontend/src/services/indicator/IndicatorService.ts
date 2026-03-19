@@ -225,6 +225,34 @@ class IndicatorService {
       .metric_date.toString();
   }
 
+  public static getEarliestIndicator(
+    indicators: Indicator[],
+    metric_ids?: string[]
+  ): string {
+    if (indicators.length === 0) {
+      return '';
+    }
+
+    let filtered_indicators = indicators;
+    if (metric_ids) {
+      filtered_indicators = indicators.filter((item) =>
+        metric_ids.includes(item.metric_id)
+      );
+    }
+
+    if (filtered_indicators.length === 0) {
+      return '';
+    }
+
+    return filtered_indicators
+      .reduce((earliest, current) => {
+        return this.parseDate(current) < this.parseDate(earliest)
+          ? current
+          : earliest;
+      }, filtered_indicators[0])
+      .metric_date.toString();
+  }
+
   public static getMostRecentDate(
     data: Indicator[],
     metric_ids?: string[]
@@ -232,6 +260,18 @@ class IndicatorService {
     const recentData = this.getMostRecentIndicator(data, metric_ids);
     if (recentData) {
       return this.formatDate(recentData);
+    } else {
+      return '';
+    }
+  }
+
+  public static getEarliestDate(
+    data: Indicator[],
+    metric_ids?: string[]
+  ): string {
+    const firstData = this.getEarliestIndicator(data, metric_ids);
+    if (firstData) {
+      return this.formatDate(firstData);
     } else {
       return '';
     }

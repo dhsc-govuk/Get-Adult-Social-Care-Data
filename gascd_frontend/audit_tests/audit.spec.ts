@@ -12,6 +12,8 @@ const DEV_AUTH_URL = `${DEV_BASE}/api/auth/local`;
 const PROTOTYPE_BASE = PROTOTYPE_HOME + '/private-beta/2026/march';
 // Explicit list of prototype paths to check against
 const INCLUDED_PATHS = [
+  '/home',
+  '/start',
   '/help/',
   '/topics/',
   '/footer/',
@@ -21,14 +23,24 @@ const INDEX_URL = `${PROTOTYPE_BASE}/pages`;
 
 // Cleanup to remove differences we don't care about
 const cleanAndSanitize = (text: string) => {
-  return text
-    .replace(
-      /Data correct as of\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}/gi,
-      ''
-    )
-    .replace(/Data correct as of\s+[\d/]+(\s+[A-Za-z]+)?(\s+\d+)?/gi, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return (
+    text
+      // Ignore dynamic dates
+      .replace(
+        /Data correct as of\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}/gi,
+        ''
+      )
+      .replace(/Data correct as of\s+[\d/]+(\s+[A-Za-z]+)?(\s+\d+)?/gi, '')
+      // Replace mock data with prototype data
+      .replace(/Sunderland/g, 'Suffolk')
+      .replace(/North East/g, 'East of England')
+      // Replace smart quotes
+      .replace(/’/g, "'")
+      .replace(/‘/g, "'")
+      // Trim whitespace
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
 };
 
 test('Audit prototype against implementation', async ({ page }) => {
@@ -54,9 +66,17 @@ test('Audit prototype against implementation', async ({ page }) => {
   expect(validPaths.length).not.toBe(0);
 
   let done = 0;
+  let seen: string[] = [];
   for (const path of validPaths) {
     // Normalize the path (ensure it starts with /)
     let cleanPath = path?.startsWith('/') ? path : `/${path}`;
+    // Remove qs
+    cleanPath = cleanPath.split('?')[0];
+
+    if (seen.includes(cleanPath)) {
+      // Don't repeat pages
+      continue;
+    }
 
     let is_included = false;
     for (let included_path of INCLUDED_PATHS) {
@@ -69,6 +89,7 @@ test('Audit prototype against implementation', async ({ page }) => {
       continue;
     }
 
+    seen.push(cleanPath);
     // Capture Prototype Content
     console.log('Checking page: ', cleanPath);
     await page.goto(`${PROTOTYPE_BASE}${cleanPath}`);
@@ -78,14 +99,19 @@ test('Audit prototype against implementation', async ({ page }) => {
       if (!main) return '';
 
       // Remove all <td> elements from the DOM temporarily
-      const cells = main.querySelectorAll('td');
+      const cells = main.querySelectorAll('tr');
       cells.forEach((td) => td.remove());
+
+      // Remove any ONS charts for now
+      const charts = main.querySelectorAll('.ons-chart__container');
+      charts.forEach((chart) => chart.remove());
 
       return main.innerText;
     });
 
     let devPath = cleanPath?.replace('/signed-in', '');
     devPath = devPath?.replace('/footer', '');
+    devPath = devPath?.replace('/start', '/login');
     // Capture Dev Content
     const devResponse = await page.goto(`${DEV_BASE}${devPath}`, {
       // not recommended by docs - workaround for react loading issues
@@ -94,14 +120,17 @@ test('Audit prototype against implementation', async ({ page }) => {
 
     // Check page exists in dev
     test.expect
-      .soft(devResponse?.status(), `Page not implemented: ${path}`)
+      .soft(devResponse?.status(), `Page not implemented: ${devPath}`)
       .toBe(200);
+    if (devResponse?.status() === 404) {
+      continue;
+    }
 
     const devContent = await page.evaluate(() => {
       const main = document.querySelector('main');
       if (!main) return '';
 
-      const cells = main.querySelectorAll('td');
+      const cells = main.querySelectorAll('tr');
       cells.forEach((td) => td.remove());
 
       return main.innerText;

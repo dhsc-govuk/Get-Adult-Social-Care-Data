@@ -133,11 +133,13 @@ describe('test handlers', () => {
 });
 
 describe('test get metrics', () => {
+  const get_metric_url = 'http://localhost/api/get_metric_data';
+
   beforeEach(() => vi.clearAllMocks());
   it('throws error if no user', async () => {
     mockGetSession.mockReturnValue(null as any);
     const req = {
-      url: `http://localhost/api/get_metric_data`,
+      url: get_metric_url,
     } as NextRequest;
 
     const result = await GetMetricData(req);
@@ -148,7 +150,7 @@ describe('test get metrics', () => {
 
   it('throws error if no metrics', async () => {
     mockGetSession.mockReturnValue(mockSessionWithLocation);
-    const req = new NextRequest('http://localhost/api/get_metric_data', {
+    const req = new NextRequest(get_metric_url, {
       method: 'POST',
       body: JSON.stringify({ query_type: 'UserQuery' }),
     });
@@ -161,7 +163,7 @@ describe('test get metrics', () => {
 
   it('throws error if no metrics', async () => {
     mockGetSession.mockReturnValue(mockSessionWithLocation);
-    const req = new NextRequest('http://localhost/api/get_metric_data', {
+    const req = new NextRequest(get_metric_url, {
       method: 'POST',
       body: JSON.stringify({
         query_type: 'NotAQuery',
@@ -177,7 +179,7 @@ describe('test get metrics', () => {
 
   it('throws error if metric ids are invalid', async () => {
     mockGetSession.mockReturnValue(mockSessionWithLocation);
-    const req = new NextRequest('http://localhost/api/get_metric_data', {
+    const req = new NextRequest(get_metric_url, {
       method: 'POST',
       body: JSON.stringify({
         query_type: 'UserQuery',
@@ -193,7 +195,7 @@ describe('test get metrics', () => {
 
   it('passes on user query type and metrics', async () => {
     mockGetSession.mockReturnValue(mockSessionWithLocation);
-    const req = new NextRequest('http://localhost/api/get_metric_data', {
+    const req = new NextRequest(get_metric_url, {
       method: 'POST',
       body: JSON.stringify({
         query_type: 'UserQuery',
@@ -208,28 +210,28 @@ describe('test get metrics', () => {
     // This should match the user's CP and associated location
     const expected_data = [
       {
-        data_point: '100',
+        data_point: '150',
         location_id: 'testcpl1',
         location_type: 'CareProviderLocation',
         metric_date: '2024-01-05',
         metric_id: 'bedcount_total',
       },
       {
-        data_point: '100',
+        data_point: '150',
         location_id: 'E08000024',
         location_type: 'LA',
         metric_date: '2024-01-05',
         metric_id: 'bedcount_total',
       },
       {
-        data_point: '100',
+        data_point: '150',
         location_id: 'E12000001',
         location_type: 'Regional',
         metric_date: '2024-01-05',
         metric_id: 'bedcount_total',
       },
       {
-        data_point: '100',
+        data_point: '150',
         location_id: 'E92000001',
         location_type: 'National',
         metric_date: '2024-01-05',
@@ -238,6 +240,58 @@ describe('test get metrics', () => {
     ];
 
     expect(data).toEqual(expected_data);
+  });
+
+  it('throws error if metric ids are not allowed for this user', async () => {
+    mockGetSession.mockReturnValue(mockSessionCareProvider);
+    const req = new NextRequest(get_metric_url, {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'UserQuery',
+        metric_ids: ['pansi_metric_one', 'something_else'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(401);
+    const data = await result.json();
+    expect(data).toEqual({ error: 'Metric access disallowed' });
+  });
+
+  it('passes metric ids are allowed for this user', async () => {
+    mockGetSession.mockReturnValue(mockSessionLAUser);
+    const req = new NextRequest(get_metric_url, {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'UserQuery',
+        metric_ids: ['pansi_metric_one', 'something_else'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    // Returns the expected metrics
+    for (let item of data) {
+      expect(['pansi_metric_one', 'something_else']).toContain(item.metric_id);
+    }
+  });
+
+  it('supports time series queries', async () => {
+    mockGetSession.mockReturnValue(mockSessionLAUser);
+    const req = new NextRequest(get_metric_url, {
+      method: 'POST',
+      body: JSON.stringify({
+        query_type: 'LATimeseriesQuery',
+        metric_ids: ['my_metric'],
+      }),
+    });
+
+    const result = await GetMetricData(req);
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    const data_points = data.map((item: any) => item.data_point);
+    expect(data_points).toEqual(['100', '200', '300', '200', '150']);
   });
 });
 

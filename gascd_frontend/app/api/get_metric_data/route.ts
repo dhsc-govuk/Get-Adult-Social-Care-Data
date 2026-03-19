@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { addUserTelemetry } from '@/helpers/telemetry/usertelemetry';
 import { getAPIClient } from '@/data/dataAPI';
 import { getDefaultLocations } from '@/data/locations';
-import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
+import {
+  canAccessMetric,
+  getCurrentUser,
+  isUserRegistered,
+} from '@/lib/permissions';
 import { transformSeriesData, SeriesPoint } from '@/utils/timeseries';
 import { validateMetricIds } from '@/data/locations';
 import logger from '@/utils/logger';
@@ -11,6 +15,7 @@ const REGIONAL_QUERYTYPE = 'RegionQuery';
 const LA_TIMESERIES = 'LATimeseriesQuery';
 const MULTI_LOCATION_TIMESERIES = 'MultiLocationTimeseriesQuery';
 const USER_QUERY = 'UserQuery';
+const TIME_SERIES_QUERIES = [LA_TIMESERIES, MULTI_LOCATION_TIMESERIES];
 
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
@@ -29,6 +34,15 @@ export async function POST(req: NextRequest) {
   if (!metric_ids.length) {
     logger.error('No valid metric IDs provided');
     return NextResponse.json({ error: `No metric ids` }, { status: 400 });
+  }
+
+  for (let metric_id of metric_ids) {
+    if (!canAccessMetric(user, metric_id)) {
+      return NextResponse.json(
+        { error: `Metric access disallowed` },
+        { status: 401 }
+      );
+    }
   }
 
   const user_location_data = await getDefaultLocations(user);
@@ -118,6 +132,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const is_timeseries = TIME_SERIES_QUERIES.includes(query_type);
   let all_metrics: any[] = [];
   for (let metric_id of metric_ids) {
     const { data, error } = await client.POST('/metrics/{metric_code}/data', {
@@ -126,9 +141,7 @@ export async function POST(req: NextRequest) {
           metric_code: metric_id,
         },
         query: {
-          time_series:
-            query_type === LA_TIMESERIES ||
-            query_type === MULTI_LOCATION_TIMESERIES,
+          time_series: is_timeseries,
         },
       },
       body: location_data as any,
@@ -136,10 +149,7 @@ export async function POST(req: NextRequest) {
 
     if (data) {
       data.map((metric) => {
-        if (
-          query_type === LA_TIMESERIES ||
-          query_type === MULTI_LOCATION_TIMESERIES
-        ) {
+        if (is_timeseries) {
           let series: SeriesPoint[];
           try {
             series = transformSeriesData(

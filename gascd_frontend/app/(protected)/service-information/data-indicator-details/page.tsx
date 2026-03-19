@@ -40,7 +40,7 @@ export default function DataIndicatorDetailsPage() {
               url="/help/beds-per-100000-adult-population-over-time"
             />
             <DataLinkCard
-              label="Number of community social care providers"
+              label="Number of adult social care providers"
               sources="Care Quality Commission"
               updateFrequency="Monthly updates"
               limitations={true}
@@ -62,7 +62,7 @@ export default function DataIndicatorDetailsPage() {
             />
             <DataLinkCard
               label="People aged 5 and over who provide unpaid care"
-              sources="Office for National Statistics."
+              sources="Office for National Statistics"
               updateFrequency="Updated every 10 years"
               limitations={false}
               url="/help/percentage-people-aged-5-and-over-who-provide-unpaid-care"
@@ -75,20 +75,8 @@ export default function DataIndicatorDetailsPage() {
             <DataLinkCard
               label={
                 <>
-                  <abbr title="Local Authority">LA</abbr> funding for adult
-                  social care
-                </>
-              }
-              sources="NHS England"
-              updateFrequency="Yearly updates"
-              limitations={false}
-              url="/help/total-financial-spend-adult-social-care"
-            />
-            <DataLinkCard
-              label={
-                <>
                   <abbr title="Local Authority">LA</abbr> funding for long-term
-                  community adult social care
+                  adult social care
                 </>
               }
               sources="NHS England"
@@ -100,7 +88,7 @@ export default function DataIndicatorDetailsPage() {
               label={
                 <>
                   <abbr title="Local Authority">LA</abbr> funding for short-term
-                  and long term adult social care
+                  and long-term adult social care
                 </>
               }
               sources="NHS England"
@@ -133,13 +121,6 @@ export default function DataIndicatorDetailsPage() {
               updateFrequency="Updated every 10 years"
               limitations={false}
               url="/help/disability-prevalence"
-            />
-            <DataLinkCard
-              label="Estimated dementia diagnosis rate for people aged 65 and over"
-              sources="Department of Health and Social Care"
-              updateFrequency="Yearly updates"
-              limitations={true}
-              url="/help/estimated-dementia-diagnosis-rate-aged-65-and-over"
             />
             <DataLinkCard
               label="Households &lsquo;deprived in 4 dimensions&rsquo;"
@@ -189,6 +170,32 @@ export default function DataIndicatorDetailsPage() {
               updateFrequency="Yearly updates"
               limitations={false}
               url="/help/primary-reason-for-accessing-long-term-adult-social-care"
+            />
+          </ul>
+          <h2 className="govuk-heading-m govuk-!-margin-top-9">
+            Future planning data indicators
+          </h2>
+          <ul className="gem-c-cards__list gem-c-cards__list--one-column">
+            <DataLinkCard
+              label="People aged 18-64 predicted to have autistic spectrum disorders, projected to 2045"
+              sources="Institute of Public Care"
+              updateFrequency="Updated every 5 years"
+              limitations={true}
+              url="/help/estimated-population-asd"
+            />
+            <DataLinkCard
+              label="People aged 18-64 with a learning disability, predicted to display challenging behaviour, projected to 2045"
+              sources="Institute of Public Care"
+              updateFrequency="Updated every 5 years"
+              limitations={true}
+              url="/help/estimated-population-learning-disability"
+            />
+            <DataLinkCard
+              label="People aged 30-64 predicted to have early onset dementia, projected to 2045"
+              sources="Institute of Public Care"
+              updateFrequency="Updated every 5 years"
+              limitations={true}
+              url="/help/estimated-population-early-onset-dementia"
             />
           </ul>
         </div>

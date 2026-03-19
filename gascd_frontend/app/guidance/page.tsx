@@ -98,9 +98,9 @@ const GuidancePage = () => {
                 </ul>
                 <h3 className="govuk-heading-s">Population needs</h3>
                 <ul className="govuk-list govuk-list--bullet">
-                  <li>dementia prevalence and estimated diagnosis rate</li>
+                  <li>dementia prevalence</li>
                   <li>economic factors and household composition</li>
-                  <li>general health, disability and learning disability</li>
+                  <li>general health and disability</li>
                   <li>population size and age group percentages</li>
                 </ul>
                 <p className="govuk-body">

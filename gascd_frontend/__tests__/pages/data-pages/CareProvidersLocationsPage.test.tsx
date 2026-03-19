@@ -24,7 +24,7 @@ describe('CareProviderLocationsPage', () => {
     render(<CareProviderLocationsPage />);
 
     const mainHeading = screen.getByRole('heading', {
-      name: /Care providers: locations and services/i,
+      name: /Care provider services/i,
       level: 1,
     });
     expect(mainHeading).toBeInTheDocument();
@@ -48,12 +48,12 @@ describe('CareProviderLocationsPage', () => {
     }
 
     const bodyTextElement = screen.getByText(
-      /Data on care provision by location, service type and number of providers./i
+      /Data on care provision by service type and number of providers./i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
     const helpLink = screen.getAllByRole('link', {
-      name: /Number of community social care providers/i,
+      name: /Number of adult social care providers/i,
     });
     expect(helpLink[0]).toBeInTheDocument();
     expect(helpLink[0]).toHaveAttribute(

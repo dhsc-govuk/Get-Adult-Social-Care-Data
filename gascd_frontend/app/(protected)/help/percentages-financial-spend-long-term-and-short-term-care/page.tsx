@@ -17,9 +17,10 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
           title="LA funding for short-term and long-term adult social care"
           whatThisMeasures={
             <p className="govuk-!-margin-top-0">
-              The percentages of financial spend on adult social care directed
-              to long-term and short-term care as funded by{' '}
-              <abbr title="Local Authority">LA</abbr>s.
+              The total financial spend on adult social care directed to
+              long-term and short-term care as funded by{' '}
+              <abbr title="Local Authority">LA</abbr>s. Short and long-term care
+              is broken down by primary support reason.
             </p>
           }
           source={
@@ -36,10 +37,11 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
           methodology={
             <>
               <p className="govuk-!-margin-top-0">
-                The percentages are calculated by summing the financial spend on
-                long-term and short-term care over the previous financial year
-                and then dividing these figures by the total financial spend on
-                adult social care over the previous financial year.
+                The total financial figures are calculated by summing the
+                financial spend on long-term and short-term care over the
+                previous financial year and then dividing these figures by the
+                total financial spend on adult social care over the previous
+                financial year, split by primary support reason.
               </p>
               <p className="govuk-!-margin-top-0">
                 The data covers only <abbr title="Local Authority">LA</abbr>{' '}

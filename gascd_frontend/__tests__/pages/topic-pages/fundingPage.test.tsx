@@ -11,13 +11,11 @@ describe('FundingPage', () => {
     });
     expect(headingElement).toBeInTheDocument();
 
-    const bodyTextElement = screen.getByText(
-      /Find data on local authority funding./i
-    );
+    const bodyTextElement = screen.getByText(/funding for adult social care/i);
     expect(bodyTextElement).toBeInTheDocument();
 
     const laFundingLinkElement = screen.getByRole('link', {
-      name: /Local Authority funding/i,
+      name: /LA funding for adult social care/i,
     });
     expect(laFundingLinkElement).toBeInTheDocument();
     expect(laFundingLinkElement).toHaveAttribute(

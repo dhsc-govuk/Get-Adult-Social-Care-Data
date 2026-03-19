@@ -2,7 +2,7 @@ import React, { Ref, useEffect } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
 
 type VerticalLocationTableProps = {
-  caption?: string;
+  caption?: React.ReactNode;
   columnHeaders: Object;
   rowHeaders: Object;
   data: Indicator[];

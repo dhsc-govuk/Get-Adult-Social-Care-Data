@@ -12,11 +12,7 @@ const FilterBox: React.FC<Props> = ({ children }) => {
     <>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
-          <div
-            id="dhsc-filter--content1"
-            className="dhsc-filter--content"
-            aria-labelledby="dhsc-filter--button1"
-          >
+          <div id="dhsc-filter--content1" className="dhsc-filter--content">
             <form>
               <div className="govuk-grid-row">
                 <div className="govuk-grid-column-one-third govuk-grid-column-one-third-searchable-radios-section">

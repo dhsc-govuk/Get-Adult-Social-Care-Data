@@ -17,7 +17,7 @@ describe('PopulationNeedsPage', () => {
     expect(bodyTextElement).toBeInTheDocument();
 
     const dementiaLinkElement = screen.getByRole('link', {
-      name: /Dementia prevalence and estimated diagnosis rate/i,
+      name: /Dementia prevalence/i,
     });
     expect(dementiaLinkElement).toBeInTheDocument();
     expect(dementiaLinkElement).toHaveAttribute(
@@ -35,7 +35,7 @@ describe('PopulationNeedsPage', () => {
     );
 
     const healthLinkElement = screen.getByRole('link', {
-      name: /General health, disability and learning disability/i,
+      name: /General health and disability/i,
     });
     expect(healthLinkElement).toBeInTheDocument();
     expect(healthLinkElement).toHaveAttribute(

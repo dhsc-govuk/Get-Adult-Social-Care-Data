@@ -153,7 +153,7 @@ export default function ResidentialCareProvidersPage() {
 
   return (
     <Layout
-      title="Care providers: locations and services"
+      title="Care provider services"
       autoSpaceMainContent={false}
       showLoginInformation={true}
       currentPage="care-providers"
@@ -161,12 +161,9 @@ export default function ResidentialCareProvidersPage() {
     >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
-          <h1 className="govuk-heading-xl">
-            Care providers: locations and services
-          </h1>
+          <h1 className="govuk-heading-xl">Care provider services</h1>
           <p className="govuk-body-l">
-            Data on care provision by location, service type and number of
-            providers.
+            Data on care provision by service type and number of providers.
           </p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview
@@ -178,7 +175,7 @@ export default function ResidentialCareProvidersPage() {
         dataInfo={
           <>
             <p className="govuk-body-m">
-              Find out how{' '}
+              Find out{' '}
               <a
                 href="/help/total-number-community-social-care-providers"
                 className="govuk-link"
@@ -246,7 +243,7 @@ export default function ResidentialCareProvidersPage() {
       </DataBox>
       <DataIndicatorDetailsList>
         <DataLinkCard
-          label="Number of community social care providers"
+          label="Number of adult social care providers"
           sources="Care Quality Commission"
           updateFrequency="Monthly updates"
           limitations={true}

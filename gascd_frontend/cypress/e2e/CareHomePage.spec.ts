@@ -3,7 +3,10 @@ describe('Care Home pages exist and contain data', () => {
     cy.login_onelogin(Cypress.env('cpl_user'));
 
     cy.visit('/location-select');
-    cy.get('h1').should('contains.text', 'Select a location');
+    cy.get('h1').should(
+      'contains.text',
+      'Select your CQC registered office address for your care provider organisation'
+    );
     cy.get('label').contains('Test Care Provider Location 1').click();
     cy.get('button').contains('Apply changes').click();
 
@@ -17,9 +20,7 @@ describe('Care Home pages exist and contain data', () => {
     cy.url().should('include', '#chart-1');
     cy.get('#chart-1')
       .should('be.visible')
-      .contains(
-        'Figure 1: chart of care home beds per 100,000 adult population'
-      );
+      .contains('Figure 1: care home bed numbers per 100,000 adult population');
     cy.get('#table-1').should('not.be.visible');
     cy.get('#download-1').should('not.be.visible');
 
@@ -28,7 +29,7 @@ describe('Care Home pages exist and contain data', () => {
     cy.get('#table-1')
       .should('be.visible')
       .contains(
-        'Table 1: care home bed numbers per 100,000 adult population for regional local authorities'
+        'Table 1: care home beds per 100,000 adult population (all bed types) for regional LAs'
       );
     cy.get('#chart-1').should('not.be.visible');
     cy.get('#download-1').should('not.be.visible');
@@ -123,20 +124,20 @@ describe('Care Home pages exist and contain data', () => {
     cy.get('#graph-4')
       .should('be.visible')
       .contains(
-        'Figure 2: graph of care home bed numbers per 100,000 adult population'
+        'Figure 2: care home bed numbers per 100,000 adult population (all bed types)'
       );
     cy.get('#table-3').should('not.be.visible');
     cy.get('#textSummary-3').should('not.be.visible');
 
-    cy.get('#type-chart-metrics-button').click();
+    cy.get('#single-type-chart-metric-button').click();
     cy.get('#dhsc-filter--content1').should('be.visible');
     cy.wait(300);
     cy.get(
-      'input[type="checkbox"][value="bedcount_per_hundred_thousand_adults_total"]'
+      'input[type="radio"][value="bedcount_per_hundred_thousand_adults_total"]'
     )
       .check()
       .should('be.checked');
-    cy.get('#type-chart-metrics-submit-button').click();
+    cy.get('#single-type-chart-metric-submit-button').click();
     cy.contains('Bed type: All bed types').should('be.visible');
     cy.contains('Bed type: All bed types').click();
     cy.contains('Bed type: All bed types').should('not.exist');
@@ -155,9 +156,7 @@ describe('Care Home pages exist and contain data', () => {
     cy.url().should('include', '#chart-1');
     cy.get('#chart-1')
       .should('be.visible')
-      .contains(
-        'Figure 1: chart of care home beds per 100,000 adult population'
-      );
+      .contains('Figure 1: care home bed numbers per 100,000 adult population');
     cy.get('#table-1').should('not.be.visible');
     cy.get('#download-1').should('not.be.visible');
 

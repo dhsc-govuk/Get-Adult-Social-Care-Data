@@ -59,18 +59,18 @@ describe('LAFundingPage', () => {
     expect(bodyTextElement).toBeInTheDocument();
 
     const helpLink = screen.getAllByRole('link', {
-      name: /LA funding for adult social care/i,
+      name: /LA funding for short-term and long term adult social care/i,
     });
     expect(helpLink[0]).toBeInTheDocument();
     expect(helpLink[0]).toHaveAttribute(
       'href',
-      '/help/total-financial-spend-adult-social-care'
+      '/help/percentages-financial-spend-long-term-and-short-term-care'
     );
 
     const tables = [
-      /Table 1: LA spending on short-term and long-term adult social care for all age groups/i,
-      /Table 2: LA funding for long-term adult social care for all age groups/i,
-      /Table 3: LA funding for long-term adult social care/i,
+      /Table 1: Total LA spending on long and short-term adult social care for all primary support reasons and all age groups/i,
+      /Table 2: Total LA funding for long-term adult social care by support setting for all age groups/i,
+      /Table 3: Total funding for long-term adult social care for/i,
     ];
     for (let table of tables) {
       expect(screen.getByRole('table', { name: table })).toBeInTheDocument();

@@ -156,10 +156,7 @@ export default function DementaPrevalencePage() {
           <>
             <p className="govuk-body">
               Find out{' '}
-              <a
-                href="/help/dementia-prevalence"
-                className="govuk-link"
-              >
+              <a href="/help/dementia-prevalence" className="govuk-link">
                 how dementia prevalence is calculated
               </a>
               .
@@ -172,7 +169,15 @@ export default function DementaPrevalencePage() {
           table={
             <DataTable
               tableref={tableref1}
-              caption={`Table 1: dementia prevalence – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDemographicData)}`}
+              caption={
+                <>
+                  Table 1: dementia prevalence – {locationNames.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr>,{' '}
+                  {locationNames.RegionLabel} region and{' '}
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getMostRecentDate(filteredDemographicData)}
+                </>
+              }
               source={
                 'Fingertips from the Department of Health and Social Care (DHSC)'
               }
@@ -216,13 +221,13 @@ export default function DementaPrevalencePage() {
           url="/topics/population-needs/household-composition-and-economic-factors/data"
         />
         <DataLinkCard
-          label="General health, disability and learning disability"
+          label="General health and disability"
           description="Data on disability prevalence, learning disability diagnoses and reasons for accessing care."
           url="/topics/population-needs/disability-prevalence/data"
         />
         <DataLinkCard
           label="Population size and age group percentages"
-          description="Population data at district, local authority, regional and national levels for England."
+          description="Population data at LA, regional and national levels for England."
           url="/topics/population-needs/population-age-and-size/data"
         />
       </RelatedDataList>

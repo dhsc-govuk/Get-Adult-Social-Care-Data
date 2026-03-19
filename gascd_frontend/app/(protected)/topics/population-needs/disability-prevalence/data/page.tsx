@@ -20,7 +20,6 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
-import { Filters } from '@/data/interfaces/Filters';
 
 export default function DisabilityPrevalence() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -248,7 +247,7 @@ export default function DisabilityPrevalence() {
 
   return (
     <Layout
-      title="General health, disability and learning disability"
+      title="General health and disability"
       autoSpaceMainContent={false}
       showLoginInformation={true}
       currentPage="disability-prevalence"
@@ -256,9 +255,7 @@ export default function DisabilityPrevalence() {
     >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
-          <h1 className="govuk-heading-xl">
-            General health, disability and learning disability
-          </h1>
+          <h1 className="govuk-heading-xl">General health and disability</h1>
           <p className="govuk-body-l">
             Data on disability prevalence, learning disability diagnoses and
             reasons for accessing care.
@@ -294,7 +291,18 @@ export default function DisabilityPrevalence() {
           table={
             <DataTable
               tableref={tableref1}
-              caption={`Table 1: self-reporting on general health and disability – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
+              caption={
+                <>
+                  Table 1: self-reporting on general health and disability –{' '}
+                  {locationNames.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr>,{' '}
+                  {locationNames.RegionLabel} region and{' '}
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getMostRecentMonthYear(
+                    filteredDisabilityData
+                  )}
+                </>
+              }
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
@@ -348,7 +356,16 @@ export default function DisabilityPrevalence() {
           table={
             <DataTable
               tableref={tableref2}
-              caption={`Table 2: learning disability prevalence – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDisabilityData)}`}
+              caption={
+                <>
+                  Table 2: learning disability prevalence –{' '}
+                  {locationNames.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr>,{' '}
+                  {locationNames.RegionLabel} region and{' '}
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getMostRecentDate(filteredDisabilityData)}
+                </>
+              }
               source={
                 'Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
               }
@@ -405,7 +422,16 @@ export default function DisabilityPrevalence() {
           table={
             <DataTable
               tableref={tableref3}
-              caption={`Table 3: primary reason for all age groups to access long-term adult social care – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentDate(filteredDisabilityData)}`}
+              caption={
+                <>
+                  Table 3: primary reason for all age groups to access long-term
+                  adult social care – {locationNames.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr>,{' '}
+                  {locationNames.RegionLabel} region and{' '}
+                  {locationNames.CountryLabel},{' '}
+                  {IndicatorService.getMostRecentDate(filteredDisabilityData)}
+                </>
+              }
               source={
                 'Adult Social Care Activity and Finance Report from NHS England'
               }
@@ -465,8 +491,8 @@ export default function DisabilityPrevalence() {
 
       <RelatedDataList>
         <DataLinkCard
-          label="Dementia prevalence and estimated diagnosis rate"
-          description="Data on registered dementia diagnoses with estimates for undiagnosed dementia."
+          label="Dementia prevalence"
+          description="Data estimates for undiagnosed dementia."
           url="/topics/population-needs/dementia-prevalence/data"
         />
         <DataLinkCard
@@ -476,7 +502,7 @@ export default function DisabilityPrevalence() {
         />
         <DataLinkCard
           label="Population size and age group percentages"
-          description="Population data at district, local authority, regional and national levels for England."
+          description="Population data at LA, regional and national levels for England."
           url="/topics/population-needs/population-age-and-size/data"
         />
       </RelatedDataList>

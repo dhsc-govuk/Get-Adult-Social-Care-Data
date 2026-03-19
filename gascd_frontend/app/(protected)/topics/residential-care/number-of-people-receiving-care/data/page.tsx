@@ -181,7 +181,7 @@ export default function NumberPeopleReceivingCarePage() {
         dataInfo={
           <>
             <p className="govuk-body-m">
-              Find out how{' '}
+              Find out{' '}
               <a
                 href="/help/number-people-receiving-care-from-community-social-care-provider"
                 className="govuk-link"
@@ -199,7 +199,7 @@ export default function NumberPeopleReceivingCarePage() {
           table={
             <DataTable
               tableref={tableref1}
-              caption={`Table 1: number of people receiving community social care in the last month – ${locationNames.LALabel} local authority, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentMonthYear(filteredDemographicData)}`}
+              caption={`Table 1: number of people receiving community social care in the last month – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentMonthYear(filteredDemographicData)}`}
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC)'
               }
@@ -240,19 +240,19 @@ export default function NumberPeopleReceivingCarePage() {
 
       <RelatedDataList>
         <DataLinkCard
-          label="Care providers: locations and services"
-          description="Data on residential care homes and nursing homes by location and service type."
+          label="Care home beds and occupancy levels"
+          description="Provision and capacity data for care homes, including local, regional and national statistics."
+          url="/topics/residential-care/provision-and-occupancy/data"
+        />
+        <DataLinkCard
+          label="Care provider services"
+          description="Data on residential care homes and nursing homes by service type."
           url="/topics/residential-care/residential-care-providers/data"
         />
         <DataLinkCard
           label="Unpaid care"
           description="Statistics on the people who provide unpaid care to family members, friends and neighbours."
           url="/topics/residential-care/unpaid-care/data"
-        />
-        <DataLinkCard
-          label="Care home beds and occupancy levels"
-          description="Provision and capacity data for care homes, including local, regional and national statistics."
-          url="/topics/residential-care/provision-and-occupancy/data"
         />
       </RelatedDataList>
 

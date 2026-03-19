@@ -18,9 +18,8 @@ export default function PopulationNeedsPage() {
 
   const subtopics = [
     {
-      title: 'Dementia prevalence and estimated diagnosis rate',
-      description:
-        'Data on registered dementia diagnoses with estimates for undiagnosed dementia.',
+      title: 'Dementia prevalence',
+      description: 'Data estimates for undiagnosed dementia.',
       url: '/topics/population-needs/dementia-prevalence/data',
     },
     {
@@ -30,7 +29,7 @@ export default function PopulationNeedsPage() {
       url: '/topics/population-needs/household-composition-and-economic-factors/data',
     },
     {
-      title: 'General health, disability and learning disability',
+      title: 'General health and disability',
       description:
         'Data on disability prevalence, learning disability diagnoses and reasons for accessing care.',
       url: '/topics/population-needs/disability-prevalence/data',
@@ -38,7 +37,7 @@ export default function PopulationNeedsPage() {
     {
       title: 'Population size and age group percentages',
       description:
-        'Population data at district, local authority, regional and national levels for England.',
+        'Population data at LA, regional and national levels for England.',
       url: '/topics/population-needs/population-age-and-size/data',
     },
   ];
@@ -68,19 +67,6 @@ export default function PopulationNeedsPage() {
               />
             ))}
           </ul>
-          <h2 className="govuk-heading-m govuk-!-margin-top-4" id="drivers">
-            Drivers of population needs
-          </h2>
-          <p className="govuk-body">
-            Population needs for adult social care are influenced by a range of
-            factors, including the population&apos;s age structure, disability
-            profile and rate of dementia diagnosis.
-          </p>
-          <p className="govuk-body">
-            Areas with a higher proportion of older adults, people with
-            disabilities or rates of dementia diagnosis typically experience
-            greater pressure on services.
-          </p>
         </div>
       </div>
     </Layout>

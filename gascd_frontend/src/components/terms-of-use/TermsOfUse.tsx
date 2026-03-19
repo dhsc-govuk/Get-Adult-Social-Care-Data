@@ -6,7 +6,7 @@ const TermsOfUse: React.FC = () => {
       <div className="govuk-grid-column-two-thirds">
         <h1 className="govuk-heading-xl">Terms of use </h1>
         <p className="govuk-body">First published: 19 February 2026</p>
-        <p className="govuk-body">Last updated: 19 February 2026</p>
+        <p className="govuk-body">Last updated: 18 March 2026</p>
         <p className="govuk-body">
           This page explains the Get Adult Social Care Data (GASCD) service
           terms of use. You will be asked to agree to these terms of use when
@@ -25,6 +25,12 @@ const TermsOfUse: React.FC = () => {
           Using the <abbr title="Get adult social care data">GASCD</abbr>{' '}
           service
         </h2>
+        <p className="govuk-body">
+          You agree to keep your{' '}
+          <abbr title="Get adult social care data">GASCD</abbr> sign in details
+          secure and not share them with anyone, including other colleagues in
+          your organisation.
+        </p>
         <p className="govuk-body">
           You agree to use the{' '}
           <abbr title="Get adult social care data">GASCD</abbr> service only for
@@ -85,7 +91,7 @@ const TermsOfUse: React.FC = () => {
           the Get Adult Social Care Data service, this includes:
         </p>
         <ul className="govuk-list govuk-list--bullet">
-          <li>any direct, indirect or consequential losses </li>
+          <li>any direct, indirect, or consequential losses </li>
           <li>
             any loss or damage caused by civil wrongs (&apos;tort&apos;,
             including negligence), breach of contract or otherwise
@@ -277,7 +283,7 @@ const TermsOfUse: React.FC = () => {
             rel="noreferrer noopener"
             target="_blank"
           >
-            how long we keep your personal data (opens in new tab)
+            how long we keep your personal data (opens in new tab).
           </a>
         </p>
 

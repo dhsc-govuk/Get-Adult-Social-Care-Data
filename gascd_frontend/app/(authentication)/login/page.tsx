@@ -51,7 +51,7 @@ const LoginPage: React.FC = () => {
             <p className="govuk-body">
               This data helps adult social care providers and local authorities
               understand local demand, track trends and support planning and
-              commissioning
+              commissioning.
             </p>
 
             <h2 className="govuk-heading-m">Who can use this service</h2>
@@ -65,9 +65,10 @@ const LoginPage: React.FC = () => {
               <h2 className="govuk-heading-m">Important</h2>
               <p className="govuk-body">
                 Note this service provides information only and does not
-                constitute advice. DHSC does not accept any liability for
-                decisions made by providers following use of this service. For
-                further details read our{' '}
+                constitute advice. The Department of Health and Social Care
+                (DHSC) does not accept any liability for decisions made by
+                providers following use of this service. For further details
+                read our{' '}
                 <a
                   className="govuk-link"
                   href="/terms-of-use"
@@ -92,6 +93,13 @@ const LoginPage: React.FC = () => {
               account in addition to your personal account, so you can create
               one to access this service. You will be given the option to create
               a new account when you click start now below.
+            </p>
+            <p className="govuk-body">
+              Find out why you need a{' '}
+              <a href="/terms-of-use" className="govuk-link">
+                GOV.UK One Login
+              </a>
+              .
             </p>
             <form action={formAction}>
               <button

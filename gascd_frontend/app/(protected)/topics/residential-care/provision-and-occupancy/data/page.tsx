@@ -24,7 +24,6 @@ import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { Indicator } from '@/data/interfaces/Indicator';
-import { Filters } from '@/data/interfaces/Filters';
 import TableService from '@/services/Table/TableService';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
@@ -49,6 +48,9 @@ export default function ProvisionAndOccupancyPage() {
   const tableref2 = useRef<HTMLTableElement>(null);
   const tableref3 = useRef<HTMLTableElement>(null);
 
+  const [numbersTableFilterName, setNumbersTableFilterName] =
+    useState<string>('');
+  const [typesChartFilterName, setTypesChartFilterName] = useState<string>('');
   // location variables
   const [locationNamesCP, setLocationNamesCP] = useState<LocationNames>({
     CPLabel: 'Loading...',
@@ -141,11 +143,9 @@ export default function ProvisionAndOccupancyPage() {
     bedTypeRowHeadersDefault
   );
 
-  const bedTypeChartHeadersDefault = {
-    bedcount_per_hundred_thousand_adults_total: 'All bed types',
-    bedcount_per_hundred_thousand_adults_dementia_nursing: 'Dementia nursing',
-    bedcount_per_hundred_thousand_adults_dementia_residential:
-      'Dementia residential',
+  const bedTypeChartHeaderDefault = {
+    metric_id: 'bedcount_per_hundred_thousand_adults_total',
+    filter_bedtype: 'All bed types',
   };
 
   const [bedNumberRowHeaders, setBedNumberRowHeaders] = useState<Object[]>([]);
@@ -212,19 +212,43 @@ export default function ProvisionAndOccupancyPage() {
     if (!filteredCareHomeBedNumbersData.length) {
       return;
     }
-    let categories: string[] = [];
-    let values: number[] = [];
-    Object.entries(bedNumberRowHeaders).map((header: any) => {
-      categories.push(header[1]);
-      const datapoints = filteredCareHomeBedNumbersData.filter(
-        (item) => item.location_id === header[0]
-      );
-      if (datapoints.length && datapoints[0].data_point !== null) {
-        values.push(datapoints[0].data_point);
-      } else {
-        values.push(0);
-      }
-    });
+    const data = Object.fromEntries(
+      Object.entries(bedNumberRowHeaders).map((header: any) => {
+        const datapoints = filteredCareHomeBedNumbersData.filter(
+          (item) => item.location_id === header[0]
+        );
+        const value =
+          datapoints.length && datapoints[0].data_point !== null
+            ? datapoints[0].data_point
+            : 0;
+        return [header[1], value];
+      })
+    );
+
+    const sorted = Object.entries(data).sort(
+      (a, b) => (b[1] as number) - (a[1] as number)
+    );
+    const region = sorted.filter((location) =>
+      [locationNamesWithAverageLabels.RegionLabel].includes(location[0])
+    );
+    const country = sorted.filter((location) =>
+      [locationNamesWithAverageLabels.CountryLabel].includes(location[0])
+    );
+    const localAuthorities = sorted.filter(
+      (location) =>
+        ![
+          locationNamesWithAverageLabels.CountryLabel,
+          locationNamesWithAverageLabels.RegionLabel,
+        ].includes(location[0])
+    );
+
+    const categories = [...country, ...region, ...localAuthorities].map(
+      (location) => location[0]
+    );
+    const values = [...country, ...region, ...localAuthorities].map(
+      (location) => location[1] as number
+    );
+
     setChartData({
       categories: categories,
       values: values,
@@ -475,12 +499,14 @@ export default function ProvisionAndOccupancyPage() {
       if (parsedData) {
         const id = parsedData.metric_id;
         const name = parsedData.filter_bedtype;
+        setNumbersTableFilterName(name);
         setFilteredCareHomeBedNumbersData(
           bedNumbersData.filter((item) => id === item.metric_id)
         );
         AnalyticsService.trackMetricView(id);
       }
     } else {
+      setNumbersTableFilterName('All bed types');
       setFilteredCareHomeBedNumbersData(
         bedNumbersData.filter(
           (item) =>
@@ -499,47 +525,48 @@ export default function ProvisionAndOccupancyPage() {
   const updateTypesChartMetrics = () => {
     if (!bedTypeOverTimeData.length) return;
 
-    const storedData = localStorage.getItem('type-chart-metrics');
-    let headers = bedTypeChartHeadersDefault;
+    const storedData = localStorage.getItem('single-type-chart-metric');
+    let header = bedTypeChartHeaderDefault;
     if (storedData) {
-      const filters = JSON.parse(storedData);
-      const map: any = {};
-      filters.map((item: any) => (map[item.metric_id] = item.filter_bedtype));
-      headers = map;
+      const filter = JSON.parse(storedData);
+      header = filter;
+      setTypesChartFilterName(header.filter_bedtype);
+    } else {
+      setTypesChartFilterName('All bed types');
     }
     // Make some time series data based on the bed type row headers
-    let series: Series[] = createTimeSeries(headers);
+    let series: Series[] = createTimeSeries(header);
     setTimedata(series);
   };
 
-  const createTimeSeries = (headers: any) => {
+  const createTimeSeries = (header: any) => {
     let series: Series[] = [];
-    Object.entries(headers).forEach((header: any) => {
-      const metric_id = header[0];
-      const name = header[1];
-      // Filter to the current metric ID, for the LA only
-      const metric_items = bedTypeOverTimeData.filter(
-        (item) => item.metric_id === metric_id
-      );
-      // Turn into the correct time series format
-      const values: DataPoint[] = metric_items.map((item) => {
-        return {
-          date: IndicatorService.parseDate(item).toISOString(),
-          value: item.data_point,
-        };
-      });
-      // Sort by date
-      values.sort((a, b) => {
-        if (a.date > b.date) {
-          return 1;
-        } else {
-          return -1;
-        }
-      });
-      series.push({
-        name: name,
-        data: values,
-      });
+
+    const metric_id = header.metric_id;
+    const name = header.filter_bedtype;
+    // Filter to the current metric ID, for the LA only
+    const metric_items = bedTypeOverTimeData.filter(
+      (item) => item.metric_id === metric_id
+    );
+
+    // Turn into the correct time series format
+    const values: DataPoint[] = metric_items.map((item) => {
+      return {
+        date: IndicatorService.parseDate(item).toISOString(),
+        value: item.data_point,
+      };
+    });
+    // Sort by date
+    values.sort((a, b) => {
+      if (a.date > b.date) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+    series.push({
+      name: name,
+      data: values,
     });
     return series;
   };
@@ -592,8 +619,10 @@ export default function ProvisionAndOccupancyPage() {
           chart={
             <>
               <h3 className="govuk-heading-s">
-                Figure 1: chart of care home beds per 100,000 adult population -
-                local authorities in {locationNamesCP.RegionLabel},{' '}
+                Figure 1: care home bed numbers per 100,000 adult population (
+                {numbersTableFilterName.toLowerCase()}) –{' '}
+                <abbr title="local authority">LA</abbr>s in the{' '}
+                {locationNamesCP.RegionLabel},{' '}
                 {IndicatorService.getMostRecentDate(bedNumbersData)}
               </h3>
               {(chartData.categories.length > 0 &&
@@ -608,6 +637,9 @@ export default function ProvisionAndOccupancyPage() {
                   </div>
                 )) || <p>Loading chart...</p>}
               <p className="govuk-body">
+                Note: small numbers have been suppressed and will appear as zero
+              </p>
+              <p className="govuk-body">
                 Source: Capacity Tracker from the Department of Health and
                 Social Care (DHSC), population estimates from the Office for
                 National Statistics (ONS)
@@ -618,9 +650,13 @@ export default function ProvisionAndOccupancyPage() {
             <VerticalLocationTable
               tableref={tableref1}
               caption={
-                `Table 1: care home bed numbers per 100,000 adult population for regional local authorities -
-                ${locationNamesCP.RegionLabel}, ` +
-                IndicatorService.getMostRecentDate(bedNumbersData)
+                <>
+                  Table 1: care home beds per 100,000 adult population (
+                  {numbersTableFilterName.toLowerCase()}) for regional{' '}
+                  <abbr title="local authority">LA</abbr>s –{' '}
+                  {locationNamesCP.RegionLabel},{' '}
+                  {IndicatorService.getMostRecentDate(bedNumbersData)}
+                </>
               }
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
@@ -674,9 +710,14 @@ export default function ProvisionAndOccupancyPage() {
             <DataTable
               tableref={tableref2}
               caption={
-                `Table 2: care home bed numbers per 100,000 adult population – ${locationNamesCP.LALabel} local authority, 
-                ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, ` +
-                IndicatorService.getMostRecentDate(latestBedTypeData)
+                <>
+                  Table 2: care home bed numbers per 100,000 adult population –{' '}
+                  {locationNamesCP.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr>,{' '}
+                  {locationNamesCP.RegionLabel} region and{' '}
+                  {locationNamesCP.CountryLabel},{' '}
+                  {IndicatorService.getMostRecentDate(latestBedTypeData)}
+                </>
               }
               metricColumnName="Care home bed type"
               source={
@@ -772,14 +813,17 @@ export default function ProvisionAndOccupancyPage() {
             <DataTable
               tableref={tableref3}
               caption={
-                `Table 3: care home bed numbers and occupancy levels – ` +
-                ((session &&
-                  showCPLevelData(session.user) &&
-                  `${locationNamesCP.CPLabel}, `) ||
-                  '') +
-                `${locationNamesCP.LALabel} local authority, 
-                ${locationNamesCP.RegionLabel} region and ${locationNamesCP.CountryLabel}, ` +
-                IndicatorService.getMostRecentDate(finalCpData)
+                <>
+                  Table 3: care home bed numbers and occupancy levels –{' '}
+                  {session && showCPLevelData(session.user)
+                    ? locationNamesCP.CPLabel + ','
+                    : ''}{' '}
+                  {locationNamesCP.LALabel}{' '}
+                  <abbr title="local authority">LA</abbr>,{' '}
+                  {locationNamesCP.RegionLabel} region and{' '}
+                  {locationNamesCP.CountryLabel},{' '}
+                  {IndicatorService.getMostRecentDate(finalCpData)}
+                </>
               }
               source={
                 'Capacity Tracker from the Department of Health and Social Care (DHSC)'
@@ -871,8 +915,8 @@ export default function ProvisionAndOccupancyPage() {
           </p>
         }
       >
-        <FilterCheckboxGroup
-          filterType="type-chart-metrics"
+        <FilterRadioGroup
+          filterType="single-type-chart-metric"
           filterLabel="Bed type"
           filters={bedTypeRowHeadersDefault}
           updateMethod={updateTypesChartMetrics}
@@ -882,14 +926,21 @@ export default function ProvisionAndOccupancyPage() {
           graph={
             <>
               <h3 className="govuk-heading-s">
-                Figure 2: graph of care home bed numbers per 100,000 adult
-                population &mdash; {locationNamesCP.LALabel} local authority
+                Figure 2: care home bed numbers per 100,000 adult population (
+                {typesChartFilterName.toLowerCase()}) –{' '}
+                {locationNamesCP.LALabel}{' '}
+                <abbr title="local authority">LA</abbr>,{' '}
+                {IndicatorService.getEarliestDate(bedTypeOverTimeData)} to{' '}
+                {IndicatorService.getMostRecentDate(bedTypeOverTimeData)}
               </h3>
               {(timeData.length > 0 && (
                 <div style={{ width: '100%', height: `500px` }}>
                   <TimeSeriesChart series={timeData} />
                 </div>
               )) || <p>Loading graph</p>}
+              <p className="govuk-body">
+                Note: small numbers have been suppressed and will appear as zero
+              </p>
               <p className="govuk-body">
                 Source: Capacity Tracker from the Department of Health and
                 Social Care (DHSC), population estimates from the Office for
@@ -926,8 +977,8 @@ export default function ProvisionAndOccupancyPage() {
 
       <RelatedDataList>
         <DataLinkCard
-          label="Care providers: locations and services"
-          description="Data on residential care homes and nursing homes by location and service type."
+          label="Care provider services"
+          description="Data on residential care homes and nursing homes by service type."
           url="/topics/residential-care/residential-care-providers/data"
         />
         <DataLinkCard

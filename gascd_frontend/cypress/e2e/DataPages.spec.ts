@@ -3,12 +3,7 @@ describe('Data pages exist and contain data', () => {
     cy.login_onelogin('testcplocation@testing.com');
     cy.visit('/topics/residential-care/residential-care-providers/data');
 
-    cy.get('h1').should(
-      'contains.text',
-      'Care providers: locations and services'
-    );
-
-    cy.contains('Care providers: locations and services');
+    cy.get('h1').should('contains.text', 'Care provider services');
 
     cy.get('a[href*="table-2"]').click();
     cy.url().should('include', '#table-2');
@@ -165,14 +160,11 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-3').should('not.be.visible');
   });
 
-  it('Should navigate to the General health, disability and learning disability page and check the contents', () => {
+  it('Should navigate to the General health and disability page and check the contents', () => {
     cy.login_onelogin(Cypress.env('cpl_user'));
     cy.visit('/topics/population-needs/disability-prevalence/data');
 
-    cy.get('h1').should(
-      'contains.text',
-      'General health, disability and learning disability'
-    );
+    cy.get('h1').should('contains.text', 'General health and disability');
 
     cy.contains('Disability prevalence');
 
@@ -219,22 +211,19 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-3').should('not.be.visible');
   });
 
-  it('Should navigate to the Dementia prevalence and estimated diagnosis rate page and check the contents', () => {
+  it('Should navigate to the Dementia prevalence page and check the contents', () => {
     cy.login_onelogin(Cypress.env('cpl_user'));
     cy.visit('/topics/population-needs/dementia-prevalence/data');
 
-    cy.get('h1').should(
-      'contains.text',
-      'Dementia prevalence and estimated diagnosis rate'
-    );
+    cy.get('h1').should('contains.text', 'Dementia prevalence');
 
-    cy.contains('Dementia prevalence and estimated diagnosis rate');
+    cy.contains('Dementia prevalence');
 
     cy.get('a[href*="table-1"]').click();
     cy.url().should('include', '#table-1');
     cy.get('#table-1')
       .should('be.visible')
-      .contains('Table 1: dementia prevalence and the dementia diagnosis rate');
+      .contains('Table 1: dementia prevalence');
     cy.get('#download-1').should('not.be.visible');
 
     cy.get('a[href*="download-1"]').click();
@@ -256,7 +245,7 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-1')
       .should('be.visible')
       .contains(
-        'Table 1: LA spending on short-term and long-term adult social care for all age groups'
+        'Table 1: Total LA spending on long and short-term adult social care for all primary support reasons and all age groups'
       );
     cy.get('#download-1').should('not.be.visible');
 
@@ -270,7 +259,7 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-2')
       .should('be.visible')
       .contains(
-        'Table 2: LA funding for long-term adult social care for all age groups'
+        'Table 2: Total LA funding for long-term adult social care by support setting for all age groups '
       );
     cy.get('#download-2').should('not.be.visible');
 
@@ -284,7 +273,7 @@ describe('Data pages exist and contain data', () => {
     cy.get('#graph-3')
       .should('be.visible')
       .contains(
-        'Figure 1: graph of LA funding for long-term adult social care (all types of adult social care) for all age groups'
+        'Figure 1: Total funding for long-term adult social care for all types of adult social care for all age groups'
       );
     cy.get('#table-3').should('not.be.visible');
     cy.get('#download-3').should('not.be.visible');
@@ -294,7 +283,7 @@ describe('Data pages exist and contain data', () => {
     cy.get('#table-3')
       .should('be.visible')
       .contains(
-        'Table 3: LA funding for long-term adult social care (all types of adult social care) for all age groups'
+        'Table 3: Total funding for long-term adult social care for all types of adult social care for all age groups'
       );
     cy.get('#graph-3').should('not.be.visible');
     cy.get('#download-3').should('not.be.visible');
@@ -304,5 +293,30 @@ describe('Data pages exist and contain data', () => {
     cy.get('#download-3').should('be.visible');
     cy.get('#graph-3').should('not.be.visible');
     cy.get('#table-3').should('not.be.visible');
+  });
+
+  it('Should navigate to the LA funding planning page and check the contents', () => {
+    cy.login_onelogin(Cypress.env('la_user'));
+    cy.visit('/topics/future-planning/la-funding-planning/data');
+
+    cy.get('h1').should(
+      'contains.text',
+      'Population projections within local authorities'
+    );
+
+    cy.contains('Population projections within local authorities');
+    cy.get('a[href*="table-1"]').click();
+    cy.url().should('include', '#table-1');
+    cy.get('#table-1')
+      .should('be.visible')
+      .contains(
+        'Table 1: comparison of estimated population with selected needs over time within'
+      );
+    cy.get('#download-1').should('not.be.visible');
+
+    cy.get('a[href*="download-1"]').click();
+    cy.url().should('include', '#download-1');
+    cy.get('#download-1').should('be.visible');
+    cy.get('#table-1').should('not.be.visible');
   });
 });
