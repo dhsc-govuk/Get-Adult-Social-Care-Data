@@ -41,7 +41,7 @@ export default function LAFundingPlanningPage() {
     location_ids: [],
   });
 
-  const [columnDates, setColumnDates] = useState<string[]>([]);
+  const [columnDates, setColumnDates] = useState<string[]>(['Loading...']);
 
   const breadcrumbs = [
     {
