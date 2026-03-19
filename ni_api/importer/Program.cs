@@ -1,4 +1,5 @@
 ﻿using core.Data;
+using importer.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,10 +7,12 @@ using Microsoft.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services.AddDbContext<NiDataContext>(o =>
-{
-    o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), p => p.MigrationsAssembly("importer"));
-});
+builder.Services
+    .AddDbContext<NiDataContext>(o => 
+    { 
+        o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), p => p.MigrationsAssembly("importer")); 
+    })
+    .AddHostedService<DataImporter>();
 
 using IHost host = builder.Build();
 
