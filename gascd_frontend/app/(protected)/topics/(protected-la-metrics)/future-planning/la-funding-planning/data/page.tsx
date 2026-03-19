@@ -234,24 +234,21 @@ export default function LAFundingPlanningPage() {
             <p className="govuk-body">
               Find out how{' '}
               <a
-                href="../../../help/estimated-population-early-onset-dementia"
+                href="/help/estimated-population-early-onset-dementia"
                 className="govuk-link"
               >
                 people aged 30-64 predicted to have early onset dementia
               </a>
               ,{' '}
               <a
-                href="../../../help/estimated-population-learning-disability"
+                href="/help/estimated-population-learning-disability"
                 className="govuk-link"
               >
                 people aged 18-64 with a learning disability, predicted to
                 display challenging behaviour
               </a>{' '}
               and{' '}
-              <a
-                href="../../../help/estimated-population-asd"
-                className="govuk-link"
-              >
+              <a href="/help/estimated-population-asd" className="govuk-link">
                 people aged 18-64 predicted to have autistic spectrum disorders
               </a>{' '}
               are calculated.
@@ -315,24 +312,21 @@ export default function LAFundingPlanningPage() {
             <p className="govuk-body">
               Find out how{' '}
               <a
-                href="../../../help/estimated-population-early-onset-dementia"
+                href="/help/estimated-population-early-onset-dementia"
                 className="govuk-link"
               >
                 people aged 30-64 predicted to have early onset dementia
               </a>
               ,{' '}
               <a
-                href="../../../help/estimated-population-learning-disability"
+                href="/help/estimated-population-learning-disability"
                 className="govuk-link"
               >
                 people aged 18-64 with a learning disability, predicted to
                 display challenging behaviour
               </a>{' '}
               and{' '}
-              <a
-                href="../../../help/estimated-population-asd"
-                className="govuk-link"
-              >
+              <a href="/help/estimated-population-asd" className="govuk-link">
                 people aged 18-64 predicted to have autistic spectrum disorders
               </a>{' '}
               are calculated.
