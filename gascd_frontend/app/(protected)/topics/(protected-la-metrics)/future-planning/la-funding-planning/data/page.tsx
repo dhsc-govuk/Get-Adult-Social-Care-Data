@@ -146,7 +146,6 @@ export default function LAFundingPlanningPage() {
       }
     };
     fetchAllData();
-    console.log('filteredDemographicData', filteredDemographicData);
   }, [demographicQuery]);
 
   useEffect(() => {
