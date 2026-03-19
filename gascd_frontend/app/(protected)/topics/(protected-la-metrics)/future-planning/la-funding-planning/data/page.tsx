@@ -41,6 +41,8 @@ export default function LAFundingPlanningPage() {
     location_ids: [],
   });
 
+  const [columnDates, setColumnDates] = useState<string[]>([]);
+
   const breadcrumbs = [
     {
       text: 'Home',
@@ -53,26 +55,31 @@ export default function LAFundingPlanningPage() {
   ];
 
   const demographicMetricIds = [
-    'pansi_pred_pop_early_dem_aged_30_64_yearly',
-    'pansi_pred_pop_challenging_behaviour_aged_18_64_yearly',
-    'pansi_pred_pop_asd_aged_18_64_yearly',
+    'pansi_pred_pop_asd_aged_18_64',
+    'pansi_pred_pop_challenging_behaviour_aged_18_64',
+    'pansi_pred_pop_early_dem_aged_30_64',
 
-    'pansi_pred_pop_early_dem_aged_30_64_perc_change_yearly',
-    'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change_yearly',
+    'pansi_pred_pop_asd_aged_18_64_perc_change',
+    'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change',
+    'pansi_pred_pop_early_dem_aged_30_64_perc_change',
+
+    'pansi_pred_pop_asd_aged_18_64_yearly',
+    'pansi_pred_pop_challenging_behaviour_aged_18_64_yearly',
+    'pansi_pred_pop_early_dem_aged_30_64_yearly',
+
     'pansi_pred_pop_asd_aged_18_64_perc_change_yearly',
+    'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change_yearly',
+    'pansi_pred_pop_early_dem_aged_30_64_perc_change_yearly',
   ];
 
   const percChangeHeaders = {
-    pansi_pred_pop_early_dem_aged_30_64_perc_change_yearly:
+    pansi_pred_pop_early_dem_aged_30_64_perc_change:
       'Total population aged 30-64 predicted to have early onset dementia',
-    pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change_yearly:
+    pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change:
       'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
-    pansi_pred_pop_asd_aged_18_64_perc_change_yearly:
+    pansi_pred_pop_asd_aged_18_64_perc_change:
       'Total population aged 18-64 predicted to have autistic spectrum disorders',
   };
-
-  // Replace with dynamic dates when we have them, this is just to show the table structure for now
-  const columnDates = ['2025', '2026', '2027', '2028', '2029'];
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -124,12 +131,22 @@ export default function LAFundingPlanningPage() {
       try {
         const demographicData: Indicator[] =
           await IndicatorFetchService.getData(demographicQuery);
+
+        demographicData.map((item) => {
+          item.metric_id = item.metric_id.replace('_yearly', '');
+        });
+        const uniqueDates = Array.from(
+          new Set(demographicData.map((item) => item.metric_date))
+        ).sort();
+
+        setColumnDates(uniqueDates);
         setFilteredDemographicData(demographicData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchAllData();
+    console.log('filteredDemographicData', filteredDemographicData);
   }, [demographicQuery]);
 
   useEffect(() => {
@@ -259,11 +276,11 @@ export default function LAFundingPlanningPage() {
               }
               columnHeaders={columnDates}
               rowHeaders={{
-                pansi_pred_pop_early_dem_aged_30_64_yearly:
+                pansi_pred_pop_early_dem_aged_30_64:
                   'Total population aged 30-64 predicted to have early onset dementia',
-                pansi_pred_pop_challenging_behaviour_aged_18_64_yearly:
+                pansi_pred_pop_challenging_behaviour_aged_18_64:
                   'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
-                pansi_pred_pop_asd_aged_18_64_yearly:
+                pansi_pred_pop_asd_aged_18_64:
                   'Total population aged 18-64 predicted to have autistic spectrum disorders',
               }}
               data={filteredDemographicData}
@@ -365,9 +382,9 @@ export default function LAFundingPlanningPage() {
               rowHeaders={percChangeHeaders}
               data={filteredDemographicData}
               percentageRows={[
-                'pansi_pred_pop_early_dem_aged_30_64_perc_change_yearly',
-                'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change_yearly',
-                'pansi_pred_pop_asd_aged_18_64_perc_change_yearly',
+                'pansi_pred_pop_early_dem_aged_30_64_perc_change',
+                'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change',
+                'pansi_pred_pop_asd_aged_18_64_perc_change',
               ]}
               currency={false}
             ></TimeSeriesTable>
