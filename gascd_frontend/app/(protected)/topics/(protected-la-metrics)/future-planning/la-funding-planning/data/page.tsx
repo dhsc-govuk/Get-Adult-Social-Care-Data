@@ -64,7 +64,7 @@ export default function LAFundingPlanningPage() {
 
   const percChangeHeaders = {
     pansi_pred_pop_early_dem_aged_30_64_perc_change_yearly:
-      'Total population aged 30-64 to have early onset dementia',
+      'Total population aged 30-64 predicted to have early onset dementia',
     pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change_yearly:
       'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
     pansi_pred_pop_asd_aged_18_64_perc_change_yearly:
@@ -260,7 +260,7 @@ export default function LAFundingPlanningPage() {
               columnHeaders={columnDates}
               rowHeaders={{
                 pansi_pred_pop_early_dem_aged_30_64_yearly:
-                  'Total population aged 30-64 to have early onset dementia',
+                  'Total population aged 30-64 predicted to have early onset dementia',
                 pansi_pred_pop_challenging_behaviour_aged_18_64_yearly:
                   'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
                 pansi_pred_pop_asd_aged_18_64_yearly:
@@ -325,7 +325,7 @@ export default function LAFundingPlanningPage() {
       >
         <DataTabs
           id="2"
-          chart={
+          graph={
             <>
               <h4 className="govuk-heading-s">
                 Figure 1: estimated percentage change in population with
@@ -343,8 +343,8 @@ export default function LAFundingPlanningPage() {
                 </div>
               )) || <p>Loading graph</p>}
               <p className="govuk-body">
-                Source: Adult Social Care Activity and Finance Report from NHS
-                England
+                Source: Projected Adult Needs and Service Information (PANSI)
+                v15 August 2025 from the Institute of Public Care
               </p>
             </>
           }
@@ -395,18 +395,18 @@ export default function LAFundingPlanningPage() {
           url="/help/estimated-population-asd"
         />
         <DataLinkCard
+          label="People aged 18-64 with a learning disability, predicted to display challenging behaviour, projected to 2045"
+          sources="Institute of Public Care"
+          updateFrequency="Updated every 5 years"
+          limitations={true}
+          url="/help/estimated-population-learning-disability"
+        />
+        <DataLinkCard
           label="People aged 30-64 predicted to have early onset dementia, projected to 2045"
           sources="Institute of Public Care"
           updateFrequency="Updated every 5 years"
           limitations={true}
           url="/help/estimated-population-early-onset-dementia"
-        />
-        <DataLinkCard
-          label="People aged 18-64 with a learning disability, predicted to display challenging behaviour, projected to 2045"
-          sources="Institute of Public Care"
-          updateFrequency="Updated every 5 years"
-          limitations={false}
-          url="/help/estimated-population-learning-disability"
         />
       </DataIndicatorDetailsList>
 

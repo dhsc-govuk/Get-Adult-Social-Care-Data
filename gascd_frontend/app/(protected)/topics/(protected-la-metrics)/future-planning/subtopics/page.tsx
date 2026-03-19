@@ -20,7 +20,7 @@ export default function FuturePlanningPage() {
     {
       title: 'Local Authority funding projected demand',
       description:
-        'Consolidated estimated data on population with selected conditions within a LA area.',
+        'Data estimates on the prevalence of conditions that may require a social care response.',
       url: '/topics/future-planning/la-funding-planning/data',
     },
   ];
