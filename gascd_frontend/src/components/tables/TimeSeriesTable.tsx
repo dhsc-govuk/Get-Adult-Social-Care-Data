@@ -62,7 +62,7 @@ const DataTable: React.FC<DataTableProps> = ({
     if (columnIndex === 0) {
       return 'govuk-table__header govuk-!-width-one-third scrollable-table__header';
     } else {
-      return 'govuk-table__header govuk-table__cell--numeric';
+      return 'govuk-table__header govuk-table__cell--numeric scrollable-table__header';
     }
   };
 
