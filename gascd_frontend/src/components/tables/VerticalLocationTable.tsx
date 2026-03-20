@@ -44,9 +44,9 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
 
   const columnClass = (columnIndex: number) => {
     if (columnIndex === 0) {
-      return 'govuk-table__header';
+      return 'govuk-table__header scrollable-table__header';
     } else {
-      return 'govuk-table__header govuk-table__cell--numeric';
+      return 'govuk-table__header govuk-table__cell--numeric  scrollable-table__header';
     }
   };
 
@@ -88,54 +88,56 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
 
   return (
     <div>
-      <table
-        className="govuk-table"
-        ref={tableref}
-        data-module="moj-sortable-table"
-      >
-        {caption && (
-          <caption className="govuk-table__caption govuk-table__caption--s">
-            {caption}
-          </caption>
-        )}
-        <thead className="govuk-table__head">
-          <tr className="govuk-table__row">
-            {Object.entries(columnHeaders).map(
-              ([columnKey, columnLabel], columnIndex) => (
-                <th
-                  key={columnKey}
-                  scope="col"
-                  className={columnClass(columnIndex)}
-                  aria-sort="none"
-                >
-                  {columnLabel}
-                </th>
-              )
-            )}
-          </tr>
-        </thead>
-        <tbody className="govuk-table__body">
-          {Object.entries(rowHeaders).map(([key, value], index) => (
-            <tr key={key}>
-              <th
-                scope="row"
-                className="govuk-table__cell govuk-!-font-weight-regular"
-              >
-                {getFormattedLocationLabel(value, index)}
-              </th>
-              <td
-                className="govuk-table__cell govuk-table__cell--numeric"
-                data-sort-value={
-                  data.find((metric) => metric.location_id === key)
-                    ?.data_point || 0
-                }
-              >
-                {getFormattedDataPoint(data, key)}
-              </td>
+      <div className="moj-scrollable-pane" role="region">
+        <table
+          className="govuk-table"
+          ref={tableref}
+          data-module="moj-sortable-table"
+        >
+          {caption && (
+            <caption className="govuk-table__caption govuk-table__caption--s">
+              {caption}
+            </caption>
+          )}
+          <thead className="govuk-table__head">
+            <tr className="govuk-table__row">
+              {Object.entries(columnHeaders).map(
+                ([columnKey, columnLabel], columnIndex) => (
+                  <th
+                    key={columnKey}
+                    scope="col"
+                    className={columnClass(columnIndex)}
+                    aria-sort="none"
+                  >
+                    {columnLabel}
+                  </th>
+                )
+              )}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="govuk-table__body">
+            {Object.entries(rowHeaders).map(([key, value], index) => (
+              <tr key={key}>
+                <th
+                  scope="row"
+                  className="govuk-table__cell govuk-!-font-weight-regular"
+                >
+                  {getFormattedLocationLabel(value, index)}
+                </th>
+                <td
+                  className="govuk-table__cell govuk-table__cell--numeric"
+                  data-sort-value={
+                    data.find((metric) => metric.location_id === key)
+                      ?.data_point || 0
+                  }
+                >
+                  {getFormattedDataPoint(data, key)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {children}
       <p className="govuk-body">Source: {source}</p>
     </div>
