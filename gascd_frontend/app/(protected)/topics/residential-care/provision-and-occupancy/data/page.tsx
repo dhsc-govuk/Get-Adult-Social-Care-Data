@@ -48,6 +48,8 @@ export default function ProvisionAndOccupancyPage() {
   const tableref2 = useRef<HTMLTableElement>(null);
   const tableref3 = useRef<HTMLTableElement>(null);
 
+  const [visibleCareProviderMetricIds1, setVisibleCareProviderMetricIds1] =
+    useState<string[]>([]);
   const [numbersTableFilterName, setNumbersTableFilterName] =
     useState<string>('');
   const [typesChartFilterName, setTypesChartFilterName] = useState<string>('');
@@ -152,6 +154,22 @@ export default function ProvisionAndOccupancyPage() {
 
   // metric ids
   const careProviderMetricIds1 = ['bedcount_total', 'occupancy_rate_total'];
+
+  useEffect(() => {
+    // Set metric ids which are conditional on the user
+    if (session?.user) {
+      const _visible_ids = showCPLevelData(session?.user)
+        ? careProviderMetricIds1
+        : careProviderMetricIds1.filter(
+            (metricId) => metricId !== 'bedcount_total'
+          );
+      setVisibleCareProviderMetricIds1(_visible_ids);
+      _visible_ids.forEach((metric_id) => {
+        AnalyticsService.trackMetricView(metric_id);
+      });
+    }
+  }, [session]);
+
   const careProviderMetricIds2 = [
     'median_bed_count_total',
     'median_occupancy_total',
@@ -192,9 +210,6 @@ export default function ProvisionAndOccupancyPage() {
   const trackDefaultMetrics = () => {
     // Track all of the key metrics shown on this page
     // note - does not include filters, which are tracked as separate events
-    careProviderMetricIds1.forEach((metric_id) => {
-      AnalyticsService.trackMetricView(metric_id);
-    });
     careProviderMetricIds2.forEach((metric_id) => {
       AnalyticsService.trackMetricView(metric_id);
     });
@@ -343,9 +358,9 @@ export default function ProvisionAndOccupancyPage() {
   // Data fetching effects
   useEffect(() => {
     // Set up the basic metric queries
-    if (CPLocationId) {
+    if (CPLocationId && visibleCareProviderMetricIds1.length) {
       setCareProviderData1Query(() => ({
-        metric_ids: careProviderMetricIds1,
+        metric_ids: visibleCareProviderMetricIds1,
         location_ids: [CPLocationId],
       }));
     }
@@ -371,7 +386,12 @@ export default function ProvisionAndOccupancyPage() {
         query_type: 'RegionQuery',
       });
     }
-  }, [CPLocationId, locationIds, laIdsForRegion]);
+  }, [
+    CPLocationId,
+    locationIds,
+    laIdsForRegion,
+    visibleCareProviderMetricIds1,
+  ]);
 
   useEffect(() => {
     // Fetch all metric data based on set queries
