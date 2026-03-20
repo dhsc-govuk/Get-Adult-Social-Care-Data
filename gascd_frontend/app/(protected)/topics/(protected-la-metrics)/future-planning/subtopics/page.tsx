@@ -18,7 +18,7 @@ export default function FuturePlanningPage() {
 
   const subtopics = [
     {
-      title: 'Local Authority funding projected demand',
+      title: 'Population projections within local authorities',
       description:
         'Data estimates on the prevalence of conditions that may require a social care response.',
       url: '/topics/future-planning/la-funding-planning/data',

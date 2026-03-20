@@ -101,7 +101,7 @@ const HomePage: React.FC = async () => {
       url: 'topics/future-planning/subtopics',
       subtopics: [
         {
-          title: 'Local authority funding projected demand',
+          title: 'Population projections within local authorities',
           description:
             'Data estimates on the prevalence of conditions that may require a social care response.',
           url: 'topics/future-planning/la-funding-planning/data',
