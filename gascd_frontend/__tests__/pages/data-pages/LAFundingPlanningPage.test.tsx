@@ -82,8 +82,21 @@ describe('LAFundingPage', () => {
       '/help/estimated-population-learning-disability'
     );
 
-    const tableElement = screen.getAllByRole('table');
-    expect(tableElement[0]).toBeInTheDocument();
-    expect(tableElement[1]).toBeInTheDocument();
+    const tables = [
+      /Table 1: comparison of estimated population with selected needs over time within/i,
+      /Table 2: estimated percentage change in population with selected needs over time within/i,
+    ];
+    for (let table of tables) {
+      expect(screen.getByRole('table', { name: table })).toBeInTheDocument();
+    }
+
+    const graphs = [
+      /Figure 1: estimated percentage change in population with selected needs over time within/i,
+    ];
+    for (let graph of graphs) {
+      expect(
+        screen.getByRole('heading', { name: graph, level: 4 })
+      ).toBeInTheDocument();
+    }
   });
 });
