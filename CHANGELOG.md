@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.2] - 2026-03-20
+
+March release - Additional fixes
+
+### Changes
+
+Frontend
+- [GASCDS-1088] Add scrollable table support (#506)
+- [GASCDS-1089] Fix title of the future planning page in home/topic pages (#507)
+
+Security:
+- Bump next from 15.5.13 to 15.5.14 in /gascd_frontend (#504)
+- Bump flatted from 3.4.1 to 3.4.2 in /gascd_frontend (#503)
+- Bump fast-xml-parser from 5.5.6 to 5.5.7 in /gascd_frontend (#502)
+
+## [1.4.1] - 2026-03-19
+
+March release - Fixes
+
+### Changes
+
+Frontend
+- [GASCDS-1086] Add 5 yearly PANSI data (#501)
+
 ## [1.4.0] - 2026-03-19
 
 March release - Bug bash / PANSI metrics
