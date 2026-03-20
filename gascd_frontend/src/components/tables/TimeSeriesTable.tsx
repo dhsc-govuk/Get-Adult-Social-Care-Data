@@ -60,7 +60,7 @@ const DataTable: React.FC<DataTableProps> = ({
 }) => {
   const columnClass = (columnIndex: number) => {
     if (columnIndex === 0) {
-      return 'govuk-table__header govuk-!-width-one-third';
+      return 'govuk-table__header govuk-!-width-one-third scrollable-table__header';
     } else {
       return 'govuk-table__header govuk-table__cell--numeric';
     }
@@ -68,59 +68,62 @@ const DataTable: React.FC<DataTableProps> = ({
 
   return (
     <div>
-      <table className="govuk-table" ref={tableref}>
-        {caption && (
-          <caption className="govuk-table__caption govuk-table__caption--s">
-            {caption}
-          </caption>
-        )}
-        <thead className="govuk-table__head">
-          <tr className="govuk-table__row">
-            <th key="0" scope="col" className={columnClass(0)}>
-              {metricColumnName}
-            </th>
-            {Object.entries(columnHeaders).map(
-              ([columnKey, columnLabel], columnIndex) => (
-                <th
-                  key={columnKey + 1}
-                  scope="col"
-                  className={columnClass(columnIndex + 1)}
-                >
-                  {columnLabel}
-                </th>
-              )
-            )}
-          </tr>
-        </thead>
-        <tbody className="govuk-table__body">
-          {Object.entries(rowHeaders).map(([key, value]) => (
-            <tr key={key}>
-              <th
-                scope="row"
-                className="govuk-table__cell govuk-!-font-weight-regular"
-              >
-                {value}
+      <div className="moj-scrollable-pane" role="region">
+        <table className="govuk-table" ref={tableref}>
+          {caption && (
+            <caption className="govuk-table__caption govuk-table__caption--s">
+              {caption}
+            </caption>
+          )}
+
+          <thead className="govuk-table__head">
+            <tr className="govuk-table__row">
+              <th key="0" scope="col" className={columnClass(0)}>
+                {metricColumnName}
               </th>
-              {columnHeaders.map((columnKey) => (
-                <td
-                  key={columnKey + 1}
-                  className="govuk-table__cell govuk-table__cell--numeric"
-                >
-                  {getFormattedDataPoint(
-                    data,
-                    key,
-                    percentageRows?.some((item) => item === key) ?? false,
-                    currency,
-                    columnKey,
-                    showAverageLabel
-                  )}
-                </td>
-              ))}
+              {Object.entries(columnHeaders).map(
+                ([columnKey, columnLabel], columnIndex) => (
+                  <th
+                    key={columnKey + 1}
+                    scope="col"
+                    className={columnClass(columnIndex + 1)}
+                  >
+                    {columnLabel}
+                  </th>
+                )
+              )}
             </tr>
-          ))}
-        </tbody>
-      </table>
-      {children}
+          </thead>
+          <tbody className="govuk-table__body">
+            {Object.entries(rowHeaders).map(([key, value]) => (
+              <tr key={key}>
+                <th
+                  scope="row"
+                  className="govuk-table__cell govuk-!-font-weight-regular scrollable-table__header"
+                >
+                  {value}
+                </th>
+                {columnHeaders.map((columnKey) => (
+                  <td
+                    key={columnKey + 1}
+                    className="govuk-table__cell govuk-table__cell--numeric"
+                  >
+                    {getFormattedDataPoint(
+                      data,
+                      key,
+                      percentageRows?.some((item) => item === key) ?? false,
+                      currency,
+                      columnKey,
+                      showAverageLabel
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {children}
+      </div>
       <p className="govuk-body govuk-!-margin-bottom-0">Source: {source}</p>
     </div>
   );

@@ -9,17 +9,19 @@ $govuk-fonts-path: "/govuk-frontend/fonts/";
 // Service header pulled from https://github.com/govuk-one-login/service-header/tree/main/dist/styles
 @import "./service-header-no-imports.scss";
 
-html, body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    width: 100%;
-  }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  width: 100%;
+}
 
 // Pull the back link up when visible
 .backlink-wrapper {
   margin-top: -20px;
 }
+
 @media (min-width: 40.0625em) {
   .backlink-wrapper {
     margin-top: -40px;
@@ -38,6 +40,7 @@ ul.nobullet {
 @media (max-width: 40.0525em) {
   .tmp-mobile-signout {
     display: block;
+
     a {
       color: #fff !important;
     }
@@ -47,15 +50,22 @@ ul.nobullet {
 // Temporary one login header styles
 @media (min-width: 40.0625em) {
   .rebranded-one-login-header__nav__link-content {
-  padding: 0 15px;
-  display: flex;
-  align-items: center;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
   }
 }
 
 @media (min-width: 40.0625em) {
   .rebranded-one-login-header__nav__link-content--sign-out {
-  height: 30px;
-  border-left: 1px solid #ffffff;
+    height: 30px;
+    border-left: 1px solid #ffffff;
+  }
+}
+
+@media (max-width: 1020px) {
+  .scrollable-table__header {
+    max-width: 30em !important;
+    white-space: normal !important;
   }
 }
