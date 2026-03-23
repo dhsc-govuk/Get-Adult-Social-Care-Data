@@ -41,6 +41,8 @@
    - This will log you in automatically using the credentials in `.env`
    - Note: this is only available if `LOCAL_AUTH=true`
 
+For more information on authentication and user types, see [USERS.md](./USERS.md)
+
 ## Usage
 
 ### Running the application
