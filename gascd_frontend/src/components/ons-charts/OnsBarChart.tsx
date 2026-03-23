@@ -50,12 +50,14 @@ const OnsBarChart: React.FC<BarChartProps> = ({
     yAxis: {
       title: {
         text: yAxisLabel,
+        align: 'high',
       },
       labels: { format: '{value:,.0f}' },
     },
     xAxis: {
       title: {
         text: xAxisLabel,
+        align: 'high',
       },
       categories: categories,
       type: 'category',
@@ -96,8 +98,9 @@ const OnsBarChart: React.FC<BarChartProps> = ({
       data-highcharts-base-chart
       data-highcharts-type="bar"
       data-highcharts-theme="primary"
-      data-highcharts-title="Food stores showed a strong rise on the month, while non-food stores fell"
+      data-highcharts-title={caption}
       data-highcharts-id="uuid"
+      style={{ width: '100%', height: '100%' }}
     >
       <figure
         className="ons-chart"

@@ -656,7 +656,7 @@ export default function ProvisionAndOccupancyPage() {
                     categories={chartData.categories}
                     values={chartData.values}
                     highlightCategory={locationNamesCP.LALabel}
-                    xAxisLabel="Care home beds per 100,000 adult population"
+                    yAxisLabel="Care home beds per 100,000 adult population"
                     label={numbersTableFilterName.toLowerCase()}
                   />
                 )) || <p>Loading chart...</p>}
