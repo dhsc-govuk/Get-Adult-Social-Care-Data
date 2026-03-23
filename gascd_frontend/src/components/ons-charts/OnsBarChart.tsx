@@ -8,6 +8,7 @@ interface BarChartProps {
   highlightCategory: string;
   yAxisLabel?: string;
   xAxisLabel?: string;
+  label?: string;
 }
 
 const OnsBarChart: React.FC<BarChartProps> = ({
@@ -17,6 +18,7 @@ const OnsBarChart: React.FC<BarChartProps> = ({
   highlightCategory,
   yAxisLabel = '',
   xAxisLabel = '',
+  label = '',
 }) => {
   useEffect(() => {
     const barCharts = async () => {
@@ -33,7 +35,7 @@ const OnsBarChart: React.FC<BarChartProps> = ({
       });
     };
     barCharts();
-  }, []);
+  }, [categories, values, highlightCategory]);
 
   const colors = ['#959495', '#1f6095'];
 
@@ -72,7 +74,7 @@ const OnsBarChart: React.FC<BarChartProps> = ({
     },
     series: [
       {
-        name: 'All bed types',
+        name: label,
         data: values.map((val, i) => ({
           y: val,
           color: categories[i] === highlightCategory ? colors[1] : colors[0],

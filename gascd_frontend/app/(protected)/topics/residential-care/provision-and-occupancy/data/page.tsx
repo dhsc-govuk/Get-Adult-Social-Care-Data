@@ -509,6 +509,11 @@ export default function ProvisionAndOccupancyPage() {
     updateNumbersTableMetrics();
   }, [bedNumbersData]);
 
+  const updateCareHomeBedNumbers = () => {
+    updateNumbersTableMetrics();
+    updateBarChartData();
+  };
+
   const updateNumbersTableMetrics = () => {
     // Set up filterable metric queries for the numbers table
     const storedData = localStorage.getItem('numbers-table-metrics');
@@ -630,7 +635,7 @@ export default function ProvisionAndOccupancyPage() {
           filterType="numbers-table-metrics"
           filterLabel="Bed type"
           filters={bedTypeRowHeadersDefault}
-          updateMethod={updateNumbersTableMetrics}
+          updateMethod={updateCareHomeBedNumbers}
         />
         <DataTabs
           id="1"
@@ -652,6 +657,7 @@ export default function ProvisionAndOccupancyPage() {
                     values={chartData.values}
                     highlightCategory={locationNamesCP.LALabel}
                     xAxisLabel="Care home beds per 100,000 adult population"
+                    label={numbersTableFilterName.toLowerCase()}
                   />
                 )) || <p>Loading chart...</p>}
               <p className="govuk-body">
