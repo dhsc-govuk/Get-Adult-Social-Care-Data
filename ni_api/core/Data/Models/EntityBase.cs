@@ -7,7 +7,4 @@ public class EntityBase
 {
     [Key, Column("id")]
     public int Id { get; set; }
-    
-    [Column("loaded_datetime"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public DateTime LoadedDateTime { get; init; }
 }

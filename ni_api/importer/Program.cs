@@ -8,11 +8,13 @@ using Microsoft.Extensions.Hosting;
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services
-    .AddDbContext<NiDataContext>(o => 
-    { 
-        o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), p => p.MigrationsAssembly("importer")); 
+    .AddDbContext<NiDataContext>(o =>
+    {
+        o.UseSqlServer("Server=localhost;Database=ni_data;User=sa;Password=DBpassword1;TrustServerCertificate=true",
+            p => p.MigrationsAssembly("importer"));
     })
-    .AddHostedService<DataImporter>();
+    .AddHostedService<DataImporter>()
+    .AddSingleton<DbWriter>();
 
 using IHost host = builder.Build();
 

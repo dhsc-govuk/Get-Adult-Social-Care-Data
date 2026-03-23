@@ -23,8 +23,8 @@ public class ExcelReaderTests : IDisposable
     {
         var expectedRows = new List<ContactRow>
         {
-            new() { LocationId = "1-10000302982", LocationName = "My Organisation", LocationType = "Location", Name = "Mr Test Person", Email = "test@testing.com"},
-            new() { LocationId = "1-10000302983", LocationName = "My Other Organisation", LocationType = "Location", Name = "Mrs Testy Person", Email = "testy@testing.com"},
+            new() { LocationId = "1-10000302982", LocationName = "My Organisation", LocationType = "Location", Role = "Registered Manager", Name = "Mr Test Person", Email = "test@testing.com"},
+            new() { LocationId = "1-10000302983", LocationName = "My Other Organisation", LocationType = "Location", Role = "Nominated Individual", Name = "Mrs Testy Person", Email = "testy@testing.com"},
         };
         ExcelReader excelReader = new ExcelReader(GetTestFileStream());
         var rows = excelReader.ProcessFile();

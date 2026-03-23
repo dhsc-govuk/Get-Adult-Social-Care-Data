@@ -54,6 +54,9 @@ public class ExcelReader(FileStream stream)
                     case "location_type":
                         contactRow.LocationType = value;
                         break;
+                    case "role":
+                        contactRow.Role = value;
+                        break;
                     case "name":
                         contactRow.Name = value;
                         break;
@@ -107,6 +110,9 @@ public class ExcelReader(FileStream stream)
                     break;
                 case "Organisation Sub Type":
                     columnDict[col] = "location_type";
+                    break;
+                case "Role":
+                    columnDict[col] = "role";
                     break;
                 case "Name":
                     columnDict[col] = "name";
