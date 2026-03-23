@@ -2,6 +2,11 @@
 
 This document explains how users are represented in the GASCD NextJS app, how access is controlled, and where the main authentication code lives.
 
+Authentication is provided by:
+
+- [Better Auth](https://better-auth.com/docs/introduction)
+- [GOV.UK One Login](https://www.sign-in.service.gov.uk)
+
 ## User types
 
 ### 1. Anonymous users
