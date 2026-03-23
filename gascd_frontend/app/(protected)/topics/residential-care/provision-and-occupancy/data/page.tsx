@@ -14,7 +14,6 @@ import DataTable from '@/components/tables/table';
 import VerticalLocationTable from '@/components/tables/VerticalLocationTable';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
-import BarChart from '@/components/charts/BarChart';
 import TimeSeriesChart, {
   DataPoint,
   Series,
@@ -30,6 +29,7 @@ import AnalyticsService from '@/services/analytics/analyticsService';
 import LocationService from '@/services/location/locationService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { ALLOWED_CP_USER_TYPES } from '@/constants';
+import OnsBarChart from '@/components/ons-charts/OnsBarChart';
 
 const CARE_HOME_RESIDENTIAL_CATEGORY = 'residential';
 
@@ -69,7 +69,6 @@ export default function ProvisionAndOccupancyPage() {
     } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
-  const [lasForRegion, setLasForRegion] = useState<string[]>();
   const [laIdsForRegion, setLaIdsForRegion] = useState<string[]>();
 
   // full data sets
@@ -342,7 +341,6 @@ export default function ProvisionAndOccupancyPage() {
           idArray.push(la.la_code);
         });
 
-        setLasForRegion(las);
         setLaIdsForRegion(idArray);
 
         const map: any = {};
@@ -638,23 +636,23 @@ export default function ProvisionAndOccupancyPage() {
           id="1"
           chart={
             <>
-              <h3 className="govuk-heading-s">
-                Figure 1: care home bed numbers per 100,000 adult population (
-                {numbersTableFilterName.toLowerCase()}) –{' '}
-                <abbr title="local authority">LA</abbr>s in the{' '}
-                {locationNamesCP.RegionLabel},{' '}
-                {IndicatorService.getMostRecentDate(bedNumbersData)}
-              </h3>
               {(chartData.categories.length > 0 &&
                 chartData.values.length > 0 && (
-                  <div style={{ height: '800px' }}>
-                    <BarChart
-                      categories={chartData.categories}
-                      values={chartData.values}
-                      highlightCategory={locationNamesCP.LALabel}
-                      darkBlueCount={2}
-                    />
-                  </div>
+                  <OnsBarChart
+                    caption={
+                      <>
+                        Figure 1: care home bed numbers per 100,000 adult
+                        population ({numbersTableFilterName.toLowerCase()}) –{' '}
+                        <abbr title="local authority">LA</abbr>s in the{' '}
+                        {locationNamesCP.RegionLabel},{' '}
+                        {IndicatorService.getMostRecentDate(bedNumbersData)}
+                      </>
+                    }
+                    categories={chartData.categories}
+                    values={chartData.values}
+                    highlightCategory={locationNamesCP.LALabel}
+                    xAxisLabel="Care home beds per 100,000 adult population"
+                  />
                 )) || <p>Loading chart...</p>}
               <p className="govuk-body">
                 Note: small numbers have been suppressed and will appear as zero
