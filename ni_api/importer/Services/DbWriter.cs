@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace importer.Services;
 
-public class DbWriter(IServiceProvider serviceProvider) : IDisposable
+public class DbWriter(IServiceProvider serviceProvider)
 {
     Dictionary<String, User> _users = new();
     Dictionary<String, Location> _locations = new();
@@ -52,9 +52,5 @@ public class DbWriter(IServiceProvider serviceProvider) : IDisposable
             context.AddRange(_roles); 
             context.SaveChanges();   
         }
-    }
-
-    public void Dispose()
-    {
     }
 }
