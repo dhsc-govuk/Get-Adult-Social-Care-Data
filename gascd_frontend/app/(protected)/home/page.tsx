@@ -103,7 +103,7 @@ const HomePage: React.FC = async () => {
         {
           title: 'Population projections within local authorities',
           description:
-            'Data estimates on the prevalence of conditions that may require a social care response.',
+            'Data estimates on the future prevalence of long-term conditions and disability for adults.',
           url: 'topics/future-planning/la-funding-planning/data',
         },
       ],

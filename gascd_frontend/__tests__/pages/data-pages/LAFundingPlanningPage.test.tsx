@@ -50,7 +50,7 @@ describe('LAFundingPage', () => {
     }
 
     const bodyTextElement = screen.getByText(
-      /Data estimates on the prevalence of conditions that may require a social care response./i
+      /Data estimates on the future prevalence of long-term conditions and disability for adults./i
     );
     expect(bodyTextElement).toBeInTheDocument();
 

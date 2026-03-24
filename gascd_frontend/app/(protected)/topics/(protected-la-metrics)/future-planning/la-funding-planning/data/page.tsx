@@ -218,8 +218,8 @@ export default function LAFundingPlanningPage() {
             Population projections within local authorities
           </h1>
           <p className="govuk-body-l">
-            Data estimates on the prevalence of conditions that may require a
-            social care response.
+            Data estimates on the future prevalence of long-term conditions and
+            disability for adults.
           </p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview
