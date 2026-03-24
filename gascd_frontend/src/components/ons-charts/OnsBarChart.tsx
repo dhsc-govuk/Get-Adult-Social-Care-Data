@@ -24,7 +24,7 @@ const OnsBarChart: React.FC<BarChartProps> = ({
       // Import this at page load time to avoid NextJS SSR errors
       // https://nextjs.org/docs/app/guides/lazy-loading#loading-external-libraries
       const HighchartsBaseChart = await import(
-        '@ons/design-system/components/chart/chart'
+        '@ons/design-system/components/chart/chart' as string
       );
 
       [HighchartsBaseChart.default].forEach((Component) => {
