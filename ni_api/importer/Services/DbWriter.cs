@@ -7,31 +7,34 @@ namespace importer.Services;
 
 public class DbWriter(IServiceProvider serviceProvider) : IDisposable
 {
+    Dictionary<String, User> _users = new();
+    Dictionary<String, Location> _locations = new();
+    List<Role> _roles = new();
+    
     public void WriteContacts(IEnumerable<ContactRow> contacts)
     {
-        List<User> users = new();
-        List<Location> locations = new();
-        List<Role> roles = new();
         foreach (var contact in contacts)
         {
             var user =  GetUser(contact);
             var location = GetLocation(contact);
-            users.Add(user);
-            locations.Add(location);
-            roles.Add(GetRole(contact, user, location));
+            _users[user.Email] = user;
+            _locations[location.Code] = location;
+            _roles.Add(GetRole(contact, user, location));
         }
         
-        WriteToDatabase(users, locations, roles);
+        WriteToDatabase();
     }
 
     private User GetUser(ContactRow contact)
     {
-        return new User { Name = contact.Name, Email = contact.Email, };
+        return _users.ContainsKey(contact.Email) ? _users[contact.Email] : 
+            new User { Name = contact.Name, Email = contact.Email, };
     }
 
     private Location GetLocation(ContactRow contact)
     {
-        return new Location { Code = contact.LocationId, Name = contact.LocationName, Type = contact.LocationType };
+        return _locations.ContainsKey(contact.LocationId) ? _locations[contact.LocationId] : 
+            new Location { Code = contact.LocationId, Name = contact.LocationName, Type = contact.LocationType };
     }
 
     private Role GetRole(ContactRow contact, User user, Location location)
@@ -39,14 +42,14 @@ public class DbWriter(IServiceProvider serviceProvider) : IDisposable
         return new Role { RoleType = contact.Role, User = user, Location = location };
     }
 
-    private void WriteToDatabase(IEnumerable<User> users, IEnumerable<Location> locations, IEnumerable<Role> roles)
+    private void WriteToDatabase()
     {
         var scope = serviceProvider.CreateScope();
         using (var context = scope.ServiceProvider.GetRequiredService<NiDataContext>())
         {
-            context.AddRange(users);
-            context.AddRange(locations);
-            context.AddRange(roles); 
+            context.AddRange(_users.Values);
+            context.AddRange(_locations.Values);
+            context.AddRange(_roles); 
             context.SaveChanges();   
         }
     }

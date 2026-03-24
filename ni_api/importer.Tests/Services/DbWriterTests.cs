@@ -122,6 +122,72 @@ public class DbWriterTests : IClassFixture<DatabaseFixture>, IDisposable
         context.Users.Count().ShouldBe(2);
         context.Roles.Count().ShouldBe(2);
     }
+    
+    [Fact]
+    public void CanWriteMultipleContactsToDatabase_OneUser()
+    {
+        var crList = new List<ContactRow>
+        {
+            new()
+            {
+                LocationId = "1-10000302983",
+                LocationName = "My Other Organisation",
+                LocationType = "Location",
+                Role = "Registered Manager",
+                Name = "Ms Caroline Cheeseman",
+                Email = "caroline@cheeseman.com"
+            },
+            new()
+            {
+                LocationId = "1-10000302984",
+                LocationName = "That Work Place",
+                LocationType = "Location",
+                Role = "Nominated Individual",
+                Name = "Ms Caroline Cheeseman",
+                Email = "caroline@cheeseman.com"
+            }
+        };
+        
+        _writer.WriteContacts(crList);
+        
+        var context = GetContext();
+        context.Locations.Count().ShouldBe(2);
+        context.Users.Count().ShouldBe(1);
+        context.Roles.Count().ShouldBe(2);
+    }
+    
+    [Fact]
+    public void CanWriteMultipleContactsToDatabase_OneLocation()
+    {
+        var crList = new List<ContactRow>
+        {
+            new()
+            {
+                LocationId = "1-10000302983",
+                LocationName = "My Other Organisation",
+                LocationType = "Location",
+                Role = "Registered Manager",
+                Name = "Mr Charles Cheeseman",
+                Email = "charles@cheeseman.com"
+            },
+            new()
+            {
+                LocationId = "1-10000302983",
+                LocationName = "My Other Organisation",
+                LocationType = "Location",
+                Role = "Nominated Individual",
+                Name = "Ms Caroline Cheeseman",
+                Email = "caroline@cheeseman.com"
+            }
+        };
+        
+        _writer.WriteContacts(crList);
+        
+        var context = GetContext();
+        context.Locations.Count().ShouldBe(1);
+        context.Users.Count().ShouldBe(2);
+        context.Roles.Count().ShouldBe(2);
+    }
 
     public void Dispose()
     {
