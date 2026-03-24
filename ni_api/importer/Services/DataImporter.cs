@@ -18,7 +18,7 @@ public class DataImporter(IHostApplicationLifetime lifetime, DbWriter writer) : 
             Email = "test@testing.com"
         };
         
-        writer.WriteContact(row);
+        writer.WriteContacts(new List<ContactRow>{ row });
         
         Console.WriteLine("omg it worked!!");
         

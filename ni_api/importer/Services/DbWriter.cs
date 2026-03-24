@@ -5,28 +5,23 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace importer.Services;
 
-public class DbWriter : IDisposable
+public class DbWriter(IServiceProvider serviceProvider) : IDisposable
 {
-    private readonly IServiceScope _scope;
-
-    public DbWriter(IServiceProvider serviceProvider)
+    public void WriteContacts(IEnumerable<ContactRow> contacts)
     {
-        _scope = serviceProvider.CreateScope();
-    }
-    
-    public void WriteContact(ContactRow contact)
-    {
-        var user = GetUser(contact);
-        var location = GetLocation(contact);
-        var role = GetRole(contact, user, location);
-        
-        using (var context = _scope.ServiceProvider.GetRequiredService<NiDataContext>())
+        List<User> users = new();
+        List<Location> locations = new();
+        List<Role> roles = new();
+        foreach (var contact in contacts)
         {
-            context.Add(user);
-            context.Add(location);
-            context.Add(role);
-            context.SaveChanges();   
+            var user =  GetUser(contact);
+            var location = GetLocation(contact);
+            users.Add(user);
+            locations.Add(location);
+            roles.Add(GetRole(contact, user, location));
         }
+        
+        WriteToDatabase(users, locations, roles);
     }
 
     private User GetUser(ContactRow contact)
@@ -44,8 +39,19 @@ public class DbWriter : IDisposable
         return new Role { RoleType = contact.Role, User = user, Location = location };
     }
 
+    private void WriteToDatabase(IEnumerable<User> users, IEnumerable<Location> locations, IEnumerable<Role> roles)
+    {
+        var scope = serviceProvider.CreateScope();
+        using (var context = scope.ServiceProvider.GetRequiredService<NiDataContext>())
+        {
+            context.AddRange(users);
+            context.AddRange(locations);
+            context.AddRange(roles); 
+            context.SaveChanges();   
+        }
+    }
+
     public void Dispose()
     {
-        _scope?.Dispose();
     }
 }
