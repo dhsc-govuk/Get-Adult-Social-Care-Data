@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.4] - 2026-03-24
+
+March release - update description of PANSI metrics
+
+### Changes
+
+Frontend:
+- [GASCDS-1121] Update description text for "Population projections" screen (#511)
+- Additional documentation on user types and auth setup (#510)
+
+Fixes:
+- Bump kysely from 0.28.12 to 0.28.14 in /gascd_frontend (#509)
+
 ## [1.4.3] - 2026-03-20
 
 ### Changes
