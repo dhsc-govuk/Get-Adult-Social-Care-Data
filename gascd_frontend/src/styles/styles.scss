@@ -1044,3 +1044,25 @@
     }
   }
 }
+
+/* Expansion on the ONS Design System line chart component (https://service-manual.ons.gov.uk/design-system/components/line-chart-component) so that it works for GASCD */
+.ons-scope .ons-chart {
+  max-width: none !important;
+  width: 100%;
+}
+.ons-scope .ons-chart__caption {
+  color: inherit !important;
+}
+
+.ons-chart__fallback-image {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.ons-chart__container {
+  padding-bottom: 10px;
+}
+
+.ons-chart__gascd {
+  margin-top: -35px;
+}

@@ -1,4 +1,3 @@
-import { color } from 'd3';
 import React, { useEffect } from 'react';
 
 interface BarChartProps {
@@ -100,16 +99,16 @@ const OnsBarChart: React.FC<BarChartProps> = ({
       data-highcharts-theme="primary"
       data-highcharts-title={caption}
       data-highcharts-id="uuid"
-      style={{ width: '100%', height: '100%' }}
+      className="ons-scope"
     >
       <figure
         className="ons-chart"
         aria-describedby="chart-audio-description-uuid"
       >
-        <h4 className="govuk-heading-s">{caption}</h4>
+        <h4 className="ons-chart__subtitle">{caption}</h4>
         <div
           data-highcharts-chart-container
-          className="ons-chart__container"
+          className="ons-chart__container ons-chart__gascd"
           role="region"
         >
           <div id="chart-instructions-uuid" className="ons-u-vh">
@@ -121,9 +120,9 @@ const OnsBarChart: React.FC<BarChartProps> = ({
           <div data-highcharts-chart className="ons-chart__chart"></div>
         </div>
       </figure>
-      <div data-highcharts-config--uuid hidden>
+      <script data-highcharts-config--uuid hidden>
         {JSON.stringify(chartConfig)}
-      </div>
+      </script>
     </div>
   );
 };
