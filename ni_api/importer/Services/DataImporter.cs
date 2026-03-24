@@ -3,7 +3,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace importer.Services;
 
-public class DataImporter(IHostApplicationLifetime lifetime, DbWriter writer) : IHostedService
+public class DataImporter(IHostApplicationLifetime lifetime, DbWriter writer) : IHostedService, IAsyncDisposable
 {
     public Task StartAsync(CancellationToken cancellationToken)
     {
@@ -30,5 +30,10 @@ public class DataImporter(IHostApplicationLifetime lifetime, DbWriter writer) : 
     {
         Console.WriteLine("stopping!!");
         return Task.CompletedTask;
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        throw new NotImplementedException();
     }
 }

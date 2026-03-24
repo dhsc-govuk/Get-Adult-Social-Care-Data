@@ -7,7 +7,7 @@ namespace core.Data.Models;
 public class Role : EntityBase
 {
     [Column("role_type"), StringLength(255)]
-    public string RoleType { get; init; }
+    public required string RoleType { get; init; }
     
     [Column("location_fk")]
     public int LocationFk { get; init; }
