@@ -9,7 +9,7 @@ using Shouldly;
 
 namespace importer.Tests.Services;
 
-public class DbWriterTests : IClassFixture<DatabaseFixture>
+public class DbWriterTests : IClassFixture<DatabaseFixture>, IDisposable
 {
     private DatabaseFixture _fixture;
     private DbWriter _writer;
@@ -18,6 +18,7 @@ public class DbWriterTests : IClassFixture<DatabaseFixture>
     {
         _fixture =  fixture;
         var context = GetContext();
+        context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
         var services = new ServiceCollection();
         services.AddSingleton<NiDataContext>(o => context);
@@ -34,7 +35,7 @@ public class DbWriterTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
-    public void CanWriteToDatabase()
+    public void CanWriteContactRowToDatabase()
     {
         var cr = new ContactRow
          {
@@ -45,8 +46,7 @@ public class DbWriterTests : IClassFixture<DatabaseFixture>
              Name = "Mr Test Person",
              Email = "test@testing.com"
          };
-         
-         
+        
          _writer.WriteContact(cr);
          
          var context = GetContext();
@@ -54,5 +54,33 @@ public class DbWriterTests : IClassFixture<DatabaseFixture>
         context.Locations.Count().ShouldBe(1);
         context.Users.Count().ShouldBe(1);
         context.Roles.Count().ShouldBe(1);
+    }
+    
+    [Fact]
+    public void CanWriteOtherContactRowToDatabase()
+    {
+        var cr = new ContactRow
+        {
+            LocationId = "1-10000302983",
+            LocationName = "My Other Organisation",
+            LocationType = "Location",
+            Role = "Registered Manager",
+            Name = "Ms Caroline Cheeseman",
+            Email = "caroline@cheeseman.com"
+        };
+        
+        _writer.WriteContact(cr);
+         
+        var context = GetContext();
+         
+        context.Locations.Count().ShouldBe(1);
+        context.Users.Count().ShouldBe(1);
+        context.Roles.Count().ShouldBe(1);
+    }
+
+    public void Dispose()
+    {
+        var context = GetContext();
+        context.Database.EnsureDeleted();
     }
 }

@@ -21,6 +21,6 @@ public class DatabaseFixture : IAsyncLifetime
     
     public string GetConnectionString()
     {
-        return Container.GetConnectionString();
+        return Container.GetConnectionString().Replace("Database=master", "Database=ni_data");
     }  
 }
