@@ -10,7 +10,7 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services
     .AddDbContext<NiDataContext>(o =>
     {
-        o.UseSqlServer("Server=localhost;Database=ni_data;User=sa;Password=DBpassword1;TrustServerCertificate=true",
+        o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
             p => p.MigrationsAssembly("importer"));
     })
     .AddHostedService<DataImporter>()

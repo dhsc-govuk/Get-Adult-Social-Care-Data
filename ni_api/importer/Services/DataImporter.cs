@@ -1,28 +1,32 @@
 using importer.Reader;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace importer.Services;
 
-public class DataImporter(IHostApplicationLifetime lifetime, DbWriter writer) : IHostedService, IAsyncDisposable
+public class DataImporter(IHostApplicationLifetime lifetime, DbWriter writer, IConfiguration config) : IHostedService, IAsyncDisposable
 {
     public Task StartAsync(CancellationToken cancellationToken)
     {
         Console.WriteLine("starting data importer!!");
-        var row = new ContactRow()
+
+        var fileName = config["CQCFile"] ?? throw new InvalidOperationException("CQCFile not set");
+
+        List<ContactRow> contactRows;
+        using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
         {
-            LocationId = "1-10000302982",
-            LocationName = "My Organisation",
-            LocationType = "Location",
-            Role = "Registered Manager",
-            Name = "Mr Test Person",
-            Email = "test@testing.com"
-        };
+            var reader = new ExcelReader(fileStream);
+            contactRows = reader.ProcessFile();
+        }
         
-        writer.WriteContacts(new List<ContactRow>{ row });
+        Console.WriteLine("Read file completed!!");
+        
+        writer.WriteContacts(contactRows);
         
         Console.WriteLine("omg it worked!!");
         
         lifetime.StopApplication();
+        
         return Task.CompletedTask;
     }
     
@@ -34,6 +38,7 @@ public class DataImporter(IHostApplicationLifetime lifetime, DbWriter writer) : 
 
     public ValueTask DisposeAsync()
     {
-        throw new NotImplementedException();
+        Console.WriteLine("Disposing!!");
+        return ValueTask.CompletedTask;
     }
 }

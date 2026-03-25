@@ -47,7 +47,7 @@ public class DbWriterTests : IClassFixture<DatabaseFixture>, IDisposable
             Email = "test@testing.com"
         };
         
-         _writer.WriteContacts(new List<ContactRow>{ cr });
+         _writer.WriteContacts([ cr ]);
          
         var context = GetContext();
         context.Locations.Count().ShouldBe(1);
@@ -68,7 +68,7 @@ public class DbWriterTests : IClassFixture<DatabaseFixture>, IDisposable
             Email = "caroline@cheeseman.com"
         };
         
-        _writer.WriteContacts(new List<ContactRow>{ cr });
+        _writer.WriteContacts([ cr ]);
          
         var context = GetContext();
          
