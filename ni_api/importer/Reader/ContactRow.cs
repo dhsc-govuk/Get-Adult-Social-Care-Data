@@ -1,4 +1,4 @@
-namespace core.Reader;
+namespace importer.Reader;
 
 public record ContactRow
 {

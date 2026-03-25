@@ -1,6 +1,6 @@
 using core.Data;
 using core.Data.Models;
-using core.Reader;
+using importer.Reader;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace importer.Services;

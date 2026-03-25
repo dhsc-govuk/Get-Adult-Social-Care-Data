@@ -1,15 +1,15 @@
-using core.Reader;
+using importer.Reader;
 using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
-namespace core.Tests.Reader;
+namespace importer.Tests.Reader;
 
 public class ExcelReaderTests : IDisposable
 {
-    FileStream _fileStream;
+    FileStream? _fileStream;
 
     [Fact]
     public void CanCreateExcelReader()
@@ -39,9 +39,6 @@ public class ExcelReaderTests : IDisposable
 
     public void Dispose()
     {
-        if (_fileStream != null)
-        {
-            _fileStream.Dispose();
-        }
+        _fileStream?.Dispose();
     }
 }

@@ -1,7 +1,7 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace core.Reader;
+namespace importer.Reader;
 
 public class ExcelReader(FileStream stream)
 {

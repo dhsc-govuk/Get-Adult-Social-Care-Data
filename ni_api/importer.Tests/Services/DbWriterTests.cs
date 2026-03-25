@@ -1,5 +1,5 @@
 using core.Data;
-using core.Reader;
+using importer.Reader;
 using importer.Services;
 using importer.Tests.Fixtures;
 using Microsoft.EntityFrameworkCore;
