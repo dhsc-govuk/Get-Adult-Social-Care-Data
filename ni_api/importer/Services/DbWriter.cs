@@ -7,9 +7,9 @@ namespace importer.Services;
 
 public class DbWriter(IServiceProvider serviceProvider)
 {
-    Dictionary<String, User> _users = new();
-    Dictionary<String, Location> _locations = new();
-    List<Role> _roles = new();
+    private readonly Dictionary<string, User> _users = new();
+    private readonly Dictionary<string, Location> _locations = new();
+    private readonly List<Role> _roles = [];
     
     public void WriteContacts(IEnumerable<ContactRow> contacts)
     {

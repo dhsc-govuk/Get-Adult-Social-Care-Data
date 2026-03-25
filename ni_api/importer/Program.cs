@@ -7,6 +7,10 @@ using Microsoft.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
 
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: true)
+    .AddJsonFile($"appsettings.{builder.Environment}.json", optional: true);
+
 builder.Services
     .AddDbContext<NiDataContext>(o =>
     {

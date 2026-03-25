@@ -27,4 +27,8 @@
         <InternalsVisibleTo Include="importer.Tests" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Update="appsettings.json;appsettings.*.json" CopyToOutputDirectory="PreserveNewest"  />
+    </ItemGroup>
+
 </Project>
