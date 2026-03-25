@@ -18,12 +18,8 @@ public class ExcelReader(FileStream stream)
 
     private Dictionary<int, string> GetWorksheetHeaderDict(Worksheet worksheet)
     {
-        var headerRow = worksheet.Descendants<Row>().FirstOrDefault();
-
-        if (headerRow == null)
-        {
-            throw new InvalidOperationException("Unable to read header row from workbook");
-        }
+        var headerRow = worksheet.Descendants<Row>().FirstOrDefault() ?? 
+                        throw new InvalidOperationException("Unable to read header row from workbook");
         
         return GetColumnDict(headerRow);
     }
@@ -81,12 +77,8 @@ public class ExcelReader(FileStream stream)
             throw new InvalidOperationException("Unable to find Contacts worksheet");
         }
 
-        var worksheet = ((WorksheetPart?)_document.WorkbookPart?.GetPartById(sheetId.Value!))?.Worksheet;
-
-        if (worksheet == null)
-        {
-            throw new InvalidOperationException("Unable to find Contacts worksheet");
-        }
+        var worksheet = ((WorksheetPart?)_document.WorkbookPart?.GetPartById(sheetId.Value!))?.Worksheet ??
+                        throw new InvalidOperationException("Unable to find Contacts worksheet");
         
         return worksheet;
     }
