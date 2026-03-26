@@ -4,7 +4,7 @@
 # dependencies = [
 # ]
 # ///
-# Reads an input csv with (name, email)
+# Reads an input csv with (full name, email address)
 # and matches LA domains against our internal mapping
 
 import csv
@@ -46,8 +46,8 @@ def main():
             for row in reader:
                 # Map original row values to our lowercased keys
                 clean_row = {k.strip().lower(): v for k, v in row.items()}
-                name = clean_row.get('name')
-                email = clean_row.get('email').lower()
+                name = clean_row.get('full name')
+                email = clean_row.get('email address').lower()
                 
                 domain = get_domain(email)
                 la_code = lookup.get(domain)
