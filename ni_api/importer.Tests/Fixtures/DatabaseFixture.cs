@@ -9,6 +9,8 @@ public class DatabaseFixture : IAsyncLifetime
     public async ValueTask InitializeAsync()
     {
         Container = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2025-latest")
+            .WithHostname("importer")
+            .WithName("importer")
             .Build();
 
         await Container.StartAsync();
