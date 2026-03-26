@@ -11,4 +11,6 @@ public class User : EntityBase
     
     [Column("email"), StringLength(255)]
     public required string Email { get; init; }
+
+    public virtual ICollection<Role> Roles { get; init; } = [];
 }
