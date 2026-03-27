@@ -8,18 +8,19 @@
 # Join CQC and waitlist files using duckdb, grouping by email
 # - performs a left join so that non-matched emails are also included (by location list will be blank)
 
+import argparse
+
 import duckdb
 import os
 
-def join_data(outfilename):
-    cwd = os.path.dirname(__file__)
+def join_data(contacts_parquet, ni_parquet, outfilename):
     SQL = f"""
     with contacts as (
         select
             email,
             string_agg(location_id) as locations
         from
-            '{cwd}/cleaned_data/contacts.parquet'
+            '{contacts_parquet}'
         where
             location_type = 'Provider'
             and role = 'Nominated Individual'
@@ -33,7 +34,7 @@ def join_data(outfilename):
             is_ni,
             list_consent
         from
-            '{cwd}/cleaned_data/ni-list.parquet'
+            '{ni_parquet}'
     )
 
     select
@@ -51,7 +52,15 @@ def join_data(outfilename):
     duckdb.sql(CSV_SQL)
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("output_csv", help="Path to save the output CSV")    
+    args = parser.parse_args()
+
     cwd = os.path.dirname(__file__)
-    outfilename = os.path.join(cwd, "cleaned_data/joined.csv")
-    join_data(outfilename)
-    print("Data written to", outfilename)
+    contacts_parquet = os.path.join(cwd, 'cleaned_data/contacts.parquet')
+    ni_parquet = os.path.join(cwd, 'cleaned_data/ni-list.parquet')
+    join_data(contacts_parquet, ni_parquet, args.output_csv)
+    # Clean up
+    os.unlink(contacts_parquet)
+    os.unlink(ni_parquet)
+    print("Data written to", args.output_csv)

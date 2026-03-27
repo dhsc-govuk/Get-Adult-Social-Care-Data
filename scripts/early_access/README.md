@@ -9,7 +9,7 @@ Usage:
 # Read list of NI subscribers
 ./scripts/early_access/read_ni_list.py /path/to/waitlist.xlsx
 # Join lists together
-./scripts/early_access/join_contacts_ni_lists.py
+./scripts/early_access/join_contacts_ni_lists.py /path/to/output.csv
 
 
 # LA users
