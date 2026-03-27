@@ -26,12 +26,10 @@ public class GetLocationsEndpoint(NiDataContext context) : Endpoint<GetLocations
             return;
         }
         
-        var locations = user.Roles.Select(role => new GetLocationsResponse.Location{ Code = role.Location.Code }).ToList();
-        
         var response = new GetLocationsResponse
         {
             Email =  req.Email,
-            Locations = locations
+            Locations = user.Roles.Select(role => new GetLocationsResponse.Location{ Code = role.Location.Code }).ToList()
         };
         await Send.OkAsync(response, ct);
     }
