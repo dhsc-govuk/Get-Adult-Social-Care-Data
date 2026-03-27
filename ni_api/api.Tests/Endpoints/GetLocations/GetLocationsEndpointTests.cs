@@ -14,7 +14,7 @@ public class GetLocationsEndpointTests(App app) : TestBase<App>
     public async Task GetLocation_ReturnsOk()
     {
         var (httpCode, _) = await app.Client.GETAsync<GetLocationsEndpoint, GetLocationsRequest, GetLocationsResponse>(
-            new GetLocationsRequest { Email = "test" });
+            new GetLocationsRequest { Email = "caroline@cheeseman.com" });
         httpCode.EnsureSuccessStatusCode();
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
@@ -44,5 +44,14 @@ public class GetLocationsEndpointTests(App app) : TestBase<App>
         response.Email.ShouldBe("charles@cheeseman.com");
         response.Locations.Count.ShouldBe(1);
         response.Locations.ShouldContain(x => x.Code == "1-54321");
+    }
+    
+    [Fact]
+    public async Task GetLocation_404IfNoSuchUser()
+    {
+        var (httpCode, response) = await app.Client.GETAsync<GetLocationsEndpoint, GetLocationsRequest, GetLocationsResponse>(
+            new GetLocationsRequest { Email = "katherine@cheeseman.com" });
+        httpCode.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        
     }
 }

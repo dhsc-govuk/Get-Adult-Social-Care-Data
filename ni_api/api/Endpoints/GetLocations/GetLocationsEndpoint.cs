@@ -20,6 +20,12 @@ public class GetLocationsEndpoint(NiDataContext context) : Endpoint<GetLocations
             .ThenInclude(r => r.Location)
             .SingleOrDefault(u => u.Email == req.Email);
 
+        if (user == null)
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+        
         var locations = user.Roles.Select(role => new GetLocationsResponse.Location{ Code = role.Location.Code }).ToList();
         
         var response = new GetLocationsResponse
