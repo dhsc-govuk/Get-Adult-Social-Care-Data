@@ -19,6 +19,8 @@ import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import SubCatergoryTable from '@/components/tables/SubCatergoryTable';
 import IndicatorService from '@/services/indicator/IndicatorService';
+import PointMap from '@/components/maps/PointMap';
+import { LocationDisplayData } from '@/data/interfaces/LocationDisplayData';
 
 export default function ResidentialCareProvidersPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -67,6 +69,27 @@ export default function ResidentialCareProvidersPage() {
     'npl_extra_care_housing',
     'npl_other_community_care',
     'npl_supported_living',
+  ];
+
+  const demoLocations: LocationDisplayData[] = [
+    {
+      coordinates: [51.5072, 0.1276],
+      provider_location_id: 'id',
+      name: 'place 1',
+      address: 'address 1',
+      services: 'services 1',
+      cqc_rating: 'good',
+      distance_from_postcode: 1.0093,
+    },
+    {
+      coordinates: [52.5072, 0.6276],
+      provider_location_id: 'id',
+      name: 'place 2',
+      address: 'address 2',
+      services: 'services 2',
+      cqc_rating: 'good',
+      distance_from_postcode: 0.953,
+    },
   ];
 
   useEffect(() => {
@@ -150,7 +173,6 @@ export default function ResidentialCareProvidersPage() {
     };
     fetchLocationIds();
   }, [CPLocationId]);
-
   return (
     <Layout
       title="Care provider services"
@@ -170,6 +192,39 @@ export default function ResidentialCareProvidersPage() {
           </h2>
         </div>
       </div>
+      <DataBox
+        dataTitle="Care provider locations near postcode EX16 1GF for Ashfield Court (Exeter)"
+        dataInfo={
+          <>
+            <p className="govuk-body-m">
+              Locations and service information for CQC-registered residential
+              social care and community based adult social care service
+              providers in England, August 2025.
+            </p>
+            <p className="govuk-body-m">
+              Find out{' '}
+              <a
+                href="/help/total-number-community-social-care-providers"
+                className="govuk-link"
+              >
+                how the number of adult social care providers is calculated
+              </a>
+              .
+            </p>
+          </>
+        }
+      >
+        <DataTabs
+          id="2"
+          map={
+            <PointMap
+              centrePoint={[51.505, -0.09]}
+              popupText="Postcode"
+              nearbyLocations={demoLocations}
+            />
+          }
+        />
+      </DataBox>
       <DataBox
         dataTitle="Number of adult social care providers"
         dataInfo={

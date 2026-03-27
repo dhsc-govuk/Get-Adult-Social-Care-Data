@@ -8,6 +8,8 @@ $govuk-fonts-path: "/govuk-frontend/fonts/";
 @import "./styles.scss";
 // Service header pulled from https://github.com/govuk-one-login/service-header/tree/main/dist/styles
 @import "./service-header-no-imports.scss";
+@import "leaflet/dist/leaflet.css";
+
 
 html,
 body {

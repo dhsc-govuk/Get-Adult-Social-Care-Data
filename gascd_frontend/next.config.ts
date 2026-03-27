@@ -7,7 +7,7 @@ const cspHeader = `
     script-src 'self' 'unsafe-eval' 'unsafe-inline' js.monitor.azure.com az416426.vo.msecnd.net;
     connect-src 'self' *.applicationinsights.azure.com *.applicationinsights.microsoft.com *.services.visualstudio.com *.monitor.azure.com;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data:;
+    img-src 'self' blob: data: *.tile.openstreetmap.org;
     font-src 'self';
     object-src 'none';
     base-uri 'self';
