@@ -6,7 +6,6 @@ using System.Net;
 
 namespace api.Tests.Endpoints.GetLocations;
 
-// [Collection("Sequential")]
 public class GetLocationsEndpointTests(App app) : TestBase<App>
 {
   
