@@ -1,0 +1,29 @@
+<svg width="40" height="50" viewBox="0 0 40 50" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Blue Pin Shape -->
+  <path fill="#1D70B8" d="
+    M20 1
+    C11 1, 4 8, 4 17
+    C4 28, 20 49, 20 49
+    C20 49, 36 28, 36 17
+    C36 8, 29 1, 20 1
+    Z
+  "></path>
+
+  <!-- White Inner Circle -->
+  <circle cx="20" cy="17" r="10" fill="#FFFFFF"></circle>
+
+  <!-- Location symbol (black) -->
+  <path fill="#000000" d="
+    M20 10
+    C16.7 10, 14 12.7, 14 16
+    C14 20.5, 20 25, 20 25
+    C20 25, 26 20.5, 26 16
+    C26 12.7, 23.3 10, 20 10
+    Z
+  "></path>
+
+  <!-- Inner white hole -->
+  <circle cx="20" cy="16" r="3" fill="#FFFFFF"></circle>
+
+</svg>

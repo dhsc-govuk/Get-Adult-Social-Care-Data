@@ -21,6 +21,7 @@ import SubCatergoryTable from '@/components/tables/SubCatergoryTable';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import PointMap from '@/components/maps/PointMap';
 import { LocationDisplayData } from '@/data/interfaces/LocationDisplayData';
+import dummyDataForMap from '@/data/mockResponses/care-providers-locations-and-services.json';
 
 export default function ResidentialCareProvidersPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -71,26 +72,19 @@ export default function ResidentialCareProvidersPage() {
     'npl_supported_living',
   ];
 
-  const demoLocations: LocationDisplayData[] = [
-    {
-      coordinates: [51.5072, 0.1276],
-      provider_location_id: 'id',
-      name: 'place 1',
-      address: 'address 1',
-      services: 'services 1',
-      cqc_rating: 'good',
-      distance_from_postcode: 1.0093,
-    },
-    {
-      coordinates: [52.5072, 0.6276],
-      provider_location_id: 'id',
-      name: 'place 2',
-      address: 'address 2',
-      services: 'services 2',
-      cqc_rating: 'good',
-      distance_from_postcode: 0.953,
-    },
-  ];
+  const demoLocations: LocationDisplayData[] = dummyDataForMap.map(
+    (location) => {
+      return {
+        coordinates: [location.location_latitude, location.location_longitude],
+        provider_location_id: location.location_id,
+        name: location.location_name,
+        address: location.location_address_line,
+        services: location.service_types,
+        cqc_rating: location.cqc_rating,
+        distance_from_postcode: location.distance_from_postcode,
+      } as unknown as LocationDisplayData;
+    }
+  ) as LocationDisplayData[];
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -218,8 +212,8 @@ export default function ResidentialCareProvidersPage() {
           id="2"
           map={
             <PointMap
-              centrePoint={[51.505, -0.09]}
-              popupText="Postcode"
+              centrePoint={[52.084024, 0.446052]}
+              popupText="EX16 1GF"
               nearbyLocations={demoLocations}
             />
           }
