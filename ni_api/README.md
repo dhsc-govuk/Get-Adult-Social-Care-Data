@@ -27,6 +27,7 @@ config or environment variable. It then creates a file stream to read the data t
 - migration process should be put in place using entity framework and pipelines like in gascd_api
 - more data from source file could be stored with improvements to the db schema
 - code to read data from excel file could be improved and further tested
+- pipeline work and containerisation
 
 ### api
 
