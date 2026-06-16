@@ -16,6 +16,7 @@ const cspHeader = `
 `;
 
 const nextConfig: NextConfig = {
+  basePath: process.env.BASE_PATH || undefined,
   serverExternalPackages: [
     '@azure/monitor-opentelemetry',
     '@opentelemetry/api',
