@@ -1,5 +1,5 @@
-$govuk-assets-path: "/govuk-frontend/";
-$govuk-fonts-path: "/govuk-frontend/fonts/";
+$govuk-assets-path: "#{$app-base-path}/govuk-frontend/";
+$govuk-fonts-path: "#{$app-base-path}/govuk-frontend/fonts/";
 
 @forward "node_modules/@ministryofjustice/frontend/moj/all";
 @import "govuk-frontend/dist/govuk/index";
