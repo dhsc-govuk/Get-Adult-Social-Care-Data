@@ -55,6 +55,7 @@ export const OneLoginPlugin = (): GenericOAuthConfig => {
     clientId: process.env.ONELOGIN_CLIENT_ID as string,
     clientSecret: process.env.ONELOGIN_CLIENT_SECRET as string,
     discoveryUrl: `${process.env.ONELOGIN_URL}/.well-known/openid-configuration`,
+    redirectURI: `${process.env.BETTER_AUTH_URL}${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/auth/oauth2/callback/govuk-one-login`,
     scopes: ['openid', 'email'],
     pkce: true,
     authorizationUrlParams: {
