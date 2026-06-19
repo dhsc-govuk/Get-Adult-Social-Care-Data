@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
+import { withBasePath } from '@/lib/basePath';
 
 const GuidancePage = () => {
   return (
@@ -137,7 +138,7 @@ const GuidancePage = () => {
                     providers following use of this service. For further details
                     read our{' '}
                     <a
-                      href="/terms-of-use"
+                      href={withBasePath('/terms-of-use')}
                       className="govuk-link"
                       rel="noreferrer noopener"
                       target="_blank"
@@ -198,7 +199,7 @@ const GuidancePage = () => {
                 <p className="govuk-body">
                   View the GASCD service{' '}
                   <a
-                    href="/privacy-policy"
+                    href={withBasePath('/privacy-policy')}
                     className="govuk-link"
                     rel="noreferrer noopener"
                     target="_blank"

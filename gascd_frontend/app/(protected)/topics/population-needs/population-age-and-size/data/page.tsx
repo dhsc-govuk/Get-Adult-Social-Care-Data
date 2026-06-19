@@ -1,6 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
+import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -224,11 +225,11 @@ export default function ProvisionAndOccupancyPage() {
         dataInfo={
           <p>
             Find out how{' '}
-            <a href="/help/population-size" className="govuk-link">
+            <a href={withBasePath('/help/population-size')} className="govuk-link">
               population size
             </a>{' '}
             and{' '}
-            <a href="/help/population-age" className="govuk-link">
+            <a href={withBasePath('/help/population-age')} className="govuk-link">
               age group percentages
             </a>{' '}
             are calculated.

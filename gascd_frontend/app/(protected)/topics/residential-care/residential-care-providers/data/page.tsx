@@ -1,6 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
+import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -177,7 +178,7 @@ export default function ResidentialCareProvidersPage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href="/help/total-number-community-social-care-providers"
+                href={withBasePath('/help/total-number-community-social-care-providers')}
                 className="govuk-link"
               >
                 how the number of adult social care providers is calculated

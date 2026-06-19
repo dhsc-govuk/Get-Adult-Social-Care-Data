@@ -1,6 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
+import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -387,7 +388,7 @@ export default function LAFundingPage() {
           <p className="govuk-body-m">
             Find out{' '}
             <a
-              href="/help/percentages-financial-spend-long-term-and-short-term-care"
+              href={withBasePath('/help/percentages-financial-spend-long-term-and-short-term-care')}
               className="govuk-link"
             >
               how the financial spend for short-term and long-term care is
@@ -478,7 +479,7 @@ export default function LAFundingPage() {
           <p className="govuk-body-m">
             Find out{' '}
             <a
-              href="/help/total-financial-spend-adult-social-care"
+              href={withBasePath('/help/total-financial-spend-adult-social-care')}
               className="govuk-link"
             >
               how the financial spend is calculated by service type
@@ -570,7 +571,7 @@ export default function LAFundingPage() {
           <p className="govuk-body-m">
             Find out{' '}
             <a
-              href="/help/total-financial-spend-long-term-community-adult-social-care"
+              href={withBasePath('/help/total-financial-spend-long-term-community-adult-social-care')}
               className="govuk-link"
             >
               how the financial spend on long-term adult social care is

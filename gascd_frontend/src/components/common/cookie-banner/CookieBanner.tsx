@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import { COOKIE_CONSENT_NAME } from '@/constants';
 import CookiesService from '@/services/cookies/CookiesService';
 import { usePathname } from 'next/navigation';
+import { withBasePath } from '@/lib/basePath';
 
 const CookieBanner: React.FC = () => {
   const pathname = usePathname();
@@ -90,7 +91,7 @@ const CookieBanner: React.FC = () => {
               >
                 Reject analytics cookies
               </button>
-              <a className="govuk-link" href="/cookies">
+              <a className="govuk-link" href={withBasePath('/cookies')}>
                 View cookies
               </a>
             </div>
@@ -114,7 +115,7 @@ const CookieBanner: React.FC = () => {
                 <div className="govuk-cookie-banner__content">
                   <p className="govuk-body">
                     You&apos;ve accepted analytics cookies. You can{' '}
-                    <a className="govuk-link" href="/cookies">
+                    <a className="govuk-link" href={withBasePath('/cookies')}>
                       change your cookie settings
                     </a>{' '}
                     at any time.
@@ -154,7 +155,7 @@ const CookieBanner: React.FC = () => {
                 <div className="govuk-cookie-banner__content">
                   <p className="govuk-body">
                     You&apos;ve rejected analytics cookies. You can{' '}
-                    <a className="govuk-link" href="/cookies">
+                    <a className="govuk-link" href={withBasePath('/cookies')}>
                       change your cookie settings
                     </a>{' '}
                     at any time.

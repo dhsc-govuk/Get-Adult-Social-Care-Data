@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import LogService from '@/services/logger/logService';
 import { Session } from '@/lib/auth-client';
 import { authClient } from '@/lib/auth-client';
+import { withBasePath } from '@/lib/basePath';
 import { useRouter } from 'next/navigation';
 
 type Props = {
@@ -17,7 +18,7 @@ const LogoutButton: React.FC<Props> = ({ session }) => {
   useEffect(() => {
     const fetchB2CLogoutUrl = async () => {
       try {
-        const response = await fetch('/api/auth/logout', {
+        const response = await fetch(withBasePath('/api/auth/logout'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

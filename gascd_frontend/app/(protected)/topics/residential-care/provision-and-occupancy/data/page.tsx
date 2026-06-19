@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { User, useSession } from '@/lib/auth-client';
+import { withBasePath } from '@/lib/basePath';
 import Layout from '@/components/common/layout/Layout';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -619,7 +620,7 @@ export default function ProvisionAndOccupancyPage() {
           <>
             Find out how{' '}
             <a
-              href="/help/beds-per-100000-adult-population"
+              href={withBasePath('/help/beds-per-100000-adult-population')}
               className="govuk-link"
             >
               the number of adult social care beds per 100,000 adult population
@@ -709,7 +710,7 @@ export default function ProvisionAndOccupancyPage() {
           <>
             Find out how{' '}
             <a
-              href="/help/beds-per-100000-adult-population"
+              href={withBasePath('/help/beds-per-100000-adult-population')}
               className="govuk-link"
             >
               the number of adult social care beds per 100,000 adult population
@@ -799,11 +800,11 @@ export default function ProvisionAndOccupancyPage() {
         dataInfo={
           <p className="govuk-body-m">
             Find out how{' '}
-            <a href="/help/percentage-beds-occupied" className="govuk-link">
+            <a href={withBasePath('/help/percentage-beds-occupied')} className="govuk-link">
               occupancy level percentages
             </a>{' '}
             and{' '}
-            <a href="/help/beds-care-provider-location" className="govuk-link">
+            <a href={withBasePath('/help/beds-care-provider-location')} className="govuk-link">
               number of adult social care beds in a care provider location
             </a>{' '}
             are calculated.
@@ -925,7 +926,7 @@ export default function ProvisionAndOccupancyPage() {
           <p className="govuk-body">
             Find out{' '}
             <a
-              href="/help/beds-per-100000-adult-population-over-time"
+              href={withBasePath('/help/beds-per-100000-adult-population-over-time')}
               className="govuk-link"
             >
               how the total number of adult social care beds per 100,000 adults

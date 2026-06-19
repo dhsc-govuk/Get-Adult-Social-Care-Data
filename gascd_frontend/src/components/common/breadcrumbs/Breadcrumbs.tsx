@@ -1,5 +1,6 @@
 import React from "react";
 import { Breadcrumb } from "../../../data/interfaces/Breadcrumb";
+import { withBasePath } from "@/lib/basePath";
 
 type Props = {
   breadcrumbs: Array<Breadcrumb>;
@@ -11,7 +12,7 @@ const Breadcrumbs: React.FC<Props> = ({ breadcrumbs }) => {
       <ol className="govuk-breadcrumbs__list">
         {breadcrumbs.map((breadcrumb, index) => (
           <li key={index} className="govuk-breadcrumbs__list-item">
-            <a className="govuk-breadcrumbs__link" href={breadcrumb.url}>
+            <a className="govuk-breadcrumbs__link" href={withBasePath(breadcrumb.url)}>
               {breadcrumb.text}
             </a>
           </li>

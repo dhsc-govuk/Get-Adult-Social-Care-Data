@@ -1,5 +1,6 @@
 import React from 'react';
 import '../../../src/styles/cards.scss';
+import { withBasePath } from '@/lib/basePath';
 
 type Props = {
   label: string | React.ReactNode;
@@ -25,7 +26,7 @@ const DataLinkCard: React.FC<Props> = ({
           <h2 className="gem-c-cards__sub-heading govuk-heading-s">
             <a
               className="govuk-link gem-c-cards__link gem-c-force-print-link-styles"
-              href={url}
+              href={withBasePath(url)}
             >
               {label}
             </a>

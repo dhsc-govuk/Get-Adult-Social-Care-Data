@@ -1,6 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
+import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -154,7 +155,7 @@ export default function UnpaidCarePage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href="/help/percentage-people-aged-5-and-over-who-provide-unpaid-care"
+                href={withBasePath('/help/percentage-people-aged-5-and-over-who-provide-unpaid-care')}
                 className="govuk-link"
               >
                 how unpaid care is measured.

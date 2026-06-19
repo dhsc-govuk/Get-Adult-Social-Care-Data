@@ -11,6 +11,7 @@ import {
   FILTER_CLEAR_EVENT,
 } from '@/constants';
 import { ICustomProperties } from '@microsoft/applicationinsights-web';
+import { withBasePath } from '@/lib/basePath';
 
 class AnalyticsService {
   // Note - user properties are added to all events inside the analytics init method
@@ -81,7 +82,7 @@ class AnalyticsService {
 
   // Anonymously track cookie opt-out events
   public static async trackOptOut() {
-    const response = await fetch('/api/analytics/optout', {
+    const response = await fetch(withBasePath('/api/analytics/optout'), {
       method: 'POST',
     });
   }

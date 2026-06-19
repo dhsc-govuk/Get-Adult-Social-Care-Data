@@ -1,4 +1,5 @@
 import React from 'react';
+import { withBasePath } from '@/lib/basePath';
 
 const TermsOfUse: React.FC = () => {
   return (
@@ -156,7 +157,7 @@ const TermsOfUse: React.FC = () => {
         <p className="govuk-body">
           We collect information about you in accordance with our{' '}
           <a
-            href="/privacy-policy"
+            href={withBasePath('/privacy-policy')}
             className="govuk-link"
             rel="noreferrer noopener"
             target="_blank"
@@ -165,7 +166,7 @@ const TermsOfUse: React.FC = () => {
           </a>{' '}
           and our{' '}
           <a
-            href="/cookies"
+            href={withBasePath('/cookies')}
             className="govuk-link"
             rel="noreferrer noopener"
             target="_blank"
@@ -279,7 +280,7 @@ const TermsOfUse: React.FC = () => {
           Check our privacy notice to find out{' '}
           <a
             className="govuk-link"
-            href="/privacy-policy"
+            href={withBasePath('/privacy-policy')}
             rel="noreferrer noopener"
             target="_blank"
           >

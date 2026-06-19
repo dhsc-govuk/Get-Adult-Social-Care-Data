@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
 import { FALLBACK_FEEDBACK_URL } from '@/components/common/feedback/Feedback';
+import { withBasePath } from '@/lib/basePath';
 
 const SignedOutPage: React.FC = () => {
   return (
@@ -15,7 +16,7 @@ const SignedOutPage: React.FC = () => {
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-xl">You have signed out</h1>
             <p className="govuk-body">
-              <a href="/login" className="govuk-button">
+              <a href={withBasePath('/login')} className="govuk-button">
                 Sign in again
               </a>
             </p>
