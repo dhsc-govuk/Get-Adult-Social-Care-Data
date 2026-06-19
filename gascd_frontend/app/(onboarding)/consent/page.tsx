@@ -63,6 +63,7 @@ const ConsentPage: React.FC = () => {
                     <a
                       href={withBasePath('/privacy-policy')}
                       className="govuk-link"
+                      rel="noreferrer noopener"
                       target="_blank"
                     >
                       privacy policy (opens in new tab)
