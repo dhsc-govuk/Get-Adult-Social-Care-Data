@@ -3,12 +3,13 @@
 import React, { useActionState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
 import { authClient } from '@/lib/auth-client';
+import { withBasePath } from '@/lib/basePath';
 
 const LoginPage: React.FC = () => {
   const handleSubmit = async () => {
     const { data, error } = await authClient.signIn.oauth2({
       providerId: 'govuk-one-login',
-      callbackURL: '/home',
+      callbackURL: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/home`,
     });
     if (error) {
       return {
@@ -71,7 +72,7 @@ const LoginPage: React.FC = () => {
                 read our{' '}
                 <a
                   className="govuk-link"
-                  href="/terms-of-use"
+                  href={withBasePath('/terms-of-use')}
                   target="_blank"
                   rel="noreferrer noopener"
                 >
@@ -96,7 +97,7 @@ const LoginPage: React.FC = () => {
             </p>
             <p className="govuk-body">
               Find out why you need a{' '}
-              <a href="/terms-of-use" className="govuk-link">
+              <a href={withBasePath('/terms-of-use')} className="govuk-link">
                 GOV.UK One Login
               </a>
               .
@@ -131,11 +132,11 @@ const LoginPage: React.FC = () => {
             <h2 className="govuk-heading-m">About using this service</h2>
             <p className="govuk-body">
               You will be asked to agree to the{' '}
-              <a className="govuk-link" href="/terms-of-use">
+              <a className="govuk-link" href={withBasePath('/terms-of-use')}>
                 terms of use
               </a>{' '}
               when you create a GASCD account. You can read our{' '}
-              <a className="govuk-link" href="/privacy-policy">
+              <a className="govuk-link" href={withBasePath('/privacy-policy')}>
                 privacy policy
               </a>{' '}
               to find out how we use your information.
@@ -143,7 +144,7 @@ const LoginPage: React.FC = () => {
             <h2 className="govuk-heading-m">More information</h2>
             <p className="govuk-body">
               Find out more about the{' '}
-              <a className="govuk-link" href="/guidance">
+              <a className="govuk-link" href={withBasePath('/guidance')}>
                 Get adult social care data service
               </a>
               .

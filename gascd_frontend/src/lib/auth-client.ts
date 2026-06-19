@@ -7,6 +7,7 @@ import {
 import type { auth } from './auth';
 
 export const authClient = createAuthClient({
+  basePath: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/auth`,
   plugins: [
     lastLoginMethodClient(),
     genericOAuthClient(),
