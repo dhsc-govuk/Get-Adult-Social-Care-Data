@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Session, User } from '@/lib/auth-client';
 import { ALLOWED_CP_USER_TYPES, LA_USER_TYPE } from '@/constants';
 import LocationService from '@/services/location/locationService';
+import { withBasePath } from '@/lib/basePath';
 
 type Props = {
   session?: Session | null;
@@ -137,7 +138,7 @@ const ServiceName: React.FC<Props> = ({ session }) => {
                     {canChangeLocation(session.user) && (
                       <a
                         className="govuk-service-navigation__link govuk-service-navigation__link-change"
-                        href="/location-select"
+                        href={withBasePath('/location-select')}
                       >
                         Change
                       </a>
@@ -185,7 +186,7 @@ const ServiceName: React.FC<Props> = ({ session }) => {
                     >
                       <a
                         className="govuk-link gem-c-layout-super-navigation-header__navigation-second-item-link gem-c-layout-super-navigation-header__navigation-second-item-link--with-description"
-                        href={link.url}
+                        href={withBasePath(link.url)}
                       >
                         {link.name}
                       </a>
@@ -208,7 +209,7 @@ const ServiceName: React.FC<Props> = ({ session }) => {
                     >
                       <a
                         className="govuk-link gem-c-layout-super-navigation-header__navigation-second-item-link gem-c-layout-super-navigation-header__navigation-second-item-link--with-description"
-                        href={link.url}
+                        href={withBasePath(link.url)}
                       >
                         {link.name}
                       </a>

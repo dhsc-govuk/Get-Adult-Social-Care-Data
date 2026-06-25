@@ -1,5 +1,6 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
+import { withBasePath } from '@/lib/basePath';
 
 const PrivacyPage = () => {
   return (
@@ -145,7 +146,7 @@ const PrivacyPage = () => {
               The legal basis for processing data collected with Google
               Analytics and government digital services is your consent. For
               more information you can read about the{' '}
-              <a href="/cookies">cookies we use</a>.
+              <a href={withBasePath('/cookies')}>cookies we use</a>.
             </p>
 
             <h2 className="govuk-heading-m">What we do with your data </h2>
@@ -233,7 +234,7 @@ const PrivacyPage = () => {
             </p>
             <p className="govuk-body">
               For more information you can read about the{' '}
-              <a href="/cookies" className="govuk-link">
+              <a href={withBasePath('/cookies')} className="govuk-link">
                 cookies we use
               </a>
               .

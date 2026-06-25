@@ -17,6 +17,9 @@ const cspHeader = `
 
 const nextConfig: NextConfig = {
   basePath: process.env.BASE_PATH || undefined,
+  sassOptions: {
+    additionalData: `$app-base-path: "${process.env.BASE_PATH ?? ''}";`,
+  },
   serverExternalPackages: [
     '@azure/monitor-opentelemetry',
     '@opentelemetry/api',
@@ -34,6 +37,18 @@ const nextConfig: NextConfig = {
   },
   poweredByHeader: false,
   output: 'standalone',
+  async redirects() {
+    const basePath = process.env.BASE_PATH;
+    if (!basePath) return [];
+    return [
+      {
+        source: '/',
+        destination: basePath,
+        basePath: false,
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     return [
       {

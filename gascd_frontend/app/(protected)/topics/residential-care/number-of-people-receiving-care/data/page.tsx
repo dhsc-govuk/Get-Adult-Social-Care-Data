@@ -1,6 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
+import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -183,7 +184,7 @@ export default function NumberPeopleReceivingCarePage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href="/help/number-people-receiving-care-from-community-social-care-provider"
+                href={withBasePath('/help/number-people-receiving-care-from-community-social-care-provider')}
                 className="govuk-link"
               >
                 how the number of people receiving community social care is

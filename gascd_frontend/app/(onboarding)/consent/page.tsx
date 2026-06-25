@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
 import { useRouter } from 'next/navigation';
 import { useSession, authClient } from '@/lib/auth-client';
+import { withBasePath } from '@/lib/basePath';
 
 const ConsentPage: React.FC = () => {
   const { data: session } = useSession();
@@ -60,8 +61,9 @@ const ConsentPage: React.FC = () => {
                   <p className="govuk-body">
                     Read the GASCD service{' '}
                     <a
-                      href="/privacy-policy"
+                      href={withBasePath('/privacy-policy')}
                       className="govuk-link"
+                      rel="noreferrer noopener"
                       target="_blank"
                     >
                       privacy policy (opens in new tab)

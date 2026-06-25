@@ -1,6 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
+import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -156,7 +157,7 @@ export default function DementaPrevalencePage() {
           <>
             <p className="govuk-body">
               Find out{' '}
-              <a href="/help/dementia-prevalence" className="govuk-link">
+              <a href={withBasePath('/help/dementia-prevalence')} className="govuk-link">
                 how dementia prevalence is calculated
               </a>
               .

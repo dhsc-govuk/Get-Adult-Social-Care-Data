@@ -1,7 +1,9 @@
 // Service to let the browser client log messages back to the server via the api
+import { withBasePath } from '@/lib/basePath';
+
 class LogService {
   public static async logEvent(message: string): Promise<void> {
-    const response = await fetch('/api/logger', {
+    const response = await fetch(withBasePath('/api/logger'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

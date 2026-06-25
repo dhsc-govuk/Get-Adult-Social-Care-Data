@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
+import { withBasePath } from '@/lib/basePath';
 
 const ConsentPage: React.FC = () => {
   const router = useRouter();
@@ -30,7 +31,7 @@ const ConsentPage: React.FC = () => {
             You must agree to agree to our{' '}
             <a
               className="govuk-link"
-              href="/terms-of-use"
+              href={withBasePath('/terms-of-use')}
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -1,6 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
+import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -244,7 +245,7 @@ export default function ProvisionAndOccupancyPage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href="/help/households-where-property-is-owned-outright"
+                href={withBasePath('/help/households-where-property-is-owned-outright')}
                 className="govuk-link"
               >
                 how data on property ownership is collected
@@ -293,7 +294,7 @@ export default function ProvisionAndOccupancyPage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href="/help/one-person-households-where-person-aged-65-or-over"
+                href={withBasePath('/help/one-person-households-where-person-aged-65-or-over')}
                 className="govuk-link"
               >
                 how the percentage of one-person households where the person is

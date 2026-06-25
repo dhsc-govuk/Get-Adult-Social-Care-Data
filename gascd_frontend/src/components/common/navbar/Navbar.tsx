@@ -1,4 +1,5 @@
 import React from 'react';
+import { withBasePath } from '@/lib/basePath';
 
 interface NavbarProps {
   currentPage: string;
@@ -32,7 +33,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
               >
                 <a
                   className="govuk-service-navigation__link"
-                  href="/home"
+                  href={withBasePath('/home')}
                   aria-current="true"
                 >
                   Home

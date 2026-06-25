@@ -3,6 +3,7 @@ import Footer from '../footer/Footer';
 import PhaseBanner from '../phase-banner/PhaseBanner';
 import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
 import { Breadcrumb } from '../../../data/interfaces/Breadcrumb';
+import { withBasePath } from '@/lib/basePath';
 
 type Props = {
   title: string;
@@ -79,7 +80,7 @@ const Layout: React.FC<Props> = ({
         </div>
         {backURL && (
           <div className="backlink-wrapper">
-            <a href={backURL} className="govuk-back-link">
+            <a href={withBasePath(backURL)} className="govuk-back-link">
               Back
             </a>
           </div>

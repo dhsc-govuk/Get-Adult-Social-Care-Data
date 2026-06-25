@@ -1,6 +1,7 @@
 'use client';
 
 import Layout from '@/components/common/layout/Layout';
+import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -272,13 +273,13 @@ export default function DisabilityPrevalence() {
             <p className="govuk-body-m">
               Find out how{' '}
               <a
-                href="/help/people-who-reported-bad-or-very-bad-health"
+                href={withBasePath('/help/people-who-reported-bad-or-very-bad-health')}
                 className="govuk-link"
               >
                 people who reported bad or very bad health
               </a>{' '}
               and{' '}
-              <a href="/help/disability-prevalence" className="govuk-link">
+              <a href={withBasePath('/help/disability-prevalence')} className="govuk-link">
                 disability prevalence
               </a>{' '}
               are calculated.
@@ -341,7 +342,7 @@ export default function DisabilityPrevalence() {
             <p className="govuk-body-m">
               Find out how{' '}
               <a
-                href="/help/learning-disability-prevalence"
+                href={withBasePath('/help/learning-disability-prevalence')}
                 className="govuk-link"
               >
                 learning disability prevalence is calculated
@@ -400,7 +401,7 @@ export default function DisabilityPrevalence() {
             <p className="govuk-body-m">
               Find out how{' '}
               <a
-                href="/help/primary-reason-for-accessing-long-term-adult-social-care"
+                href={withBasePath('/help/primary-reason-for-accessing-long-term-adult-social-care')}
                 className="govuk-link"
               >
                 primary reason for people to access long-term adult social care

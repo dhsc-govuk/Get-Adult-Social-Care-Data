@@ -29,17 +29,28 @@ export async function GET(req: NextRequest) {
     return redirect('/');
   }
 
-  // If running in docker in development we need to rewrite the host
+  // We're typically behind a proxy (Docker compose in local dev, Azure Container
+  // Apps in deployed envs). req.url reflects the internal listener (e.g.
+  // 0.0.0.0:3000) rather than the public URL, so we have to reconstruct the
+  // redirect target from X-Forwarded-* headers when they're present.
   const requestedHost = req.headers.get('X-Forwarded-Host');
   const redirectUrl = new URL('/home', req.url);
-  if (requestedHost && requestedHost.match(/localhost/)) {
+  if (requestedHost) {
     const requestedPort = req.headers.get('X-Forwarded-Port');
     const requestedProto = req.headers.get('X-Forwarded-Proto');
 
-    redirectUrl.host = requestedHost;
+    // Split host header in case it includes ":port" (some proxies do this)
+    const [hostOnly, portFromHost] = requestedHost.split(':');
+    redirectUrl.hostname = hostOnly;
     redirectUrl.protocol = requestedProto || redirectUrl.protocol;
-    if (requestedPort !== '80') {
-      redirectUrl.port = requestedPort || redirectUrl.port;
+
+    // Prefer X-Forwarded-Port, fall back to port embedded in host header.
+    // Drop standard ports (80/443) so the URL stays clean.
+    const effectivePort = requestedPort || portFromHost || '';
+    if (effectivePort && effectivePort !== '80' && effectivePort !== '443') {
+      redirectUrl.port = effectivePort;
+    } else {
+      redirectUrl.port = '';
     }
   }
 
