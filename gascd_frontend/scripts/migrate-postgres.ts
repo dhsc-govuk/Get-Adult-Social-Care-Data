@@ -151,11 +151,7 @@ async function runImport() {
 
     if (!dryRun) {
       await client.query('BEGIN');
-      // Disable all triggers (incl. FK constraint triggers) on each table so we
-      // don't have to insert in dependency order.
-      for (const n of targetTables) {
-        await client.query(`ALTER TABLE public."${n}" DISABLE TRIGGER ALL`);
-      }
+      await client.query("SET session_replication_role = 'replica'");
       console.log(`Truncating: ${tableList}`);
       await client.query(
         `TRUNCATE TABLE ${tableList} RESTART IDENTITY CASCADE`
@@ -199,10 +195,8 @@ async function runImport() {
     }
 
     if (!dryRun) {
-      // Re-enable triggers and commit.
-      for (const n of targetTables) {
-        await client.query(`ALTER TABLE public."${n}" ENABLE TRIGGER ALL`);
-      }
+      // Restore trigger enforcement before committing the transaction.
+      await client.query("SET session_replication_role = 'origin'");
       await client.query('COMMIT');
     }
   } catch (e) {
@@ -237,9 +231,7 @@ async function runDirectMigrate() {
     const tableList = tables.map((n) => `public."${n}"`).join(', ');
     if (!dryRun) {
       await tgt.query('BEGIN');
-      for (const n of tables) {
-        await tgt.query(`ALTER TABLE public."${n}" DISABLE TRIGGER ALL`);
-      }
+      await tgt.query("SET session_replication_role = 'replica'");
       await tgt.query(`TRUNCATE TABLE ${tableList} RESTART IDENTITY CASCADE`);
     }
     let totalInserted = 0;
@@ -271,9 +263,7 @@ async function runDirectMigrate() {
       console.log(`[${td.name}] ${td.rows.length} rows`);
     }
     if (!dryRun) {
-      for (const n of tables) {
-        await tgt.query(`ALTER TABLE public."${n}" ENABLE TRIGGER ALL`);
-      }
+      await tgt.query("SET session_replication_role = 'origin'");
       await tgt.query('COMMIT');
     }
     console.log(
