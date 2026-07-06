@@ -43,7 +43,7 @@
     "@microsoft/applicationinsights-web": "^3.3.9",
     "@ministryofjustice/frontend": "^8.0.0",
     "@next/eslint-plugin-next": "15.5.2",
-    "@opentelemetry/auto-instrumentations-node": "^0.62.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.75.0",
     "@types/d3": "^7.4.3",
     "@types/lodash.clonedeep": "^4.5.9",
     "@x-govuk/govuk-prototype-components": "^5.0.2",
