@@ -2,6 +2,7 @@ import React from 'react';
 import Layout from '@/components/common/layout/Layout';
 import { LA_USER_TYPE } from '@/constants';
 import { auth } from '@/lib/auth';
+import { withBasePath } from '@/lib/basePath';
 import { headers } from 'next/headers';
 
 const HomePage: React.FC = async () => {
@@ -24,7 +25,7 @@ const HomePage: React.FC = async () => {
   let topics: Topic[] = [
     {
       title: 'Care provision',
-      url: 'topics/residential-care/subtopics',
+      url: '/topics/residential-care/subtopics',
       subtopics: [
         {
           title: 'Care provider services',
@@ -36,7 +37,7 @@ const HomePage: React.FC = async () => {
           title: 'Care home beds and occupancy levels',
           description:
             'Provision and capacity data for care homes, including local, regional and national statistics.',
-          url: 'topics/residential-care/provision-and-occupancy/data',
+          url: '/topics/residential-care/provision-and-occupancy/data',
         },
         {
           title: 'Number of adults receiving community social care',
@@ -54,42 +55,42 @@ const HomePage: React.FC = async () => {
     },
     {
       title: 'Funding',
-      url: 'topics/financial-spend-and-unpaid-care/subtopics',
+      url: '/topics/financial-spend-and-unpaid-care/subtopics',
       subtopics: [
         {
           title: 'Local authority (LA) funding for adult social care',
           description:
             'Data on funding for both short-term and long-term care, also funding by individual care type.',
-          url: 'topics/financial-spend-and-unpaid-care/financial-spend/data',
+          url: '/topics/financial-spend-and-unpaid-care/financial-spend/data',
         },
       ],
     },
     {
       title: 'Population needs',
-      url: 'topics/population-needs/subtopics',
+      url: '/topics/population-needs/subtopics',
       subtopics: [
         {
           title: 'Population size and age group percentages',
           description:
             'Population data at LA, regional and national levels for England.',
-          url: 'topics/population-needs/population-age-and-size/data',
+          url: '/topics/population-needs/population-age-and-size/data',
         },
         {
           title: 'Economic factors and household composition',
           description:
             'Data on household deprivation, property ownership and older people living alone.',
-          url: 'topics/population-needs/household-composition-and-economic-factors/data',
+          url: '/topics/population-needs/household-composition-and-economic-factors/data',
         },
         {
           title: 'General health and disability',
           description:
             'Data on disability prevalence, learning disability diagnoses and reasons for accessing care.',
-          url: 'topics/population-needs/disability-prevalence/data',
+          url: '/topics/population-needs/disability-prevalence/data',
         },
         {
           title: 'Dementia prevalence',
           description: 'Data estimates for undiagnosed dementia.',
-          url: 'topics/population-needs/dementia-prevalence/data',
+          url: '/topics/population-needs/dementia-prevalence/data',
         },
       ],
     },
@@ -98,13 +99,13 @@ const HomePage: React.FC = async () => {
   if (session?.user.locationType == LA_USER_TYPE) {
     topics.push({
       title: 'Future planning',
-      url: 'topics/future-planning/subtopics',
+      url: '/topics/future-planning/subtopics',
       subtopics: [
         {
           title: 'Population projections within local authorities',
           description:
             'Data estimates on the future prevalence of long-term conditions and disability for adults.',
-          url: 'topics/future-planning/la-funding-planning/data',
+          url: '/topics/future-planning/la-funding-planning/data',
         },
       ],
     });
@@ -129,7 +130,7 @@ const HomePage: React.FC = async () => {
                     : 'govuk-!-margin-top-7')
                 }
               >
-                <a href={topic.url} className="govuk-link">
+                <a href={withBasePath(topic.url)} className="govuk-link">
                   {topic.title}
                 </a>
               </h2>
@@ -141,7 +142,7 @@ const HomePage: React.FC = async () => {
                     className="govuk-grid-column-one-half"
                     key={subtopic.title}
                   >
-                    <a href={subtopic.url} className="app-card">
+                    <a href={withBasePath(subtopic.url)} className="app-card">
                       <h3 className="govuk-heading-m app-card__heading">
                         {subtopic.title}
                       </h3>
