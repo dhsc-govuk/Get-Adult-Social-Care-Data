@@ -36,6 +36,9 @@
   "exclude": [
     "./cypress.config.ts",
     "./playwright.config.ts",
+    "./playwright.smoke.config.ts",
+    "smoke_tests",
+    "load_tests",
     "node_modules",
     "cypress",
     "./scripts/import-users.ts"
