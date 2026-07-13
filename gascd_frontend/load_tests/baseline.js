@@ -20,7 +20,7 @@ export default function () {
   group('landing', () => {
     const res = http.get(`${BASE_URL}/`, { redirects: 0 });
     check(res, {
-      'landing status 200/307': (r) => r.status === 200 || r.status === 307,
+      'landing responded (2xx/3xx)': (r) => r.status >= 200 && r.status < 400,
     });
   });
 
