@@ -1,5 +1,5 @@
-import React from 'react';
 import { withBasePath } from '@/lib/basePath';
+import React from 'react';
 
 const TermsOfUse: React.FC = () => {
   return (
@@ -7,48 +7,118 @@ const TermsOfUse: React.FC = () => {
       <div className="govuk-grid-column-two-thirds">
         <h1 className="govuk-heading-xl">Terms of use </h1>
         <p className="govuk-body">First published: 19 February 2026</p>
-        <p className="govuk-body">Last updated: 18 March 2026</p>
+        <p className="govuk-body">Last updated: 18 June 2026</p>
         <p className="govuk-body">
-          This page explains the Get Adult Social Care Data (GASCD) service
-          terms of use. You will be asked to agree to these terms of use when
-          creating a GASCD account.
+          This page explains the Get Adult Social Care Data{' '}
+          <abbr title="Get Adult Social Care Data">(GASCD)</abbr> service terms
+          of use. You will be asked to agree to these terms of use when creating
+          a <abbr title="Get Adult Social Care Data">GASCD</abbr> account.
         </p>
 
-        <h2 className="govuk-heading-m">Who we are </h2>
+        <h2 className="govuk-heading-m">About the service</h2>
         <p className="govuk-body">
-          Get Adult Social Care Data (GASCD) is a new service provided by the
-          Department for Health and Social Care as part of the Data Access
-          Project. The GASCD service gives key stakeholders in the adult social
-          care sector access to adult social care data in one place.
+          Get Adult Social Care Data{' '}
+          <abbr title="Get Adult Social Care Data">(GASCD)</abbr>is a new
+          service provided by the Department for Health and Social Care as part
+          of the Data Access Project. The{' '}
+          <abbr title="Get Adult Social Care Data">GASCD</abbr> service gives
+          CQC-registered care providers and local authority officers in the
+          adult social care sector access to reliable, useful and secure adult
+          social care data in one place, for internal management purposes.
         </p>
-
+        <p className="govuk-body">
+          This service is a pre-release version (&apos;Beta&apos;) and is
+          provided &apos;as is&apos; without any warranty of any kind. During
+          the beta phase we test and improve our services. The testing is
+          designed to uncover service issues and improve service quality,
+          usability, and availability by inviting users to experience new
+          features of a pre-release service, to help us deliver a satisfying
+          product for the official release. We encourage users to test the
+          service and provide feedback.
+        </p>
+        <p className="govuk-body">
+          To help improve this service, please provide any feedback on accuracy,
+          usability, or missing features using{' '}
+          <a
+            href="https://forms.office.com/pages/responsepage.aspx?id=MIwnYaiRMUyMH-9N6Jc6HCTDIbGmpYFAqGjg7fX8zI9URDFZRFE1N0tBOE1NMFhCV08zN0hTN0lKMyQlQCN0PWcu&route=shorturl"
+            className="govuk-link"
+            rel="noreferrer noopener"
+            target="_blank"
+          >
+            the feedback form embedded in the service
+          </a>
+          . Your insights help identify strengths and weaknesses to improve the
+          user experience. Alternatively, you can email our team on{' '}
+          <a
+            href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
+            className="govuk-link govuk-link--no-underline"
+          >
+            GetAdultSocialCareData.team@dhsc.gov.uk
+          </a>
+          .
+        </p>
+        <p className="govuk-body">
+          We update and expand the{' '}
+          <abbr title="Get Adult Social Care Data">GASCD</abbr> service
+          regularly based on feedback and user research. We can change or remove
+          content at any time without notice.
+        </p>
         <h2 className="govuk-heading-m">
-          Using the <abbr title="Get adult social care data">GASCD</abbr>{' '}
+          Using the <abbr title="Get Adult Social Care Data">GASCD</abbr>{' '}
           service
         </h2>
         <p className="govuk-body">
           You agree to keep your{' '}
-          <abbr title="Get adult social care data">GASCD</abbr> sign in details
+          <abbr title="Get Adult Social Care Data">GASCD</abbr> sign in details
           secure and not share them with anyone, including other colleagues in
           your organisation.
         </p>
         <p className="govuk-body">
-          You agree to use the{' '}
-          <abbr title="Get adult social care data">GASCD</abbr> service only for
-          lawful purposes. You must also use it in a way that does not infringe
-          the rights of, or restrict or inhibit the use and enjoyment of, this
+          You agree to use data insight from the{' '}
+          <abbr title="Get Adult Social Care Data">GASCD</abbr> service only for
+          internal operational management purposes. This means that you agree
+          not to share this insight with anyone in your organisation who does
+          not have a rightful purpose to use it (ie for internal operational
+          management purposes).
+        </p>
+
+        <p className="govuk-body">
+          You agree to: (i) keep all shared data secure; (ii) use the data
+          solely for the agreed purposes; and (iii) delete all data upon
+          termination. Confidentiality obligations do not apply to data that is
+          already public and/or required to be disclosed by law.
+        </p>
+        <p className="govuk-body">
+          Unless otherwise indicated, the data insight is not provided for you
+          to use in public documents. If you would like to make any insight from{' '}
+          <abbr title="Get Adult Social Care Data">GASCD</abbr> available to the
+          public, please contact DHSC first on{' '}
+          <a
+            href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
+            className="govuk-link govuk-link--no-underline"
+          >
+            GetAdultSocialCareData.team@dhsc.gov.uk
+          </a>
+          , to check on permissions to publish.
+        </p>
+        <p className="govuk-body">
+          You must also use the service in a way that does not infringe the
+          rights of, or restrict or inhibit the use and enjoyment of, this
           service by anyone else.
         </p>
         <p className="govuk-body">
-          We update the <abbr title="Get adult social care data">GASCD</abbr>{' '}
-          service regularly. We can change or remove content at any time without
-          notice.
+          We retain all right, title, and interest in and to the Software,
+          including all copyrights, patents, trade secrets, and other
+          intellectual property rights. The Software is licensed, not sold, to
+          you. You agree not to copy, modify, reverse engineer, or claim
+          ownership of our Software, or use it to create derivative works. All
+          rights not expressly granted are reserved by us.
         </p>
 
         <h2 className="govuk-heading-m">GOV.UK One Login</h2>
         <p className="govuk-body">
-          New customers registering for a Get Adult Social Care Data service
-          account will be asked to sign-up using GOV.UK One Login.
+          New users registering for a Get Adult Social Care Data service account
+          will be asked to sign-up using GOV.UK One Login.
         </p>
         <p className="govuk-body">
           GOV.UK One Login is a new way of{' '}
@@ -58,7 +128,7 @@ const TermsOfUse: React.FC = () => {
             rel="noreferrer noopener"
             target="_blank"
           >
-            signing in to government services (opens in new tab)
+            signing in to government services
           </a>
           . It provides a simple way for you to sign in and prove your identity
           using an email address and password.
@@ -70,89 +140,69 @@ const TermsOfUse: React.FC = () => {
 
         <h2 className="govuk-heading-m">Disclaimer</h2>
         <p className="govuk-body">
-          The information in the Get adult social care data service does not
-          constitute advice. While we make every effort to keep Get adult social
-          care data up to date, we do not provide any guarantees, conditions, or
-          warranties that the information will be:
+          The information in{' '}
+          <abbr title="Get Adult Social Care Data">GASCD</abbr> offers local,
+          regional, and national data insight based on sharing data and combined
+          data from third party sources to support internal operational
+          management purposes. This does not constitute advice or publication of
+          metrics.
         </p>
-        <ul className="govuk-list govuk-list--bullet">
-          <li>current</li>
-          <li>secure</li>
-          <li>accurate</li>
-          <li>complete</li>
-          <li>free from bugs or viruses</li>
-        </ul>
-        <p className="govuk-body">
-          You should get professional or specialist advice before doing anything
-          based on the content in the{' '}
-          <abbr title="Get adult social care data">GASCD</abbr> service.
-        </p>
-        <p className="govuk-body">
-          We&apos;re not liable for any loss or damage that may come from using
-          the Get Adult Social Care Data service, this includes:
-        </p>
-        <ul className="govuk-list govuk-list--bullet">
-          <li>any direct, indirect, or consequential losses </li>
-          <li>
-            any loss or damage caused by civil wrongs (&apos;tort&apos;,
-            including negligence), breach of contract or otherwise
-          </li>
-          <li>
-            the use of GOV.UK and any websites that are linked to or from it
-          </li>
-          <li>
-            the inability to use GOV.UK and any websites that are linked to or
-            from it
-          </li>
-        </ul>
-        <p className="govuk-body">
-          This applies if the loss or damage was foreseeable, arose in the
-          normal course of things or you advised us that it might happen.
-        </p>
-        <p className="govuk-body">
-          This includes (but is not limited to) the loss of your:
-        </p>
-        <ul className="govuk-list govuk-list--bullet">
-          <li>income or revenue</li>
-          <li>salary, benefits or other payments</li>
-          <li>business</li>
-          <li>profits or contracts</li>
-          <li>opportunity</li>
-          <li>anticipated savings</li>
-          <li>data</li>
-          <li>goodwill or reputation</li>
-          <li>tangible property</li>
-          <li>
-            intangible property, including loss, corruption or damage to data or
-            any computer system
-          </li>
-          <li>wasted management or office time </li>
-        </ul>
 
-        <h2 className="govuk-heading-m">Service emails </h2>
         <p className="govuk-body">
-          From time to time, we may need to send you service emails, these are
-          strictly operational communications and will never include marketing
-          content. By signing up for a{' '}
-          <abbr title="Get adult social care data">GASCD</abbr> account you
-          consent to receiving service emails containing service information,
-          updates or any other service-based communication to support the
-          critical operation of the service. We will send these service emails
-          via GOV.UK Notify. For further information read{' '}
+          Rigorous quality control processes are applied, but while we make
+          every effort to maintain high data quality and to access the latest
+          available data from each data source, the data we use is provided by
+          other data owners and may be subject to change after we have sourced
+          it, or inaccuracies.
+        </p>
+        <p className="govuk-body">
+          To maximise clarity and transparency, we explain the timeliness,
+          definitions and sources of the data insight shared through{' '}
+          <abbr title="Get Adult Social Care Data">GASCD</abbr>. However, we
+          cannot be held responsible for any inaccuracies in the information
+          provided. We are not responsible for any data loss, system damages, or
+          consequences resulting from the use of this service. We recommend
+          independently verifying any information.
+        </p>
+        <p className="govuk-body">
+          While we strive to maintain a secure environment and have taken all
+          reasonable precautions to ensure no viruses are present on our
+          service, we cannot accept responsibility for any loss or damage
+          arising from the use of this system.
+        </p>
+        <p className="govuk-body">
+          Any attempt to breach this service or introduce malware will result in
+          legal action and reporting to authorities.
+        </p>
+        <p className="govuk-body">
+          We reserve the right to suspend or terminate the Beta Programme, or
+          individual user access to the services, at any time, with or without
+          cause, and without prior notice or liability to you. Upon termination,
+          your right to use the service immediately ceases, and we may delete or
+          restrict access to any associated user data.
+        </p>
+        <h2 className="govuk-heading-m">Emails from us to you</h2>
+        <p className="govuk-body">
+          From time to time, we may need to send you service emails; these will
+          be operational communications or otherwise related to the service eg.
+          opportunities to share your views on the service. They will never
+          include marketing content. By signing up for a{' '}
+          <abbr title="Get Adult Social Care Data">GASCD</abbr> account, you
+          consent to receiving these emails, which will be sent via GOV.UK
+          Notify. For further information read{' '}
           <a
             href="https://www.notifications.service.gov.uk/privacy"
             className="govuk-link"
             rel="noreferrer noopener"
             target="_blank"
           >
-            GOV.UK Notify&apos;s privacy notice (opens in new tab)
+            GOV.UK Notify&apos;s privacy notice
           </a>
           .
         </p>
-
         <h2 className="govuk-heading-m">
           Information about you and your visits to the{' '}
-          <abbr title="Get adult social care data">GASCD</abbr> service
+          <abbr title="Get Adult Social Care Data">GASCD</abbr> service
         </h2>
         <p className="govuk-body">
           We collect information about you in accordance with our{' '}
@@ -162,7 +212,7 @@ const TermsOfUse: React.FC = () => {
             rel="noreferrer noopener"
             target="_blank"
           >
-            privacy policy (opens in new tab)
+            privacy policy
           </a>{' '}
           and our{' '}
           <a
@@ -171,134 +221,21 @@ const TermsOfUse: React.FC = () => {
             rel="noreferrer noopener"
             target="_blank"
           >
-            cookie policy (opens in new tab)
+            cookie policy
           </a>
-          . By using the <abbr title="Get adult social care data">GASCD</abbr>{' '}
+          . By using the <abbr title="Get Adult Social Care Data">GASCD</abbr>{' '}
           service, you agree to us collecting this information and confirm that
           any data you provide is accurate.
         </p>
-
         <h2 className="govuk-heading-m">
-          Linking from the <abbr title="Get adult social care data">GASCD</abbr>{' '}
+          Linking from the <abbr title="Get Adult Social Care Data">GASCD</abbr>{' '}
           service{' '}
         </h2>
         <p className="govuk-body">
-          The <abbr title="Get adult social care data">GASCD</abbr> service
-          links to websites that are managed by other government departments and
-          agencies, service providers or other organisations. We don&apos;t have
-          any control over the content on these websites.
-        </p>
-        <p className="govuk-body">We&apos;re not responsible for:</p>
-        <ul className="govuk-list govuk-list--bullet">
-          <li>the protection of any information you give to these websites </li>
-          <li>
-            any loss or damage that may come from your use of these websites, or
-            any other websites they link to
-          </li>
-        </ul>
-        <p className="govuk-body">
-          You agree to release us from any claims or disputes that may come from
-          using these websites.
-        </p>
-        <p className="govuk-body">
-          You should read all terms and conditions, privacy policies and end
-          user licences that relate to these websites before you use them.
-        </p>
-
-        <h2 className="govuk-heading-m">Security </h2>
-        <p className="govuk-body">
-          You must follow your organisation&apos;s policies for using online
-          tools and platforms. Check with your organisation&apos;s security or
-          IT team for help with this.
-        </p>
-
-        <h2 className="govuk-heading-m">Accessing the platform </h2>
-        <p className="govuk-body">
-          You must sign in to the{' '}
-          <abbr title="Get adult social care data">GASCD</abbr> service using:
-        </p>
-        <ul className="govuk-list govuk-list--bullet">
-          <li>a secure work-managed device </li>
-          <li>
-            a secure individual work email address that&apos;s protected with
-            multi-factor authentication (MFA)
-          </li>
-          <li>
-            a trusted internet connection - do not sign in using an untrusted
-            public Wi-Fi network
-          </li>
-        </ul>
-
-        <h2 className="govuk-heading-m">Virus protection </h2>
-        <p className="govuk-body">
-          We make every effort to check and test the service for viruses at
-          every stage of production. You must make sure that the way you use the
-          service does not expose you to the risk of viruses, malicious computer
-          code or other forms of interference which can damage your computer
-          system.
-        </p>
-        <p className="govuk-body">
-          We&apos;re not responsible for any loss, disruption or damage to your
-          data or computer system that might happen when you use the service.
-        </p>
-
-        <h2 className="govuk-heading-m">Viruses, hacking and other offences</h2>
-        <p className="govuk-body">
-          When using the service, you must not introduce viruses, trojans,
-          worms, logic bombs or any other material that&apos;s malicious or
-          technologically harmful.
-        </p>
-        <p className="govuk-body">
-          You must not try to gain unauthorised access to the service, the
-          server on which it&apos;s stored or any server, computer or database
-          connected to it.
-        </p>
-        <p className="govuk-body">
-          You must not attack the service in any way. This includes
-          denial-of-service attacks.
-        </p>
-        <p className="govuk-body">
-          We&apos;ll report any attacks or attempt to gain unauthorised access
-          to the relevant law enforcement authorities and share information
-          about you with them.
-        </p>
-
-        <h2 className="govuk-heading-m">
-          Leaving <abbr title="Get adult social care data">GASCD</abbr>{' '}
-        </h2>
-        <p className="govuk-body">
-          You can{' '}
-          <a
-            href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
-            className="govuk-link govuk-link--no-underline"
-          >
-            contact us
-          </a>{' '}
-          at any time to close your account.
-        </p>
-        <p className="govuk-body">
-          Check our privacy notice to find out{' '}
-          <a
-            className="govuk-link"
-            href={withBasePath('/privacy-policy')}
-            rel="noreferrer noopener"
-            target="_blank"
-          >
-            how long we keep your personal data (opens in new tab).
-          </a>
-        </p>
-
-        <h2 className="govuk-heading-m">
-          Changes to these terms and conditions
-        </h2>
-        <p className="govuk-body">
-          Please check these terms and conditions regularly. We can update them
-          at any time without notice.
-        </p>
-        <p className="govuk-body">
-          You&apos;ll agree to any changes if you continue to use the{' '}
-          <abbr title="Get adult social care data">GASCD</abbr> service after
-          the terms and conditions have been updated.
+          The GASCD service links to websites that are managed by other
+          government departments and agencies, service providers or other
+          organisations. We don&apos;t have any control over the content on
+          these websites.
         </p>
       </div>
     </div>
