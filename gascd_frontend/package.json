@@ -13,6 +13,7 @@
     "format": "prettier --write",
     "lint-staged": "lint-staged",
     "audit": "playwright test",
+    "smoke": "playwright test --config=playwright.smoke.config.ts",
     "test": "vitest run --coverage",
     "test:nocov": "vitest run",
     "test:watch": "vitest",
