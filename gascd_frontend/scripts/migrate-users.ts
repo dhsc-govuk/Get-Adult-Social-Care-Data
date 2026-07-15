@@ -42,6 +42,24 @@ const TABLES_IN_ORDER: { name: string; pk: string }[] = [
   { name: 'account', pk: 'id' },
 ];
 
+// Fields on the `user` row that can legitimately change between the initial
+// migration and the final DNS cut-over (opt-ins, terms, selected location,
+// display name). Refresh mode overwrites these on existing rows so the DAC
+// copy stays in sync with EH right up to the switch. Immutable identity /
+// membership fields (id, email, role, locationType, locationId) are not
+// touched.
+const MUTABLE_USER_FIELDS = [
+  'name',
+  'marketingConsent',
+  'marketingConsentDate',
+  'termsAccepted',
+  'termsAcceptedDate',
+  'selectedLocationId',
+  'selectedLocationDisplayName',
+  'selectedLocationCategory',
+  'smartInsights',
+];
+
 type TableDump = { name: string; pk: string; rows: any[] };
 
 function buildDialect(prefix: 'SOURCE' | 'TARGET'): MssqlDialect {
@@ -135,10 +153,14 @@ async function importRows(
   table: string,
   pk: string,
   rows: any[],
-  dryRun: boolean
+  dryRun: boolean,
+  refresh = false
 ) {
-  console.log(`[${table}] rows to import: ${rows.length}`);
+  console.log(
+    `[${table}] rows to process: ${rows.length}${refresh ? ' (refresh mode: existing rows get mutable fields updated)' : ''}`
+  );
   let inserted = 0;
+  let refreshed = 0;
   let skippedByPk = 0;
   let skippedByCollision = 0;
   let errors = 0;
@@ -151,11 +173,43 @@ async function importRows(
         .where(pk as any, '=', (row as any)[pk])
         .executeTakeFirst();
       if (existing) {
-        skippedByPk++;
+        if (refresh && table === 'user') {
+          const patch: Record<string, any> = {};
+          for (const f of MUTABLE_USER_FIELDS) {
+            if (f in row) patch[f] = (row as any)[f];
+          }
+          if (Object.keys(patch).length > 0 && !dryRun) {
+            await tgt
+              .updateTable('user')
+              .set(patch)
+              .where('id', '=', (row as any).id)
+              .execute();
+          }
+          refreshed++;
+        } else {
+          skippedByPk++;
+        }
         continue;
       }
       const collision = await findCollision(tgt, table, row);
       if (collision) {
+        // In refresh mode a same-email different-id user is expected on the
+        // second pass (e.g. dedup fix); refresh mutable fields on that target row.
+        if (refresh && table === 'user' && row.email) {
+          const patch: Record<string, any> = {};
+          for (const f of MUTABLE_USER_FIELDS) {
+            if (f in row) patch[f] = (row as any)[f];
+          }
+          if (Object.keys(patch).length > 0 && !dryRun) {
+            await tgt
+              .updateTable('user')
+              .set(patch)
+              .where('email', '=', row.email)
+              .execute();
+          }
+          refreshed++;
+          continue;
+        }
         console.warn(`[${table}] skip ${pk}=${(row as any)[pk]}: ${collision}`);
         skippedByCollision++;
         continue;
@@ -176,9 +230,9 @@ async function importRows(
   }
 
   console.log(
-    `[${table}] inserted=${inserted} skipped_by_pk=${skippedByPk} skipped_by_collision=${skippedByCollision} errors=${errors}`
+    `[${table}] inserted=${inserted} refreshed=${refreshed} skipped_by_pk=${skippedByPk} skipped_by_collision=${skippedByCollision} errors=${errors}`
   );
-  return { inserted, skippedByPk, skippedByCollision, errors };
+  return { inserted, refreshed, skippedByPk, skippedByCollision, errors };
 }
 
 // JSON (de)serialisation helpers - preserve Date / Buffer across the file handoff.
@@ -246,11 +300,14 @@ async function runExtract() {
 
 async function runImport() {
   const dryRun = (process.env.DRY_RUN || '').toLowerCase() === 'true';
+  const refresh = (process.env.REFRESH || '').toLowerCase() === 'true';
   const inputFile = process.env.INPUT_FILE;
   if (!inputFile)
     throw new Error('INPUT_FILE env var is required in import mode');
 
-  console.log(`Mode: IMPORT (${dryRun ? 'DRY RUN' : 'LIVE'})`);
+  console.log(
+    `Mode: IMPORT (${dryRun ? 'DRY RUN' : 'LIVE'}${refresh ? ' | REFRESH: existing users get mutable fields updated' : ''})`
+  );
   console.log(`Input: ${inputFile}`);
   console.log(
     `Target: ${process.env.TARGET_USER_DB_SERVER} / ${process.env.TARGET_USER_DATABASE}`
@@ -267,7 +324,7 @@ async function runImport() {
   let totalErrors = 0;
   try {
     for (const t of dump.tables as TableDump[]) {
-      const r = await importRows(tgt, t.name, t.pk, t.rows, dryRun);
+      const r = await importRows(tgt, t.name, t.pk, t.rows, dryRun, refresh);
       totalErrors += r.errors;
     }
   } finally {
@@ -283,9 +340,10 @@ async function runImport() {
 
 async function runDirectMigrate() {
   const dryRun = (process.env.DRY_RUN || '').toLowerCase() === 'true';
+  const refresh = (process.env.REFRESH || '').toLowerCase() === 'true';
   const providerFilter = process.env.PROVIDER_FILTER || null;
   console.log(
-    `Mode: MIGRATE (${dryRun ? 'DRY RUN' : 'LIVE'})${providerFilter ? ` | account provider filter: ${providerFilter}` : ''}`
+    `Mode: MIGRATE (${dryRun ? 'DRY RUN' : 'LIVE'}${refresh ? ' | REFRESH: existing users get mutable fields updated' : ''})${providerFilter ? ` | account provider filter: ${providerFilter}` : ''}`
   );
   console.log(
     `Source: ${process.env.SOURCE_USER_DB_SERVER} / ${process.env.SOURCE_USER_DATABASE}`
@@ -302,7 +360,7 @@ async function runDirectMigrate() {
     for (const { name, pk } of TABLES_IN_ORDER) {
       const rows = await extractTable(src, name, providerFilter);
       console.log(`[${name}] source rows: ${rows.length}`);
-      const r = await importRows(tgt, name, pk, rows, dryRun);
+      const r = await importRows(tgt, name, pk, rows, dryRun, refresh);
       totalErrors += r.errors;
     }
   } finally {
