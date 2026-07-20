@@ -45,6 +45,7 @@ const AccessDeniedPage: React.FC = () => {
             <ul className="govuk-list govuk-list--bullet">
               <li>name</li>
               <li>organisation name</li>
+              <li>role in organisation</li>
               <li>CQC registration number</li>
               <li>CQC registered email address</li>
               <li>gov.uk email address</li>
