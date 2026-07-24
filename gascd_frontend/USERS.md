@@ -7,6 +7,23 @@ Authentication is provided by:
 - [Better Auth](https://better-auth.com/docs/introduction)
 - [GOV.UK One Login](https://www.sign-in.service.gov.uk)
 
+## User data source
+
+The source of data for GASCD users is the CQC contact list; this data is used to decide who is added to the GASCD application's User database. The mechanism through which these users are added lives outside this repository.
+
+Some key aspects of this data are:
+
+- a list of people who need to have access to GASCD
+- what level of responsiblity they have within a care provider organisation (either Nominated Individual at an organisation level, or Registered Manager at a location level within that organisation)
+
+Some high-level business logic:
+
+- there are one or more locations within a provider organisation
+- a provider organisation can have multiple Nominated Individuals
+- an individual may be Nominated Individual for multiple provider organisations
+- an individual may be Registered Manager for multiple provider organisations
+- an individual may be both Nominated Individual for a provider organisation as well as being Registered Manager for a location under that organisation
+
 ## User types
 
 ### 1. Anonymous users
@@ -40,7 +57,9 @@ What they can access:
 - protected app pages after completing onboarding
 - provider-location-specific views
 - local authority, regional and national context derived from the selected provider location
-- location switching within their care provider group
+- location switching within their location allocations (comma-separated locationId column)
+- users with locationType `Care provider` (NIs) can select any location within their Care provider organisation
+- users with locationType `Care provider location` (RMs) can only select locations from their specific allocations, not from all locations within their care provider organisation
 
 ### 4. Registered local authority users
 

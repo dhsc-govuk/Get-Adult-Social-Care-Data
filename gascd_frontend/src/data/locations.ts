@@ -107,6 +107,7 @@ export const getAllowedLocationsForUser = async (user: User) => {
   let allowed_locations = [];
   // Support for multiple comma-separated location ids
   const location_ids = location_id.split(',');
+
   for (let location_id of location_ids) {
     const newLocations = await getAllowedLocations(location_id, location_type);
     allowed_locations.push(...newLocations);
@@ -114,6 +115,7 @@ export const getAllowedLocationsForUser = async (user: User) => {
   const unique_allowed_locations = Array.from(
     new Map(allowed_locations.map((item) => [item.location_id, item])).values()
   );
+
   return unique_allowed_locations;
 };
 
@@ -123,6 +125,7 @@ export const getAllowedLocations = async (
 ) => {
   const client = getAPIClient();
   let provider_code;
+
   if (location_type === 'Care provider') {
     provider_code = location_id;
   } else if (location_type === 'Care provider location') {
@@ -132,14 +135,28 @@ export const getAllowedLocations = async (
         path: {
           code: location_id,
         },
+        query: {
+          include_parents: true,
+        },
       },
     });
+
     const loc_data = response.data;
+
     if (!loc_data || !loc_data.provider_code) {
       logger.error(`No location data found`);
       return [];
+    } else {
+      const mappedProviderLocation = mapAvailableLocation({
+        laName: loc_data.local_authority_name,
+        locationAddress: loc_data.address,
+        locationCategory: loc_data.location_category,
+        locationId: loc_data.code,
+        locationName: loc_data.display_name,
+        providerName: loc_data.provider_name,
+      });
+      return [mappedProviderLocation];
     }
-    provider_code = loc_data.provider_code;
   } else {
     logger.error('No support for user type:' + location_type);
     return [];
@@ -157,15 +174,14 @@ export const getAllowedLocations = async (
 
   // map from api 'code' to 'id' as expected by client JS
   const available_locations = locations?.map((location) => {
-    return {
-      location_id: location.location_code,
-      location_name: location.location_name,
-      location_display_name: location.location_name + ` (${location.la_name})`,
-      provider_name: provider_data?.display_name,
-      address: location.address,
-      la_name: location.la_name,
-      location_category: location.location_category,
-    };
+    return mapAvailableLocation({
+      laName: location.la_name,
+      locationAddress: location.address,
+      locationCategory: location.location_category,
+      locationId: location.location_code,
+      locationName: location.location_name,
+      providerName: provider_data?.display_name,
+    });
   });
   return available_locations;
 };
@@ -181,3 +197,29 @@ export function validateMetricIds(ids: string[]): string[] {
     .map((id) => id.trim()) // Remove accidental whitespace
     .filter((id) => id.length > 0 && validPattern.test(id));
 }
+
+const mapAvailableLocation = ({
+  laName,
+  locationAddress,
+  locationCategory,
+  locationId,
+  locationName,
+  providerName,
+}: {
+  locationId: string | null | undefined;
+  locationName: string | null | undefined;
+  laName: string | null | undefined;
+  providerName: string | null | undefined;
+  locationAddress: string | null | undefined;
+  locationCategory: string | null | undefined;
+}) => {
+  return {
+    location_id: locationId ?? '',
+    location_name: locationName ?? '',
+    location_display_name: locationName + ` (${laName})`,
+    provider_name: providerName ?? '',
+    address: locationAddress ?? '',
+    la_name: laName ?? '',
+    location_category: locationCategory ?? '',
+  };
+};
