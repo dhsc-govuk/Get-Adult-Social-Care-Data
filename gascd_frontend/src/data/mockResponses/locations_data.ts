@@ -17,6 +17,7 @@ export const locations_data = {
     region_name: 'North East',
     country_code: 'E92000001',
     country_name: 'England',
+    location_category: 'Care home',
   },
   local_authority: {
     code: 'E08000024',

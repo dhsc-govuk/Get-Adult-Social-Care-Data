@@ -308,7 +308,7 @@ describe('test available locations', () => {
     expect(data).toEqual({ error: 'No user' });
   });
 
-  it('fetches locations user', async () => {
+  it('fetches locations for user with locationType "Care provider location"', async () => {
     mockGetSession.mockReturnValue(mockSession);
 
     const req = {
@@ -317,6 +317,33 @@ describe('test available locations', () => {
 
     const result = await GetAvailableLocations(req);
     const data = await result.json();
+
+    const { care_provider_location } = locations_data;
+    const location_listing = {
+      location_id: care_provider_location.code,
+      location_name: care_provider_location.provider_location_name,
+      provider_name: care_provider_location.provider_name,
+      la_name: care_provider_location.local_authority_name,
+      location_display_name:
+        care_provider_location.provider_location_name +
+        ` (${care_provider_location.local_authority_name})`,
+      location_category: care_provider_location.location_category,
+      address: care_provider_location.address,
+    };
+
+    expect(data).toEqual({ data: [location_listing] });
+  });
+
+  it('fetches locations for user with locationType "Care provider"', async () => {
+    mockGetSession.mockReturnValue(mockSessionCareProvider);
+
+    const req = {
+      url: `http://localhost/api/get_available_locations`,
+    } as NextRequest;
+
+    const result = await GetAvailableLocations(req);
+    const data = await result.json();
+
     const location_listing = organisation_data.locations.map((item) => {
       return {
         location_id: item.location_code,
@@ -325,6 +352,7 @@ describe('test available locations', () => {
         la_name: item.la_name,
         location_display_name: item.location_name + ` (${item.la_name})`,
         location_category: item.location_category,
+        address: item.address,
       };
     });
     expect(data).toEqual({ data: location_listing });
@@ -373,7 +401,7 @@ describe('set selected locations', () => {
   });
 
   it('accepts valid location ids', async () => {
-    mockGetSession.mockReturnValue(mockSession);
+    mockGetSession.mockReturnValue(mockSessionCareProvider);
 
     const req = new NextRequest('http://localhost/api/set_selected_location', {
       method: 'POST',

@@ -101,5 +101,6 @@ export const mockSessionWithMultipleLocationIDs: any = {
   user: {
     ...mockSession.user,
     locationId: 'testlocation1,testlocation2',
+    locationType: 'Care provider',
   },
 };
