@@ -1,4 +1,5 @@
 import LogService from '@/services/logger/logService';
+import { ClientLogCode } from '@/services/logger/clientLogCodes';
 
 describe('logEvent Service', () => {
   const mockFetch = vi.fn();
@@ -8,21 +9,21 @@ describe('logEvent Service', () => {
     mockFetch.mockReset();
   });
 
-  it('should send a POST request to the logger endpoint with the message', async () => {
+  it('should send a POST request to the logger endpoint with the code', async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve({}),
     });
 
-    const message = 'Test log message';
-    await LogService.logEvent(message);
+    const code = ClientLogCode.LocationFetchFailed;
+    await LogService.logEvent(code);
 
     expect(mockFetch).toHaveBeenCalledWith('/api/logger', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ code }),
     });
   });
 
@@ -33,7 +34,9 @@ describe('logEvent Service', () => {
     };
     mockFetch.mockResolvedValueOnce(mockResponse);
 
-    await expect(LogService.logEvent('test')).resolves.not.toThrow();
+    await expect(
+      LogService.logEvent(ClientLogCode.AppInsightsInitFailed)
+    ).resolves.not.toThrow();
   });
 
   it('should log an error to the console if the response is not ok', async () => {
@@ -46,7 +49,7 @@ describe('logEvent Service', () => {
       statusText: 'Internal Server Error',
     });
 
-    await LogService.logEvent('Test message');
+    await LogService.logEvent(ClientLogCode.LocationFetchFailed);
 
     expect(mockConsoleError).toHaveBeenCalledWith(
       'Error logging event: 500 Internal Server Error'

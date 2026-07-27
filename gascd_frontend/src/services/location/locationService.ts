@@ -1,4 +1,5 @@
 import LogService from '../logger/logService';
+import { ClientLogCode } from '../logger/clientLogCodes';
 import { Locations } from '@/data/interfaces/Locations';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { authClient } from '@/lib/auth-client';
@@ -25,7 +26,7 @@ class LocationService {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
-      LogService.logEvent(`Error in getLocations: ${errorMessage}`);
+      LogService.logEvent(ClientLogCode.LocationFetchFailed);
       throw new Error(`Failed to retrieve location data: ${errorMessage}`);
     }
   }
@@ -51,7 +52,7 @@ class LocationService {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
-      LogService.logEvent(`Error in getAvailableLocations: ${errorMessage}`);
+      LogService.logEvent(ClientLogCode.AvailableLocationsFetchFailed);
       throw new Error(
         `Failed to retrieve available location data: ${errorMessage}`
       );
@@ -137,7 +138,7 @@ class LocationService {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
-      LogService.logEvent(`Error in setSelectedLocation: ${errorMessage}`);
+      LogService.logEvent(ClientLogCode.SetSelectedLocationFailed);
       throw new Error(`Failed to set selected location: ${errorMessage}`);
     }
   }
@@ -157,7 +158,7 @@ class LocationService {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
-      LogService.logEvent(`Error in getLasForRegion: ${errorMessage}`);
+      LogService.logEvent(ClientLogCode.LasForRegionFetchFailed);
       throw new Error(
         `Failed to retrieve local authorities in region: ${errorMessage}`
       );

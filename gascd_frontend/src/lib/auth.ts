@@ -1,5 +1,5 @@
 import { betterAuth, boolean } from 'better-auth';
-import { createAuthMiddleware } from 'better-auth/api';
+import { createAuthMiddleware, getSessionFromCtx } from 'better-auth/api';
 import { getOAuthConfig } from './authPlugins';
 import { nextCookies } from 'better-auth/next-js';
 import logger from '@/utils/logger';
@@ -132,6 +132,16 @@ export const auth = betterAuth({
     nextCookies(), // make sure this is the last plugin in the array
   ],
   hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      // Log the logout in a `before` hook: the /sign-out handler deletes the
+      // session, so by the `after` hook the user is no longer resolvable.
+      if (ctx.path.startsWith('/sign-out')) {
+        const session = await getSessionFromCtx(ctx).catch(() => null);
+        logger.info('User logged out', {
+          userid: session?.user?.id,
+        });
+      }
+    }),
     after: createAuthMiddleware(async (ctx) => {
       if (
         ctx.path.startsWith('/sign-in/') ||
