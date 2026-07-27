@@ -36,6 +36,10 @@ describe('Help pages exist and contain data', () => {
         heading: 'LA funding for short-term and long-term adult social care',
       },
       {
+        url: 'total-financial-spend-long-term-community-care-trends-over-time',
+        heading: 'LA funding for long-term adult social care – trends over time',
+      },
+      {
         url: '/help/dementia-prevalence',
         heading: 'Dementia prevalence',
       },
