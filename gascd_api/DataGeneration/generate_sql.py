@@ -272,10 +272,55 @@ def generate_reference_sql():
     country_sql = generate_location_sql('countries', 'National', generate_country_record)
     region_sql = generate_location_sql('regions', 'Regional', generate_region_record)
     la_sql = generate_location_sql('local_authorities', 'LA', generate_la_record)
+    la_peers_sql = generate_local_authority_peers_sql()
     cp_sql = generate_location_sql('care_providers', 'Care provider', generate_care_provider_record)
     cpl_sql = generate_location_sql('care_provider_locations', 'CareProviderLocation', generate_cpl_record)
 
-    return geo_data_sql + country_sql + region_sql + la_sql + cp_sql + cpl_sql
+    return geo_data_sql + country_sql + region_sql + la_sql + la_peers_sql + cp_sql + cpl_sql
+
+def generate_local_authority_peers_sql():
+    la_codes = [loc['code'] for loc in LOCATIONS['LA']]
+
+    if len(la_codes) < 2:
+        return []
+
+    values = []
+    for la_code in la_codes:
+        peer_rank = 1
+        for peer_code in la_codes:
+            if la_code == peer_code:
+                continue
+            values.append(f"('{la_code}', '{peer_code}', {peer_rank})")
+            peer_rank += 1
+
+    values_sql = ',\n         '.join(values)
+
+    sql = f"""WITH candidate_peers AS (
+    SELECT la.id AS local_authority_fk, p.peer_rank, peer.id AS peer_local_authority_fk
+    FROM (VALUES
+                 {values_sql}
+    ) AS p(la_code, peer_code, peer_rank)
+    JOIN local_authorities la ON la.code = p.la_code
+    JOIN local_authorities peer ON peer.code = p.peer_code
+    WHERE NOT EXISTS (
+            SELECT 1
+            FROM local_authority_peers lap
+            WHERE lap.local_authority_fk = la.id
+                AND lap.peer_local_authority_fk = peer.id
+    )
+), base AS (
+    SELECT coalesce(max(id), 0) AS max_id FROM local_authority_peers
+)
+INSERT INTO local_authority_peers (id, local_authority_fk, peer_rank, peer_local_authority_fk, loaded_datetime)
+SELECT base.max_id + row_number() OVER (ORDER BY candidate_peers.local_authority_fk, candidate_peers.peer_rank),
+             candidate_peers.local_authority_fk,
+             candidate_peers.peer_rank,
+             candidate_peers.peer_local_authority_fk,
+             CURRENT_TIMESTAMP
+FROM candidate_peers
+CROSS JOIN base;"""
+
+    return [sql]
 
 def generate_all_sql():
     ref_sql = generate_reference_sql()

@@ -11,6 +11,10 @@ interface BarChartProps {
   values: number[];
   highlightCategory: string;
   darkBlueCount?: number;
+  additionalShapes?: Partial<Shape>[];
+  xAxisRange?: [number, number];
+  xAxisTickSuffix?: string;
+  showHighlightOutline?: boolean;
 }
 
 const BarChart: React.FC<BarChartProps> = ({
@@ -18,6 +22,10 @@ const BarChart: React.FC<BarChartProps> = ({
   values = [],
   highlightCategory,
   darkBlueCount = 2,
+  additionalShapes = [],
+  xAxisRange,
+  xAxisTickSuffix,
+  showHighlightOutline = true,
 }) => {
   // Top highlight colours
   const TOP_HIGHLIGHT_COL = '#959495';
@@ -49,6 +57,8 @@ const BarChart: React.FC<BarChartProps> = ({
 
   // Dotted box for the main highlight
   const shapes = useMemo((): Partial<Shape>[] => {
+    if (!showHighlightOutline) return [];
+
     const highlightIndex = categories.indexOf(highlightCategory);
 
     if (highlightIndex === -1) return [];
@@ -69,7 +79,7 @@ const BarChart: React.FC<BarChartProps> = ({
         },
       },
     ];
-  }, [categories, highlightCategory]);
+  }, [categories, highlightCategory, showHighlightOutline]);
 
   // Pull together the labels and values, along with some hover text
   const chartData: Data[] = [
@@ -95,6 +105,8 @@ const BarChart: React.FC<BarChartProps> = ({
       side: 'bottom',
       zeroline: true,
       fixedrange: true, // prevents zooming
+      ...(xAxisRange ? { range: xAxisRange } : {}),
+      ...(xAxisTickSuffix ? { ticksuffix: xAxisTickSuffix } : {}),
     },
     yaxis: {
       autorange: 'reversed',
@@ -112,7 +124,7 @@ const BarChart: React.FC<BarChartProps> = ({
         color: '#ffffff',
       },
     },
-    shapes: shapes,
+    shapes: [...shapes, ...additionalShapes],
     margin: { l: 200, t: 20, r: 20, b: 50 }, // minimum margin buffer
     showlegend: false,
     autosize: true,

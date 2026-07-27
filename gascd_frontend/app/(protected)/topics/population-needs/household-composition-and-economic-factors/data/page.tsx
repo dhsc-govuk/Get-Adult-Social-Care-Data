@@ -20,6 +20,7 @@ import TableService from '@/services/Table/TableService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
+import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -27,8 +28,9 @@ export default function ProvisionAndOccupancyPage() {
   const tableref3 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
+    CPLabel: null,
     LALabel: 'Loading...',
-    RegionLabel: 'Loading...',
+    RegionLabel: 'NHS Peer Group',
     CountryLabel: 'Loading...',
   } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
@@ -40,6 +42,9 @@ export default function ProvisionAndOccupancyPage() {
     metric_ids: [],
     location_ids: [],
   });
+  const [peerGroupAverages, setPeerGroupAverages] = useState<{
+    [key: string]: number | null;
+  }>({});
 
   const breadcrumbs = [
     {
@@ -82,7 +87,12 @@ export default function ProvisionAndOccupancyPage() {
             CPLocationId,
             false
           );
-          setLocationNames(locationNames);
+          setLocationNames({
+            CPLabel: locationNames.CPLabel,
+            LALabel: locationNames.LALabel,
+            RegionLabel: 'NHS Peer Group',
+            CountryLabel: locationNames.CountryLabel,
+          });
         } catch (error) {
           console.error('Error fetching location names:', error);
         }
@@ -108,13 +118,29 @@ export default function ProvisionAndOccupancyPage() {
           await IndicatorFetchService.getData(demographicQuery);
         const filteredDemographicData =
           TableService.filterDate(demographicData);
-        setFilteredDemographicData(filteredDemographicData);
+
+        // Transform Regional data to NHS Peer Group and fetch peer group averages
+        const transformedData = filteredDemographicData.map((d: Indicator) => {
+          if (
+            d.location_type === 'Regional' &&
+            peerGroupAverages[d.metric_id] !== undefined
+          ) {
+            return {
+              ...d,
+              location_type: 'Regional',
+              data_point: peerGroupAverages[d.metric_id],
+            };
+          }
+          return d;
+        });
+
+        setFilteredDemographicData(transformedData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchAllData();
-  }, [demographicQuery]);
+  }, [demographicQuery, peerGroupAverages]);
 
   useEffect(() => {
     const fetchLocationIds = async () => {
@@ -132,6 +158,49 @@ export default function ProvisionAndOccupancyPage() {
     };
     fetchLocationIds();
   }, [CPLocationId]);
+
+  useEffect(() => {
+    const fetchPeerGroupAverages = async () => {
+      if (!locationIds.length || locationIds.length < 2) return;
+      try {
+        const laCode = locationIds[1];
+
+        const results = await Promise.all(
+          demographicMetricIds.map(async (metricId) => {
+            try {
+              const response = await fetch(
+                withBasePath(
+                  `/api/get_la_peers?la_code=${encodeURIComponent(laCode)}&metric_code=${metricId}`
+                )
+              );
+              if (response.ok) {
+                const data = await response.json();
+                return [
+                  metricId,
+                  data?.averagePeerGroup ??
+                    data?.AveragePeerGroup ??
+                    data?.average_peer_group ??
+                    null,
+                ] as const;
+              }
+            } catch (error) {
+              console.error(
+                `Error fetching peer group data for ${metricId}:`,
+                error
+              );
+            }
+            return [metricId, null] as const;
+          })
+        );
+
+        setPeerGroupAverages(Object.fromEntries(results));
+      } catch (error) {
+        console.error('Error fetching peer group averages:', error);
+      }
+    };
+
+    fetchPeerGroupAverages();
+  }, [locationIds]);
 
   return (
     <Layout
@@ -201,12 +270,35 @@ export default function ProvisionAndOccupancyPage() {
             </Link>
           </div>
         </details>
+        <details className="govuk-details govuk-!-margin-top-3">
+          <summary className="govuk-details__summary">
+            <span className="govuk-details__summary-text">
+              NHSDigital Adult Social Care Peer Groups source
+            </span>
+          </summary>
+          <div className="govuk-details__text">
+            NHSDigital Adult Social Care Peer Groups: For your local authority,
+            data is grouped alongside a total of fifteen other local authorities
+            that are similar with regard to various socio-economic and
+            geographic factors, such as age profile, ethnicity, density,
+            education. For further information{' '}
+            <a
+              className="govuk-link"
+              href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              click here
+            </a>
+            .
+          </div>
+        </details>
         <DataTabs
           id="1"
           table={
             <DataTable
               tableref={tableref1}
-              caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
+              caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
@@ -232,6 +324,26 @@ export default function ProvisionAndOccupancyPage() {
               />
             </>
           }
+          chart={
+            <PeerGroupBarChart
+              laCode={locationIds[1]}
+              laName={locationNames.LALabel}
+              currentLaValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_households_deprivation_deprived' &&
+                    d.location_type === 'LA'
+                )?.data_point ?? null
+              }
+              nationalAverageValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_households_deprivation_deprived' &&
+                    d.location_type === 'National'
+                )?.data_point ?? null
+              }
+            />
+          }
         />
       </DataBox>
       <DataBox
@@ -245,12 +357,37 @@ export default function ProvisionAndOccupancyPage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href={withBasePath('/help/households-where-property-is-owned-outright')}
+                href={withBasePath(
+                  '/help/households-where-property-is-owned-outright'
+                )}
                 className="govuk-link"
               >
                 how data on property ownership is collected
               </a>
             </p>
+            <details className="govuk-details govuk-!-margin-top-3">
+              <summary className="govuk-details__summary">
+                <span className="govuk-details__summary-text">
+                  NHSDigital Adult Social Care Peer Groups source
+                </span>
+              </summary>
+              <div className="govuk-details__text">
+                NHSDigital Adult Social Care Peer Groups: For your local
+                authority, data is grouped alongside a total of fifteen other
+                local authorities that are similar with regard to various
+                socio-economic and geographic factors, such as age profile,
+                ethnicity, density, education. For further information{' '}
+                <a
+                  className="govuk-link"
+                  href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  click here
+                </a>
+                .
+              </div>
+            </details>
           </>
         }
       >
@@ -259,7 +396,7 @@ export default function ProvisionAndOccupancyPage() {
           table={
             <DataTable
               tableref={tableref2}
-              caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
+              caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
@@ -285,6 +422,30 @@ export default function ProvisionAndOccupancyPage() {
               />
             </>
           }
+          chart={
+            <PeerGroupBarChart
+              laCode={locationIds[1]}
+              laName={locationNames.LALabel}
+              currentLaValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_household_ownership' &&
+                    d.location_type === 'LA'
+                )?.data_point ?? null
+              }
+              nationalAverageValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_household_ownership' &&
+                    d.location_type === 'National'
+                )?.data_point ?? null
+              }
+              metricCode="perc_household_ownership"
+              metricDescription="the percentage of households where the property is owned outright"
+              figureTitle="Percentage of households where the property is owned outright"
+              figureNumber={2}
+            />
+          }
         />
       </DataBox>
       <DataBox
@@ -294,7 +455,9 @@ export default function ProvisionAndOccupancyPage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href={withBasePath('/help/one-person-households-where-person-aged-65-or-over')}
+                href={withBasePath(
+                  '/help/one-person-households-where-person-aged-65-or-over'
+                )}
                 className="govuk-link"
               >
                 how the percentage of one-person households where the person is
@@ -309,7 +472,7 @@ export default function ProvisionAndOccupancyPage() {
           table={
             <DataTable
               tableref={tableref3}
-              caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} region and ${locationNames.CountryLabel}, March 2021`}
+              caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
