@@ -48,7 +48,7 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
               </p>
               <p className="govuk-!-margin-top-0">
                 The data covers only <abbr title="Local Authority">LA</abbr>{' '}
-                funded long-term social care. It does not include NHS funded
+                -funded long-term social care. It does not include NHS funded
                 care or care funded privately by individuals.
               </p>
             </>
