@@ -1,5 +1,6 @@
 import { betterAuth, boolean } from 'better-auth';
-import { createAuthMiddleware, getSessionFromCtx } from 'better-auth/api';
+import { createAuthMiddleware } from 'better-auth/api';
+import { logLogoutEvent } from './authHooks';
 import { getOAuthConfig } from './authPlugins';
 import { nextCookies } from 'better-auth/next-js';
 import logger from '@/utils/logger';
@@ -133,19 +134,7 @@ export const auth = betterAuth({
   ],
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
-      // Log the logout in a `before` hook: the /sign-out handler deletes the
-      // session, so by the `after` hook the user is no longer resolvable.
-      if (ctx.path.startsWith('/sign-out')) {
-        const session = await getSessionFromCtx(ctx).catch(() => null);
-        // Only record a logout when there was actually a session to end —
-        // otherwise unauthenticated /sign-out requests would forge false
-        // "User logged out" entries and undermine log integrity.
-        if (session?.user) {
-          logger.info('User logged out', {
-            userid: session.user.id,
-          });
-        }
-      }
+      await logLogoutEvent(ctx);
     }),
     after: createAuthMiddleware(async (ctx) => {
       if (
