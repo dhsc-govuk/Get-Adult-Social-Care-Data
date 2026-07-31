@@ -137,9 +137,14 @@ export const auth = betterAuth({
       // session, so by the `after` hook the user is no longer resolvable.
       if (ctx.path.startsWith('/sign-out')) {
         const session = await getSessionFromCtx(ctx).catch(() => null);
-        logger.info('User logged out', {
-          userid: session?.user?.id,
-        });
+        // Only record a logout when there was actually a session to end —
+        // otherwise unauthenticated /sign-out requests would forge false
+        // "User logged out" entries and undermine log integrity.
+        if (session?.user) {
+          logger.info('User logged out', {
+            userid: session.user.id,
+          });
+        }
       }
     }),
     after: createAuthMiddleware(async (ctx) => {
