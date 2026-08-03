@@ -6,6 +6,7 @@ import {
 import { createBrowserHistory } from 'history';
 import { ReactPlugin } from '@microsoft/applicationinsights-react-js';
 import LogService from '@/services/logger/logService';
+import { ClientLogCode } from '@/services/logger/clientLogCodes';
 import { Session } from '@/lib/auth-client';
 import {
   PRIMARY_LOCATION_ID,
@@ -48,10 +49,10 @@ export const initializeAppInsights = (
         };
         appInsights.addTelemetryInitializer(telemetryInitializer);
       }
-    } catch (err) {
-      // Most likely a connection string issue. Clear the app insights setup and re-throw
+    } catch {
+      // Most likely a connection string issue. Clear the app insights setup.
       appInsights = null;
-      LogService.logEvent('Error loading browser app insights' + err);
+      LogService.logEvent(ClientLogCode.AppInsightsInitFailed);
       return;
     }
     console.log('Application Insights initialized.');

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import LogService from '@/services/logger/logService';
 import { Session } from '@/lib/auth-client';
 import { authClient } from '@/lib/auth-client';
 import { withBasePath } from '@/lib/basePath';
@@ -42,7 +41,6 @@ const LogoutButton: React.FC<Props> = ({ session }) => {
 
   const handleSignOut = async (event: any) => {
     event.preventDefault();
-    await LogService.logEvent('User logged out');
     localStorage.clear();
     await authClient.signOut({
       fetchOptions: {
