@@ -16,6 +16,9 @@ interface PeerGroupChartContentProps {
   peerData: PeerGroupData;
 }
 
+const roundToOneDecimal = (value: number | null): number | null =>
+  value !== null ? Math.round(value * 10) / 10 : null;
+
 const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
   laName,
   currentLaValue,
@@ -52,9 +55,12 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
 
   const referenceShapes = useMemo((): Partial<Shape>[] => {
     const shapes: Partial<Shape>[] = [];
-    const resolvedPeerGroupAverage = peerData.averagePeerGroup;
-    const resolvedNationalAverage =
-      nationalAverageValue ?? peerData.nationalAverage;
+    const resolvedPeerGroupAverage = roundToOneDecimal(
+      peerData.averagePeerGroup
+    );
+    const resolvedNationalAverage = roundToOneDecimal(
+      nationalAverageValue ?? peerData.nationalAverage
+    );
 
     if (resolvedPeerGroupAverage !== null) {
       shapes.push({
@@ -97,8 +103,9 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
     );
   }
 
-  const resolvedNationalAverage =
-    nationalAverageValue ?? peerData.nationalAverage;
+  const resolvedNationalAverage = roundToOneDecimal(
+    nationalAverageValue ?? peerData.nationalAverage
+  );
 
   return (
     <div>
@@ -110,7 +117,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
       />
       <PeerGroupChartLegend
         laName={laName}
-        peerGroupAverage={peerData.averagePeerGroup}
+        peerGroupAverage={roundToOneDecimal(peerData.averagePeerGroup)}
         nationalAverage={resolvedNationalAverage}
       />
       {categories.length > 0 && (
