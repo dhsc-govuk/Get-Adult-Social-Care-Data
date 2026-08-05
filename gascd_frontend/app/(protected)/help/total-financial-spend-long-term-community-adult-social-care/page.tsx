@@ -29,7 +29,7 @@ const TotalFinancialSpendLongTermCommunityAdultSocialCare: React.FC = () => {
               target="_blank"
             >
               Adult Social Care Activity and Finance Report from NHS England
-              (ASC-FR), year-on-year series (opens in new tab)
+              (opens in new tab)
             </Link>
           }
           updateFrequency="Yearly (by financial year)"
@@ -41,18 +41,18 @@ const TotalFinancialSpendLongTermCommunityAdultSocialCare: React.FC = () => {
                 return), summed across support settings:
               </p>
               <ul className="govuk-list govuk-list--bullet">
-                <li>residential</li>
-                <li>nursing</li>
-                <li>home care</li>
-                <li>supported living</li>
-                <li>community direct payments</li>
-                <li>other long-term community care</li>
-                <li>and supported accomodation</li>
+                <li>Residential</li>
+                <li>Nursing</li>
+                <li>Home care</li>
+                <li>Supported living</li>
+                <li>Community direct payments</li>
+                <li>Other long-term community care</li>
+                <li>Supported accomodation</li>
               </ul>
               <p className="govuk-!-margin-top-0">
-                Covers <abbr title="Local Authority">LA</abbr>-funded 
-                long-term social care only; excludes NHS-funded care and 
-                privately funded care.
+                Covers <abbr title="Local Authority">LA</abbr>-funded
+                care only; excludes NHS-funded care (including the Better Care
+                Fund) and privately funded care.
               </p>
             </>
           }
