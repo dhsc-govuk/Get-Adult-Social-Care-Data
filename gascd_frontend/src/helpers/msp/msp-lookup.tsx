@@ -58,7 +58,7 @@ export const MSPLookup: MSPItems = {
     url: 'https://www.derby.gov.uk/health-and-social-care/your-life-your-choice/adults-commissioning/market-position-statement/',
   },
   E06000016: {
-    url: 'https://resources.leicestershire.gov.uk/adult-social-care-and-health/market-position-statement',
+    url: 'https://cabinet.leicester.gov.uk/documents/s47602/Market%20Position%20Statement.pdf',
   },
   E06000017: {
     url: 'https://www.rutland.gov.uk/adult-social-care/plans-policies-reports-adult-social-care/market-position-statements',
@@ -235,7 +235,7 @@ export const MSPLookup: MSPItems = {
     url: 'https://www.knowsley.gov.uk//sites/default/files/2023-11/Adult-Social-Care-Market-Position-Statement-2022-26_accessible.pdf',
   },
   E08000012: {
-    url: 'https://liverpool.gov.uk/media/1tjjoxlg/lcc-mpsreport-2020-08-25-v12.pdf',
+    url: 'https://liverpool.gov.uk/media/vwnh4r20/liverpool-city-council-adult-social-care-market-position-statement-2026-2031.pdf',
   },
   E08000013: {
     url: 'https://www.sthelens.gov.uk/media/9891/Adult-Social-Care-Market-Position-Statement/pdf/2400132_Market_Position_Statement.pdf?m=1732188549690',
@@ -277,7 +277,7 @@ export const MSPLookup: MSPItems = {
     url: 'https://www.sandwell.gov.uk/downloads/file/1820/market-sustainability-plan-sandwell',
   },
   E08000029: {
-    url: 'https://www.solihull.gov.uk/sites/default/files/2022-04/Market-Position-Statement.pdf',
+    url: 'https://www.solihull.gov.uk/sites/default/files/2025-07/Market-Position-Statement.pdf',
   },
   E08000030: {
     url: 'https://go.walsall.gov.uk/health-and-social-care/adult-social-care-commissioning/adult-social-care-market-position-statements/adult-social-care-market-position-0',
@@ -307,7 +307,7 @@ export const MSPLookup: MSPItems = {
     url: 'https://www.barnsley.gov.uk/services/council-and-democracy/plans-strategies-and-performance/adult-social-care-market-position-statement-2024-2027/',
   },
   E08000039: {
-    url: 'https://www.sheffield.gov.uk/sites/default/files/2022-11/mental-health-social-care-market-position-statement.pdf',
+    url: 'https://www.sheffielddirectory.org.uk/media/ucwddk2v/acw-mps-2025-26.pdf',
   },
   E09000001: {
     url: 'https://www.cityoflondon.gov.uk/assets/Services-DCCS/market-position-statement.pdf',
@@ -328,10 +328,10 @@ export const MSPLookup: MSPItems = {
     url: 'https://www.camden.gov.uk/information-for-providers',
   },
   E09000008: {
-    url: 'https://www.croydon.gov.uk/sites/default/files/2026-06/CROYDON-MPS-PLAN.pdf ',
+    url: 'https://www.croydon.gov.uk/sites/default/files/2026-06/CROYDON-MPS-PLAN.pdf',
   },
   E09000009: {
-    url: 'https://www.ealing.gov.uk/download/downloads/id/21517/ealing_market_position_statement_2026.pdf ',
+    url: 'https://www.ealing.gov.uk/download/downloads/id/21517/ealing_market_position_statement_2026.pdf',
   },
   E09000010: {
     url: 'https://mylife.enfield.gov.uk/enfield-home-page/content/professionals-and-providers/priorities-and-policies/priorities-policies-and-reports/',
@@ -343,7 +343,7 @@ export const MSPLookup: MSPItems = {
     url: 'https://hackney.gov.uk/commissioning-procurement-asc',
   },
   E09000013: {
-    url: 'https://www.lbhf.gov.uk/hammersmith-fulham-market-position-statement-2026/introduction ',
+    url: 'https://www.lbhf.gov.uk/hammersmith-fulham-market-position-statement-2026/introduction',
   },
   E09000014: {
     url: 'https://www.haringey.gov.uk/adult-social-care/adult-social-care-policy-practice/adult-social-services-market-position-statement#:~:text=Upcoming%20procurement%20opportunities-,Overview,social%20care%20in%20our%20community.',
@@ -406,10 +406,10 @@ export const MSPLookup: MSPItems = {
     url: 'https://www.cambridgeshire.gov.uk/residents/adults/adults-services-strategies-and-policies/adult-social-care-market-position-statement',
   },
   E10000007: {
-    url: 'https://www.derbyshire.gov.uk/site-elements/documents/pdf/social-health/care-health-service-providers/commissioning/market-position-statement-community-and-accommodation-based-support-for-older-people-2025-2027.pdf ',
+    url: 'https://www.derbyshire.gov.uk/site-elements/documents/pdf/social-health/care-health-service-providers/commissioning/market-position-statement-community-and-accommodation-based-support-for-older-people-2025-2027.pdf',
   },
   E10000008: {
-    url: 'https://www.devon.gov.uk/provider-engagement-network/document/market-position-statement-february-2025/ ',
+    url: 'https://www.devon.gov.uk/provider-engagement-network/document/market-position-statement-february-2025/',
   },
   E10000011: {
     url: 'https://www.eastsussex.gov.uk/social-care/providers/funding/market-position-statement#:~:text=Our%20market%20position%20statement%20provides,to%20develop%20in%20the%20future.',
@@ -430,7 +430,7 @@ export const MSPLookup: MSPItems = {
     url: 'https://www.kent.gov.uk/about-the-council/strategies-and-policies/service-specific-policies/adult-social-care-policies/adult-social-care-commissioning-market-position-statement',
   },
   E10000017: {
-    url: 'https://www.lancashire.gov.uk/council/strategies-policies-plans/adult-social-care/market-position-statement/',
+    url: 'https://www.lancashire.gov.uk/council/strategies-policies-and-plans/adult-social-care/market-position-statement/',
   },
   E10000018: {
     url: 'https://resources.leicestershire.gov.uk/adult-social-care-and-health/market-position-statement',
@@ -448,7 +448,7 @@ export const MSPLookup: MSPItems = {
     url: 'https://letstalk.oxfordshire.gov.uk/provider-engagement/news_feed/market-position-statement-2024-is-now-live',
   },
   E10000028: {
-    url: 'https://www.staffordshire.gov.uk/Advice-support-and-care-for-adults/Information-for-providers/Market-position-statements/Market-Position-Statement-Care-in-the-Home.aspx',
+    url: 'https://www.staffordshire.gov.uk/adult-social-care-hub/market-position-statements',
   },
   E10000029: {
     url: 'https://www.suffolk.gov.uk/care-and-support-for-adults/work-with-adult-social-care/suffolk-care-market',

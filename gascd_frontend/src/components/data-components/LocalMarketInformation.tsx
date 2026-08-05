@@ -25,7 +25,7 @@ const LocalMarketInformation: React.FC<Props> = ({
         <h2 className="govuk-heading-l govuk-!-margin-top-9">
           Information on the local care market
         </h2>
-        {url && (
+        {url ? (
           <p className="govuk-body">
             <a
               href={url}
@@ -36,6 +36,12 @@ const LocalMarketInformation: React.FC<Props> = ({
             >
               Market Position Statement for {localAuthority} (opens in new tab)
             </a>
+          </p>
+        ) : (
+          <p className="govuk-body">
+            We were unable to find a market position statement for the selected{' '}
+            <abbr title="Local Authority">LA</abbr>. Get in touch with the{' '}
+            <abbr title="Local Authority">LA</abbr> to request it.
           </p>
         )}
         <p className="govuk-body">

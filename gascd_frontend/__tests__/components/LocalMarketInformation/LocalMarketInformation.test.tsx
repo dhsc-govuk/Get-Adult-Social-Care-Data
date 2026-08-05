@@ -23,6 +23,22 @@ describe('Service Component', () => {
     expect(link).not.toBeInTheDocument();
   });
 
+  it('Renders fallback text if LA id not found', () => {
+    render(
+      <LocalMarketInformation
+        localAuthority="My Test LA"
+        localAuthorityId="notanlacode"
+      />
+    );
+    const fallback = screen.getByText(
+      /We were unable to find a market position statement for the selected/
+    );
+    expect(fallback).toBeInTheDocument();
+    expect(fallback.textContent).toBe(
+      'We were unable to find a market position statement for the selected LA. Get in touch with the LA to request it.'
+    );
+  });
+
   it('Renders a URL if LA is valid', () => {
     render(
       <LocalMarketInformation
@@ -37,5 +53,10 @@ describe('Service Component', () => {
     expect(link.getAttribute('href')).toBe(
       'https://www.gov.uk/government/organisations/department-of-health-and-social-care'
     );
+    expect(
+      screen.queryByText(
+        /We were unable to find a market position statement for the selected/
+      )
+    ).not.toBeInTheDocument();
   });
 });
