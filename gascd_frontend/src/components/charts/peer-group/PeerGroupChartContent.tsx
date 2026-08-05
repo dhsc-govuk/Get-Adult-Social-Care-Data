@@ -84,7 +84,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
         x1: resolvedNationalAverage,
         y0: 0,
         y1: 1,
-        line: { color: NATIONAL_AVG_COLOUR, width: 2, dash: 'dot' },
+        line: { color: NATIONAL_AVG_COLOUR, width: 2, dash: 'dash' },
       });
     }
 
@@ -129,6 +129,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
             darkBlueCount={0}
             additionalShapes={referenceShapes}
             xAxisTickSuffix="%"
+            hoverValueFormat=".1f"
           />
         </div>
       )}

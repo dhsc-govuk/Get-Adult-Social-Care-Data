@@ -1,5 +1,6 @@
 import React, { Ref } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
+import TableService from '@/services/Table/TableService';
 
 type DataTableProps = {
   caption?: React.ReactNode;
@@ -68,15 +69,11 @@ const DataTable: React.FC<DataTableProps> = ({
       foundMetric.data_point !== null &&
       !isNaN(Number(foundMetric.data_point))
     ) {
-      let formatted = Number(foundMetric.data_point).toLocaleString(undefined, {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
+      return TableService.formatDataPoint(Number(foundMetric.data_point), {
+        isPercentage,
+        isCurrency,
+        showAverageLabel,
       });
-      if (isPercentage) formatted += '%';
-      if (isCurrency) formatted = '£' + formatted;
-      if (showAverageLabel)
-        formatted += isPercentage ? ' (average)' : ' (median)';
-      return formatted;
     } else if (
       foundMetric &&
       foundMetric.data_point === null &&
