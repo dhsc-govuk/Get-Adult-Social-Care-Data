@@ -79,7 +79,7 @@ export default function LAFundingPage() {
     },
     {
       text: 'Funding',
-      url: '/topics/Funding/subtopics',
+      url: '/topics/financial-spend-and-unpaid-care/subtopics',
     },
   ];
 
@@ -479,7 +479,7 @@ export default function LAFundingPage() {
           <p className="govuk-body-m">
             Find out{' '}
             <a
-              href={withBasePath('/help/total-financial-spend-adult-social-care')}
+              href={withBasePath('/help/total-financial-spend-long-term-community-adult-social-care')}
               className="govuk-link"
             >
               how the financial spend is calculated by service type
@@ -571,7 +571,7 @@ export default function LAFundingPage() {
           <p className="govuk-body-m">
             Find out{' '}
             <a
-              href={withBasePath('/help/total-financial-spend-long-term-community-adult-social-care')}
+              href={withBasePath('/help/total-financial-spend-long-term-care-trends-over-time')}
               className="govuk-link"
             >
               how the financial spend on long-term adult social care is
