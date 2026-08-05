@@ -42,14 +42,9 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
                 authority on long-term and short-term care over the financial
                 year (ASC-FR return), shown by primary support reason. Gross
                 (not net) expenditure is used so figures are not distorted by
-                differing client contributions between areas. Covers LA-funded
+                differing client contributions between areas. Covers <abbr title="Local Authority">LA</abbr>-funded
                 care only; excludes NHS-funded care (including the Better Care
                 Fund) and privately funded care.
-              </p>
-              <p className="govuk-!-margin-top-0">
-                The data covers only <abbr title="Local Authority">LA</abbr>{' '}
-                -funded long-term social care. It does not include NHS funded
-                care or care funded privately by individuals.
               </p>
             </>
           }
