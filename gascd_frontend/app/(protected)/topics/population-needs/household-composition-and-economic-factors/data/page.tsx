@@ -30,7 +30,7 @@ export default function ProvisionAndOccupancyPage() {
   const [locationNames, setLocationNames] = useState<LocationNames>({
     CPLabel: null,
     LALabel: 'Loading...',
-    RegionLabel: 'NHS Peer Group',
+    RegionLabel: 'NHS Peer Group Average',
     CountryLabel: 'Loading...',
   } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
@@ -90,8 +90,8 @@ export default function ProvisionAndOccupancyPage() {
           setLocationNames({
             CPLabel: locationNames.CPLabel,
             LALabel: locationNames.LALabel,
-            RegionLabel: 'NHS Peer Group',
-            CountryLabel: locationNames.CountryLabel,
+            RegionLabel: 'NHS Peer Group Average',
+            CountryLabel: 'England (national average)',
           });
         } catch (error) {
           console.error('Error fetching location names:', error);
@@ -273,24 +273,29 @@ export default function ProvisionAndOccupancyPage() {
         <details className="govuk-details govuk-!-margin-top-3">
           <summary className="govuk-details__summary">
             <span className="govuk-details__summary-text">
-              NHSDigital Adult Social Care Peer Groups source
+              Interpreting the NHS Digital Adult Social Care statistical
+              neighbour authorities
             </span>
           </summary>
           <div className="govuk-details__text">
-            NHSDigital Adult Social Care Peer Groups: For your local authority,
-            data is grouped alongside a total of fifteen other local authorities
-            that are similar with regard to various socio-economic and
-            geographic factors, such as age profile, ethnicity, density,
-            education. For further information{' '}
+            GASCD currently uses a{' '}
             <a
               className="govuk-link"
               href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
               target="_blank"
               rel="noopener noreferrer"
             >
-              click here
-            </a>
-            .
+              statistical neighbours model
+            </a>{' '}
+            developed by NHS digital in 2022/23 to support benchmarking. This is
+            one of a number of approaches that aim to group authorities with
+            similar socio-economic and geographic factors (e.g. age, ethnicity,
+            education). It is important to note that there is limited evidence
+            of which factors are the most important drivers of variation in
+            adult social care. As a result, these statistical neighbours should
+            be viewed as a helpful starting point for benchmarking, rather than
+            a definitive indication of which authorities are most alike or
+            measuring relative performance.
           </div>
         </details>
         <DataTabs
@@ -368,24 +373,30 @@ export default function ProvisionAndOccupancyPage() {
             <details className="govuk-details govuk-!-margin-top-3">
               <summary className="govuk-details__summary">
                 <span className="govuk-details__summary-text">
-                  NHSDigital Adult Social Care Peer Groups source
+                  Interpreting the NHS Digital Adult Social Care statistical
+              neighbour authorities
                 </span>
               </summary>
               <div className="govuk-details__text">
-                NHSDigital Adult Social Care Peer Groups: For your local
-                authority, data is grouped alongside a total of fifteen other
-                local authorities that are similar with regard to various
-                socio-economic and geographic factors, such as age profile,
-                ethnicity, density, education. For further information{' '}
+                GASCD currently uses a{' '}
                 <a
                   className="govuk-link"
                   href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  click here
-                </a>
-                .
+                  statistical neighbours model
+                </a>{' '}
+                developed by NHS digital in 2022/23 to support benchmarking.
+                This is one of a number of approaches that aim to group
+                authorities with similar socio-economic and geographic factors
+                (e.g. age, ethnicity, education). It is important to note that
+                there is limited evidence of which factors are the most
+                important drivers of variation in adult social care. As a
+                result, these statistical neighbours should be viewed as a
+                helpful starting point for benchmarking, rather than a
+                definitive indication of which authorities are most alike or
+                measuring relative performance.
               </div>
             </details>
           </>
@@ -464,6 +475,35 @@ export default function ProvisionAndOccupancyPage() {
                 aged 65 or over is calculated
               </a>
             </p>
+            <details className="govuk-details govuk-!-margin-top-3">
+              <summary className="govuk-details__summary">
+                <span className="govuk-details__summary-text">
+                  Interpreting the NHS Digital Adult Social Care statistical
+                  neighbour authorities
+                </span>
+              </summary>
+              <div className="govuk-details__text">
+                GASCD currently uses a{' '}
+                <a
+                  className="govuk-link"
+                  href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  statistical neighbours model
+                </a>{' '}
+                developed by NHS digital in 2022/23 to support benchmarking.
+                This is one of a number of approaches that aim to group
+                authorities with similar socio-economic and geographic factors
+                (e.g. age, ethnicity, education). It is important to note that
+                there is limited evidence of which factors are the most
+                important drivers of variation in adult social care. As a
+                result, these statistical neighbours should be viewed as a
+                helpful starting point for benchmarking, rather than a
+                definitive indication of which authorities are most alike or
+                measuring relative performance.
+              </div>
+            </details>
           </>
         }
       >
@@ -497,6 +537,30 @@ export default function ProvisionAndOccupancyPage() {
                 downloadType="percentage of one-person households where the person is aged 65 or over"
               />
             </>
+          }
+          chart={
+            <PeerGroupBarChart
+              laCode={locationIds[1]}
+              laName={locationNames.LALabel}
+              currentLaValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_households_one_person' &&
+                    d.location_type === 'LA'
+                )?.data_point ?? null
+              }
+              nationalAverageValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_households_one_person' &&
+                    d.location_type === 'National'
+                )?.data_point ?? null
+              }
+              metricCode="perc_households_one_person"
+              metricDescription="the percentage of one-person households where the person is aged 65 or over"
+              figureTitle="Percentage of one-person households where the person is aged 65 or over"
+              figureNumber={3}
+            />
           }
         />
       </DataBox>
