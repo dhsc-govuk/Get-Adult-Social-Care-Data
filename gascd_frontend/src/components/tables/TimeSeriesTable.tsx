@@ -33,7 +33,10 @@ const getFormattedDataPoint = (
     foundMetric.data_point !== null &&
     !isNaN(Number(foundMetric.data_point))
   ) {
-    let formatted = Number(foundMetric.data_point).toLocaleString();
+    let formatted = Number(foundMetric.data_point).toLocaleString(undefined, {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
+    });
     if (isPercentage) formatted += '%';
     if (isCurrency) formatted = '£' + formatted;
     if (showAverageLabel)

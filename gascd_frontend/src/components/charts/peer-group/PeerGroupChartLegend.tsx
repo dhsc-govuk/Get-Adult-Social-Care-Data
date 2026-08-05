@@ -13,7 +13,7 @@ interface PeerGroupChartLegendProps {
 }
 
 const formatPercentage = (value: number | null | undefined): string =>
-  value !== null && value !== undefined ? `${value.toFixed(2)}%` : 'N/A';
+  value !== null && value !== undefined ? `${value.toFixed(1)}%` : 'N/A';
 
 const PeerGroupChartLegend: React.FC<PeerGroupChartLegendProps> = ({
   laName,

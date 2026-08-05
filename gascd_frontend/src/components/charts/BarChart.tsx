@@ -91,7 +91,7 @@ const BarChart: React.FC<BarChartProps> = ({
       marker: {
         color: barColors,
       },
-      hovertemplate: '<b>%{y}</b><br>Value: %{x}<extra></extra>',
+      hovertemplate: '<b>%{y}</b><br>Value: %{x:.1f}<extra></extra>',
     },
   ];
 
