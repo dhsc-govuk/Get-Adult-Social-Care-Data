@@ -60,6 +60,62 @@ LOCATIONS = {
         'code': 'test_la_2',
         'name': 'Test LA 2',
         'region': 'test_region_2'
+    },{
+        'code': 'test_la_3',
+        'name': 'Test LA 3',
+        'region': 'test_region_1'
+    },{
+        'code': 'test_la_4',
+        'name': 'Test LA 4',
+        'region': 'test_region_2'
+    },{
+        'code': 'test_la_5',
+        'name': 'Test LA 5',
+        'region': 'test_region_1'
+    },{
+        'code': 'test_la_6',
+        'name': 'Test LA 6',
+        'region': 'test_region_2'
+    },{
+        'code': 'test_la_7',
+        'name': 'Test LA 7',
+        'region': 'test_region_1'
+    },{
+        'code': 'test_la_8',
+        'name': 'Test LA 8',
+        'region': 'test_region_2'
+    },{
+        'code': 'test_la_9',
+        'name': 'Test LA 9',
+        'region': 'test_region_1'
+    },{
+        'code': 'test_la_10',
+        'name': 'Test LA 10',
+        'region': 'test_region_2'
+    },{
+        'code': 'test_la_11',
+        'name': 'Test LA 11',
+        'region': 'test_region_1'
+    },{
+        'code': 'test_la_12',
+        'name': 'Test LA 12',
+        'region': 'test_region_2'
+    },{
+        'code': 'test_la_13',
+        'name': 'Test LA 13',
+        'region': 'test_region_1'
+    },{
+        'code': 'test_la_14',
+        'name': 'Test LA 14',
+        'region': 'test_region_2'
+    },{
+        'code': 'test_la_15',
+        'name': 'Test LA 15',
+        'region': 'test_region_1'
+    },{
+        'code': 'test_la_16',
+        'name': 'Test LA 16',
+        'region': 'test_region_2'
     }],
     'Regional': [{
         'code': 'test_region_1',

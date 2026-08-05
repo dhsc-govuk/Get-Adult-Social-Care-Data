@@ -318,6 +318,65 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/metric_locations/local_authority_peers/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get local authority peer group data
+         * @description Retrieves peer local authorities and summary averages for a local authority and metric.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description The unique identifier for the metric. */
+                    metric_code: string;
+                };
+                header?: never;
+                path: {
+                    /** @description The unique identifier for the local authority. */
+                    code: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Peer local authorities and summary averages for the requested local authority and metric. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["LocalAuthorityPeersResponse"];
+                    };
+                };
+                /** @description Invalid metric code supplied. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Local authority not found. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/metric_locations/regions/{code}": {
         parameters: {
             query?: never;
@@ -635,6 +694,25 @@ export interface components {
             country_code?: string | null;
             /** @description The associated country name. */
             country_name?: string | null;
+        };
+        /** @description Represents a peer local authority and its metric value. */
+        LocalAuthorityPeer: {
+            /** @description Unique identifier for the peer local authority. */
+            code?: string;
+            /** @description Display name of the peer local authority. */
+            display_name?: string;
+            /** @description Rank of the peer local authority within the peer group. */
+            peer_ranking?: number;
+            /** @description Most recent metric value for the peer local authority. */
+            metric_value?: number | null;
+        };
+        /** @description Peer local authorities and summary averages for a local authority and metric. */
+        LocalAuthorityPeersResponse: {
+            local_authority_peers?: components["schemas"]["LocalAuthorityPeer"][];
+            /** @description Average metric value across peer local authorities with available data. */
+            average_peer_group?: number | null;
+            /** @description Most recent national metric value. */
+            national_average?: number | null;
         };
         /** @description Represents a region */
         Region: {

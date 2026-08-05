@@ -21,17 +21,17 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: "Postcode object"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Postcode'
-        '400':
+                $ref: "#/components/schemas/Postcode"
+        "400":
           description: "Postcode doesn't meet validation requirements: 5-7 chars inclusive"
-        '404':
+        "404":
           description: "No details found for postcode"
-          
+
   /geo/care_provider_location/{code}/neighbours:
     get:
       summary: "Get the care provider locations within a provided distance (defaults to 1km)."
@@ -50,7 +50,7 @@ paths:
           description: "The distance in kilometres from the provided Care Provider Location to look for other Care Provider Locations. Defaults to 5 if none provided."
           schema:
             type: number
-            example: 2     
+            example: 2
         - name: limit
           in: query
           required: false
@@ -59,7 +59,7 @@ paths:
             type: number
             example: 10
       responses:
-        '200':
+        "200":
           description: "A list of neighbouring Care Provider Locations"
           content:
             application/json:
@@ -74,13 +74,13 @@ paths:
                     description: "A list of neighbouring Care Provider Locations within the specified distance of provided Care Provider Location"
                     items:
                       type: object
-                      properties: 
+                      properties:
                         distance:
                           type: number
                           description: "The distance of this Care Provider Location neighbour from the Care Provider Location"
                         location_details:
                           $ref: "#/components/schemas/CareProviderLocationShort"
-                
+
   /organisation/care_provider/{code}:
     get:
       summary: "Get the care provider locations linked to a care provider organisation."
@@ -94,7 +94,7 @@ paths:
             type: string
             example: "1-12345678"
       responses:
-        '200':
+        "200":
           description: "A list of care provider locations"
           content:
             application/json:
@@ -133,13 +133,13 @@ paths:
             type: boolean
             default: false
       responses:
-        '200':
+        "200":
           description: "Detailed information for the requested location."
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CareProviderLocation'
-        '404':
+                $ref: "#/components/schemas/CareProviderLocation"
+        "404":
           description: "Care provider location not found."
 
   /metric_locations/districts/{code}:
@@ -162,42 +162,72 @@ paths:
             type: boolean
             default: false
       responses:
-        '200':
+        "200":
           description: "Detailed information for the requested location."
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/District'
-        '404':
+                $ref: "#/components/schemas/District"
+        "404":
           description: "District not found."
   /metric_locations/local_authorities/{code}:
-      get:
-        summary: "Get a local authority"
-        description: "Retrieves detailed information for a local authority by its code."
-        parameters:
-          - name: code
-            in: path
-            required: true
-            description: "The unique identifier for the local authority."
-            schema:
-              type: string
-              example: "1-12345678"
-          - name: include_parents
-            in: query
-            required: false
-            description: "Whether to include parent location information."
-            schema:
-              type: boolean
-              default: false
-        responses:
-          '200':
-            description: "Detailed information for the requested location."
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/LocalAuthority'
-          '404':
-            description: "Local authority not found."
+    get:
+      summary: "Get a local authority"
+      description: "Retrieves detailed information for a local authority by its code."
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: "The unique identifier for the local authority."
+          schema:
+            type: string
+            example: "1-12345678"
+        - name: include_parents
+          in: query
+          required: false
+          description: "Whether to include parent location information."
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "200":
+          description: "Detailed information for the requested location."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocalAuthority"
+        "404":
+          description: "Local authority not found."
+  /metric_locations/local_authority_peers/{code}:
+    get:
+      summary: "Get local authority peer group data"
+      description: "Retrieves peer local authorities and summary averages for a local authority and metric."
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: "The unique identifier for the local authority."
+          schema:
+            type: string
+            example: "E00000001"
+        - name: metric_code
+          in: query
+          required: true
+          description: "The unique identifier for the metric."
+          schema:
+            type: string
+            example: "metric_identifier_here"
+      responses:
+        "200":
+          description: "Peer local authorities and summary averages for the requested local authority and metric."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocalAuthorityPeersResponse"
+        "400":
+          description: "Invalid metric code supplied."
+        "404":
+          description: "Local authority not found."
   /metric_locations/regions/{code}:
     get:
       summary: "Get a region"
@@ -211,13 +241,13 @@ paths:
             type: string
             example: "1-12345678"
       responses:
-        '200':
+        "200":
           description: "Detailed information for the requested location."
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Region'
-        '404':
+                $ref: "#/components/schemas/Region"
+        "404":
           description: "Region not found."
   /metric_locations/countries/{code}:
     get:
@@ -232,13 +262,13 @@ paths:
             type: string
             example: "1-12345678"
       responses:
-        '200':
+        "200":
           description: "Detailed information for the requested location."
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Country'
-        '404':
+                $ref: "#/components/schemas/Country"
+        "404":
           description: "Country not found."
 
   /metric_filters/{metric_group_code}:
@@ -246,30 +276,29 @@ paths:
       summary: "Get available filters for a group of metrics"
       description: "Retrieves the available filter options for a metric group."
       parameters:
-        - $ref: '#/components/parameters/MetricGroupCode'
+        - $ref: "#/components/parameters/MetricGroupCode"
       responses:
-        '200':
+        "200":
           description: "A list of available filter options."
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MetricFilters'
-                  
+                $ref: "#/components/schemas/MetricFilters"
 
   /metrics/{metric_code}/metadata:
     get:
       summary: "Get metadata for a specific metric"
       description: "Retrieves all metadata for a single metric, including its name, numerator, and denominator definitions. "
       parameters:
-        - $ref: '#/components/parameters/MetricCode'
+        - $ref: "#/components/parameters/MetricCode"
       responses:
-        '200':
+        "200":
           description: "The metadata for the requested metric."
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MetricMetadata'
-        '404':
+                $ref: "#/components/schemas/MetricMetadata"
+        "404":
           description: "Metric not found."
 
   /metrics/{metric_code}/data:
@@ -277,7 +306,7 @@ paths:
       summary: "Get time-series or most recent data for a single metric"
       description: "Retrieves data points for a single specified metric across one or more locations. Omit the time_series parameter to get the most recent data point. Include time_series=true to get the time-series."
       parameters:
-        - $ref: '#/components/parameters/MetricCode'
+        - $ref: "#/components/parameters/MetricCode"
         - name: time_series
           in: query
           description: "Boolean whether to return whole time series. If false or omitted, only the most recent data point is returned."
@@ -292,17 +321,17 @@ paths:
           application/json:
             schema:
               type: array
-              items: 
+              items:
                 $ref: "#/components/schemas/Location"
       responses:
-        '200':
+        "200":
           description: "A list of matching metric series for the specified metric."
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/MetricSeries'
+                  $ref: "#/components/schemas/MetricSeries"
 
 # Reusable components
 components:
@@ -339,7 +368,7 @@ components:
           type: string
           description: "Address of the care provider location."
         geo_data:
-          $ref: '#/components/schemas/GeoData'
+          $ref: "#/components/schemas/GeoData"
         provider_code:
           type: string
           description: "The parent provider code."
@@ -376,7 +405,7 @@ components:
           type: string
           nullable: true
           description: "The associated country name."
-          
+
     CareProviderLocationShort:
       type: object
       description: "Represents a care provider location"
@@ -398,9 +427,8 @@ components:
           description: "The category of the location."
         address:
           type: string
-          description: "The address of the location."     
-    
-    
+          description: "The address of the location."
+
     District:
       type: object
       description: "Represents a district"
@@ -412,7 +440,7 @@ components:
           type: string
           description: "Display name of the district."
         geo_data:
-          $ref: '#/components/schemas/GeoData'
+          $ref: "#/components/schemas/GeoData"
         local_authority_code:
           type: string
           description: "The associated local authority code."
@@ -424,7 +452,7 @@ components:
           type: string
           nullable: true
           description: "The associated country code."
-    
+
     LocalAuthority:
       type: object
       description: "Represents a local authority"
@@ -436,15 +464,15 @@ components:
           type: string
           description: "Display name of the local authority."
         geo_data:
-          $ref: '#/components/schemas/GeoData'
+          $ref: "#/components/schemas/GeoData"
         region_code:
           type: string
           nullable: true
           description: "The associated region code."
         region_name:
-            type: string
-            nullable: true
-            description: "The associated region name."
+          type: string
+          nullable: true
+          description: "The associated region name."
         country_code:
           type: string
           nullable: true
@@ -453,7 +481,42 @@ components:
           type: string
           nullable: true
           description: "The associated country name."
-    
+
+    LocalAuthorityPeer:
+      type: object
+      description: "Represents a peer local authority and its metric value."
+      properties:
+        code:
+          type: string
+          description: "Unique identifier for the peer local authority."
+        display_name:
+          type: string
+          description: "Display name of the peer local authority."
+        peer_ranking:
+          type: integer
+          description: "Rank of the peer local authority within the peer group."
+        metric_value:
+          type: number
+          nullable: true
+          description: "Most recent metric value for the peer local authority."
+
+    LocalAuthorityPeersResponse:
+      type: object
+      description: "Peer local authorities and summary averages for a local authority and metric."
+      properties:
+        local_authority_peers:
+          type: array
+          items:
+            $ref: "#/components/schemas/LocalAuthorityPeer"
+        average_peer_group:
+          type: number
+          nullable: true
+          description: "Average metric value across peer local authorities with available data."
+        national_average:
+          type: number
+          nullable: true
+          description: "Most recent national metric value."
+
     Region:
       type: object
       description: "Represents a region"
@@ -465,7 +528,7 @@ components:
           type: string
           description: "Display name of the region."
         geo_data:
-          $ref: '#/components/schemas/GeoData'
+          $ref: "#/components/schemas/GeoData"
         country_code:
           type: string
           description: "The associated country code."
@@ -496,7 +559,7 @@ components:
           type: string
           description: "Display name of the country."
         geo_data:
-          $ref: '#/components/schemas/GeoData'
+          $ref: "#/components/schemas/GeoData"
 
     Postcode:
       type: object
@@ -509,7 +572,7 @@ components:
           type: string
           description: "Properly formatted postcode for display"
         geo_data:
-          $ref: '#/components/schemas/GeoData'
+          $ref: "#/components/schemas/GeoData"
         la_code:
           type: string
           description: "Local authority code."
@@ -529,9 +592,9 @@ components:
           description: "Longitude of the centre point of the location."
         polygon:
           type: array
-          items:          
-            $ref: '#/components/schemas/Coordinate'
-            
+          items:
+            $ref: "#/components/schemas/Coordinate"
+
     Coordinate:
       type: object
       description: "Pair of coordinates"
@@ -542,11 +605,11 @@ components:
         longitude:
           type: number
           description: "Longitude of the location."
-          
+
     Location:
       type: object
       description: "A location type and code pair."
-      properties: 
+      properties:
         location_code:
           type: string
           description: "The locations unique code."
@@ -556,7 +619,7 @@ components:
           description: "The type of this location."
           enum: [LA, National, Regional, CareProviderLocation]
           default: la
-    
+
     MetricMetadata:
       type: object
       description: "Defines the properties and context of a metric."
@@ -608,7 +671,6 @@ components:
               filter_type:
                 type: string
                 description: "A user-friendly name for the metric filter."
-                
 
     MetricSeries:
       type: object
@@ -642,7 +704,7 @@ components:
           items:
             type: number
             format: float
-          
+
   securitySchemes:
     ApiKey:
       type: apiKey

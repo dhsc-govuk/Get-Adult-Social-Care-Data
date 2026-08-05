@@ -245,7 +245,7 @@ export function renderLineYAxis(
     .tickSizeOuter(0);
 
   if (yAxisAsPercentage) {
-    yAxis.tickFormat((d: any) => `${(d * 100).toFixed(2)}%`);
+    yAxis.tickFormat((d: any) => `${(d * 100).toFixed(1)}%`);
   }
   chartSvg
     .append('g')

@@ -34,7 +34,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   yPrefix = '',
   ySuffix = '',
   dateFormat = '%b %y',
-  decimalPoints = 0,
+  decimalPoints = 1,
 }) => {
   const DEFAULT_COLORS = [
     // Colour pallete from

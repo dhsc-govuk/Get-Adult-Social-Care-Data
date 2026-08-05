@@ -349,7 +349,7 @@ export default function LAFundingPlanningPage() {
                     series={timeSeriesDataForGraph}
                     dateFormat="%Y"
                     ySuffix="%"
-                    decimalPoints={2}
+                    decimalPoints={1}
                   />
                 </div>
               )) || <p>Loading graph</p>}
