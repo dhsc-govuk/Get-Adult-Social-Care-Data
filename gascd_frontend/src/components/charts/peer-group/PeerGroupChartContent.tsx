@@ -134,7 +134,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
         </div>
       )}
       <p className="govuk-body">
-        Source: CQC Care Directory, August 2025.
+        Source: Census 2021 from the Office for National Statistics (ONS)
       </p>
     </div>
   );
