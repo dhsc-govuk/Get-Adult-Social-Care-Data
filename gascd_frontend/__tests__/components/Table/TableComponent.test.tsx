@@ -134,8 +134,9 @@ describe('Table component tests', () => {
         if (item.data_point === null) {
           expectedDataPoint = '--';
         } else {
+          // Percentages always display with 1 decimal place
           expectedDataPoint = shouldBePercentage
-            ? `${item.data_point}%`
+            ? `${item.data_point.toFixed(1)}%`
             : item.data_point;
         }
 

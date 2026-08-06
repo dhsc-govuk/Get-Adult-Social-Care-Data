@@ -74,7 +74,7 @@ const PeerGroupChartLegend: React.FC<PeerGroupChartLegendProps> = ({
         style={{
           display: 'inline-block',
           width: 32,
-          borderTop: `2px dotted ${NATIONAL_AVG_COLOUR}`,
+          borderTop: `2px dashed ${NATIONAL_AVG_COLOUR}`,
           flexShrink: 0,
         }}
         aria-hidden="true"
