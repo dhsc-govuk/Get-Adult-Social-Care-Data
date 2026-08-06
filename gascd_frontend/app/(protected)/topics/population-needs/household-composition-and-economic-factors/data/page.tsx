@@ -273,8 +273,7 @@ export default function ProvisionAndOccupancyPage() {
         <details className="govuk-details govuk-!-margin-top-3">
           <summary className="govuk-details__summary">
             <span className="govuk-details__summary-text">
-              Interpreting the NHS Digital Adult Social Care statistical
-              neighbour authorities
+              Interpreting the NHS Peer Group
             </span>
           </summary>
           <div className="govuk-details__text">
@@ -373,8 +372,7 @@ export default function ProvisionAndOccupancyPage() {
             <details className="govuk-details govuk-!-margin-top-3">
               <summary className="govuk-details__summary">
                 <span className="govuk-details__summary-text">
-                  Interpreting the NHS Digital Adult Social Care statistical
-              neighbour authorities
+                  Interpreting the NHS Peer Group
                 </span>
               </summary>
               <div className="govuk-details__text">
@@ -478,8 +476,7 @@ export default function ProvisionAndOccupancyPage() {
             <details className="govuk-details govuk-!-margin-top-3">
               <summary className="govuk-details__summary">
                 <span className="govuk-details__summary-text">
-                  Interpreting the NHS Digital Adult Social Care statistical
-                  neighbour authorities
+                  Interpreting the NHS Peer Group
                 </span>
               </summary>
               <div className="govuk-details__text">

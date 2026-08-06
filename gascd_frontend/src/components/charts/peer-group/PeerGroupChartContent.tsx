@@ -126,8 +126,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
         </div>
       )}
       <p className="govuk-body">
-        Source: CQC Care Directory, August 2025. Non-{laName} figures are
-        illustrative.
+        Source: CQC Care Directory, August 2025.
       </p>
     </div>
   );
