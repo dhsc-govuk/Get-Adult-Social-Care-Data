@@ -19,7 +19,6 @@ import ConditionalText from '@/components/common/conditional-text/ConditionalTex
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { generatePopulationMapURL } from '@/helpers/maps/mapsupport';
 import { Locations } from '@/data/interfaces/Locations';
-import LogService from '@/services/logger/logService';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
@@ -106,10 +105,9 @@ export default function ProvisionAndOccupancyPage() {
           const location_data =
             await LocationService.getLocations(CPLocationId);
           setLocationData(location_data);
-        } catch (error) {
-          LogService.logEvent(
-            'Error fetching location ids: ' + (error as Error).message
-          );
+        } catch {
+          // LocationService.getLocations already logs the failure server-side;
+          // swallow here so the rejected promise doesn't go unhandled.
         }
       }
     };

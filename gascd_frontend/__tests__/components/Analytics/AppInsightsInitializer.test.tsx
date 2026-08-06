@@ -6,6 +6,7 @@ import {
 } from '@/components/analytics/appInsights';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import LogService from '@/services/logger/logService';
+import { ClientLogCode } from '@/services/logger/clientLogCodes';
 import { mockSession, mockSessionWithAnalytics } from '@/test-utils/test-utils';
 
 const TEST_CONNECTION_STRING = 'InstrumentationKey=fake-connection-string';
@@ -35,9 +36,7 @@ describe('AppInsightsInitializer', () => {
 
     render(<AppInsightsInitializer connectionString="blah" />);
 
-    expect(logspy).toHaveBeenCalledWith(
-      'Error loading browser app insightsError: Please provide instrumentation key'
-    );
+    expect(logspy).toHaveBeenCalledWith(ClientLogCode.AppInsightsInitFailed);
 
     const insights_invalid = getAppInsights();
     expect(insights_invalid).toBe(null);

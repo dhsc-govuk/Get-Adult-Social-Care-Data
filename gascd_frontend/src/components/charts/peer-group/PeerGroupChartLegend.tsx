@@ -66,7 +66,7 @@ const PeerGroupChartLegend: React.FC<PeerGroupChartLegendProps> = ({
         aria-hidden="true"
       />
       <span className="govuk-body-s govuk-!-margin-bottom-0">
-        NHS Peer Group avg ({formatPercentage(peerGroupAverage)})
+        NHS peer group average ({formatPercentage(peerGroupAverage)})
       </span>
     </li>
     <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -74,13 +74,13 @@ const PeerGroupChartLegend: React.FC<PeerGroupChartLegendProps> = ({
         style={{
           display: 'inline-block',
           width: 32,
-          borderTop: `2px dotted ${NATIONAL_AVG_COLOUR}`,
+          borderTop: `2px dashed ${NATIONAL_AVG_COLOUR}`,
           flexShrink: 0,
         }}
         aria-hidden="true"
       />
       <span className="govuk-body-s govuk-!-margin-bottom-0">
-        National average ({formatPercentage(nationalAverage)})
+        England (national average) ({formatPercentage(nationalAverage)})
       </span>
     </li>
   </ul>

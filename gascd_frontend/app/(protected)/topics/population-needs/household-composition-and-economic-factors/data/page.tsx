@@ -30,7 +30,7 @@ export default function ProvisionAndOccupancyPage() {
   const [locationNames, setLocationNames] = useState<LocationNames>({
     CPLabel: null,
     LALabel: 'Loading...',
-    RegionLabel: 'NHS Peer Group Average',
+    RegionLabel: 'NHS peer group average',
     CountryLabel: 'Loading...',
   } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
@@ -90,7 +90,7 @@ export default function ProvisionAndOccupancyPage() {
           setLocationNames({
             CPLabel: locationNames.CPLabel,
             LALabel: locationNames.LALabel,
-            RegionLabel: 'NHS Peer Group Average',
+            RegionLabel: 'NHS peer group average',
             CountryLabel: 'England (national average)',
           });
         } catch (error) {

@@ -52,12 +52,15 @@ import logger from '@/utils/logger';
 logger.info("My message", {"foo": "bar"})
 ```
 
-For client-side code, there is a service and API route which allow authenticated sessions to send logs to the server (and subsequently to Azure):
+For client-side code, there is a service and API route which allow authenticated sessions to send logs to the server (and subsequently to Azure). To prevent log injection (CWE-117), the browser may **not** send free text — it sends a fixed code from the `ClientLogCode` allowlist, and the server maps that code to the message that is actually logged:
 
 ```typescript
 import LogService from '@/services/logger/logService';
-LogService.logEvent("The user did something")
+import { ClientLogCode } from '@/services/logger/clientLogCodes';
+LogService.logEvent(ClientLogCode.LocationFetchFailed)
 ```
+
+To log a new kind of client event, add a value to `ClientLogCode` (`src/services/logger/clientLogCodes.ts`) and its message mapping in the route (`app/api/logger/route.ts`). Prefer logging the underlying error detail server-side (directly via the Winston logger) where the failing request reaches the server, since the client cannot safely send arbitrary detail.
 
 Application logs can be found in the `traces` table of Azure App Insights.
 

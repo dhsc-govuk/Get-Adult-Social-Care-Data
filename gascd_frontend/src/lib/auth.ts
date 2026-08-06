@@ -1,5 +1,6 @@
 import { betterAuth, boolean } from 'better-auth';
 import { createAuthMiddleware } from 'better-auth/api';
+import { logLogoutEvent } from './authHooks';
 import { getOAuthConfig } from './authPlugins';
 import { nextCookies } from 'better-auth/next-js';
 import logger from '@/utils/logger';
@@ -132,6 +133,9 @@ export const auth = betterAuth({
     nextCookies(), // make sure this is the last plugin in the array
   ],
   hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      await logLogoutEvent(ctx);
+    }),
     after: createAuthMiddleware(async (ctx) => {
       if (
         ctx.path.startsWith('/sign-in/') ||

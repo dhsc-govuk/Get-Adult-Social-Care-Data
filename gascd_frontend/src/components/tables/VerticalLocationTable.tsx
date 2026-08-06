@@ -1,5 +1,6 @@
 import React, { Ref, useEffect } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
+import TableService from '@/services/Table/TableService';
 
 type VerticalLocationTableProps = {
   caption?: React.ReactNode;
@@ -65,14 +66,10 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
       foundMetric.data_point !== null &&
       !isNaN(Number(foundMetric.data_point))
     ) {
-      let formatted = Number(foundMetric.data_point).toLocaleString(undefined, {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
+      return TableService.formatDataPoint(Number(foundMetric.data_point), {
+        isPercentage,
+        showAverageLabel,
       });
-      if (isPercentage) formatted += '%';
-      if (showAverageLabel)
-        formatted += isPercentage ? ' (average)' : ' (median)';
-      return formatted;
     }
     return 'Loading...';
   };
