@@ -493,7 +493,7 @@ export default function DisabilityPrevalence() {
       <RelatedDataList>
         <DataLinkCard
           label="Dementia prevalence"
-          description="Data estimates for undiagnosed dementia."
+          description="Data on dementia prevalence."
           url="/topics/population-needs/dementia-prevalence/data"
         />
         <DataLinkCard

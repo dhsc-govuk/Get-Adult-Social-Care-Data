@@ -144,7 +144,7 @@ export default function DementaPrevalencePage() {
         <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">Dementia prevalence</h1>
           <p className="govuk-body-l">
-            Data estimates for undiagnosed dementia.
+            Data on dementia prevalence.
           </p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview

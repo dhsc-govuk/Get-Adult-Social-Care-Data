@@ -48,7 +48,7 @@ describe('DementiaPrevalencePage', () => {
     }
 
     const bodyTextElement = screen.getByText(
-      /Data estimates for undiagnosed dementia./i
+      /Data on dementia prevalence./i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
