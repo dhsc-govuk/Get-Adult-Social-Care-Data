@@ -4,6 +4,7 @@ import React, { useActionState } from 'react';
 import Layout from '../../../src/components/common/layout/Layout';
 import { authClient } from '@/lib/auth-client';
 import { withBasePath } from '@/lib/basePath';
+import Link from 'next/link';
 
 const LoginPage: React.FC = () => {
   const handleSubmit = async () => {
@@ -102,7 +103,7 @@ const LoginPage: React.FC = () => {
               </a>
               .
             </p>
-            <form action={formAction}>
+            {/* <form action={formAction}>
               <button
                 type="submit"
                 className="govuk-button govuk-button--start"
@@ -128,7 +129,14 @@ const LoginPage: React.FC = () => {
                 )}
               </button>
               {state && <p className="govuk-error-message">{state.error}</p>}
-            </form>
+            </form> */}
+            <Link
+              href="/whoami"
+              className="govuk-button govuk-button--start"
+              data-module="govuk-button"
+            >
+              Start now
+            </Link>
             <h2 className="govuk-heading-m">About using this service</h2>
             <p className="govuk-body">
               You will be asked to agree to the{' '}
