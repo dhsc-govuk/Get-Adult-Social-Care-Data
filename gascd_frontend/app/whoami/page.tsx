@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from '@/components/common/layout/Layout';
 import Whoami from '@/components/whoami/Whoami';
 
-const TermsOfUsePage: React.FC = () => {
+const WhoamiPage: React.FC = () => {
   return (
     <>
       <Layout
@@ -17,4 +17,4 @@ const TermsOfUsePage: React.FC = () => {
   );
 };
 
-export default TermsOfUsePage;
+export default WhoamiPage;
