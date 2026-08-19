@@ -2,6 +2,7 @@
 // import React, { useActionState } from 'react';
 import React from 'react';
 import Link from 'next/link';
+import Form from 'next/form';
 // import { authClient } from '@/lib/auth-client';
 
 const Whoami: React.FC = () => {
@@ -25,7 +26,7 @@ const Whoami: React.FC = () => {
       <div className="govuk-grid-column-two-thirds">
         <div className="govuk-form-group">
           {/* <form action={formAction}> */}
-          <form>
+          <Form action="/lookup-email">
             <fieldset className="govuk-fieldset" aria-describedby="signIn-hint">
               <legend className="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <h1 className="govuk-fieldset__heading">
@@ -43,9 +44,9 @@ const Whoami: React.FC = () => {
                   <input
                     className="govuk-radios__input"
                     id="user-la"
-                    name="user"
                     type="radio"
-                    value="LA"
+                    name="id"
+                    value="u:la"
                   />
                   <label
                     className="govuk-label govuk-radios__label"
@@ -58,9 +59,9 @@ const Whoami: React.FC = () => {
                   <input
                     className="govuk-radios__input"
                     id="user-ni"
-                    name="user"
                     type="radio"
-                    value="government-gateway"
+                    name="id"
+                    value="u:ni"
                     aria-describedby="user-ni-item-hint"
                   />
                   <label
@@ -81,9 +82,9 @@ const Whoami: React.FC = () => {
                   <input
                     className="govuk-radios__input"
                     id="user-rm"
-                    name="user"
                     type="radio"
-                    value="govuk-one-login"
+                    name="id"
+                    value="u:rm"
                     aria-describedby="user-rm-item-hint"
                   />
                   <label
@@ -104,9 +105,9 @@ const Whoami: React.FC = () => {
                   <input
                     className="govuk-radios__input"
                     id="user-x"
-                    name="user"
                     type="radio"
-                    value="X"
+                    name="id"
+                    value="u:x"
                   />
                   <label
                     className="govuk-label govuk-radios__label"
@@ -126,6 +127,7 @@ const Whoami: React.FC = () => {
               >
                 Continue
               </button>
+
               {/* <button
                 type="submit"
                 className="govuk-button govuk-button--start"
@@ -156,7 +158,7 @@ const Whoami: React.FC = () => {
                 Cancel and go back
               </Link>
             </div>
-          </form>
+          </Form>
         </div>
       </div>
     </div>
