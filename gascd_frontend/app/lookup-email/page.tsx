@@ -20,29 +20,28 @@ const EmailLookupPage: React.FC<Props> = async ({ searchParams }) => {
   console.log('=======+>>>', id);
 
   return (
-    <>
-      <Layout
-        title="Check your email here"
-        showLoginInformation={false}
-        currentPage="lookup-email"
-        showNavBar={false}
-      >
-        <div className="govuk-grid-row">
-          <div className="govuk-grid-column-two-thirds">
-            <div className="govuk-form-group">
-              <Form action={checkEmailDomain}>
-                <LookupLA />
+    <Layout
+      title="Check your email here"
+      showLoginInformation={false}
+      currentPage="lookup-email"
+      showNavBar={false}
+    >
+      <div className="govuk-grid-row">
+        <div className="govuk-grid-column-two-thirds">
+          <div className="govuk-form-group">
+            <Form action={checkEmailDomain}>
+              <LookupLA />
 
-                {/* Form Trigger(s) */}
-                <div className="govuk-button-group govuk-!-margin-top-6">
-                  <button
-                    type="submit"
-                    className="govuk-button"
-                    data-module="govuk-button"
-                  >
-                    Continue
-                  </button>
-                  {/* <button
+              {/* Form Trigger(s) */}
+              <div className="govuk-button-group govuk-!-margin-top-6">
+                <button
+                  type="submit"
+                  className="govuk-button"
+                  data-module="govuk-button"
+                >
+                  Continue
+                </button>
+                {/* <button
                 type="submit"
                 className="govuk-button govuk-button--start"
                 data-module="govuk-button"
@@ -68,16 +67,15 @@ const EmailLookupPage: React.FC<Props> = async ({ searchParams }) => {
               </button>
               {state && <p className="govuk-error-message">{state.error}</p>} */}
 
-                  <Link href="#" className="govuk-link">
-                    Cancel and go back
-                  </Link>
-                </div>
-              </Form>
-            </div>
+                <Link href="#" className="govuk-link">
+                  Cancel and go back
+                </Link>
+              </div>
+            </Form>
           </div>
         </div>
-      </Layout>
-    </>
+      </div>
+    </Layout>
   );
 };
 
