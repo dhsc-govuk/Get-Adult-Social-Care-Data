@@ -3,6 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import Form from 'next/form';
+import { redirect } from 'next/navigation';
+import { authClient } from '@/lib/auth-client';
 // import { authClient } from '@/lib/auth-client';
 
 const Whoami: React.FC = () => {
@@ -26,7 +28,30 @@ const Whoami: React.FC = () => {
       <div className="govuk-grid-column-two-thirds">
         <div className="govuk-form-group">
           {/* <form action={formAction}> */}
-          <Form action="/lookup-email">
+          <Form
+            action={async function handler(formdata: FormData) {
+              'use server';
+              console.log('whoami...', formdata);
+              const whoami = formdata.get('id');
+
+              if (whoami == 'u:la') {
+                redirect(`/lookup-email`);
+              } else if (whoami == 'u:cqc') {
+                // const { data, error } = await authClient.signIn.oauth2({
+                //   providerId: 'govuk-one-login',
+                //   callbackURL: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/home`,
+                // });
+                // if (error) {
+                //   return {
+                //     error:
+                //       'Sorry, there is a problem with the service. Please try again later.',
+                //   };
+                // }
+              }
+              // Fallback / whoami === 'u:x'
+              redirect('/access-denied');
+            }}
+          >
             <fieldset className="govuk-fieldset" aria-describedby="signIn-hint">
               <legend className="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <h1 className="govuk-fieldset__heading">
@@ -52,55 +77,33 @@ const Whoami: React.FC = () => {
                     className="govuk-label govuk-radios__label"
                     htmlFor="user-la"
                   >
-                    Local authority officer
+                    Local Authority Officer
                   </label>
                 </div>
                 <div className="govuk-radios__item">
                   <input
                     className="govuk-radios__input"
-                    id="user-ni"
+                    id="user-cqc"
                     type="radio"
                     name="id"
-                    value="u:ni"
-                    aria-describedby="user-ni-item-hint"
+                    value="u:cqc"
+                    aria-describedby="user-cqc-item-hint"
                   />
                   <label
                     className="govuk-label govuk-radios__label"
-                    htmlFor="user-ni"
+                    htmlFor="user-cqc"
                   >
-                    Nominated individual for a CQC-registered care provider
+                    CQC-registered care provider
                   </label>
                   <div
-                    id="user-ni-item-hint"
+                    id="user-cqc-item-hint"
                     className="govuk-hint govuk-radios__hint"
                   >
-                    Use the same email address for your GOV.UK One Login that
-                    you for your CQC registration.
+                    This encompasses being either a Nominated individual (NI) or
+                    a Registered Manager (RM)
                   </div>
                 </div>
-                <div className="govuk-radios__item">
-                  <input
-                    className="govuk-radios__input"
-                    id="user-rm"
-                    type="radio"
-                    name="id"
-                    value="u:rm"
-                    aria-describedby="user-rm-item-hint"
-                  />
-                  <label
-                    className="govuk-label govuk-radios__label"
-                    htmlFor="user-rm"
-                  >
-                    Registered manager for a CQC-registered care provider
-                  </label>
-                  <div
-                    id="user-rm-item-hint"
-                    className="govuk-hint govuk-radios__hint"
-                  >
-                    Use the same email address for your GOV.UK One Login that
-                    you for your CQC registration.
-                  </div>
-                </div>
+
                 <div className="govuk-radios__item">
                   <input
                     className="govuk-radios__input"
@@ -113,7 +116,7 @@ const Whoami: React.FC = () => {
                     className="govuk-label govuk-radios__label"
                     htmlFor="user-x"
                   >
-                    None of these
+                    Neither of these
                   </label>
                 </div>
               </div>
