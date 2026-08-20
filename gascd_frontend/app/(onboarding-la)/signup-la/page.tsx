@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
 import Form from 'next/form';
+import { redirect } from 'next/navigation';
 
 const OPTIONS_LA: Record<'text' | 'value', string>[] = [
   { value: 'eastmidlands', text: 'East Midlands' },
@@ -48,6 +49,8 @@ const SignupLAPage: React.FC = () => {
             action={async function handler(formdata: FormData) {
               'use server';
               console.log('Logging...', formdata);
+
+              redirect('/confirm-la?sref=HDJ2123F');
             }}
           >
             <div className="govuk-form-group">
