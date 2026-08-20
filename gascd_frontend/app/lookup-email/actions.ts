@@ -10,5 +10,7 @@ export async function checkEmailDomain(formData: FormData) {
 
   console.log('======@>>', rawFormData, isAcceptableEmail(rawFormData.email));
   // Redirect to the new post
-  //   redirect(`/posts/${data.id}`);
+  if (!isAcceptableEmail(rawFormData.email)) {
+    redirect(`/signup-la`);
+  }
 }
