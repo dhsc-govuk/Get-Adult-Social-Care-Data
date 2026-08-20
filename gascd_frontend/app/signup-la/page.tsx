@@ -2,6 +2,18 @@ import React from 'react';
 import Layout from '@/components/common/layout/Layout';
 import Form from 'next/form';
 
+const OPTIONS_LA: Record<'text' | 'value', string>[] = [
+  { value: 'eastmidlands', text: 'East Midlands' },
+  { value: 'eastofengland', text: 'East of England' },
+  { value: 'london', text: 'London' },
+  { value: 'northeast', text: 'North East' },
+  { value: 'northwest', text: 'North West' },
+  { value: 'southeast', text: 'South East' },
+  { value: 'southwest', text: 'South West' },
+  { value: 'westmidlands', text: 'West Midlands' },
+  { value: 'yorkshire', text: 'Yorkshire and the Humber' },
+];
+
 const SignupLAPage: React.FC = () => {
   return (
     <Layout
@@ -25,39 +37,12 @@ const SignupLAPage: React.FC = () => {
             </a>{' '}
             and try again using your Local Authority email address.
           </p>
-          {/* <div className="govuk-inset-text">
-            <h2 className="govuk-heading-m">People with access</h2>
-            <ul className="govuk-list govuk-list--bullet">
-              <li>
-                CQC nominated individuals with a CQC registered email addresses
-              </li>
-              <li>Local Authority ASC representatives</li>
-            </ul>
-          </div> */}
+
           <h2 className="govuk-heading-l">If you think there is a problem</h2>
           <p className="govuk-body">
             If you believe you should have access to this service, complete the
             access request form.
           </p>
-          {/* <p className="govuk-body">
-            You will need to provide the following information:
-          </p> */}
-          {/* <p className="govuk-heading-s">Required information</p>
-          <ul className="govuk-list govuk-list--bullet">
-            <li>Full name</li>
-            <li>
-              <span>Local Authority</span>
-              <ul className="govuk-list govuk-list--bullet govuk-!-margin-top-2 govuk-!-margin-bottom-2">
-                <li>Select your Local Authority from the list</li>
-                <li>
-                  If your Local Authority is not listed, select Other and enter
-                  the name of your organisation
-                </li>
-              </ul>
-            </li>
-            <li>Your role in the organisation</li>
-            <li>Local Authority email address</li>
-          </ul> */}
 
           <Form
             action={async function handler(formdata: FormData) {
@@ -97,15 +82,12 @@ const SignupLAPage: React.FC = () => {
                 <option value="" selected>
                   Select your Local Authority from the list
                 </option>
-                <option value="eastmidlands">East Midlands</option>
-                <option value="eastofengland">East of England</option>
-                <option value="london">London</option>
-                <option value="northeast">North East</option>
-                <option value="northwest">North West</option>
-                <option value="southeast">South East</option>
-                <option value="southwest">South West</option>
-                <option value="westmidlands">West Midlands</option>
-                <option value="yorkshire">Yorkshire and the Humber</option>
+
+                {OPTIONS_LA.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.text}
+                  </option>
+                ))}
               </select>
             </div>
 
