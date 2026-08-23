@@ -163,7 +163,7 @@ export function isAcceptableEmail(email: unknown): boolean {
 }
 
 export function isBadQueryStringValue(id: unknown): boolean {
-  const EXPECTED_ID_VALUES = ['u:ni', 'u:cqc', 'u:x'];
+  const EXPECTED_ID_VALUES = ['u:la', 'u:cqc', 'u:x'];
 
   return (
     typeof id === 'string' &&
