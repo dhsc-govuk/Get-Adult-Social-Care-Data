@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import Whoami from '@/components/whoami/Whoami';
+import Whoami from './Whoami';
 
 const WhoamiPage: React.FC = () => {
   return (
