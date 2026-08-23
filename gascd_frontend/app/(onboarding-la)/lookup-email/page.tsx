@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Form from 'next/form';
 import Layout from '@/components/common/layout/Layout';
-import LookupLA from '@/components/email-lookup/LookupLA';
+import LookupLA from './LookupLA';
 import { redirect } from 'next/navigation';
 import { checkEmailDomain } from './actions';
 import { isBadQueryStringValue } from '@/lib/domain-check';

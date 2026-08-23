@@ -1,34 +1,38 @@
-// import { withBasePath } from '@/lib/basePath';
-// import React, { useActionState } from 'react';
-import React from 'react';
+'use client';
+import React, { useActionState } from 'react';
 import Link from 'next/link';
 import Form from 'next/form';
 import { redirect } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
-// import { authClient } from '@/lib/auth-client';
 
 const Whoami: React.FC = () => {
-  // const handleSubmit = async () => {
-  //   const { data, error } = await authClient.signIn.oauth2({
-  //     providerId: 'govuk-one-login',
-  //     callbackURL: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/home`,
-  //   });
-  //   if (error) {
-  //     return {
-  //       error:
-  //         'Sorry, there is a problem with the service. Please try again later.',
-  //     };
-  //   }
-  // };
+  const handleSubmit = async (formdata: unknown) => {
+    // const { data, error } = await authClient.signIn.oauth2({
+    //   providerId: 'govuk-one-login',
+    //   callbackURL: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/home`,
+    // });
+    console.log('========%%%%%%%', formdata);
+    // useFormStatus
+    // useActionState
 
-  // const [state, formAction, isPending] = useActionState(handleSubmit, null);
+    const error = false;
+    if (error) {
+      return {
+        error:
+          'Sorry, there is a problem with the service. Please try again later.',
+      };
+    }
+  };
+
+  const [state, formAction, isPending] = useActionState(handleSubmit, null);
+  console.log('@@@@@@==========', state);
 
   return (
     <div className="govuk-grid-row">
       <div className="govuk-grid-column-two-thirds">
         <div className="govuk-form-group">
-          {/* <form action={formAction}> */}
-          <Form
+          <form action={formAction}>
+            {/* <Form
             action={async function handler(formdata: FormData) {
               'use server';
               console.log('whoami...', formdata);
@@ -37,21 +41,21 @@ const Whoami: React.FC = () => {
               if (whoami == 'u:la') {
                 redirect(`/lookup-email`);
               } else if (whoami == 'u:cqc') {
-                // const { data, error } = await authClient.signIn.oauth2({
-                //   providerId: 'govuk-one-login',
-                //   callbackURL: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/home`,
-                // });
-                // if (error) {
-                //   return {
-                //     error:
-                //       'Sorry, there is a problem with the service. Please try again later.',
-                //   };
-                // }
+                if (process.env.NODE_ENV === 'development') {
+                  const loggedin = await fetch('/api/auth/local');
+                  redirect(loggedin.url);
+                  // redirect('/api/auth/local');
+                } else {
+                  await authClient.signIn.oauth2({
+                    providerId: 'govuk-one-login',
+                    callbackURL: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/home`,
+                  });
+                }
               }
               // Fallback / whoami === 'u:x'
               redirect('/access-denied');
             }}
-          >
+          > */}
             <fieldset className="govuk-fieldset" aria-describedby="signIn-hint">
               <legend className="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <h1 className="govuk-fieldset__heading">
@@ -127,41 +131,19 @@ const Whoami: React.FC = () => {
                 type="submit"
                 className="govuk-button"
                 data-module="govuk-button"
-              >
-                Continue
-              </button>
-
-              {/* <button
-                type="submit"
-                className="govuk-button govuk-button--start"
-                data-module="govuk-button"
                 disabled={isPending}
               >
                 {isPending ? 'Signing in...' : 'Continue'}
-                {!isPending && (
-                  <svg
-                    className="govuk-button__start-icon"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="17.5"
-                    height="19"
-                    viewBox="0 0 33 40"
-                    aria-hidden="true"
-                    focusable="false"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M0 0h13l20 20-20 20H0l20-20z"
-                    />
-                  </svg>
-                )}
               </button>
-              {state && <p className="govuk-error-message">{state.error}</p>} */}
+
+              {state && <p className="govuk-error-message">{state.error}</p>}
 
               <Link href="#" className="govuk-link">
                 Cancel and go back
               </Link>
             </div>
-          </Form>
+            {/* </Form> */}
+          </form>
         </div>
       </div>
     </div>
