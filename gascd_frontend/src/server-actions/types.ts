@@ -1,4 +1,4 @@
-export type ActionResponse =
+export type ActionResponse<T> =
   | {
       success: true;
       message: string;
@@ -6,11 +6,20 @@ export type ActionResponse =
   | {
       success: false;
       description: string;
-      errors: WhoamiErrors;
-      values: Partial<WhoamiFormData>;
+      errors: Partial<T>;
+      values: Partial<T>;
     };
 
 export type WhoamiErrors = Partial<WhoamiFormData>;
+
 export type WhoamiFormData = {
-  id: string;
+  id: string | null;
+};
+
+export type SignupLAData = {
+  regfullname: string | null;
+  regla: string | null;
+  regorgname: string | null;
+  regrole: string | null;
+  regmail: string | null;
 };
