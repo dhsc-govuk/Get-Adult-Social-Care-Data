@@ -32,7 +32,7 @@ export const auth = betterAuth({
   },
   logger: {
     log: (level, message, ...args) => {
-     // Send logs to our winston logger
+      // Send logs to our winston logger
       logger.log(level, '(Better Auth): ' + message, ...args);
     },
   },

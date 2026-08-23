@@ -4,58 +4,16 @@ import Link from 'next/link';
 import Form from 'next/form';
 import { redirect } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
+import { processWhoami } from '@/server-actions';
 
 const Whoami: React.FC = () => {
-  const handleSubmit = async (formdata: unknown) => {
-    // const { data, error } = await authClient.signIn.oauth2({
-    //   providerId: 'govuk-one-login',
-    //   callbackURL: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/home`,
-    // });
-    console.log('========%%%%%%%', formdata);
-    // useFormStatus
-    // useActionState
-
-    const error = false;
-    if (error) {
-      return {
-        error:
-          'Sorry, there is a problem with the service. Please try again later.',
-      };
-    }
-  };
-
-  const [state, formAction, isPending] = useActionState(handleSubmit, null);
-  console.log('@@@@@@==========', state);
+  const [state, action, isPending] = useActionState(processWhoami, null);
 
   return (
     <div className="govuk-grid-row">
       <div className="govuk-grid-column-two-thirds">
         <div className="govuk-form-group">
-          <form action={formAction}>
-            {/* <Form
-            action={async function handler(formdata: FormData) {
-              'use server';
-              console.log('whoami...', formdata);
-              const whoami = formdata.get('id');
-
-              if (whoami == 'u:la') {
-                redirect(`/lookup-email`);
-              } else if (whoami == 'u:cqc') {
-                if (process.env.NODE_ENV === 'development') {
-                  const loggedin = await fetch('/api/auth/local');
-                  redirect(loggedin.url);
-                  // redirect('/api/auth/local');
-                } else {
-                  await authClient.signIn.oauth2({
-                    providerId: 'govuk-one-login',
-                    callbackURL: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/home`,
-                  });
-                }
-              }
-              // Fallback / whoami === 'u:x'
-              redirect('/access-denied');
-            }}
-          > */}
+          <form action={action}>
             <fieldset className="govuk-fieldset" aria-describedby="signIn-hint">
               <legend className="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <h1 className="govuk-fieldset__heading">
@@ -133,10 +91,12 @@ const Whoami: React.FC = () => {
                 data-module="govuk-button"
                 disabled={isPending}
               >
-                {isPending ? 'Signing in...' : 'Continue'}
+                {isPending ? 'Processing...' : 'Continue'}
               </button>
 
-              {state && <p className="govuk-error-message">{state.error}</p>}
+              {state?.success == false && (
+                <p className="govuk-error-message">{state.description}</p>
+              )}
 
               <Link href="#" className="govuk-link">
                 Cancel and go back

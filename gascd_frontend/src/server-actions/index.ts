@@ -1,0 +1,124 @@
+'use server';
+import logger from '@/utils/logger';
+import { isAcceptableEmail } from '@/lib/domain-check';
+import { redirect } from 'next/navigation';
+import type { ActionResponse, WhoamiErrors, WhoamiFormData } from './types';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+
+export async function checkEmailDomain(formData: FormData) {
+  const rawFormData = {
+    email: formData.get('email'),
+    // ...
+  };
+
+  if (isAcceptableEmail(rawFormData.email)) {
+    // Redirect to Confirmation page
+    redirect('/confirm-la?sref=HDJ2123F');
+  } else {
+    // Redirect to page for User Signup
+    redirect(`/signup-la`);
+  }
+}
+
+export async function processWhoami(
+  previousState: ActionResponse | null,
+  formData: FormData
+): Promise<ActionResponse | undefined> {
+  // const { data, error } = await authClient.signIn.oauth2({
+  //   providerId: 'govuk-one-login',
+  //   callbackURL: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/home`,
+  // });
+  const rawFormData: WhoamiFormData = {
+    id: formData.get('id') as string,
+  };
+
+  const errors = validateFormFields(rawFormData);
+  const hasErrors = Object.keys(errors).length > 0;
+  if (hasErrors) {
+    return {
+      success: false,
+      description: 'Invalid option received',
+      values: rawFormData,
+      errors,
+    };
+  }
+  console.log('========%%%%%%%', rawFormData, { previousState });
+
+  switch (rawFormData.id) {
+    case 'u:x': {
+      redirect('/access-denied');
+    }
+
+    case 'u:la': {
+      redirect(`/lookup-email`);
+    }
+
+    case 'u:cqc': {
+      let responseAuth = null;
+      try {
+        if (process.env.NODE_ENV === 'development') {
+          if (
+            !process.env.LOCAL_AUTH_EMAIL ||
+            !process.env.LOCAL_AUTH_PASSWORD
+          ) {
+            throw Error(
+              'LOCAL_AUTH_EMAIL or LOCAL_AUTH_PASSWORD not found in env'
+            );
+          }
+
+          responseAuth = await auth.api.signInEmail({
+            body: {
+              email: process.env.LOCAL_AUTH_EMAIL,
+              password: process.env.LOCAL_AUTH_PASSWORD,
+              callbackURL: '/home',
+            },
+            headers: await headers(),
+          });
+
+          logger.info('Local auth session started');
+        } else {
+          responseAuth = await auth.api.signInWithOAuth2({
+            body: {
+              providerId: 'govuk-one-login',
+              callbackURL: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/home`,
+            },
+            headers: await headers(),
+          });
+        }
+      } catch (error) {
+        const ERROR_MSG =
+          'Sorry, there is a problem with the service. Please try again later.';
+        logger.error(ERROR_MSG, { error });
+
+        return {
+          success: false,
+          description: ERROR_MSG,
+          errors: {},
+          values: {},
+        };
+      }
+
+      console.log('[response-auth]:', responseAuth);
+      redirect(responseAuth.url!);
+    }
+    default:
+    ///
+  }
+
+  // return {
+  //   success: true,
+  //   message: 'All form values passed the validation check.',
+  // };
+}
+
+function validateFormFields(fields: WhoamiFormData): WhoamiErrors {
+  const errors: WhoamiErrors = {};
+
+  const EXPECTED_ID_VALUES = ['u:la', 'u:cqc', 'u:x'];
+  if (EXPECTED_ID_VALUES.includes(fields.id) === false) {
+    errors.id = 'Select an option';
+  }
+
+  return errors;
+}

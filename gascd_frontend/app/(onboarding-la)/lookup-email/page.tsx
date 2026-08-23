@@ -4,8 +4,8 @@ import Form from 'next/form';
 import Layout from '@/components/common/layout/Layout';
 import LookupLA from './LookupLA';
 import { redirect } from 'next/navigation';
-import { checkEmailDomain } from './actions';
 import { isBadQueryStringValue } from '@/lib/domain-check';
+import { checkEmailDomain } from '@/server-actions';
 
 type Props = {
   searchParams: Promise<{ id?: string }>;
