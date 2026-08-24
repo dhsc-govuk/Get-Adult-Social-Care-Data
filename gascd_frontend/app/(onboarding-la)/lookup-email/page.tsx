@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import LookupLA from './LookupLA';
+import LookupLA from './LookupLAForm';
 
 const EmailLookupPage: React.FC = () => {
   return (

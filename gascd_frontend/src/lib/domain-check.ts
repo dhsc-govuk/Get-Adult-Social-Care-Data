@@ -1,4 +1,4 @@
-const ACCEPTABLE_EMAIL_DOMAINS: string[] = [
+export const ACCEPTABLE_EMAIL_DOMAINS: string[] = [
   // Data-source=`scripts/early_access/la_domain_mapping.json`
   'barnet.gov.uk',
   'barnsley.gov.uk',

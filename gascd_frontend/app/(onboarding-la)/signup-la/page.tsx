@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import SignupLAForm from './Form';
+import SignupLAForm from './SignupLAForm';
 
 const SignupLAPage: React.FC = () => {
   return (

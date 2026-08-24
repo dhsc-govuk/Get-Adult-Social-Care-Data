@@ -1,21 +1,13 @@
 'use client';
 
+import { ACCEPTABLE_EMAIL_DOMAINS } from '@/lib/domain-check';
 import { handleFormSignupLA } from '@/server-actions';
 import Form from 'next/form';
 import Link from 'next/link';
 import { useActionState } from 'react';
 
-const OPTIONS_LA: Record<'text' | 'value', string>[] = [
-  { value: 'eastmidlands', text: 'East Midlands' },
-  { value: 'eastofengland', text: 'East of England' },
-  { value: 'london', text: 'London' },
-  { value: 'northeast', text: 'North East' },
-  { value: 'northwest', text: 'North West' },
-  { value: 'southeast', text: 'South East' },
-  { value: 'southwest', text: 'South West' },
-  { value: 'westmidlands', text: 'West Midlands' },
-  { value: 'yorkshire', text: 'Yorkshire and the Humber' },
-];
+const OPTIONS_LA: Record<'text' | 'value', string>[] =
+  ACCEPTABLE_EMAIL_DOMAINS.map((domain) => ({ text: domain, value: domain }));
 
 const BACK_LINK = '/lookup-email';
 
