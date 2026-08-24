@@ -5,13 +5,11 @@ export type ActionResponse<T> = {
   values?: Partial<T>; // form-fields
 };
 
-export type WhoamiErrors = Partial<WhoamiFormData>;
-
 export type WhoamiFormData = {
   id: string | null;
 };
 
-export type SignupLAData = {
+export type SignupLAFormData = {
   regfullname: string | null;
   regla: string | null;
   regorgname: string | null;

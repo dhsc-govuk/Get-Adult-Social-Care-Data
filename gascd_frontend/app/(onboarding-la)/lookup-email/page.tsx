@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import LookupLA from './LookupLAForm';
+import LookupLAForm from './LookupLAForm';
 
 const EmailLookupPage: React.FC = () => {
   return (
@@ -13,7 +13,7 @@ const EmailLookupPage: React.FC = () => {
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
           <div className="govuk-form-group">
-            <LookupLA />
+            <LookupLAForm />
           </div>
         </div>
       </div>

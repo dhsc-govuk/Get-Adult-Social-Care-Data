@@ -6,7 +6,7 @@ import { handleFormEmailDomainCheck } from '@/server-actions';
 
 const BACK_LINK = '/whoami';
 
-const LookupLA: React.FC = () => {
+const LookupLAForm: React.FC = () => {
   const [state, action, isPending] = useActionState(
     handleFormEmailDomainCheck,
     undefined
@@ -60,4 +60,4 @@ const LookupLA: React.FC = () => {
   );
 };
 
-export default LookupLA;
+export default LookupLAForm;

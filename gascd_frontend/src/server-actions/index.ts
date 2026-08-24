@@ -2,21 +2,21 @@
 import logger from '@/utils/logger';
 import { isAcceptableEmail } from '@/lib/domain-check';
 import { redirect } from 'next/navigation';
-import type { ActionResponse, SignupLAData, WhoamiFormData } from './types';
+import type { ActionResponse, SignupLAFormData, WhoamiFormData } from './types';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 
 export async function handleFormSignupLA(
-  _prev: ActionResponse<SignupLAData> | undefined,
+  _prev: ActionResponse<SignupLAFormData> | undefined,
   formData: FormData
-): Promise<ActionResponse<SignupLAData> | undefined> {
+): Promise<ActionResponse<SignupLAFormData> | undefined> {
   const regfullname = formData.get('regfullname');
   const regla = formData.get('regla');
   const regmail = formData.get('regmail');
   const regorgname = formData.get('regorgname');
   const regrole = formData.get('regrole');
 
-  const rawFormData: SignupLAData = {
+  const rawFormData: SignupLAFormData = {
     regfullname: isNonEmptyString(regfullname) ? regfullname : null,
     regla: isNonEmptyString(regla) ? regla : null,
     regmail: isNonEmptyString(regmail) ? regmail : null,
@@ -30,7 +30,7 @@ export async function handleFormSignupLA(
 }
 
 export async function handleFormEmailDomainCheck(
-  _: unknown,
+  _prev: unknown,
   formData: FormData
 ) {
   const regmail = formData.get('regmail');
@@ -49,7 +49,7 @@ export async function handleFormEmailDomainCheck(
   }
 }
 
-export async function processWhoami(
+export async function handleFormWhoami(
   _prev: ActionResponse<WhoamiFormData> | undefined,
   formData: FormData
 ): Promise<ActionResponse<WhoamiFormData> | undefined> {
