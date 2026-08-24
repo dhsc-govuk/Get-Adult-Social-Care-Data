@@ -3,6 +3,8 @@ import React, { useActionState } from 'react';
 import Link from 'next/link';
 import { processWhoami } from '@/server-actions';
 
+const BACK_LINK = '/login';
+
 const Whoami: React.FC = () => {
   const [state, action, isPending] = useActionState(processWhoami, undefined);
 
@@ -81,6 +83,7 @@ const Whoami: React.FC = () => {
               </div>
             </fieldset>
 
+            {/* ------------------------------------- */}
             <div className="govuk-button-group govuk-!-margin-top-6">
               <button
                 type="submit"
@@ -95,11 +98,10 @@ const Whoami: React.FC = () => {
                 <p className="govuk-error-message">{state.description}</p>
               )}
 
-              <Link href="#" className="govuk-link">
+              <Link href={BACK_LINK} className="govuk-link">
                 Cancel and go back
               </Link>
             </div>
-            {/* </Form> */}
           </form>
         </div>
       </div>

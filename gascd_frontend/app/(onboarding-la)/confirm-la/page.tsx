@@ -1,16 +1,11 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import { redirect } from 'next/navigation';
 
 type Props = {
   searchParams: Promise<{ sref?: string }>;
 };
 const ConfirmLAPage: React.FC<Props> = async ({ searchParams }) => {
   const { sref } = await searchParams;
-
-  // if (sref !== 'HDJ2123F') {
-  //   redirect('/signup-la');
-  // }
 
   return (
     <>

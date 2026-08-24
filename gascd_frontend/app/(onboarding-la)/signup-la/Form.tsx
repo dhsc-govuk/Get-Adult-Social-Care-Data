@@ -2,6 +2,7 @@
 
 import { handleFormSignupLA } from '@/server-actions';
 import Form from 'next/form';
+import Link from 'next/link';
 import { useActionState } from 'react';
 
 const OPTIONS_LA: Record<'text' | 'value', string>[] = [
@@ -15,6 +16,8 @@ const OPTIONS_LA: Record<'text' | 'value', string>[] = [
   { value: 'westmidlands', text: 'West Midlands' },
   { value: 'yorkshire', text: 'Yorkshire and the Humber' },
 ];
+
+const BACK_LINK = '/lookup-email';
 
 const SignupLAForm: React.FC = () => {
   const [state, action, isPending] = useActionState(
@@ -108,6 +111,7 @@ const SignupLAForm: React.FC = () => {
           autoComplete="regmail"
         />
       </div>
+
       {/* ------------------------------------- */}
       <button
         type="submit"
@@ -117,6 +121,9 @@ const SignupLAForm: React.FC = () => {
       >
         Request access to GASCD
       </button>
+      <Link href={BACK_LINK} className="govuk-link">
+        Cancel and go back
+      </Link>
     </Form>
   );
 };

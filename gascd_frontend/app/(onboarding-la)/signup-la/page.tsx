@@ -20,7 +20,7 @@ const SignupLAPage: React.FC = () => {
           </p>
           <p className="govuk-body">
             If you entered the wrong email address,{' '}
-            <a className="govuk-link" href="#">
+            <a className="govuk-link" href="/lookup-email">
               go back
             </a>{' '}
             and try again using your Local Authority email address.
