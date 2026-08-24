@@ -299,6 +299,7 @@ export default function ProvisionAndOccupancyPage() {
         </details>
         <DataTabs
           id="1"
+          sharingMetricIds={['perc_households_deprivation_deprived']}
           table={
             <DataTable
               tableref={tableref1}
@@ -402,6 +403,7 @@ export default function ProvisionAndOccupancyPage() {
       >
         <DataTabs
           id="2"
+          sharingMetricIds={['perc_household_ownership']}
           table={
             <DataTable
               tableref={tableref2}
@@ -506,6 +508,7 @@ export default function ProvisionAndOccupancyPage() {
       >
         <DataTabs
           id="3"
+          sharingMetricIds={['perc_households_one_person']}
           table={
             <DataTable
               tableref={tableref3}

@@ -223,11 +223,17 @@ export default function ProvisionAndOccupancyPage() {
         dataInfo={
           <p>
             Find out how{' '}
-            <a href={withBasePath('/help/population-size')} className="govuk-link">
+            <a
+              href={withBasePath('/help/population-size')}
+              className="govuk-link"
+            >
               population size
             </a>{' '}
             and{' '}
-            <a href={withBasePath('/help/population-age')} className="govuk-link">
+            <a
+              href={withBasePath('/help/population-age')}
+              className="govuk-link"
+            >
               age group percentages
             </a>{' '}
             are calculated.
@@ -236,6 +242,7 @@ export default function ProvisionAndOccupancyPage() {
       >
         <DataTabs
           id="1"
+          sharingMetricIds={demographicMetricIds}
           table={
             <DataTable
               tableref={tableref1}

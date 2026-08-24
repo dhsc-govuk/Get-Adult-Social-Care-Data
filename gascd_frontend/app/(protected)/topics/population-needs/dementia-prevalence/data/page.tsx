@@ -143,9 +143,7 @@ export default function DementaPrevalencePage() {
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">Dementia prevalence</h1>
-          <p className="govuk-body-l">
-            Data on dementia prevalence.
-          </p>
+          <p className="govuk-body-l">Data on dementia prevalence.</p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview
           </h2>
@@ -157,7 +155,10 @@ export default function DementaPrevalencePage() {
           <>
             <p className="govuk-body">
               Find out{' '}
-              <a href={withBasePath('/help/dementia-prevalence')} className="govuk-link">
+              <a
+                href={withBasePath('/help/dementia-prevalence')}
+                className="govuk-link"
+              >
                 how dementia prevalence is calculated
               </a>
               .
@@ -167,6 +168,7 @@ export default function DementaPrevalencePage() {
       >
         <DataTabs
           id="1"
+          sharingMetricIds={demographicMetricIds}
           table={
             <DataTable
               tableref={tableref1}

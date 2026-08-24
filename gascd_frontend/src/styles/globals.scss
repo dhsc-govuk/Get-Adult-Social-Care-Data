@@ -70,3 +70,55 @@ ul.nobullet {
     white-space: normal !important;
   }
 }
+// Sharing label (GASCD-217): sharing statement on the left, label to the right,
+// sitting above the figure, table or download link
+.sharing-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: govuk-spacing(2) govuk-spacing(4);
+  margin-bottom: govuk-spacing(4);
+
+  .sharing-label__statement {
+    flex: 1 1 20em;
+    margin-bottom: 0;
+  }
+
+  .sharing-label__tag-wrapper {
+    flex: 0 0 auto;
+    margin-bottom: 0;
+  }
+
+  // govuk-tag caps itself at 160px so a long single word can wrap. These labels
+  // are short phrases that should stay on one line, so lift the cap and let the
+  // flex container drop the whole tag below the statement when space runs out.
+  .govuk-tag {
+    max-width: none;
+    white-space: nowrap;
+  }
+
+  // Circular exclamation mark, matching the GOV.UK warning text icon
+  .sharing-label__icon {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 25px;
+    height: 25px;
+    min-width: 25px;
+    margin-right: govuk-spacing(2);
+    border: 3px solid $govuk-text-colour;
+    border-radius: 50%;
+    background-color: $govuk-text-colour;
+    color: govuk-colour("white");
+    font-weight: bold;
+    line-height: 20px;
+    text-align: center;
+    vertical-align: text-bottom;
+    forced-color-adjust: none;
+
+    @media screen and (forced-colors: active) {
+      background-color: windowText;
+      color: window;
+    }
+  }
+}

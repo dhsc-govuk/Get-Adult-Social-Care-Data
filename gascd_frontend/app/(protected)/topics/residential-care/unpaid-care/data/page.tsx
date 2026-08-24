@@ -155,7 +155,9 @@ export default function UnpaidCarePage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href={withBasePath('/help/percentage-people-aged-5-and-over-who-provide-unpaid-care')}
+                href={withBasePath(
+                  '/help/percentage-people-aged-5-and-over-who-provide-unpaid-care'
+                )}
                 className="govuk-link"
               >
                 how unpaid care is measured.
@@ -166,6 +168,7 @@ export default function UnpaidCarePage() {
       >
         <DataTabs
           id="1"
+          sharingMetricIds={demographicMetricIds}
           table={
             <DataTable
               tableref={tableref1}

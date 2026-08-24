@@ -273,13 +273,18 @@ export default function DisabilityPrevalence() {
             <p className="govuk-body-m">
               Find out how{' '}
               <a
-                href={withBasePath('/help/people-who-reported-bad-or-very-bad-health')}
+                href={withBasePath(
+                  '/help/people-who-reported-bad-or-very-bad-health'
+                )}
                 className="govuk-link"
               >
                 people who reported bad or very bad health
               </a>{' '}
               and{' '}
-              <a href={withBasePath('/help/disability-prevalence')} className="govuk-link">
+              <a
+                href={withBasePath('/help/disability-prevalence')}
+                className="govuk-link"
+              >
                 disability prevalence
               </a>{' '}
               are calculated.
@@ -289,6 +294,10 @@ export default function DisabilityPrevalence() {
       >
         <DataTabs
           id="1"
+          sharingMetricIds={[
+            'perc_population_disability',
+            'perc_general_health',
+          ]}
           table={
             <DataTable
               tableref={tableref1}
@@ -354,6 +363,7 @@ export default function DisabilityPrevalence() {
       >
         <DataTabs
           id="2"
+          sharingMetricIds={['learning_disability_prevalence']}
           table={
             <DataTable
               tableref={tableref2}
@@ -401,7 +411,9 @@ export default function DisabilityPrevalence() {
             <p className="govuk-body-m">
               Find out how{' '}
               <a
-                href={withBasePath('/help/primary-reason-for-accessing-long-term-adult-social-care')}
+                href={withBasePath(
+                  '/help/primary-reason-for-accessing-long-term-adult-social-care'
+                )}
                 className="govuk-link"
               >
                 primary reason for people to access long-term adult social care
@@ -420,6 +432,7 @@ export default function DisabilityPrevalence() {
         />
         <DataTabs
           id="3"
+          sharingMetricIds={supportReasonMetricIds}
           table={
             <DataTable
               tableref={tableref3}
