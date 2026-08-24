@@ -8,9 +8,9 @@ type Props = {
 const ConfirmLAPage: React.FC<Props> = async ({ searchParams }) => {
   const { sref } = await searchParams;
 
-  if (sref !== 'HDJ2123F') {
-    redirect('/signup-la');
-  }
+  // if (sref !== 'HDJ2123F') {
+  //   redirect('/signup-la');
+  // }
 
   return (
     <>
