@@ -105,17 +105,19 @@ const SignupLAForm: React.FC = () => {
       </div>
 
       {/* ------------------------------------- */}
-      <button
-        type="submit"
-        className="govuk-button"
-        data-module="govuk-button"
-        disabled={isPending}
-      >
-        Request access to GASCD
-      </button>
-      <Link href={BACK_LINK} className="govuk-link">
-        Cancel and go back
-      </Link>
+      <div className="govuk-button-group govuk-!-margin-top-6">
+        <button
+          type="submit"
+          className="govuk-button"
+          data-module="govuk-button"
+          disabled={isPending}
+        >
+          Request access to GASCD
+        </button>
+        <Link href={BACK_LINK} className="govuk-link">
+          Cancel and go back
+        </Link>
+      </div>
     </Form>
   );
 };

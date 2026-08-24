@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import Whoami from './WhoamiForm';
+import WhoamiForm from './WhoamiForm';
 
 const WhoamiPage: React.FC = () => {
   return (
@@ -11,7 +11,13 @@ const WhoamiPage: React.FC = () => {
         currentPage="whoami"
         showNavBar={false}
       >
-        <Whoami />
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <div className="govuk-form-group">
+              <WhoamiForm />
+            </div>
+          </div>
+        </div>
       </Layout>
     </>
   );
