@@ -38,7 +38,9 @@ const showCPLevelData = (user: User | null | undefined) => {
   return (
     (user &&
       ALLOWED_CP_USER_TYPES.includes(user.locationType || '') &&
-      user.selectedLocationCategory === CARE_HOME_RESIDENTIAL_CATEGORY) ||
+      // Case-insensitive: the data API returns categories like 'Residential'
+      user.selectedLocationCategory?.toLowerCase() ===
+        CARE_HOME_RESIDENTIAL_CATEGORY) ||
     false
   );
 };
@@ -864,7 +866,7 @@ export default function ProvisionAndOccupancyPage() {
           textSummary={
             <>
               <h4 className="govuk-heading-s">Text summary</h4>
-              {session?.user.selectedLocationCategory ===
+              {session?.user.selectedLocationCategory?.toLowerCase() ===
                 CARE_HOME_RESIDENTIAL_CATEGORY && (
                 <>
                   <p className="govuk-body">
