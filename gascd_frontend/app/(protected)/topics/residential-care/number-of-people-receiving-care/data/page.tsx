@@ -29,7 +29,9 @@ const showCPLevelData = (user: User | null | undefined) => {
   return (
     (user &&
       ALLOWED_CP_USER_TYPES.includes(user.locationType || '') &&
-      user.selectedLocationCategory === CARE_HOME_COMM_CATEGORY) ||
+      // Case-insensitive: the data API returns categories like 'Residential'
+      user.selectedLocationCategory?.toLowerCase() ===
+        CARE_HOME_COMM_CATEGORY) ||
     false
   );
 };
