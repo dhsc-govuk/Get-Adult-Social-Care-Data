@@ -1,13 +1,10 @@
 'use client';
 import React, { useActionState } from 'react';
 import Link from 'next/link';
-import Form from 'next/form';
-import { redirect } from 'next/navigation';
-import { authClient } from '@/lib/auth-client';
 import { processWhoami } from '@/server-actions';
 
 const Whoami: React.FC = () => {
-  const [state, action, isPending] = useActionState(processWhoami, null);
+  const [state, action, isPending] = useActionState(processWhoami, undefined);
 
   return (
     <div className="govuk-grid-row">
@@ -94,7 +91,7 @@ const Whoami: React.FC = () => {
                 {isPending ? 'Processing...' : 'Continue'}
               </button>
 
-              {state?.success == false && (
+              {state?.description && (
                 <p className="govuk-error-message">{state.description}</p>
               )}
 

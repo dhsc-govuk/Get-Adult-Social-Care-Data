@@ -7,7 +7,7 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 
 export async function handleFormSignupLA(
-  prev: ActionResponse<SignupLAData> | null,
+  _prev: ActionResponse<SignupLAData> | undefined,
   formData: FormData
 ): Promise<ActionResponse<SignupLAData> | undefined> {
   const regfullname = formData.get('regfullname');
@@ -25,19 +25,24 @@ export async function handleFormSignupLA(
   };
 
   // ...
-  return;
+  console.log('========%%%%%%%', rawFormData, { _prev });
+
+  redirect('/confirm-la?sref=HDJ2123F');
 }
 
-function isNonEmptyString(value: unknown): value is string {
-  return typeof value === 'string' && value.trim().length > 0;
-}
-export async function checkEmailDomain(formData: FormData) {
+export async function handleFormEmailDomainCheck(
+  _: unknown,
+  formData: FormData
+) {
+  const regmail = formData.get('regmail');
+
   const rawFormData = {
-    email: formData.get('email'),
+    regmail: isNonEmptyString(regmail) ? regmail : null,
     // ...
   };
 
-  if (isAcceptableEmail(rawFormData.email)) {
+  console.log('@@@@', rawFormData);
+  if (isAcceptableEmail(rawFormData.regmail)) {
     // Redirect to Confirmation page
     redirect('/confirm-la?sref=HDJ2123F');
   } else {
@@ -47,7 +52,7 @@ export async function checkEmailDomain(formData: FormData) {
 }
 
 export async function processWhoami(
-  previousState: ActionResponse<WhoamiFormData> | null,
+  _prev: ActionResponse<WhoamiFormData> | undefined,
   formData: FormData
 ): Promise<ActionResponse<WhoamiFormData> | undefined> {
   const _id = formData.get('id');
@@ -59,13 +64,12 @@ export async function processWhoami(
   const hasErrors = Object.keys(errors).length > 0;
   if (hasErrors) {
     return {
-      success: false,
+      type: 'error',
       description: 'Invalid option received',
       values: rawFormData,
       errors,
     };
   }
-  console.log('========%%%%%%%', rawFormData, { previousState });
 
   switch (rawFormData.id) {
     case 'u:x': {
@@ -114,10 +118,8 @@ export async function processWhoami(
         logger.error(ERROR_MSG, { error });
 
         return {
-          success: false,
+          type: 'error',
           description: ERROR_MSG,
-          errors: {},
-          values: {},
         };
       }
 
@@ -127,13 +129,11 @@ export async function processWhoami(
     default:
     ///
   }
-
-  // return {
-  //   success: true,
-  //   message: 'All form values passed the validation check.',
-  // };
 }
 
+// ================================
+//  UTILITY FUNCTIONS
+// ================================
 type WhoamiErrors = Partial<WhoamiFormData>;
 function validateFormFields(fields: WhoamiFormData): WhoamiErrors {
   const errors: WhoamiErrors = {};
@@ -144,4 +144,8 @@ function validateFormFields(fields: WhoamiFormData): WhoamiErrors {
   }
 
   return errors;
+}
+
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0;
 }

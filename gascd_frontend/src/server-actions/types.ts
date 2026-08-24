@@ -1,14 +1,9 @@
-export type ActionResponse<T> =
-  | {
-      success: true;
-      message: string;
-    }
-  | {
-      success: false;
-      description: string;
-      errors: Partial<T>;
-      values: Partial<T>;
-    };
+export type ActionResponse<T> = {
+  type: 'error';
+  description: string;
+  errors?: Partial<T>;
+  values?: Partial<T>; // form-fields
+};
 
 export type WhoamiErrors = Partial<WhoamiFormData>;
 
