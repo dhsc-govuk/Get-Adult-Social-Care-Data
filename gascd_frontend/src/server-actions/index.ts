@@ -25,7 +25,6 @@ export async function handleFormSignupLA(
   };
 
   // ...
-  console.log('========%%%%%%%', rawFormData, { _prev });
 
   redirect('/confirm-la?sref=HDJ2123F');
 }
@@ -41,7 +40,6 @@ export async function handleFormEmailDomainCheck(
     // ...
   };
 
-  console.log('@@@@', rawFormData);
   if (isAcceptableEmail(rawFormData.regmail)) {
     // Redirect to Confirmation page
     redirect('/confirm-la?sref=HDJ2123F');
@@ -127,7 +125,7 @@ export async function processWhoami(
       redirect(responseAuth.url!);
     }
     default:
-    ///
+    // ...
   }
 }
 
