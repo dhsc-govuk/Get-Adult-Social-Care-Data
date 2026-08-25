@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import '../../../src/styles/cards.scss';
 import { withBasePath } from '@/lib/basePath';
@@ -16,7 +17,7 @@ const DataLinkCard: React.FC<Props> = ({
   description = null,
   sources = null,
   updateFrequency = null,
-  limitations = null,
+  limitations = false,
   url,
 }) => {
   return (
