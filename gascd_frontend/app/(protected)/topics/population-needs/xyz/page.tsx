@@ -14,6 +14,11 @@ import DataBox from '@/components/data-components/DataBox';
 import Link from 'next/link';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
+import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
+import DataLinkCard from '@/components/data-components/DataLinkCard';
+import RelatedDataList from '@/components/data-components/RelatedDataList';
+import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
+import BackToTop from '@/components/data-components/BackToTop';
 
 const breadcrumbs = [
   {
@@ -241,6 +246,268 @@ export default async function XYZPage(props: Props) {
           }
         />
       </DataBox>
+
+      <DataBox
+        dataTitle="Households where the property is owned outright"
+        dataInfo={
+          <>
+            <p className="govuk-body-m">
+              This is when the property does not have an outstanding mortgage or
+              any other type of loan attached to it.
+            </p>
+            <p className="govuk-body-m">
+              Find out{' '}
+              <a
+                href={withBasePath(
+                  '/help/households-where-property-is-owned-outright'
+                )}
+                className="govuk-link"
+              >
+                how data on property ownership is collected
+              </a>
+            </p>
+            <details className="govuk-details govuk-!-margin-top-3">
+              <summary className="govuk-details__summary">
+                <span className="govuk-details__summary-text">
+                  Interpreting the NHS Peer Group
+                </span>
+              </summary>
+              <div className="govuk-details__text">
+                GASCD currently uses a{' '}
+                <a
+                  className="govuk-link"
+                  href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  statistical neighbours model
+                </a>{' '}
+                developed by NHS digital in 2022/23 to support benchmarking.
+                This is one of a number of approaches that aim to group
+                authorities with similar socio-economic and geographic factors
+                (e.g. age, ethnicity, education). It is important to note that
+                there is limited evidence of which factors are the most
+                important drivers of variation in adult social care. As a
+                result, these statistical neighbours should be viewed as a
+                helpful starting point for benchmarking, rather than a
+                definitive indication of which authorities are most alike or
+                measuring relative performance.
+              </div>
+            </details>
+          </>
+        }
+      >
+        <DataTabs
+          id="2"
+          table={
+            <DataTable
+              // tableref={tableref2}
+              caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
+              source={
+                'Census 2021 from the Office for National Statistics (ONS)'
+              }
+              columnHeaders={locationNames}
+              rowHeaders={{
+                perc_household_ownership:
+                  'Percentage of households where the property is owned outright',
+              }}
+              data={filteredDemographicData}
+              showCareProvider={false}
+              percentageRows={['perc_household_ownership']}
+              showAverageLabel={false}
+            ></DataTable>
+          }
+          download={
+            <>
+              <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                // tableref={tableref2}
+                filename="property_owned_outright.csv"
+                xLabel=""
+                downloadType="percentage of households where the property is owned outright"
+              />
+            </>
+          }
+          chart={
+            <PeerGroupBarChart
+              laCode={laCode}
+              laName={locationNames.LALabel}
+              currentLaValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_household_ownership' &&
+                    d.location_type === 'LA'
+                )?.data_point ?? null
+              }
+              nationalAverageValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_household_ownership' &&
+                    d.location_type === 'National'
+                )?.data_point ?? null
+              }
+              metricCode="perc_household_ownership"
+              metricDescription="the percentage of households where the property is owned outright"
+              figureTitle="Percentage of households where the property is owned outright"
+              figureNumber={2}
+            />
+          }
+        />
+      </DataBox>
+
+      <DataBox
+        dataTitle="One-person households where the person is aged 65 or over"
+        dataInfo={
+          <>
+            <p className="govuk-body-m">
+              Find out{' '}
+              <a
+                href={withBasePath(
+                  '/help/one-person-households-where-person-aged-65-or-over'
+                )}
+                className="govuk-link"
+              >
+                how the percentage of one-person households where the person is
+                aged 65 or over is calculated
+              </a>
+            </p>
+            <details className="govuk-details govuk-!-margin-top-3">
+              <summary className="govuk-details__summary">
+                <span className="govuk-details__summary-text">
+                  Interpreting the NHS Peer Group
+                </span>
+              </summary>
+              <div className="govuk-details__text">
+                GASCD currently uses a{' '}
+                <a
+                  className="govuk-link"
+                  href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  statistical neighbours model
+                </a>{' '}
+                developed by NHS digital in 2022/23 to support benchmarking.
+                This is one of a number of approaches that aim to group
+                authorities with similar socio-economic and geographic factors
+                (e.g. age, ethnicity, education). It is important to note that
+                there is limited evidence of which factors are the most
+                important drivers of variation in adult social care. As a
+                result, these statistical neighbours should be viewed as a
+                helpful starting point for benchmarking, rather than a
+                definitive indication of which authorities are most alike or
+                measuring relative performance.
+              </div>
+            </details>
+          </>
+        }
+      >
+        <DataTabs
+          id="3"
+          table={
+            <DataTable
+              // tableref={tableref3}
+              caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
+              source={
+                'Census 2021 from the Office for National Statistics (ONS)'
+              }
+              columnHeaders={locationNames}
+              rowHeaders={{
+                perc_households_one_person:
+                  'Percentage of one-person households where the person is aged 65 or over',
+              }}
+              data={filteredDemographicData}
+              showCareProvider={false}
+              percentageRows={['perc_households_one_person']}
+              showAverageLabel={false}
+            ></DataTable>
+          }
+          download={
+            <>
+              <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                // tableref={tableref3}
+                filename="one_person_households_over_65.csv"
+                xLabel=""
+                downloadType="percentage of one-person households where the person is aged 65 or over"
+              />
+            </>
+          }
+          chart={
+            <PeerGroupBarChart
+              laCode={laCode}
+              laName={locationNames.LALabel}
+              currentLaValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_households_one_person' &&
+                    d.location_type === 'LA'
+                )?.data_point ?? null
+              }
+              nationalAverageValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_households_one_person' &&
+                    d.location_type === 'National'
+                )?.data_point ?? null
+              }
+              metricCode="perc_households_one_person"
+              metricDescription="the percentage of one-person households where the person is aged 65 or over"
+              figureTitle="Percentage of one-person households where the person is aged 65 or over"
+              figureNumber={3}
+            />
+          }
+        />
+      </DataBox>
+
+      {/* $$$ */}
+      <DataIndicatorDetailsList>
+        <DataLinkCard
+          label="Households &lsquo;deprived in 4 dimensions&rsquo;"
+          sources="Office for National Statistics"
+          updateFrequency="Updates every 10 years"
+          url="/help/household-deprivation"
+        />
+        <DataLinkCard
+          label="Households where the property is owned outright"
+          sources="Office for National Statistics"
+          updateFrequency="Updates every 10 years"
+          url="/help/households-where-property-is-owned-outright"
+        />
+        <DataLinkCard
+          label="One-person households where the person is aged 65 or over"
+          sources="Office for National Statistics"
+          updateFrequency="Updates every 10 years"
+          url="/help/one-person-households-where-person-aged-65-or-over"
+        />
+      </DataIndicatorDetailsList>
+
+      {/* $$$ */}
+      <RelatedDataList>
+        <DataLinkCard
+          label="Dementia prevalence"
+          description="Data estimates for undiagnosed dementia."
+          url="/topics/population-needs/dementia-prevalence/data"
+        />
+        <DataLinkCard
+          label="General health and disability"
+          description="Data on disability prevalence, learning disability diagnoses and reasons for accessing care."
+          url="/topics/population-needs/disability-prevalence/data"
+        />
+        <DataLinkCard
+          label="Population size and age group percentages"
+          description="Population data at LA, regional and national levels for England."
+          url="/topics/population-needs/population-age-and-size/data"
+        />
+      </RelatedDataList>
+
+      {/* $$$ */}
+      <LocalMarketInformation
+        localAuthority={locationNames.LALabel}
+        localAuthorityId={laCode}
+      />
+
+      <BackToTop />
     </Layout>
   );
 }
