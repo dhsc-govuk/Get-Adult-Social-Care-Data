@@ -10,12 +10,11 @@ export const getCurrentUser = cache(async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  if (session?.user) {
-    return session?.user;
-  }
+
+  return session?.user;
 });
 
-export const isUserRegistered = (user: User) => {
+export const isUserRegistered = (user?: User) => {
   if (!user) {
     return false;
   } else if (user.role !== 'member') {
