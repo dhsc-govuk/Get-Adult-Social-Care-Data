@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
-import { COMPARISON_GROUPS } from './constants';
+import React, { ReactNode } from 'react';
+import { NHS_PEER_GROUP_COMPARATOR_LABEL } from './constants';
 
 interface PeerGroupChartHeaderProps {
   laName: string;
   metricDescription: string;
   figureTitle: string;
   figureNumber: number;
+  // The comparison group control (select + builder panel), owned by the page.
+  comparatorControl?: ReactNode;
+  // How the comparison set is referred to in the summary sentence,
+  // e.g. "its NHS Peer Group" or a custom group's name.
+  comparatorLabel?: string;
 }
 
 const PeerGroupChartHeader: React.FC<PeerGroupChartHeaderProps> = ({
@@ -13,28 +18,14 @@ const PeerGroupChartHeader: React.FC<PeerGroupChartHeaderProps> = ({
   metricDescription,
   figureTitle,
   figureNumber,
+  comparatorControl,
+  comparatorLabel = NHS_PEER_GROUP_COMPARATOR_LABEL,
 }) => {
-  const [comparisonGroup, setComparisonGroup] = useState(
-    COMPARISON_GROUPS[0].value
-  );
-
   return (
     <>
-      <p className="govuk-body govuk-!-font-weight-bold">Comparison group</p>
-      <select
-        className="govuk-select"
-        value={comparisonGroup}
-        onChange={(event) => setComparisonGroup(event.target.value)}
-        aria-label="Select comparison group"
-      >
-        {COMPARISON_GROUPS.map((group) => (
-          <option key={group.value} value={group.value}>
-            {group.label}
-          </option>
-        ))}
-      </select>
+      {comparatorControl}
       <p className="govuk-body govuk-!-margin-top-4">
-        This chart compares {laName} with its NHS Peer Group for{' '}
+        This chart compares {laName} with {comparatorLabel} for{' '}
         {metricDescription}.
       </p>
       <p className="govuk-body govuk-!-font-weight-bold">

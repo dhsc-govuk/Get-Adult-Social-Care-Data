@@ -170,6 +170,17 @@ paths:
                 $ref: "#/components/schemas/District"
         "404":
           description: "District not found."
+  /metric_locations/local_authorities:
+    get:
+      summary: "List all local authorities"
+      description: "Retrieves all local authorities with their region, ordered by name."
+      responses:
+        "200":
+          description: "All local authorities ordered by name."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocalAuthorityListResponse"
   /metric_locations/local_authorities/{code}:
     get:
       summary: "Get a local authority"
@@ -228,6 +239,43 @@ paths:
           description: "Invalid metric code supplied."
         "404":
           description: "Local authority not found."
+  /metric_locations/custom_local_authority_group:
+    get:
+      summary: "Get metric values for a custom group of local authorities"
+      description: "Retrieves the latest metric values and summary averages for an arbitrary set of local authorities."
+      parameters:
+        - name: la_codes
+          in: query
+          required: true
+          description: "The local authority codes in the custom group."
+          schema:
+            type: array
+            items:
+              type: string
+            example: ["E08000014", "E08000015"]
+        - name: metric_code
+          in: query
+          required: true
+          description: "The unique identifier for the metric."
+          schema:
+            type: string
+            example: "metric_identifier_here"
+        - name: requesting_la_code
+          in: query
+          required: false
+          description: "The requesting local authority's code. Included as a group member but excluded from the group average."
+          schema:
+            type: string
+            example: "E08000014"
+      responses:
+        "200":
+          description: "Metric values and summary averages for the requested local authorities."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomLocalAuthorityGroupResponse"
+        "400":
+          description: "Invalid metric code, unknown local authority codes, or too many codes supplied."
   /metric_locations/regions/{code}:
     get:
       summary: "Get a region"
@@ -516,6 +564,64 @@ components:
           type: number
           nullable: true
           description: "Most recent national metric value."
+
+    CustomGroupMember:
+      type: object
+      description: "A local authority within a custom comparator group."
+      properties:
+        code:
+          type: string
+          description: "Code of the local authority."
+        display_name:
+          type: string
+          description: "Display name of the local authority."
+        metric_value:
+          type: number
+          nullable: true
+          description: "Most recent metric value for the local authority."
+
+    CustomLocalAuthorityGroupResponse:
+      type: object
+      description: "Metric values and summary averages for a custom group of local authorities."
+      properties:
+        group_members:
+          type: array
+          items:
+            $ref: "#/components/schemas/CustomGroupMember"
+        custom_group_average:
+          type: number
+          nullable: true
+          description: "Average metric value across group members with available data, excluding the requesting local authority."
+        national_average:
+          type: number
+          nullable: true
+          description: "Most recent national metric value."
+
+    LocalAuthoritySummary:
+      type: object
+      description: "A local authority with its region."
+      properties:
+        code:
+          type: string
+          description: "Code of the local authority."
+        display_name:
+          type: string
+          description: "Display name of the local authority."
+        region_code:
+          type: string
+          description: "Code of the region the local authority belongs to."
+        region_name:
+          type: string
+          description: "Name of the region the local authority belongs to."
+
+    LocalAuthorityListResponse:
+      type: object
+      description: "All local authorities ordered by name."
+      properties:
+        local_authorities:
+          type: array
+          items:
+            $ref: "#/components/schemas/LocalAuthoritySummary"
 
     Region:
       type: object

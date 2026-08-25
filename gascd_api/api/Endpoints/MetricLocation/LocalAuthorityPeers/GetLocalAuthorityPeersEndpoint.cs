@@ -1,11 +1,14 @@
 using api.Data;
-using api.Data.Shared;
+using api.Services;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Endpoints.MetricLocation.LocalAuthorityPeers;
 
-public class GetLocalAuthorityPeersEndpoint(GascdDataContext context, ILogger<GetLocalAuthorityPeersEndpoint> logger)
+public class GetLocalAuthorityPeersEndpoint(
+    GascdDataContext context,
+    LocalAuthorityMetricValuesService metricValuesService,
+    ILogger<GetLocalAuthorityPeersEndpoint> logger)
     : Endpoint<GetLocalAuthorityPeersRequest, GetLocalAuthorityPeersResponse>
 {
     public override void Configure()
@@ -30,13 +33,6 @@ public class GetLocalAuthorityPeersEndpoint(GascdDataContext context, ILogger<Ge
             return;
         }
 
-        var metricCode = req.MetricCode.ToString();
-        var laLocationType = LocationTypeEnum.LA.ToString();
-        var nationalLocationType = LocationTypeEnum.National.ToString();
-
-        var metricTimeSeriesQueryable = context.GetMetricTimeSeriesQueryable(req.MetricCode)
-            .AsNoTracking();
-
         var peerRows = await context.LocalAuthorityPeers
             .AsNoTracking()
             .Where(x => x.LocalAuthorityFk == sourceLocalAuthorityId)
@@ -51,17 +47,8 @@ public class GetLocalAuthorityPeersEndpoint(GascdDataContext context, ILogger<Ge
 
         var peerCodes = peerRows.Select(x => x.PeerCode).ToList();
 
-        var metricRows = await metricTimeSeriesQueryable
-            .Where(x => x.Metric.Code == metricCode)
-            .Where(x =>
-                (x.LocationType == laLocationType && peerCodes.Contains(x.LocationCode)) ||
-                x.LocationType == nationalLocationType)
-            .Select(x => new { x.LocationCode, x.LocationType, x.LatestValue })
-            .ToListAsync(ct);
-
-        var peerMetricLookup = metricRows
-            .Where(x => x.LocationType == laLocationType)
-            .ToDictionary(x => x.LocationCode, x => x.LatestValue);
+        var metricValues = await metricValuesService.GetLatestValuesAsync(req.MetricCode, peerCodes, req.LocalAuthorityCode, ct);
+        var peerMetricLookup = metricValues.LocalAuthorityValues;
 
         var localAuthorityPeers = peerRows
             .Select(x => new GetLocalAuthorityPeersResponse.LocalAuthorityPeer
@@ -80,16 +67,11 @@ public class GetLocalAuthorityPeersEndpoint(GascdDataContext context, ILogger<Ge
             .Select(x => x.MetricValue!.Value)
             .ToList();
 
-        var nationalAverage = metricRows
-            .Where(x => x.LocationType == nationalLocationType)
-            .Select(x => x.LatestValue)
-            .FirstOrDefault();
-
         var response = new GetLocalAuthorityPeersResponse
         {
             LocalAuthorityPeers = localAuthorityPeers,
             AveragePeerGroup = peerValues.Count > 0 ? peerValues.Average() : null,
-            NationalAverage = nationalAverage
+            NationalAverage = metricValues.NationalAverage
         };
 
         logger.LogInformation("Finished processing Local Authority peers for LA code: {code} and Metric code: {metricCode}", req.LocalAuthorityCode, req.MetricCode);
