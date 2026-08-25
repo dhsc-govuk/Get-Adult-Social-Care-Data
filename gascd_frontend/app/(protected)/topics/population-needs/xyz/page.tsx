@@ -1,6 +1,3 @@
-import { Indicator } from '@/data/interfaces/Indicator';
-import LocationService from '@/services/location/locationService';
-import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { withBasePath } from '@/lib/basePath';
 import TableService from '@/services/Table/TableService';
@@ -48,9 +45,6 @@ export default async function XYZPage(props: Props) {
   }
   console.log('///---', { xyz: user, isXYZ: isUserRegistered(user) });
 
-  //   const { cplid = 'test_cpl1' } = await searchParams;
-
-  //   const cplid = await LocationService.getSelectedLocation();
   const data = await get_location_data({ user });
 
   const { locationNames, locationIds } = await getLocationData(data);
@@ -59,11 +53,6 @@ export default async function XYZPage(props: Props) {
 
   const demographicMetricsDataRequests = await Promise.all(
     demographicMetricIds.map((metricId) =>
-      // fetch(
-      //   withBasePath(
-      //     `/api/get_la_peers?la_code=${encodeURIComponent(laCode)}&metric_code=${metricId}`
-      //   )
-      // )
       get_la_peers({ user, la_code: laCode, metric_code: metricId }).then(
         (data) =>
           [
@@ -78,10 +67,6 @@ export default async function XYZPage(props: Props) {
   );
   const peerGroupAverages = Object.fromEntries(demographicMetricsDataRequests);
 
-  // const demographicData = await getDemographicData({
-  //   locations: locationIds,
-  //   metrics: demographicMetricIds,
-  // });
   const demographicData = await get_metric_data({
     metric_ids: demographicMetricIds,
     user,
@@ -515,8 +500,6 @@ export default async function XYZPage(props: Props) {
 async function getLocationData(
   data?: Record<string, Partial<string>>
 ): Promise<{ locationNames: LocationNames | null; locationIds: string[] }> {
-  // const response = await fetch('http://localhost:3000/api/get_location_data');
-
   if (!data) {
     return { locationIds: [], locationNames: null };
   }
@@ -547,28 +530,3 @@ async function getLocationData(
 }
 
 // async function getHouseholdPercentageData(locationIds: string[]) {
-
-async function getDemographicData(params: {
-  locations: string[];
-  metrics: string[];
-  qtype?: string;
-}) {
-  const payload = {
-    metric_ids: params.metrics,
-    // We don't send this to the backend anymore - still needs pulling out of the in-page queries
-    //location_ids: query.location_ids.filter((item) => item !== 'Indicator'),
-    query_type: params.qtype || 'UserQuery',
-  };
-
-  const response = await fetch(withBasePath('/api/get_metric_data'), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  });
-
-  const data = (await response.json()) as Indicator[];
-
-  return data;
-}
