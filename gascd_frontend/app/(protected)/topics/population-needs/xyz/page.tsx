@@ -92,7 +92,6 @@ export default async function XYZPage(props: Props) {
     return d;
   });
 
-  // locationIds
   type MKey = 'LA' | 'Regional' | 'National';
 
   const [M1, M2, M3] = demographicMetricIds.map((m) =>
@@ -261,8 +260,8 @@ export default async function XYZPage(props: Props) {
           source="XYZ Census 2021..."
           items={[
             {
-              label: 'Past day',
-              id: 'past-day',
+              label: 'Chart',
+              id: 'chart-1',
               panel: (
                 <PeerGroupBarChart
                   laCode={laCode}
@@ -287,8 +286,8 @@ export default async function XYZPage(props: Props) {
               ),
             },
             {
-              label: 'Past week',
-              id: 'past-week',
+              label: 'Table',
+              id: 'table-1',
               panel: (
                 <XYZDataTable
                   caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
@@ -314,8 +313,8 @@ export default async function XYZPage(props: Props) {
               ),
             },
             {
-              label: 'Past month',
-              id: 'past-month',
+              label: 'Download',
+              id: 'download-1',
               panel: (
                 <>
                   <h4 className="govuk-heading-s">Download</h4>
