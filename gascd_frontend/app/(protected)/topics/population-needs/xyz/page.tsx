@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation';
 import Layout from '@/components/common/layout/Layout';
 import XYZDataTabs from './XYZDataTabs';
 import DataTable from '@/components/tables/table';
-import XYZDataBox from './XYZDataBox';
+import XYZDataBox, { DataKey } from './XYZDataBox';
 import Link from 'next/link';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
@@ -20,6 +20,7 @@ import SummaryNHSPeerGroup from '@/components/benchmarking/nhs-peer-summary';
 import PeerGroupChartContent from '@/components/charts/peer-group/PeerGroupChartContent';
 import XYZDataTabsServer from './XYZDataTabsServer';
 import XYZDataTable, { TableColumnValue } from './XYZDataTable';
+import { PeerGroupData } from '@/components/charts/peer-group/types';
 
 const breadcrumbs = [
   {
@@ -47,52 +48,51 @@ export default async function XYZPage(props: Props) {
   if (!user) {
     redirect('/login');
   }
-  console.log('///---', { xyz: user, isXYZ: isUserRegistered(user) });
+  console.log('///---', { isXYZ: isUserRegistered(user) });
 
   const data = await get_location_data({ user });
 
-  const { locationNames, locationIds } = await getLocationData(data);
+  const { dataKeys, dataLabels } = await getLocationData(data);
 
-  const laCode = locationIds[1];
+  // const demographicMetricsDataRequests = await Promise.all(
+  //   demographicMetricIds.map((metricId) =>
+  //     get_la_peers({ user, la_code: dataKeys.LA, metric_code: metricId }).then(
+  //       (data) =>
+  //         [
+  //           metricId,
+  //           data?.averagePeerGroup ??
+  //             data?.AveragePeerGroup ??
+  //             data?.average_peer_group ??
+  //             null,
+  //         ] as const
+  //     )
+  //   )
+  // );
+  // const peerGroupAverages = Object.fromEntries(
+  //   demographicMetricsDataRequests
+  // ) as PeerGroupData;
 
-  const demographicMetricsDataRequests = await Promise.all(
-    demographicMetricIds.map((metricId) =>
-      get_la_peers({ user, la_code: laCode, metric_code: metricId }).then(
-        (data) =>
-          [
-            metricId,
-            data?.averagePeerGroup ??
-              data?.AveragePeerGroup ??
-              data?.average_peer_group ??
-              null,
-          ] as const
-      )
-    )
+  const filteredDemographicData = TableService.filterDate(
+    await get_metric_data({
+      metric_ids: demographicMetricIds,
+      user,
+    })
   );
-  const peerGroupAverages = Object.fromEntries(demographicMetricsDataRequests);
-
-  const demographicData = await get_metric_data({
-    metric_ids: demographicMetricIds,
-    user,
-  });
-  const filteredDemographicData = TableService.filterDate(demographicData);
 
   // Transform Regional data to NHS Peer Group and fetch peer group averages
-  const transformedData = filteredDemographicData.map((d) => {
-    if (
-      d.location_type === 'Regional' &&
-      peerGroupAverages[d.metric_id] !== undefined
-    ) {
-      return {
-        ...d,
-        location_type: 'Regional',
-        data_point: peerGroupAverages[d.metric_id],
-      };
-    }
-    return d;
-  });
-
-  type MKey = 'LA' | 'Regional' | 'National';
+  // const transformedData = filteredDemographicData.map((d) => {
+  //   if (
+  //     d.location_type === 'Regional' &&
+  //     peerGroupAverages[d.metric_id] !== undefined
+  //   ) {
+  //     return {
+  //       ...d,
+  //       location_type: 'Regional',
+  //       data_point: peerGroupAverages[d.metric_id],
+  //     };
+  //   }
+  //   return d;
+  // });
 
   const [M1, M2, M3] = demographicMetricIds.map((m) =>
     filteredDemographicData
@@ -103,22 +103,23 @@ export default async function XYZPage(props: Props) {
       }))
       .reduce(
         (obj, item) => ((obj[item.key] = item.value), obj),
-        {} as Record<MKey, TableColumnValue>
+        {} as Record<DataKey, TableColumnValue>
       )
   );
 
   console.log('@>>>', {
+    M1,
+    M2,
+    M3,
     metrics: {
       filteredDemographicData,
-      demographicData,
-      transformedData,
-      xyz: [M1, M2, M3],
+      // demographicData,
+      // transformedData,
+      // demographicMetricsDataRequests,
     },
-    peer: {
-      peerGroupAverages,
-    },
-    locationNames,
-    locationIds,
+    // peer: {
+    //   peerGroupAverages,
+    // },
   });
 
   return (
@@ -131,7 +132,11 @@ export default async function XYZPage(props: Props) {
         </div>
       </div>
 
-      <XYZDataBox metricKey="perc_households_deprivation_deprived">
+      <XYZDataBox
+        metricKey="perc_households_deprivation_deprived"
+        user={user}
+        dataKeys={dataKeys}
+      >
         <h3 className="govuk-heading-m">Household deprivation</h3>
         <p className="govuk-body-m">
           In Census 2021, households were classified by 4 dimensions of
@@ -178,84 +183,6 @@ export default async function XYZPage(props: Props) {
 
         <SummaryNHSPeerGroup />
 
-        {/* <XYZDataTabs
-          id="1"
-          table={
-            <DataTable
-              // tableref={tableref1}
-              caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
-              source={
-                'Census 2021 from the Office for National Statistics (ONS)'
-              }
-              columnHeaders={locationNames}
-              rowHeaders={{
-                perc_households_deprivation_deprived:
-                  'Percentage of households deprived in 4 dimensions: education, employment, health and housing',
-              }}
-              data={filteredDemographicData}
-              showCareProvider={false}
-              percentageRows={['perc_households_deprivation_deprived']}
-              showAverageLabel={false}
-            ></DataTable>
-          }
-          download={
-            <>
-              <h4 className="govuk-heading-s">Download</h4>
-              <DownloadTableDataCSVLink
-                // tableref={tableref1}
-                filename="households_deprived_in_4_dimensions.csv"
-                xLabel=""
-                downloadType="percentage of households classified as 'deprived in 4 dimensions'"
-              />
-            </>
-          }
-          chart={
-            <PeerGroupBarChart
-              laCode={laCode}
-              laName={locationNames.LALabel}
-              currentLaValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_households_deprivation_deprived' &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_households_deprivation_deprived' &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-            />
-
-            // <PeerGroupChartContent
-            //   laName={locationNames.LALabel}
-            //   currentLaValue={
-            //     filteredDemographicData.find(
-            //       (d) =>
-            //         d.metric_id === 'perc_households_deprivation_deprived' &&
-            //         d.location_type === 'LA'
-            //     )?.data_point ?? null
-            //   }
-            //   nationalAverageValue={
-            //     filteredDemographicData.find(
-            //       (d) =>
-            //         d.metric_id === 'perc_households_deprivation_deprived' &&
-            //         d.location_type === 'National'
-            //     )?.data_point ?? null
-            //   }
-            //   metricDescription="the percentage of households deprived in 4 dimensions"
-            //   figureTitle="Percentage of households deprived in 4 dimensions"
-            //   figureNumber={1}
-            //   // metricDescription={metricDescription}
-            //   // figureTitle={figureTitle}
-            //   // figureNumber={figureNumber}
-            //   peerData={peerData}
-            // />
-          }
-        /> */}
-
         <XYZDataTabsServer
           source="XYZ Census 2021..."
           items={[
@@ -264,25 +191,20 @@ export default async function XYZPage(props: Props) {
               id: 'chart-1',
               panel: (
                 <PeerGroupBarChart
-                  laCode={laCode}
-                  laName={locationNames.LALabel}
-                  currentLaValue={
-                    filteredDemographicData.find(
-                      (d) =>
-                        d.metric_id ===
-                          'perc_households_deprivation_deprived' &&
-                        d.location_type === 'LA'
-                    )?.data_point ?? null
-                  }
-                  nationalAverageValue={
-                    filteredDemographicData.find(
-                      (d) =>
-                        d.metric_id ===
-                          'perc_households_deprivation_deprived' &&
-                        d.location_type === 'National'
-                    )?.data_point ?? null
-                  }
+                  laCode={dataKeys.LA}
+                  laName={dataLabels.LA}
+                  currentLaValue={M1.LA}
+                  nationalAverageValue={M1.National}
                 />
+                // <PeerGroupChartContent
+                //   laName={dataLabels.LA}
+                //   currentLaValue={M1.LA}
+                //   nationalAverageValue={M1.National}
+                //   metricDescription="the percentage of households deprived in 4 dimensions"
+                //   figureTitle="Percentage of households deprived in 4 dimensions"
+                //   figureNumber={1}
+                //   peerData={peerGroupAverages}
+                // />
               ),
             },
             {
@@ -290,18 +212,15 @@ export default async function XYZPage(props: Props) {
               id: 'table-1',
               panel: (
                 <XYZDataTable
-                  caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
+                  caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${dataLabels.LA} LA, ${dataLabels.Regional} and ${dataLabels.National}, March 2021`}
                   head={[
-                    'Indicator',
-                    locationNames.LALabel,
-                    locationNames.RegionLabel,
-                    locationNames.CountryLabel,
+                    // 'Indicator',
+                    dataLabels?.CP,
+                    dataLabels?.LA,
+                    dataLabels?.Peer,
+                    dataLabels?.National,
                   ].map((v) => ({ text: v }))}
                   rows={[
-                    // ['A1', 'B1', 'C1'].map((v) => ({ text: `Week ${v}` })),
-                    // ['A2', 'B2', 'C2'].map((v) => ({ text: `Week ${v}` })),
-                    // ['A3', 'B3', 'C3'].map((v) => ({ text: `Week ${v}` })),
-                    // ['A4', 'B4', 'C4'].map((v) => ({ text: `Week ${v}` })),
                     [
                       'Percentage of households deprived in 4 dimensions: education, employment, health and housing',
                       M1.LA,
@@ -331,7 +250,11 @@ export default async function XYZPage(props: Props) {
         />
       </XYZDataBox>
 
-      <XYZDataBox metricKey="perc_household_ownership">
+      <XYZDataBox
+        metricKey="perc_household_ownership"
+        user={user}
+        dataKeys={dataKeys}
+      >
         <h3 className="govuk-heading-m">
           Households where the property is owned outright
         </h3>
@@ -358,11 +281,16 @@ export default async function XYZPage(props: Props) {
           table={
             <DataTable
               // tableref={tableref2}
-              caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
+              caption={`Table 2: percentage of households where the property is owned outright – ${dataLabels.LA} LA, ${dataLabels.Regional} and ${dataLabels.National}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
-              columnHeaders={locationNames}
+              columnHeaders={[
+                dataLabels?.CP,
+                dataLabels?.LA,
+                dataLabels?.Regional,
+                dataLabels?.National,
+              ]}
               rowHeaders={{
                 perc_household_ownership:
                   'Percentage of households where the property is owned outright',
@@ -386,22 +314,10 @@ export default async function XYZPage(props: Props) {
           }
           chart={
             <PeerGroupBarChart
-              laCode={laCode}
-              laName={locationNames.LALabel}
-              currentLaValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_household_ownership' &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_household_ownership' &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
+              laCode={dataKeys.LA}
+              laName={dataLabels.LA}
+              currentLaValue={M2.LA}
+              nationalAverageValue={M2.National}
               metricCode="perc_household_ownership"
               metricDescription="the percentage of households where the property is owned outright"
               figureTitle="Percentage of households where the property is owned outright"
@@ -411,7 +327,11 @@ export default async function XYZPage(props: Props) {
         />
       </XYZDataBox>
 
-      <XYZDataBox metricKey="perc_households_one_person">
+      <XYZDataBox
+        metricKey="perc_households_one_person"
+        user={user}
+        dataKeys={dataKeys}
+      >
         <h3 className="govuk-heading-m">
           One-person households where the person is aged 65 or over
         </h3>
@@ -435,11 +355,16 @@ export default async function XYZPage(props: Props) {
           table={
             <DataTable
               // tableref={tableref3}
-              caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
+              caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${dataLabels.LA} LA, ${dataLabels.Regional} and ${dataLabels.National}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
-              columnHeaders={locationNames}
+              columnHeaders={[
+                dataLabels?.CP,
+                dataLabels?.LA,
+                dataLabels?.Regional,
+                dataLabels?.National,
+              ]}
               rowHeaders={{
                 perc_households_one_person:
                   'Percentage of one-person households where the person is aged 65 or over',
@@ -463,22 +388,10 @@ export default async function XYZPage(props: Props) {
           }
           chart={
             <PeerGroupBarChart
-              laCode={laCode}
-              laName={locationNames.LALabel}
-              currentLaValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_households_one_person' &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_households_one_person' &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
+              laCode={dataKeys.LA}
+              laName={dataLabels.LA}
+              currentLaValue={M3.LA}
+              nationalAverageValue={M3.National}
               metricCode="perc_households_one_person"
               metricDescription="the percentage of one-person households where the person is aged 65 or over"
               figureTitle="Percentage of one-person households where the person is aged 65 or over"
@@ -531,8 +444,8 @@ export default async function XYZPage(props: Props) {
 
       {/* $$$ */}
       <LocalMarketInformation
-        localAuthority={locationNames.LALabel}
-        localAuthorityId={laCode}
+        localAuthority={dataLabels.LA}
+        localAuthorityId={dataKeys.LA}
       />
 
       <BackToTop />
@@ -540,37 +453,59 @@ export default async function XYZPage(props: Props) {
   );
 }
 
-async function getLocationData(
-  data?: Record<string, Partial<string>>
-): Promise<{ locationNames: LocationNames | null; locationIds: string[] }> {
-  if (!data) {
-    return { locationIds: [], locationNames: null };
-  }
-
-  const careProvider = false;
-  const locationNames: LocationNames = {
-    CPLabel:
-      careProvider && data.provider_location_name
-        ? data.provider_location_name
-        : 'N/A',
-    LALabel: data.la_name,
-    RegionLabel: data.region_name,
-    CountryLabel: data.country_name,
+type LocationData = {
+  dataLabels: Record<DataKey, string> | null;
+  dataKeys: Record<DataKey, string> | null;
+};
+function getLocationData(data?: Record<string, Partial<string>>): LocationData {
+  let result: LocationData = {
+    dataKeys: null,
+    dataLabels: null,
   };
 
-  const locationIds = [
-    'Indicator',
-    data.la_code,
-    data.region_code,
-    data.country_code,
-  ];
-  console.log('@@@', { data, locationIds, locationNames });
-
-  if (careProvider) {
-    locationIds.splice(1, 0, data.provider_location_id);
+  if (!data) {
+    return result;
   }
-  return { locationNames, locationIds };
-}
 
-// async function getHouseholdPercentageData(locationIds: string[]) {
-// function transformMetricsData(data) {}
+  // ...
+  const {
+    la_code,
+    region_code,
+    country_code,
+    la_name,
+    region_name,
+    country_name,
+    // ...
+    // CP
+    provider_location_name,
+    provider_location_id,
+  } = data;
+
+  const careProvider = false;
+
+  result = {
+    dataKeys: {
+      LA: la_code,
+      National: country_code,
+      Regional: region_code,
+      Peer: 'average_peer_group',
+      CP: 'Indicator',
+    },
+    dataLabels: {
+      LA: la_name,
+      // National: country_name,
+      National: 'England (national average)',
+      Regional: region_name,
+      Peer: 'NHS peer group average',
+      CP:
+        careProvider && provider_location_name
+          ? provider_location_name
+          : careProvider
+            ? provider_location_id
+            : 'N/A',
+    },
+  };
+
+  console.log('@@@', { data, result });
+  return result;
+}

@@ -1,5 +1,4 @@
 'use client';
-
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useRef, useState } from 'react';

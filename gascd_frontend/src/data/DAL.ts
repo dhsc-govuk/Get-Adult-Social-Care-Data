@@ -153,7 +153,6 @@ export async function get_la_peers(payload: {
     );
     throw new Error('Failed to fetch peer data');
   }
-  console.log('+++', data);
 
   return data;
 }

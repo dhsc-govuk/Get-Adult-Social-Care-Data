@@ -1,3 +1,4 @@
+'sue client';
 import React, { useMemo } from 'react';
 import { Shape } from 'plotly.js';
 import BarChart from '../BarChart';
