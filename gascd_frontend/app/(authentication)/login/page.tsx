@@ -87,7 +87,7 @@ const LoginPage: React.FC = () => {
             </p>
 
             <Link
-              href="/whoami"
+              href={withBasePath('/whoami')}
               className="govuk-button govuk-button--start"
               data-module="govuk-button"
             >
