@@ -14,6 +14,7 @@ type Props = {
   // map?: React.ReactNode;
   // download?: React.ReactNode;
   items: XYZDataTabItem[];
+  source?: string;
 };
 export default async function XYZDataTabsServer({
   // id,
@@ -24,6 +25,7 @@ export default async function XYZDataTabsServer({
   // download,
   // textSummary,
   items,
+  source,
 }: Props) {
   return (
     // return items.map((item) => <p key={item.id}>Item - {item.id}</p>);
@@ -50,6 +52,8 @@ export default async function XYZDataTabsServer({
         >
           {/* <h2 className="govuk-heading-l">{item.label}</h2> */}
           {item.panel}
+
+          {source && <p className="govuk-body">Source: {source}</p>}
         </div>
       ))}
     </div>

@@ -19,7 +19,7 @@ import BackToTop from '@/components/data-components/BackToTop';
 import SummaryNHSPeerGroup from '@/components/benchmarking/nhs-peer-summary';
 import PeerGroupChartContent from '@/components/charts/peer-group/PeerGroupChartContent';
 import XYZDataTabsServer from './XYZDataTabsServer';
-import XYZDataTable from './XYZDataTable';
+import XYZDataTable, { TableColumnValue } from './XYZDataTable';
 
 const breadcrumbs = [
   {
@@ -92,11 +92,28 @@ export default async function XYZPage(props: Props) {
     return d;
   });
 
+  // locationIds
+  type MKey = 'LA' | 'Regional' | 'National';
+
+  const [M1, M2, M3] = demographicMetricIds.map((m) =>
+    filteredDemographicData
+      .filter((entry) => entry.metric_id == m)
+      .map((m) => ({
+        key: m.location_type,
+        value: TableService.formatDataPoint(Number(m.data_point)),
+      }))
+      .reduce(
+        (obj, item) => ((obj[item.key] = item.value), obj),
+        {} as Record<MKey, TableColumnValue>
+      )
+  );
+
   console.log('@>>>', {
     metrics: {
       filteredDemographicData,
       demographicData,
       transformedData,
+      xyz: [M1, M2, M3],
     },
     peer: {
       peerGroupAverages,
@@ -241,19 +258,31 @@ export default async function XYZPage(props: Props) {
         /> */}
 
         <XYZDataTabsServer
+          source="XYZ Census 2021..."
           items={[
             {
               label: 'Past day',
               id: 'past-day',
               panel: (
-                <XYZDataTable
-                  head={['A', 'B', 'C'].map((v) => ({ text: `Day ${v}` }))}
-                  rows={[
-                    ['A1', 'B1', 'C1'].map((v) => ({ text: `Day ${v}` })),
-                    ['A2', 'B2', 'C2'].map((v) => ({ text: `Day ${v}` })),
-                    ['A3', 'B3', 'C3'].map((v) => ({ text: `Day ${v}` })),
-                    ['A4', 'B4', 'C4'].map((v) => ({ text: `Day ${v}` })),
-                  ]}
+                <PeerGroupBarChart
+                  laCode={laCode}
+                  laName={locationNames.LALabel}
+                  currentLaValue={
+                    filteredDemographicData.find(
+                      (d) =>
+                        d.metric_id ===
+                          'perc_households_deprivation_deprived' &&
+                        d.location_type === 'LA'
+                    )?.data_point ?? null
+                  }
+                  nationalAverageValue={
+                    filteredDemographicData.find(
+                      (d) =>
+                        d.metric_id ===
+                          'perc_households_deprivation_deprived' &&
+                        d.location_type === 'National'
+                    )?.data_point ?? null
+                  }
                 />
               ),
             },
@@ -262,12 +291,24 @@ export default async function XYZPage(props: Props) {
               id: 'past-week',
               panel: (
                 <XYZDataTable
-                  head={['A', 'B', 'C'].map((v) => ({ text: `Week ${v}` }))}
+                  caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
+                  head={[
+                    'Indicator',
+                    locationNames.LALabel,
+                    locationNames.RegionLabel,
+                    locationNames.CountryLabel,
+                  ].map((v) => ({ text: v }))}
                   rows={[
-                    ['A1', 'B1', 'C1'].map((v) => ({ text: `Week ${v}` })),
-                    ['A2', 'B2', 'C2'].map((v) => ({ text: `Week ${v}` })),
-                    ['A3', 'B3', 'C3'].map((v) => ({ text: `Week ${v}` })),
-                    ['A4', 'B4', 'C4'].map((v) => ({ text: `Week ${v}` })),
+                    // ['A1', 'B1', 'C1'].map((v) => ({ text: `Week ${v}` })),
+                    // ['A2', 'B2', 'C2'].map((v) => ({ text: `Week ${v}` })),
+                    // ['A3', 'B3', 'C3'].map((v) => ({ text: `Week ${v}` })),
+                    // ['A4', 'B4', 'C4'].map((v) => ({ text: `Week ${v}` })),
+                    [
+                      'Percentage of households deprived in 4 dimensions: education, employment, health and housing',
+                      M1.LA,
+                      M1.Regional,
+                      M1.National,
+                    ].map((v) => ({ text: v })),
                   ]}
                 />
               ),
@@ -276,30 +317,15 @@ export default async function XYZPage(props: Props) {
               label: 'Past month',
               id: 'past-month',
               panel: (
-                <XYZDataTable
-                  head={['A', 'B', 'C'].map((v) => ({ text: `Month ${v}` }))}
-                  rows={[
-                    ['A1', 'B1', 'C1'].map((v) => ({ text: `Month ${v}` })),
-                    ['A2', 'B2', 'C2'].map((v) => ({ text: `Month ${v}` })),
-                    ['A3', 'B3', 'C3'].map((v) => ({ text: `Month ${v}` })),
-                    ['A4', 'B4', 'C4'].map((v) => ({ text: `Month ${v}` })),
-                  ]}
-                />
-              ),
-            },
-            {
-              label: 'Past year',
-              id: 'past-year',
-              panel: (
-                <XYZDataTable
-                  head={['YA', 'B', 'C'].map((v) => ({ text: `Year ${v}` }))}
-                  rows={[
-                    ['A1', 'B1', 'C1'].map((v) => ({ text: `Year ${v}` })),
-                    ['A2', 'B2', 'C2'].map((v) => ({ text: `Year ${v}` })),
-                    ['A3', 'B3', 'C3'].map((v) => ({ text: `Year ${v}` })),
-                    ['A4', 'B4', 'C4'].map((v) => ({ text: `Year ${v}` })),
-                  ]}
-                />
+                <>
+                  <h4 className="govuk-heading-s">Download</h4>
+                  <DownloadTableDataCSVLink
+                    // tableref={tableref1}
+                    filename="households_deprived_in_4_dimensions.csv"
+                    xLabel=""
+                    downloadType="percentage of households classified as 'deprived in 4 dimensions'"
+                  />
+                </>
               ),
             },
           ]}
@@ -548,3 +574,4 @@ async function getLocationData(
 }
 
 // async function getHouseholdPercentageData(locationIds: string[]) {
+// function transformMetricsData(data) {}
