@@ -121,24 +121,6 @@ export async function get_available_locations(payload: { user?: User }) {
   }
 }
 
-export async function set_selected_location(payload: { user?: User }) {
-  const { user } = payload;
-  if (!user || !isUserRegistered(user)) {
-    throw new Error('No user');
-  }
-
-  // ...
-}
-
-export async function get_las_for_region(payload: { user?: User }) {
-  const { user } = payload;
-  if (!user || !isUserRegistered(user)) {
-    throw new Error('No user');
-  }
-
-  // ...
-}
-
 export async function get_la_peers(payload: {
   la_code?: string;
   metric_code?: string;
@@ -170,11 +152,8 @@ export async function get_la_peers(payload: {
       `Peer data fetch failed: ${response.status} for LA ${la_code}`
     );
     throw new Error('Failed to fetch peer data');
-    // return NextResponse.json(
-    //   { error:  },
-    //   { status: response.status }
-    // );
   }
+  console.log('+++', data);
 
   return data;
 }
@@ -338,6 +317,24 @@ export async function get_metric_data(payload: {
     }
   }
   return all_metrics;
+}
+
+export async function set_selected_location(payload: { user?: User }) {
+  const { user } = payload;
+  if (!user || !isUserRegistered(user)) {
+    throw new Error('No user');
+  }
+
+  // ...
+}
+
+export async function get_las_for_region(payload: { user?: User }) {
+  const { user } = payload;
+  if (!user || !isUserRegistered(user)) {
+    throw new Error('No user');
+  }
+
+  // ...
 }
 
 export async function get_all_total_beds_filters(payload: { user?: User }) {
