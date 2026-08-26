@@ -1,5 +1,6 @@
 'use client';
 
+import { withBasePath } from '@/lib/basePath';
 import { ACCEPTABLE_EMAIL_DOMAINS } from '@/lib/domain-check';
 import { handleFormSignupLA } from '@/server-actions';
 import Form from 'next/form';
@@ -9,7 +10,7 @@ import { useActionState } from 'react';
 const OPTIONS_LA: Record<'text' | 'value', string>[] =
   ACCEPTABLE_EMAIL_DOMAINS.map((domain) => ({ text: domain, value: domain }));
 
-const BACK_LINK = '/lookup-email';
+const BACK_LINK = withBasePath('/lookup-email');
 
 const SignupLAForm: React.FC = () => {
   const [state, action, isPending] = useActionState(

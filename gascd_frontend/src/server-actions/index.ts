@@ -5,6 +5,10 @@ import { redirect } from 'next/navigation';
 import type { ActionResponse, SignupLAFormData, WhoamiFormData } from './types';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
+import { withBasePath } from '@/lib/basePath';
+
+// Placeholder link, for demo purposes - INTERIM TEMP SOLUTION
+const CONFIRM_LA_LINK = withBasePath('/confirm-la?sref=HDJ2123F');
 
 export async function handleFormSignupLA(
   _prev: ActionResponse<SignupLAFormData> | undefined,
@@ -26,7 +30,7 @@ export async function handleFormSignupLA(
 
   // ...
 
-  redirect('/confirm-la?sref=HDJ2123F');
+  redirect(CONFIRM_LA_LINK);
 }
 
 export async function handleFormEmailDomainCheck(
@@ -42,10 +46,10 @@ export async function handleFormEmailDomainCheck(
 
   if (isAcceptableEmail(rawFormData.regmail)) {
     // Redirect to Confirmation page
-    redirect('/confirm-la?sref=HDJ2123F');
+    redirect(CONFIRM_LA_LINK);
   } else {
     // Redirect to page for User Signup
-    redirect(`/signup-la`);
+    redirect(withBasePath(`/signup-la`));
   }
 }
 
@@ -71,11 +75,11 @@ export async function handleFormWhoami(
 
   switch (rawFormData.id) {
     case 'u:x': {
-      redirect('/access-denied');
+      redirect(withBasePath('/access-denied'));
     }
 
     case 'u:la': {
-      redirect(`/lookup-email`);
+      redirect(withBasePath(`/lookup-email`));
     }
 
     case 'u:cqc': {
@@ -95,7 +99,7 @@ export async function handleFormWhoami(
             body: {
               email: process.env.LOCAL_AUTH_EMAIL,
               password: process.env.LOCAL_AUTH_PASSWORD,
-              callbackURL: '/home',
+              callbackURL: withBasePath('/home'),
             },
             headers: await headers(),
           });
@@ -105,7 +109,7 @@ export async function handleFormWhoami(
           responseAuth = await auth.api.signInWithOAuth2({
             body: {
               providerId: 'govuk-one-login',
-              callbackURL: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/home`,
+              callbackURL: withBasePath('/home'),
             },
             headers: await headers(),
           });
