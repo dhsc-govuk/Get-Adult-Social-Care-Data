@@ -18,6 +18,7 @@ export const config = {
   runtime: 'nodejs', // Required for auth.api calls
   matcher: [
     // match all /api routes except /api/auth/*
-    '/api/((?!auth|checks|analytics).*)',
+    // /api/onboarding/* runs before the user has a session
+    '/api/((?!auth|checks|analytics|onboarding).*)',
   ],
 };

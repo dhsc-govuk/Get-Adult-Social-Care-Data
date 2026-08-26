@@ -1,18 +1,43 @@
 'use client';
-import React, { useActionState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { handleFormWhoami } from '@/server-actions';
+import { useRouter } from 'next/navigation';
+import { submitOnboarding } from '@/onboarding/client';
+import type { OnboardingResult, WhoamiFormData } from '@/onboarding/types';
 
 const BACK_LINK = '/login';
 
 const WhoamiForm: React.FC = () => {
-  const [state, action, isPending] = useActionState(
-    handleFormWhoami,
-    undefined
-  );
+  const router = useRouter();
+  const [state, setState] = useState<OnboardingResult<WhoamiFormData>>();
+  const [isPending, setIsPending] = useState(false);
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsPending(true);
+    setState(undefined);
+
+    const formData = new FormData(event.currentTarget);
+    const result = await submitOnboarding<WhoamiFormData>(
+      '/api/onboarding/whoami',
+      { id: formData.get('id') }
+    );
+
+    if (result.type === 'navigate') {
+      router.push(result.path);
+      return;
+    }
+    if (result.type === 'external') {
+      window.location.assign(result.url);
+      return;
+    }
+
+    setState(result);
+    setIsPending(false);
+  };
 
   return (
-    <form action={action}>
+    <form onSubmit={onSubmit}>
       <fieldset className="govuk-fieldset" aria-describedby="signIn-hint">
         <legend className="govuk-fieldset__legend govuk-fieldset__legend--l">
           <h1 className="govuk-fieldset__heading">
@@ -91,7 +116,7 @@ const WhoamiForm: React.FC = () => {
           {isPending ? 'Processing...' : 'Continue'}
         </button>
 
-        {state?.description && (
+        {state?.type === 'error' && state.description && (
           <p className="govuk-error-message">{state.description}</p>
         )}
 

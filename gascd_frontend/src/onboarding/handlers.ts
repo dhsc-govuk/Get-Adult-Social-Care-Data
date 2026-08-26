@@ -1,65 +1,55 @@
-'use server';
 import logger from '@/utils/logger';
 import { isAcceptableEmail } from '@/lib/domain-check';
-import { redirect } from 'next/navigation';
-import type { ActionResponse, SignupLAFormData, WhoamiFormData } from './types';
 import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
 import { withBasePath } from '@/lib/basePath';
+import type {
+  LookupEmailFormData,
+  OnboardingResult,
+  SignupLAFormData,
+  WhoamiFormData,
+} from './types';
 
 // Placeholder link, for demo purposes - INTERIM TEMP SOLUTION
-const CONFIRM_LA_LINK = withBasePath('/confirm-la?sref=HDJ2123F');
+const CONFIRM_LA_PATH = '/confirm-la?sref=HDJ2123F';
 
-export async function handleFormSignupLA(
-  _prev: ActionResponse<SignupLAFormData> | undefined,
-  formData: FormData
-): Promise<ActionResponse<SignupLAFormData> | undefined> {
-  const regfullname = formData.get('regfullname');
-  const regla = formData.get('regla');
-  const regmail = formData.get('regmail');
-  const regorgname = formData.get('regorgname');
-  const regrole = formData.get('regrole');
-
+export async function handleSignupLA(
+  body: unknown
+): Promise<OnboardingResult<SignupLAFormData>> {
   const rawFormData: SignupLAFormData = {
-    regfullname: isNonEmptyString(regfullname) ? regfullname : null,
-    regla: isNonEmptyString(regla) ? regla : null,
-    regmail: isNonEmptyString(regmail) ? regmail : null,
-    regorgname: isNonEmptyString(regorgname) ? regorgname : null, // Optional
-    regrole: isNonEmptyString(regrole) ? regrole : null,
+    regfullname: readField(body, 'regfullname'),
+    regla: readField(body, 'regla'),
+    regmail: readField(body, 'regmail'),
+    regorgname: readField(body, 'regorgname'), // Optional
+    regrole: readField(body, 'regrole'),
   };
 
   // ...
 
-  redirect(CONFIRM_LA_LINK);
+  return { type: 'navigate', path: CONFIRM_LA_PATH };
 }
 
-export async function handleFormEmailDomainCheck(
-  _prev: unknown,
-  formData: FormData
-) {
-  const regmail = formData.get('regmail');
-
-  const rawFormData = {
-    regmail: isNonEmptyString(regmail) ? regmail : null,
+export async function handleEmailDomainCheck(
+  body: unknown
+): Promise<OnboardingResult<LookupEmailFormData>> {
+  const rawFormData: LookupEmailFormData = {
+    regmail: readField(body, 'regmail'),
     // ...
   };
 
   if (isAcceptableEmail(rawFormData.regmail)) {
-    // Redirect to Confirmation page
-    redirect(CONFIRM_LA_LINK);
-  } else {
-    // Redirect to page for User Signup
-    redirect(withBasePath(`/signup-la`));
+    // Confirmation page
+    return { type: 'navigate', path: CONFIRM_LA_PATH };
   }
+  // Page for User Signup
+  return { type: 'navigate', path: '/signup-la' };
 }
 
-export async function handleFormWhoami(
-  _prev: ActionResponse<WhoamiFormData> | undefined,
-  formData: FormData
-): Promise<ActionResponse<WhoamiFormData> | undefined> {
-  const _id = formData.get('id');
+export async function handleWhoami(
+  body: unknown,
+  requestHeaders: Headers
+): Promise<OnboardingResult<WhoamiFormData>> {
   const rawFormData: WhoamiFormData = {
-    id: isNonEmptyString(_id) ? _id : null,
+    id: readField(body, 'id'),
   };
 
   const errors = validateFormFields(rawFormData);
@@ -75,11 +65,11 @@ export async function handleFormWhoami(
 
   switch (rawFormData.id) {
     case 'u:x': {
-      redirect(withBasePath('/access-denied'));
+      return { type: 'navigate', path: '/access-denied' };
     }
 
     case 'u:la': {
-      redirect(withBasePath(`/lookup-email`));
+      return { type: 'navigate', path: '/lookup-email' };
     }
 
     case 'u:cqc': {
@@ -101,7 +91,7 @@ export async function handleFormWhoami(
               password: process.env.LOCAL_AUTH_PASSWORD,
               callbackURL: withBasePath('/home'),
             },
-            headers: await headers(),
+            headers: requestHeaders,
           });
 
           logger.info('Local auth session started');
@@ -111,7 +101,7 @@ export async function handleFormWhoami(
               providerId: 'govuk-one-login',
               callbackURL: withBasePath('/home'),
             },
-            headers: await headers(),
+            headers: requestHeaders,
           });
         }
       } catch (error) {
@@ -125,11 +115,15 @@ export async function handleFormWhoami(
         };
       }
 
-      console.log('[response-auth]:', responseAuth);
-      redirect(responseAuth.url!);
+      return { type: 'external', url: responseAuth.url! };
     }
-    default:
-    // ...
+    default: {
+      return {
+        type: 'error',
+        description: 'Invalid option received',
+        values: rawFormData,
+      };
+    }
   }
 }
 
@@ -146,6 +140,14 @@ function validateFormFields(fields: WhoamiFormData): WhoamiErrors {
   }
 
   return errors;
+}
+
+function readField(body: unknown, key: string): string | null {
+  if (typeof body !== 'object' || body === null) {
+    return null;
+  }
+  const value = (body as Record<string, unknown>)[key];
+  return isNonEmptyString(value) ? value : null;
 }
 
 function isNonEmptyString(value: unknown): value is string {

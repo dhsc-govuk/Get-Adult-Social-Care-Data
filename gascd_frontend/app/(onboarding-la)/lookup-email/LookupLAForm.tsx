@@ -1,19 +1,44 @@
 'use client';
 
-import React, { useActionState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { handleFormEmailDomainCheck } from '@/server-actions';
+import { useRouter } from 'next/navigation';
+import { submitOnboarding } from '@/onboarding/client';
+import type { LookupEmailFormData, OnboardingResult } from '@/onboarding/types';
 
 const BACK_LINK = '/whoami';
 
 const LookupLAForm: React.FC = () => {
-  const [state, action, isPending] = useActionState(
-    handleFormEmailDomainCheck,
-    undefined
-  );
+  const router = useRouter();
+  const [state, setState] = useState<OnboardingResult<LookupEmailFormData>>();
+  const [isPending, setIsPending] = useState(false);
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsPending(true);
+    setState(undefined);
+
+    const formData = new FormData(event.currentTarget);
+    const result = await submitOnboarding<LookupEmailFormData>(
+      '/api/onboarding/lookup-email',
+      { regmail: formData.get('regmail') }
+    );
+
+    if (result.type === 'navigate') {
+      router.push(result.path);
+      return;
+    }
+    if (result.type === 'external') {
+      window.location.assign(result.url);
+      return;
+    }
+
+    setState(result);
+    setIsPending(false);
+  };
 
   return (
-    <form action={action}>
+    <form onSubmit={onSubmit}>
       <fieldset className="govuk-fieldset" aria-describedby="signIn-hint">
         <legend className="govuk-fieldset__legend govuk-fieldset__legend--l">
           <h1 className="govuk-fieldset__heading">Check your email here</h1>
@@ -51,6 +76,10 @@ const LookupLAForm: React.FC = () => {
         >
           Continue
         </button>
+
+        {state?.type === 'error' && state.description && (
+          <p className="govuk-error-message">{state.description}</p>
+        )}
 
         <Link href={BACK_LINK} className="govuk-link">
           Cancel and go back
