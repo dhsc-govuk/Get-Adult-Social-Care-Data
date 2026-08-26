@@ -1,0 +1,21 @@
+import React from 'react';
+
+type MetricKey =
+  | 'perc_households_deprivation_deprived'
+  | 'perc_household_ownership'
+  | 'perc_households_one_person';
+
+type Props = {
+  children?: React.ReactNode;
+  metricKey: MetricKey;
+};
+
+export default async function XYZDataBox({ children }: Props) {
+  return (
+    <div className="govuk-grid-row">
+      <div className="govuk-grid-column-full">
+        <div className="data-box govuk-form-group">{children}</div>
+      </div>
+    </div>
+  );
+}

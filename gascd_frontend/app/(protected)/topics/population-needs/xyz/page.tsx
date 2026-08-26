@@ -5,9 +5,9 @@ import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import { get_la_peers, get_location_data, get_metric_data } from '@/data/DAL';
 import { redirect } from 'next/navigation';
 import Layout from '@/components/common/layout/Layout';
-import DataTabs from '@/components/data-components/DataTabs';
+import XYZDataTabs from './XYZDataTabs';
 import DataTable from '@/components/tables/table';
-import DataBox from '@/components/data-components/DataBox';
+import XYZDataBox from './XYZDataBox';
 import Link from 'next/link';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
@@ -17,6 +17,9 @@ import RelatedDataList from '@/components/data-components/RelatedDataList';
 import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
 import BackToTop from '@/components/data-components/BackToTop';
 import SummaryNHSPeerGroup from '@/components/benchmarking/nhs-peer-summary';
+import PeerGroupChartContent from '@/components/charts/peer-group/PeerGroupChartContent';
+import XYZDataTabsServer from './XYZDataTabsServer';
+import XYZDataTable from './XYZDataTable';
 
 const breadcrumbs = [
   {
@@ -90,10 +93,16 @@ export default async function XYZPage(props: Props) {
   });
 
   console.log('@>>>', {
-    transformedData,
+    metrics: {
+      filteredDemographicData,
+      demographicData,
+      transformedData,
+    },
+    peer: {
+      peerGroupAverages,
+    },
     locationNames,
     locationIds,
-    filteredDemographicData,
   });
 
   return (
@@ -106,16 +115,14 @@ export default async function XYZPage(props: Props) {
         </div>
       </div>
 
-      <DataBox
-        dataTitle="Household deprivation"
-        dataInfo={
-          <p className="govuk-body-m">
-            In Census 2021, households were classified by 4 dimensions of
-            deprivation: education, employment, health and disability, and
-            household overcrowding.
-          </p>
-        }
-      >
+      <XYZDataBox metricKey="perc_households_deprivation_deprived">
+        <h3 className="govuk-heading-m">Household deprivation</h3>
+        <p className="govuk-body-m">
+          In Census 2021, households were classified by 4 dimensions of
+          deprivation: education, employment, health and disability, and
+          household overcrowding.
+        </p>
+
         <details className="govuk-details">
           <summary className="govuk-details__summary">
             <span className="govuk-details__summary-text">
@@ -155,7 +162,7 @@ export default async function XYZPage(props: Props) {
 
         <SummaryNHSPeerGroup />
 
-        <DataTabs
+        {/* <XYZDataTabs
           id="1"
           table={
             <DataTable
@@ -205,34 +212,123 @@ export default async function XYZPage(props: Props) {
                 )?.data_point ?? null
               }
             />
-          }
-        />
-      </DataBox>
 
-      <DataBox
-        dataTitle="Households where the property is owned outright"
-        dataInfo={
-          <>
-            <p className="govuk-body-m">
-              This is when the property does not have an outstanding mortgage or
-              any other type of loan attached to it.
-            </p>
-            <p className="govuk-body-m">
-              Find out{' '}
-              <a
-                href={withBasePath(
-                  '/help/households-where-property-is-owned-outright'
-                )}
-                className="govuk-link"
-              >
-                how data on property ownership is collected
-              </a>
-            </p>
-            <SummaryNHSPeerGroup />
-          </>
-        }
-      >
-        <DataTabs
+            // <PeerGroupChartContent
+            //   laName={locationNames.LALabel}
+            //   currentLaValue={
+            //     filteredDemographicData.find(
+            //       (d) =>
+            //         d.metric_id === 'perc_households_deprivation_deprived' &&
+            //         d.location_type === 'LA'
+            //     )?.data_point ?? null
+            //   }
+            //   nationalAverageValue={
+            //     filteredDemographicData.find(
+            //       (d) =>
+            //         d.metric_id === 'perc_households_deprivation_deprived' &&
+            //         d.location_type === 'National'
+            //     )?.data_point ?? null
+            //   }
+            //   metricDescription="the percentage of households deprived in 4 dimensions"
+            //   figureTitle="Percentage of households deprived in 4 dimensions"
+            //   figureNumber={1}
+            //   // metricDescription={metricDescription}
+            //   // figureTitle={figureTitle}
+            //   // figureNumber={figureNumber}
+            //   peerData={peerData}
+            // />
+          }
+        /> */}
+
+        <XYZDataTabsServer
+          items={[
+            {
+              label: 'Past day',
+              id: 'past-day',
+              panel: (
+                <XYZDataTable
+                  head={['A', 'B', 'C'].map((v) => ({ text: `Day ${v}` }))}
+                  rows={[
+                    ['A1', 'B1', 'C1'].map((v) => ({ text: `Day ${v}` })),
+                    ['A2', 'B2', 'C2'].map((v) => ({ text: `Day ${v}` })),
+                    ['A3', 'B3', 'C3'].map((v) => ({ text: `Day ${v}` })),
+                    ['A4', 'B4', 'C4'].map((v) => ({ text: `Day ${v}` })),
+                  ]}
+                />
+              ),
+            },
+            {
+              label: 'Past week',
+              id: 'past-week',
+              panel: (
+                <XYZDataTable
+                  head={['A', 'B', 'C'].map((v) => ({ text: `Week ${v}` }))}
+                  rows={[
+                    ['A1', 'B1', 'C1'].map((v) => ({ text: `Week ${v}` })),
+                    ['A2', 'B2', 'C2'].map((v) => ({ text: `Week ${v}` })),
+                    ['A3', 'B3', 'C3'].map((v) => ({ text: `Week ${v}` })),
+                    ['A4', 'B4', 'C4'].map((v) => ({ text: `Week ${v}` })),
+                  ]}
+                />
+              ),
+            },
+            {
+              label: 'Past month',
+              id: 'past-month',
+              panel: (
+                <XYZDataTable
+                  head={['A', 'B', 'C'].map((v) => ({ text: `Month ${v}` }))}
+                  rows={[
+                    ['A1', 'B1', 'C1'].map((v) => ({ text: `Month ${v}` })),
+                    ['A2', 'B2', 'C2'].map((v) => ({ text: `Month ${v}` })),
+                    ['A3', 'B3', 'C3'].map((v) => ({ text: `Month ${v}` })),
+                    ['A4', 'B4', 'C4'].map((v) => ({ text: `Month ${v}` })),
+                  ]}
+                />
+              ),
+            },
+            {
+              label: 'Past year',
+              id: 'past-year',
+              panel: (
+                <XYZDataTable
+                  head={['YA', 'B', 'C'].map((v) => ({ text: `Year ${v}` }))}
+                  rows={[
+                    ['A1', 'B1', 'C1'].map((v) => ({ text: `Year ${v}` })),
+                    ['A2', 'B2', 'C2'].map((v) => ({ text: `Year ${v}` })),
+                    ['A3', 'B3', 'C3'].map((v) => ({ text: `Year ${v}` })),
+                    ['A4', 'B4', 'C4'].map((v) => ({ text: `Year ${v}` })),
+                  ]}
+                />
+              ),
+            },
+          ]}
+        />
+      </XYZDataBox>
+
+      <XYZDataBox metricKey="perc_household_ownership">
+        <h3 className="govuk-heading-m">
+          Households where the property is owned outright
+        </h3>
+        <>
+          <p className="govuk-body-m">
+            This is when the property does not have an outstanding mortgage or
+            any other type of loan attached to it.
+          </p>
+          <p className="govuk-body-m">
+            Find out{' '}
+            <a
+              href={withBasePath(
+                '/help/households-where-property-is-owned-outright'
+              )}
+              className="govuk-link"
+            >
+              how data on property ownership is collected
+            </a>
+          </p>
+          <SummaryNHSPeerGroup />
+        </>
+        <XYZDataTabs
           id="2"
           table={
             <DataTable
@@ -288,29 +384,28 @@ export default async function XYZPage(props: Props) {
             />
           }
         />
-      </DataBox>
+      </XYZDataBox>
 
-      <DataBox
-        dataTitle="One-person households where the person is aged 65 or over"
-        dataInfo={
-          <>
-            <p className="govuk-body-m">
-              Find out{' '}
-              <a
-                href={withBasePath(
-                  '/help/one-person-households-where-person-aged-65-or-over'
-                )}
-                className="govuk-link"
-              >
-                how the percentage of one-person households where the person is
-                aged 65 or over is calculated
-              </a>
-            </p>
-            <SummaryNHSPeerGroup />
-          </>
-        }
-      >
-        <DataTabs
+      <XYZDataBox metricKey="perc_households_one_person">
+        <h3 className="govuk-heading-m">
+          One-person households where the person is aged 65 or over
+        </h3>
+        <>
+          <p className="govuk-body-m">
+            Find out{' '}
+            <a
+              href={withBasePath(
+                '/help/one-person-households-where-person-aged-65-or-over'
+              )}
+              className="govuk-link"
+            >
+              how the percentage of one-person households where the person is
+              aged 65 or over is calculated
+            </a>
+          </p>
+          <SummaryNHSPeerGroup />
+        </>
+        <XYZDataTabs
           id="3"
           table={
             <DataTable
@@ -366,7 +461,7 @@ export default async function XYZPage(props: Props) {
             />
           }
         />
-      </DataBox>
+      </XYZDataBox>
 
       {/* $$$ */}
       <DataIndicatorDetailsList>
