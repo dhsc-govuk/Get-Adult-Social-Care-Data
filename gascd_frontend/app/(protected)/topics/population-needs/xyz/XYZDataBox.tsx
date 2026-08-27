@@ -5,7 +5,8 @@ export type DataKey = 'LA' | 'Regional' | 'National' | 'CP' | 'Peer';
 export type MetricKey =
   | 'perc_households_deprivation_deprived'
   | 'perc_household_ownership'
-  | 'perc_households_one_person';
+  | 'perc_households_one_person'
+  | 'perc_unpaid_care_provider';
 
 type Props = {
   children?: React.ReactNode;

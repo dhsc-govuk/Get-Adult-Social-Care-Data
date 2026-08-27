@@ -4,7 +4,7 @@ export type ComparisonGroup = {
 };
 
 export const COMPARISON_GROUPS: ComparisonGroup[] = [
-  { value: 'nhs_peer_group', label: 'NHS Peer Group' },
+  { value: 'nhs_peer_group', label: 'Statistically similar peer group (NHS)' },
 ];
 
 export const CURRENT_LA_COLOUR = '#1f6095';

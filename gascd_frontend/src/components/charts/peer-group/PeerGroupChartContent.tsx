@@ -11,10 +11,11 @@ interface PeerGroupChartContentProps {
   laName: string;
   currentLaValue: number | null;
   nationalAverageValue: number | null;
-  metricDescription: string;
-  figureTitle: string;
-  figureNumber: number;
   peerData: PeerGroupData;
+  figure: {
+    title: string;
+    description: string;
+  };
 }
 
 const roundToOneDecimal = (value: number | null): number | null =>
@@ -24,9 +25,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
   laName,
   currentLaValue,
   nationalAverageValue,
-  metricDescription,
-  figureTitle,
-  figureNumber,
+  figure,
   peerData,
 }) => {
   const hasPeers = peerData.localAuthorityPeers.length > 0;
@@ -111,10 +110,8 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
   return (
     <div>
       <PeerGroupChartHeader
-        laName={laName}
-        metricDescription={metricDescription}
-        figureTitle={figureTitle}
-        figureNumber={figureNumber}
+        description={figure.description}
+        title={figure.title}
       />
       <PeerGroupChartLegend
         laName={laName}
@@ -134,9 +131,6 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
           />
         </div>
       )}
-      <p className="govuk-body">
-        Source: Census 2021 from the Office for National Statistics (ONS)
-      </p>
     </div>
   );
 };

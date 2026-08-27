@@ -2,19 +2,12 @@
 import React, { useState } from 'react';
 import { COMPARISON_GROUPS } from './constants';
 
-interface PeerGroupChartHeaderProps {
-  laName: string;
-  metricDescription: string;
-  figureTitle: string;
-  figureNumber: number;
-}
+type Props = {
+  title: string;
+  description: string;
+};
 
-const PeerGroupChartHeader: React.FC<PeerGroupChartHeaderProps> = ({
-  laName,
-  metricDescription,
-  figureTitle,
-  figureNumber,
-}) => {
+const PeerGroupChartHeader: React.FC<Props> = ({ description, title }) => {
   const [comparisonGroup, setComparisonGroup] = useState(
     COMPARISON_GROUPS[0].value
   );
@@ -34,14 +27,8 @@ const PeerGroupChartHeader: React.FC<PeerGroupChartHeaderProps> = ({
           </option>
         ))}
       </select>
-      <p className="govuk-body govuk-!-margin-top-4">
-        This chart compares {laName} with its NHS Peer Group for{' '}
-        {metricDescription}.
-      </p>
-      <p className="govuk-body govuk-!-font-weight-bold">
-        Figure {figureNumber}: {figureTitle} &ndash; {laName} compared with peer
-        group
-      </p>
+      <p className="govuk-body govuk-!-margin-top-4">{description}</p>
+      <p className="govuk-body govuk-!-font-weight-bold">{title}</p>
     </>
   );
 };

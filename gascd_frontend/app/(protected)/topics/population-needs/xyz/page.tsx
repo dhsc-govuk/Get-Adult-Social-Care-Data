@@ -29,16 +29,12 @@ const breadcrumbs = [
     url: '/home',
   },
   {
-    text: 'Population needs',
-    url: '/topics/population-needs/subtopics',
+    text: 'Care provision',
+    url: '/topics/residential-care/subtopics',
   },
 ];
 
-const METRIC_KEYS: MetricKey[] = [
-  'perc_households_deprivation_deprived',
-  'perc_household_ownership',
-  'perc_households_one_person',
-];
+const METRIC_KEYS: MetricKey[] = ['perc_unpaid_care_provider'];
 
 type Props = {
   //   searchParams: Promise<{ cplid: string }>;
@@ -135,8 +131,8 @@ export default async function XYZPage(props: Props) {
 
   console.log('@>>>', {
     M1,
-    M2,
-    M3,
+    // M2,
+    // M3,
     peersGroupedByKey,
     collectedPeers,
     metrics: {
@@ -145,64 +141,40 @@ export default async function XYZPage(props: Props) {
   });
 
   return (
-    <Layout title="XYZ" breadcrumbs={breadcrumbs}>
+    <Layout title="Unpaid care" breadcrumbs={breadcrumbs}>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
-          <h1 className="govuk-heading-xl">X Y Z</h1>
-          <p className="govuk-body-l">Data data data</p>
-          <h2 className="govuk-heading-l govuk-!-margin-top-9">Data XYZ</h2>
+          <h1 className="govuk-heading-xl">Unpaid care</h1>
+          <p className="govuk-body-l">
+            Statistics on the people who provide unpaid care to family members,
+            friends and neighbours.
+          </p>
+          <h2 className="govuk-heading-l govuk-!-margin-top-9">
+            Data overview
+          </h2>
         </div>
       </div>
 
-      <XYZDataBox metricKey="perc_households_deprivation_deprived">
-        <h3 className="govuk-heading-m">Household deprivation</h3>
+      <XYZDataBox metricKey="perc_unpaid_care_provider">
+        <h3 className="govuk-heading-m">
+          People aged 5 and over who provide unpaid care
+        </h3>
         <p className="govuk-body-m">
-          In Census 2021, households were classified by 4 dimensions of
-          deprivation: education, employment, health and disability, and
-          household overcrowding.
+          Find out{' '}
+          <a
+            href={withBasePath(
+              '/help/percentage-people-aged-5-and-over-who-provide-unpaid-care'
+            )}
+            className="govuk-link"
+          >
+            how unpaid care is measured.
+          </a>{' '}
         </p>
-
-        <details className="govuk-details">
-          <summary className="govuk-details__summary">
-            <span className="govuk-details__summary-text">
-              How the 4 dimensions of deprivation are measured
-            </span>
-          </summary>
-          <div className="govuk-details__text">
-            <p>
-              All the following characteristics must apply for a household to be
-              classified as &lsquo;deprived in 4 dimensions&rsquo; in Census
-              2021 data.
-            </p>
-            <ol className="govuk-list govuk-list--number govuk-list--spaced">
-              <li>
-                No one in the household has at least level 2 education and no
-                one aged 16 to 18 years is a full-time student.
-              </li>
-              <li>
-                A household member is unemployed or economically inactive due to
-                long-term sickness or disability, and is not a full-time
-                student.
-              </li>
-              <li>
-                Any member of the household has general health that is bad or
-                very bad, or is identified as disabled.
-              </li>
-              <li>
-                The household&apos;s accommodation is overcrowded, is in a
-                shared dwelling, or has no central heating.
-              </li>
-            </ol>
-            <Link className="govuk-link" href="/help/household-deprivation">
-              More details on household deprivation data.
-            </Link>
-          </div>
-        </details>
 
         <SummaryNHSPeerGroup />
 
         <XYZDataTabsClient
-          source="XYZ Census 2021..."
+          source="Census 2021 from the Office for National Statistics (ONS)"
           items={[
             {
               label: 'Chart',
@@ -212,12 +184,12 @@ export default async function XYZPage(props: Props) {
                   laName={dataLabels.LA}
                   currentLaValue={M1.LA}
                   nationalAverageValue={M1.National}
-                  metricDescription="the percentage of households deprived in 4 dimensions"
-                  figureTitle="Percentage of households deprived in 4 dimensions"
-                  figureNumber={1}
-                  peerData={
-                    peersGroupedByKey['perc_households_deprivation_deprived']
-                  }
+                  peerData={peersGroupedByKey['perc_unpaid_care_provider']}
+                  figure={{
+                    description: `This chart compares the ${'percentage of people aged 5 and over who provide unpaid care'} in ${dataLabels.LA} against its NHS
+        Peer Group and England.`,
+                    title: `Figure 1: Percentage of people aged 5 or over who provide unpaid care - ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`,
+                  }}
                 />
               ),
             },
@@ -226,7 +198,8 @@ export default async function XYZPage(props: Props) {
               id: 'table-1',
               panel: (
                 <XYZDataTable
-                  caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`}
+                  caption={`Table 1: Percentage of people aged 5 and over who provide
+                  unpaid care - ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`}
                   head={[
                     'Indicator',
                     // dataLabels?.CP,
@@ -236,7 +209,7 @@ export default async function XYZPage(props: Props) {
                   ].map((v) => ({ text: v }))}
                   rows={[
                     [
-                      'Percentage of households deprived in 4 dimensions: education, employment, health and housing',
+                      'Percentage of people aged 5 and over who provide unpaid care',
                       ...[M1.LA, M1.Peer, M1.National].map((v) =>
                         makePercentageString(v)
                       ),
@@ -252,172 +225,9 @@ export default async function XYZPage(props: Props) {
                 <>
                   <h4 className="govuk-heading-s">Download</h4>
                   <DownloadTableDataCSVLink
-                    filename="households_deprived_in_4_dimensions.csv"
+                    filename="percent_unpaid_care.csv"
                     xLabel=""
-                    downloadType="percentage of households classified as 'deprived in 4 dimensions'"
-                  />
-                </>
-              ),
-            },
-          ]}
-        />
-      </XYZDataBox>
-
-      <XYZDataBox metricKey="perc_household_ownership">
-        <h3 className="govuk-heading-m">
-          Households where the property is owned outright
-        </h3>
-        <>
-          <p className="govuk-body-m">
-            This is when the property does not have an outstanding mortgage or
-            any other type of loan attached to it.
-          </p>
-          <p className="govuk-body-m">
-            Find out{' '}
-            <a
-              href={withBasePath(
-                '/help/households-where-property-is-owned-outright'
-              )}
-              className="govuk-link"
-            >
-              how data on property ownership is collected
-            </a>
-          </p>
-          <SummaryNHSPeerGroup />
-        </>
-
-        <XYZDataTabsClient
-          source="XYZ Census 2021..."
-          items={[
-            {
-              label: 'Chart',
-              id: 'chart-2',
-              panel: (
-                <PeerGroupChartContent
-                  laName={dataLabels.LA}
-                  currentLaValue={M2.LA}
-                  nationalAverageValue={M2.National}
-                  metricDescription="the percentage of households where the property is owned outright"
-                  figureTitle="Percentage of households where the property is owned outright"
-                  figureNumber={2}
-                  peerData={peersGroupedByKey['perc_household_ownership']}
-                />
-              ),
-            },
-            {
-              label: 'Table',
-              id: 'table-2',
-              panel: (
-                <XYZDataTable
-                  caption={`Table 2: percentage of households where the property is owned outright – ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`}
-                  head={[
-                    'Indicator',
-                    // dataLabels?.CP,
-                    dataLabels?.LA,
-                    dataLabels?.Peer,
-                    dataLabels?.National,
-                  ].map((v) => ({ text: v }))}
-                  rows={[
-                    [
-                      'Percentage of households where the property is owned outright',
-                      ...[M2.LA, M2.Peer, M2.National].map((v) =>
-                        makePercentageString(v)
-                      ),
-                    ].map((v) => ({ text: v })),
-                  ]}
-                />
-              ),
-            },
-            {
-              label: 'Download',
-              id: 'download-2',
-              panel: (
-                <>
-                  <h4 className="govuk-heading-s">Download</h4>
-                  <DownloadTableDataCSVLink
-                    filename="property_owned_outright.csv"
-                    xLabel=""
-                    downloadType="percentage of households where the property is owned outright"
-                  />
-                </>
-              ),
-            },
-          ]}
-        />
-      </XYZDataBox>
-
-      <XYZDataBox metricKey="perc_households_one_person">
-        <h3 className="govuk-heading-m">
-          One-person households where the person is aged 65 or over
-        </h3>
-        <>
-          <p className="govuk-body-m">
-            Find out{' '}
-            <a
-              href={withBasePath(
-                '/help/one-person-households-where-person-aged-65-or-over'
-              )}
-              className="govuk-link"
-            >
-              how the percentage of one-person households where the person is
-              aged 65 or over is calculated
-            </a>
-          </p>
-          <SummaryNHSPeerGroup />
-        </>
-
-        <XYZDataTabsClient
-          source="XYZ Census 2021..."
-          items={[
-            {
-              label: 'Chart',
-              id: 'chart-3',
-              panel: (
-                <PeerGroupChartContent
-                  laName={dataLabels.LA}
-                  currentLaValue={M3.LA}
-                  nationalAverageValue={M3.National}
-                  metricDescription="the percentage of one-person households where the person is aged 65 or over"
-                  figureTitle="Percentage of one-person households where the person is aged 65 or over"
-                  figureNumber={3}
-                  peerData={peersGroupedByKey['perc_households_one_person']}
-                />
-              ),
-            },
-            {
-              label: 'Table',
-              id: 'table-3',
-              panel: (
-                <XYZDataTable
-                  caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`}
-                  head={[
-                    'Indicator',
-                    // dataLabels?.CP,
-                    dataLabels?.LA,
-                    dataLabels?.Peer,
-                    dataLabels?.National,
-                  ].map((v) => ({ text: v }))}
-                  rows={[
-                    [
-                      'Percentage of one-person households where the person is aged 65 or over',
-                      ...[M3.LA, M3.Peer, M3.National].map((v) =>
-                        makePercentageString(v)
-                      ),
-                    ].map((v) => ({ text: v })),
-                  ]}
-                />
-              ),
-            },
-            {
-              label: 'Download',
-              id: 'download-3',
-              panel: (
-                <>
-                  <h4 className="govuk-heading-s">Download</h4>
-                  <DownloadTableDataCSVLink
-                    filename="one_person_households_over_65.csv"
-                    xLabel=""
-                    downloadType="percentage of one-person households where the person is aged 65 or over"
+                    downloadType={`percentage of people aged 5 and over who provide unpaid care`}
                   />
                 </>
               ),
@@ -429,41 +239,30 @@ export default async function XYZPage(props: Props) {
       {/* $$$ */}
       <DataIndicatorDetailsList>
         <DataLinkCard
-          label="Households &lsquo;deprived in 4 dimensions&rsquo;"
-          sources="Office for National Statistics"
-          updateFrequency="Updates every 10 years"
-          url="/help/household-deprivation"
-        />
-        <DataLinkCard
-          label="Households where the property is owned outright"
-          sources="Office for National Statistics"
-          updateFrequency="Updates every 10 years"
-          url="/help/households-where-property-is-owned-outright"
-        />
-        <DataLinkCard
-          label="One-person households where the person is aged 65 or over"
-          sources="Office for National Statistics"
-          updateFrequency="Updates every 10 years"
-          url="/help/one-person-households-where-person-aged-65-or-over"
+          label="People aged 5 and over who provide unpaid care"
+          sources="Office for National Statistics."
+          updateFrequency="Updated every 10 years"
+          limitations={false}
+          url="/help/percentage-people-aged-5-and-over-who-provide-unpaid-care"
         />
       </DataIndicatorDetailsList>
 
       {/* $$$ */}
       <RelatedDataList>
         <DataLinkCard
-          label="Dementia prevalence"
-          description="Data estimates for undiagnosed dementia."
-          url="/topics/population-needs/dementia-prevalence/data"
+          label="Care home beds and occupancy levels"
+          description="Provision and capacity data for care homes, including local, regional and national statistics."
+          url="/topics/residential-care/provision-and-occupancy/data"
         />
         <DataLinkCard
-          label="General health and disability"
-          description="Data on disability prevalence, learning disability diagnoses and reasons for accessing care."
-          url="/topics/population-needs/disability-prevalence/data"
+          label="Care provider services"
+          description="Data on residential care homes and nursing homes by service type."
+          url="/topics/residential-care/residential-care-providers/data"
         />
         <DataLinkCard
-          label="Population size and age group percentages"
-          description="Population data at LA, regional and national levels for England."
-          url="/topics/population-needs/population-age-and-size/data"
+          label="Number of adults receiving community social care"
+          description="Data on the number of people supported through community social care, including trends over time."
+          url="/topics/residential-care/number-of-people-receiving-care/data"
         />
       </RelatedDataList>
 
@@ -494,7 +293,7 @@ function getLocationData(data?: Record<string, Partial<string>>): LocationData {
     country_code,
     la_name,
     region_name,
-    // country_name,
+    country_name,
     // ...
     // CP
     provider_location_name,
