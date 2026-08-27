@@ -10,3 +10,8 @@ export interface Indicator {
   data_point: number | null;
   load_date_time: Date;
 }
+
+export type UIMetric = Pick<
+  Indicator,
+  'data_point' | 'location_type' | 'location_id' | 'metric_date' | 'metric_id'
+>;

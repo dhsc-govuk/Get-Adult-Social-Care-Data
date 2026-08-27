@@ -1,4 +1,3 @@
-import { LocationNames } from '@/data/interfaces/LocationNames';
 import { withBasePath } from '@/lib/basePath';
 import TableService from '@/services/Table/TableService';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
@@ -7,7 +6,7 @@ import { redirect } from 'next/navigation';
 import Layout from '@/components/common/layout/Layout';
 import XYZDataTabs from './XYZDataTabs';
 import DataTable from '@/components/tables/table';
-import XYZDataBox, { DataKey } from './XYZDataBox';
+import XYZDataBox, { DataKey, MetricKey } from './XYZDataBox';
 import Link from 'next/link';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
@@ -20,7 +19,8 @@ import SummaryNHSPeerGroup from '@/components/benchmarking/nhs-peer-summary';
 import PeerGroupChartContent from '@/components/charts/peer-group/PeerGroupChartContent';
 import XYZDataTabsServer from './XYZDataTabsServer';
 import XYZDataTable, { TableColumnValue } from './XYZDataTable';
-import { PeerGroupData } from '@/components/charts/peer-group/types';
+import { mapPeerGroupResponse } from '@/components/charts/peer-group/MapPeerGroupResponse';
+import { UIMetric } from '@/data/interfaces/Indicator';
 
 const breadcrumbs = [
   {
@@ -33,7 +33,7 @@ const breadcrumbs = [
   },
 ];
 
-const demographicMetricIds = [
+const METRIC_KEYS: MetricKey[] = [
   'perc_households_deprivation_deprived',
   'perc_household_ownership',
   'perc_households_one_person',
@@ -54,33 +54,45 @@ export default async function XYZPage(props: Props) {
 
   const { dataKeys, dataLabels } = await getLocationData(data);
 
-  // const demographicMetricsDataRequests = await Promise.all(
-  //   demographicMetricIds.map((metricId) =>
-  //     get_la_peers({ user, la_code: dataKeys.LA, metric_code: metricId }).then(
-  //       (data) =>
-  //         [
-  //           metricId,
-  //           data?.averagePeerGroup ??
-  //             data?.AveragePeerGroup ??
-  //             data?.average_peer_group ??
-  //             null,
-  //         ] as const
-  //     )
-  //   )
-  // );
-  // const peerGroupAverages = Object.fromEntries(
-  //   demographicMetricsDataRequests
-  // ) as PeerGroupData;
-
-  const filteredDemographicData = TableService.filterDate(
-    await get_metric_data({
-      metric_ids: demographicMetricIds,
-      user,
-    })
+  const [P1, P2, P3] = await Promise.all(
+    METRIC_KEYS.map((metricKey) =>
+      get_la_peers({
+        user,
+        la_code: dataKeys.LA,
+        metric_code: metricKey,
+      }).then((data) => mapPeerGroupResponse(data))
+    )
   );
 
+  const metrics = await get_metric_data({
+    metric_ids: METRIC_KEYS,
+    user,
+  }).then((data) =>
+    TableService.filterDate(data)
+      // Extract from the returned data only what's necessary
+      .map(
+        ({
+          data_point,
+          location_id,
+          location_type,
+          metric_date,
+          metric_id,
+        }): UIMetric => ({
+          data_point,
+          location_id,
+          location_type,
+          metric_date,
+          metric_id,
+        })
+      )
+  );
+  // const metricsGroupedByKey = Object.groupBy(
+  //   metrics,
+  //   ({ metric_id }) => metric_id
+  // );
+
   // Transform Regional data to NHS Peer Group and fetch peer group averages
-  // const transformedData = filteredDemographicData.map((d) => {
+  // const transformedData = metrics.map((d) => {
   //   if (
   //     d.location_type === 'Regional' &&
   //     peerGroupAverages[d.metric_id] !== undefined
@@ -94,12 +106,20 @@ export default async function XYZPage(props: Props) {
   //   return d;
   // });
 
-  const [M1, M2, M3] = demographicMetricIds.map((m) =>
-    filteredDemographicData
+  const [M1, M2, M3] = METRIC_KEYS.map((m) =>
+    metrics
       .filter((entry) => entry.metric_id == m)
+      // Attach NHS Peer metric
+      .concat({
+        metric_date: null,
+        metric_id: m,
+        location_id: dataKeys.Peer,
+        location_type: 'Peer',
+        data_point: P1.averagePeerGroup,
+      } satisfies UIMetric)
       .map((m) => ({
         key: m.location_type,
-        value: TableService.formatDataPoint(Number(m.data_point)),
+        value: m.data_point,
       }))
       .reduce(
         (obj, item) => ((obj[item.key] = item.value), obj),
@@ -111,15 +131,12 @@ export default async function XYZPage(props: Props) {
     M1,
     M2,
     M3,
+    P1,
+    P2,
+    P3,
     metrics: {
-      filteredDemographicData,
-      // demographicData,
-      // transformedData,
-      // demographicMetricsDataRequests,
+      data: metrics,
     },
-    // peer: {
-    //   peerGroupAverages,
-    // },
   });
 
   return (
@@ -132,11 +149,7 @@ export default async function XYZPage(props: Props) {
         </div>
       </div>
 
-      <XYZDataBox
-        metricKey="perc_households_deprivation_deprived"
-        user={user}
-        dataKeys={dataKeys}
-      >
+      <XYZDataBox metricKey="perc_households_deprivation_deprived">
         <h3 className="govuk-heading-m">Household deprivation</h3>
         <p className="govuk-body-m">
           In Census 2021, households were classified by 4 dimensions of
@@ -190,21 +203,21 @@ export default async function XYZPage(props: Props) {
               label: 'Chart',
               id: 'chart-1',
               panel: (
-                <PeerGroupBarChart
-                  laCode={dataKeys.LA}
-                  laName={dataLabels.LA}
-                  currentLaValue={M1.LA}
-                  nationalAverageValue={M1.National}
-                />
-                // <PeerGroupChartContent
+                // <PeerGroupBarChart
+                //   laCode={dataKeys.LA}
                 //   laName={dataLabels.LA}
                 //   currentLaValue={M1.LA}
                 //   nationalAverageValue={M1.National}
-                //   metricDescription="the percentage of households deprived in 4 dimensions"
-                //   figureTitle="Percentage of households deprived in 4 dimensions"
-                //   figureNumber={1}
-                //   peerData={peerGroupAverages}
                 // />
+                <PeerGroupChartContent
+                  laName={dataLabels.LA}
+                  currentLaValue={M1.LA}
+                  nationalAverageValue={M1.National}
+                  metricDescription="the percentage of households deprived in 4 dimensions"
+                  figureTitle="Percentage of households deprived in 4 dimensions"
+                  figureNumber={1}
+                  peerData={P1}
+                />
               ),
             },
             {
@@ -212,7 +225,7 @@ export default async function XYZPage(props: Props) {
               id: 'table-1',
               panel: (
                 <XYZDataTable
-                  caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${dataLabels.LA} LA, ${dataLabels.Regional} and ${dataLabels.National}, March 2021`}
+                  caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`}
                   head={[
                     // 'Indicator',
                     dataLabels?.CP,
@@ -223,9 +236,9 @@ export default async function XYZPage(props: Props) {
                   rows={[
                     [
                       'Percentage of households deprived in 4 dimensions: education, employment, health and housing',
-                      M1.LA,
-                      M1.Regional,
-                      M1.National,
+                      ...[M1.LA, M1.Peer, M1.National].map((v) =>
+                        makePercentageString(v)
+                      ),
                     ].map((v) => ({ text: v })),
                   ]}
                 />
@@ -250,11 +263,7 @@ export default async function XYZPage(props: Props) {
         />
       </XYZDataBox>
 
-      <XYZDataBox
-        metricKey="perc_household_ownership"
-        user={user}
-        dataKeys={dataKeys}
-      >
+      <XYZDataBox metricKey="perc_household_ownership">
         <h3 className="govuk-heading-m">
           Households where the property is owned outright
         </h3>
@@ -281,7 +290,7 @@ export default async function XYZPage(props: Props) {
           table={
             <DataTable
               // tableref={tableref2}
-              caption={`Table 2: percentage of households where the property is owned outright – ${dataLabels.LA} LA, ${dataLabels.Regional} and ${dataLabels.National}, March 2021`}
+              caption={`Table 2: percentage of households where the property is owned outright – ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
@@ -295,7 +304,7 @@ export default async function XYZPage(props: Props) {
                 perc_household_ownership:
                   'Percentage of households where the property is owned outright',
               }}
-              data={filteredDemographicData}
+              data={metrics}
               showCareProvider={false}
               percentageRows={['perc_household_ownership']}
               showAverageLabel={false}
@@ -327,11 +336,7 @@ export default async function XYZPage(props: Props) {
         />
       </XYZDataBox>
 
-      <XYZDataBox
-        metricKey="perc_households_one_person"
-        user={user}
-        dataKeys={dataKeys}
-      >
+      <XYZDataBox metricKey="perc_households_one_person">
         <h3 className="govuk-heading-m">
           One-person households where the person is aged 65 or over
         </h3>
@@ -355,7 +360,7 @@ export default async function XYZPage(props: Props) {
           table={
             <DataTable
               // tableref={tableref3}
-              caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${dataLabels.LA} LA, ${dataLabels.Regional} and ${dataLabels.National}, March 2021`}
+              caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`}
               source={
                 'Census 2021 from the Office for National Statistics (ONS)'
               }
@@ -369,7 +374,7 @@ export default async function XYZPage(props: Props) {
                 perc_households_one_person:
                   'Percentage of one-person households where the person is aged 65 or over',
               }}
-              data={filteredDemographicData}
+              data={metrics}
               showCareProvider={false}
               percentageRows={['perc_households_one_person']}
               showAverageLabel={false}
@@ -454,17 +459,12 @@ export default async function XYZPage(props: Props) {
 }
 
 type LocationData = {
-  dataLabels: Record<DataKey, string> | null;
-  dataKeys: Record<DataKey, string> | null;
+  dataLabels: Record<DataKey, string>;
+  dataKeys: Record<DataKey, string>;
 };
 function getLocationData(data?: Record<string, Partial<string>>): LocationData {
-  let result: LocationData = {
-    dataKeys: null,
-    dataLabels: null,
-  };
-
   if (!data) {
-    return result;
+    throw new Error('Cannot proceed with data formatting.');
   }
 
   // ...
@@ -474,7 +474,7 @@ function getLocationData(data?: Record<string, Partial<string>>): LocationData {
     country_code,
     la_name,
     region_name,
-    country_name,
+    // country_name,
     // ...
     // CP
     provider_location_name,
@@ -483,7 +483,7 @@ function getLocationData(data?: Record<string, Partial<string>>): LocationData {
 
   const careProvider = false;
 
-  result = {
+  const result: LocationData = {
     dataKeys: {
       LA: la_code,
       National: country_code,
@@ -508,4 +508,10 @@ function getLocationData(data?: Record<string, Partial<string>>): LocationData {
 
   console.log('@@@', { data, result });
   return result;
+}
+
+function makePercentageString(v: TableColumnValue) {
+  return TableService.formatDataPoint(Number(v), {
+    isPercentage: true,
+  });
 }
