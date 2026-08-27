@@ -1,7 +1,8 @@
 import { PeerGroupApiResponse, PeerGroupData } from './types';
 
 export const mapPeerGroupResponse = (
-  raw: PeerGroupApiResponse
+  raw: PeerGroupApiResponse,
+  mkey: string
 ): PeerGroupData => ({
   localAuthorityPeers: (raw.local_authority_peers ?? []).map((peer, index) => ({
     code: peer.code ?? `peer-${index}`,
@@ -11,4 +12,5 @@ export const mapPeerGroupResponse = (
   })),
   averagePeerGroup: raw.average_peer_group ?? null,
   nationalAverage: raw.national_average ?? null,
+  metric_id: mkey,
 });

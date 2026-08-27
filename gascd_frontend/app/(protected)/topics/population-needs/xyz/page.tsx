@@ -21,6 +21,7 @@ import XYZDataTabsServer from './XYZDataTabsServer';
 import XYZDataTable, { TableColumnValue } from './XYZDataTable';
 import { mapPeerGroupResponse } from '@/components/charts/peer-group/MapPeerGroupResponse';
 import { UIMetric } from '@/data/interfaces/Indicator';
+import { PeerGroupData } from '@/components/charts/peer-group/types';
 
 const breadcrumbs = [
   {
@@ -54,14 +55,19 @@ export default async function XYZPage(props: Props) {
 
   const { dataKeys, dataLabels } = await getLocationData(data);
 
-  const [P1, P2, P3] = await Promise.all(
+  const collectedPeers = await Promise.all(
     METRIC_KEYS.map((metricKey) =>
       get_la_peers({
         user,
         la_code: dataKeys.LA,
         metric_code: metricKey,
-      }).then((data) => mapPeerGroupResponse(data))
+      }).then((data) => mapPeerGroupResponse(data, metricKey))
     )
+  );
+
+  const peersGroupedByKey = collectedPeers.reduce(
+    (current, v) => ((current[v.metric_id] = v), current),
+    {} as Record<string, PeerGroupData>
   );
 
   const metrics = await get_metric_data({
@@ -115,7 +121,7 @@ export default async function XYZPage(props: Props) {
         metric_id: m,
         location_id: dataKeys.Peer,
         location_type: 'Peer',
-        data_point: P1.averagePeerGroup,
+        data_point: peersGroupedByKey[m].averagePeerGroup,
       } satisfies UIMetric)
       .map((m) => ({
         key: m.location_type,
@@ -131,9 +137,8 @@ export default async function XYZPage(props: Props) {
     M1,
     M2,
     M3,
-    P1,
-    P2,
-    P3,
+    peersGroupedByKey,
+    collectedPeers,
     metrics: {
       data: metrics,
     },
@@ -203,12 +208,6 @@ export default async function XYZPage(props: Props) {
               label: 'Chart',
               id: 'chart-1',
               panel: (
-                // <PeerGroupBarChart
-                //   laCode={dataKeys.LA}
-                //   laName={dataLabels.LA}
-                //   currentLaValue={M1.LA}
-                //   nationalAverageValue={M1.National}
-                // />
                 <PeerGroupChartContent
                   laName={dataLabels.LA}
                   currentLaValue={M1.LA}
@@ -216,7 +215,9 @@ export default async function XYZPage(props: Props) {
                   metricDescription="the percentage of households deprived in 4 dimensions"
                   figureTitle="Percentage of households deprived in 4 dimensions"
                   figureNumber={1}
-                  peerData={P1}
+                  peerData={
+                    peersGroupedByKey['perc_households_deprivation_deprived']
+                  }
                 />
               ),
             },
@@ -227,8 +228,8 @@ export default async function XYZPage(props: Props) {
                 <XYZDataTable
                   caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`}
                   head={[
-                    // 'Indicator',
-                    dataLabels?.CP,
+                    'Indicator',
+                    // dataLabels?.CP,
                     dataLabels?.LA,
                     dataLabels?.Peer,
                     dataLabels?.National,
@@ -285,7 +286,7 @@ export default async function XYZPage(props: Props) {
           </p>
           <SummaryNHSPeerGroup />
         </>
-        <XYZDataTabs
+        {/* <XYZDataTabs
           id="2"
           table={
             <DataTable
@@ -333,6 +334,75 @@ export default async function XYZPage(props: Props) {
               figureNumber={2}
             />
           }
+        /> */}
+
+        <XYZDataTabsServer
+          source="XYZ Census 2021..."
+          items={[
+            {
+              label: 'Chart',
+              id: 'chart-2',
+              panel: (
+                <PeerGroupChartContent
+                  laName={dataLabels.LA}
+                  currentLaValue={M2.LA}
+                  nationalAverageValue={M2.National}
+                  metricDescription="the percentage of households where the property is owned outright"
+                  figureTitle="Percentage of households where the property is owned outright"
+                  figureNumber={2}
+                  peerData={peersGroupedByKey['perc_household_ownership']}
+                />
+              ),
+            },
+            {
+              label: 'Table',
+              id: 'table-2',
+              panel: (
+                <XYZDataTable
+                  caption={`Table 2: percentage of households where the property is owned outright – ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`}
+                  head={[
+                    'Indicator',
+                    // dataLabels?.CP,
+                    dataLabels?.LA,
+                    dataLabels?.Peer,
+                    dataLabels?.National,
+                  ].map((v) => ({ text: v }))}
+                  rows={[
+                    [
+                      'Percentage of households where the property is owned outright',
+                      ...[M2.LA, M2.Peer, M2.National].map((v) =>
+                        makePercentageString(v)
+                      ),
+                    ].map((v) => ({ text: v })),
+                  ]}
+                />
+              ),
+            },
+            {
+              label: 'Download',
+              id: 'download-2',
+              panel: (
+                // <>
+                //   <h4 className="govuk-heading-s">Download</h4>
+                //   <DownloadTableDataCSVLink
+                //     // tableref={tableref2}
+                //     filename="property_owned_outright.csv"
+                //     xLabel=""
+                //     downloadType="percentage of households where the property is owned outright"
+                //   />
+                // </>
+
+                <>
+                  <h4 className="govuk-heading-s">Download</h4>
+                  <DownloadTableDataCSVLink
+                    filename="property_owned_outright.csv"
+                    xLabel=""
+                    downloadType="percentage of households where the property is owned outright"
+                  />
+                </>
+              ),
+            },
+          ]}
         />
       </XYZDataBox>
 

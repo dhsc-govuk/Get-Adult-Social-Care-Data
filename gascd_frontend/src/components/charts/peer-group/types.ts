@@ -22,6 +22,7 @@ export interface PeerGroupData {
   localAuthorityPeers: LocalAuthorityPeer[];
   averagePeerGroup: number | null;
   nationalAverage: number | null;
+  metric_id: string;
 }
 
 export interface PeerGroupBarChartProps {

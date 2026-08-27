@@ -42,7 +42,7 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
         return res.json();
       })
       .then((data: PeerGroupApiResponse) => {
-        setPeerData(mapPeerGroupResponse(data));
+        setPeerData(mapPeerGroupResponse(data, metricCode));
         setLoading(false);
       })
       .catch(() => {
