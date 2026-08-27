@@ -4,12 +4,8 @@ import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import { get_la_peers, get_location_data, get_metric_data } from '@/data/DAL';
 import { redirect } from 'next/navigation';
 import Layout from '@/components/common/layout/Layout';
-import XYZDataTabs from './XYZDataTabs';
-import DataTable from '@/components/tables/table';
 import XYZDataBox, { DataKey, MetricKey } from './XYZDataBox';
-import Link from 'next/link';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
-import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
 import DataLinkCard from '@/components/data-components/DataLinkCard';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
@@ -88,25 +84,6 @@ export default async function XYZPage(props: Props) {
         })
       )
   );
-  // const metricsGroupedByKey = Object.groupBy(
-  //   metrics,
-  //   ({ metric_id }) => metric_id
-  // );
-
-  // Transform Regional data to NHS Peer Group and fetch peer group averages
-  // const transformedData = metrics.map((d) => {
-  //   if (
-  //     d.location_type === 'Regional' &&
-  //     peerGroupAverages[d.metric_id] !== undefined
-  //   ) {
-  //     return {
-  //       ...d,
-  //       location_type: 'Regional',
-  //       data_point: peerGroupAverages[d.metric_id],
-  //     };
-  //   }
-  //   return d;
-  // });
 
   const [M1, M2, M3] = METRIC_KEYS.map((m) =>
     metrics
@@ -325,7 +302,7 @@ function getLocationData(data?: Record<string, Partial<string>>): LocationData {
     },
   };
 
-  console.log('@@@', { data, result });
+  // console.log('@@@', { data, result });
   return result;
 }
 
