@@ -18,6 +18,7 @@ import XYZDataTable, { TableColumnValue } from './XYZDataTable';
 import { mapPeerGroupResponse } from '@/components/charts/peer-group/MapPeerGroupResponse';
 import { UIMetric } from '@/data/interfaces/Indicator';
 import { PeerGroupData } from '@/components/charts/peer-group/types';
+import AnalyticsService from '@/services/analytics/analyticsService';
 
 const breadcrumbs = [
   {
@@ -115,6 +116,11 @@ export default async function XYZPage(props: Props) {
     metrics: {
       data: metrics,
     },
+  });
+
+  // Track all metrics on this page
+  METRIC_KEYS.forEach((metric_id) => {
+    AnalyticsService.trackMetricView(metric_id);
   });
 
   return (
