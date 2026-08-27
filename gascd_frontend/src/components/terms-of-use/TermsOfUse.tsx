@@ -7,7 +7,7 @@ const TermsOfUse: React.FC = () => {
       <div className="govuk-grid-column-two-thirds">
         <h1 className="govuk-heading-xl">Terms of use </h1>
         <p className="govuk-body">First published: 19 February 2026</p>
-        <p className="govuk-body">Last updated: 18 June 2026</p>
+        <p className="govuk-body">Last updated: 27 August 2026</p>
         <p className="govuk-body">
           This page explains the Get Adult Social Care Data{' '}
           <abbr title="Get Adult Social Care Data">(GASCD)</abbr> service terms
@@ -74,32 +74,109 @@ const TermsOfUse: React.FC = () => {
           your organisation.
         </p>
         <p className="govuk-body">
-          You agree to use data insight from the{' '}
-          <abbr title="Get Adult Social Care Data">GASCD</abbr> service only for
-          internal operational management purposes. This means that you agree
-          not to share this insight with anyone in your organisation who does
-          not have a rightful purpose to use it (ie for internal operational
-          management purposes).
-        </p>
-
-        <p className="govuk-body">
           You agree to: (i) keep all shared data secure; (ii) use the data
           solely for the agreed purposes; and (iii) delete all data upon
           termination. Confidentiality obligations do not apply to data that is
           already public and/or required to be disclosed by law.
         </p>
         <p className="govuk-body">
-          Unless otherwise indicated, the data insight is not provided for you
-          to use in public documents. If you would like to make any insight from{' '}
-          <abbr title="Get Adult Social Care Data">GASCD</abbr> available to the
-          public, please contact DHSC first on{' '}
+          The data insight shown in the service has been labelled to help you
+          understand whether you are allowed to share it outside of your
+          organisation or not. The labels are:
+        </p>
+        <table className="govuk-table" data-testid="data-labels-table">
+          <caption className="govuk-visually-hidden">
+            Data labels used in the{' '}
+            <abbr title="Get Adult Social Care Data">GASCD</abbr> service and
+            what each one means
+          </caption>
+          <thead className="govuk-table__head govuk-visually-hidden">
+            <tr className="govuk-table__row">
+              <th scope="col" className="govuk-table__header">
+                Label
+              </th>
+              <th scope="col" className="govuk-table__header">
+                What it means
+              </th>
+            </tr>
+          </thead>
+          <tbody className="govuk-table__body">
+            <tr className="govuk-table__row">
+              <td className="govuk-table__cell">
+                <strong className="govuk-tag govuk-tag--green">
+                  Published data
+                </strong>
+              </td>
+              <td className="govuk-table__cell">
+                This data is from public data sources. You can share it with
+                anyone outside your organisation.
+              </td>
+            </tr>
+            <tr className="govuk-table__row">
+              <td className="govuk-table__cell">
+                <strong className="govuk-tag govuk-tag--red">
+                  Not for sharing externally
+                </strong>
+              </td>
+              <td className="govuk-table__cell">
+                This data is only made available to you in{' '}
+                <abbr title="Get Adult Social Care Data">GASCD</abbr> for your
+                internal management purposes. You should only share it within
+                your organisation and instruct your staff not to share it
+                outside of your organisation. This data is not for sharing with
+                AI tools that are outwards facing (ie where content may be used
+                for training of AI models).
+              </td>
+            </tr>
+            <tr className="govuk-table__row">
+              <td className="govuk-table__cell">
+                <strong className="govuk-tag govuk-tag--blue">
+                  Share at your own discretion
+                </strong>
+              </td>
+              <td className="govuk-table__cell">
+                This contains your own data that we are reflecting back to you.
+                While we safeguard it, and do not share it with other providers,
+                your organisation owns this data. You can decide how to share
+                it.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p className="govuk-body">
+          If you are unsure about what you can do with the data you see in{' '}
+          <abbr title="Get Adult Social Care Data">GASCD</abbr>, please contact
+          DHSC on{' '}
           <a
             href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
             className="govuk-link govuk-link--no-underline"
           >
             GetAdultSocialCareData.team@dhsc.gov.uk
           </a>
-          , to check on permissions to publish.
+          .
+        </p>
+        <p className="govuk-body">
+          If you make a mistake and share any{' '}
+          <abbr title="Get Adult Social Care Data">GASCD</abbr> data insight in
+          public that should only be used for internal management purposes,
+          please contact DHSC as soon as possible to report what has happened by
+          emailing{' '}
+          <a
+            href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
+            className="govuk-link govuk-link--no-underline"
+          >
+            GetAdultSocialCareData.team@dhsc.gov.uk
+          </a>
+          . You should take any possible steps to retract the information you
+          have shared.
+        </p>
+        <p className="govuk-body">
+          If it comes to DHSC&apos;s attention that you have shared any{' '}
+          <abbr title="Get Adult Social Care Data">GASCD</abbr> data insight in
+          public on purpose, despite knowing that it should only be used for
+          internal management purposes, DHSC will revoke your access to{' '}
+          <abbr title="Get Adult Social Care Data">GASCD</abbr> for an
+          indefinite period.
         </p>
         <p className="govuk-body">
           You must also use the service in a way that does not infringe the

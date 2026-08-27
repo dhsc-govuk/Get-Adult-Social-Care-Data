@@ -10,6 +10,7 @@ const TermsOfUsePage: React.FC = () => {
         showLoginInformation={false}
         currentPage="terms-of-use"
         showNavBar={false}
+        showBackLink={true}
       >
         <TermsOfUse />
       </Layout>
