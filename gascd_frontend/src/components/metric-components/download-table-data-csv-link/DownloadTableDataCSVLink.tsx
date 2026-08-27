@@ -38,6 +38,8 @@ const DownloadTableDataCSVLink: React.FC<Props> = ({
       const csv_data = extractTableCellText(tableref.current);
       downloadCSV(csv_data, filename, xLabel, notice);
     } else if (rawdata?.length) {
+      console.log(':$:<>===<>:$:', rawdata);
+
       downloadCSV(rawdata, filename, xLabel, notice);
     } else {
       console.error('No exportable table data found');

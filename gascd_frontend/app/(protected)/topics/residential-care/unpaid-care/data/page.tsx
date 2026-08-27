@@ -211,6 +211,21 @@ export default async function UnpaidCarePage(props: Props) {
                 <>
                   <h4 className="govuk-heading-s">Download</h4>
                   <DownloadTableDataCSVLink
+                    rawdata={[
+                      [
+                        'Indicator',
+                        // dataLabels?.CP,
+                        dataLabels?.LA,
+                        dataLabels?.Peer,
+                        dataLabels?.National,
+                      ],
+                      [
+                        'Percentage of people aged 5 and over who provide unpaid care',
+                        M1.LA,
+                        M1.Peer,
+                        M1.National,
+                      ],
+                    ]}
                     filename="percent_unpaid_care.csv"
                     xLabel=""
                     downloadType={`percentage of people aged 5 and over who provide unpaid care`}
