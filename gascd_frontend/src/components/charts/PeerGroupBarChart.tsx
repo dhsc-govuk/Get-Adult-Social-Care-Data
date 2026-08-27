@@ -62,23 +62,16 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
   if (error || !peerData) {
     return <p className="govuk-body">Data not available</p>;
   }
-  console.log(':$:=bartosz=:$:', {
-    laName,
-    currentLaValue,
-    nationalAverageValue,
-    metricDescription,
-    figureNumber,
-    figureTitle,
-    peerData,
-  });
+
   return (
     <PeerGroupChartContent
       laName={laName}
       currentLaValue={currentLaValue}
       nationalAverageValue={nationalAverageValue}
-      metricDescription={metricDescription}
-      figureTitle={figureTitle}
-      figureNumber={figureNumber}
+      figure={{
+        description: metricDescription,
+        title: figureTitle,
+      }}
       peerData={peerData}
     />
   );

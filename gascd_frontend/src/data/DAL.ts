@@ -30,7 +30,6 @@ export async function x_y_z(payload: { user?: User }) {
 
 export async function get_location_data(payload: { user?: User }) {
   const { user } = payload;
-  //   console.log(':$: modulo :$:', { user });
 
   if (!user || !isUserRegistered(user)) {
     throw new Error('No user');
@@ -171,8 +170,6 @@ export async function get_metric_data(payload: {
   if (!user || !isUserRegistered(user)) {
     throw new Error('No user');
   }
-
-  //   console.log(':$: modulo :$:', { payload });
 
   await addUserTelemetry();
 
