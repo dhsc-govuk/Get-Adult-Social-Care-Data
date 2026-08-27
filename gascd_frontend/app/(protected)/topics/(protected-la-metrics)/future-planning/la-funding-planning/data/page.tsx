@@ -234,21 +234,28 @@ export default function LAFundingPlanningPage() {
             <p className="govuk-body">
               Find out how{' '}
               <a
-                href={withBasePath('/help/estimated-population-early-onset-dementia')}
+                href={withBasePath(
+                  '/help/estimated-population-early-onset-dementia'
+                )}
                 className="govuk-link"
               >
                 people aged 30-64 predicted to have early onset dementia
               </a>
               ,{' '}
               <a
-                href={withBasePath('/help/estimated-population-learning-disability')}
+                href={withBasePath(
+                  '/help/estimated-population-learning-disability'
+                )}
                 className="govuk-link"
               >
                 people aged 18-64 with a learning disability, predicted to
                 display challenging behaviour
               </a>{' '}
               and{' '}
-              <a href={withBasePath('/help/estimated-population-asd')} className="govuk-link">
+              <a
+                href={withBasePath('/help/estimated-population-asd')}
+                className="govuk-link"
+              >
                 people aged 18-64 predicted to have autistic spectrum disorders
               </a>{' '}
               are calculated.
@@ -258,6 +265,7 @@ export default function LAFundingPlanningPage() {
       >
         <DataTabs
           id="1"
+          sharingMetricIds={demographicMetricIds}
           table={
             <TimeSeriesTable
               tableref={tableref1}
@@ -312,21 +320,28 @@ export default function LAFundingPlanningPage() {
             <p className="govuk-body">
               Find out how{' '}
               <a
-                href={withBasePath('/help/estimated-population-early-onset-dementia')}
+                href={withBasePath(
+                  '/help/estimated-population-early-onset-dementia'
+                )}
                 className="govuk-link"
               >
                 people aged 30-64 predicted to have early onset dementia
               </a>
               ,{' '}
               <a
-                href={withBasePath('/help/estimated-population-learning-disability')}
+                href={withBasePath(
+                  '/help/estimated-population-learning-disability'
+                )}
                 className="govuk-link"
               >
                 people aged 18-64 with a learning disability, predicted to
                 display challenging behaviour
               </a>{' '}
               and{' '}
-              <a href={withBasePath('/help/estimated-population-asd')} className="govuk-link">
+              <a
+                href={withBasePath('/help/estimated-population-asd')}
+                className="govuk-link"
+              >
                 people aged 18-64 predicted to have autistic spectrum disorders
               </a>{' '}
               are calculated.
@@ -336,6 +351,7 @@ export default function LAFundingPlanningPage() {
       >
         <DataTabs
           id="2"
+          sharingMetricIds={demographicMetricIds}
           graph={
             <>
               <h4 className="govuk-heading-s">

@@ -1,6 +1,10 @@
 'use client';
 import React, { useEffect } from 'react';
 import AnalyticsService from '@/services/analytics/analyticsService';
+import SharingLabel from '@/components/data-components/SharingLabel';
+import SharingSourceNote from '@/components/data-components/SharingSourceNote';
+import { SharingCategoryProvider } from '@/components/data-components/SharingCategoryContext';
+import { resolveSharingCategory } from '@/data/sharingCategories';
 
 type Props = {
   id: string;
@@ -10,6 +14,12 @@ type Props = {
   textSummary?: React.ReactNode;
   map?: React.ReactNode;
   download?: React.ReactNode;
+  /**
+   * Every metric the tabs can show, including any only reachable through a
+   * filter. The sharing label is resolved from these once, so it stays the same
+   * across tabs and as filters are applied and cleared.
+   */
+  sharingMetricIds?: string[];
 };
 
 const tabClicked = (tabname: string) => {
@@ -24,6 +34,7 @@ const DataTabs: React.FC<Props> = ({
   map,
   download,
   textSummary,
+  sharingMetricIds,
 }) => {
   useEffect(() => {
     const setupTabs = async () => {
@@ -35,8 +46,20 @@ const DataTabs: React.FC<Props> = ({
     setupTabs();
   }, []);
 
-  return (
+  const sharingCategory = resolveSharingCategory(sharingMetricIds);
+
+  // Wraps the contents of every tab panel so the label, and the additional
+  // source note where one applies, appear on all of them
+  const panelContent = (contents: React.ReactNode) => (
     <>
+      <SharingLabel category={sharingCategory} />
+      {contents}
+      <SharingSourceNote category={sharingCategory} />
+    </>
+  );
+
+  return (
+    <SharingCategoryProvider value={sharingCategory}>
       <h3 className="govuk-tabs__title">Contents</h3>
       <ul className="govuk-tabs__list">
         {map && (
@@ -136,7 +159,7 @@ const DataTabs: React.FC<Props> = ({
           id={`map-${id}`}
           style={{ backgroundColor: 'white' }}
         >
-          {map}
+          {panelContent(map)}
         </div>
       )}
       {chart && (
@@ -145,7 +168,7 @@ const DataTabs: React.FC<Props> = ({
           id={`chart-${id}`}
           style={{ backgroundColor: 'white' }}
         >
-          {chart}
+          {panelContent(chart)}
         </div>
       )}
       {graph && (
@@ -154,7 +177,7 @@ const DataTabs: React.FC<Props> = ({
           id={`graph-${id}`}
           style={{ backgroundColor: 'white' }}
         >
-          {graph}
+          {panelContent(graph)}
         </div>
       )}{' '}
       {table && (
@@ -163,7 +186,7 @@ const DataTabs: React.FC<Props> = ({
           id={`table-${id}`}
           style={{ backgroundColor: 'white' }}
         >
-          {table}
+          {panelContent(table)}
         </div>
       )}
       {textSummary && (
@@ -172,7 +195,7 @@ const DataTabs: React.FC<Props> = ({
           id={`textSummary-${id}`}
           style={{ backgroundColor: 'white' }}
         >
-          {textSummary}
+          {panelContent(textSummary)}
         </div>
       )}
       {download && (
@@ -181,10 +204,10 @@ const DataTabs: React.FC<Props> = ({
           id={`download-${id}`}
           style={{ backgroundColor: 'white' }}
         >
-          {download}
+          {panelContent(download)}
         </div>
       )}
-    </>
+    </SharingCategoryProvider>
   );
 };
 

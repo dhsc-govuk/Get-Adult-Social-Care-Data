@@ -157,6 +157,7 @@ export default async function UnpaidCarePage(props: Props) {
         <SummaryNHSPeerGroup />
 
         <DataTabs
+          // sharingMetricIds={demographicMetricIds}
           source="Census 2021 from the Office for National Statistics (ONS)"
           items={[
             {

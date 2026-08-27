@@ -637,6 +637,7 @@ export default function ProvisionAndOccupancyPage() {
         />
         <DataTabs
           id="1"
+          sharingMetricIds={bedTypeMetricIds}
           chart={
             <>
               <h3 className="govuk-heading-s">
@@ -727,6 +728,7 @@ export default function ProvisionAndOccupancyPage() {
         />
         <DataTabs
           id="2"
+          sharingMetricIds={bedTypeMetricIds}
           table={
             <DataTable
               tableref={tableref2}
@@ -800,11 +802,17 @@ export default function ProvisionAndOccupancyPage() {
         dataInfo={
           <p className="govuk-body-m">
             Find out how{' '}
-            <a href={withBasePath('/help/percentage-beds-occupied')} className="govuk-link">
+            <a
+              href={withBasePath('/help/percentage-beds-occupied')}
+              className="govuk-link"
+            >
               occupancy level percentages
             </a>{' '}
             and{' '}
-            <a href={withBasePath('/help/beds-care-provider-location')} className="govuk-link">
+            <a
+              href={withBasePath('/help/beds-care-provider-location')}
+              className="govuk-link"
+            >
               number of adult social care beds in a care provider location
             </a>{' '}
             are calculated.
@@ -830,6 +838,10 @@ export default function ProvisionAndOccupancyPage() {
         </details>
         <DataTabs
           id="3"
+          sharingMetricIds={[
+            ...careProviderMetricIds1,
+            ...careProviderMetricIds2,
+          ]}
           table={
             <DataTable
               tableref={tableref3}
@@ -926,7 +938,9 @@ export default function ProvisionAndOccupancyPage() {
           <p className="govuk-body">
             Find out{' '}
             <a
-              href={withBasePath('/help/beds-per-100000-adult-population-over-time')}
+              href={withBasePath(
+                '/help/beds-per-100000-adult-population-over-time'
+              )}
               className="govuk-link"
             >
               how the total number of adult social care beds per 100,000 adults
@@ -944,6 +958,7 @@ export default function ProvisionAndOccupancyPage() {
         />
         <DataTabs
           id="4"
+          sharingMetricIds={bedTypeMetricIds}
           graph={
             <>
               <h3 className="govuk-heading-s">
