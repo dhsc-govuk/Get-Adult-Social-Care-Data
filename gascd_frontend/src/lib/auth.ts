@@ -8,6 +8,7 @@ import { msdialect } from './authDatabase';
 import { admin, lastLoginMethod } from 'better-auth/plugins';
 import { Kysely } from 'kysely';
 import { withBasePath } from './basePath';
+import { buildLaUserFields } from './laProvisioning';
 
 // Export a connection to the user db for usage elsewhere
 // (re-uses the same connection pool set up in the dialect)
@@ -132,6 +133,40 @@ export const auth = betterAuth({
     // https://www.better-auth.com/docs/integrations/next#server-action-cookies
     nextCookies(), // make sure this is the last plugin in the array
   ],
+  databaseHooks: {
+    user: {
+      create: {
+        // Auto-provision Local Authority users returning from GOV.UK One Login.
+        // Only the LA journey reaches this: the One Login provider keeps
+        // disableImplicitSignUp, and the lookup-email handler passes
+        // requestSignUp for that flow alone. Scoped to the OAuth callback so
+        // other creation paths (local dev sign-up, test seeding) are untouched.
+        before: async (user, context) => {
+          if (!context?.path?.startsWith('/oauth2/callback/')) {
+            return;
+          }
+
+          // Re-check the domain against the allow-list here rather than trusting
+          // the earlier check: this uses the email the IdP actually returned,
+          // which may differ from the one typed on the lookup-email page.
+          const laFields = buildLaUserFields(user.email, user.name);
+          if (!laFields) {
+            logger.error('Blocked sign-up: domain not on the LA allow-list', {
+              path: context.path,
+            });
+            return false;
+          }
+
+          logger.info('Onboarding new LA user', {
+            locationId: laFields.locationId,
+            source: laFields.source,
+          });
+
+          return { data: { ...user, ...laFields } };
+        },
+      },
+    },
+  },
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
       await logLogoutEvent(ctx);
@@ -158,6 +193,12 @@ export const auth = betterAuth({
         });
         if (error === 'signup_disabled') {
           // This occurs for valid oauth flows which don't match existing users in the db
+          throw ctx.redirect(withBasePath('/access-denied'));
+        }
+        if (error === 'unable_to_create_user') {
+          // The user-create hook rejected the sign-up. In practice this means the
+          // address One Login returned is not on the LA allow-list, even though
+          // the address typed on the lookup-email page was.
           throw ctx.redirect(withBasePath('/access-denied'));
         }
       }

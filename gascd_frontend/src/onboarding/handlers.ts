@@ -29,19 +29,51 @@ export async function handleSignupLA(
 }
 
 export async function handleEmailDomainCheck(
-  body: unknown
+  body: unknown,
+  requestHeaders: Headers
 ): Promise<OnboardingResult<LookupEmailFormData>> {
   const rawFormData: LookupEmailFormData = {
     regmail: readField(body, 'regmail'),
-    // ...
   };
 
-  if (isAcceptableEmail(rawFormData.regmail)) {
-    // Confirmation page
-    return { type: 'navigate', path: CONFIRM_LA_PATH };
+  if (!rawFormData.regmail) {
+    const description = 'Enter your email address';
+    return {
+      type: 'error',
+      description,
+      values: rawFormData,
+      errors: { regmail: description },
+    };
   }
-  // Page for User Signup
-  return { type: 'navigate', path: '/signup-la' };
+
+  if (!isAcceptableEmail(rawFormData.regmail)) {
+    // Page for User Signup
+    return { type: 'navigate', path: '/signup-la' };
+  }
+
+  // On the allow-list: hand off to One Login. requestSignUp permits account
+  // creation for this flow only - the provider keeps disableImplicitSignUp, so
+  // the care provider journey is unchanged. The account itself is provisioned
+  // with the LA role by the user-create hook in lib/auth.ts, which re-checks
+  // the domain of the address One Login returns.
+  try {
+    const responseAuth = await auth.api.signInWithOAuth2({
+      body: {
+        providerId: 'govuk-one-login',
+        callbackURL: withBasePath('/home'),
+        requestSignUp: true,
+      },
+      headers: requestHeaders,
+    });
+
+    return { type: 'external', url: responseAuth.url! };
+  } catch (error) {
+    const ERROR_MSG =
+      'Sorry, there is a problem with the service. Please try again later.';
+    logger.error(ERROR_MSG, { error });
+
+    return { type: 'error', description: ERROR_MSG };
+  }
 }
 
 export async function handleWhoami(

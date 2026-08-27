@@ -12,5 +12,5 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  return NextResponse.json(await handleEmailDomainCheck(body));
+  return NextResponse.json(await handleEmailDomainCheck(body, req.headers));
 }
