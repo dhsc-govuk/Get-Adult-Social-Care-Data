@@ -17,7 +17,7 @@ import LocalMarketInformation from '@/components/data-components/LocalMarketInfo
 import BackToTop from '@/components/data-components/BackToTop';
 import SummaryNHSPeerGroup from '@/components/benchmarking/nhs-peer-summary';
 import PeerGroupChartContent from '@/components/charts/peer-group/PeerGroupChartContent';
-import XYZDataTabsServer from './XYZDataTabsServer';
+import XYZDataTabsClient from './XYZDataTabsClient';
 import XYZDataTable, { TableColumnValue } from './XYZDataTable';
 import { mapPeerGroupResponse } from '@/components/charts/peer-group/MapPeerGroupResponse';
 import { UIMetric } from '@/data/interfaces/Indicator';
@@ -201,7 +201,7 @@ export default async function XYZPage(props: Props) {
 
         <SummaryNHSPeerGroup />
 
-        <XYZDataTabsServer
+        <XYZDataTabsClient
           source="XYZ Census 2021..."
           items={[
             {
@@ -252,7 +252,6 @@ export default async function XYZPage(props: Props) {
                 <>
                   <h4 className="govuk-heading-s">Download</h4>
                   <DownloadTableDataCSVLink
-                    // tableref={tableref1}
                     filename="households_deprived_in_4_dimensions.csv"
                     xLabel=""
                     downloadType="percentage of households classified as 'deprived in 4 dimensions'"
@@ -286,57 +285,8 @@ export default async function XYZPage(props: Props) {
           </p>
           <SummaryNHSPeerGroup />
         </>
-        {/* <XYZDataTabs
-          id="2"
-          table={
-            <DataTable
-              // tableref={tableref2}
-              caption={`Table 2: percentage of households where the property is owned outright – ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`}
-              source={
-                'Census 2021 from the Office for National Statistics (ONS)'
-              }
-              columnHeaders={[
-                dataLabels?.CP,
-                dataLabels?.LA,
-                dataLabels?.Regional,
-                dataLabels?.National,
-              ]}
-              rowHeaders={{
-                perc_household_ownership:
-                  'Percentage of households where the property is owned outright',
-              }}
-              data={metrics}
-              showCareProvider={false}
-              percentageRows={['perc_household_ownership']}
-              showAverageLabel={false}
-            ></DataTable>
-          }
-          download={
-            <>
-              <h4 className="govuk-heading-s">Download</h4>
-              <DownloadTableDataCSVLink
-                // tableref={tableref2}
-                filename="property_owned_outright.csv"
-                xLabel=""
-                downloadType="percentage of households where the property is owned outright"
-              />
-            </>
-          }
-          chart={
-            <PeerGroupBarChart
-              laCode={dataKeys.LA}
-              laName={dataLabels.LA}
-              currentLaValue={M2.LA}
-              nationalAverageValue={M2.National}
-              metricCode="perc_household_ownership"
-              metricDescription="the percentage of households where the property is owned outright"
-              figureTitle="Percentage of households where the property is owned outright"
-              figureNumber={2}
-            />
-          }
-        /> */}
 
-        <XYZDataTabsServer
+        <XYZDataTabsClient
           source="XYZ Census 2021..."
           items={[
             {
@@ -382,16 +332,6 @@ export default async function XYZPage(props: Props) {
               label: 'Download',
               id: 'download-2',
               panel: (
-                // <>
-                //   <h4 className="govuk-heading-s">Download</h4>
-                //   <DownloadTableDataCSVLink
-                //     // tableref={tableref2}
-                //     filename="property_owned_outright.csv"
-                //     xLabel=""
-                //     downloadType="percentage of households where the property is owned outright"
-                //   />
-                // </>
-
                 <>
                   <h4 className="govuk-heading-s">Download</h4>
                   <DownloadTableDataCSVLink
@@ -425,54 +365,64 @@ export default async function XYZPage(props: Props) {
           </p>
           <SummaryNHSPeerGroup />
         </>
-        <XYZDataTabs
-          id="3"
-          table={
-            <DataTable
-              // tableref={tableref3}
-              caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`}
-              source={
-                'Census 2021 from the Office for National Statistics (ONS)'
-              }
-              columnHeaders={[
-                dataLabels?.CP,
-                dataLabels?.LA,
-                dataLabels?.Regional,
-                dataLabels?.National,
-              ]}
-              rowHeaders={{
-                perc_households_one_person:
-                  'Percentage of one-person households where the person is aged 65 or over',
-              }}
-              data={metrics}
-              showCareProvider={false}
-              percentageRows={['perc_households_one_person']}
-              showAverageLabel={false}
-            ></DataTable>
-          }
-          download={
-            <>
-              <h4 className="govuk-heading-s">Download</h4>
-              <DownloadTableDataCSVLink
-                // tableref={tableref3}
-                filename="one_person_households_over_65.csv"
-                xLabel=""
-                downloadType="percentage of one-person households where the person is aged 65 or over"
-              />
-            </>
-          }
-          chart={
-            <PeerGroupBarChart
-              laCode={dataKeys.LA}
-              laName={dataLabels.LA}
-              currentLaValue={M3.LA}
-              nationalAverageValue={M3.National}
-              metricCode="perc_households_one_person"
-              metricDescription="the percentage of one-person households where the person is aged 65 or over"
-              figureTitle="Percentage of one-person households where the person is aged 65 or over"
-              figureNumber={3}
-            />
-          }
+
+        <XYZDataTabsClient
+          source="XYZ Census 2021..."
+          items={[
+            {
+              label: 'Chart',
+              id: 'chart-3',
+              panel: (
+                <PeerGroupChartContent
+                  laName={dataLabels.LA}
+                  currentLaValue={M3.LA}
+                  nationalAverageValue={M3.National}
+                  metricDescription="the percentage of one-person households where the person is aged 65 or over"
+                  figureTitle="Percentage of one-person households where the person is aged 65 or over"
+                  figureNumber={3}
+                  peerData={peersGroupedByKey['perc_households_one_person']}
+                />
+              ),
+            },
+            {
+              label: 'Table',
+              id: 'table-3',
+              panel: (
+                <XYZDataTable
+                  caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`}
+                  head={[
+                    'Indicator',
+                    // dataLabels?.CP,
+                    dataLabels?.LA,
+                    dataLabels?.Peer,
+                    dataLabels?.National,
+                  ].map((v) => ({ text: v }))}
+                  rows={[
+                    [
+                      'Percentage of one-person households where the person is aged 65 or over',
+                      ...[M3.LA, M3.Peer, M3.National].map((v) =>
+                        makePercentageString(v)
+                      ),
+                    ].map((v) => ({ text: v })),
+                  ]}
+                />
+              ),
+            },
+            {
+              label: 'Download',
+              id: 'download-3',
+              panel: (
+                <>
+                  <h4 className="govuk-heading-s">Download</h4>
+                  <DownloadTableDataCSVLink
+                    filename="one_person_households_over_65.csv"
+                    xLabel=""
+                    downloadType="percentage of one-person households where the person is aged 65 or over"
+                  />
+                </>
+              ),
+            },
+          ]}
         />
       </XYZDataBox>
 

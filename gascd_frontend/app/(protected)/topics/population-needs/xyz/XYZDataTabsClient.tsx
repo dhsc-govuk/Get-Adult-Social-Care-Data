@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+import React, { useEffect } from 'react';
 
 type XYZDataTabItem = {
   label: string;
@@ -10,7 +11,17 @@ type Props = {
   items: XYZDataTabItem[];
   source?: string;
 };
-export default async function XYZDataTabsServer({ items, source }: Props) {
+export default function XYZDataTabsClient({ items, source }: Props) {
+  useEffect(() => {
+    const setupTabs = async () => {
+      // Import this at page load time to avoid NextJS SSR errors
+      // https://nextjs.org/docs/app/guides/lazy-loading#loading-external-libraries
+      const GOVUKFrontend = await import('govuk-frontend');
+      GOVUKFrontend.createAll(GOVUKFrontend.Tabs);
+    };
+    setupTabs();
+  }, []);
+
   return (
     <div className="govuk-tabs" data-module="govuk-tabs">
       <h2 className="govuk-tabs__title">Contents</h2>
