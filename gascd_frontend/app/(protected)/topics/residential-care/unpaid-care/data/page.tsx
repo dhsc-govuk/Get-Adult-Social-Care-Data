@@ -36,7 +36,7 @@ const METRIC_KEYS: MetricKey[] = ['perc_unpaid_care_provider'];
 type Props = {
   //   searchParams: Promise<{ cplid: string }>;
 };
-export default async function XYZPage(props: Props) {
+export default async function UnpaidCarePage(props: Props) {
   const user = await getCurrentUser();
 
   if (!user) {
@@ -93,7 +93,7 @@ export default async function XYZPage(props: Props) {
       .concat({
         metric_date: null,
         metric_id: m,
-        location_id: dataKeys.Peer,
+        location_id: dataKeys.Peer ?? '',
         location_type: 'Peer',
         data_point: peersGroupedByKey[m].averagePeerGroup,
       } satisfies UIMetric)
@@ -102,7 +102,7 @@ export default async function XYZPage(props: Props) {
         value: m.data_point,
       }))
       .reduce(
-        (obj, item) => ((obj[item.key] = item.value), obj),
+        (obj, item) => ((obj[item.key as DataKey] = item.value), obj),
         {} as Record<DataKey, TableColumnValue>
       )
   );
@@ -165,8 +165,8 @@ export default async function XYZPage(props: Props) {
               panel: (
                 <PeerGroupChartContent
                   laName={dataLabels.LA}
-                  currentLaValue={M1.LA}
-                  nationalAverageValue={M1.National}
+                  currentLaValue={Number(M1.LA)}
+                  nationalAverageValue={Number(M1.National)}
                   peerData={peersGroupedByKey['perc_unpaid_care_provider']}
                   figure={{
                     description: `This chart compares the ${'percentage of people aged 5 and over who provide unpaid care'} in ${dataLabels.LA} against its NHS
@@ -253,8 +253,8 @@ export default async function XYZPage(props: Props) {
 
       {/* $$$ */}
       <LocalMarketInformation
-        localAuthority={dataLabels.LA}
-        localAuthorityId={dataKeys.LA}
+        localAuthority={dataLabels.LA ?? ''}
+        localAuthorityId={dataKeys.LA ?? ''}
       />
 
       <BackToTop />
@@ -263,10 +263,12 @@ export default async function XYZPage(props: Props) {
 }
 
 type LocationData = {
-  dataLabels: Record<DataKey, string>;
-  dataKeys: Record<DataKey, string>;
+  dataLabels: Record<DataKey, string | null>;
+  dataKeys: Record<DataKey, string | null>;
 };
-function getLocationData(data?: Record<string, Partial<string>>): LocationData {
+function getLocationData(
+  data?: Partial<Record<string, string | null>>
+): LocationData {
   if (!data) {
     throw new Error('Cannot proceed with data formatting.');
   }
@@ -289,24 +291,23 @@ function getLocationData(data?: Record<string, Partial<string>>): LocationData {
 
   const result: LocationData = {
     dataKeys: {
-      LA: la_code,
-      National: country_code,
-      Regional: region_code,
+      LA: la_code ?? null,
+      National: country_code ?? null,
+      Regional: region_code ?? null,
       Peer: 'average_peer_group',
       CP: 'Indicator',
     },
     dataLabels: {
-      LA: la_name,
+      LA: la_name ?? null,
       // National: country_name,
       National: 'England (national average)',
-      Regional: region_name,
+      Regional: region_name ?? null,
       Peer: 'NHS peer group average',
-      CP:
-        careProvider && provider_location_name
+      CP: careProvider
+        ? provider_location_name
           ? provider_location_name
-          : careProvider
-            ? provider_location_id
-            : 'N/A',
+          : null
+        : 'N/A',
     },
   };
 

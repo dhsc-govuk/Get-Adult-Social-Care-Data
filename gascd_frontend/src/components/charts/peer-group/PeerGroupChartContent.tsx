@@ -8,7 +8,7 @@ import { NATIONAL_AVG_COLOUR, PEER_AVG_COLOUR } from './constants';
 import { PeerGroupData } from './types';
 
 interface PeerGroupChartContentProps {
-  laName: string;
+  laName: string | null;
   currentLaValue: number | null;
   nationalAverageValue: number | null;
   peerData: PeerGroupData;
@@ -28,6 +28,8 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
   figure,
   peerData,
 }) => {
+  if (laName == null) return null;
+
   const hasPeers = peerData.localAuthorityPeers.length > 0;
 
   const { categories, values } = useMemo(() => {

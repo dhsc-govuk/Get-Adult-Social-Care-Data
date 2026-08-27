@@ -1,14 +1,14 @@
 'use client';
 import React, { useEffect } from 'react';
 
-type XYZDataTabItem = {
+type DataTabItem = {
   label: string;
   id: string;
   panel: React.ReactNode;
 };
 
 type Props = {
-  items: XYZDataTabItem[];
+  items: DataTabItem[];
   source?: string;
 };
 export default function DataTabs({ items, source }: Props) {
