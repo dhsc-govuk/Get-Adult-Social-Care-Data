@@ -57,9 +57,25 @@ function initiateDownload(downloadLink: HTMLAnchorElement) {
   URL.revokeObjectURL(downloadLink.href);
 }
 
-export function convertToCSV(dataRows: any[], xLabel: string): string {
+/**
+ * Usage guidance placed above the data, so the sharing rules for a metric travel
+ * with the file once it leaves the service.
+ */
+function createCSVNotice(notice: string[]): string {
+  if (!notice.length) return '';
+
+  const rows = notice.map((line) => `"${line.replace(/"/g, '""')}"`);
+  // Trailing blank row separates the guidance from the table headers
+  return rows.join('\r\n') + '\r\n\r\n';
+}
+
+export function convertToCSV(
+  dataRows: any[],
+  xLabel: string,
+  notice: string[] = []
+): string {
   const parsedData = parseInputData(dataRows);
-  let csvContent = '';
+  let csvContent = createCSVNotice(notice);
   if (!(parsedData[0] instanceof Array)) {
     csvContent += createCSVHeaders(parsedData, xLabel);
   }
@@ -68,8 +84,13 @@ export function convertToCSV(dataRows: any[], xLabel: string): string {
   return csvContent;
 }
 
-export function downloadCSV(data: any[], filename: string, xLabel: string) {
-  const csvData = convertToCSV(data, xLabel);
+export function downloadCSV(
+  data: any[],
+  filename: string,
+  xLabel: string,
+  notice: string[] = []
+) {
+  const csvData = convertToCSV(data, xLabel, notice);
   const csvBlob = createCSVBlob(csvData);
   const downloadLink = createDownloadLink(csvBlob, filename);
   initiateDownload(downloadLink);

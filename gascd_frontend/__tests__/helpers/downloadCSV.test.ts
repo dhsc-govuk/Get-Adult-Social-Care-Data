@@ -30,6 +30,28 @@ describe('convertToCSV', () => {
     const csv = convertToCSV(mockstruct, '');
     expect(csv).toBe('"Fruit","Cost"\r\n"Apple","1.00"\r\n"Pear","2.00"\r\n');
   });
+
+  it('places the sharing usage guidance above the data', () => {
+    const mocktable = [
+      ['Fruit', 'Cost'],
+      ['Apple', '1.50'],
+    ];
+    const csv = convertToCSV(mocktable, '', [
+      'Sharing label: Not for sharing externally',
+      'The data in the chart is not to be shared outside your organisation.',
+    ]);
+    expect(csv).toBe(
+      '"Sharing label: Not for sharing externally"\r\n' +
+        '"The data in the chart is not to be shared outside your organisation."\r\n' +
+        '\r\n' +
+        '"Fruit","Cost"\r\n"Apple","1.50"\r\n'
+    );
+  });
+
+  it('leaves the CSV unchanged when there is no guidance', () => {
+    const mocktable = [['Fruit']];
+    expect(convertToCSV(mocktable, '', [])).toBe('"Fruit"\r\n');
+  });
 });
 
 describe('extractTableCellText', () => {

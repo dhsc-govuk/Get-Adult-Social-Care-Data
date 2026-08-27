@@ -184,7 +184,9 @@ export default function NumberPeopleReceivingCarePage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href={withBasePath('/help/number-people-receiving-care-from-community-social-care-provider')}
+                href={withBasePath(
+                  '/help/number-people-receiving-care-from-community-social-care-provider'
+                )}
                 className="govuk-link"
               >
                 how the number of people receiving community social care is
@@ -197,6 +199,7 @@ export default function NumberPeopleReceivingCarePage() {
       >
         <DataTabs
           id="1"
+          sharingMetricIds={demographicMetricIds}
           table={
             <DataTable
               tableref={tableref1}
