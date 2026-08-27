@@ -175,6 +175,8 @@ export default async function XYZPage(props: Props) {
               id: 'table-1',
               panel: (
                 <XYZDataTable
+                  description={`This table compares the ${'percentage of people aged 5 and over who provide unpaid care'} in ${dataLabels.LA} against its NHS
+        Peer Group and England.`}
                   caption={`Table 1: Percentage of people aged 5 and over who provide
                   unpaid care - ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`}
                   head={[
