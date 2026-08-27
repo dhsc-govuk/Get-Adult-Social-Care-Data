@@ -47,15 +47,11 @@ const DownloadTableDataCSVLink: React.FC<Props> = ({
   };
 
   return (
-    <>
-      <Link
-        href="#"
-        className="govuk-link govuk-body"
-        onClick={handleDownloadClick}
-      >
+    <p className="govuk-body">
+      <Link href="#" className="govuk-link" onClick={handleDownloadClick}>
         Export {downloadType} table data (CSV)
       </Link>
-    </>
+    </p>
   );
 };
 
