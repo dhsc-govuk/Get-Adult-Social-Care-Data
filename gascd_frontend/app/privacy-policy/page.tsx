@@ -14,7 +14,7 @@ const PrivacyPage = () => {
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-xl">Our privacy notice</h1>
-            <p className="govuk-body">Last updated 19 February 2026</p>
+            <p className="govuk-body">Last updated 19 May 2026</p>
             <p className="govuk-body">
               Your privacy is important to us. This privacy policy covers what
               we collect and how we use it.
@@ -22,7 +22,7 @@ const PrivacyPage = () => {
 
             <h2 className="govuk-heading-m">Who we are</h2>
             <p className="govuk-body">
-              Get adult social care data (GASCD) is a new service provided by
+              Get Adult Social Care Data (GASCD) is a new service provided by
               the Department for Health and Social Care as part of the Data
               Access Project. The GASCD service gives key stakeholders in the
               adult social care sector access to adult social care data in one
@@ -42,10 +42,7 @@ const PrivacyPage = () => {
             </p>
             <ul className="govuk-list govuk-list--bullet">
               <li>your name</li>
-              <li>
-                your Care Quality Commission (CQC) registered or GOV.UK email
-                address
-              </li>
+              <li>your CQC registered or GOV.UK email address</li>
               <li>name and location of your employer or organisation.</li>
               <li>the IP address you use to access the GASCD service</li>
             </ul>
@@ -54,12 +51,14 @@ const PrivacyPage = () => {
               What data we collect from other sources
             </h2>
             <p className="govuk-body">
-              We work closely with trusted partners such as the CQC who provide
-              us with information on:
+              We work closely with trusted partners such as the Care Quality
+              Commission (CQC) who provide us with information on:
             </p>
             <ul className="govuk-list govuk-list--bullet">
               <li>name of registered CQC nominated individuals</li>
+              <li>name of registered managers</li>
               <li>email address of CQC nominated individuals</li>
+              <li>email address of registered managers</li>
               <li>
                 name and location of the CQC registered care provider
                 organisation
@@ -67,13 +66,29 @@ const PrivacyPage = () => {
             </ul>
             <p className="govuk-body">
               We use this information for verification and pre-authorisation to
-              allow access to the data the DHSC provides through its free GASCD
-              service. To find out more about how the CQC shares your data with
-              us read the{' '}
+              allow access to the data the DHSC provides through its free Get
+              Adult Social Care Data service. We also use this information to
+              contact registered managers and nominated individuals by email to
+              invite them to register for the service. To find out more about
+              how the CQC shares your data with us read the{' '}
               <a href="https://www.cqc.org.uk/about-us/our-policies/privacy-statement">
                 CQC&apos;s privacy statement
               </a>
               .
+            </p>
+            <p className="govuk-body">
+              If you are a registered manager or nominated individual registered
+              by the CQC and would prefer not to be contacted the invitation
+              email has a one click unsubscribe button. Once you have clicked,
+              you will not receive any further invitation emails. You can also
+              contact us at
+              <a
+                href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
+                className="govuk-link govuk-link--no-underline"
+              >
+                getadultsocialcaredata.team@dhsc.gov.uk
+              </a>
+              to unsubscribe from the invitation email or for any other queries.
             </p>
 
             <h2 className="govuk-heading-m">
@@ -108,6 +123,7 @@ const PrivacyPage = () => {
             <h2 className="govuk-heading-m">Why we need your data</h2>
             <p className="govuk-body">We collect your personal data to:</p>
             <ul className="govuk-list govuk-list--bullet">
+              <li>invite you to register for GASCD</li>
               <li>allow you to access the GASCD service</li>
               <li>understand who is using the service</li>
               <li>gather feedback to improve our services</li>
@@ -121,9 +137,9 @@ const PrivacyPage = () => {
                 inefficiencies and errors
               </li>
               <li>
-                analyse the information we collect using Azure App Insights to
-                see how you use the GASCD service and to see how well it
-                performs on your device
+                analyse the information we collect using Google Analytics to see
+                how you use the GASCD service and to see how well it performs on
+                your device
               </li>
             </ul>
             <p className="govuk-body">We do this to help:</p>
@@ -164,7 +180,7 @@ const PrivacyPage = () => {
               example, by court order, or to prevent fraud or other crime.
             </p>
 
-            <h2 className="govuk-heading-m">How long we keep your data </h2>
+            <h2 className="govuk-heading-m">How long we keep your data</h2>
             <p className="govuk-body">
               We&apos;ll keep your personal data for as long as you have a GASCD
               service account.
@@ -235,12 +251,12 @@ const PrivacyPage = () => {
             <p className="govuk-body">
               For more information you can read about the{' '}
               <a href={withBasePath('/cookies')} className="govuk-link">
-                cookies we use
+                cookies we use.
               </a>
               .
             </p>
 
-            <h2 className="govuk-heading-m">What are your rights </h2>
+            <h2 className="govuk-heading-m">What are your rights</h2>
             <p className="govuk-body">You have the right to:</p>
             <ul className="govuk-list govuk-list--bullet">
               <li>
@@ -275,7 +291,7 @@ const PrivacyPage = () => {
               Protection Officer, you can find their contact details below.
             </p>
 
-            <h2 className="govuk-heading-m">Questions or complaints </h2>
+            <h2 className="govuk-heading-m">Questions or complaints</h2>
             <p className="govuk-body">
               Contact the DHSC&apos;s Data Protection Team if you either:
             </p>

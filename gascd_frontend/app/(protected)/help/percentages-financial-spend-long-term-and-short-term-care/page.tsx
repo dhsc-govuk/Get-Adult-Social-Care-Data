@@ -26,11 +26,11 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
           }
           source={
             <Link
-              href="https://digital.nhs.uk/data-and-information/publications/statistical/adult-social-care-activity-and-finance-report"
+              href="https://www.gov.uk/government/statistics/adult-social-care-finance-report-england-2024-to-2025/adult-social-care-finance-report-england-2024-to-2025"
               className="govuk-link"
               target="_blank"
             >
-              Adult Social Care Activity and Finance Report from NHS England
+              Adult Social Care Finance Report from the Department of Health and Social Care
               (opens in new tab)
             </Link>
           }
