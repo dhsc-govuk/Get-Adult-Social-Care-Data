@@ -1,259 +1,139 @@
-'use client';
-
-import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
-import React, { useEffect, useRef, useState } from 'react';
-import DataBox from '@/components/data-components/DataBox';
-import DataTabs from '@/components/data-components/DataTabs';
+import TableService from '@/services/Table/TableService';
+import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
+import { get_la_peers, get_location_data, get_metric_data } from '@/data/DAL';
+import { redirect } from 'next/navigation';
+import Layout from '@/components/common/layout/Layout';
+import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
 import DataLinkCard from '@/components/data-components/DataLinkCard';
+import RelatedDataList from '@/components/data-components/RelatedDataList';
 import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
 import BackToTop from '@/components/data-components/BackToTop';
-import LocationService from '@/services/location/locationService';
-import DataTable from '@/components/tables/table';
-import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
-import { LocationNames } from '@/data/interfaces/LocationNames';
-import { Indicator } from '@/data/interfaces/Indicator';
-import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
-import TableService from '@/services/Table/TableService';
-import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
-import IndicatorService from '@/services/indicator/IndicatorService';
+import SummaryNHSPeerGroup from '@/components/benchmarking/nhs-peer-summary';
+import PeerGroupChartContent from '@/components/charts/peer-group/PeerGroupChartContent';
+import { mapPeerGroupResponse } from '@/components/charts/peer-group/MapPeerGroupResponse';
+import { UIMetric } from '@/data/interfaces/Indicator';
+import { PeerGroupData } from '@/components/charts/peer-group/types';
 import AnalyticsService from '@/services/analytics/analyticsService';
-import RelatedDataList from '@/components/data-components/RelatedDataList';
-import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
+import DataBox, {
+  DataKey,
+  MetricKey,
+} from '../../../residential-care/unpaid-care/data/DataBox';
+import DataTable, {
+  TableColumnValue,
+} from '../../../residential-care/unpaid-care/data/DataTable';
+import DataTabs from '../../../residential-care/unpaid-care/data/DataTabs';
 
-export default function DisabilityPrevalence() {
-  const tableref1 = useRef<HTMLTableElement>(null);
-  const tableref2 = useRef<HTMLTableElement>(null);
-  const tableref3 = useRef<HTMLTableElement>(null);
+const breadcrumbs = [
+  {
+    text: 'Home',
+    url: '/home',
+  },
+  {
+    text: 'Population needs',
+    url: '/topics/population-needs/subtopics',
+  },
+];
 
-  const [locationNames, setLocationNames] = useState<LocationNames>({
-    LALabel: 'Loading...',
-    RegionLabel: 'Loading...',
-    CountryLabel: 'Loading...',
-  } as LocationNames);
-  const [locationNamesWithAverageLabels, setLocationNamesWithAverageLabels] =
-    useState<LocationNames>({
-      CPLabel: 'Loading...',
-      LALabel: 'Loading...',
-      RegionLabel: 'Loading...',
-      CountryLabel: 'Loading...',
-    } as LocationNames);
-  const [locationIds, setLocationIds] = useState<string[]>([]);
-  const [CPLocationId, setCPLocationId] = useState<string>();
-  const [filteredDisabilityData, setFilteredDisabilityData] = useState<
-    Indicator[]
-  >([]);
-  const [primarySupportReasonData, setPrimarySupportReasonData] = useState<
-    Indicator[]
-  >([]);
-  const [filteredPrimaryReasonData, setFilteredPrimaryReasonData] = useState<
-    Indicator[]
-  >([]);
-  const [disabilityQuery, setDisabilityQuery] = useState<IndicatorQuery>({
-    metric_ids: [],
-    location_ids: [],
-  });
-  const [supportReasonQuery, setSupportReasonQuery] = useState<IndicatorQuery>({
-    metric_ids: [],
-    location_ids: [],
-  });
+const METRIC_KEYS: MetricKey[] = [
+  'perc_population_disability',
+  'learning_disability_prevalence',
+  'perc_general_health',
+];
 
-  const breadcrumbs = [
-    {
-      text: 'Home',
-      url: '/home',
-    },
-    {
-      text: 'Population needs',
-      url: '/topics/population-needs/subtopics',
-    },
-  ];
+type Props = {
+  //   searchParams: Promise<{ cplid: string }>;
+};
+export default async function UnpaidCarePage(props: Props) {
+  const user = await getCurrentUser();
 
-  const supportReasonMetricIds = [
-    'access_and_mobility_only_physical_support_18_and_over',
-    'asylum_seeker_support_social_support_18_and_over',
-    'learning_disability_support_18_and_over',
-    'mental_health_support_18_and_over',
-    'personal_care_support_physical_support_18_and_over',
-    'substance_misuse_support_social_support_18_and_over',
-    'support_for_dual_impairment_sensory_support_18_and_over',
-    'support_for_hearing_impairment_sensory_support_18_and_over',
-    'support_for_social_isolation_other_social_support_18_and_over',
-    'support_for_visual_impairment_sensory_support_18_and_over',
-    'support_with_memory_and_cognition_18_and_over',
-  ];
+  if (!user) {
+    redirect('/login');
+  }
+  console.log('///---', { isXYZ: isUserRegistered(user) });
 
-  const disabilityMetricIds = [
-    'perc_population_disability',
-    'learning_disability_prevalence',
-    'perc_general_health',
-  ];
+  const data = await get_location_data({ user });
 
-  const supportReasonRowHeadersDefault = {
-    learning_disability_support_18_and_over: 'Learning disability support',
-    mental_health_support_18_and_over: 'Mental health support',
-    access_and_mobility_only_physical_support_18_and_over:
-      'Physical support: Access and mobility only',
-    personal_care_support_physical_support_18_and_over:
-      'Physical support: Personal care support',
-    support_for_dual_impairment_sensory_support_18_and_over:
-      'Sensory support: Support for dual impairment',
-    support_for_hearing_impairment_sensory_support_18_and_over:
-      'Sensory support: Support for hearing impairment',
-    support_for_visual_impairment_sensory_support_18_and_over:
-      'Sensory support: Support for visual impairment',
-    asylum_seeker_support_social_support_18_and_over:
-      'Social support: Asylum seeker support',
-    substance_misuse_support_social_support_18_and_over:
-      'Social support: Substance misuse support',
-    support_for_social_isolation_other_social_support_18_and_over:
-      'Social support: Support for social isolation or other reason',
-    support_with_memory_and_cognition_18_and_over:
-      'Support with memory and cognition',
-  };
+  const { dataKeys, dataLabels } = await getLocationData(data);
 
-  const [supportReasonRowHeaders, setSupportReasonRowHeaders] = useState<any>(
-    supportReasonRowHeadersDefault
+  const collectedPeers = await Promise.all(
+    METRIC_KEYS.map((metricKey) =>
+      get_la_peers({
+        user,
+        la_code: dataKeys.LA,
+        metric_code: metricKey,
+      }).then((data) => mapPeerGroupResponse(data, metricKey))
+    )
   );
 
-  useEffect(() => {
-    const fetchSelectedLocation = async () => {
-      const userLocationId = await LocationService.getSelectedLocation();
-      if (!userLocationId) {
-        // Can't load any data without a valid user location
-        return;
-      }
-      setCPLocationId(userLocationId);
-    };
-    fetchSelectedLocation();
+  const peersGroupedByKey = collectedPeers.reduce(
+    (current, v) => ((current[v.metric_id] = v), current),
+    {} as Record<string, PeerGroupData>
+  );
 
-    // Track all metrics on this page
-    disabilityMetricIds.forEach((metric_id) => {
-      AnalyticsService.trackMetricView(metric_id);
-    });
-    supportReasonMetricIds.forEach((metric_id) => {
-      AnalyticsService.trackMetricView(metric_id);
-    });
-  }, []);
+  const metrics = await get_metric_data({
+    metric_ids: METRIC_KEYS,
+    user,
+  }).then((data) =>
+    TableService.filterDate(data)
+      // Extract from the returned data only what's necessary
+      .map(
+        ({
+          data_point,
+          location_id,
+          location_type,
+          metric_date,
+          metric_id,
+        }): UIMetric => ({
+          data_point,
+          location_id,
+          location_type,
+          metric_date,
+          metric_id,
+        })
+      )
+  );
 
-  useEffect(() => {
-    const fetchLocationNames = async () => {
-      if (CPLocationId) {
-        try {
-          const locationNames = await LocationService.getLocationNames(
-            CPLocationId,
-            false
-          );
-          setLocationNames(locationNames);
-          setLocationNamesWithAverageLabels({
-            CPLabel: locationNames.CPLabel!,
-            LALabel: locationNames.LALabel,
-            RegionLabel: `${locationNames.RegionLabel} (regional average)`,
-            CountryLabel: `${locationNames.CountryLabel} (national average)`,
-          });
-        } catch (error) {
-          console.error('Error fetching location names:', error);
-        }
-      }
-    };
-    fetchLocationNames();
-  }, [CPLocationId]);
+  const [M1, M2, M3] = METRIC_KEYS.map((m) =>
+    metrics
+      .filter((entry) => entry.metric_id == m)
+      // Attach NHS Peer metric
+      .concat({
+        metric_date: null,
+        metric_id: m,
+        location_id: dataKeys.Peer ?? '',
+        location_type: 'Peer',
+        data_point: peersGroupedByKey[m].averagePeerGroup,
+      } satisfies UIMetric)
+      .map((m) => ({
+        key: m.location_type,
+        value: m.data_point,
+      }))
+      .reduce(
+        (obj, item) => ((obj[item.key as DataKey] = item.value), obj),
+        {} as Record<DataKey, TableColumnValue>
+      )
+  );
 
-  useEffect(() => {
-    if (locationIds.length > 0) {
-      setDisabilityQuery(() => ({
-        metric_ids: disabilityMetricIds,
-        location_ids: locationIds,
-      }));
-      setSupportReasonQuery(() => ({
-        metric_ids: supportReasonMetricIds,
-        location_ids: locationIds,
-      }));
-    }
-  }, [locationIds]);
+  console.log('@>>>', {
+    M1,
+    M2,
+    M3,
+    peersGroupedByKey,
+    collectedPeers,
+    metrics: {
+      data: metrics,
+    },
+  });
 
-  useEffect(() => {
-    const fetchDisabilityData = async () => {
-      if (!CPLocationId) return;
-      try {
-        const disabilityData: Indicator[] =
-          await IndicatorFetchService.getData(disabilityQuery);
-        const filteredDisabilityData = TableService.filterDate(disabilityData);
-        setFilteredDisabilityData(filteredDisabilityData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchDisabilityData();
-  }, [disabilityQuery]);
-
-  useEffect(() => {
-    const fetchReasonData = async () => {
-      if (!CPLocationId) return;
-      try {
-        const supportReasonData: Indicator[] =
-          await IndicatorFetchService.getData(supportReasonQuery);
-        const filteredSupportReasonData =
-          TableService.filterDate(supportReasonData);
-        setPrimarySupportReasonData(filteredSupportReasonData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchReasonData();
-  }, [supportReasonQuery]);
-
-  useEffect(() => {
-    const fetchLocationIds = async () => {
-      if (CPLocationId) {
-        try {
-          const locationids = await LocationService.getLocationIds(
-            CPLocationId,
-            false
-          );
-          setLocationIds(locationids);
-        } catch (error) {
-          console.error('Error fetching location ids:', error);
-        }
-      }
-    };
-    fetchLocationIds();
-  }, [CPLocationId]);
-
-  useEffect(() => {
-    updatePrimaryReasonMetrics();
-  }, [primarySupportReasonData]);
-
-  const updatePrimaryReasonMetrics = () => {
-    const storedData = localStorage.getItem('primary-reason-metrics');
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      if (Array.isArray(parsedData)) {
-        const ids = parsedData.map((item) => item.metric_id);
-        setFilteredPrimaryReasonData(
-          primarySupportReasonData.filter((item) =>
-            ids.includes(item.metric_id)
-          )
-        );
-        const map: any = {};
-        parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
-        setSupportReasonRowHeaders(map);
-      }
-    } else {
-      setFilteredPrimaryReasonData(primarySupportReasonData);
-      setSupportReasonRowHeaders(supportReasonRowHeadersDefault);
-    }
-  };
+  // Track all metrics on this page
+  METRIC_KEYS.forEach((metric_id) => {
+    AnalyticsService.trackMetricView(metric_id);
+  });
 
   return (
-    <Layout
-      title="General health and disability"
-      autoSpaceMainContent={false}
-      showLoginInformation={true}
-      currentPage="disability-prevalence"
-      breadcrumbs={breadcrumbs}
-    >
+    <Layout title="General health and disability" breadcrumbs={breadcrumbs}>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">General health and disability</h1>
@@ -266,212 +146,103 @@ export default function DisabilityPrevalence() {
           </h2>
         </div>
       </div>
-      <DataBox
-        dataTitle="Disability prevalence"
-        dataInfo={
-          <>
-            <p className="govuk-body-m">
-              Find out how{' '}
-              <a
-                href={withBasePath(
-                  '/help/people-who-reported-bad-or-very-bad-health'
-                )}
-                className="govuk-link"
-              >
-                people who reported bad or very bad health
-              </a>{' '}
-              and{' '}
-              <a
-                href={withBasePath('/help/disability-prevalence')}
-                className="govuk-link"
-              >
-                disability prevalence
-              </a>{' '}
-              are calculated.
-            </p>
-          </>
-        }
-      >
+
+      <DataBox metricKey="learning_disability_prevalence">
+        <h3 className="govuk-heading-m">Learning disability prevalence</h3>
+        <p className="govuk-body-m">
+          Find out how{' '}
+          <a
+            href={withBasePath('/help/learning-disability-prevalence')}
+            className="govuk-link"
+          >
+            learning disability prevalence is calculated
+          </a>
+          .
+        </p>
+
+        <SummaryNHSPeerGroup />
+
         <DataTabs
-          id="1"
-          sharingMetricIds={[
-            'perc_population_disability',
-            'perc_general_health',
+          // sharingMetricIds={demographicMetricIds}
+          source="Fingertips public health profiles from the Department of Health and Social Care (DHSC)"
+          items={[
+            {
+              label: 'Chart',
+              id: 'chart-2',
+              panel: (
+                <PeerGroupChartContent
+                  laName={dataLabels.LA}
+                  currentLaValue={Number(M2.LA)}
+                  nationalAverageValue={Number(M2.National)}
+                  peerData={peersGroupedByKey['learning_disability_prevalence']}
+                  figure={{
+                    description: `This chart compares the ${'learning disability prevalence'} in ${dataLabels.LA} against its NHS
+            Peer Group and England.`,
+                    title: `Figure 2: Learning disability prevalence - ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`,
+                  }}
+                />
+              ),
+            },
+            {
+              label: 'Table',
+              id: 'table-2',
+              panel: (
+                <DataTable
+                  description={`This table compares the ${'learning disability prevalence'} in ${dataLabels.LA} against its NHS
+        Peer Group and England.`}
+                  caption={`Table 2: Learning disability prevalence - ${dataLabels.LA} LA, ${dataLabels.Peer} and ${dataLabels.National}, March 2021`}
+                  head={[
+                    'Indicator',
+                    // dataLabels?.CP,
+                    dataLabels?.LA,
+                    dataLabels?.Peer,
+                    dataLabels?.National,
+                  ].map((v) => ({ text: v }))}
+                  rows={[
+                    [
+                      'Learning disability prevalence',
+                      ...[M2.LA, M2.Peer, M2.National].map((v) =>
+                        makePercentageString(v)
+                      ),
+                    ].map((v) => ({ text: v })),
+                  ]}
+                />
+              ),
+            },
+            {
+              label: 'Download',
+              id: 'download-2',
+              panel: (
+                <>
+                  <h4 className="govuk-heading-s">Download</h4>
+                  <DownloadTableDataCSVLink
+                    rawdata={[
+                      [
+                        'Indicator',
+                        // dataLabels?.CP,
+                        dataLabels?.LA,
+                        dataLabels?.Peer,
+                        dataLabels?.National,
+                      ],
+                      [
+                        'Learning disability prevalence',
+                        M2.LA,
+                        M2.Peer,
+                        M2.National,
+                      ],
+                    ]}
+                    filename="learning_disability_prevalence.csv"
+                    xLabel=""
+                    downloadType={`learning disability prevalence`}
+                  />
+                </>
+              ),
+            },
           ]}
-          table={
-            <DataTable
-              tableref={tableref1}
-              caption={
-                <>
-                  Table 1: self-reporting on general health and disability –{' '}
-                  {locationNames.LALabel}{' '}
-                  <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getMostRecentMonthYear(
-                    filteredDisabilityData
-                  )}
-                </>
-              }
-              source={
-                'Census 2021 from the Office for National Statistics (ONS)'
-              }
-              columnHeaders={locationNames}
-              rowHeaders={{
-                perc_general_health:
-                  'People who reported bad or very bad health',
-                perc_population_disability:
-                  'Disability prevalence – people who reported a long-term physical or mental health condition, or illness that limits day-to-day activities',
-              }}
-              data={filteredDisabilityData}
-              showCareProvider={false}
-              percentageRows={[
-                'perc_general_health',
-                'perc_population_disability',
-              ]}
-            ></DataTable>
-          }
-          download={
-            <>
-              <h4 className="govuk-heading-s">Download</h4>
-              <DownloadTableDataCSVLink
-                tableref={tableref1}
-                filename="general_health_and_disability.csv"
-                xLabel=""
-                downloadType="self-reporting on general health and disability"
-              />
-            </>
-          }
-        />
-      </DataBox>
-      <DataBox
-        dataTitle="Learning disability prevalence"
-        dataInfo={
-          <>
-            <p className="govuk-body-m">
-              Find out how{' '}
-              <a
-                href={withBasePath('/help/learning-disability-prevalence')}
-                className="govuk-link"
-              >
-                learning disability prevalence is calculated
-              </a>
-              .
-            </p>
-          </>
-        }
-      >
-        <DataTabs
-          id="2"
-          sharingMetricIds={['learning_disability_prevalence']}
-          table={
-            <DataTable
-              tableref={tableref2}
-              caption={
-                <>
-                  Table 2: learning disability prevalence –{' '}
-                  {locationNames.LALabel}{' '}
-                  <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getMostRecentDate(filteredDisabilityData)}
-                </>
-              }
-              source={
-                'Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
-              }
-              columnHeaders={locationNames}
-              rowHeaders={{
-                learning_disability_prevalence:
-                  'Learning disability prevalence',
-              }}
-              data={filteredDisabilityData}
-              showCareProvider={false}
-              percentageRows={['learning_disability_prevalence']}
-            ></DataTable>
-          }
-          download={
-            <>
-              <h4 className="govuk-heading-s">Download</h4>
-              <DownloadTableDataCSVLink
-                tableref={tableref2}
-                filename="learning_disability_prevalence.csv"
-                xLabel=""
-                downloadType="learning disability prevalence"
-              />
-            </>
-          }
         />
       </DataBox>
 
-      <DataBox
-        dataTitle="Primary reason for people to access long-term adult social care"
-        dataInfo={
-          <>
-            <p className="govuk-body-m">
-              Find out how{' '}
-              <a
-                href={withBasePath(
-                  '/help/primary-reason-for-accessing-long-term-adult-social-care'
-                )}
-                className="govuk-link"
-              >
-                primary reason for people to access long-term adult social care
-                is calculated.
-              </a>
-              .
-            </p>
-          </>
-        }
-      >
-        <FilterCheckboxGroup
-          filterType="primary-reason-metrics"
-          filterLabel="Primary support reason"
-          filters={supportReasonRowHeadersDefault}
-          updateMethod={updatePrimaryReasonMetrics}
-        />
-        <DataTabs
-          id="3"
-          sharingMetricIds={supportReasonMetricIds}
-          table={
-            <DataTable
-              tableref={tableref3}
-              caption={
-                <>
-                  Table 3: primary reason for all age groups to access long-term
-                  adult social care – {locationNames.LALabel}{' '}
-                  <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getMostRecentDate(filteredDisabilityData)}
-                </>
-              }
-              source={
-                'Adult Social Care Activity and Finance Report from NHS England'
-              }
-              columnHeaders={locationNamesWithAverageLabels}
-              metricColumnName="Primary support reason"
-              rowHeaders={supportReasonRowHeaders}
-              data={filteredPrimaryReasonData}
-              showCareProvider={false}
-              smallNumberSuppression={true}
-            >
-              <p className="govuk-body-m">(*) denotes less than 5</p>
-            </DataTable>
-          }
-          download={
-            <>
-              <h4 className="govuk-heading-s">Download</h4>
-              <DownloadTableDataCSVLink
-                tableref={tableref3}
-                filename="primary_reasons_for_accessing_care.csv"
-                xLabel=""
-                downloadType="primary reason for all age groups to access long-term adult social care"
-              />
-            </>
-          }
-        />
-      </DataBox>
+      {/* $$$ */}
       <DataIndicatorDetailsList>
         <DataLinkCard
           label="Disability prevalence"
@@ -503,6 +274,7 @@ export default function DisabilityPrevalence() {
         />
       </DataIndicatorDetailsList>
 
+      {/* $$$ */}
       <RelatedDataList>
         <DataLinkCard
           label="Dementia prevalence"
@@ -521,11 +293,71 @@ export default function DisabilityPrevalence() {
         />
       </RelatedDataList>
 
+      {/* $$$ */}
       <LocalMarketInformation
-        localAuthority={locationNames.LALabel}
-        localAuthorityId={locationIds[1]}
+        localAuthority={dataLabels.LA ?? ''}
+        localAuthorityId={dataKeys.LA ?? ''}
       />
       <BackToTop />
     </Layout>
   );
+}
+
+type LocationData = {
+  dataLabels: Record<DataKey, string | null>;
+  dataKeys: Record<DataKey, string | null>;
+};
+function getLocationData(
+  data?: Partial<Record<string, string | null>>
+): LocationData {
+  if (!data) {
+    throw new Error('Cannot proceed with data formatting.');
+  }
+
+  // ...
+  const {
+    la_code,
+    region_code,
+    country_code,
+    la_name,
+    region_name,
+    country_name,
+    // ...
+    // CP
+    provider_location_name,
+    provider_location_id,
+  } = data;
+
+  const careProvider = false;
+
+  const result: LocationData = {
+    dataKeys: {
+      LA: la_code ?? null,
+      National: country_code ?? null,
+      Regional: region_code ?? null,
+      Peer: 'average_peer_group',
+      CP: 'Indicator',
+    },
+    dataLabels: {
+      LA: la_name ?? null,
+      // National: country_name,
+      National: 'England (national average)',
+      Regional: region_name ?? null,
+      Peer: 'NHS peer group average',
+      CP: careProvider
+        ? provider_location_name
+          ? provider_location_name
+          : null
+        : 'N/A',
+    },
+  };
+
+  // console.log('@@@', { data, result });
+  return result;
+}
+
+function makePercentageString(v: TableColumnValue) {
+  return TableService.formatDataPoint(Number(v), {
+    isPercentage: true,
+  });
 }

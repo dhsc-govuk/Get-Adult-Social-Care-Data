@@ -6,7 +6,10 @@ export type MetricKey =
   | 'perc_households_deprivation_deprived'
   | 'perc_household_ownership'
   | 'perc_households_one_person'
-  | 'perc_unpaid_care_provider';
+  | 'perc_unpaid_care_provider'
+  | 'perc_population_disability'
+  | 'learning_disability_prevalence'
+  | 'perc_general_health';
 
 type Props = {
   children?: React.ReactNode;
