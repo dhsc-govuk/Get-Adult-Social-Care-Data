@@ -9,6 +9,10 @@ import {
   FILTER_APPLY_EVENT,
   FILTER_REMOVE_EVENT,
   FILTER_CLEAR_EVENT,
+  COMPARATOR_CHANGE_EVENT,
+  COMPARATOR_GROUP_SAVE_EVENT,
+  COMPARATOR_GROUP_EDIT_EVENT,
+  COMPARATOR_GROUP_DELETE_EVENT,
 } from '@/constants';
 import { ICustomProperties } from '@microsoft/applicationinsights-web';
 import { withBasePath } from '@/lib/basePath';
@@ -78,6 +82,35 @@ class AnalyticsService {
     this._track(FILTER_CLEAR_EVENT, {
       metric_id: metric_id,
     });
+  }
+
+  public static trackComparatorChange(
+    comparator_kind: string,
+    metric_page: string
+  ) {
+    // Tracks switching the benchmarking comparison group
+    // ('nhs_peer_group' or 'custom' - selecting a custom group is the
+    // "performed custom benchmarking" event)
+    this._track(COMPARATOR_CHANGE_EVENT, {
+      comparator_kind: comparator_kind,
+      metric_page: metric_page,
+    });
+  }
+
+  public static trackComparatorGroupSave(group_size: number) {
+    this._track(COMPARATOR_GROUP_SAVE_EVENT, {
+      group_size: group_size,
+    });
+  }
+
+  public static trackComparatorGroupEdit(group_size: number) {
+    this._track(COMPARATOR_GROUP_EDIT_EVENT, {
+      group_size: group_size,
+    });
+  }
+
+  public static trackComparatorGroupDelete() {
+    this._track(COMPARATOR_GROUP_DELETE_EVENT);
   }
 
   // Anonymously track cookie opt-out events

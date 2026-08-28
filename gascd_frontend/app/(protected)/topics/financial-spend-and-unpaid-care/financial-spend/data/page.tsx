@@ -424,7 +424,7 @@ export default function LAFundingPage() {
                 </>
               }
               source={
-                'Adult Social Care Activity and Finance Report from NHS England'
+                'Adult Social Care Finance Report from the Department of Health and Social Care'
               }
               columnHeaders={locationNamesWithAverageLabels}
               metricColumnName={metricColumnNames[0]}
@@ -518,7 +518,7 @@ export default function LAFundingPage() {
                 </>
               }
               source={
-                'Adult Social Care Activity and Finance Report from NHS England'
+                'Adult Social Care Finance Report from the Department of Health and Social Care'
               }
               columnHeaders={locationNamesWithAverageLabels}
               metricColumnName={metricColumnNames[1]}
@@ -627,8 +627,8 @@ export default function LAFundingPage() {
                 </div>
               )) || <p>Loading graph</p>}
               <p className="govuk-body">
-                Source: Adult Social Care Activity and Finance Report from NHS
-                England
+                Source: Adult Social Care Finance Report from the Department of
+                Health and Social Care
               </p>
             </>
           }
@@ -650,7 +650,7 @@ export default function LAFundingPage() {
                 </>
               }
               source={
-                'Adult Social Care Activity and Finance Report from NHS England'
+                'Adult Social Care Finance Report from the Department of Health and Social Care'
               }
               columnHeaders={locationNamesWithAverageLabels}
               metricColumnName={metricColumnNames[2]}

@@ -806,7 +806,9 @@ BEGIN
            (la_id_2, 'E08000015', 'Manchester', region_id, gd_la_2, CURRENT_TIMESTAMP),
            (la_id_3, 'E08000016', 'Cheshire', region_id, null, CURRENT_TIMESTAMP),
            (4, 'E08000017', 'Leeds', region_id, null, CURRENT_TIMESTAMP),
-           (5, 'E08000018', 'Sheffield', region_id, null, CURRENT_TIMESTAMP);
+           (5, 'E08000018', 'Sheffield', region_id, null, CURRENT_TIMESTAMP),
+           -- York deliberately has no metric time-series rows, so endpoints can be tested against an LA with missing values
+           (6, 'E08000019', 'York', region_id, null, CURRENT_TIMESTAMP);
 
     INSERT INTO postcodes (id, code, display_postcode, local_authority_fk, geo_data_fk, loaded_datetime)
     VALUES (1, 'KT220UF', 'KT22 0UF', la_id, gd_postcode, CURRENT_TIMESTAMP),
@@ -1004,10 +1006,14 @@ BEGIN
            (3, perc_household_ownership_total_metric_id, 'E08000015', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [14.2,24.3,34.4,44.5,54.6], 54.6, CURRENT_TIMESTAMP),
            (4, perc_household_ownership_total_metric_id, 'E08000016', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [16.2,26.3,36.4,46.5,56.6], 56.6, CURRENT_TIMESTAMP),
            (5, perc_household_ownership_total_metric_id, 'E08000017', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [17.2,27.3,37.4,47.5,57.6], 57.6, CURRENT_TIMESTAMP),
-           (6, perc_household_ownership_total_metric_id, 'E08000018', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [18.2,28.3,38.4,48.5,58.6], 58.6, CURRENT_TIMESTAMP);
+           (6, perc_household_ownership_total_metric_id, 'E08000018', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [18.2,28.3,38.4,48.5,58.6], 58.6, CURRENT_TIMESTAMP),
+           (7, perc_household_ownership_total_metric_id, 'E92000001', 'National', '2021-03-01 00:00:00', '2021-03-21 00:00:00', ARRAY [32.5], 32.5, CURRENT_TIMESTAMP);
     
     INSERT INTO perc_households_deprivation_deprived (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
-    VALUES (1, perc_households_deprivation_deprived_total_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.24], 6.24, CURRENT_TIMESTAMP),
+    -- Scotland's national value is inserted first so an unfiltered "take any National row" query would
+    -- pick it up: the peers/custom-group national average for an English LA must still be England's 10.5
+    VALUES (8, perc_households_deprivation_deprived_total_metric_id, 'E92000002', 'National', '2021-03-01 00:00:00', '2021-03-21 00:00:00', ARRAY [99.9], 99.9, CURRENT_TIMESTAMP),
+           (1, perc_households_deprivation_deprived_total_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 6.24], 6.24, CURRENT_TIMESTAMP),
            (7, perc_households_deprivation_deprived_total_metric_id, 'E92000001', 'National', '2021-03-01 00:00:00', '2021-03-21 00:00:00', ARRAY [10.5], 10.5, CURRENT_TIMESTAMP),
            (2, perc_households_deprivation_deprived_total_metric_id, 'E08000014', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [12.1,22.2,32.3,42.4,52.5], 52.5, CURRENT_TIMESTAMP),
            (3, perc_households_deprivation_deprived_total_metric_id, 'E08000015', 'LA', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [11.1,21.2,31.3,41.4,51.5], 51.5, CURRENT_TIMESTAMP),
