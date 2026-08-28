@@ -78,24 +78,6 @@ export async function createNewDBUser(email: unknown) {
   }
 }
 
-// ----
-// const REQUIRED_FIELDS = [
-//   'name',
-//   'email',
-//   'location_id',
-//   'location_type',
-//   'source',
-// ];
-
-// type Nullable<T> = { [K in keyof T]: T[K] | null };
-// type UnknownDBRecordUser = Nullable<DBRecordUser>;
-// function isValid(row: Record<string, unknown>): row is DBRecordUser {
-//   return (
-//     REQUIRED_FIELDS.every((k) => k in row) &&
-//     Object.values(row).some((v) => v == null) === false
-//   );
-// }
-
 type ParsedEmailResult = { domain: string; location_id: string };
 function parseEmail(email: string): ParsedEmailResult | null {
   if (isAcceptableEmail(email)) {
