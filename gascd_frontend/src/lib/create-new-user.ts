@@ -1,0 +1,110 @@
+import { redactUserInfo } from '../../scripts/obfuscate';
+import { authDB } from './auth';
+import {
+  isAcceptableEmail,
+  isNonEmptyString,
+  LA_EMAIL_DOMAIN_ID_MAP,
+} from './domain-check';
+import { generateId } from 'better-auth';
+import { generateAnalyticsId } from '@/helpers/telemetry/analyticsId';
+
+type ValidLocationType = 'Care provider' | 'Care provider location' | 'LA';
+
+type DBRecordNewUser = {
+  id: string;
+  analyticsId: string;
+  name: string; // The email is used here for this value.
+  registeredName: string;
+  email: string;
+  registeredEmail: string;
+  emailVerified: 1; // Default value is 1 (Context unknown.)
+  locationId: string;
+  selectedLocationId: string; // Can have the same value as 'locationId' when locationType is 'LA'
+  locationType: ValidLocationType;
+  source: 'manual'; // Acceptable values: 'manual'... Can be expanded (to 'string') later
+  role: 'member'; // Default value is set to 'member' (Context unknown)
+};
+
+const USER_DATABASE_NAME = 'user';
+
+export async function createNewDBUser(email: unknown) {
+  if (isNonEmptyString(email) === false) {
+    throw new Error(`A valid email cannot be empty`);
+  }
+
+  const parsedResult = parseEmail(email);
+  if (parsedResult == null) {
+    throw new Error(`The email did not pass our validation check`);
+  }
+
+  const { location_id } = parsedResult;
+
+  const email_lower = email.toLowerCase();
+  const email_redacted = redactUserInfo(email_lower);
+  const user_match = await authDB
+    .selectFrom(USER_DATABASE_NAME)
+    .select('id')
+    .where('email', '=', email_lower)
+    .executeTakeFirst();
+
+  if (user_match) {
+    throw new Error(`User (${email_redacted}) already exists`);
+  }
+
+  const user_id = generateId();
+  const newDataRow: DBRecordNewUser = {
+    locationId: location_id,
+    locationType: 'LA',
+    name: email_lower,
+    registeredName: email_lower,
+    email: email_lower,
+    registeredEmail: email_lower,
+    source: 'manual',
+    analyticsId: generateAnalyticsId(),
+    id: user_id,
+    emailVerified: 1,
+    role: 'member',
+    selectedLocationId: location_id,
+  };
+
+  try {
+    await authDB.insertInto(USER_DATABASE_NAME).values(newDataRow).execute();
+
+    console.log('New user created successfully.', { user_id });
+  } catch (error) {
+    throw new Error('An error occurred trying to create the new user');
+  } finally {
+    authDB.destroy();
+  }
+}
+
+// ----
+// const REQUIRED_FIELDS = [
+//   'name',
+//   'email',
+//   'location_id',
+//   'location_type',
+//   'source',
+// ];
+
+// type Nullable<T> = { [K in keyof T]: T[K] | null };
+// type UnknownDBRecordUser = Nullable<DBRecordUser>;
+// function isValid(row: Record<string, unknown>): row is DBRecordUser {
+//   return (
+//     REQUIRED_FIELDS.every((k) => k in row) &&
+//     Object.values(row).some((v) => v == null) === false
+//   );
+// }
+
+type ParsedEmailResult = { domain: string; location_id: string };
+function parseEmail(email: string): ParsedEmailResult | null {
+  if (isAcceptableEmail(email)) {
+    const domain = email.split('@')[1];
+    const location_id = LA_EMAIL_DOMAIN_ID_MAP[domain];
+    if (isNonEmptyString(location_id)) {
+      return { domain, location_id };
+    }
+  }
+
+  return null;
+}

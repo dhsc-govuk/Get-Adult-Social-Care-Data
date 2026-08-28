@@ -1,11 +1,12 @@
 'use server';
 import logger from '@/utils/logger';
-import { isAcceptableEmail } from '@/lib/domain-check';
+import { isAcceptableEmail, isNonEmptyString } from '@/lib/domain-check';
 import { redirect } from 'next/navigation';
 import type { ActionResponse, SignupLAFormData, WhoamiFormData } from './types';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { withBasePath } from '@/lib/basePath';
+import { createNewDBUser } from '@/lib/users-db';
 
 // Placeholder link, for demo purposes - INTERIM TEMP SOLUTION
 const CONFIRM_LA_LINK = withBasePath('/confirm-la?sref=HDJ2123F');
@@ -45,6 +46,10 @@ export async function handleFormEmailDomainCheck(
   };
 
   if (isAcceptableEmail(rawFormData.regmail)) {
+    // Insert into database
+    // ...
+    await createNewDBUser(rawFormData.regmail);
+
     // Redirect to Confirmation page
     redirect(CONFIRM_LA_LINK);
   } else {
@@ -146,8 +151,4 @@ function validateFormFields(fields: WhoamiFormData): WhoamiErrors {
   }
 
   return errors;
-}
-
-function isNonEmptyString(value: unknown): value is string {
-  return typeof value === 'string' && value.trim().length > 0;
 }
