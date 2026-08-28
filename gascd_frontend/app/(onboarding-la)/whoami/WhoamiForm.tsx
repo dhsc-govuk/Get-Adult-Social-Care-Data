@@ -2,9 +2,8 @@
 import React, { useActionState } from 'react';
 import Link from 'next/link';
 import { handleFormWhoami } from '@/server-actions';
-import { withBasePath } from '@/lib/basePath';
 
-const BACK_LINK = withBasePath('/login');
+const BACK_LINK = '/login';
 
 const WhoamiForm: React.FC = () => {
   const [state, action, isPending] = useActionState(

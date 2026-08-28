@@ -3,6 +3,8 @@ import Layout from '../../../src/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
 import Link from 'next/link';
 
+const NEXT_PAGE_LINK = '/whoami';
+
 const LoginPage: React.FC = () => {
   return (
     <>
@@ -87,7 +89,7 @@ const LoginPage: React.FC = () => {
             </p>
 
             <Link
-              href={withBasePath('/whoami')}
+              href={NEXT_PAGE_LINK}
               className="govuk-button govuk-button--start"
               data-module="govuk-button"
             >
