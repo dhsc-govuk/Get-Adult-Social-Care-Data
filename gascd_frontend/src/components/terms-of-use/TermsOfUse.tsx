@@ -82,7 +82,8 @@ const TermsOfUse: React.FC = () => {
         <p className="govuk-body">
           The data insight shown in the service has been labelled to help you
           understand whether you are allowed to share it outside of your
-          organisation or not. The labels are:
+          organisation or not. Please review these definitions carefully before
+          sharing any information outside your organisation. The labels are:
         </p>
         <table className="govuk-table" data-testid="data-labels-table">
           <caption className="govuk-visually-hidden">
@@ -108,8 +109,8 @@ const TermsOfUse: React.FC = () => {
                 </strong>
               </td>
               <td className="govuk-table__cell">
-                This data is from public data sources. You can share it with
-                anyone outside your organisation.
+                This data is public because it comes from public data sources.
+                You can share it externally with anyone.
               </td>
             </tr>
             <tr className="govuk-table__row">
@@ -121,11 +122,10 @@ const TermsOfUse: React.FC = () => {
               <td className="govuk-table__cell">
                 This data is only made available to you in{' '}
                 <abbr title="Get Adult Social Care Data">GASCD</abbr> for your
-                internal management purposes. You should only share it within
-                your organisation and instruct your staff not to share it
-                outside of your organisation. This data is not for sharing with
-                AI tools that are outwards facing (ie where content may be used
-                for training of AI models).
+                internal management purposes. Do not share outside your
+                organisation or input into public-facing AI tools (where data
+                may train AI models). Ensure your staff follow these
+                restrictions.
               </td>
             </tr>
             <tr className="govuk-table__row">
@@ -135,10 +135,10 @@ const TermsOfUse: React.FC = () => {
                 </strong>
               </td>
               <td className="govuk-table__cell">
-                This contains your own data that we are reflecting back to you.
-                While we safeguard it, and do not share it with other providers,
-                your organisation owns this data. You can decide how to share
-                it.
+                This section contains some of your organisation&apos;s own data
+                reflected back to you. While DHSC safeguards it and never shares
+                it with other providers, you own this data and can decide how to
+                distribute it.
               </td>
             </tr>
           </tbody>

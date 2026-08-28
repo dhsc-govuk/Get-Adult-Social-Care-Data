@@ -24,12 +24,12 @@ const TotalFinancialSpendLongTermCommunityAdultSocialCare: React.FC = () => {
           }
           source={
             <Link
-              href="https://digital.nhs.uk/data-and-information/publications/statistical/adult-social-care-activity-and-finance-report"
+              href="https://www.gov.uk/government/statistics/adult-social-care-finance-report-england-2024-to-2025/adult-social-care-finance-report-england-2024-to-2025"
               className="govuk-link"
               target="_blank"
             >
-              Adult Social Care Activity and Finance Report from NHS England
-              (opens in new tab)
+              Adult Social Care Finance Report from the Department of Health and
+              Social Care (opens in new tab)
             </Link>
           }
           updateFrequency="Yearly (by financial year)"
@@ -50,9 +50,9 @@ const TotalFinancialSpendLongTermCommunityAdultSocialCare: React.FC = () => {
                 <li>Supported accomodation</li>
               </ul>
               <p className="govuk-!-margin-top-0">
-                Covers <abbr title="Local Authority">LA</abbr>-funded
-                care only; excludes NHS-funded care (including the Better Care
-                Fund) and privately funded care.
+                Covers <abbr title="Local Authority">LA</abbr>-funded care only;
+                excludes NHS-funded care (including the Better Care Fund) and
+                privately funded care.
               </p>
             </>
           }

@@ -28,6 +28,11 @@ describe('TermsOfUsePage', () => {
         /The data insight shown in the service has been labelled/
       )
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /Please review these definitions carefully before sharing/
+      )
+    ).toBeInTheDocument();
   });
 
   it('should define each of the three data labels', () => {
@@ -37,14 +42,18 @@ describe('TermsOfUsePage', () => {
     expect(published).toHaveClass('govuk-tag');
     expect(published).toHaveClass('govuk-tag--green');
     expect(
-      screen.getByText(/This data is from public data sources/)
+      screen.getByText(
+        /This data is public because it comes from public data sources/
+      )
     ).toBeInTheDocument();
 
     const internalOnly = screen.getByText('Not for sharing externally');
     expect(internalOnly).toHaveClass('govuk-tag');
     expect(internalOnly).toHaveClass('govuk-tag--red');
     expect(
-      screen.getByText(/You should only share it within your organisation/)
+      screen.getByText(
+        /Do not share outside your organisation or input into public-facing AI tools/
+      )
     ).toBeInTheDocument();
 
     const ownData = screen.getByText('Share at your own discretion');
@@ -52,7 +61,7 @@ describe('TermsOfUsePage', () => {
     expect(ownData).toHaveClass('govuk-tag--blue');
     expect(
       screen.getByText(
-        /This contains your own data that we are reflecting back to you/
+        /While DHSC safeguards it and never shares it with other providers/
       )
     ).toBeInTheDocument();
   });
@@ -61,9 +70,7 @@ describe('TermsOfUsePage', () => {
     render(<TermsOfUsePage />);
 
     expect(
-      screen.getByText(
-        /This data is not for sharing with AI tools that are outwards facing/
-      )
+      screen.getByText(/where data may train AI models/)
     ).toBeInTheDocument();
   });
 
