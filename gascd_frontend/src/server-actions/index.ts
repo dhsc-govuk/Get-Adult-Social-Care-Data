@@ -9,7 +9,7 @@ import { withBasePath } from '@/lib/basePath';
 import { createNewDBUser } from '@/lib/create-new-user';
 
 // Placeholder link, for demo purposes - INTERIM TEMP SOLUTION
-const CONFIRM_LA_LINK = withBasePath('/confirm-la?sref=HDJ2123F');
+const CONFIRM_LA_LINK = withBasePath('/confirm-la');
 
 export async function handleFormSignupLA(
   _prev: ActionResponse<SignupLAFormData> | undefined,
@@ -48,10 +48,23 @@ export async function handleFormEmailDomainCheck(
   if (isAcceptableEmail(rawFormData.regmail)) {
     // Insert into database
     // ...
-    await createNewDBUser(rawFormData.regmail);
+    const verdict = await createNewDBUser(rawFormData.regmail);
 
-    // Redirect to Confirmation page
-    redirect(CONFIRM_LA_LINK);
+    if (verdict.result == 'EXISTS') {
+      // Proceed to the OneLogin flow
+      const responseAuth = await auth.api.signInWithOAuth2({
+        body: {
+          providerId: 'govuk-one-login',
+          callbackURL: withBasePath('/home'),
+        },
+        headers: await headers(),
+      });
+
+      redirect(responseAuth.url!);
+    } else {
+      // Redirect to Confirmation page
+      redirect(CONFIRM_LA_LINK);
+    }
   } else {
     // Redirect to page for User Signup
     redirect(withBasePath(`/signup-la`));

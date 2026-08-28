@@ -27,7 +27,9 @@ type DBRecordNewUser = {
 
 const USER_DATABASE_NAME = 'user';
 
-export async function createNewDBUser(email: unknown) {
+type Verdict = 'EXISTS' | 'CREATED';
+type Result = { result: Verdict };
+export async function createNewDBUser(email: unknown): Promise<Result> {
   if (isNonEmptyString(email) === false) {
     throw new Error(`A valid email cannot be empty`);
   }
@@ -40,7 +42,6 @@ export async function createNewDBUser(email: unknown) {
   const { location_id } = parsedResult;
 
   const email_lower = email.toLowerCase();
-  const email_redacted = redactUserInfo(email_lower);
   const user_match = await authDB
     .selectFrom(USER_DATABASE_NAME)
     .select('id')
@@ -48,7 +49,7 @@ export async function createNewDBUser(email: unknown) {
     .executeTakeFirst();
 
   if (user_match) {
-    throw new Error(`User (${email_redacted}) already exists`);
+    return { result: 'EXISTS' };
   }
 
   const user_id = generateId();
@@ -71,6 +72,7 @@ export async function createNewDBUser(email: unknown) {
     await authDB.insertInto(USER_DATABASE_NAME).values(newDataRow).execute();
 
     console.log('New user created successfully.', { user_id });
+    return { result: 'CREATED' };
   } catch (error) {
     throw new Error('An error occurred trying to create the new user');
   } finally {
