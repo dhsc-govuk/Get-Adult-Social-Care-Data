@@ -1,7 +1,9 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
 import SignupLAForm from './SignupLAForm';
-import { withBasePath } from '@/lib/basePath';
+import Link from 'next/link';
+
+const BACK_LINK = '/lookup-email';
 
 const SignupLAPage: React.FC = () => {
   return (
@@ -21,9 +23,9 @@ const SignupLAPage: React.FC = () => {
           </p>
           <p className="govuk-body">
             If you entered the wrong email address,{' '}
-            <a className="govuk-link" href={withBasePath('/lookup-email')}>
+            <Link href={BACK_LINK} className="govuk-link">
               go back
-            </a>{' '}
+            </Link>{' '}
             and try again using your Local Authority email address.
           </p>
 

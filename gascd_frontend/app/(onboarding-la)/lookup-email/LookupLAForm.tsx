@@ -3,9 +3,8 @@
 import React, { useActionState } from 'react';
 import Link from 'next/link';
 import { handleFormEmailDomainCheck } from '@/server-actions';
-import { withBasePath } from '@/lib/basePath';
 
-const BACK_LINK = withBasePath('/whoami');
+const BACK_LINK = '/whoami';
 
 const LookupLAForm: React.FC = () => {
   const [state, action, isPending] = useActionState(
