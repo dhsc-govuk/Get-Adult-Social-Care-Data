@@ -99,8 +99,8 @@ export default function DataIndicatorDetailsPage() {
             <DataLinkCard
               label={
                 <>
-                  <abbr title="Local Authority">LA</abbr> funding for
-                  long-term adult social care – trends over time
+                  <abbr title="Local Authority">LA</abbr> funding for long-term
+                  adult social care – trends over time
                 </>
               }
               sources="NHS England"
@@ -189,6 +189,41 @@ export default function DataIndicatorDetailsPage() {
           </h2>
           <ul className="gem-c-cards__list gem-c-cards__list--one-column">
             <DataLinkCard
+              label="Children and young people with an EHCP, aged 14 and over"
+              sources="Department for Education"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/children-and-young-people-with-an-ehcp-aged-14-and-over"
+            />
+            <DataLinkCard
+              label="Children in need"
+              sources="Department for Education"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/children-in-need"
+            />
+            <DataLinkCard
+              label="Children in need episodes ending due to transfer to adult social care"
+              sources="Department for Education"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/children-in-need-episodes-ending-due-to-transfer-to-adult-social-care"
+            />
+            <DataLinkCard
+              label="Children in need per 10,000 children"
+              sources="Department for Education"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/children-in-need-per-10000-children"
+            />
+            <DataLinkCard
+              label="Percentage of pupils with SEN support, aged 14 and over"
+              sources="Department for Education"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/percentage-of-pupils-with-sen-support-aged-14-and-over"
+            />
+            <DataLinkCard
               label="People aged 18-64 predicted to have autistic spectrum disorders, projected to 2045"
               sources="Institute of Public Care"
               updateFrequency="Updated every 5 years"
@@ -208,6 +243,13 @@ export default function DataIndicatorDetailsPage() {
               updateFrequency="Updated every 5 years"
               limitations={true}
               url="/help/estimated-population-early-onset-dementia"
+            />
+            <DataLinkCard
+              label="Pupils with SEN support, aged 14 and over"
+              sources="Department for Education"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/pupils-with-sen-support-aged-14-and-over"
             />
           </ul>
         </div>
