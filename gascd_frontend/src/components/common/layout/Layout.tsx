@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import Footer from '../footer/Footer';
 import PhaseBanner from '../phase-banner/PhaseBanner';
 import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
+import BackLink from '../back-link/BackLink';
 import { Breadcrumb } from '../../../data/interfaces/Breadcrumb';
 import { withBasePath } from '@/lib/basePath';
 
@@ -13,6 +14,7 @@ type Props = {
   showLoginInformation?: boolean;
   currentPage?: string;
   backURL?: string;
+  showBackLink?: boolean;
   showNavBar?: boolean;
 };
 
@@ -25,6 +27,7 @@ const Layout: React.FC<Props> = ({
   showNavBar = false,
   currentPage,
   backURL,
+  showBackLink = false,
 }) => {
   const title_suffix = 'Get adult social care data - GOV.UK';
   const full_title = title + ' - ' + title_suffix;
@@ -83,6 +86,11 @@ const Layout: React.FC<Props> = ({
             <a href={withBasePath(backURL)} className="govuk-back-link">
               Back
             </a>
+          </div>
+        )}
+        {!backURL && showBackLink && (
+          <div className="backlink-wrapper">
+            <BackLink />
           </div>
         )}
         <main
