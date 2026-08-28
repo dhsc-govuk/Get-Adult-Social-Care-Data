@@ -19,7 +19,7 @@ export default function PopulationNeedsPage() {
   const subtopics = [
     {
       title: 'Dementia prevalence',
-      description: 'Data estimates for undiagnosed dementia.',
+      description: 'Data on dementia prevalence.',
       url: '/topics/population-needs/dementia-prevalence/data',
     },
     {

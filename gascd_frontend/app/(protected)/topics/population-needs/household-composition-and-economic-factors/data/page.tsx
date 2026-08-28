@@ -426,6 +426,7 @@ export default function ProvisionAndOccupancyPage() {
         </details>
         <DataTabs
           id="1"
+          sharingMetricIds={['perc_households_deprivation_deprived']}
           table={
             <>
               {renderComparatorControl('comparator-table-1')}
@@ -541,6 +542,7 @@ export default function ProvisionAndOccupancyPage() {
       >
         <DataTabs
           id="2"
+          sharingMetricIds={['perc_household_ownership']}
           table={
             <>
               {renderComparatorControl('comparator-table-2')}
@@ -654,6 +656,7 @@ export default function ProvisionAndOccupancyPage() {
       >
         <DataTabs
           id="3"
+          sharingMetricIds={['perc_households_one_person']}
           table={
             <>
               {renderComparatorControl('comparator-table-3')}
@@ -745,7 +748,7 @@ export default function ProvisionAndOccupancyPage() {
       <RelatedDataList>
         <DataLinkCard
           label="Dementia prevalence"
-          description="Data estimates for undiagnosed dementia."
+          description="Data on dementia prevalence."
           url="/topics/population-needs/dementia-prevalence/data"
         />
         <DataLinkCard
