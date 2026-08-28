@@ -96,20 +96,37 @@ const HomePage: React.FC = async () => {
     },
   ];
 
+  const futurePlanning: Topic = {
+    title: 'Future planning',
+    url: '/topics/future-planning/subtopics',
+    subtopics: [
+      {
+        title:
+          'Special Educational Needs (SEN) and Education, Health and Care Plans (EHCP)',
+        description:
+          'Data on the number and percentage of pupils with SEN support, and on children and young people with an EHCP.',
+        url: '/topics/future-planning/sen-and-ehcp/data',
+      },
+      {
+        title: 'Children in need',
+        description:
+          'Data on children assessed as needing help and protection, including episodes ending due to transfer to adult social care.',
+        url: '/topics/future-planning/children-in-need/data',
+      },
+    ],
+  };
+
+  // Population projections come from PANSI, which is only licensed for LA users
   if (session?.user.locationType == LA_USER_TYPE) {
-    topics.push({
-      title: 'Future planning',
-      url: '/topics/future-planning/subtopics',
-      subtopics: [
-        {
-          title: 'Population projections within local authorities',
-          description:
-            'Data estimates on the future prevalence of long-term conditions and disability for adults.',
-          url: '/topics/future-planning/la-funding-planning/data',
-        },
-      ],
+    futurePlanning.subtopics.push({
+      title: 'Population projections within local authorities',
+      description:
+        'Data estimates on the future prevalence of long-term conditions and disability for adults.',
+      url: '/topics/future-planning/la-funding-planning/data',
     });
   }
+
+  topics.push(futurePlanning);
 
   return (
     <>
