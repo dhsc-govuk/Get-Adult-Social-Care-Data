@@ -264,9 +264,8 @@ export default function SenAndEhcpPage() {
 
   const comparedLocations = (
     <>
-      {locationNames.LALabel} <abbr title="local authority">LA</abbr>,{' '}
-      {locationNames.RegionLabel} (regional average) and{' '}
-      {locationNames.CountryLabel} (national average)
+      {columnLabels.LALabel} <abbr title="local authority">LA</abbr>,{' '}
+      {columnLabels.RegionLabel} and {columnLabels.CountryLabel}
     </>
   );
 

@@ -21,9 +21,13 @@ export const comparisonLabels = (
   locationNames: LocationNames
 ): LocationNames => ({
   CPLabel: locationNames.CPLabel,
-  LALabel: locationNames.LALabel,
-  RegionLabel: `${locationNames.RegionLabel} (regional average)`,
-  CountryLabel: `${locationNames.CountryLabel} (national average)`,
+  LALabel: locationNames.LALabel || 'Local authority',
+  RegionLabel: locationNames.RegionLabel
+    ? `${locationNames.RegionLabel} (regional average)`
+    : 'Regional average',
+  CountryLabel: locationNames.CountryLabel
+    ? `${locationNames.CountryLabel} (national average)`
+    : 'National average',
 });
 
 const labelFor = (
