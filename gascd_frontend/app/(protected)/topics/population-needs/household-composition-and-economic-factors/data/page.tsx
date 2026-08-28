@@ -2,7 +2,7 @@
 
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
@@ -21,6 +21,14 @@ import DownloadTableDataCSVLink from '@/components/metric-components/download-ta
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
+import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
+import ComparatorGroupBuilder from '@/components/charts/peer-group/ComparatorGroupBuilder';
+import { useComparatorGroups } from '@/components/charts/peer-group/useComparatorGroups';
+import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
+import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLocalAuthorities';
+import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
+import { ComparatorSelection } from '@/components/charts/peer-group/types';
+import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -35,16 +43,19 @@ export default function ProvisionAndOccupancyPage() {
   } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
-  const [filteredDemographicData, setFilteredDemographicData] = useState<
-    Indicator[]
-  >([]);
+  const [baseDemographicData, setBaseDemographicData] = useState<Indicator[]>(
+    []
+  );
   const [demographicQuery, setDemographicQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
   });
-  const [peerGroupAverages, setPeerGroupAverages] = useState<{
-    [key: string]: number | null;
-  }>({});
+  // Status of the metric-data request that supplies the user's LA and England
+  // values. Starts as loading because the query cannot be built until the
+  // location ids resolve.
+  const [baseDataStatus, setBaseDataStatus] = useState<
+    'loading' | 'ready' | 'error'
+  >('loading');
 
   const breadcrumbs = [
     {
@@ -62,6 +73,157 @@ export default function ProvisionAndOccupancyPage() {
     'perc_household_ownership',
     'perc_households_one_person',
   ];
+
+  const metricPage = 'household-composition-and-economic-factors';
+  const laCode = locationIds[1];
+
+  const {
+    groups,
+    selection,
+    setSelection,
+    saveGroup,
+    updateGroup,
+    deleteGroup,
+  } = useComparatorGroups();
+  // Which comparator control has its builder panel open, and whether it is
+  // editing an existing group (by id) or creating a new one
+  const [builderState, setBuilderState] = useState<{
+    idPrefix: string;
+    editingGroupId?: string;
+  } | null>(null);
+  const [builderError, setBuilderError] = useState<string | null>(null);
+  const {
+    dataByMetric,
+    loading: peerLoading,
+    error: peerError,
+  } = usePeerGroupData(laCode, demographicMetricIds, selection, groups);
+  // A chart needs both the comparator data and the user's own LA / England
+  // values before it is complete, so it waits for (and fails on) either
+  // request rather than rendering peer bars without the user's authority.
+  const chartLoading = peerLoading || baseDataStatus === 'loading';
+  const chartError = peerError || baseDataStatus === 'error';
+  const { authorities, error: authoritiesError } = useAllLocalAuthorities(
+    builderState !== null
+  );
+
+  const selectedGroup =
+    selection.kind === 'custom'
+      ? groups.find((group) => group.id === selection.groupId)
+      : undefined;
+  const comparatorLabel = selectedGroup ? selectedGroup.name : undefined;
+  const comparatorAverageLabel = selectedGroup
+    ? `${selectedGroup.name} average`
+    : NHS_PEER_GROUP_AVERAGE_LABEL;
+  const tableColumnHeaders = {
+    ...locationNames,
+    RegionLabel: comparatorAverageLabel,
+  };
+
+  const handleComparatorChange = (newSelection: ComparatorSelection) => {
+    setSelection(newSelection);
+    setBuilderState(null);
+    setBuilderError(null);
+    AnalyticsService.trackComparatorChange(newSelection.kind, metricPage);
+  };
+
+  const handleGroupSave = async (group: {
+    name: string;
+    laCodes: string[];
+  }) => {
+    setBuilderError(null);
+    try {
+      if (builderState?.editingGroupId) {
+        await updateGroup(builderState.editingGroupId, group);
+        AnalyticsService.trackComparatorGroupEdit(group.laCodes.length);
+      } else {
+        await saveGroup(group);
+        AnalyticsService.trackComparatorGroupSave(group.laCodes.length);
+        AnalyticsService.trackComparatorChange('custom', metricPage);
+      }
+      setBuilderState(null);
+    } catch (error) {
+      // Keep the builder open so nothing the user entered is lost
+      setBuilderError(
+        error instanceof Error
+          ? error.message
+          : 'Your comparator group could not be saved. Try again.'
+      );
+    }
+  };
+
+  const handleGroupDelete = async () => {
+    setBuilderError(null);
+    try {
+      if (builderState?.editingGroupId) {
+        await deleteGroup(builderState.editingGroupId);
+        AnalyticsService.trackComparatorGroupDelete();
+      }
+      setBuilderState(null);
+    } catch (error) {
+      setBuilderError(
+        error instanceof Error
+          ? error.message
+          : 'The comparator group could not be deleted. Try again.'
+      );
+    }
+  };
+
+  const handleEditToggle = (idPrefix: string) => {
+    if (selection.kind !== 'custom') return;
+    setBuilderError(null);
+    setBuilderState((current) =>
+      current?.idPrefix === idPrefix && current.editingGroupId
+        ? null
+        : { idPrefix, editingGroupId: selection.groupId }
+    );
+  };
+
+  const renderComparatorControl = (idPrefix: string) => {
+    const builderOpenHere = builderState?.idPrefix === idPrefix;
+    const editingGroup = builderOpenHere
+      ? groups.find((group) => group.id === builderState?.editingGroupId)
+      : undefined;
+
+    return (
+      <>
+        <ComparatorGroupSelect
+          idPrefix={idPrefix}
+          selection={selection}
+          groups={groups}
+          onChange={handleComparatorChange}
+          onCreateNew={() => setBuilderState({ idPrefix })}
+          onEdit={() => handleEditToggle(idPrefix)}
+          builderMode={
+            builderOpenHere ? (editingGroup ? 'edit' : 'create') : null
+          }
+        />
+        {builderOpenHere && (
+          <ComparatorGroupBuilder
+            // Remount when switching between create and edit so the form
+            // state is reinitialised from the right group
+            key={editingGroup?.id ?? 'create'}
+            idPrefix={idPrefix}
+            allAuthorities={authorities}
+            authoritiesError={authoritiesError}
+            ownLaCode={laCode}
+            existingNames={groups
+              .filter((group) => group.id !== editingGroup?.id)
+              .map((group) => group.name)}
+            onSave={handleGroupSave}
+            onCancel={() => {
+              setBuilderState(null);
+              setBuilderError(null);
+            }}
+            mode={editingGroup ? 'edit' : 'create'}
+            initialName={editingGroup?.name}
+            initialCodes={editingGroup?.laCodes}
+            onDelete={editingGroup ? handleGroupDelete : undefined}
+            serverError={builderError ?? undefined}
+          />
+        )}
+      </>
+    );
+  };
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -111,36 +273,44 @@ export default function ProvisionAndOccupancyPage() {
   }, [locationIds]);
 
   useEffect(() => {
+    let cancelled = false;
     const fetchAllData = async () => {
-      if (!CPLocationId) return;
+      if (!CPLocationId || demographicQuery.metric_ids.length === 0) return;
+      setBaseDataStatus('loading');
       try {
         const demographicData: Indicator[] =
           await IndicatorFetchService.getData(demographicQuery);
-        const filteredDemographicData =
-          TableService.filterDate(demographicData);
-
-        // Transform Regional data to NHS Peer Group and fetch peer group averages
-        const transformedData = filteredDemographicData.map((d: Indicator) => {
-          if (
-            d.location_type === 'Regional' &&
-            peerGroupAverages[d.metric_id] !== undefined
-          ) {
-            return {
-              ...d,
-              location_type: 'Regional',
-              data_point: peerGroupAverages[d.metric_id],
-            };
-          }
-          return d;
-        });
-
-        setFilteredDemographicData(transformedData);
+        if (cancelled) return;
+        setBaseDemographicData(TableService.filterDate(demographicData));
+        setBaseDataStatus('ready');
       } catch (error) {
+        if (cancelled) return;
         console.error('Error fetching data:', error);
+        setBaseDataStatus('error');
       }
     };
     fetchAllData();
-  }, [demographicQuery, peerGroupAverages]);
+    return () => {
+      cancelled = true;
+    };
+  }, [demographicQuery, CPLocationId]);
+
+  // The Regional row is repurposed to show the selected comparison group's
+  // average (synthesised if the metrics API returned no Regional row). Derived
+  // synchronously so the table can never show a stale or mislabelled value:
+  // while comparator data is unresolved (loading or failed), the row is null
+  // and renders as unavailable rather than falling back to the true regional
+  // value under a comparator-average heading.
+  const filteredDemographicData = useMemo(
+    () =>
+      mergeComparatorAverage(
+        baseDemographicData,
+        demographicMetricIds,
+        dataByMetric,
+        locationIds[2]
+      ),
+    [baseDemographicData, dataByMetric, locationIds]
+  );
 
   useEffect(() => {
     const fetchLocationIds = async () => {
@@ -158,49 +328,6 @@ export default function ProvisionAndOccupancyPage() {
     };
     fetchLocationIds();
   }, [CPLocationId]);
-
-  useEffect(() => {
-    const fetchPeerGroupAverages = async () => {
-      if (!locationIds.length || locationIds.length < 2) return;
-      try {
-        const laCode = locationIds[1];
-
-        const results = await Promise.all(
-          demographicMetricIds.map(async (metricId) => {
-            try {
-              const response = await fetch(
-                withBasePath(
-                  `/api/get_la_peers?la_code=${encodeURIComponent(laCode)}&metric_code=${metricId}`
-                )
-              );
-              if (response.ok) {
-                const data = await response.json();
-                return [
-                  metricId,
-                  data?.averagePeerGroup ??
-                    data?.AveragePeerGroup ??
-                    data?.average_peer_group ??
-                    null,
-                ] as const;
-              }
-            } catch (error) {
-              console.error(
-                `Error fetching peer group data for ${metricId}:`,
-                error
-              );
-            }
-            return [metricId, null] as const;
-          })
-        );
-
-        setPeerGroupAverages(Object.fromEntries(results));
-      } catch (error) {
-        console.error('Error fetching peer group averages:', error);
-      }
-    };
-
-    fetchPeerGroupAverages();
-  }, [locationIds]);
 
   return (
     <Layout
@@ -301,25 +428,29 @@ export default function ProvisionAndOccupancyPage() {
           id="1"
           sharingMetricIds={['perc_households_deprivation_deprived']}
           table={
-            <DataTable
-              tableref={tableref1}
-              caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
-              source={
-                'Census 2021 from the Office for National Statistics (ONS)'
-              }
-              columnHeaders={locationNames}
-              rowHeaders={{
-                perc_households_deprivation_deprived:
-                  'Percentage of households deprived in 4 dimensions: education, employment, health and housing',
-              }}
-              data={filteredDemographicData}
-              showCareProvider={false}
-              percentageRows={['perc_households_deprivation_deprived']}
-              showAverageLabel={false}
-            ></DataTable>
+            <>
+              {renderComparatorControl('comparator-table-1')}
+              <DataTable
+                tableref={tableref1}
+                caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${tableColumnHeaders.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
+                source={
+                  'Census 2021 from the Office for National Statistics (ONS)'
+                }
+                columnHeaders={tableColumnHeaders}
+                rowHeaders={{
+                  perc_households_deprivation_deprived:
+                    'Percentage of households deprived in 4 dimensions: education, employment, health and housing',
+                }}
+                data={filteredDemographicData}
+                showCareProvider={false}
+                percentageRows={['perc_households_deprivation_deprived']}
+                showAverageLabel={false}
+              ></DataTable>
+            </>
           }
           download={
             <>
+              {renderComparatorControl('comparator-download-1')}
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
@@ -347,6 +478,14 @@ export default function ProvisionAndOccupancyPage() {
                     d.location_type === 'National'
                 )?.data_point ?? null
               }
+              peerData={
+                dataByMetric['perc_households_deprivation_deprived'] ?? null
+              }
+              loading={chartLoading}
+              error={chartError}
+              comparatorControl={renderComparatorControl('comparator-chart-1')}
+              comparatorLabel={comparatorLabel}
+              comparatorAverageLabel={comparatorAverageLabel}
             />
           }
         />
@@ -405,25 +544,29 @@ export default function ProvisionAndOccupancyPage() {
           id="2"
           sharingMetricIds={['perc_household_ownership']}
           table={
-            <DataTable
-              tableref={tableref2}
-              caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
-              source={
-                'Census 2021 from the Office for National Statistics (ONS)'
-              }
-              columnHeaders={locationNames}
-              rowHeaders={{
-                perc_household_ownership:
-                  'Percentage of households where the property is owned outright',
-              }}
-              data={filteredDemographicData}
-              showCareProvider={false}
-              percentageRows={['perc_household_ownership']}
-              showAverageLabel={false}
-            ></DataTable>
+            <>
+              {renderComparatorControl('comparator-table-2')}
+              <DataTable
+                tableref={tableref2}
+                caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${tableColumnHeaders.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
+                source={
+                  'Census 2021 from the Office for National Statistics (ONS)'
+                }
+                columnHeaders={tableColumnHeaders}
+                rowHeaders={{
+                  perc_household_ownership:
+                    'Percentage of households where the property is owned outright',
+                }}
+                data={filteredDemographicData}
+                showCareProvider={false}
+                percentageRows={['perc_household_ownership']}
+                showAverageLabel={false}
+              ></DataTable>
+            </>
           }
           download={
             <>
+              {renderComparatorControl('comparator-download-2')}
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref2}
@@ -451,7 +594,12 @@ export default function ProvisionAndOccupancyPage() {
                     d.location_type === 'National'
                 )?.data_point ?? null
               }
-              metricCode="perc_household_ownership"
+              peerData={dataByMetric['perc_household_ownership'] ?? null}
+              loading={chartLoading}
+              error={chartError}
+              comparatorControl={renderComparatorControl('comparator-chart-2')}
+              comparatorLabel={comparatorLabel}
+              comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="the percentage of households where the property is owned outright"
               figureTitle="Percentage of households where the property is owned outright"
               figureNumber={2}
@@ -510,25 +658,29 @@ export default function ProvisionAndOccupancyPage() {
           id="3"
           sharingMetricIds={['perc_households_one_person']}
           table={
-            <DataTable
-              tableref={tableref3}
-              caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
-              source={
-                'Census 2021 from the Office for National Statistics (ONS)'
-              }
-              columnHeaders={locationNames}
-              rowHeaders={{
-                perc_households_one_person:
-                  'Percentage of one-person households where the person is aged 65 or over',
-              }}
-              data={filteredDemographicData}
-              showCareProvider={false}
-              percentageRows={['perc_households_one_person']}
-              showAverageLabel={false}
-            ></DataTable>
+            <>
+              {renderComparatorControl('comparator-table-3')}
+              <DataTable
+                tableref={tableref3}
+                caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${tableColumnHeaders.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
+                source={
+                  'Census 2021 from the Office for National Statistics (ONS)'
+                }
+                columnHeaders={tableColumnHeaders}
+                rowHeaders={{
+                  perc_households_one_person:
+                    'Percentage of one-person households where the person is aged 65 or over',
+                }}
+                data={filteredDemographicData}
+                showCareProvider={false}
+                percentageRows={['perc_households_one_person']}
+                showAverageLabel={false}
+              ></DataTable>
+            </>
           }
           download={
             <>
+              {renderComparatorControl('comparator-download-3')}
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref3}
@@ -556,7 +708,12 @@ export default function ProvisionAndOccupancyPage() {
                     d.location_type === 'National'
                 )?.data_point ?? null
               }
-              metricCode="perc_households_one_person"
+              peerData={dataByMetric['perc_households_one_person'] ?? null}
+              loading={chartLoading}
+              error={chartError}
+              comparatorControl={renderComparatorControl('comparator-chart-3')}
+              comparatorLabel={comparatorLabel}
+              comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="the percentage of one-person households where the person is aged 65 or over"
               figureTitle="Percentage of one-person households where the person is aged 65 or over"
               figureNumber={3}

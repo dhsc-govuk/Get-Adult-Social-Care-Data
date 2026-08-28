@@ -44,10 +44,13 @@ public class GetRegionEndpointTests(App app) : TestBase<App>
         response.GeoData!.Polygon.ShouldBe(expectedPolygon);
         response.CountryCode.ShouldBe("E92000001");
         response.CountryName.ShouldBe("England");
-        response.LocalAuthorities.Count.ShouldBe(3);
+        response.LocalAuthorities.Count.ShouldBe(6);
         response.LocalAuthorities.ShouldContain(x => x.LaName == "Liverpool" && x.LaCode == "E08000014");
         response.LocalAuthorities.ShouldContain(x => x.LaName == "Manchester" && x.LaCode == "E08000015");
         response.LocalAuthorities.ShouldContain(x => x.LaName == "Cheshire" && x.LaCode == "E08000016");
+        response.LocalAuthorities.ShouldContain(x => x.LaName == "Leeds" && x.LaCode == "E08000017");
+        response.LocalAuthorities.ShouldContain(x => x.LaName == "Sheffield" && x.LaCode == "E08000018");
+        response.LocalAuthorities.ShouldContain(x => x.LaName == "York" && x.LaCode == "E08000019");
     }
 
 

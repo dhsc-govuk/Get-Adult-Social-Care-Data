@@ -266,6 +266,45 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/metric_locations/local_authorities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List all local authorities
+         * @description Retrieves all local authorities with their region, ordered by name.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description All local authorities ordered by name. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["LocalAuthorityListResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/metric_locations/local_authorities/{code}": {
         parameters: {
             query?: never;
@@ -362,6 +401,59 @@ export interface paths {
                 };
                 /** @description Local authority not found. */
                 404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/metric_locations/custom_local_authority_group": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get metric values for a custom group of local authorities
+         * @description Retrieves the latest metric values and summary averages for an arbitrary set of local authorities.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description The local authority codes in the custom group. */
+                    la_codes: string[];
+                    /** @description The unique identifier for the metric. */
+                    metric_code: string;
+                    /** @description The requesting local authority's code. Included as a group member but excluded from the group average. */
+                    requesting_la_code?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Metric values and summary averages for the requested local authorities. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CustomLocalAuthorityGroupResponse"];
+                    };
+                };
+                /** @description Invalid metric code, unknown local authority codes, or too many codes supplied. */
+                400: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -713,6 +805,38 @@ export interface components {
             average_peer_group?: number | null;
             /** @description Most recent national metric value. */
             national_average?: number | null;
+        };
+        /** @description A local authority within a custom comparator group. */
+        CustomGroupMember: {
+            /** @description Code of the local authority. */
+            code?: string;
+            /** @description Display name of the local authority. */
+            display_name?: string;
+            /** @description Most recent metric value for the local authority. */
+            metric_value?: number | null;
+        };
+        /** @description Metric values and summary averages for a custom group of local authorities. */
+        CustomLocalAuthorityGroupResponse: {
+            group_members?: components["schemas"]["CustomGroupMember"][];
+            /** @description Average metric value across group members with available data, excluding the requesting local authority. */
+            custom_group_average?: number | null;
+            /** @description Most recent national metric value. */
+            national_average?: number | null;
+        };
+        /** @description A local authority with its region. */
+        LocalAuthoritySummary: {
+            /** @description Code of the local authority. */
+            code?: string;
+            /** @description Display name of the local authority. */
+            display_name?: string;
+            /** @description Code of the region the local authority belongs to. */
+            region_code?: string;
+            /** @description Name of the region the local authority belongs to. */
+            region_name?: string;
+        };
+        /** @description All local authorities ordered by name. */
+        LocalAuthorityListResponse: {
+            local_authorities?: components["schemas"]["LocalAuthoritySummary"][];
         };
         /** @description Represents a region */
         Region: {

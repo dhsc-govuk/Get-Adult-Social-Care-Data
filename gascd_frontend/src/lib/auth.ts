@@ -2,6 +2,7 @@ import { betterAuth, boolean } from 'better-auth';
 import { createAuthMiddleware } from 'better-auth/api';
 import { logLogoutEvent } from './authHooks';
 import { getOAuthConfig } from './authPlugins';
+import { comparatorGroupsPlugin } from './comparatorGroupsPlugin';
 import { nextCookies } from 'better-auth/next-js';
 import logger from '@/utils/logger';
 import { msdialect } from './authDatabase';
@@ -128,6 +129,7 @@ export const auth = betterAuth({
     lastLoginMethod({
       storeInDatabase: true,
     }),
+    comparatorGroupsPlugin(),
     getOAuthConfig(),
     // https://www.better-auth.com/docs/integrations/next#server-action-cookies
     nextCookies(), // make sure this is the last plugin in the array

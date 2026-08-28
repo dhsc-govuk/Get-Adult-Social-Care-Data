@@ -6,20 +6,31 @@ import {
   PEER_LA_COLOUR,
 } from './constants';
 
+import { NHS_PEER_GROUP_AVERAGE_LABEL } from './constants';
+
 interface PeerGroupChartLegendProps {
   laName: string;
   peerGroupAverage: number | null;
   nationalAverage: number | null;
+  // Legend label for the comparator average line, e.g. "NHS peer group
+  // average" or "{group name} average".
+  comparatorAverageLabel?: string;
+  valueSuffix?: string;
 }
-
-const formatPercentage = (value: number | null | undefined): string =>
-  value !== null && value !== undefined ? `${value.toFixed(1)}%` : 'N/A';
 
 const PeerGroupChartLegend: React.FC<PeerGroupChartLegendProps> = ({
   laName,
   peerGroupAverage,
   nationalAverage,
-}) => (
+  comparatorAverageLabel = NHS_PEER_GROUP_AVERAGE_LABEL,
+  valueSuffix = '%',
+}) => {
+  const formatValue = (value: number | null | undefined): string =>
+    value !== null && value !== undefined
+      ? `${value.toFixed(1)}${valueSuffix}`
+      : 'N/A';
+
+  return (
   <ul
     className="govuk-list govuk-!-margin-bottom-4"
     style={{
@@ -66,7 +77,7 @@ const PeerGroupChartLegend: React.FC<PeerGroupChartLegendProps> = ({
         aria-hidden="true"
       />
       <span className="govuk-body-s govuk-!-margin-bottom-0">
-        NHS peer group average ({formatPercentage(peerGroupAverage)})
+        {comparatorAverageLabel} ({formatValue(peerGroupAverage)})
       </span>
     </li>
     <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -80,10 +91,11 @@ const PeerGroupChartLegend: React.FC<PeerGroupChartLegendProps> = ({
         aria-hidden="true"
       />
       <span className="govuk-body-s govuk-!-margin-bottom-0">
-        England (national average) ({formatPercentage(nationalAverage)})
+        England (national average) ({formatValue(nationalAverage)})
       </span>
     </li>
   </ul>
-);
+  );
+};
 
 export default PeerGroupChartLegend;
