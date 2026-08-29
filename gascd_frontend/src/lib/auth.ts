@@ -14,7 +14,7 @@ import { withBasePath } from './basePath';
 export const authDB = new Kysely<any>({ dialect: msdialect });
 
 export const auth = betterAuth({
-  basePath: (process.env.NEXT_PUBLIC_BASE_PATH ?? '') + '/api/auth',
+  basePath: (process.env.BASE_PATH ?? '') + '/api/auth',
   rateLimit: {
     enabled: process.env.E2E_TESTING_MODE !== 'true',
   },
