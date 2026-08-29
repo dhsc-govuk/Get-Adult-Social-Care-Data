@@ -1,12 +1,16 @@
 export type ActionResponse<T> = {
-  type: 'error';
-  description: string;
+  type?: 'error';
+  description?: string;
   errors?: Partial<T>;
   values?: Partial<T>; // form-fields
 };
 
 export type WhoamiFormData = {
   id: string | null;
+};
+
+export type LookupLAFormData = {
+  regmail: string | null;
 };
 
 export type SignupLAFormData = {

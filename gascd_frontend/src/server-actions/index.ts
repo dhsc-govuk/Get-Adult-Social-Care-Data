@@ -2,7 +2,12 @@
 import logger from '@/utils/logger';
 import { isAcceptableEmail, isNonEmptyString } from '@/lib/domain-check';
 import { redirect } from 'next/navigation';
-import type { ActionResponse, SignupLAFormData, WhoamiFormData } from './types';
+import type {
+  ActionResponse,
+  LookupLAFormData,
+  SignupLAFormData,
+  WhoamiFormData,
+} from './types';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { withBasePath } from '@/lib/basePath';
@@ -12,9 +17,9 @@ import { createNewDBUser } from '@/lib/create-new-user';
 const CONFIRM_LA_LINK = withBasePath('/confirm-la');
 
 export async function handleFormSignupLA(
-  _prev: ActionResponse<SignupLAFormData> | undefined,
+  _prev: ActionResponse<SignupLAFormData>,
   formData: FormData
-): Promise<ActionResponse<SignupLAFormData> | undefined> {
+): Promise<ActionResponse<SignupLAFormData>> {
   const regfullname = formData.get('regfullname');
   const regla = formData.get('regla');
   const regmail = formData.get('regmail');
@@ -34,13 +39,13 @@ export async function handleFormSignupLA(
   redirect(CONFIRM_LA_LINK);
 }
 
-export async function handleFormEmailDomainCheck(
-  _prev: unknown,
+export async function handleFormLookupLA(
+  _prev: ActionResponse<LookupLAFormData>,
   formData: FormData
-) {
+): Promise<ActionResponse<LookupLAFormData>> {
   const regmail = formData.get('regmail');
 
-  const rawFormData = {
+  const rawFormData: LookupLAFormData = {
     regmail: isNonEmptyString(regmail) ? regmail : null,
     // ...
   };
@@ -72,9 +77,9 @@ export async function handleFormEmailDomainCheck(
 }
 
 export async function handleFormWhoami(
-  _prev: ActionResponse<WhoamiFormData> | undefined,
+  _prev: ActionResponse<WhoamiFormData>,
   formData: FormData
-): Promise<ActionResponse<WhoamiFormData> | undefined> {
+): Promise<ActionResponse<WhoamiFormData>> {
   const _id = formData.get('id');
   const rawFormData: WhoamiFormData = {
     id: isNonEmptyString(_id) ? _id : null,
@@ -92,6 +97,7 @@ export async function handleFormWhoami(
   }
 
   switch (rawFormData.id) {
+    default:
     case 'u:x': {
       redirect(withBasePath('/access-denied'));
     }
@@ -146,8 +152,6 @@ export async function handleFormWhoami(
       console.log('[response-auth]:', responseAuth);
       redirect(responseAuth.url!);
     }
-    default:
-    // ...
   }
 }
 

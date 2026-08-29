@@ -6,10 +6,7 @@ import { handleFormWhoami } from '@/server-actions';
 const BACK_LINK = '/login';
 
 const WhoamiForm: React.FC = () => {
-  const [state, action, isPending] = useActionState(
-    handleFormWhoami,
-    undefined
-  );
+  const [state, action, isPending] = useActionState(handleFormWhoami, {});
 
   return (
     <form action={action}>
