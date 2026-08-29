@@ -2,15 +2,12 @@
 
 import React, { useActionState } from 'react';
 import Link from 'next/link';
-import { handleFormEmailDomainCheck } from '@/server-actions';
+import { handleFormLookupLA } from '@/server-actions';
 
 const BACK_LINK = '/whoami';
 
 const LookupLAForm: React.FC = () => {
-  const [state, action, isPending] = useActionState(
-    handleFormEmailDomainCheck,
-    undefined
-  );
+  const [state, action, isPending] = useActionState(handleFormLookupLA, {});
 
   return (
     <form action={action}>

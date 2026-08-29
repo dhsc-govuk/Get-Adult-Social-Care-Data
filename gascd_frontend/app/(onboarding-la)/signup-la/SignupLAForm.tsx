@@ -12,10 +12,8 @@ const OPTIONS_LA: Record<'text' | 'value', string>[] =
 const BACK_LINK = '/lookup-email';
 
 const SignupLAForm: React.FC = () => {
-  const [state, action, isPending] = useActionState(
-    handleFormSignupLA,
-    undefined
-  );
+  const [state, action, isPending] = useActionState(handleFormSignupLA, {});
+
   return (
     <Form action={action}>
       <div className="govuk-form-group">
