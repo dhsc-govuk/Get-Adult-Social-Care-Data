@@ -14,7 +14,7 @@ import { withBasePath } from '@/lib/basePath';
 import { createNewDBUser } from '@/lib/create-new-user';
 
 // Placeholder link, for demo purposes - INTERIM TEMP SOLUTION
-const CONFIRM_LA_LINK = withBasePath('/confirm-la');
+const CONFIRM_LA_LINK = '/confirm-la';
 
 export async function handleFormSignupLA(
   _prev: ActionResponse<SignupLAFormData>,
@@ -60,7 +60,7 @@ export async function handleFormLookupLA(
       const responseAuth = await auth.api.signInWithOAuth2({
         body: {
           providerId: 'govuk-one-login',
-          callbackURL: withBasePath('/home'),
+          callbackURL: '/home',
         },
         headers: await headers(),
       });
@@ -72,7 +72,7 @@ export async function handleFormLookupLA(
     }
   } else {
     // Redirect to page for User Signup
-    redirect(withBasePath(`/signup-la`));
+    redirect(`/signup-la`);
   }
 }
 
@@ -99,11 +99,11 @@ export async function handleFormWhoami(
   switch (rawFormData.id) {
     default:
     case 'u:x': {
-      redirect(withBasePath('/access-denied'));
+      redirect('/access-denied');
     }
 
     case 'u:la': {
-      redirect(withBasePath(`/lookup-email`));
+      redirect(`/lookup-email`);
     }
 
     case 'u:cqc': {
@@ -123,7 +123,7 @@ export async function handleFormWhoami(
             body: {
               email: process.env.LOCAL_AUTH_EMAIL,
               password: process.env.LOCAL_AUTH_PASSWORD,
-              callbackURL: withBasePath('/home'),
+              callbackURL: '/home',
             },
             headers: await headers(),
           });
@@ -133,7 +133,7 @@ export async function handleFormWhoami(
           responseAuth = await auth.api.signInWithOAuth2({
             body: {
               providerId: 'govuk-one-login',
-              callbackURL: withBasePath('/home'),
+              callbackURL: '/home',
             },
             headers: await headers(),
           });
