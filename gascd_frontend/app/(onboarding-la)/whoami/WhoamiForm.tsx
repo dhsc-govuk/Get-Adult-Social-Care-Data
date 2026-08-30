@@ -2,6 +2,7 @@
 import React, { useActionState } from 'react';
 import Link from 'next/link';
 import { handleFormWhoami } from '@/server-actions';
+import Form from 'next/form';
 
 const BACK_LINK = '/login';
 
@@ -9,7 +10,7 @@ const WhoamiForm: React.FC = () => {
   const [state, action, isPending] = useActionState(handleFormWhoami, {});
 
   return (
-    <form action={action}>
+    <Form action={action}>
       <fieldset className="govuk-fieldset" aria-describedby="signIn-hint">
         <legend className="govuk-fieldset__legend govuk-fieldset__legend--l">
           <h1 className="govuk-fieldset__heading">
@@ -96,7 +97,7 @@ const WhoamiForm: React.FC = () => {
           Cancel and go back
         </Link>
       </div>
-    </form>
+    </Form>
   );
 };
 
