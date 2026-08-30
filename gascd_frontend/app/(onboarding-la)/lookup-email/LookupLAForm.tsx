@@ -3,6 +3,7 @@
 import React, { useActionState } from 'react';
 import Link from 'next/link';
 import { handleFormLookupLA } from '@/server-actions';
+import Form from 'next/form';
 
 const BACK_LINK = '/whoami';
 
@@ -10,7 +11,7 @@ const LookupLAForm: React.FC = () => {
   const [state, action, isPending] = useActionState(handleFormLookupLA, {});
 
   return (
-    <form action={action}>
+    <Form action={action}>
       <fieldset className="govuk-fieldset" aria-describedby="signIn-hint">
         <legend className="govuk-fieldset__legend govuk-fieldset__legend--l">
           <h1 className="govuk-fieldset__heading">Check your email here</h1>
@@ -53,7 +54,7 @@ const LookupLAForm: React.FC = () => {
           Cancel and go back
         </Link>
       </div>
-    </form>
+    </Form>
   );
 };
 

@@ -10,7 +10,6 @@ import type {
 } from './types';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
-import { withBasePath } from '@/lib/basePath';
 import { createNewDBUser } from '@/lib/create-new-user';
 
 // Placeholder link, for demo purposes - INTERIM TEMP SOLUTION
