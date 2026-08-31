@@ -150,10 +150,12 @@ async function handleFormSubmit(
   switch (rawFormData.id) {
     case 'u:x': {
       nextPageURL = '/access-denied';
+      break;
     }
 
     case 'u:la': {
       nextPageURL = `/lookup-email`;
+      break;
     }
 
     case 'u:cqc': {
@@ -212,6 +214,7 @@ async function handleFormSubmit(
       console.log('[response-auth]:', responseAuth);
 
       nextPageURL = responseAuth.data?.url ?? null;
+      break;
     }
   }
 
