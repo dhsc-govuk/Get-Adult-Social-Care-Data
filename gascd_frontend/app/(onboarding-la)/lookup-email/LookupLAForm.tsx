@@ -93,7 +93,16 @@ async function handleFormSubmit(
   if (isAcceptableEmail(rawFormData.regmail)) {
     // Insert into database
     // ...
-    const verdict = await createNewDBUser(rawFormData.regmail);
+    const response = await fetch('', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: rawFormData.regmail }),
+    });
+    // createNewDBUser(rawFormData.regmail);
+
+    const verdict = await response.json();
 
     if (verdict.result == 'EXISTS') {
       // Proceed to the OneLogin flow
