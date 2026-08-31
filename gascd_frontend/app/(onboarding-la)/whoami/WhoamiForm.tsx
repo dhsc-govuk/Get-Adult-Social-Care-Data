@@ -174,11 +174,21 @@ async function handleFormSubmit(
             );
           }
 
-          responseAuth = await authClient.signIn.email({
-            email: process.env.NEXT_PUBLIC_LOCAL_AUTH_EMAIL,
-            password: process.env.NEXT_PUBLIC_LOCAL_AUTH_PASSWORD,
-            callbackURL: withBasePath('/home'),
-          });
+          responseAuth = await authClient.signIn.email(
+            {
+              email: process.env.NEXT_PUBLIC_LOCAL_AUTH_EMAIL,
+              password: process.env.NEXT_PUBLIC_LOCAL_AUTH_PASSWORD,
+              // callbackURL: withBasePath('/home'),
+            },
+            {
+              onSuccess(context) {
+                console.log('---< EMAIL >---', {
+                  ...context.data,
+                  ...context.response,
+                });
+              },
+            }
+          );
           // responseAuth = await auth.api.signInEmail({
           //   body: {
           //     email: process.env.LOCAL_AUTH_EMAIL,
@@ -190,10 +200,20 @@ async function handleFormSubmit(
 
           console.info('Local auth session started');
         } else {
-          responseAuth = await authClient.signIn.oauth2({
-            providerId: 'govuk-one-login',
-            callbackURL: withBasePath('/home'),
-          });
+          responseAuth = await authClient.signIn.oauth2(
+            {
+              providerId: 'govuk-one-login',
+              // callbackURL: withBasePath('/home'),
+            },
+            {
+              onSuccess(context) {
+                console.log('---< OAUTH >---', {
+                  ...context.data,
+                  ...context.response,
+                });
+              },
+            }
+          );
           // responseAuth = await auth.api.signInWithOAuth2({
           //   body: {
           //     providerId: 'govuk-one-login',
@@ -212,9 +232,8 @@ async function handleFormSubmit(
           error: ERROR_MSG,
         };
       }
-      console.log('[response-auth]:', responseAuth);
-
-      nextPageURL = responseAuth.data?.url ?? null;
+      nextPageURL = '/home';
+      console.log('[response-auth]:', responseAuth, nextPageURL);
       break;
     }
   }
