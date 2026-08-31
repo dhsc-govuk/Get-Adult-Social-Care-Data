@@ -12,7 +12,9 @@ const OPTIONS_LA: Record<'text' | 'value', string>[] =
 const BACK_LINK = '/lookup-email';
 
 const SignupLAForm: React.FC = () => {
-  const [state, action, isPending] = useActionState(handleFormSignupLA, {});
+  const [state, action, isPending] = useActionState(handleFormSignupLA, {
+    fields: {},
+  });
 
   return (
     <Form action={action}>

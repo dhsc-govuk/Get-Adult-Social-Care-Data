@@ -1,3 +1,5 @@
+import { WhoamiFormData } from '@/server-actions/types';
+
 export const LA_EMAIL_DOMAIN_ID_MAP: Record<string, string> = {
   // Data-source=`scripts/early_access/la_domain_mapping.json`
   'barnet.gov.uk': 'E09000003',
@@ -164,6 +166,21 @@ export function isAcceptableEmail(email: unknown): boolean {
     return ACCEPTABLE_EMAIL_DOMAINS.includes(domain);
   }
   return false;
+}
+
+// ================================
+//  UTILITY FUNCTIONS
+// ================================
+type WhoamiErrors = Partial<WhoamiFormData>;
+export function validateFormFields(fields: WhoamiFormData): WhoamiErrors {
+  const errors: WhoamiErrors = {};
+
+  const EXPECTED_ID_VALUES = ['u:la', 'u:cqc', 'u:x'];
+  if (fields.id == null || EXPECTED_ID_VALUES.includes(fields.id) === false) {
+    errors.id = 'Select an option';
+  }
+
+  return errors;
 }
 
 export function isNonEmptyString(value: unknown): value is string {

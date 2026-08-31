@@ -1,6 +1,9 @@
 'use server';
-import logger from '@/utils/logger';
-import { isAcceptableEmail, isNonEmptyString } from '@/lib/domain-check';
+import {
+  isAcceptableEmail,
+  isNonEmptyString,
+  validateFormFields,
+} from '@/lib/domain-check';
 import { redirect } from 'next/navigation';
 import type {
   ActionResponse,
@@ -25,6 +28,7 @@ export async function handleFormSignupLA(
   const regorgname = formData.get('regorgname');
   const regrole = formData.get('regrole');
 
+  // ...Object.fromEntries(formData)
   const rawFormData: SignupLAFormData = {
     regfullname: isNonEmptyString(regfullname) ? regfullname : null,
     regla: isNonEmptyString(regla) ? regla : null,
@@ -79,6 +83,7 @@ export async function handleFormWhoami(
   _prev: ActionResponse<WhoamiFormData>,
   formData: FormData
 ): Promise<ActionResponse<WhoamiFormData>> {
+  // ) {
   const _id = formData.get('id');
   const rawFormData: WhoamiFormData = {
     id: isNonEmptyString(_id) ? _id : null,
@@ -88,83 +93,61 @@ export async function handleFormWhoami(
   const hasErrors = Object.keys(errors).length > 0;
   if (hasErrors) {
     return {
-      type: 'error',
-      description: 'Invalid option received',
-      values: rawFormData,
+      error: 'Invalid option received',
       errors,
     };
   }
 
-  switch (rawFormData.id) {
-    default:
-    case 'u:x': {
-      redirect('/access-denied');
-    }
-
-    case 'u:la': {
-      redirect(`/lookup-email`);
-    }
-
-    case 'u:cqc': {
-      let responseAuth = null;
-      try {
-        if (process.env.NODE_ENV === 'development') {
-          if (
-            !process.env.LOCAL_AUTH_EMAIL ||
-            !process.env.LOCAL_AUTH_PASSWORD
-          ) {
-            throw Error(
-              'LOCAL_AUTH_EMAIL or LOCAL_AUTH_PASSWORD not found in env'
-            );
-          }
-
-          responseAuth = await auth.api.signInEmail({
-            body: {
-              email: process.env.LOCAL_AUTH_EMAIL,
-              password: process.env.LOCAL_AUTH_PASSWORD,
-              callbackURL: '/home',
-            },
-            headers: await headers(),
-          });
-
-          logger.info('Local auth session started');
-        } else {
-          responseAuth = await auth.api.signInWithOAuth2({
-            body: {
-              providerId: 'govuk-one-login',
-              callbackURL: '/home',
-            },
-            headers: await headers(),
-          });
+  if (rawFormData.id === 'u:cqc') {
+    let responseAuth = null;
+    try {
+      if (process.env.NODE_ENV === 'development') {
+        if (!process.env.LOCAL_AUTH_EMAIL || !process.env.LOCAL_AUTH_PASSWORD) {
+          throw new Error(
+            'LOCAL_AUTH_EMAIL or LOCAL_AUTH_PASSWORD not found in env'
+          );
         }
-      } catch (error) {
-        const ERROR_MSG =
-          'Sorry, there is a problem with the service. Please try again later.';
-        logger.error(ERROR_MSG, { error });
 
-        return {
-          type: 'error',
-          description: ERROR_MSG,
-        };
+        // responseAuth = await authClient.signIn.email({
+        //   email: process.env.LOCAL_AUTH_EMAIL,
+        //   password: process.env.LOCAL_AUTH_PASSWORD,
+        //   callbackURL: '/home',
+        // });
+        responseAuth = await auth.api.signInEmail({
+          body: {
+            email: process.env.LOCAL_AUTH_EMAIL,
+            password: process.env.LOCAL_AUTH_PASSWORD,
+            callbackURL: '/home',
+          },
+          headers: await headers(),
+        });
+
+        console.info('Local auth session started');
+      } else {
+        // responseAuth = await authClient.signIn.oauth2({
+        //   providerId: 'govuk-one-login',
+        //   callbackURL: '/home',
+        // });
+        responseAuth = await auth.api.signInWithOAuth2({
+          body: {
+            providerId: 'govuk-one-login',
+            callbackURL: '/home',
+          },
+          headers: await headers(),
+        });
       }
+    } catch (error) {
+      const ERROR_MSG =
+        'Sorry, there is a problem with the service. Please try again later.';
+      console.error(ERROR_MSG, { error });
 
-      console.log('[response-auth]:', responseAuth);
-      redirect(responseAuth.url!);
+      // throw new Error(ERROR_MSG);
+      return {
+        error: ERROR_MSG,
+      };
     }
-  }
-}
-
-// ================================
-//  UTILITY FUNCTIONS
-// ================================
-type WhoamiErrors = Partial<WhoamiFormData>;
-function validateFormFields(fields: WhoamiFormData): WhoamiErrors {
-  const errors: WhoamiErrors = {};
-
-  const EXPECTED_ID_VALUES = ['u:la', 'u:cqc', 'u:x'];
-  if (fields.id == null || EXPECTED_ID_VALUES.includes(fields.id) === false) {
-    errors.id = 'Select an option';
+    console.log('[response-auth]:', responseAuth);
   }
 
-  return errors;
+  return { fields: rawFormData };
 }
