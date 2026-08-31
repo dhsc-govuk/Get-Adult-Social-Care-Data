@@ -23,7 +23,7 @@ const WhoamiForm: React.FC = () => {
   });
 
   useEffect(() => {
-    console.log(':$:-- Whoami --', { state });
+    console.log(':$:-- Whoami --', state);
 
     if (state.error == null && state.next) {
       router.replace(state.next);

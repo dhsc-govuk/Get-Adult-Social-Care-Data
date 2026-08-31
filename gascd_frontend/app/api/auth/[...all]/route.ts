@@ -1,21 +1,25 @@
 import { toNextJsHandler } from 'better-auth/next-js';
 import { auth } from '@/lib/auth';
+import { NextRequest } from 'next/server';
 
-const baseHandlers = toNextJsHandler(auth);
-const prefix = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+const handlers = toNextJsHandler(auth);
 
-function withRestoredPrefix(
-  handler: (req: Request) => Response | Promise<Response>
-) {
-  if (!prefix) return handler;
-  return async (request: Request) => {
-    const url = new URL(request.url);
-    if (!url.pathname.startsWith(prefix)) {
-      url.pathname = prefix + url.pathname;
-    }
-    return handler(new Request(url, request));
-  };
+const baseURL = `${process.env.BETTER_AUTH_URL}${process.env.BASE_PATH}`;
+
+function rewriteRequest(req: NextRequest) {
+  const { search, pathname } = req.nextUrl;
+  const url = new URL(`${baseURL}${pathname}`);
+  url.search = search;
+
+  return new NextRequest(url, req);
 }
 
-export const POST = withRestoredPrefix(baseHandlers.POST);
-export const GET = withRestoredPrefix(baseHandlers.GET);
+export async function GET(req: NextRequest) {
+  const modified = rewriteRequest(req);
+  return handlers.GET(modified);
+}
+
+export async function POST(req: NextRequest) {
+  const modified = rewriteRequest(req);
+  return handlers.POST(modified);
+}
