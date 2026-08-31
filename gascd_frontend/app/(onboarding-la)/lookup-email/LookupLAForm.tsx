@@ -19,10 +19,11 @@ const LookupLAForm: React.FC = () => {
   });
 
   useEffect(() => {
-    console.log(':$:-- LookupLA --', { state });
+    console.log(':$:-- LookupLA --', state);
 
     if (state.error == null && state.next) {
-      router.push(state.next);
+      router.replace(state.next);
+      router.refresh();
     }
   }, [state]);
 
@@ -106,9 +107,9 @@ async function handleFormSubmit(
 
     if (verdict.result == 'EXISTS') {
       // Proceed to the OneLogin flow
-      const responseAuth = await authClient.signIn.oauth2({
+      await authClient.signIn.oauth2({
         providerId: 'govuk-one-login',
-        callbackURL: '/home',
+        // callbackURL: '/home',
       });
       // const responseAuth = await auth.api.signInWithOAuth2({
       //   body: {
@@ -117,7 +118,7 @@ async function handleFormSubmit(
       //   },
       //   headers: await headers(),
       // });
-      nextPageURL = responseAuth.data?.url ?? null;
+      nextPageURL = '/home';
     } else {
       // Redirect to Confirmation page
       nextPageURL = CONFIRM_LA_LINK;

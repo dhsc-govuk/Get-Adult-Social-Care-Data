@@ -27,6 +27,7 @@ const WhoamiForm: React.FC = () => {
 
     if (state.error == null && state.next) {
       router.replace(state.next);
+      router.refresh();
     }
   }, [state]);
 
@@ -160,8 +161,8 @@ async function handleFormSubmit(
     }
 
     case 'u:cqc': {
-      // router.push('/home');
-      // window.history.pushState({}, '', '/home');
+      nextPageURL = '/home';
+
       let responseAuth = null;
       try {
         if (process.env.NODE_ENV === 'development') {
@@ -232,7 +233,6 @@ async function handleFormSubmit(
           error: ERROR_MSG,
         };
       }
-      nextPageURL = '/home';
       console.log('[response-auth]:', responseAuth, nextPageURL);
       break;
     }
