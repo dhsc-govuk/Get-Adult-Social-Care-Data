@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useActionState } from 'react';
 import Link from 'next/link';
 import { handleFormLookupLA } from '@/server-actions';
@@ -8,7 +6,9 @@ import Form from 'next/form';
 const BACK_LINK = '/whoami';
 
 const LookupLAForm: React.FC = () => {
-  const [state, action, isPending] = useActionState(handleFormLookupLA, {});
+  const [state, action, isPending] = useActionState(handleFormLookupLA, {
+    fields: {},
+  });
 
   return (
     <Form action={action}>
