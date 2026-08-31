@@ -18,27 +18,14 @@ const WhoamiForm: React.FC = () => {
   // const { data, action, pending: isPending } = useFormStatus();
   const [state, action, isPending] = useActionState(handleFormSubmit, {
     fields: {},
+    next: null,
   });
 
   useEffect(() => {
-    console.log(':$:', { state });
-    if (state.error == null) {
-      switch (state.fields.id) {
-        case 'u:x': {
-          router.push('/access-denied');
-          return;
-        }
+    console.log(':$:-- Whoami --', { state });
 
-        case 'u:la': {
-          router.push(`/lookup-email`);
-          return;
-        }
-
-        case 'u:cqc': {
-          // router.push('/home');
-          // window.history.pushState({}, '', '/home');
-        }
-      }
+    if (state.error == null && state.next) {
+      router.push(state.next);
     }
   }, [state]);
 
@@ -65,6 +52,7 @@ const WhoamiForm: React.FC = () => {
               type="radio"
               name="id"
               value="u:la"
+              defaultChecked={state.error == null && state.fields.id === 'u:la'}
             />
             <label
               className="govuk-label govuk-radios__label"
@@ -80,6 +68,9 @@ const WhoamiForm: React.FC = () => {
               type="radio"
               name="id"
               value="u:cqc"
+              defaultChecked={
+                state.error == null && state.fields.id === 'u:cqc'
+              }
               aria-describedby="user-cqc-item-hint"
             />
             <label
@@ -104,6 +95,7 @@ const WhoamiForm: React.FC = () => {
               type="radio"
               name="id"
               value="u:x"
+              defaultChecked={state.error == null && state.fields.id === 'u:x'}
             />
             <label className="govuk-label govuk-radios__label" htmlFor="user-x">
               Neither of these
@@ -142,7 +134,7 @@ async function handleFormSubmit(
   // ) {
   const _id = formData.get('id');
   const rawFormData: WhoamiFormData = {
-    id: isNonEmptyString(_id) ? _id : null,
+    id: isNonEmptyString(_id) ? _id : '',
   };
 
   const errors = validateFormFields(rawFormData);
@@ -154,56 +146,74 @@ async function handleFormSubmit(
     };
   }
 
-  if (rawFormData.id === 'u:cqc') {
-    let responseAuth = null;
-    try {
-      if (process.env.NODE_ENV === 'development') {
-        if (!process.env.LOCAL_AUTH_EMAIL || !process.env.LOCAL_AUTH_PASSWORD) {
-          throw new Error(
-            'LOCAL_AUTH_EMAIL or LOCAL_AUTH_PASSWORD not found in env'
-          );
-        }
-
-        responseAuth = await authClient.signIn.email({
-          email: process.env.LOCAL_AUTH_EMAIL,
-          password: process.env.LOCAL_AUTH_PASSWORD,
-          callbackURL: '/home',
-        });
-        // responseAuth = await auth.api.signInEmail({
-        //   body: {
-        //     email: process.env.LOCAL_AUTH_EMAIL,
-        //     password: process.env.LOCAL_AUTH_PASSWORD,
-        //     callbackURL: '/home',
-        //   },
-        //   headers: await headers(),
-        // });
-
-        console.info('Local auth session started');
-      } else {
-        responseAuth = await authClient.signIn.oauth2({
-          providerId: 'govuk-one-login',
-          callbackURL: '/home',
-        });
-        // responseAuth = await auth.api.signInWithOAuth2({
-        //   body: {
-        //     providerId: 'govuk-one-login',
-        //     callbackURL: '/home',
-        //   },
-        //   headers: await headers(),
-        // });
-      }
-    } catch (error) {
-      const ERROR_MSG =
-        'Sorry, there is a problem with the service. Please try again later.';
-      console.error(ERROR_MSG, { error });
-
-      // throw new Error(ERROR_MSG);
-      return {
-        error: ERROR_MSG,
-      };
+  let nextPageURL: string | null = null;
+  switch (rawFormData.id) {
+    case 'u:x': {
+      nextPageURL = '/access-denied';
     }
-    console.log('[response-auth]:', responseAuth);
+
+    case 'u:la': {
+      nextPageURL = `/lookup-email`;
+    }
+
+    case 'u:cqc': {
+      // router.push('/home');
+      // window.history.pushState({}, '', '/home');
+      let responseAuth = null;
+      try {
+        if (process.env.NODE_ENV === 'development') {
+          if (
+            !process.env.LOCAL_AUTH_EMAIL ||
+            !process.env.LOCAL_AUTH_PASSWORD
+          ) {
+            throw new Error(
+              'LOCAL_AUTH_EMAIL or LOCAL_AUTH_PASSWORD not found in env'
+            );
+          }
+
+          responseAuth = await authClient.signIn.email({
+            email: process.env.LOCAL_AUTH_EMAIL,
+            password: process.env.LOCAL_AUTH_PASSWORD,
+            callbackURL: '/home',
+          });
+          // responseAuth = await auth.api.signInEmail({
+          //   body: {
+          //     email: process.env.LOCAL_AUTH_EMAIL,
+          //     password: process.env.LOCAL_AUTH_PASSWORD,
+          //     callbackURL: '/home',
+          //   },
+          //   headers: await headers(),
+          // });
+
+          console.info('Local auth session started');
+        } else {
+          responseAuth = await authClient.signIn.oauth2({
+            providerId: 'govuk-one-login',
+            callbackURL: '/home',
+          });
+          // responseAuth = await auth.api.signInWithOAuth2({
+          //   body: {
+          //     providerId: 'govuk-one-login',
+          //     callbackURL: '/home',
+          //   },
+          //   headers: await headers(),
+          // });
+        }
+      } catch (error) {
+        const ERROR_MSG =
+          'Sorry, there is a problem with the service. Please try again later.';
+        console.error(ERROR_MSG, { error });
+
+        // throw new Error(ERROR_MSG);
+        return {
+          error: ERROR_MSG,
+        };
+      }
+      console.log('[response-auth]:', responseAuth);
+
+      nextPageURL = responseAuth.data?.url ?? null;
+    }
   }
 
-  return { fields: rawFormData };
+  return { fields: rawFormData, next: nextPageURL };
 }

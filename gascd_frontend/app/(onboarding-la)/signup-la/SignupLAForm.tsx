@@ -1,10 +1,12 @@
 'use client';
 
-import { ACCEPTABLE_EMAIL_DOMAINS } from '@/lib/domain-check';
+import { ACCEPTABLE_EMAIL_DOMAINS, isNonEmptyString } from '@/lib/domain-check';
 import { handleFormSignupLA } from '@/server-actions';
+import { ActionResponse, SignupLAFormData } from '@/server-actions/types';
 import Form from 'next/form';
 import Link from 'next/link';
-import { useActionState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useActionState, useEffect } from 'react';
 
 const OPTIONS_LA: Record<'text' | 'value', string>[] =
   ACCEPTABLE_EMAIL_DOMAINS.map((domain) => ({ text: domain, value: domain }));
@@ -12,9 +14,20 @@ const OPTIONS_LA: Record<'text' | 'value', string>[] =
 const BACK_LINK = '/lookup-email';
 
 const SignupLAForm: React.FC = () => {
-  const [state, action, isPending] = useActionState(handleFormSignupLA, {
+  const router = useRouter();
+
+  const [state, action, isPending] = useActionState(handleFormSubmit, {
     fields: {},
+    next: null,
   });
+
+  useEffect(() => {
+    console.log(':$:-- SignupLA --', { state });
+
+    if (state.error == null && state.next) {
+      router.push(state.next);
+    }
+  }, [state]);
 
   return (
     <Form action={action}>
@@ -123,3 +136,28 @@ const SignupLAForm: React.FC = () => {
 };
 
 export default SignupLAForm;
+
+const CONFIRM_LA_LINK = '/confirm-la';
+async function handleFormSubmit(
+  _prev: ActionResponse<SignupLAFormData>,
+  formData: FormData
+): Promise<ActionResponse<SignupLAFormData>> {
+  const regfullname = formData.get('regfullname');
+  const regla = formData.get('regla');
+  const regmail = formData.get('regmail');
+  const regorgname = formData.get('regorgname');
+  const regrole = formData.get('regrole');
+
+  // ...Object.fromEntries(formData)
+  const rawFormData: SignupLAFormData = {
+    regfullname: isNonEmptyString(regfullname) ? regfullname : '',
+    regla: isNonEmptyString(regla) ? regla : '',
+    regmail: isNonEmptyString(regmail) ? regmail : '',
+    regorgname: isNonEmptyString(regorgname) ? regorgname : '', // Optional
+    regrole: isNonEmptyString(regrole) ? regrole : '',
+  };
+
+  // ...
+
+  return { fields: rawFormData, next: CONFIRM_LA_LINK };
+}

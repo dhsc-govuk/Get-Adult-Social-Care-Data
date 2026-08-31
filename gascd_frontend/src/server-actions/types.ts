@@ -6,7 +6,7 @@
 // };
 export type ActionResponse<T> =
   | { error: string; errors?: Partial<T> }
-  | { error?: null; fields: Partial<T> };
+  | { error?: null; fields: Partial<T>; next: string | null };
 // | { error?: null; goto: string }
 // | { error: string; errors?: Partial<T> };
 
@@ -16,17 +16,17 @@ function foo(): Foo<{ aaa: string; bbb: number }> {
 }
 
 export type WhoamiFormData = {
-  id: string | null;
+  id: string;
 };
 
 export type LookupLAFormData = {
-  regmail: string | null;
+  regmail: string;
 };
 
 export type SignupLAFormData = {
-  regfullname: string | null;
-  regla: string | null;
-  regorgname: string | null;
-  regrole: string | null;
-  regmail: string | null;
+  regfullname: string;
+  regla: string;
+  regorgname: string;
+  regrole: string;
+  regmail: string;
 };
