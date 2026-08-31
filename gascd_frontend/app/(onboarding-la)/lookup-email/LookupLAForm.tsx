@@ -1,14 +1,30 @@
-import React, { useActionState } from 'react';
+import React, { useActionState, useEffect } from 'react';
 import Link from 'next/link';
 import { handleFormLookupLA } from '@/server-actions';
 import Form from 'next/form';
+import { ActionResponse, LookupLAFormData } from '@/server-actions/types';
+import { isAcceptableEmail, isNonEmptyString } from '@/lib/domain-check';
+import { createNewDBUser } from '@/lib/create-new-user';
+import { authClient } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 const BACK_LINK = '/whoami';
 
 const LookupLAForm: React.FC = () => {
-  const [state, action, isPending] = useActionState(handleFormLookupLA, {
+  const router = useRouter();
+
+  const [state, action, isPending] = useActionState(handleFormSubmit, {
     fields: {},
+    next: null,
   });
+
+  useEffect(() => {
+    console.log(':$:-- LookupLA --', { state });
+
+    if (state.error == null && state.next) {
+      router.push(state.next);
+    }
+  }, [state]);
 
   return (
     <Form action={action}>
@@ -35,6 +51,7 @@ const LookupLAForm: React.FC = () => {
             spellCheck="false"
             autoComplete="regmail"
             aria-describedby="la-user-email-hint"
+            defaultValue={state.error == null ? state.fields.regmail : ''}
           />
         </div>
       </fieldset>
@@ -59,3 +76,47 @@ const LookupLAForm: React.FC = () => {
 };
 
 export default LookupLAForm;
+
+const CONFIRM_LA_LINK = '/confirm-la';
+async function handleFormSubmit(
+  _prev: ActionResponse<LookupLAFormData>,
+  formData: FormData
+): Promise<ActionResponse<LookupLAFormData>> {
+  const regmail = formData.get('regmail');
+
+  const rawFormData: LookupLAFormData = {
+    regmail: isNonEmptyString(regmail) ? regmail : '',
+    // ...
+  };
+
+  let nextPageURL: string | null = null;
+  if (isAcceptableEmail(rawFormData.regmail)) {
+    // Insert into database
+    // ...
+    const verdict = await createNewDBUser(rawFormData.regmail);
+
+    if (verdict.result == 'EXISTS') {
+      // Proceed to the OneLogin flow
+      const responseAuth = await authClient.signIn.oauth2({
+        providerId: 'govuk-one-login',
+        callbackURL: '/home',
+      });
+      // const responseAuth = await auth.api.signInWithOAuth2({
+      //   body: {
+      //     providerId: 'govuk-one-login',
+      //     callbackURL: '/home',
+      //   },
+      //   headers: await headers(),
+      // });
+      nextPageURL = responseAuth.data?.url ?? null;
+    } else {
+      // Redirect to Confirmation page
+      nextPageURL = CONFIRM_LA_LINK;
+    }
+  } else {
+    // Redirect to page for User Signup
+    nextPageURL = `/signup-la`;
+  }
+
+  return { fields: rawFormData, next: nextPageURL };
+}

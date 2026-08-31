@@ -30,11 +30,11 @@ export async function handleFormSignupLA(
 
   // ...Object.fromEntries(formData)
   const rawFormData: SignupLAFormData = {
-    regfullname: isNonEmptyString(regfullname) ? regfullname : null,
-    regla: isNonEmptyString(regla) ? regla : null,
-    regmail: isNonEmptyString(regmail) ? regmail : null,
-    regorgname: isNonEmptyString(regorgname) ? regorgname : null, // Optional
-    regrole: isNonEmptyString(regrole) ? regrole : null,
+    regfullname: isNonEmptyString(regfullname) ? regfullname : '',
+    regla: isNonEmptyString(regla) ? regla : '',
+    regmail: isNonEmptyString(regmail) ? regmail : '',
+    regorgname: isNonEmptyString(regorgname) ? regorgname : '', // Optional
+    regrole: isNonEmptyString(regrole) ? regrole : '',
   };
 
   // ...
@@ -49,7 +49,7 @@ export async function handleFormLookupLA(
   const regmail = formData.get('regmail');
 
   const rawFormData: LookupLAFormData = {
-    regmail: isNonEmptyString(regmail) ? regmail : null,
+    regmail: isNonEmptyString(regmail) ? regmail : '',
     // ...
   };
 
@@ -86,7 +86,7 @@ export async function handleFormWhoami(
   // ) {
   const _id = formData.get('id');
   const rawFormData: WhoamiFormData = {
-    id: isNonEmptyString(_id) ? _id : null,
+    id: isNonEmptyString(_id) ? _id : '',
   };
 
   const errors = validateFormFields(rawFormData);
@@ -98,56 +98,74 @@ export async function handleFormWhoami(
     };
   }
 
-  if (rawFormData.id === 'u:cqc') {
-    let responseAuth = null;
-    try {
-      if (process.env.NODE_ENV === 'development') {
-        if (!process.env.LOCAL_AUTH_EMAIL || !process.env.LOCAL_AUTH_PASSWORD) {
-          throw new Error(
-            'LOCAL_AUTH_EMAIL or LOCAL_AUTH_PASSWORD not found in env'
-          );
-        }
-
-        // responseAuth = await authClient.signIn.email({
-        //   email: process.env.LOCAL_AUTH_EMAIL,
-        //   password: process.env.LOCAL_AUTH_PASSWORD,
-        //   callbackURL: '/home',
-        // });
-        responseAuth = await auth.api.signInEmail({
-          body: {
-            email: process.env.LOCAL_AUTH_EMAIL,
-            password: process.env.LOCAL_AUTH_PASSWORD,
-            callbackURL: '/home',
-          },
-          headers: await headers(),
-        });
-
-        console.info('Local auth session started');
-      } else {
-        // responseAuth = await authClient.signIn.oauth2({
-        //   providerId: 'govuk-one-login',
-        //   callbackURL: '/home',
-        // });
-        responseAuth = await auth.api.signInWithOAuth2({
-          body: {
-            providerId: 'govuk-one-login',
-            callbackURL: '/home',
-          },
-          headers: await headers(),
-        });
-      }
-    } catch (error) {
-      const ERROR_MSG =
-        'Sorry, there is a problem with the service. Please try again later.';
-      console.error(ERROR_MSG, { error });
-
-      // throw new Error(ERROR_MSG);
-      return {
-        error: ERROR_MSG,
-      };
+  let nextPageURL: string | null = null;
+  switch (rawFormData.id) {
+    case 'u:x': {
+      nextPageURL = '/access-denied';
     }
-    console.log('[response-auth]:', responseAuth);
+
+    case 'u:la': {
+      nextPageURL = `/lookup-email`;
+    }
+
+    case 'u:cqc': {
+      // router.push('/home');
+      // window.history.pushState({}, '', '/home');
+      let responseAuth = null;
+      try {
+        if (process.env.NODE_ENV === 'development') {
+          if (
+            !process.env.LOCAL_AUTH_EMAIL ||
+            !process.env.LOCAL_AUTH_PASSWORD
+          ) {
+            throw new Error(
+              'LOCAL_AUTH_EMAIL or LOCAL_AUTH_PASSWORD not found in env'
+            );
+          }
+
+          // responseAuth = await authClient.signIn.email({
+          //   email: process.env.LOCAL_AUTH_EMAIL,
+          //   password: process.env.LOCAL_AUTH_PASSWORD,
+          //   callbackURL: '/home',
+          // });
+          responseAuth = await auth.api.signInEmail({
+            body: {
+              email: process.env.LOCAL_AUTH_EMAIL,
+              password: process.env.LOCAL_AUTH_PASSWORD,
+              callbackURL: '/home',
+            },
+            headers: await headers(),
+          });
+
+          console.info('Local auth session started');
+        } else {
+          // responseAuth = await authClient.signIn.oauth2({
+          //   providerId: 'govuk-one-login',
+          //   callbackURL: '/home',
+          // });
+          responseAuth = await auth.api.signInWithOAuth2({
+            body: {
+              providerId: 'govuk-one-login',
+              callbackURL: '/home',
+            },
+            headers: await headers(),
+          });
+        }
+      } catch (error) {
+        const ERROR_MSG =
+          'Sorry, there is a problem with the service. Please try again later.';
+        console.error(ERROR_MSG, { error });
+
+        // throw new Error(ERROR_MSG);
+        return {
+          error: ERROR_MSG,
+        };
+      }
+      console.log('[response-auth]:', responseAuth);
+
+      nextPageURL = responseAuth.url ?? null;
+    }
   }
 
-  return { fields: rawFormData };
+  return { fields: rawFormData, next: nextPageURL };
 }
