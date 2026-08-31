@@ -9,6 +9,7 @@ import { useFormStatus } from 'react-dom';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { handleFormWhoami } from '@/server-actions';
+import { withBasePath } from '@/lib/basePath';
 
 const BACK_LINK = '/login';
 
@@ -176,7 +177,7 @@ async function handleFormSubmit(
           responseAuth = await authClient.signIn.email({
             email: process.env.LOCAL_AUTH_EMAIL,
             password: process.env.LOCAL_AUTH_PASSWORD,
-            callbackURL: '/home',
+            callbackURL: withBasePath('/home'),
           });
           // responseAuth = await auth.api.signInEmail({
           //   body: {
@@ -191,7 +192,7 @@ async function handleFormSubmit(
         } else {
           responseAuth = await authClient.signIn.oauth2({
             providerId: 'govuk-one-login',
-            callbackURL: '/home',
+            callbackURL: withBasePath('/home'),
           });
           // responseAuth = await auth.api.signInWithOAuth2({
           //   body: {
