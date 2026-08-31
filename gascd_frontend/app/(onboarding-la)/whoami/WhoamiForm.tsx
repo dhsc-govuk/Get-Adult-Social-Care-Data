@@ -26,7 +26,7 @@ const WhoamiForm: React.FC = () => {
     console.log(':$:-- Whoami --', { state });
 
     if (state.error == null && state.next) {
-      router.push(state.next);
+      router.replace(state.next);
     }
   }, [state]);
 
@@ -166,17 +166,17 @@ async function handleFormSubmit(
       try {
         if (process.env.NODE_ENV === 'development') {
           if (
-            !process.env.LOCAL_AUTH_EMAIL ||
-            !process.env.LOCAL_AUTH_PASSWORD
+            !process.env.NEXT_PUBLIC_LOCAL_AUTH_EMAIL ||
+            !process.env.NEXT_PUBLIC_LOCAL_AUTH_PASSWORD
           ) {
             throw new Error(
-              'LOCAL_AUTH_EMAIL or LOCAL_AUTH_PASSWORD not found in env'
+              'NEXT_PUBLIC_LOCAL_AUTH_EMAIL or NEXT_PUBLIC_LOCAL_AUTH_PASSWORD not found in env'
             );
           }
 
           responseAuth = await authClient.signIn.email({
-            email: process.env.LOCAL_AUTH_EMAIL,
-            password: process.env.LOCAL_AUTH_PASSWORD,
+            email: process.env.NEXT_PUBLIC_LOCAL_AUTH_EMAIL,
+            password: process.env.NEXT_PUBLIC_LOCAL_AUTH_PASSWORD,
             callbackURL: withBasePath('/home'),
           });
           // responseAuth = await auth.api.signInEmail({
