@@ -106,7 +106,7 @@ async function handleFormSubmit(
 
     const verdict = await response.json();
 
-    if (verdict.result == 'EXISTS') {
+    if (verdict.result) {
       // Proceed to the OneLogin flow
       await authClient.signIn.oauth2({
         providerId: 'govuk-one-login',
@@ -119,10 +119,11 @@ async function handleFormSubmit(
       //   },
       //   headers: await headers(),
       // });
+
+      // // Redirect to Confirmation page
+      // nextPageURL = CONFIRM_LA_LINK;
+
       nextPageURL = '/home';
-    } else {
-      // Redirect to Confirmation page
-      nextPageURL = CONFIRM_LA_LINK;
     }
   } else {
     // Redirect to page for User Signup
