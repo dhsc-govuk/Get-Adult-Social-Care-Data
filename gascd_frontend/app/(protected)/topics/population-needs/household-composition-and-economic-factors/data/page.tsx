@@ -119,16 +119,17 @@ export default function ProvisionAndOccupancyPage() {
         const filteredDemographicData =
           TableService.filterDate(demographicData);
 
-        // Transform Regional data to NHS Peer Group and fetch peer group averages
+        // Replace Regional values with the NHS peer group average. While the
+        // peer average is still loading, null the value so the raw regional
+        // figure is never shown under the peer group column header.
         const transformedData = filteredDemographicData.map((d: Indicator) => {
           if (
             d.location_type === 'Regional' &&
-            peerGroupAverages[d.metric_id] !== undefined
+            demographicMetricIds.includes(d.metric_id)
           ) {
             return {
               ...d,
-              location_type: 'Regional',
-              data_point: peerGroupAverages[d.metric_id],
+              data_point: peerGroupAverages[d.metric_id] ?? null,
             };
           }
           return d;
