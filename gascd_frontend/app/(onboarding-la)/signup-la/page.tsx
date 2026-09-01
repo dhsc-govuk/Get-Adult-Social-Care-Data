@@ -36,7 +36,7 @@ const SignupLAPage: React.FC = () => {
           {/* <SignupLAForm /> */}
           <p className="govuk-body">
             If you believe you should have access to this service, please
-            contact the GASCD team at
+            contact the GASCD team at{' '}
             <a
               href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
               className="govuk-link govuk-link--no-underline"
