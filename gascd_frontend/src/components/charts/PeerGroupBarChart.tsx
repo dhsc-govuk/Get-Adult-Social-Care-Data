@@ -18,6 +18,7 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
   metricDescription = 'the percentage of households deprived in 4 dimensions',
   figureTitle = 'Percentage of households deprived in 4 dimensions',
   figureNumber = 1,
+  source,
 }) => {
   const [peerData, setPeerData] = useState<PeerGroupData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -72,6 +73,7 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
       figureTitle={figureTitle}
       figureNumber={figureNumber}
       peerData={peerData}
+      source={source}
     />
   );
 };

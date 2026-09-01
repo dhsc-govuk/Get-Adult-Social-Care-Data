@@ -33,4 +33,5 @@ export interface PeerGroupBarChartProps {
   metricDescription?: string;
   figureTitle?: string;
   figureNumber?: number;
+  source?: string;
 }

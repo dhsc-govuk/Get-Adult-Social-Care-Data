@@ -21,13 +21,15 @@ import DownloadTableDataCSVLink from '@/components/metric-components/download-ta
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
+import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
 
 export default function DementaPrevalencePage() {
   const tableref1 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
+    CPLabel: null,
     LALabel: 'Loading...',
-    RegionLabel: 'Loading...',
+    RegionLabel: 'NHS peer group average',
     CountryLabel: 'Loading...',
   } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
@@ -39,6 +41,9 @@ export default function DementaPrevalencePage() {
     metric_ids: [],
     location_ids: [],
   });
+  const [peerGroupAverages, setPeerGroupAverages] = useState<{
+    [key: string]: number | null;
+  }>({});
 
   const breadcrumbs = [
     {
@@ -55,6 +60,9 @@ export default function DementaPrevalencePage() {
     'dementia_qof_prevalence',
     'dementia_estimated_diagnosis_rate_65over',
   ];
+
+  // Metrics with NHS peer group benchmarking
+  const benchmarkedMetricIds = ['dementia_qof_prevalence'];
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -81,7 +89,12 @@ export default function DementaPrevalencePage() {
             CPLocationId,
             false
           );
-          setLocationNames(locationNames);
+          setLocationNames({
+            CPLabel: locationNames.CPLabel,
+            LALabel: locationNames.LALabel,
+            RegionLabel: 'NHS peer group average',
+            CountryLabel: 'England (national average)',
+          });
         } catch (error) {
           console.error('Error fetching location names:', error);
         }
@@ -107,13 +120,29 @@ export default function DementaPrevalencePage() {
           await IndicatorFetchService.getData(demographicQuery);
         const filteredDemographicData =
           TableService.filterDate(demographicData);
-        setFilteredDemographicData(filteredDemographicData);
+
+        // Transform Regional data to NHS Peer Group and fetch peer group averages
+        const transformedData = filteredDemographicData.map((d: Indicator) => {
+          if (
+            d.location_type === 'Regional' &&
+            peerGroupAverages[d.metric_id] !== undefined
+          ) {
+            return {
+              ...d,
+              location_type: 'Regional',
+              data_point: peerGroupAverages[d.metric_id],
+            };
+          }
+          return d;
+        });
+
+        setFilteredDemographicData(transformedData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchAllData();
-  }, [demographicQuery]);
+  }, [demographicQuery, peerGroupAverages]);
 
   useEffect(() => {
     const fetchLocationIds = async () => {
@@ -131,6 +160,49 @@ export default function DementaPrevalencePage() {
     };
     fetchLocationIds();
   }, [CPLocationId]);
+
+  useEffect(() => {
+    const fetchPeerGroupAverages = async () => {
+      if (!locationIds.length || locationIds.length < 2) return;
+      try {
+        const laCode = locationIds[1];
+
+        const results = await Promise.all(
+          benchmarkedMetricIds.map(async (metricId) => {
+            try {
+              const response = await fetch(
+                withBasePath(
+                  `/api/get_la_peers?la_code=${encodeURIComponent(laCode)}&metric_code=${metricId}`
+                )
+              );
+              if (response.ok) {
+                const data = await response.json();
+                return [
+                  metricId,
+                  data?.averagePeerGroup ??
+                    data?.AveragePeerGroup ??
+                    data?.average_peer_group ??
+                    null,
+                ] as const;
+              }
+            } catch (error) {
+              console.error(
+                `Error fetching peer group data for ${metricId}:`,
+                error
+              );
+            }
+            return [metricId, null] as const;
+          })
+        );
+
+        setPeerGroupAverages(Object.fromEntries(results));
+      } catch (error) {
+        console.error('Error fetching peer group averages:', error);
+      }
+    };
+
+    fetchPeerGroupAverages();
+  }, [locationIds]);
 
   return (
     <Layout
@@ -162,6 +234,34 @@ export default function DementaPrevalencePage() {
               </a>
               .
             </p>
+            <details className="govuk-details govuk-!-margin-top-3">
+              <summary className="govuk-details__summary">
+                <span className="govuk-details__summary-text">
+                  Interpreting the NHS Peer Group
+                </span>
+              </summary>
+              <div className="govuk-details__text">
+                GASCD currently uses a{' '}
+                <a
+                  className="govuk-link"
+                  href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  statistical neighbours model
+                </a>{' '}
+                developed by NHS digital in 2022/23 to support benchmarking.
+                This is one of a number of approaches that aim to group
+                authorities with similar socio-economic and geographic factors
+                (e.g. age, ethnicity, education). It is important to note that
+                there is limited evidence of which factors are the most
+                important drivers of variation in adult social care. As a
+                result, these statistical neighbours should be viewed as a
+                helpful starting point for benchmarking, rather than a
+                definitive indication of which authorities are most alike or
+                measuring relative performance.
+              </div>
+            </details>
           </>
         }
       >
@@ -174,8 +274,7 @@ export default function DementaPrevalencePage() {
                 <>
                   Table 1: dementia prevalence – {locationNames.LALabel}{' '}
                   <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel},{' '}
+                  {locationNames.RegionLabel} and {locationNames.CountryLabel},{' '}
                   {IndicatorService.getMostRecentDate(filteredDemographicData)}
                 </>
               }
@@ -202,6 +301,31 @@ export default function DementaPrevalencePage() {
                 downloadType="dementia prevalence and the dementia diagnosis rate"
               />
             </>
+          }
+          chart={
+            <PeerGroupBarChart
+              laCode={locationIds[1]}
+              laName={locationNames.LALabel}
+              currentLaValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'dementia_qof_prevalence' &&
+                    d.location_type === 'LA'
+                )?.data_point ?? null
+              }
+              nationalAverageValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'dementia_qof_prevalence' &&
+                    d.location_type === 'National'
+                )?.data_point ?? null
+              }
+              metricCode="dementia_qof_prevalence"
+              metricDescription="dementia prevalence in all ages, as a proportion of people registered at GP practices"
+              figureTitle="Dementia prevalence - all ages, as a proportion of people registered at GP practices"
+              figureNumber={1}
+              source="Fingertips from the Department of Health and Social Care (DHSC)"
+            />
           }
         />
       </DataBox>

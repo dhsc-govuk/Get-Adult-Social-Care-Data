@@ -14,6 +14,7 @@ interface PeerGroupChartContentProps {
   figureTitle: string;
   figureNumber: number;
   peerData: PeerGroupData;
+  source?: string;
 }
 
 const roundToOneDecimal = (value: number | null): number | null =>
@@ -27,6 +28,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
   figureTitle,
   figureNumber,
   peerData,
+  source = 'Census 2021 from the Office for National Statistics (ONS)',
 }) => {
   const hasPeers = peerData.localAuthorityPeers.length > 0;
 
@@ -133,9 +135,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
           />
         </div>
       )}
-      <p className="govuk-body">
-        Source: Census 2021 from the Office for National Statistics (ONS)
-      </p>
+      <p className="govuk-body">Source: {source}</p>
     </div>
   );
 };
