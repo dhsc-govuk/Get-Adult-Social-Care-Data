@@ -7,6 +7,7 @@ import { isAcceptableEmail, isNonEmptyString } from '@/lib/domain-check';
 import { createNewDBUser } from '@/lib/create-new-user';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
+import { withBasePath } from '@/lib/basePath';
 
 const BACK_LINK = '/whoami';
 
@@ -94,7 +95,7 @@ async function handleFormSubmit(
   if (isAcceptableEmail(rawFormData.regmail)) {
     // Insert into database
     // ...
-    const response = await fetch('/api/onboarding-la', {
+    const response = await fetch(withBasePath('/api/onboarding-la'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
