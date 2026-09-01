@@ -22,8 +22,6 @@ const SignupLAForm: React.FC = () => {
   });
 
   useEffect(() => {
-    console.log(':$:-- SignupLA --', { state });
-
     if (state.error == null && state.next) {
       router.push(state.next);
     }
