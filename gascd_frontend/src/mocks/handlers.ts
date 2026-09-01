@@ -64,6 +64,91 @@ export const handlers = [
     return HttpResponse.json(locations_data.local_authority);
   }),
 
+  http.get(api_root + '/metric_locations/local_authorities', () => {
+    return HttpResponse.json({
+      local_authorities: [
+        {
+          code: 'testla1',
+          display_name: 'Test LA One',
+          region_code: 'E12000001',
+          region_name: 'North East',
+        },
+        {
+          code: 'testla2',
+          display_name: 'Test LA Two',
+          region_code: 'E12000001',
+          region_name: 'North East',
+        },
+        {
+          code: 'testla3',
+          display_name: 'Test LA Three',
+          region_code: 'E12000002',
+          region_name: 'North West',
+        },
+      ],
+    });
+  }),
+
+  http.get(
+    api_root + '/metric_locations/local_authority_peers/:la_code',
+    () => {
+      return HttpResponse.json({
+        local_authority_peers: [
+          {
+            code: 'testla2',
+            display_name: 'Test LA Two',
+            peer_ranking: 1,
+            metric_value: 20.5,
+          },
+          {
+            code: 'testla3',
+            display_name: 'Test LA Three',
+            peer_ranking: 2,
+            metric_value: 18.5,
+          },
+        ],
+        average_peer_group: 19.5,
+        national_average: 15.5,
+      });
+    }
+  ),
+
+  http.get(
+    api_root + '/metric_locations/custom_local_authority_group',
+    ({ request }) => {
+      const url = new URL(request.url);
+      const la_codes = url.searchParams.getAll('la_codes');
+      const requesting_la_code = url.searchParams.get('requesting_la_code');
+
+      const values: { [key: string]: number } = {
+        testla1: 10,
+        testla2: 20,
+        testla3: 30,
+      };
+      const group_members = la_codes.map((code) => ({
+        code,
+        display_name: `Name for ${code}`,
+        metric_value: values[code] ?? null,
+      }));
+      const averageValues = group_members
+        .filter(
+          (member) =>
+            member.code !== requesting_la_code && member.metric_value !== null
+        )
+        .map((member) => member.metric_value as number);
+
+      return HttpResponse.json({
+        group_members,
+        custom_group_average:
+          averageValues.length > 0
+            ? averageValues.reduce((sum, value) => sum + value, 0) /
+              averageValues.length
+            : null,
+        national_average: 15.5,
+      });
+    }
+  ),
+
   http.get(api_root + '/metric_locations/regions/:region_code', () => {
     return HttpResponse.json(locations_data.region);
   }),

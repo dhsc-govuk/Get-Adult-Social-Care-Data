@@ -2,7 +2,7 @@
 
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
@@ -13,7 +13,6 @@ import LocationService from '@/services/location/locationService';
 import DataTable from '@/components/tables/table';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { LocationNames } from '@/data/interfaces/LocationNames';
-import Link from 'next/link';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import TableService from '@/services/Table/TableService';
@@ -22,6 +21,14 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
+import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
+import ComparatorGroupBuilder from '@/components/charts/peer-group/ComparatorGroupBuilder';
+import { useComparatorGroups } from '@/components/charts/peer-group/useComparatorGroups';
+import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
+import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLocalAuthorities';
+import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
+import { ComparatorSelection } from '@/components/charts/peer-group/types';
+import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
 
 export default function DementaPrevalencePage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -34,16 +41,19 @@ export default function DementaPrevalencePage() {
   } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
-  const [filteredDemographicData, setFilteredDemographicData] = useState<
-    Indicator[]
-  >([]);
+  const [baseDemographicData, setBaseDemographicData] = useState<Indicator[]>(
+    []
+  );
   const [demographicQuery, setDemographicQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
   });
-  const [peerGroupAverages, setPeerGroupAverages] = useState<{
-    [key: string]: number | null;
-  }>({});
+  // Status of the metric-data request that supplies the user's LA and England
+  // values. Starts as loading because the query cannot be built until the
+  // location ids resolve.
+  const [baseDataStatus, setBaseDataStatus] = useState<
+    'loading' | 'ready' | 'error'
+  >('loading');
 
   const breadcrumbs = [
     {
@@ -61,8 +71,159 @@ export default function DementaPrevalencePage() {
     'dementia_estimated_diagnosis_rate_65over',
   ];
 
-  // Metrics with NHS peer group benchmarking
+  // Metrics with peer group / custom comparator benchmarking
   const benchmarkedMetricIds = ['dementia_qof_prevalence'];
+
+  const metricPage = 'dementia-prevalence';
+  const laCode = locationIds[1];
+
+  const {
+    groups,
+    selection,
+    setSelection,
+    saveGroup,
+    updateGroup,
+    deleteGroup,
+  } = useComparatorGroups();
+  // Which comparator control has its builder panel open, and whether it is
+  // editing an existing group (by id) or creating a new one
+  const [builderState, setBuilderState] = useState<{
+    idPrefix: string;
+    editingGroupId?: string;
+  } | null>(null);
+  const [builderError, setBuilderError] = useState<string | null>(null);
+  const {
+    dataByMetric,
+    loading: peerLoading,
+    error: peerError,
+  } = usePeerGroupData(laCode, benchmarkedMetricIds, selection, groups);
+  // A chart needs both the comparator data and the user's own LA / England
+  // values before it is complete, so it waits for (and fails on) either
+  // request rather than rendering peer bars without the user's authority.
+  const chartLoading = peerLoading || baseDataStatus === 'loading';
+  const chartError = peerError || baseDataStatus === 'error';
+  const { authorities, error: authoritiesError } = useAllLocalAuthorities(
+    builderState !== null
+  );
+
+  const selectedGroup =
+    selection.kind === 'custom'
+      ? groups.find((group) => group.id === selection.groupId)
+      : undefined;
+  const comparatorLabel = selectedGroup ? selectedGroup.name : undefined;
+  const comparatorAverageLabel = selectedGroup
+    ? `${selectedGroup.name} average`
+    : NHS_PEER_GROUP_AVERAGE_LABEL;
+  const tableColumnHeaders = {
+    ...locationNames,
+    RegionLabel: comparatorAverageLabel,
+  };
+
+  const handleComparatorChange = (newSelection: ComparatorSelection) => {
+    setSelection(newSelection);
+    setBuilderState(null);
+    setBuilderError(null);
+    AnalyticsService.trackComparatorChange(newSelection.kind, metricPage);
+  };
+
+  const handleGroupSave = async (group: {
+    name: string;
+    laCodes: string[];
+  }) => {
+    setBuilderError(null);
+    try {
+      if (builderState?.editingGroupId) {
+        await updateGroup(builderState.editingGroupId, group);
+        AnalyticsService.trackComparatorGroupEdit(group.laCodes.length);
+      } else {
+        await saveGroup(group);
+        AnalyticsService.trackComparatorGroupSave(group.laCodes.length);
+        AnalyticsService.trackComparatorChange('custom', metricPage);
+      }
+      setBuilderState(null);
+    } catch (error) {
+      // Keep the builder open so nothing the user entered is lost
+      setBuilderError(
+        error instanceof Error
+          ? error.message
+          : 'Your comparator group could not be saved. Try again.'
+      );
+    }
+  };
+
+  const handleGroupDelete = async () => {
+    setBuilderError(null);
+    try {
+      if (builderState?.editingGroupId) {
+        await deleteGroup(builderState.editingGroupId);
+        AnalyticsService.trackComparatorGroupDelete();
+      }
+      setBuilderState(null);
+    } catch (error) {
+      setBuilderError(
+        error instanceof Error
+          ? error.message
+          : 'The comparator group could not be deleted. Try again.'
+      );
+    }
+  };
+
+  const handleEditToggle = (idPrefix: string) => {
+    if (selection.kind !== 'custom') return;
+    setBuilderError(null);
+    setBuilderState((current) =>
+      current?.idPrefix === idPrefix && current.editingGroupId
+        ? null
+        : { idPrefix, editingGroupId: selection.groupId }
+    );
+  };
+
+  const renderComparatorControl = (idPrefix: string) => {
+    const builderOpenHere = builderState?.idPrefix === idPrefix;
+    const editingGroup = builderOpenHere
+      ? groups.find((group) => group.id === builderState?.editingGroupId)
+      : undefined;
+
+    return (
+      <>
+        <ComparatorGroupSelect
+          idPrefix={idPrefix}
+          selection={selection}
+          groups={groups}
+          onChange={handleComparatorChange}
+          onCreateNew={() => setBuilderState({ idPrefix })}
+          onEdit={() => handleEditToggle(idPrefix)}
+          builderMode={
+            builderOpenHere ? (editingGroup ? 'edit' : 'create') : null
+          }
+        />
+        {builderOpenHere && (
+          <ComparatorGroupBuilder
+            // Remount when switching between create and edit so the form
+            // state is reinitialised from the right group
+            key={editingGroup?.id ?? 'create'}
+            idPrefix={idPrefix}
+            allAuthorities={authorities}
+            authoritiesError={authoritiesError}
+            ownLaCode={laCode}
+            existingNames={groups
+              .filter((group) => group.id !== editingGroup?.id)
+              .map((group) => group.name)}
+            onSave={handleGroupSave}
+            onCancel={() => {
+              setBuilderState(null);
+              setBuilderError(null);
+            }}
+            mode={editingGroup ? 'edit' : 'create'}
+            initialName={editingGroup?.name}
+            initialCodes={editingGroup?.laCodes}
+            onDelete={editingGroup ? handleGroupDelete : undefined}
+            serverError={builderError ?? undefined}
+          />
+        )}
+      </>
+    );
+  };
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -113,37 +274,44 @@ export default function DementaPrevalencePage() {
   }, [locationIds]);
 
   useEffect(() => {
+    let cancelled = false;
     const fetchAllData = async () => {
-      if (!CPLocationId) return;
+      if (!CPLocationId || demographicQuery.metric_ids.length === 0) return;
+      setBaseDataStatus('loading');
       try {
         const demographicData: Indicator[] =
           await IndicatorFetchService.getData(demographicQuery);
-        const filteredDemographicData =
-          TableService.filterDate(demographicData);
-
-        // Replace Regional values with the NHS peer group average. While the
-        // peer average is still loading, null the value so the raw regional
-        // figure is never shown under the peer group column header.
-        const transformedData = filteredDemographicData.map((d: Indicator) => {
-          if (
-            d.location_type === 'Regional' &&
-            benchmarkedMetricIds.includes(d.metric_id)
-          ) {
-            return {
-              ...d,
-              data_point: peerGroupAverages[d.metric_id] ?? null,
-            };
-          }
-          return d;
-        });
-
-        setFilteredDemographicData(transformedData);
+        if (cancelled) return;
+        setBaseDemographicData(TableService.filterDate(demographicData));
+        setBaseDataStatus('ready');
       } catch (error) {
+        if (cancelled) return;
         console.error('Error fetching data:', error);
+        setBaseDataStatus('error');
       }
     };
     fetchAllData();
-  }, [demographicQuery, peerGroupAverages]);
+    return () => {
+      cancelled = true;
+    };
+  }, [demographicQuery, CPLocationId]);
+
+  // The Regional row is repurposed to show the selected comparison group's
+  // average (synthesised if the metrics API returned no Regional row). Derived
+  // synchronously so the table can never show a stale or mislabelled value:
+  // while comparator data is unresolved (loading or failed), the row is null
+  // and renders as unavailable rather than falling back to the true regional
+  // value under a comparator-average heading.
+  const filteredDemographicData = useMemo(
+    () =>
+      mergeComparatorAverage(
+        baseDemographicData,
+        benchmarkedMetricIds,
+        dataByMetric,
+        locationIds[2]
+      ),
+    [baseDemographicData, dataByMetric, locationIds]
+  );
 
   useEffect(() => {
     const fetchLocationIds = async () => {
@@ -162,49 +330,6 @@ export default function DementaPrevalencePage() {
     fetchLocationIds();
   }, [CPLocationId]);
 
-  useEffect(() => {
-    const fetchPeerGroupAverages = async () => {
-      if (!locationIds.length || locationIds.length < 2) return;
-      try {
-        const laCode = locationIds[1];
-
-        const results = await Promise.all(
-          benchmarkedMetricIds.map(async (metricId) => {
-            try {
-              const response = await fetch(
-                withBasePath(
-                  `/api/get_la_peers?la_code=${encodeURIComponent(laCode)}&metric_code=${metricId}`
-                )
-              );
-              if (response.ok) {
-                const data = await response.json();
-                return [
-                  metricId,
-                  data?.averagePeerGroup ??
-                    data?.AveragePeerGroup ??
-                    data?.average_peer_group ??
-                    null,
-                ] as const;
-              }
-            } catch (error) {
-              console.error(
-                `Error fetching peer group data for ${metricId}:`,
-                error
-              );
-            }
-            return [metricId, null] as const;
-          })
-        );
-
-        setPeerGroupAverages(Object.fromEntries(results));
-      } catch (error) {
-        console.error('Error fetching peer group averages:', error);
-      }
-    };
-
-    fetchPeerGroupAverages();
-  }, [locationIds]);
-
   return (
     <Layout
       title="Dementia prevalence"
@@ -216,9 +341,7 @@ export default function DementaPrevalencePage() {
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">Dementia prevalence</h1>
-          <p className="govuk-body-l">
-            Data estimates for undiagnosed dementia.
-          </p>
+          <p className="govuk-body-l">Data on dementia prevalence.</p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview
           </h2>
@@ -230,7 +353,10 @@ export default function DementaPrevalencePage() {
           <>
             <p className="govuk-body">
               Find out{' '}
-              <a href={withBasePath('/help/dementia-prevalence')} className="govuk-link">
+              <a
+                href={withBasePath('/help/dementia-prevalence')}
+                className="govuk-link"
+              >
                 how dementia prevalence is calculated
               </a>
               .
@@ -268,32 +394,40 @@ export default function DementaPrevalencePage() {
       >
         <DataTabs
           id="1"
+          sharingMetricIds={demographicMetricIds}
           table={
-            <DataTable
-              tableref={tableref1}
-              caption={
-                <>
-                  Table 1: dementia prevalence – {locationNames.LALabel}{' '}
-                  <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} and {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getMostRecentDate(filteredDemographicData)}
-                </>
-              }
-              source={
-                'Fingertips from the Department of Health and Social Care (DHSC)'
-              }
-              columnHeaders={locationNames}
-              rowHeaders={{
-                dementia_qof_prevalence:
-                  'Dementia prevalence - all ages, as a proportion of people registered at GP practices',
-              }}
-              data={filteredDemographicData}
-              showCareProvider={false}
-              percentageRows={['dementia_qof_prevalence']}
-            ></DataTable>
+            <>
+              {renderComparatorControl('comparator-table-1')}
+              <DataTable
+                tableref={tableref1}
+                caption={
+                  <>
+                    Table 1: dementia prevalence – {locationNames.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {tableColumnHeaders.RegionLabel} and{' '}
+                    {locationNames.CountryLabel},{' '}
+                    {IndicatorService.getMostRecentDate(
+                      filteredDemographicData
+                    )}
+                  </>
+                }
+                source={
+                  'Fingertips from the Department of Health and Social Care (DHSC)'
+                }
+                columnHeaders={tableColumnHeaders}
+                rowHeaders={{
+                  dementia_qof_prevalence:
+                    'Dementia prevalence - all ages, as a proportion of people registered at GP practices',
+                }}
+                data={filteredDemographicData}
+                showCareProvider={false}
+                percentageRows={['dementia_qof_prevalence']}
+              ></DataTable>
+            </>
           }
           download={
             <>
+              {renderComparatorControl('comparator-download-1')}
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
@@ -321,11 +455,16 @@ export default function DementaPrevalencePage() {
                     d.location_type === 'National'
                 )?.data_point ?? null
               }
-              metricCode="dementia_qof_prevalence"
+              peerData={dataByMetric['dementia_qof_prevalence'] ?? null}
+              loading={chartLoading}
+              error={chartError}
+              comparatorControl={renderComparatorControl('comparator-chart-1')}
+              comparatorLabel={comparatorLabel}
+              comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="dementia prevalence in all ages, as a proportion of people registered at GP practices"
               figureTitle="Dementia prevalence - all ages, as a proportion of people registered at GP practices"
               figureNumber={1}
-              source="Fingertips from the Department of Health and Social Care (DHSC)"
+              sourceText="Source: Fingertips from the Department of Health and Social Care (DHSC)"
             />
           }
         />

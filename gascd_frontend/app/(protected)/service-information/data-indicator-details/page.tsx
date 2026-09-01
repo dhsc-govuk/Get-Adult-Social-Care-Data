@@ -79,7 +79,7 @@ export default function DataIndicatorDetailsPage() {
                   adult social care
                 </>
               }
-              sources="NHS England"
+              sources="Department of Health and Social Care"
               updateFrequency="Yearly updates"
               limitations={true}
               url="/help/total-financial-spend-long-term-community-adult-social-care"
@@ -91,7 +91,7 @@ export default function DataIndicatorDetailsPage() {
                   and long-term adult social care
                 </>
               }
-              sources="NHS England"
+              sources="Department of Health and Social Care"
               updateFrequency="Yearly updates"
               limitations={true}
               url="/help/percentages-financial-spend-long-term-and-short-term-care"
@@ -99,11 +99,11 @@ export default function DataIndicatorDetailsPage() {
             <DataLinkCard
               label={
                 <>
-                  <abbr title="Local Authority">LA</abbr> funding for
-                  long-term adult social care – trends over time
+                  <abbr title="Local Authority">LA</abbr> funding for long-term
+                  adult social care – trends over time
                 </>
               }
-              sources="NHS England"
+              sources="Department of Health and Social Care"
               updateFrequency="Yearly updates"
               limitations={true}
               url="/help/total-financial-spend-long-term-care-trends-over-time"

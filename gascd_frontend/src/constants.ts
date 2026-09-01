@@ -17,6 +17,10 @@ export const DOWNLOAD_CSV_EVENT = 'download-csv';
 export const FILTER_APPLY_EVENT = 'filter-apply';
 export const FILTER_REMOVE_EVENT = 'filter-remove';
 export const FILTER_CLEAR_EVENT = 'filter-clear';
+export const COMPARATOR_CHANGE_EVENT = 'comparator-change';
+export const COMPARATOR_GROUP_SAVE_EVENT = 'comparator-group-save';
+export const COMPARATOR_GROUP_EDIT_EVENT = 'comparator-group-edit';
+export const COMPARATOR_GROUP_DELETE_EVENT = 'comparator-group-delete';
 
 // User types
 export const ALLOWED_CP_USER_TYPES = [

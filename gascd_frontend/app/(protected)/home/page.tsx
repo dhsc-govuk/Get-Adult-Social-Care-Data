@@ -89,7 +89,7 @@ const HomePage: React.FC = async () => {
         },
         {
           title: 'Dementia prevalence',
-          description: 'Data estimates for undiagnosed dementia.',
+          description: 'Data on dementia prevalence.',
           url: '/topics/population-needs/dementia-prevalence/data',
         },
       ],

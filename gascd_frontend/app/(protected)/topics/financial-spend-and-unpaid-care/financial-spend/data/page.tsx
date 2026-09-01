@@ -388,7 +388,9 @@ export default function LAFundingPage() {
           <p className="govuk-body-m">
             Find out{' '}
             <a
-              href={withBasePath('/help/percentages-financial-spend-long-term-and-short-term-care')}
+              href={withBasePath(
+                '/help/percentages-financial-spend-long-term-and-short-term-care'
+              )}
               className="govuk-link"
             >
               how the financial spend for short-term and long-term care is
@@ -400,6 +402,9 @@ export default function LAFundingPage() {
       >
         <DataTabs
           id="1"
+          sharingMetricIds={demographicMetricIds.filter((id) =>
+            id.startsWith('edpsr_')
+          )}
           table={
             <SubCatergoryTable
               tableref={tableref1}
@@ -419,7 +424,7 @@ export default function LAFundingPage() {
                 </>
               }
               source={
-                'Adult Social Care Activity and Finance Report from NHS England'
+                'Adult Social Care Finance Report from the Department of Health and Social Care'
               }
               columnHeaders={locationNamesWithAverageLabels}
               metricColumnName={metricColumnNames[0]}
@@ -479,7 +484,9 @@ export default function LAFundingPage() {
           <p className="govuk-body-m">
             Find out{' '}
             <a
-              href={withBasePath('/help/total-financial-spend-long-term-community-adult-social-care')}
+              href={withBasePath(
+                '/help/total-financial-spend-long-term-community-adult-social-care'
+              )}
               className="govuk-link"
             >
               how the financial spend is calculated by service type
@@ -490,6 +497,9 @@ export default function LAFundingPage() {
       >
         <DataTabs
           id="2"
+          sharingMetricIds={demographicMetricIds.filter((id) =>
+            id.startsWith('elss_')
+          )}
           table={
             <SubCatergoryTable
               tableref={tableref2}
@@ -508,7 +518,7 @@ export default function LAFundingPage() {
                 </>
               }
               source={
-                'Adult Social Care Activity and Finance Report from NHS England'
+                'Adult Social Care Finance Report from the Department of Health and Social Care'
               }
               columnHeaders={locationNamesWithAverageLabels}
               metricColumnName={metricColumnNames[1]}
@@ -571,7 +581,9 @@ export default function LAFundingPage() {
           <p className="govuk-body-m">
             Find out{' '}
             <a
-              href={withBasePath('/help/total-financial-spend-long-term-care-trends-over-time')}
+              href={withBasePath(
+                '/help/total-financial-spend-long-term-care-trends-over-time'
+              )}
               className="govuk-link"
             >
               how the financial spend on long-term adult social care is
@@ -589,6 +601,9 @@ export default function LAFundingPage() {
         />
         <DataTabs
           id="3"
+          sharingMetricIds={demographicMetricIds.filter((id) =>
+            id.startsWith('elss_')
+          )}
           graph={
             <>
               <h4 className="govuk-heading-s">
@@ -612,8 +627,8 @@ export default function LAFundingPage() {
                 </div>
               )) || <p>Loading graph</p>}
               <p className="govuk-body">
-                Source: Adult Social Care Activity and Finance Report from NHS
-                England
+                Source: Adult Social Care Finance Report from the Department of
+                Health and Social Care
               </p>
             </>
           }
@@ -635,7 +650,7 @@ export default function LAFundingPage() {
                 </>
               }
               source={
-                'Adult Social Care Activity and Finance Report from NHS England'
+                'Adult Social Care Finance Report from the Department of Health and Social Care'
               }
               columnHeaders={locationNamesWithAverageLabels}
               metricColumnName={metricColumnNames[2]}

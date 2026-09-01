@@ -1,4 +1,8 @@
-import { PeerGroupApiResponse, PeerGroupData } from './types';
+import {
+  CustomGroupApiResponse,
+  PeerGroupApiResponse,
+  PeerGroupData,
+} from './types';
 
 export const mapPeerGroupResponse = (
   raw: PeerGroupApiResponse
@@ -10,5 +14,18 @@ export const mapPeerGroupResponse = (
     metricValue: peer.metric_value ?? null,
   })),
   averagePeerGroup: raw.average_peer_group ?? null,
+  nationalAverage: raw.national_average ?? null,
+});
+
+export const mapCustomGroupResponse = (
+  raw: CustomGroupApiResponse
+): PeerGroupData => ({
+  localAuthorityPeers: (raw.group_members ?? []).map((member, index) => ({
+    code: member.code ?? `member-${index}`,
+    displayName: member.display_name ?? 'Unknown',
+    peerRanking: index + 1,
+    metricValue: member.metric_value ?? null,
+  })),
+  averagePeerGroup: raw.custom_group_average ?? null,
   nationalAverage: raw.national_average ?? null,
 });

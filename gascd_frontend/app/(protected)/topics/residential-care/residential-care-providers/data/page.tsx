@@ -178,7 +178,9 @@ export default function ResidentialCareProvidersPage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href={withBasePath('/help/total-number-community-social-care-providers')}
+                href={withBasePath(
+                  '/help/total-number-community-social-care-providers'
+                )}
                 className="govuk-link"
               >
                 how the number of adult social care providers is calculated
@@ -190,6 +192,7 @@ export default function ResidentialCareProvidersPage() {
       >
         <DataTabs
           id="2"
+          sharingMetricIds={demographicMetricIds}
           table={
             <SubCatergoryTable
               tableref={tableref2}

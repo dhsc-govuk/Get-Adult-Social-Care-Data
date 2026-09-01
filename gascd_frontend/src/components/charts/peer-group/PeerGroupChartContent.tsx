@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { Shape } from 'plotly.js';
 import BarChart from '../BarChart';
-import PeerGroupChartHeader from './PeerGroupChartHeader';
 import PeerGroupChartLegend from './PeerGroupChartLegend';
 import { NATIONAL_AVG_COLOUR, PEER_AVG_COLOUR } from './constants';
 import { PeerGroupData } from './types';
@@ -9,12 +8,18 @@ import { PeerGroupData } from './types';
 interface PeerGroupChartContentProps {
   laName: string;
   currentLaValue: number | null;
+  // The England value from the same metric-data query the tables use. It is
+  // deliberately the only source of the national figure so the chart and the
+  // table can never disagree; peerData.nationalAverage is not used as a
+  // fallback because the peers API does not filter National rows by code.
   nationalAverageValue: number | null;
-  metricDescription: string;
-  figureTitle: string;
-  figureNumber: number;
   peerData: PeerGroupData;
-  source?: string;
+  // The user's own LA code - excluded from the peer rows so a custom group
+  // containing the user's LA cannot render it twice.
+  ownLaCode?: string;
+  comparatorAverageLabel?: string;
+  valueSuffix?: string;
+  sourceText?: string;
 }
 
 const roundToOneDecimal = (value: number | null): number | null =>
@@ -24,22 +29,26 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
   laName,
   currentLaValue,
   nationalAverageValue,
-  metricDescription,
-  figureTitle,
-  figureNumber,
   peerData,
-  source = 'Census 2021 from the Office for National Statistics (ONS)',
+  ownLaCode,
+  comparatorAverageLabel,
+  valueSuffix = '%',
+  sourceText = 'Source: Census 2021 from the Office for National Statistics (ONS)',
 }) => {
   const hasPeers = peerData.localAuthorityPeers.length > 0;
 
   const { categories, values } = useMemo(() => {
     if (!hasPeers) return { categories: [], values: [] };
 
+    const peers = ownLaCode
+      ? peerData.localAuthorityPeers.filter((peer) => peer.code !== ownLaCode)
+      : peerData.localAuthorityPeers;
+
     const allItems: { name: string; value: number }[] = [
       ...(currentLaValue !== null
         ? [{ name: laName, value: currentLaValue }]
         : []),
-      ...peerData.localAuthorityPeers
+      ...peers
         .filter((peer) => peer.metricValue !== null)
         .map((peer) => ({
           name: peer.displayName,
@@ -53,16 +62,20 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
       categories: sorted.map((item) => item.name),
       values: sorted.map((item) => item.value),
     };
-  }, [currentLaValue, hasPeers, laName, peerData.localAuthorityPeers]);
+  }, [
+    currentLaValue,
+    hasPeers,
+    laName,
+    ownLaCode,
+    peerData.localAuthorityPeers,
+  ]);
 
   const referenceShapes = useMemo((): Partial<Shape>[] => {
     const shapes: Partial<Shape>[] = [];
     const resolvedPeerGroupAverage = roundToOneDecimal(
       peerData.averagePeerGroup
     );
-    const resolvedNationalAverage = roundToOneDecimal(
-      nationalAverageValue ?? peerData.nationalAverage
-    );
+    const resolvedNationalAverage = roundToOneDecimal(nationalAverageValue);
 
     if (resolvedPeerGroupAverage !== null) {
       shapes.push({
@@ -91,11 +104,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
     }
 
     return shapes;
-  }, [
-    nationalAverageValue,
-    peerData.averagePeerGroup,
-    peerData.nationalAverage,
-  ]);
+  }, [nationalAverageValue, peerData.averagePeerGroup]);
 
   if (!hasPeers) {
     return (
@@ -105,22 +114,16 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
     );
   }
 
-  const resolvedNationalAverage = roundToOneDecimal(
-    nationalAverageValue ?? peerData.nationalAverage
-  );
+  const resolvedNationalAverage = roundToOneDecimal(nationalAverageValue);
 
   return (
     <div>
-      <PeerGroupChartHeader
-        laName={laName}
-        metricDescription={metricDescription}
-        figureTitle={figureTitle}
-        figureNumber={figureNumber}
-      />
       <PeerGroupChartLegend
         laName={laName}
         peerGroupAverage={roundToOneDecimal(peerData.averagePeerGroup)}
         nationalAverage={resolvedNationalAverage}
+        comparatorAverageLabel={comparatorAverageLabel}
+        valueSuffix={valueSuffix}
       />
       {categories.length > 0 && (
         <div style={{ height: `${Math.max(400, categories.length * 50)}px` }}>
@@ -130,12 +133,12 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
             highlightCategory={laName}
             darkBlueCount={0}
             additionalShapes={referenceShapes}
-            xAxisTickSuffix="%"
+            xAxisTickSuffix={valueSuffix}
             hoverValueFormat=".1f"
           />
         </div>
       )}
-      <p className="govuk-body">Source: {source}</p>
+      <p className="govuk-body">{sourceText}</p>
     </div>
   );
 };

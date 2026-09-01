@@ -26,12 +26,12 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
           }
           source={
             <Link
-              href="https://digital.nhs.uk/data-and-information/publications/statistical/adult-social-care-activity-and-finance-report"
+              href="https://www.gov.uk/government/statistics/adult-social-care-finance-report-england-2024-to-2025/adult-social-care-finance-report-england-2024-to-2025"
               className="govuk-link"
               target="_blank"
             >
-              Adult Social Care Activity and Finance Report from NHS England
-              (opens in new tab)
+              Adult Social Care Finance Report from the Department of Health and
+              Social Care (opens in new tab)
             </Link>
           }
           updateFrequency="Yearly (by financial year)"
@@ -42,9 +42,10 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
                 authority on long-term and short-term care over the financial
                 year (ASC-FR return), shown by primary support reason. Gross
                 (not net) expenditure is used so figures are not distorted by
-                differing client contributions between areas. Covers <abbr title="Local Authority">LA</abbr>-funded
-                care only; excludes NHS-funded care (including the Better Care
-                Fund) and privately funded care.
+                differing client contributions between areas. Covers{' '}
+                <abbr title="Local Authority">LA</abbr>-funded care only;
+                excludes NHS-funded care (including the Better Care Fund) and
+                privately funded care.
               </p>
             </>
           }

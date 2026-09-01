@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Layout from '@/components/common/layout/Layout';
+import SharingRulesTableRow from '@/components/data-components/SharingRulesTableRow';
 
 const PercentageBedsOccupiedCareProviders: React.FC = () => {
   return (
@@ -58,6 +59,7 @@ const PercentageBedsOccupiedCareProviders: React.FC = () => {
                   </th>
                   <td className="govuk-table__cell">Daily</td>
                 </tr>
+                <SharingRulesTableRow />
 
                 <tr className="govuk-table__row">
                   <th scope="row" className="govuk-table__header">

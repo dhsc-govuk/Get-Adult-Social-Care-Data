@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { locations_data } from '@/data/mockResponses/locations_data';
 import { GET as GetFilters } from '../../app/api/get_all_total_beds_filters/route';
+import { GET as GetCustomGroupValues } from '../../app/api/get_custom_group_values/route';
+import { GET as GetLaList } from '../../app/api/get_la_list/route';
 import { GET as GetAvailableLocations } from '../../app/api/get_available_locations/route';
 import { POST as SetSelectedLocation } from '../../app/api/set_selected_location/route';
 import { POST as GetMetricData } from '../../app/api/get_metric_data/route';
@@ -459,5 +461,115 @@ describe('set selected locations', () => {
     });
     const result = await SetSelectedLocation(req);
     expect(result.status).toBe(401);
+  });
+});
+
+describe('get la list', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('requires a user', async () => {
+    mockGetSession.mockReturnValue(null as any);
+    const result = await GetLaList();
+    expect(result.status).toBe(401);
+  });
+
+  it('returns the full local authority list', async () => {
+    mockGetSession.mockReturnValue(mockSession);
+    const result = await GetLaList();
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    expect(data.local_authorities).toHaveLength(3);
+    expect(data.local_authorities[0]).toEqual({
+      code: 'testla1',
+      display_name: 'Test LA One',
+      region_code: 'E12000001',
+      region_name: 'North East',
+    });
+  });
+});
+
+describe('get custom group values', () => {
+  const base_url = 'http://localhost/api/get_custom_group_values';
+
+  beforeEach(() => vi.clearAllMocks());
+
+  it('requires a user', async () => {
+    mockGetSession.mockReturnValue(null as any);
+    const req = new NextRequest(
+      `${base_url}?la_codes=testla2&metric_code=perc_households_one_person`
+    );
+    const result = await GetCustomGroupValues(req);
+    expect(result.status).toBe(401);
+  });
+
+  it('requires la_codes', async () => {
+    mockGetSession.mockReturnValue(mockSession);
+    const req = new NextRequest(
+      `${base_url}?metric_code=perc_households_one_person`
+    );
+    const result = await GetCustomGroupValues(req);
+    expect(result.status).toBe(400);
+  });
+
+  it('requires a metric_code', async () => {
+    mockGetSession.mockReturnValue(mockSession);
+    const req = new NextRequest(`${base_url}?la_codes=testla2`);
+    const result = await GetCustomGroupValues(req);
+    expect(result.status).toBe(400);
+  });
+
+  it('rejects more than 500 la_codes', async () => {
+    mockGetSession.mockReturnValue(mockSession);
+    const codes = Array.from(
+      { length: 501 },
+      (_, index) => `la_codes=code${index}`
+    ).join('&');
+    const req = new NextRequest(
+      `${base_url}?${codes}&metric_code=perc_households_one_person`
+    );
+    const result = await GetCustomGroupValues(req);
+    expect(result.status).toBe(400);
+  });
+
+  it('returns group values for a registered user', async () => {
+    mockGetSession.mockReturnValue(mockSession);
+    const req = new NextRequest(
+      `${base_url}?la_codes=testla2&la_codes=testla3&metric_code=perc_households_one_person`
+    );
+    const result = await GetCustomGroupValues(req);
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    expect(data.group_members).toHaveLength(2);
+    expect(data.custom_group_average).toBe(25);
+    expect(data.national_average).toBe(15.5);
+  });
+
+  it('derives requesting_la_code from the session for LA users, not the client', async () => {
+    // The LA user's own authority (testla1) is in the group; the mock data
+    // API excludes the requesting LA from the average, so an average without
+    // testla1's value proves the code was injected from the session. A
+    // client-supplied requesting_la_code must be ignored.
+    mockGetSession.mockReturnValue(mockSessionLAUser);
+    const req = new NextRequest(
+      `${base_url}?la_codes=testla1&la_codes=testla2&la_codes=testla3&metric_code=perc_households_one_person&requesting_la_code=testla3`
+    );
+    const result = await GetCustomGroupValues(req);
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    // Average of testla2 (20) and testla3 (30) - testla1 (10) excluded
+    expect(data.custom_group_average).toBe(25);
+    expect(data.group_members).toHaveLength(3);
+  });
+
+  it('does not send a requesting_la_code for care provider users', async () => {
+    mockGetSession.mockReturnValue(mockSession);
+    const req = new NextRequest(
+      `${base_url}?la_codes=testla1&la_codes=testla2&metric_code=perc_households_one_person`
+    );
+    const result = await GetCustomGroupValues(req);
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    // No exclusion applies - both values are in the average
+    expect(data.custom_group_average).toBe(15);
   });
 });

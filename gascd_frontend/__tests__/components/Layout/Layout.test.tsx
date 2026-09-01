@@ -1,6 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import Layout from '@/components/common/layout/Layout';
 
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(() => ({ back: vi.fn() })),
+}));
+
 describe('Layout', () => {
   it('Renders the main layout correctly', () => {
     render(<Layout title="My test page" />);
@@ -21,6 +25,22 @@ describe('Layout', () => {
     });
     expect(backlink).toBeInTheDocument();
     expect(backlink.getAttribute('href')).toBe('/myback');
+  });
+
+  it('Renders a back link to the previous page when asked to', () => {
+    render(<Layout title="My test page" showBackLink={true} />);
+    const backlink = screen.getByRole('link', {
+      name: 'Back',
+    });
+    expect(backlink).toBeInTheDocument();
+  });
+
+  it('Renders a footer link to the terms of use', () => {
+    render(<Layout title="My test page" />);
+    const termsOfUse = screen.getByRole('link', {
+      name: 'Terms of use',
+    });
+    expect(termsOfUse).toHaveAttribute('href', '/terms-of-use');
   });
 
   it('Renders version numbers in footer', () => {
