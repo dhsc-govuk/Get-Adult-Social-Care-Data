@@ -94,7 +94,7 @@ async function handleFormSubmit(
   if (isAcceptableEmail(rawFormData.regmail)) {
     // Insert into database
     // ...
-    const response = await fetch('', {
+    const response = await fetch('/api/onboarding-la', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
