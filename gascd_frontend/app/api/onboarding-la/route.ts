@@ -7,5 +7,5 @@ export async function POST(req: NextRequest) {
   const result = await createNewDBUser(submittedData.email ?? null);
   console.log('$$$', req.url, submittedData, result);
 
-  return NextResponse.json({ result: 'XYZ' }, { status: 200 });
+  return NextResponse.json({ result }, { status: 200 });
 }
