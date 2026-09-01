@@ -1,10 +1,8 @@
 import React, { useActionState, useEffect } from 'react';
 import Link from 'next/link';
-import { handleFormLookupLA } from '@/server-actions';
 import Form from 'next/form';
 import { ActionResponse, LookupLAFormData } from '@/server-actions/types';
 import { isAcceptableEmail, isNonEmptyString } from '@/lib/domain-check';
-import { createNewDBUser } from '@/lib/create-new-user';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { withBasePath } from '@/lib/basePath';
@@ -20,8 +18,6 @@ const LookupLAForm: React.FC = () => {
   });
 
   useEffect(() => {
-    console.log(':$:-- LookupLA --', state);
-
     if (state.error == null && state.next) {
       router.replace(state.next);
       router.refresh();
@@ -93,8 +89,6 @@ async function handleFormSubmit(
 
   let nextPageURL: string | null = null;
   if (isAcceptableEmail(rawFormData.regmail)) {
-    // Insert into database
-    // ...
     const response = await fetch(withBasePath('/api/onboarding-la'), {
       method: 'POST',
       headers: {
@@ -102,7 +96,6 @@ async function handleFormSubmit(
       },
       body: JSON.stringify({ email: rawFormData.regmail }),
     });
-    // createNewDBUser(rawFormData.regmail);
 
     const verdict = await response.json();
 
@@ -112,16 +105,6 @@ async function handleFormSubmit(
         providerId: 'govuk-one-login',
         // callbackURL: '/home',
       });
-      // const responseAuth = await auth.api.signInWithOAuth2({
-      //   body: {
-      //     providerId: 'govuk-one-login',
-      //     callbackURL: '/home',
-      //   },
-      //   headers: await headers(),
-      // });
-
-      // // Redirect to Confirmation page
-      // nextPageURL = CONFIRM_LA_LINK;
 
       nextPageURL = '/home';
     }

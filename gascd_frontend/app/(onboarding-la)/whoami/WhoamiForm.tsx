@@ -5,26 +5,18 @@ import { isNonEmptyString, validateFormFields } from '@/lib/domain-check';
 import { ActionResponse, WhoamiFormData } from '@/server-actions/types';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
-import { useFormStatus } from 'react-dom';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
-import { handleFormWhoami } from '@/server-actions';
-import { withBasePath } from '@/lib/basePath';
 
 const BACK_LINK = '/login';
 
 const WhoamiForm: React.FC = () => {
   const router = useRouter();
 
-  // const { data, action, pending: isPending } = useFormStatus();
   const [state, action, isPending] = useActionState(handleFormSubmit, {
     fields: {},
     next: null,
   });
 
   useEffect(() => {
-    console.log(':$:-- Whoami --', state);
-
     if (state.error == null && state.next) {
       router.replace(state.next);
       router.refresh();
@@ -32,7 +24,6 @@ const WhoamiForm: React.FC = () => {
   }, [state]);
 
   return (
-    // <Form action={handleFormSubmit}>
     <Form action={action}>
       <fieldset className="govuk-fieldset" aria-describedby="signIn-hint">
         <legend className="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -175,53 +166,18 @@ async function handleFormSubmit(
             );
           }
 
-          responseAuth = await authClient.signIn.email(
-            {
-              email: process.env.NEXT_PUBLIC_LOCAL_AUTH_EMAIL,
-              password: process.env.NEXT_PUBLIC_LOCAL_AUTH_PASSWORD,
-              // callbackURL: withBasePath('/home'),
-            },
-            {
-              onSuccess(context) {
-                console.log('---< EMAIL >---', {
-                  ...context.data,
-                  ...context.response,
-                });
-              },
-            }
-          );
-          // responseAuth = await auth.api.signInEmail({
-          //   body: {
-          //     email: process.env.LOCAL_AUTH_EMAIL,
-          //     password: process.env.LOCAL_AUTH_PASSWORD,
-          //     callbackURL: '/home',
-          //   },
-          //   headers: await headers(),
-          // });
+          responseAuth = await authClient.signIn.email({
+            email: process.env.NEXT_PUBLIC_LOCAL_AUTH_EMAIL,
+            password: process.env.NEXT_PUBLIC_LOCAL_AUTH_PASSWORD,
+            // callbackURL: withBasePath('/home'),
+          });
 
           console.info('Local auth session started');
         } else {
-          responseAuth = await authClient.signIn.oauth2(
-            {
-              providerId: 'govuk-one-login',
-              // callbackURL: withBasePath('/home'),
-            },
-            {
-              onSuccess(context) {
-                console.log('---< OAUTH >---', {
-                  ...context.data,
-                  ...context.response,
-                });
-              },
-            }
-          );
-          // responseAuth = await auth.api.signInWithOAuth2({
-          //   body: {
-          //     providerId: 'govuk-one-login',
-          //     callbackURL: '/home',
-          //   },
-          //   headers: await headers(),
-          // });
+          responseAuth = await authClient.signIn.oauth2({
+            providerId: 'govuk-one-login',
+            // callbackURL: withBasePath('/home'),
+          });
         }
       } catch (error) {
         const ERROR_MSG =
@@ -233,7 +189,6 @@ async function handleFormSubmit(
           error: ERROR_MSG,
         };
       }
-      console.log('[response-auth]:', responseAuth, nextPageURL);
       break;
     }
   }
