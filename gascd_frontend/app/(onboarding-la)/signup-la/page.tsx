@@ -28,14 +28,20 @@ const SignupLAPage: React.FC = () => {
             </Link>{' '}
             and try again using your Local Authority email address.
           </p>
-
           <h2 className="govuk-heading-l">If you think there is a problem</h2>
           <p className="govuk-body">
             If you believe you should have access to this service, complete the
             access request form.
           </p>
-
-          <SignupLAForm />
+          {/* <SignupLAForm /> */}
+          For enquiries about the service, please contact the GASCD team at
+          <a
+            href="mailto:getadultsocialcaredata.team@dhsc.gov.uk"
+            className="govuk-link govuk-link--no-underline"
+          >
+            getadultsocialcaredata.team@dhsc.gov.uk
+          </a>
+          .
         </div>
       </div>
     </Layout>
