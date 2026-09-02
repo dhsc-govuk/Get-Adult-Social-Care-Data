@@ -5,6 +5,7 @@ import { isNonEmptyString, validateFormFields } from '@/lib/domain-check';
 import { ActionResponse, WhoamiFormData } from '@/server-actions/types';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
+import { withBasePath } from '@/lib/basePath';
 
 const BACK_LINK = '/login';
 
@@ -169,14 +170,14 @@ async function handleFormSubmit(
           responseAuth = await authClient.signIn.email({
             email: process.env.NEXT_PUBLIC_LOCAL_AUTH_EMAIL,
             password: process.env.NEXT_PUBLIC_LOCAL_AUTH_PASSWORD,
-            // callbackURL: withBasePath('/home'),
+            callbackURL: withBasePath('/home'),
           });
 
           console.info('Local auth session started');
         } else {
           responseAuth = await authClient.signIn.oauth2({
             providerId: 'govuk-one-login',
-            // callbackURL: withBasePath('/home'),
+            callbackURL: withBasePath('/home'),
           });
         }
       } catch (error) {
