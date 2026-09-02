@@ -137,6 +137,16 @@ export default function ProvisionAndOccupancyPage() {
     ...locationNames,
     RegionLabel: comparatorAverageLabel,
   };
+  // The population size table shows the comparator group's combined
+  // population instead of a mean, which is what reads naturally next to
+  // England's total.
+  const comparatorTotalLabel = selectedGroup
+    ? `${selectedGroup.name} total`
+    : 'NHS peer group total';
+  const populationSizeColumnHeaders = {
+    ...locationNames,
+    RegionLabel: comparatorTotalLabel,
+  };
 
   const handleComparatorChange = (newSelection: ComparatorSelection) => {
     setSelection(newSelection);
@@ -437,16 +447,30 @@ export default function ProvisionAndOccupancyPage() {
   // while comparator data is unresolved (loading or failed), the row is null
   // and renders as unavailable rather than falling back to the true regional
   // value under a comparator-average heading.
-  const benchmarkedDemographicData = useMemo(
-    () =>
-      mergeComparatorAverage(
-        baseDemographicData,
-        demographicMetricIds,
-        dataByMetric,
-        locationIds[2]
-      ),
-    [baseDemographicData, dataByMetric, locationIds]
-  );
+  const benchmarkedDemographicData = useMemo(() => {
+    const merged = mergeComparatorAverage(
+      baseDemographicData,
+      demographicMetricIds,
+      dataByMetric,
+      locationIds[2]
+    );
+    // Total population is benchmarked against the comparator group's summed
+    // population rather than its average. The user's own LA is excluded from
+    // the sum, as it is everywhere else the peer rows are used.
+    const ownLaCode = locationIds[1];
+    const peers = dataByMetric['total_population']?.localAuthorityPeers.filter(
+      (peer) => peer.code !== ownLaCode && peer.metricValue !== null
+    );
+    const peerPopulationTotal =
+      peers && peers.length > 0
+        ? peers.reduce((sum, peer) => sum + (peer.metricValue as number), 0)
+        : null;
+    return merged.map((d) =>
+      d.metric_id === 'total_population' && d.location_type === 'Regional'
+        ? { ...d, data_point: peerPopulationTotal }
+        : d
+    );
+  }, [baseDemographicData, dataByMetric, locationIds]);
 
   useEffect(() => {
     const fetchLocationIds = async () => {
@@ -519,8 +543,8 @@ export default function ProvisionAndOccupancyPage() {
                   <>
                     Table 1: adult population size – {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
-                    {benchmarkedColumnHeaders.RegionLabel} and{' '}
-                    {benchmarkedColumnHeaders.CountryLabel},{' '}
+                    {populationSizeColumnHeaders.RegionLabel} and{' '}
+                    {populationSizeColumnHeaders.CountryLabel},{' '}
                     {IndicatorService.getMostRecentDate(
                       benchmarkedDemographicData,
                       ['total_population']
@@ -530,7 +554,7 @@ export default function ProvisionAndOccupancyPage() {
                 source={
                   'Population estimates from the Office for National Statistics (ONS)'
                 }
-                columnHeaders={benchmarkedColumnHeaders}
+                columnHeaders={populationSizeColumnHeaders}
                 rowHeaders={{
                   total_population: 'Total adult population',
                 }}
