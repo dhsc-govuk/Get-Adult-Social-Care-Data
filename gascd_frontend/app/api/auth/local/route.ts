@@ -44,9 +44,11 @@ export async function GET(req: NextRequest) {
     redirectUrl.hostname = hostOnly;
     redirectUrl.protocol = requestedProto || redirectUrl.protocol;
 
-    // Prefer X-Forwarded-Port, fall back to port embedded in host header.
+    // Prefer the port embedded in the host header (the port the client
+    // actually used) over X-Forwarded-Port, which Next.js populates with the
+    // internal listener port (e.g. 80 inside the Docker container).
     // Drop standard ports (80/443) so the URL stays clean.
-    const effectivePort = requestedPort || portFromHost || '';
+    const effectivePort = portFromHost || requestedPort || '';
     if (effectivePort && effectivePort !== '80' && effectivePort !== '443') {
       redirectUrl.port = effectivePort;
     } else {
