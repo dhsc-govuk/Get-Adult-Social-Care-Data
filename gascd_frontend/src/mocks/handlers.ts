@@ -124,6 +124,9 @@ export const handlers = [
         testla1: 10,
         testla2: 20,
         testla3: 30,
+        // The parent LA of the mock care provider location (see
+        // locations_data.care_provider_location.local_authority_code)
+        E08000024: 40,
       };
       const group_members = la_codes.map((code) => ({
         code,
