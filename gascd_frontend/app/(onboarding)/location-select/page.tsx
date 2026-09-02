@@ -6,13 +6,12 @@ import Link from 'next/link';
 import LocationService, {
   AvailableLocation,
 } from '@/services/location/locationService';
-import { useRouter } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
+import { withBasePath } from '@/lib/basePath';
 import AnalyticsService from '@/services/analytics/analyticsService';
 
 const LocationSelectPage: React.FC = () => {
   const { data: session } = useSession();
-  const router = useRouter();
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [selectedLocationName, setSelectedLocationName] = useState<string>('');
   const [availableLocations, setAvailableLocations] = useState<
@@ -58,9 +57,11 @@ const LocationSelectPage: React.FC = () => {
       selectedLocation,
       selectedLocationName
     );
-    router.push('/home#top');
-    // Ensure changes to saved name are displayed
-    router.refresh();
+    // Must be a full page load, not router.push: the better-auth useSession
+    // store is only rebuilt on a fresh load, so client-side navigation keeps
+    // serving the pre-change user (stale selectedLocationCategory), which
+    // hides care-provider-level table columns (GASCD-165)
+    window.location.assign(withBasePath('/home#top'));
   };
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {

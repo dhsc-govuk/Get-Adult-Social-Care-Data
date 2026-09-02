@@ -129,6 +129,9 @@ class LocationService {
         },
         body: JSON.stringify({ location_id: locationId }),
       });
+      if (!response.ok) {
+        throw new Error(`Error setting location: ${response.statusText}`);
+      }
       // Force the session cache to refresh
       await authClient.getSession({
         query: {
