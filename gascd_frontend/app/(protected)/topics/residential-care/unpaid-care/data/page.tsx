@@ -2,7 +2,7 @@
 
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
@@ -20,24 +20,40 @@ import DownloadTableDataCSVLink from '@/components/metric-components/download-ta
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
+import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
+import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
+import ComparatorGroupBuilder from '@/components/charts/peer-group/ComparatorGroupBuilder';
+import { useComparatorGroups } from '@/components/charts/peer-group/useComparatorGroups';
+import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
+import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLocalAuthorities';
+import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
+import { ComparatorSelection } from '@/components/charts/peer-group/types';
+import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
 
 export default function UnpaidCarePage() {
   const tableref1 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
+    CPLabel: null,
     LALabel: 'Loading...',
-    RegionLabel: 'Loading...',
+    RegionLabel: 'NHS peer group average',
     CountryLabel: 'Loading...',
   } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
-  const [filteredDemographicData, setFilteredDemographicData] = useState<
-    Indicator[]
-  >([]);
+  const [baseDemographicData, setBaseDemographicData] = useState<Indicator[]>(
+    []
+  );
   const [demographicQuery, setDemographicQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
   });
+  // Status of the metric-data request that supplies the user's LA and England
+  // values. Starts as loading because the query cannot be built until the
+  // location ids resolve.
+  const [baseDataStatus, setBaseDataStatus] = useState<
+    'loading' | 'ready' | 'error'
+  >('loading');
 
   const breadcrumbs = [
     {
@@ -51,6 +67,157 @@ export default function UnpaidCarePage() {
   ];
 
   const demographicMetricIds = ['perc_unpaid_care_provider'];
+
+  const metricPage = 'unpaid-care';
+  const laCode = locationIds[1];
+
+  const {
+    groups,
+    selection,
+    setSelection,
+    saveGroup,
+    updateGroup,
+    deleteGroup,
+  } = useComparatorGroups();
+  // Which comparator control has its builder panel open, and whether it is
+  // editing an existing group (by id) or creating a new one
+  const [builderState, setBuilderState] = useState<{
+    idPrefix: string;
+    editingGroupId?: string;
+  } | null>(null);
+  const [builderError, setBuilderError] = useState<string | null>(null);
+  const {
+    dataByMetric,
+    loading: peerLoading,
+    error: peerError,
+  } = usePeerGroupData(laCode, demographicMetricIds, selection, groups);
+  // A chart needs both the comparator data and the user's own LA / England
+  // values before it is complete, so it waits for (and fails on) either
+  // request rather than rendering peer bars without the user's authority.
+  const chartLoading = peerLoading || baseDataStatus === 'loading';
+  const chartError = peerError || baseDataStatus === 'error';
+  const { authorities, error: authoritiesError } = useAllLocalAuthorities(
+    builderState !== null
+  );
+
+  const selectedGroup =
+    selection.kind === 'custom'
+      ? groups.find((group) => group.id === selection.groupId)
+      : undefined;
+  const comparatorLabel = selectedGroup ? selectedGroup.name : undefined;
+  const comparatorAverageLabel = selectedGroup
+    ? `${selectedGroup.name} average`
+    : NHS_PEER_GROUP_AVERAGE_LABEL;
+  const tableColumnHeaders = {
+    ...locationNames,
+    RegionLabel: comparatorAverageLabel,
+  };
+
+  const handleComparatorChange = (newSelection: ComparatorSelection) => {
+    setSelection(newSelection);
+    setBuilderState(null);
+    setBuilderError(null);
+    AnalyticsService.trackComparatorChange(newSelection.kind, metricPage);
+  };
+
+  const handleGroupSave = async (group: {
+    name: string;
+    laCodes: string[];
+  }) => {
+    setBuilderError(null);
+    try {
+      if (builderState?.editingGroupId) {
+        await updateGroup(builderState.editingGroupId, group);
+        AnalyticsService.trackComparatorGroupEdit(group.laCodes.length);
+      } else {
+        await saveGroup(group);
+        AnalyticsService.trackComparatorGroupSave(group.laCodes.length);
+        AnalyticsService.trackComparatorChange('custom', metricPage);
+      }
+      setBuilderState(null);
+    } catch (error) {
+      // Keep the builder open so nothing the user entered is lost
+      setBuilderError(
+        error instanceof Error
+          ? error.message
+          : 'Your comparator group could not be saved. Try again.'
+      );
+    }
+  };
+
+  const handleGroupDelete = async () => {
+    setBuilderError(null);
+    try {
+      if (builderState?.editingGroupId) {
+        await deleteGroup(builderState.editingGroupId);
+        AnalyticsService.trackComparatorGroupDelete();
+      }
+      setBuilderState(null);
+    } catch (error) {
+      setBuilderError(
+        error instanceof Error
+          ? error.message
+          : 'The comparator group could not be deleted. Try again.'
+      );
+    }
+  };
+
+  const handleEditToggle = (idPrefix: string) => {
+    if (selection.kind !== 'custom') return;
+    setBuilderError(null);
+    setBuilderState((current) =>
+      current?.idPrefix === idPrefix && current.editingGroupId
+        ? null
+        : { idPrefix, editingGroupId: selection.groupId }
+    );
+  };
+
+  const renderComparatorControl = (idPrefix: string) => {
+    const builderOpenHere = builderState?.idPrefix === idPrefix;
+    const editingGroup = builderOpenHere
+      ? groups.find((group) => group.id === builderState?.editingGroupId)
+      : undefined;
+
+    return (
+      <>
+        <ComparatorGroupSelect
+          idPrefix={idPrefix}
+          selection={selection}
+          groups={groups}
+          onChange={handleComparatorChange}
+          onCreateNew={() => setBuilderState({ idPrefix })}
+          onEdit={() => handleEditToggle(idPrefix)}
+          builderMode={
+            builderOpenHere ? (editingGroup ? 'edit' : 'create') : null
+          }
+        />
+        {builderOpenHere && (
+          <ComparatorGroupBuilder
+            // Remount when switching between create and edit so the form
+            // state is reinitialised from the right group
+            key={editingGroup?.id ?? 'create'}
+            idPrefix={idPrefix}
+            allAuthorities={authorities}
+            authoritiesError={authoritiesError}
+            ownLaCode={laCode}
+            existingNames={groups
+              .filter((group) => group.id !== editingGroup?.id)
+              .map((group) => group.name)}
+            onSave={handleGroupSave}
+            onCancel={() => {
+              setBuilderState(null);
+              setBuilderError(null);
+            }}
+            mode={editingGroup ? 'edit' : 'create'}
+            initialName={editingGroup?.name}
+            initialCodes={editingGroup?.laCodes}
+            onDelete={editingGroup ? handleGroupDelete : undefined}
+            serverError={builderError ?? undefined}
+          />
+        )}
+      </>
+    );
+  };
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -77,7 +244,12 @@ export default function UnpaidCarePage() {
             CPLocationId,
             false
           );
-          setLocationNames(locationNames);
+          setLocationNames({
+            CPLabel: locationNames.CPLabel,
+            LALabel: locationNames.LALabel,
+            RegionLabel: 'NHS peer group average',
+            CountryLabel: 'England (national average)',
+          });
         } catch (error) {
           console.error('Error fetching location names:', error);
         }
@@ -96,20 +268,44 @@ export default function UnpaidCarePage() {
   }, [locationIds]);
 
   useEffect(() => {
+    let cancelled = false;
     const fetchAllData = async () => {
-      if (!CPLocationId) return;
+      if (!CPLocationId || demographicQuery.metric_ids.length === 0) return;
+      setBaseDataStatus('loading');
       try {
         const demographicData: Indicator[] =
           await IndicatorFetchService.getData(demographicQuery);
-        const filteredDemographicData =
-          TableService.filterDate(demographicData);
-        setFilteredDemographicData(filteredDemographicData);
+        if (cancelled) return;
+        setBaseDemographicData(TableService.filterDate(demographicData));
+        setBaseDataStatus('ready');
       } catch (error) {
+        if (cancelled) return;
         console.error('Error fetching data:', error);
+        setBaseDataStatus('error');
       }
     };
     fetchAllData();
-  }, [demographicQuery]);
+    return () => {
+      cancelled = true;
+    };
+  }, [demographicQuery, CPLocationId]);
+
+  // The Regional row is repurposed to show the selected comparison group's
+  // average (synthesised if the metrics API returned no Regional row). Derived
+  // synchronously so the table can never show a stale or mislabelled value:
+  // while comparator data is unresolved (loading or failed), the row is null
+  // and renders as unavailable rather than falling back to the true regional
+  // value under a comparator-average heading.
+  const filteredDemographicData = useMemo(
+    () =>
+      mergeComparatorAverage(
+        baseDemographicData,
+        demographicMetricIds,
+        dataByMetric,
+        locationIds[2]
+      ),
+    [baseDemographicData, dataByMetric, locationIds]
+  );
 
   useEffect(() => {
     const fetchLocationIds = async () => {
@@ -163,6 +359,34 @@ export default function UnpaidCarePage() {
                 how unpaid care is measured.
               </a>{' '}
             </p>
+            <details className="govuk-details govuk-!-margin-top-3">
+              <summary className="govuk-details__summary">
+                <span className="govuk-details__summary-text">
+                  Interpreting the NHS Peer Group
+                </span>
+              </summary>
+              <div className="govuk-details__text">
+                GASCD currently uses a{' '}
+                <a
+                  className="govuk-link"
+                  href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  statistical neighbours model
+                </a>{' '}
+                developed by NHS digital in 2022/23 to support benchmarking.
+                This is one of a number of approaches that aim to group
+                authorities with similar socio-economic and geographic factors
+                (e.g. age, ethnicity, education). It is important to note that
+                there is limited evidence of which factors are the most
+                important drivers of variation in adult social care. As a
+                result, these statistical neighbours should be viewed as a
+                helpful starting point for benchmarking, rather than a
+                definitive indication of which authorities are most alike or
+                measuring relative performance.
+              </div>
+            </details>
           </>
         }
       >
@@ -170,33 +394,39 @@ export default function UnpaidCarePage() {
           id="1"
           sharingMetricIds={demographicMetricIds}
           table={
-            <DataTable
-              tableref={tableref1}
-              caption={
-                <>
-                  Table 1: percentage of people aged 5 and over who provide
-                  unpaid care – {locationNames.LALabel}{' '}
-                  <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getMostRecentDate(filteredDemographicData)}
-                </>
-              }
-              source={
-                'Census 2021 from the Office for National Statistics (ONS)'
-              }
-              columnHeaders={locationNames}
-              rowHeaders={{
-                perc_unpaid_care_provider:
-                  'Percentage of people aged 5 or over who provide unpaid care',
-              }}
-              data={filteredDemographicData}
-              showCareProvider={false}
-              percentageRows={['perc_unpaid_care_provider']}
-            ></DataTable>
+            <>
+              {renderComparatorControl('comparator-table-1')}
+              <DataTable
+                tableref={tableref1}
+                caption={
+                  <>
+                    Table 1: percentage of people aged 5 and over who provide
+                    unpaid care – {locationNames.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {tableColumnHeaders.RegionLabel} and{' '}
+                    {locationNames.CountryLabel},{' '}
+                    {IndicatorService.getMostRecentDate(
+                      filteredDemographicData
+                    )}
+                  </>
+                }
+                source={
+                  'Census 2021 from the Office for National Statistics (ONS)'
+                }
+                columnHeaders={tableColumnHeaders}
+                rowHeaders={{
+                  perc_unpaid_care_provider:
+                    'Percentage of people aged 5 or over who provide unpaid care',
+                }}
+                data={filteredDemographicData}
+                showCareProvider={false}
+                percentageRows={['perc_unpaid_care_provider']}
+              ></DataTable>
+            </>
           }
           download={
             <>
+              {renderComparatorControl('comparator-download-1')}
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
@@ -205,6 +435,35 @@ export default function UnpaidCarePage() {
                 downloadType="percentage of people aged 5 and over who provide unpaid care"
               />
             </>
+          }
+          chart={
+            <PeerGroupBarChart
+              laCode={locationIds[1]}
+              laName={locationNames.LALabel}
+              currentLaValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_unpaid_care_provider' &&
+                    d.location_type === 'LA'
+                )?.data_point ?? null
+              }
+              nationalAverageValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_unpaid_care_provider' &&
+                    d.location_type === 'National'
+                )?.data_point ?? null
+              }
+              peerData={dataByMetric['perc_unpaid_care_provider'] ?? null}
+              loading={chartLoading}
+              error={chartError}
+              comparatorControl={renderComparatorControl('comparator-chart-1')}
+              comparatorLabel={comparatorLabel}
+              comparatorAverageLabel={comparatorAverageLabel}
+              metricDescription="the percentage of people aged 5 and over who provide unpaid care"
+              figureTitle="Percentage of people aged 5 or over who provide unpaid care"
+              figureNumber={1}
+            />
           }
         />
       </DataBox>
