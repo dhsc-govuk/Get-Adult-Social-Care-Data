@@ -18,7 +18,7 @@ const AccessDeniedPage: React.FC = () => {
                   CQC nominated individuals with a CQC registered email
                   addresses
                 </li>
-                <li>Local Authority ASC representatives</li>
+                <li>Local Authority officers</li>
               </ul>
             </div>
 
