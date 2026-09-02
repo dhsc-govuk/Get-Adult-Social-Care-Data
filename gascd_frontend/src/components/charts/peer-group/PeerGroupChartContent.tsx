@@ -18,6 +18,7 @@ interface PeerGroupChartContentProps {
   // containing the user's LA cannot render it twice.
   ownLaCode?: string;
   comparatorAverageLabel?: string;
+  nationalAverageLabel?: string;
   valueSuffix?: string;
   sourceText?: string;
 }
@@ -32,6 +33,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
   peerData,
   ownLaCode,
   comparatorAverageLabel,
+  nationalAverageLabel,
   valueSuffix = '%',
   sourceText = 'Source: Census 2021 from the Office for National Statistics (ONS)',
 }) => {
@@ -123,6 +125,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
         peerGroupAverage={roundToOneDecimal(peerData.averagePeerGroup)}
         nationalAverage={resolvedNationalAverage}
         comparatorAverageLabel={comparatorAverageLabel}
+        nationalAverageLabel={nationalAverageLabel}
         valueSuffix={valueSuffix}
       />
       {categories.length > 0 && (
