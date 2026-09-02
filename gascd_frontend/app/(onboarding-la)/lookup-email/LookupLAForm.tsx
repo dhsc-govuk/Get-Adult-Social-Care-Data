@@ -122,6 +122,8 @@ async function handleFormSubmit(
     );
 
     nextPageURL = '/home';
+  } else {
+    nextPageURL = `/signup-la`;
   }
 
   return { fields: rawFormData, next: nextPageURL };
