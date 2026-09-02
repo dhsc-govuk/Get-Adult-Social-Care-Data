@@ -117,11 +117,12 @@ async function handleFormSubmit(
           //     // Redirect to page for User Signup
           //     nextPageURL = `/signup-la`;
           //   }
-          nextPageURL = '/home';
         },
       }
     );
 
-    return { fields: rawFormData, next: nextPageURL };
+    nextPageURL = '/home';
   }
+
+  return { fields: rawFormData, next: nextPageURL };
 }
