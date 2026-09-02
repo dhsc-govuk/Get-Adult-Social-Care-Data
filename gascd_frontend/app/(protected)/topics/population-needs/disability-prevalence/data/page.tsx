@@ -2,7 +2,7 @@
 
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
@@ -21,6 +21,15 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
+import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
+import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
+import ComparatorGroupBuilder from '@/components/charts/peer-group/ComparatorGroupBuilder';
+import { useComparatorGroups } from '@/components/charts/peer-group/useComparatorGroups';
+import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
+import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLocalAuthorities';
+import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
+import { ComparatorSelection } from '@/components/charts/peer-group/types';
+import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
 
 export default function DisabilityPrevalence() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -58,6 +67,12 @@ export default function DisabilityPrevalence() {
     metric_ids: [],
     location_ids: [],
   });
+  // Status of the metric-data request that supplies the user's LA and England
+  // values for the benchmarked learning disability chart. Starts as loading
+  // because the query cannot be built until the location ids resolve.
+  const [baseDataStatus, setBaseDataStatus] = useState<
+    'loading' | 'ready' | 'error'
+  >('loading');
 
   const breadcrumbs = [
     {
@@ -89,6 +104,164 @@ export default function DisabilityPrevalence() {
     'learning_disability_prevalence',
     'perc_general_health',
   ];
+
+  // Metrics with peer group / custom comparator benchmarking. The other
+  // tables on this page keep their true regional values.
+  const benchmarkedMetricIds = ['learning_disability_prevalence'];
+
+  const metricPage = 'disability-prevalence';
+  const laCode = locationIds[1];
+
+  const {
+    groups,
+    selection,
+    setSelection,
+    saveGroup,
+    updateGroup,
+    deleteGroup,
+  } = useComparatorGroups();
+  // Which comparator control has its builder panel open, and whether it is
+  // editing an existing group (by id) or creating a new one
+  const [builderState, setBuilderState] = useState<{
+    idPrefix: string;
+    editingGroupId?: string;
+  } | null>(null);
+  const [builderError, setBuilderError] = useState<string | null>(null);
+  const {
+    dataByMetric,
+    loading: peerLoading,
+    error: peerError,
+  } = usePeerGroupData(laCode, benchmarkedMetricIds, selection, groups);
+  // A chart needs both the comparator data and the user's own LA / England
+  // values before it is complete, so it waits for (and fails on) either
+  // request rather than rendering peer bars without the user's authority.
+  const chartLoading = peerLoading || baseDataStatus === 'loading';
+  const chartError = peerError || baseDataStatus === 'error';
+  const { authorities, error: authoritiesError } = useAllLocalAuthorities(
+    builderState !== null
+  );
+
+  const selectedGroup =
+    selection.kind === 'custom'
+      ? groups.find((group) => group.id === selection.groupId)
+      : undefined;
+  const comparatorLabel = selectedGroup ? selectedGroup.name : undefined;
+  const comparatorAverageLabel = selectedGroup
+    ? `${selectedGroup.name} average`
+    : NHS_PEER_GROUP_AVERAGE_LABEL;
+  // Column headers for the benchmarked learning disability table only: its
+  // Regional column is repurposed to show the comparator group's average
+  const learningDisabilityColumnHeaders = {
+    ...locationNames,
+    RegionLabel: comparatorAverageLabel,
+    CountryLabel: 'England (national average)',
+  };
+
+  const handleComparatorChange = (newSelection: ComparatorSelection) => {
+    setSelection(newSelection);
+    setBuilderState(null);
+    setBuilderError(null);
+    AnalyticsService.trackComparatorChange(newSelection.kind, metricPage);
+  };
+
+  const handleGroupSave = async (group: {
+    name: string;
+    laCodes: string[];
+  }) => {
+    setBuilderError(null);
+    try {
+      if (builderState?.editingGroupId) {
+        await updateGroup(builderState.editingGroupId, group);
+        AnalyticsService.trackComparatorGroupEdit(group.laCodes.length);
+      } else {
+        await saveGroup(group);
+        AnalyticsService.trackComparatorGroupSave(group.laCodes.length);
+        AnalyticsService.trackComparatorChange('custom', metricPage);
+      }
+      setBuilderState(null);
+    } catch (error) {
+      // Keep the builder open so nothing the user entered is lost
+      setBuilderError(
+        error instanceof Error
+          ? error.message
+          : 'Your comparator group could not be saved. Try again.'
+      );
+    }
+  };
+
+  const handleGroupDelete = async () => {
+    setBuilderError(null);
+    try {
+      if (builderState?.editingGroupId) {
+        await deleteGroup(builderState.editingGroupId);
+        AnalyticsService.trackComparatorGroupDelete();
+      }
+      setBuilderState(null);
+    } catch (error) {
+      setBuilderError(
+        error instanceof Error
+          ? error.message
+          : 'The comparator group could not be deleted. Try again.'
+      );
+    }
+  };
+
+  const handleEditToggle = (idPrefix: string) => {
+    if (selection.kind !== 'custom') return;
+    setBuilderError(null);
+    setBuilderState((current) =>
+      current?.idPrefix === idPrefix && current.editingGroupId
+        ? null
+        : { idPrefix, editingGroupId: selection.groupId }
+    );
+  };
+
+  const renderComparatorControl = (idPrefix: string) => {
+    const builderOpenHere = builderState?.idPrefix === idPrefix;
+    const editingGroup = builderOpenHere
+      ? groups.find((group) => group.id === builderState?.editingGroupId)
+      : undefined;
+
+    return (
+      <>
+        <ComparatorGroupSelect
+          idPrefix={idPrefix}
+          selection={selection}
+          groups={groups}
+          onChange={handleComparatorChange}
+          onCreateNew={() => setBuilderState({ idPrefix })}
+          onEdit={() => handleEditToggle(idPrefix)}
+          builderMode={
+            builderOpenHere ? (editingGroup ? 'edit' : 'create') : null
+          }
+        />
+        {builderOpenHere && (
+          <ComparatorGroupBuilder
+            // Remount when switching between create and edit so the form
+            // state is reinitialised from the right group
+            key={editingGroup?.id ?? 'create'}
+            idPrefix={idPrefix}
+            allAuthorities={authorities}
+            authoritiesError={authoritiesError}
+            ownLaCode={laCode}
+            existingNames={groups
+              .filter((group) => group.id !== editingGroup?.id)
+              .map((group) => group.name)}
+            onSave={handleGroupSave}
+            onCancel={() => {
+              setBuilderState(null);
+              setBuilderError(null);
+            }}
+            mode={editingGroup ? 'edit' : 'create'}
+            initialName={editingGroup?.name}
+            initialCodes={editingGroup?.laCodes}
+            onDelete={editingGroup ? handleGroupDelete : undefined}
+            serverError={builderError ?? undefined}
+          />
+        )}
+      </>
+    );
+  };
 
   const supportReasonRowHeadersDefault = {
     learning_disability_support_18_and_over: 'Learning disability support',
@@ -174,19 +347,47 @@ export default function DisabilityPrevalence() {
   }, [locationIds]);
 
   useEffect(() => {
+    let cancelled = false;
     const fetchDisabilityData = async () => {
-      if (!CPLocationId) return;
+      if (!CPLocationId || disabilityQuery.metric_ids.length === 0) return;
+      setBaseDataStatus('loading');
       try {
         const disabilityData: Indicator[] =
           await IndicatorFetchService.getData(disabilityQuery);
-        const filteredDisabilityData = TableService.filterDate(disabilityData);
-        setFilteredDisabilityData(filteredDisabilityData);
+        if (cancelled) return;
+        setFilteredDisabilityData(TableService.filterDate(disabilityData));
+        setBaseDataStatus('ready');
       } catch (error) {
+        if (cancelled) return;
         console.error('Error fetching data:', error);
+        setBaseDataStatus('error');
       }
     };
     fetchDisabilityData();
-  }, [disabilityQuery]);
+    return () => {
+      cancelled = true;
+    };
+  }, [disabilityQuery, CPLocationId]);
+
+  // Learning disability data with the Regional row repurposed to show the
+  // selected comparison group's average (synthesised if the metrics API
+  // returned no Regional row). Passed only to the benchmarked learning
+  // disability table and chart; the other tables keep filteredDisabilityData
+  // with its true regional values. Derived synchronously so the table can
+  // never show a stale or mislabelled value: while comparator data is
+  // unresolved (loading or failed), the row is null and renders as
+  // unavailable rather than falling back to the true regional value under a
+  // comparator-average heading.
+  const learningDisabilityData = useMemo(
+    () =>
+      mergeComparatorAverage(
+        filteredDisabilityData,
+        benchmarkedMetricIds,
+        dataByMetric,
+        locationIds[2]
+      ),
+    [filteredDisabilityData, dataByMetric, locationIds]
+  );
 
   useEffect(() => {
     const fetchReasonData = async () => {
@@ -358,6 +559,34 @@ export default function DisabilityPrevalence() {
               </a>
               .
             </p>
+            <details className="govuk-details govuk-!-margin-top-3">
+              <summary className="govuk-details__summary">
+                <span className="govuk-details__summary-text">
+                  Interpreting the NHS Peer Group
+                </span>
+              </summary>
+              <div className="govuk-details__text">
+                GASCD currently uses a{' '}
+                <a
+                  className="govuk-link"
+                  href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  statistical neighbours model
+                </a>{' '}
+                developed by NHS digital in 2022/23 to support benchmarking.
+                This is one of a number of approaches that aim to group
+                authorities with similar socio-economic and geographic factors
+                (e.g. age, ethnicity, education). It is important to note that
+                there is limited evidence of which factors are the most
+                important drivers of variation in adult social care. As a
+                result, these statistical neighbours should be viewed as a
+                helpful starting point for benchmarking, rather than a
+                definitive indication of which authorities are most alike or
+                measuring relative performance.
+              </div>
+            </details>
           </>
         }
       >
@@ -365,33 +594,37 @@ export default function DisabilityPrevalence() {
           id="2"
           sharingMetricIds={['learning_disability_prevalence']}
           table={
-            <DataTable
-              tableref={tableref2}
-              caption={
-                <>
-                  Table 2: learning disability prevalence –{' '}
-                  {locationNames.LALabel}{' '}
-                  <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getMostRecentDate(filteredDisabilityData)}
-                </>
-              }
-              source={
-                'Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
-              }
-              columnHeaders={locationNames}
-              rowHeaders={{
-                learning_disability_prevalence:
-                  'Learning disability prevalence',
-              }}
-              data={filteredDisabilityData}
-              showCareProvider={false}
-              percentageRows={['learning_disability_prevalence']}
-            ></DataTable>
+            <>
+              {renderComparatorControl('comparator-table-2')}
+              <DataTable
+                tableref={tableref2}
+                caption={
+                  <>
+                    Table 2: learning disability prevalence –{' '}
+                    {locationNames.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {learningDisabilityColumnHeaders.RegionLabel} and{' '}
+                    {learningDisabilityColumnHeaders.CountryLabel},{' '}
+                    {IndicatorService.getMostRecentDate(learningDisabilityData)}
+                  </>
+                }
+                source={
+                  'Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
+                }
+                columnHeaders={learningDisabilityColumnHeaders}
+                rowHeaders={{
+                  learning_disability_prevalence:
+                    'Learning disability prevalence',
+                }}
+                data={learningDisabilityData}
+                showCareProvider={false}
+                percentageRows={['learning_disability_prevalence']}
+              ></DataTable>
+            </>
           }
           download={
             <>
+              {renderComparatorControl('comparator-download-2')}
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref2}
@@ -400,6 +633,36 @@ export default function DisabilityPrevalence() {
                 downloadType="learning disability prevalence"
               />
             </>
+          }
+          chart={
+            <PeerGroupBarChart
+              laCode={locationIds[1]}
+              laName={locationNames.LALabel}
+              currentLaValue={
+                learningDisabilityData.find(
+                  (d) =>
+                    d.metric_id === 'learning_disability_prevalence' &&
+                    d.location_type === 'LA'
+                )?.data_point ?? null
+              }
+              nationalAverageValue={
+                learningDisabilityData.find(
+                  (d) =>
+                    d.metric_id === 'learning_disability_prevalence' &&
+                    d.location_type === 'National'
+                )?.data_point ?? null
+              }
+              peerData={dataByMetric['learning_disability_prevalence'] ?? null}
+              loading={chartLoading}
+              error={chartError}
+              comparatorControl={renderComparatorControl('comparator-chart-2')}
+              comparatorLabel={comparatorLabel}
+              comparatorAverageLabel={comparatorAverageLabel}
+              metricDescription="learning disability prevalence"
+              figureTitle="Learning disability prevalence"
+              figureNumber={2}
+              sourceText="Source: Fingertips public health profiles from the Department of Health and Social Care (DHSC)"
+            />
           }
         />
       </DataBox>
