@@ -89,33 +89,36 @@ async function handleFormSubmit(
 
   let nextPageURL: string | null = null;
   if (isAcceptableEmail(rawFormData.regmail)) {
-
     // Proceed to the OneLogin flow
-    await authClient.signIn.oauth2({
-      providerId: 'govuk-one-login',
-      callbackURL: '/home',
-    }, {
-      onResponse(ctx) {
-        console.log("$$$", {ctx});
-        const response = await fetch(withBasePath('/api/onboarding-la'), {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email: rawFormData.regmail }),
-        });
-        
-        const verdict = await response.json();    
+    await authClient.signIn.oauth2(
+      {
+        providerId: 'govuk-one-login',
+        callbackURL: '/home',
+      },
+      {
+        onResponse(ctx) {
+          console.log('$$$', { ctx });
+          const response = await fetch(withBasePath('/api/onboarding-la'), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: rawFormData.regmail }),
+          });
 
-        console.log("$===$", {verdict});
-        // if (verdict.result) {
-        //   } else {
-        //     // Redirect to page for User Signup
-        //     nextPageURL = `/signup-la`;
-        //   }
-        nextPageURL = '/home';
-    }
-  });
+          const verdict = await response.json();
 
-  return { fields: rawFormData, next: nextPageURL };
+          console.log('$===$', { verdict });
+          // if (verdict.result) {
+          //   } else {
+          //     // Redirect to page for User Signup
+          //     nextPageURL = `/signup-la`;
+          //   }
+          nextPageURL = '/home';
+        },
+      }
+    );
+
+    return { fields: rawFormData, next: nextPageURL };
+  }
 }
