@@ -35,6 +35,7 @@ export default function DisabilityPrevalence() {
   const tableref1 = useRef<HTMLTableElement>(null);
   const tableref2 = useRef<HTMLTableElement>(null);
   const tableref3 = useRef<HTMLTableElement>(null);
+  const tableref4 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
     LALabel: 'Loading...',
@@ -105,9 +106,13 @@ export default function DisabilityPrevalence() {
     'perc_general_health',
   ];
 
-  // Metrics with peer group / custom comparator benchmarking. The other
-  // tables on this page keep their true regional values.
-  const benchmarkedMetricIds = ['learning_disability_prevalence'];
+  // Metrics with peer group / custom comparator benchmarking. The primary
+  // support reason table keeps its true regional values.
+  const benchmarkedMetricIds = [
+    'perc_general_health',
+    'perc_population_disability',
+    'learning_disability_prevalence',
+  ];
 
   const metricPage = 'disability-prevalence';
   const laCode = locationIds[1];
@@ -149,9 +154,9 @@ export default function DisabilityPrevalence() {
   const comparatorAverageLabel = selectedGroup
     ? `${selectedGroup.name} average`
     : NHS_PEER_GROUP_AVERAGE_LABEL;
-  // Column headers for the benchmarked learning disability table only: its
-  // Regional column is repurposed to show the comparator group's average
-  const learningDisabilityColumnHeaders = {
+  // Column headers for the benchmarked tables: their Regional column is
+  // repurposed to show the comparator group's average
+  const benchmarkedColumnHeaders = {
     ...locationNames,
     RegionLabel: comparatorAverageLabel,
     CountryLabel: 'England (national average)',
@@ -263,6 +268,37 @@ export default function DisabilityPrevalence() {
     );
   };
 
+  // Shared explanatory note shown in every benchmarked data box
+  const nhsPeerGroupDetails = (
+    <details className="govuk-details govuk-!-margin-top-3">
+      <summary className="govuk-details__summary">
+        <span className="govuk-details__summary-text">
+          Interpreting the NHS Peer Group
+        </span>
+      </summary>
+      <div className="govuk-details__text">
+        GASCD currently uses a{' '}
+        <a
+          className="govuk-link"
+          href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          statistical neighbours model
+        </a>{' '}
+        developed by NHS digital in 2022/23 to support benchmarking. This is
+        one of a number of approaches that aim to group authorities with
+        similar socio-economic and geographic factors (e.g. age, ethnicity,
+        education). It is important to note that there is limited evidence of
+        which factors are the most important drivers of variation in adult
+        social care. As a result, these statistical neighbours should be viewed
+        as a helpful starting point for benchmarking, rather than a definitive
+        indication of which authorities are most alike or measuring relative
+        performance.
+      </div>
+    </details>
+  );
+
   const supportReasonRowHeadersDefault = {
     learning_disability_support_18_and_over: 'Learning disability support',
     mental_health_support_18_and_over: 'Mental health support',
@@ -369,16 +405,15 @@ export default function DisabilityPrevalence() {
     };
   }, [disabilityQuery, CPLocationId]);
 
-  // Learning disability data with the Regional row repurposed to show the
+  // Benchmarked metric data with the Regional rows repurposed to show the
   // selected comparison group's average (synthesised if the metrics API
-  // returned no Regional row). Passed only to the benchmarked learning
-  // disability table and chart; the other tables keep filteredDisabilityData
-  // with its true regional values. Derived synchronously so the table can
-  // never show a stale or mislabelled value: while comparator data is
-  // unresolved (loading or failed), the row is null and renders as
-  // unavailable rather than falling back to the true regional value under a
-  // comparator-average heading.
-  const learningDisabilityData = useMemo(
+  // returned no Regional row). Passed only to the benchmarked tables and
+  // charts; the primary support reason table keeps its true regional values.
+  // Derived synchronously so the tables can never show a stale or mislabelled
+  // value: while comparator data is unresolved (loading or failed), the row
+  // is null and renders as unavailable rather than falling back to the true
+  // regional value under a comparator-average heading.
+  const benchmarkedDisabilityData = useMemo(
     () =>
       mergeComparatorAverage(
         filteredDisabilityData,
@@ -468,7 +503,7 @@ export default function DisabilityPrevalence() {
         </div>
       </div>
       <DataBox
-        dataTitle="Disability prevalence"
+        dataTitle="People who reported bad or very bad health"
         dataInfo={
           <>
             <p className="govuk-body-m">
@@ -481,67 +516,189 @@ export default function DisabilityPrevalence() {
               >
                 people who reported bad or very bad health
               </a>{' '}
-              and{' '}
+              is calculated.
+            </p>
+            {nhsPeerGroupDetails}
+          </>
+        }
+      >
+        <DataTabs
+          id="1"
+          sharingMetricIds={['perc_general_health']}
+          table={
+            <>
+              {renderComparatorControl('comparator-table-1')}
+              <DataTable
+                tableref={tableref1}
+                caption={
+                  <>
+                    Table 1: people who reported bad or very bad health –{' '}
+                    {locationNames.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {benchmarkedColumnHeaders.RegionLabel} and{' '}
+                    {benchmarkedColumnHeaders.CountryLabel},{' '}
+                    {IndicatorService.getMostRecentMonthYear(
+                      benchmarkedDisabilityData,
+                      ['perc_general_health']
+                    )}
+                  </>
+                }
+                source={
+                  'Census 2021 from the Office for National Statistics (ONS)'
+                }
+                columnHeaders={benchmarkedColumnHeaders}
+                rowHeaders={{
+                  perc_general_health:
+                    'People who reported bad or very bad health',
+                }}
+                data={benchmarkedDisabilityData}
+                showCareProvider={false}
+                percentageRows={['perc_general_health']}
+              ></DataTable>
+            </>
+          }
+          download={
+            <>
+              {renderComparatorControl('comparator-download-1')}
+              <h4 className="govuk-heading-s">Download</h4>
+              <DownloadTableDataCSVLink
+                tableref={tableref1}
+                filename="people_who_reported_bad_or_very_bad_health.csv"
+                xLabel=""
+                downloadType="people who reported bad or very bad health"
+              />
+            </>
+          }
+          chart={
+            <PeerGroupBarChart
+              laCode={locationIds[1]}
+              laName={locationNames.LALabel}
+              currentLaValue={
+                benchmarkedDisabilityData.find(
+                  (d) =>
+                    d.metric_id === 'perc_general_health' &&
+                    d.location_type === 'LA'
+                )?.data_point ?? null
+              }
+              nationalAverageValue={
+                benchmarkedDisabilityData.find(
+                  (d) =>
+                    d.metric_id === 'perc_general_health' &&
+                    d.location_type === 'National'
+                )?.data_point ?? null
+              }
+              peerData={dataByMetric['perc_general_health'] ?? null}
+              loading={chartLoading}
+              error={chartError}
+              comparatorControl={renderComparatorControl('comparator-chart-1')}
+              comparatorLabel={comparatorLabel}
+              comparatorAverageLabel={comparatorAverageLabel}
+              metricDescription="the percentage of the population who self-reported bad or very bad health"
+              figureTitle="People who reported bad or very bad health"
+              figureNumber={1}
+            />
+          }
+        />
+      </DataBox>
+      <DataBox
+        dataTitle="Disability prevalence"
+        dataInfo={
+          <>
+            <p className="govuk-body-m">
+              People who reported a long-term physical or mental health
+              condition, or illness that limits day-to-day activities.
+            </p>
+            <p className="govuk-body-m">
+              Find out how{' '}
               <a
                 href={withBasePath('/help/disability-prevalence')}
                 className="govuk-link"
               >
                 disability prevalence
               </a>{' '}
-              are calculated.
+              is calculated.
             </p>
+            {nhsPeerGroupDetails}
           </>
         }
       >
         <DataTabs
-          id="1"
-          sharingMetricIds={[
-            'perc_population_disability',
-            'perc_general_health',
-          ]}
+          id="2"
+          sharingMetricIds={['perc_population_disability']}
           table={
-            <DataTable
-              tableref={tableref1}
-              caption={
-                <>
-                  Table 1: self-reporting on general health and disability –{' '}
-                  {locationNames.LALabel}{' '}
-                  <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getMostRecentMonthYear(
-                    filteredDisabilityData
-                  )}
-                </>
-              }
-              source={
-                'Census 2021 from the Office for National Statistics (ONS)'
-              }
-              columnHeaders={locationNames}
-              rowHeaders={{
-                perc_general_health:
-                  'People who reported bad or very bad health',
-                perc_population_disability:
-                  'Disability prevalence – people who reported a long-term physical or mental health condition, or illness that limits day-to-day activities',
-              }}
-              data={filteredDisabilityData}
-              showCareProvider={false}
-              percentageRows={[
-                'perc_general_health',
-                'perc_population_disability',
-              ]}
-            ></DataTable>
+            <>
+              {renderComparatorControl('comparator-table-2')}
+              <DataTable
+                tableref={tableref2}
+                caption={
+                  <>
+                    Table 2: percentage of the population who reported a
+                    long-term physical or mental health condition, or illness
+                    that limits day-to-day activities –{' '}
+                    {locationNames.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {benchmarkedColumnHeaders.RegionLabel} and{' '}
+                    {benchmarkedColumnHeaders.CountryLabel},{' '}
+                    {IndicatorService.getMostRecentMonthYear(
+                      benchmarkedDisabilityData,
+                      ['perc_population_disability']
+                    )}
+                  </>
+                }
+                source={
+                  'Census 2021 from the Office for National Statistics (ONS)'
+                }
+                columnHeaders={benchmarkedColumnHeaders}
+                rowHeaders={{
+                  perc_population_disability:
+                    'Disability prevalence – people who reported a long-term physical or mental health condition, or illness that limits day-to-day activities',
+                }}
+                data={benchmarkedDisabilityData}
+                showCareProvider={false}
+                percentageRows={['perc_population_disability']}
+              ></DataTable>
+            </>
           }
           download={
             <>
+              {renderComparatorControl('comparator-download-2')}
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
-                tableref={tableref1}
-                filename="general_health_and_disability.csv"
+                tableref={tableref2}
+                filename="disability_prevalence.csv"
                 xLabel=""
-                downloadType="self-reporting on general health and disability"
+                downloadType="disability prevalence"
               />
             </>
+          }
+          chart={
+            <PeerGroupBarChart
+              laCode={locationIds[1]}
+              laName={locationNames.LALabel}
+              currentLaValue={
+                benchmarkedDisabilityData.find(
+                  (d) =>
+                    d.metric_id === 'perc_population_disability' &&
+                    d.location_type === 'LA'
+                )?.data_point ?? null
+              }
+              nationalAverageValue={
+                benchmarkedDisabilityData.find(
+                  (d) =>
+                    d.metric_id === 'perc_population_disability' &&
+                    d.location_type === 'National'
+                )?.data_point ?? null
+              }
+              peerData={dataByMetric['perc_population_disability'] ?? null}
+              loading={chartLoading}
+              error={chartError}
+              comparatorControl={renderComparatorControl('comparator-chart-2')}
+              comparatorLabel={comparatorLabel}
+              comparatorAverageLabel={comparatorAverageLabel}
+              metricDescription="the percentage of the population who reported a long-term physical or mental health condition, or illness that limits day-to-day activities"
+              figureTitle="Percentage of the population who reported a long-term physical or mental health condition, or illness that limits day-to-day activities"
+              figureNumber={2}
+            />
           }
         />
       </DataBox>
@@ -559,64 +716,40 @@ export default function DisabilityPrevalence() {
               </a>
               .
             </p>
-            <details className="govuk-details govuk-!-margin-top-3">
-              <summary className="govuk-details__summary">
-                <span className="govuk-details__summary-text">
-                  Interpreting the NHS Peer Group
-                </span>
-              </summary>
-              <div className="govuk-details__text">
-                GASCD currently uses a{' '}
-                <a
-                  className="govuk-link"
-                  href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  statistical neighbours model
-                </a>{' '}
-                developed by NHS digital in 2022/23 to support benchmarking.
-                This is one of a number of approaches that aim to group
-                authorities with similar socio-economic and geographic factors
-                (e.g. age, ethnicity, education). It is important to note that
-                there is limited evidence of which factors are the most
-                important drivers of variation in adult social care. As a
-                result, these statistical neighbours should be viewed as a
-                helpful starting point for benchmarking, rather than a
-                definitive indication of which authorities are most alike or
-                measuring relative performance.
-              </div>
-            </details>
+            {nhsPeerGroupDetails}
           </>
         }
       >
         <DataTabs
-          id="2"
+          id="3"
           sharingMetricIds={['learning_disability_prevalence']}
           table={
             <>
-              {renderComparatorControl('comparator-table-2')}
+              {renderComparatorControl('comparator-table-3')}
               <DataTable
-                tableref={tableref2}
+                tableref={tableref3}
                 caption={
                   <>
-                    Table 2: learning disability prevalence –{' '}
+                    Table 3: learning disability prevalence –{' '}
                     {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
-                    {learningDisabilityColumnHeaders.RegionLabel} and{' '}
-                    {learningDisabilityColumnHeaders.CountryLabel},{' '}
-                    {IndicatorService.getMostRecentDate(learningDisabilityData)}
+                    {benchmarkedColumnHeaders.RegionLabel} and{' '}
+                    {benchmarkedColumnHeaders.CountryLabel},{' '}
+                    {IndicatorService.getMostRecentDate(
+                      benchmarkedDisabilityData,
+                      ['learning_disability_prevalence']
+                    )}
                   </>
                 }
                 source={
                   'Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
                 }
-                columnHeaders={learningDisabilityColumnHeaders}
+                columnHeaders={benchmarkedColumnHeaders}
                 rowHeaders={{
                   learning_disability_prevalence:
                     'Learning disability prevalence',
                 }}
-                data={learningDisabilityData}
+                data={benchmarkedDisabilityData}
                 showCareProvider={false}
                 percentageRows={['learning_disability_prevalence']}
               ></DataTable>
@@ -624,10 +757,10 @@ export default function DisabilityPrevalence() {
           }
           download={
             <>
-              {renderComparatorControl('comparator-download-2')}
+              {renderComparatorControl('comparator-download-3')}
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
-                tableref={tableref2}
+                tableref={tableref3}
                 filename="learning_disability_prevalence.csv"
                 xLabel=""
                 downloadType="learning disability prevalence"
@@ -639,14 +772,14 @@ export default function DisabilityPrevalence() {
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
               currentLaValue={
-                learningDisabilityData.find(
+                benchmarkedDisabilityData.find(
                   (d) =>
                     d.metric_id === 'learning_disability_prevalence' &&
                     d.location_type === 'LA'
                 )?.data_point ?? null
               }
               nationalAverageValue={
-                learningDisabilityData.find(
+                benchmarkedDisabilityData.find(
                   (d) =>
                     d.metric_id === 'learning_disability_prevalence' &&
                     d.location_type === 'National'
@@ -655,12 +788,12 @@ export default function DisabilityPrevalence() {
               peerData={dataByMetric['learning_disability_prevalence'] ?? null}
               loading={chartLoading}
               error={chartError}
-              comparatorControl={renderComparatorControl('comparator-chart-2')}
+              comparatorControl={renderComparatorControl('comparator-chart-3')}
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="learning disability prevalence"
               figureTitle="Learning disability prevalence"
-              figureNumber={2}
+              figureNumber={3}
               sourceText="Source: Fingertips public health profiles from the Department of Health and Social Care (DHSC)"
             />
           }
@@ -694,14 +827,14 @@ export default function DisabilityPrevalence() {
           updateMethod={updatePrimaryReasonMetrics}
         />
         <DataTabs
-          id="3"
+          id="4"
           sharingMetricIds={supportReasonMetricIds}
           table={
             <DataTable
-              tableref={tableref3}
+              tableref={tableref4}
               caption={
                 <>
-                  Table 3: primary reason for all age groups to access long-term
+                  Table 4: primary reason for all age groups to access long-term
                   adult social care – {locationNames.LALabel}{' '}
                   <abbr title="local authority">LA</abbr>,{' '}
                   {locationNames.RegionLabel} region and{' '}
@@ -726,7 +859,7 @@ export default function DisabilityPrevalence() {
             <>
               <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
-                tableref={tableref3}
+                tableref={tableref4}
                 filename="primary_reasons_for_accessing_care.csv"
                 xLabel=""
                 downloadType="primary reason for all age groups to access long-term adult social care"
