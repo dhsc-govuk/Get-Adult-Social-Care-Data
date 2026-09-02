@@ -75,8 +75,6 @@ export async function createNewDBUser(email: unknown): Promise<Result> {
     return { result: 'CREATED' };
   } catch (error) {
     throw new Error('An error occurred trying to create the new user');
-  } finally {
-    authDB.destroy();
   }
 }
 
