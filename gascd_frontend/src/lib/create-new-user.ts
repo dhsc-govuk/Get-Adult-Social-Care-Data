@@ -82,11 +82,23 @@ type ParsedEmailResult = { domain: string; location_id: string };
 function parseEmail(email: string): ParsedEmailResult | null {
   if (isAcceptableEmail(email)) {
     const domain = email.split('@')[1];
-    const location_id = LA_EMAIL_DOMAIN_ID_MAP[domain];
+    const location_id = isDev()
+      ? {
+          ...LA_EMAIL_DOMAIN_ID_MAP,
+          'dhsc.gov.uk': 'DHSC777',
+          'edgehealth.co.uk': 'EDG777',
+          'deloitte.co.uk': 'DEL777',
+        }[domain]
+      : LA_EMAIL_DOMAIN_ID_MAP[domain];
+
     if (isNonEmptyString(location_id)) {
       return { domain, location_id };
     }
   }
 
   return null;
+}
+
+function isDev(): boolean {
+  return (process.env.BASE_URL ?? '').startsWith('https://dev.');
 }
