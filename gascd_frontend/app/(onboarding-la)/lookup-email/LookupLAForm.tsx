@@ -94,9 +94,12 @@ async function handleFormSubmit(
       {
         providerId: 'govuk-one-login',
         callbackURL: '/home',
+        additionalData: {
+          isAcceptableEmail: true,
+        },
       },
       {
-        onResponse(ctx) {
+        async onSuccess(ctx) {
           console.log('$$$', { ctx });
           const response = await fetch(withBasePath('/api/onboarding-la'), {
             method: 'POST',
