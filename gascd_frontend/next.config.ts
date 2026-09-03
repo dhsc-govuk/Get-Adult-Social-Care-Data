@@ -16,7 +16,7 @@ const cspHeader = `
 `;
 
 const nextConfig: NextConfig = {
-  basePath: process.env.BASE_PATH || undefined,
+  basePath: process.env.BASE_PATH || '',
   sassOptions: {
     additionalData: `$app-base-path: "${process.env.BASE_PATH ?? ''}";`,
   },
