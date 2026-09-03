@@ -18,6 +18,7 @@ interface PeerGroupChartContentProps {
   // containing the user's LA cannot render it twice.
   ownLaCode?: string;
   comparatorAverageLabel?: string;
+  nationalAverageLabel?: string;
   valueSuffix?: string;
   sourceText?: string;
 }
@@ -32,6 +33,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
   peerData,
   ownLaCode,
   comparatorAverageLabel,
+  nationalAverageLabel,
   valueSuffix = '%',
   sourceText = 'Source: Census 2021 from the Office for National Statistics (ONS)',
 }) => {
@@ -58,9 +60,20 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
 
     const sorted = [...allItems].sort((a, b) => b.value - a.value);
 
+    // Plotly's categorical axis merges rows that share a label, which would
+    // leave the highlight shape positioned past the end of the axis and the
+    // chart rendering blank label-less rows below the bars. Distinct LAs never
+    // share a name, so keep one bar per label (the sort means the highest
+    // value survives) - this also drops an LA that appears under both an old
+    // and a new ONS code.
+    const seenNames = new Set<string>();
+    const uniqueItems = sorted.filter(
+      (item) => !seenNames.has(item.name) && Boolean(seenNames.add(item.name))
+    );
+
     return {
-      categories: sorted.map((item) => item.name),
-      values: sorted.map((item) => item.value),
+      categories: uniqueItems.map((item) => item.name),
+      values: uniqueItems.map((item) => item.value),
     };
   }, [
     currentLaValue,
@@ -123,6 +136,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
         peerGroupAverage={roundToOneDecimal(peerData.averagePeerGroup)}
         nationalAverage={resolvedNationalAverage}
         comparatorAverageLabel={comparatorAverageLabel}
+        nationalAverageLabel={nationalAverageLabel}
         valueSuffix={valueSuffix}
       />
       {categories.length > 0 && (

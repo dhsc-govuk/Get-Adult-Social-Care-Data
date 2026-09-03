@@ -15,6 +15,8 @@ interface PeerGroupChartLegendProps {
   // Legend label for the comparator average line, e.g. "NHS peer group
   // average" or "{group name} average".
   comparatorAverageLabel?: string;
+  // Legend label for the national average line.
+  nationalAverageLabel?: string;
   valueSuffix?: string;
 }
 
@@ -23,6 +25,7 @@ const PeerGroupChartLegend: React.FC<PeerGroupChartLegendProps> = ({
   peerGroupAverage,
   nationalAverage,
   comparatorAverageLabel = NHS_PEER_GROUP_AVERAGE_LABEL,
+  nationalAverageLabel = 'England (national average)',
   valueSuffix = '%',
 }) => {
   const formatValue = (value: number | null | undefined): string =>
@@ -91,7 +94,7 @@ const PeerGroupChartLegend: React.FC<PeerGroupChartLegendProps> = ({
         aria-hidden="true"
       />
       <span className="govuk-body-s govuk-!-margin-bottom-0">
-        England (national average) ({formatValue(nationalAverage)})
+        {nationalAverageLabel} ({formatValue(nationalAverage)})
       </span>
     </li>
   </ul>

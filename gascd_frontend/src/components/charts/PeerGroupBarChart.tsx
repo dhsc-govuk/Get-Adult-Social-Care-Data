@@ -20,6 +20,7 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
   comparatorControl,
   comparatorLabel,
   comparatorAverageLabel,
+  nationalAverageLabel,
   valueSuffix,
   sourceText,
 }) => {
@@ -55,6 +56,7 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
           peerData={peerData}
           ownLaCode={laCode}
           comparatorAverageLabel={comparatorAverageLabel}
+          nationalAverageLabel={nationalAverageLabel}
           valueSuffix={valueSuffix}
           sourceText={sourceText}
         />

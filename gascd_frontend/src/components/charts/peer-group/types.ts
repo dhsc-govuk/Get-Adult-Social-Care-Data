@@ -68,6 +68,9 @@ export interface PeerGroupBarChartProps {
   comparatorControl?: ReactNode;
   comparatorLabel?: string;
   comparatorAverageLabel?: string;
+  // Legend label for the national average line, e.g. "England" where the
+  // page's tables also use the plain country name.
+  nationalAverageLabel?: string;
   valueSuffix?: string;
   sourceText?: string;
 }

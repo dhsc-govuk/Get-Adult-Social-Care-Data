@@ -120,6 +120,35 @@ describe('PeerGroupBarChart', () => {
     ]);
   });
 
+  it('renders one bar per LA name when a peer appears under two codes', () => {
+    // e.g. an LA present under both its old and new ONS code. Plotly merges
+    // bars that share a tick label, which would desynchronise the highlight
+    // shape's index from the axis and render blank rows below the bars.
+    const dataWithRecodedPeer: PeerGroupData = {
+      ...peerData,
+      localAuthorityPeers: [
+        ...peerData.localAuthorityPeers,
+        {
+          code: 'E08000038',
+          displayName: 'Sheffield',
+          peerRanking: 3,
+          metricValue: 41.5,
+        },
+      ],
+    };
+    render(<PeerGroupBarChart {...defaultProps} peerData={dataWithRecodedPeer} />);
+    const chartData = JSON.parse(
+      screen.getByTestId('chart-data').textContent ?? '[]'
+    );
+    // The higher-valued Sheffield entry survives; every label is unique
+    expect(chartData[0].y).toEqual([
+      'Sheffield',
+      '<b>Liverpool</b>',
+      'Manchester',
+    ]);
+    expect(chartData[0].x).toEqual([55.5, 52.5, 51.5]);
+  });
+
   it("dedupes the user's own LA out of the peer rows by code", () => {
     const dataWithOwnLa: PeerGroupData = {
       ...peerData,

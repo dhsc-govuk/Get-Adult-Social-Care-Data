@@ -76,13 +76,13 @@ describe('Data pages exist and contain data', () => {
       'Population size and age group percentages'
     );
 
-    cy.contains('Adult population size with age group percentages');
+    cy.contains('Adult population size');
 
     cy.get('a[href*="table-1"]').click();
     cy.url().should('include', '#table-1');
     cy.get('#table-1')
       .should('be.visible')
-      .contains('Table 1: population size and age group percentages');
+      .contains('Table 1: adult population size');
     cy.get('#textSummary-1').should('not.be.visible');
     cy.get('#download-1').should('not.be.visible');
 
@@ -100,6 +100,26 @@ describe('Data pages exist and contain data', () => {
     cy.get('#download-1').should('be.visible');
     cy.get('#textSummary-1').should('not.be.visible');
     cy.get('#table-1').should('not.be.visible');
+
+    cy.contains('Age group percentages');
+
+    cy.get('a[href*="chart-2"]').click();
+    cy.url().should('include', '#chart-2');
+    cy.get('#chart-2').should('be.visible').contains('Age group');
+    cy.get('#table-2').should('not.be.visible');
+    cy.get('#download-2').should('not.be.visible');
+
+    cy.get('a[href*="table-2"]').click();
+    cy.url().should('include', '#table-2');
+    cy.get('#table-2')
+      .should('be.visible')
+      .contains('Table 2: age group percentages');
+    cy.get('#download-2').should('not.be.visible');
+
+    cy.get('a[href*="download-2"]').click();
+    cy.url().should('include', '#download-2');
+    cy.get('#download-2').should('be.visible');
+    cy.get('#table-2').should('not.be.visible');
   });
 
   it('Should navigate to the Economic factors and household composition page and check the contents', () => {
@@ -166,13 +186,13 @@ describe('Data pages exist and contain data', () => {
 
     cy.get('h1').should('contains.text', 'General health and disability');
 
-    cy.contains('Disability prevalence');
+    cy.contains('People who reported bad or very bad health');
 
     cy.get('a[href*="table-1"]').click();
     cy.url().should('include', '#table-1');
     cy.get('#table-1')
       .should('be.visible')
-      .contains('Table 1: self-reporting on general health and disability');
+      .contains('Table 1: people who reported bad or very bad health');
     cy.get('#download-1').should('not.be.visible');
 
     cy.get('a[href*="download-1"]').click();
@@ -180,13 +200,15 @@ describe('Data pages exist and contain data', () => {
     cy.get('#download-1').should('be.visible');
     cy.get('#table-1').should('not.be.visible');
 
-    cy.contains('Learning disability prevalence');
+    cy.contains('Disability prevalence');
 
     cy.get('a[href*="table-2"]').click();
     cy.url().should('include', '#table-2');
     cy.get('#table-2')
       .should('be.visible')
-      .contains('Table 2: learning disability prevalence');
+      .contains(
+        'Table 2: percentage of the population who reported a long-term'
+      );
     cy.get('#download-2').should('not.be.visible');
 
     cy.get('a[href*="download-2"]').click();
@@ -194,21 +216,35 @@ describe('Data pages exist and contain data', () => {
     cy.get('#download-2').should('be.visible');
     cy.get('#table-2').should('not.be.visible');
 
-    cy.contains(
-      'Primary reason for people to access long-term adult social care'
-    );
+    cy.contains('Learning disability prevalence');
 
     cy.get('a[href*="table-3"]').click();
     cy.url().should('include', '#table-3');
     cy.get('#table-3')
       .should('be.visible')
-      .contains('Table 3: primary reason for');
+      .contains('Table 3: learning disability prevalence');
     cy.get('#download-3').should('not.be.visible');
 
     cy.get('a[href*="download-3"]').click();
     cy.url().should('include', '#download-3');
     cy.get('#download-3').should('be.visible');
     cy.get('#table-3').should('not.be.visible');
+
+    cy.contains(
+      'Primary reason for people to access long-term adult social care'
+    );
+
+    cy.get('a[href*="table-4"]').click();
+    cy.url().should('include', '#table-4');
+    cy.get('#table-4')
+      .should('be.visible')
+      .contains('Table 4: primary reason for');
+    cy.get('#download-4').should('not.be.visible');
+
+    cy.get('a[href*="download-4"]').click();
+    cy.url().should('include', '#download-4');
+    cy.get('#download-4').should('be.visible');
+    cy.get('#table-4').should('not.be.visible');
   });
 
   it('Should navigate to the Dementia prevalence page and check the contents', () => {
