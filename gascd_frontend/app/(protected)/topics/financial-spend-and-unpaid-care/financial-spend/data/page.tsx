@@ -622,7 +622,7 @@ export default function LAFundingPage() {
                   <TimeSeriesChart
                     series={timeSeriesDataForGraph}
                     yPrefix="£"
-                    dateFormat="%Y"
+                    financialYear
                   />
                 </div>
               )) || <p>Loading graph</p>}
