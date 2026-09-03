@@ -9,7 +9,7 @@ ARG LATEST_GASCD_GIT_HASH
 # Copy project files and restore dependencies
 COPY . ./
 RUN dotnet restore
-RUN dotnet publish -c Release -o out /p:VersionPrefix=${LATEST_GASCD_GIT_TAG} /p:VersionSuffix=${LATEST_GASCD_GIT_HASH}
+RUN dotnet publish -c Release -o out /p:VersionPrefix=${LATEST_GASCD_GIT_TAG} /p:VersionSuffix=g${LATEST_GASCD_GIT_HASH}
 
 # Use runtime image for final container
 FROM mcr.microsoft.com/dotnet/aspnet:10.0.2-alpine3.23
