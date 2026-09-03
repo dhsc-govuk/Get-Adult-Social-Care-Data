@@ -24,12 +24,15 @@ import {
   CHILDREN_IN_NEED_METRIC_IDS,
   NUM_CHILDREN_IN_NEED,
   NUM_CIN_TRANSFER_ASC,
+  TOTALLED_METRIC_IDS,
 } from '@/data/dfeMetrics';
 import {
+  ComparatorLaCounts,
   comparisonLabels,
   locationTimeSeries,
   periodRows,
   seriesDates,
+  toLaAverages,
 } from '@/helpers/locationComparison';
 
 const LOADING_LOCATION_NAMES = {
@@ -79,6 +82,9 @@ export default function ChildrenInNeedPage() {
     metric_ids: [],
     location_ids: [],
   });
+  // INTERIM (GASCD-236): comparator totals are converted to per-authority
+  // averages in the browser until the pipeline writes averages
+  const [laCounts, setLaCounts] = useState<ComparatorLaCounts | null>(null);
 
   const breadcrumbs = [
     {
@@ -160,35 +166,51 @@ export default function ChildrenInNeedPage() {
     fetchOverTimeData();
   }, [overTimeQuery]);
 
+
+  // INTERIM (GASCD-236): see toLaAverages
+  useEffect(() => {
+    const fetchLaCounts = async () => {
+      setLaCounts(await LocationService.getComparatorLaCounts());
+    };
+    fetchLaCounts();
+  }, []);
+
   const columnLabels = useMemo(
     () => comparisonLabels(locationNames),
     [locationNames]
   );
 
+  // Everything below reads the averaged data, so the charts, the tables and
+  // the CSV export can never disagree
+  const overTimeAverages = useMemo(
+    () => toLaAverages(overTimeData, laCounts, TOTALLED_METRIC_IDS),
+    [overTimeData, laCounts]
+  );
+
   const numCinSeries = useMemo(
-    () => locationTimeSeries(overTimeData, NUM_CHILDREN_IN_NEED, columnLabels),
-    [overTimeData, columnLabels]
+    () => locationTimeSeries(overTimeAverages, NUM_CHILDREN_IN_NEED, columnLabels),
+    [overTimeAverages, columnLabels]
   );
   const cinPer10000Series = useMemo(
-    () => locationTimeSeries(overTimeData, CIN_PER_10000_CHILDREN, columnLabels),
-    [overTimeData, columnLabels]
+    () => locationTimeSeries(overTimeAverages, CIN_PER_10000_CHILDREN, columnLabels),
+    [overTimeAverages, columnLabels]
   );
   const cinTransferSeries = useMemo(
-    () => locationTimeSeries(overTimeData, NUM_CIN_TRANSFER_ASC, columnLabels),
-    [overTimeData, columnLabels]
+    () => locationTimeSeries(overTimeAverages, NUM_CIN_TRANSFER_ASC, columnLabels),
+    [overTimeAverages, columnLabels]
   );
 
   const numCinRows = useMemo(
-    () => periodRows(overTimeData, NUM_CHILDREN_IN_NEED, reportingYearLabel),
-    [overTimeData]
+    () => periodRows(overTimeAverages, NUM_CHILDREN_IN_NEED, reportingYearLabel),
+    [overTimeAverages]
   );
   const cinPer10000Rows = useMemo(
-    () => periodRows(overTimeData, CIN_PER_10000_CHILDREN, reportingYearLabel),
-    [overTimeData]
+    () => periodRows(overTimeAverages, CIN_PER_10000_CHILDREN, reportingYearLabel),
+    [overTimeAverages]
   );
   const cinTransferRows = useMemo(
-    () => periodRows(overTimeData, NUM_CIN_TRANSFER_ASC, reportingYearLabel),
-    [overTimeData]
+    () => periodRows(overTimeAverages, NUM_CIN_TRANSFER_ASC, reportingYearLabel),
+    [overTimeAverages]
   );
 
   const comparedLocations = (
@@ -254,7 +276,7 @@ export default function ChildrenInNeedPage() {
                     series={numCinSeries}
                     decimalPoints={0}
                     hoverDateFormat="%Y"
-                    {...reportingYearTicks(overTimeData, NUM_CHILDREN_IN_NEED)}
+                    {...reportingYearTicks(overTimeAverages, NUM_CHILDREN_IN_NEED)}
                   />
                 </div>
               )) || <p className="govuk-body">Loading graph</p>}
@@ -326,7 +348,7 @@ export default function ChildrenInNeedPage() {
                     decimalPoints={1}
                     hoverDateFormat="%Y"
                     {...reportingYearTicks(
-                      overTimeData,
+                      overTimeAverages,
                       CIN_PER_10000_CHILDREN
                     )}
                   />
@@ -402,7 +424,7 @@ export default function ChildrenInNeedPage() {
                     series={cinTransferSeries}
                     decimalPoints={0}
                     hoverDateFormat="%Y"
-                    {...reportingYearTicks(overTimeData, NUM_CIN_TRANSFER_ASC)}
+                    {...reportingYearTicks(overTimeAverages, NUM_CIN_TRANSFER_ASC)}
                   />
                 </div>
               )) || <p className="govuk-body">Loading graph</p>}

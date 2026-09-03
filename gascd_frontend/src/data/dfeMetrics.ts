@@ -87,6 +87,24 @@ export const SEN_EHCP_METRIC_IDS = [
   ...Object.keys(NUM_EHCP_BY_AGE),
 ];
 
+/**
+ * INTERIM (GASCD-236). The metrics whose Regional and National rows the DfE
+ * pipeline stores as totals across local authorities, rather than as the
+ * averages the service presents them as.
+ *
+ * Counts only. The percentage and per-10,000 metrics are already rates, and
+ * dividing those by the number of authorities would be meaningless - an
+ * England figure of 45% would read as 0.3%.
+ */
+export const TOTALLED_METRIC_IDS = [
+  NUM_SEN_SUPPORT_14PLUS,
+  ...Object.keys(NUM_SEN_SUPPORT_BY_AGE),
+  NUM_EHCP_14PLUS,
+  ...Object.keys(NUM_EHCP_BY_AGE),
+  NUM_CHILDREN_IN_NEED,
+  NUM_CIN_TRANSFER_ASC,
+];
+
 /** Every metric shown on the children in need page */
 export const CHILDREN_IN_NEED_METRIC_IDS = [
   NUM_CHILDREN_IN_NEED,

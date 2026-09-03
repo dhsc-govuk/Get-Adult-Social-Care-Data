@@ -30,6 +30,60 @@ export const comparisonLabels = (
     : 'National average',
 });
 
+export type ComparatorLaCounts = {
+  /** Local authorities in the user's region */
+  regional: number;
+  /** Local authorities in England */
+  national: number;
+};
+
+/**
+ * INTERIM (GASCD-236). Turns comparator totals into per-authority averages.
+ *
+ * The Department for Education pipeline writes the Regional and National rows
+ * as totals across local authorities, but the service presents them as
+ * averages - so an England row reads 214,546 next to a single authority's
+ * 3,756. Dividing by the number of authorities gives the mean the labels and
+ * the designs describe.
+ *
+ * This belongs in the pipeline, alongside every other metric in the service,
+ * which stores its comparator ready to display. It is here because the pages
+ * shipped before that could be changed. To remove it, delete this function,
+ * `ComparatorLaCounts`, `LocationService.getComparatorLaCounts`, the
+ * `/api/get_la_counts` route, and the call sites on the two DfE pages.
+ *
+ * Applies only to the metrics named in `totalledMetricIds` - the counts. The
+ * percentage and per-10,000 metrics are already rates and are passed through
+ * untouched.
+ *
+ * Only an approximation of the mean: it assumes the stored total covers every
+ * authority counted. Where an authority is missing from the data, the average
+ * is understated.
+ */
+export const toLaAverages = (
+  data: Indicator[],
+  counts: ComparatorLaCounts | undefined | null,
+  totalledMetricIds: string[]
+): Indicator[] => {
+  if (!counts) return data;
+  const totalled = new Set(totalledMetricIds);
+
+  return data.map((item) => {
+    // Rates and percentages are already averages - only counts are totals
+    if (!totalled.has(item.metric_id)) return item;
+
+    const divisor =
+      item.location_type === 'Regional'
+        ? counts.regional
+        : item.location_type === 'National'
+          ? counts.national
+          : 1;
+
+    if (divisor <= 1 || item.data_point === null) return item;
+    return { ...item, data_point: item.data_point / divisor };
+  });
+};
+
 const labelFor = (
   locationType: ComparedLocationType,
   labels: LocationNames
