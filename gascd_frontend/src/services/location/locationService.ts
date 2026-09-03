@@ -97,6 +97,31 @@ class LocationService {
     return locationIds;
   }
 
+  /**
+   * INTERIM (GASCD-236). Number of local authorities in the user's region and
+   * in England, so the DfE regional and national totals can be shown as
+   * per-authority averages. Remove with toLaAverages once the pipeline writes
+   * averages.
+   */
+  public static async getComparatorLaCounts(): Promise<{
+    regional: number;
+    national: number;
+  } | null> {
+    try {
+      const response = await fetch(withBasePath('/api/get_la_counts'));
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
+      }
+      return await response.json();
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      LogService.logEvent(ClientLogCode.LocationFetchFailed);
+      console.error(`Failed to retrieve LA counts: ${errorMessage}`);
+      return null;
+    }
+  }
+
   public static async getSelectedLocation(): Promise<string> {
     const session = await authClient.getSession();
     if (!session?.data?.user) {

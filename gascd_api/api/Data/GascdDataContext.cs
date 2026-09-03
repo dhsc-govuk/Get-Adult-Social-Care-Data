@@ -56,6 +56,14 @@ public partial class GascdDataContext : DbContext
     public virtual DbSet<PercUnpaidCareProvider> PercUnpaidCareProviderSet { get; set; } = null!;
     public virtual DbSet<TotalPopulation> TotalPopulationSet { get; set; } = null!;
 
+    // Department for Education future planning metrics
+    public virtual DbSet<CinPer10000Children> CinPer10000ChildrenSet { get; set; } = null!;
+    public virtual DbSet<NumChildrenInNeed> NumChildrenInNeedSet { get; set; } = null!;
+    public virtual DbSet<NumCinTransferAsc> NumCinTransferAscSet { get; set; } = null!;
+    public virtual DbSet<NumEhcp14Plus> NumEhcp14PlusSet { get; set; } = null!;
+    public virtual DbSet<NumSenSupport14Plus> NumSenSupport14PlusSet { get; set; } = null!;
+    public virtual DbSet<PercSenSupport14Plus> PercSenSupport14PlusSet { get; set; } = null!;
+
     public IQueryable<MetricTimeSeries> GetMetricTimeSeriesQueryable(MetricCodeEnum metricCode)
     {
         Type t = metricCode.MetricGroupType();

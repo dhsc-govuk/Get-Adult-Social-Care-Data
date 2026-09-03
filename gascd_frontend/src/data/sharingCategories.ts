@@ -13,6 +13,16 @@
  * page.
  */
 
+import {
+  CHILDREN_IN_NEED_METRIC_IDS,
+  NUM_EHCP_14PLUS,
+  NUM_EHCP_BY_AGE,
+  NUM_SEN_SUPPORT_14PLUS,
+  NUM_SEN_SUPPORT_BY_AGE,
+  PERC_SEN_SUPPORT_14PLUS,
+  PERC_SEN_SUPPORT_BY_AGE,
+} from '@/data/dfeMetrics';
+
 export type SharingCategoryId =
   | 'published'
   | 'discretion'
@@ -232,6 +242,20 @@ export const METRIC_SHARING_CATEGORIES: Record<string, SharingCategoryId> = {
   pansi_pred_pop_asd_aged_18_64: 'not-for-external-sharing',
   pansi_pred_pop_challenging_behaviour_aged_18_64: 'not-for-external-sharing',
   pansi_pred_pop_early_dem_aged_30_64: 'not-for-external-sharing',
+
+  // Department for Education future planning metrics. All are published
+  // national statistics, so the whole set is in the public domain.
+  ...Object.fromEntries(
+    [
+      NUM_SEN_SUPPORT_14PLUS,
+      ...Object.keys(NUM_SEN_SUPPORT_BY_AGE),
+      PERC_SEN_SUPPORT_14PLUS,
+      ...Object.keys(PERC_SEN_SUPPORT_BY_AGE),
+      NUM_EHCP_14PLUS,
+      ...Object.keys(NUM_EHCP_BY_AGE),
+      ...CHILDREN_IN_NEED_METRIC_IDS,
+    ].map((metricId) => [metricId, 'published' as SharingCategoryId])
+  ),
 };
 
 /**
@@ -311,6 +335,11 @@ export const HELP_PAGE_SHARING = {
   'beds-care-provider-location': 'capacityTrackerOwnOrganisation',
   'beds-per-100000-adult-population': 'capacityTrackerRestricted',
   'beds-per-100000-adult-population-over-time': 'capacityTrackerRestricted',
+  'children-and-young-people-with-an-ehcp-aged-14-and-over': 'publicDomain',
+  'children-in-need': 'publicDomain',
+  'children-in-need-episodes-ending-due-to-transfer-to-adult-social-care':
+    'publicDomain',
+  'children-in-need-per-10000-children': 'publicDomain',
   'dementia-prevalence': 'publicDomain',
   'disability-prevalence': 'publicDomain',
   'estimated-dementia-diagnosis-rate-aged-65-and-over': 'publicDomain',
@@ -327,11 +356,13 @@ export const HELP_PAGE_SHARING = {
   'percentage-beds-occupied': 'capacityTrackerRestricted',
   'percentage-beds-occupied-care-provider-location':
     'capacityTrackerOwnOrganisation',
+  'percentage-of-pupils-with-sen-support-aged-14-and-over': 'publicDomain',
   'percentage-people-aged-5-and-over-who-provide-unpaid-care': 'publicDomain',
   'percentages-financial-spend-long-term-and-short-term-care': 'publicDomain',
   'population-age': 'publicDomain',
   'population-size': 'publicDomain',
   'primary-reason-for-accessing-long-term-adult-social-care': 'publicDomain',
+  'pupils-with-sen-support-aged-14-and-over': 'publicDomain',
   'total-financial-spend-long-term-care-trends-over-time': 'publicDomain',
   'total-financial-spend-long-term-community-adult-social-care': 'publicDomain',
   'total-number-community-social-care-providers': 'publicDomain',

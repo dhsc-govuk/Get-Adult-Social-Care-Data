@@ -25,6 +25,16 @@ interface TimeSeriesChartProps {
   ySuffix?: string;
   dateFormat?: string;
   decimalPoints?: number;
+  /**
+   * Explicit x axis ticks, for periods a date format cannot express. Pass the
+   * ISO dates to label in `tickValues` and the label for each one in
+   * `tickLabels` - for example an academic year shown as "2023/24". Both are
+   * needed for either to apply; without them the ticks come from `dateFormat`.
+   */
+  tickValues?: string[];
+  tickLabels?: string[];
+  /** Date shown in the hover label, defaults to the full date */
+  hoverDateFormat?: string;
 }
 
 // --- Component ---
@@ -35,7 +45,12 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   ySuffix = '',
   dateFormat = '%b %y',
   decimalPoints = 1,
+  tickValues,
+  tickLabels,
+  hoverDateFormat = '%d %b %Y',
 }) => {
+  const useExplicitTicks =
+    !!tickValues?.length && tickValues.length === tickLabels?.length;
   const DEFAULT_COLORS = [
     // Colour pallete from
     // https://service-manual.ons.gov.uk/data-visualisation/colours/using-colours-in-charts#multiple-colours
@@ -65,7 +80,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
           color: s.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
           width: 5,
         },
-        hovertemplate: `<b>${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}</b><br>%{x|%d %b %Y}<extra></extra>`,
+        hovertemplate: `<b>${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}</b><br>%{x|${hoverDateFormat}}<extra></extra>`,
       };
 
       return trace as Data;
@@ -89,12 +104,20 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
     },
     xaxis: {
       type: 'date',
-      tickformat: `${dateFormat}`, // Shows "Jan", "Feb", etc.
       showgrid: false, // No vertical grid lines
-      nticks:
-        dateFormat === '%b %y'
-          ? Math.ceil(series[series.length - 1].data.length / 48)
-          : series[series.length - 1].data.length, // uses last item in series which is usually national
+      ...(useExplicitTicks
+        ? {
+            tickmode: 'array' as const,
+            tickvals: tickValues,
+            ticktext: tickLabels,
+          }
+        : {
+            tickformat: `${dateFormat}`, // Shows "Jan", "Feb", etc.
+            nticks:
+              dateFormat === '%b %y'
+                ? Math.ceil(series[series.length - 1].data.length / 48)
+                : series[series.length - 1].data.length, // uses last item in series which is usually national
+          }),
       tickfont: {
         family: '"GDS Transport", Arial, sans-serif',
         size: 14,
