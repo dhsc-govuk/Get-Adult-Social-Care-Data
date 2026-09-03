@@ -32,3 +32,5 @@ cypress.env.json
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+/cypress/screenshots/
+/cypress/videos/

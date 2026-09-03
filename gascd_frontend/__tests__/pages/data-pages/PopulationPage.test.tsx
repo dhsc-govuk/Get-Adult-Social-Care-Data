@@ -40,9 +40,7 @@ describe('PopulationPage', () => {
       ).toBeInTheDocument();
     }
 
-    const dataBoxHeadings = [
-      'Adult population size with age group percentages',
-    ];
+    const dataBoxHeadings = ['Adult population size', 'Age group percentages'];
     for (let dataBoxHeadingText of dataBoxHeadings) {
       expect(
         screen.getByRole('heading', { name: dataBoxHeadingText, level: 3 })
@@ -50,17 +48,24 @@ describe('PopulationPage', () => {
     }
 
     const bodyTextElement = screen.getByText(
-      /regional and national levels for England./i
+      /NHS peer group and national levels for England./i
     );
     expect(bodyTextElement).toBeInTheDocument();
 
-    const helpLink = screen.getAllByRole('link', {
-      name: /population size/i,
+    const helpLink = screen.getByRole('link', {
+      name: 'population size',
     });
-    expect(helpLink[0]).toBeInTheDocument();
-    expect(helpLink[0]).toHaveAttribute('href', '/help/population-size');
+    expect(helpLink).toHaveAttribute('href', '/help/population-size');
 
-    const tables = [/Table 1: population size and age group percentages/i];
+    const ageHelpLink = screen.getByRole('link', {
+      name: 'age group percentages',
+    });
+    expect(ageHelpLink).toHaveAttribute('href', '/help/population-age');
+
+    const tables = [
+      /Table 1: adult population size/i,
+      /Table 2: age group percentages/i,
+    ];
     for (let table of tables) {
       expect(screen.getByRole('table', { name: table })).toBeInTheDocument();
     }

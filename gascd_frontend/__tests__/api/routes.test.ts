@@ -561,7 +561,26 @@ describe('get custom group values', () => {
     expect(data.group_members).toHaveLength(3);
   });
 
-  it('does not send a requesting_la_code for care provider users', async () => {
+  it('resolves the parent LA as requesting_la_code for care provider users', async () => {
+    // The mock cp_locations endpoint resolves the selected provider location
+    // to parent LA E08000024. That LA is in the group, so its value must be
+    // excluded from the average - the same semantics LA users get.
+    mockGetSession.mockReturnValue({
+      ...mockSession,
+      user: { ...mockSession.user, selectedLocationId: 'testcpl1' },
+    } as any);
+    const req = new NextRequest(
+      `${base_url}?la_codes=E08000024&la_codes=testla1&la_codes=testla2&metric_code=perc_households_one_person`
+    );
+    const result = await GetCustomGroupValues(req);
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    // Average of testla1 (10) and testla2 (20) - E08000024 (40) excluded
+    expect(data.custom_group_average).toBe(15);
+    expect(data.group_members).toHaveLength(3);
+  });
+
+  it('omits requesting_la_code when a care provider user has no selected location', async () => {
     mockGetSession.mockReturnValue(mockSession);
     const req = new NextRequest(
       `${base_url}?la_codes=testla1&la_codes=testla2&metric_code=perc_households_one_person`

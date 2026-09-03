@@ -41,6 +41,7 @@ describe('DisabilityPrevalencePage', () => {
     }
 
     const dataBoxHeadings = [
+      'People who reported bad or very bad health',
       'Disability prevalence',
       'Learning disability prevalence',
       'Primary reason for people to access long-term adult social care',
@@ -59,25 +60,26 @@ describe('DisabilityPrevalencePage', () => {
     );
     expect(bodyTextElement).toBeInTheDocument();
 
-    const disabilityHelpLinks = screen.getAllByRole('link', {
-      name: /disability prevalence/,
+    const disabilityHelpLink = screen.getByRole('link', {
+      name: 'disability prevalence',
     });
-    expect(disabilityHelpLinks[0]).toBeInTheDocument();
-    expect(disabilityHelpLinks[0]).toHaveAttribute(
+    expect(disabilityHelpLink).toHaveAttribute(
       'href',
       '/help/disability-prevalence'
     );
-    expect(disabilityHelpLinks[1]).toBeInTheDocument();
-    expect(disabilityHelpLinks[1]).toHaveAttribute(
+
+    const learningDisabilityHelpLink = screen.getByRole('link', {
+      name: 'learning disability prevalence is calculated',
+    });
+    expect(learningDisabilityHelpLink).toHaveAttribute(
       'href',
       '/help/learning-disability-prevalence'
     );
 
-    const healthHelpLink = screen.getAllByRole('link', {
-      name: /People who reported bad or very bad health/,
+    const healthHelpLink = screen.getByRole('link', {
+      name: 'people who reported bad or very bad health',
     });
-    expect(healthHelpLink[0]).toBeInTheDocument();
-    expect(healthHelpLink[0]).toHaveAttribute(
+    expect(healthHelpLink).toHaveAttribute(
       'href',
       '/help/people-who-reported-bad-or-very-bad-health'
     );
@@ -92,9 +94,10 @@ describe('DisabilityPrevalencePage', () => {
     );
 
     const tables = [
-      /Table 1: self-reporting on general health and disability – /i,
-      /Table 2: learning disability prevalence – /i,
-      /Table 3: primary reason for /i,
+      /Table 1: people who reported bad or very bad health – /i,
+      /Table 2: percentage of the population who reported a long-term physical or mental health condition/i,
+      /Table 3: learning disability prevalence – /i,
+      /Table 4: primary reason for /i,
     ];
     for (let table of tables) {
       expect(screen.getByRole('table', { name: table })).toBeInTheDocument();
