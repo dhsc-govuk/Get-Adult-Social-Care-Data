@@ -32,8 +32,6 @@ const toFinancialYearLabel = (isoDate: string): string => {
   return `${yearEnd - 1}-${yearEnd}`;
 };
 
-const CATEGORY_PADDING = 0.5;
-
 // --- Component ---
 
 const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
@@ -84,8 +82,6 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
     });
   }, [series, financialYear]);
 
-  const pointCount = Math.max(...series.map((s) => s.data.length));
-
   const layout: Partial<Layout> = {
     // Legend positioned above the chart, horizontal
     showlegend: true,
@@ -114,9 +110,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
         size: 14,
         color: '#000',
       },
-      range: financialYear
-        ? [-CATEGORY_PADDING, pointCount - 1 + CATEGORY_PADDING]
-        : undefined,
+      tickangle: financialYear ? 45 : undefined,
       automargin: financialYear,
       fixedrange: true, // prevents zooming
     },
