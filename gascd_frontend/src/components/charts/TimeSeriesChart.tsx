@@ -25,7 +25,12 @@ interface TimeSeriesChartProps {
   ySuffix?: string;
   dateFormat?: string;
   decimalPoints?: number;
+  financialYear?: boolean;
 }
+const toFinancialYearLabel = (isoDate: string): string => {
+  const yearEnd = new Date(isoDate).getUTCFullYear();
+  return `${yearEnd - 1}-${yearEnd}`;
+};
 
 // --- Component ---
 
@@ -35,6 +40,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   ySuffix = '',
   dateFormat = '%b %y',
   decimalPoints = 1,
+  financialYear = false,
 }) => {
   const DEFAULT_COLORS = [
     // Colour pallete from
@@ -51,7 +57,9 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   const chartData: Data[] = useMemo(() => {
     return series.map((s, index) => {
       // Create separate arrays for X and Y as Plotly expects
-      const xValues = s.data.map((d) => d.date);
+      const xValues = s.data.map((d) =>
+        financialYear ? toFinancialYearLabel(d.date) : d.date
+      );
       const yValues = s.data.map((d) => d.value);
 
       const trace: Partial<ScatterData> = {
@@ -65,12 +73,14 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
           color: s.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
           width: 5,
         },
-        hovertemplate: `<b>${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}</b><br>%{x|%d %b %Y}<extra></extra>`,
+        hovertemplate: financialYear
+          ? `<b>${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}</b><extra></extra>`
+          : `<b>${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}</b><br>%{x|%d %b %Y}<extra></extra>`,
       };
 
       return trace as Data;
     });
-  }, [series]);
+  }, [series, financialYear]);
 
   const layout: Partial<Layout> = {
     // Legend positioned above the chart, horizontal
@@ -88,11 +98,11 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
       },
     },
     xaxis: {
-      type: 'date',
-      tickformat: `${dateFormat}`, // Shows "Jan", "Feb", etc.
+      type: financialYear ? 'category' : 'date',
+      tickformat: financialYear ? undefined : `${dateFormat}`, // Shows "Jan", "Feb", etc.
       showgrid: false, // No vertical grid lines
       nticks:
-        dateFormat === '%b %y'
+        !financialYear && dateFormat === '%b %y'
           ? Math.ceil(series[series.length - 1].data.length / 48)
           : series[series.length - 1].data.length, // uses last item in series which is usually national
       tickfont: {
@@ -100,6 +110,8 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
         size: 14,
         color: '#000',
       },
+      tickangle: financialYear ? 45 : undefined,
+      automargin: financialYear,
       fixedrange: true, // prevents zooming
     },
     yaxis: {
