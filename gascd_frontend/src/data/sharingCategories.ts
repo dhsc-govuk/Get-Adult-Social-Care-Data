@@ -324,7 +324,7 @@ export const HELP_PAGE_SHARING = {
     'capacityTrackerOwnOrganisation',
   'one-person-households-where-person-aged-65-or-over': 'publicDomain',
   'people-who-reported-bad-or-very-bad-health': 'publicDomain',
-  'percentage-beds-occupied': 'capacityTrackerRestricted',
+  'percentage-beds-occupied': 'capacityTrackerOwnOrganisation',
   'percentage-beds-occupied-care-provider-location':
     'capacityTrackerOwnOrganisation',
   'percentage-people-aged-5-and-over-who-provide-unpaid-care': 'publicDomain',
