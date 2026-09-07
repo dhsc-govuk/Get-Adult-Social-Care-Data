@@ -8,7 +8,8 @@ public class GetCareProviderLocationResponse
     public GeoDataDto? GeoData { get; init; }
     public required string ProviderCode { get; init; }
     public required string ProviderName { get; init; }
-    public required string Category { get; init; }
+    // Serialized as "location_category" to match the OpenAPI contract and frontend consumers
+    public required string LocationCategory { get; init; }
     public string? NominatedIndividual { get; init; }
     public string? LocalAuthorityCode { get; init; }
     public string? LocalAuthorityName { get; init; }
