@@ -381,6 +381,38 @@ paths:
                 items:
                   $ref: "#/components/schemas/MetricSeries"
 
+  /onboarding/register:
+    post:
+      summary: "Register a local authority user"
+      description: "Registers an approved LA email before the One Login OAuth2 flow."
+      security:
+        - ApiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        "200":
+          description: "Registration successful"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  registered:
+                    type: boolean
+        "400":
+          description: "Invalid request"
+        "422":
+          description: "Email not on approved LA domains list"
+
 # Reusable components
 components:
   parameters:
