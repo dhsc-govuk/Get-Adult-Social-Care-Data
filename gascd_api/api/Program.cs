@@ -13,8 +13,8 @@ bld.Services
     .AddScopedConfiguration()
     .AddOpenTelemetryConfiguration(bld.Configuration)
     .RegisterSwaggerConfiguration()
+    .AddEmailConfiguration(bld.Configuration)
     .RegisterAuth();
-
 var app = bld.Build();
 app.UseMiddleware<LogContextMiddleware>()
     .RegisterFastEndpoints()
