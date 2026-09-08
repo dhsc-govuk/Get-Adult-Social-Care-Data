@@ -26,8 +26,8 @@ const PrimaryReasonForAccessingCare: React.FC = () => {
               className="govuk-link"
               target="_blank"
             >
-              Adult Social Care Activity Report from DHSC
-              (opens in new tab)
+              Adult Social Care Activity Report from Department of Health and
+              Social Care (DHSC) (opens in new tab)
             </Link>
           }
           updateFrequency="Yearly (by financial year)"

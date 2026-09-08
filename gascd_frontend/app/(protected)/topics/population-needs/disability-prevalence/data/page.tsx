@@ -843,7 +843,7 @@ export default function DisabilityPrevalence() {
                 </>
               }
               source={
-                'Adult Social Care Activity Report from DHSC'
+                'Adult Social Care Activity Report from Department of Health and Social Care (DHSC)'
               }
               columnHeaders={locationNamesWithAverageLabels}
               metricColumnName="Primary support reason"
