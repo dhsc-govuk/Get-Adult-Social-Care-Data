@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
         });
 
         if (error || !data?.registered) {
-          return DEFAULT_RESPONSE;
+          return NextResponse.json(DEFAULT_RESPONSE, { status: 200 });
         }
 
         const isRegistered = data.registered;
@@ -30,9 +30,9 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(DEFAULT_RESPONSE, { status: 200 });
       }
     }
-    return DEFAULT_RESPONSE;
+    return NextResponse.json(DEFAULT_RESPONSE, { status: 200 });
   } catch (error) {
     logger.error('There was a problem with your request', { error });
-    return DEFAULT_RESPONSE;
+    return NextResponse.json(DEFAULT_RESPONSE, { status: 400 });
   }
 }
