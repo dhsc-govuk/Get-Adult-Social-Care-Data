@@ -1,17 +1,38 @@
+import { getAPIClient } from '@/data/dataAPI';
 import { createNewDBUser } from '@/lib/create-new-user';
-import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import { NextRequest, NextResponse } from 'next/server';
+import logger from '@/utils/logger';
 
+type RegisterLAUserResult = { registered: boolean };
 export async function POST(req: NextRequest) {
-  const user = await getCurrentUser();
-  if (!user || !isUserRegistered(user)) {
-    return NextResponse.json({ error: `No user` }, { status: 401 });
+  const { email } = await req.json();
+
+  const DEFAULT_RESPONSE: RegisterLAUserResult = { registered: false };
+  try {
+    if (email != null) {
+      // Insert into database
+      const result = await createNewDBUser(email ?? null);
+
+      if (result) {
+        // Trigger email invitation via the external dotnet Data API
+        const api = getAPIClient();
+        const { data, error } = await api.POST('/onboarding/register', {
+          body: { email },
+        });
+
+        if (error || !data?.registered) {
+          return DEFAULT_RESPONSE;
+        }
+
+        const isRegistered = data.registered;
+        DEFAULT_RESPONSE.registered = isRegistered;
+
+        return NextResponse.json(DEFAULT_RESPONSE, { status: 200 });
+      }
+    }
+    return DEFAULT_RESPONSE;
+  } catch (error) {
+    logger.error('There was a problem with your request', { error });
+    return DEFAULT_RESPONSE;
   }
-
-  const submittedData = await req.json();
-
-  // Insert into database
-  const result = await createNewDBUser(submittedData.email ?? null);
-
-  return NextResponse.json({ result }, { status: 200 });
 }

@@ -17,7 +17,7 @@ type DBRecordNewUser = {
   registeredName: string;
   email: string;
   registeredEmail: string;
-  emailVerified: 1; // Default value is 1 (Context unknown.)
+  emailVerified: 0 | 1; // Context unknown.
   locationId: string;
   selectedLocationId: string; // Can have the same value as 'locationId' when locationType is 'LA'
   locationType: ValidLocationType;
@@ -63,7 +63,7 @@ export async function createNewDBUser(email: unknown): Promise<Result> {
     source: 'manual',
     analyticsId: generateAnalyticsId(),
     id: user_id,
-    emailVerified: 1,
+    emailVerified: 0,
     role: 'member',
     selectedLocationId: location_id,
   };
@@ -79,7 +79,7 @@ export async function createNewDBUser(email: unknown): Promise<Result> {
 }
 
 type ParsedEmailResult = { domain: string; location_id: string };
-function parseEmail(email: string): ParsedEmailResult | null {
+export function parseEmail(email: string): ParsedEmailResult | null {
   if (isAcceptableEmail(email)) {
     const domain = email.split('@')[1];
     const location_id = isDev()
@@ -100,5 +100,8 @@ function parseEmail(email: string): ParsedEmailResult | null {
 }
 
 function isDev(): boolean {
-  return (process.env.BASE_URL ?? '').startsWith('https://dev.');
+  return (
+    (process.env.BASE_URL ?? '').startsWith('https://dev.') ||
+    process.env.NODE_ENV === 'development'
+  );
 }
