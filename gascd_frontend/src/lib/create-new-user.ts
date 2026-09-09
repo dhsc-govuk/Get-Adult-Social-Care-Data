@@ -85,9 +85,9 @@ export function parseEmail(email: string): ParsedEmailResult | null {
     const location_id = isDev()
       ? {
           ...LA_EMAIL_DOMAIN_ID_MAP,
-          'dhsc.gov.uk': 'DHSC777',
-          'edgehealth.co.uk': 'EDG777',
-          'deloitte.co.uk': 'DEL777',
+          'dhsc.gov.uk': 'E09000027',
+          'edgehealth.co.uk': 'E09000003',
+          'deloitte.co.uk': 'E08000024',
         }[domain]
       : LA_EMAIL_DOMAIN_ID_MAP[domain];
 
