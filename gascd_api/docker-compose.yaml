@@ -7,13 +7,14 @@
       args:
         - LATEST_GASCD_GIT_HASH=dev-build
         - LATEST_GASCD_GIT_TAG=1.0.0
-        - GOVNOTIFY_API_KEY=${GOVNOTIFY_API_KEY}
-        - GOVNOTIFY_TEMPLATE_ID=${GOVNOTIFY_TEMPLATE_ID}
     ports:
       - "5050:5050"
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
-
+      - GOVNOTIFY_API_KEY=${GOVNOTIFY_API_KEY}
+      - GOVNOTIFY_TEMPLATE_ID=${GOVNOTIFY_TEMPLATE_ID}
+  
+  
   generate-sql:
     build: ./DataGeneration
     container_name: generate-sql
@@ -36,6 +37,6 @@
     depends_on:
       generate-sql:
         condition: service_completed_successfully
-
+        
 volumes:
   shared-volume:
