@@ -29,9 +29,6 @@ public class NotifyEmailSender(IOptions<NotifyOptions> options, ILogger<NotifyEm
             {
                 // "Name" placeholder is used for the requester's full name.
                 { "Name", message.FullName },
-                { "local_authority", message.LocalAuthority },
-                { "organisation_name", message.OrganisationName },
-                { "role", message.Role },
             },
             clientReference: message.ClientReference);
     }
@@ -52,7 +49,4 @@ public class NotifyOptions
 public record EmailMessage(
     string To,
     string FullName,
-    string LocalAuthority,
-    string OrganisationName,
-    string Role,
     string? ClientReference = null);

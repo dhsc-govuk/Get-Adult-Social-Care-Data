@@ -101,7 +101,8 @@ export function parseEmail(email: string): ParsedEmailResult | null {
 
 function isDev(): boolean {
   return (
-    (process.env.BASE_URL ?? '').startsWith('https://dev.') ||
-    process.env.NODE_ENV === 'development'
+    (process.env.BASE_URL ?? '').startsWith(
+      'https://dev.analytics.dhsc.gov.uk'
+    ) || process.env.NODE_ENV === 'development'
   );
 }

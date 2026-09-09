@@ -10,9 +10,12 @@ export async function POST(req: NextRequest) {
   const DEFAULT_RESPONSE: RegisterLAUserResult = { registered: false };
   try {
     if (email != null) {
+      const requestHeaders = new Headers(req.headers);
+      const url = new URL(req.url);
+      console.log('@@@@', url, requestHeaders);
+
       // Insert into database
       const result = await createNewDBUser(email ?? null);
-
       if (result) {
         // Trigger email invitation via the external dotnet Data API
         const api = getAPIClient();
@@ -23,6 +26,8 @@ export async function POST(req: NextRequest) {
         if (error || !data?.registered) {
           return NextResponse.json(DEFAULT_RESPONSE, { status: 200 });
         }
+
+        console.log('++++', data);
 
         const isRegistered = data.registered;
         DEFAULT_RESPONSE.registered = isRegistered;

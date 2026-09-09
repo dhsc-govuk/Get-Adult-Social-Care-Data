@@ -19,10 +19,7 @@ public class RegisterEndpoint(IEmailSender emailSender, ILogger<RegisterEndpoint
 
         var message = new EmailMessage(
             To: req.RegMail,
-            FullName: req.RegFullName,
-            LocalAuthority: req.RegLa,
-            OrganisationName: req.RegOrgName,
-            Role: req.RegRole);
+            FullName: req.RegFullName);
 
         try
         {

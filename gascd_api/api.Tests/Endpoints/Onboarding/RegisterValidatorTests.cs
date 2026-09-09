@@ -18,14 +18,8 @@ public class RegisterValidatorTests
     [Theory]
     [InlineData("", "Full name is required", nameof(RegisterRequest.RegFullName))]
     [InlineData(" ", "Full name is required", nameof(RegisterRequest.RegFullName))]
-    [InlineData("", "Local authority is required", nameof(RegisterRequest.RegLa))]
-    [InlineData(" ", "Local authority is required", nameof(RegisterRequest.RegLa))]
     [InlineData("", "Email address is required", nameof(RegisterRequest.RegMail))]
     [InlineData("not-an-email", "Email address is not valid", nameof(RegisterRequest.RegMail))]
-    [InlineData("", "Organisation name is required", nameof(RegisterRequest.RegOrgName))]
-    [InlineData(" ", "Organisation name is required", nameof(RegisterRequest.RegOrgName))]
-    [InlineData("", "Role is required", nameof(RegisterRequest.RegRole))]
-    [InlineData(" ", "Role is required", nameof(RegisterRequest.RegRole))]
     public void Invalid_Field(string value, string expectedMessage, string property)
     {
         var request = ValidRequest();
@@ -38,9 +32,6 @@ public class RegisterValidatorTests
     private static RegisterRequest ValidRequest() => new()
     {
         RegFullName = "Jane Smith",
-        RegLa = "Liverpool",
-        RegMail = "jane.smith@example.com",
-        RegOrgName = "ACME Care Ltd",
-        RegRole = "Data manager"
+        RegMail = "jane.smith@example.com"
     };
 }

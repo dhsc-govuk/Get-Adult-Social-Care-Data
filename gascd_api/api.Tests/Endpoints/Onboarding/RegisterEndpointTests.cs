@@ -25,9 +25,6 @@ public class RegisterEndpointTests(App app) : TestBase<App>
         var sent = SpyEmailSender.SentMessages.ShouldHaveSingleItem();
         sent.To.ShouldBe(request.RegMail);
         sent.FullName.ShouldBe(request.RegFullName);
-        sent.LocalAuthority.ShouldBe(request.RegLa);
-        sent.OrganisationName.ShouldBe(request.RegOrgName);
-        sent.Role.ShouldBe(request.RegRole);
     }
 
     [Fact]
@@ -36,10 +33,7 @@ public class RegisterEndpointTests(App app) : TestBase<App>
         var request = new RegisterRequest
         {
             RegFullName = "Jane Smith",
-            RegLa = "Liverpool",
-            RegMail = "",
-            RegOrgName = "ACME Care Ltd",
-            RegRole = "Data manager"
+            RegMail = ""
         };
 
         var (httpCode, problemDetails) =
@@ -54,9 +48,6 @@ public class RegisterEndpointTests(App app) : TestBase<App>
     private static RegisterRequest ValidRequest() => new()
     {
         RegFullName = "Jane Smith",
-        RegLa = "Liverpool",
-        RegMail = "jane.smith@example.com",
-        RegOrgName = "ACME Care Ltd",
-        RegRole = "Data manager"
+        RegMail = "jane.smith@example.com"
     };
 }

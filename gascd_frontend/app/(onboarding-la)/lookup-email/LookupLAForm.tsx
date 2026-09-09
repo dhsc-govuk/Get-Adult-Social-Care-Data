@@ -2,7 +2,7 @@ import React, { useActionState, useEffect } from 'react';
 import Link from 'next/link';
 import Form from 'next/form';
 import { ActionResponse, LookupLAFormData } from '@/server-actions/types';
-import { isAcceptableEmail, isNonEmptyString } from '@/lib/domain-check';
+import { isNonEmptyString } from '@/lib/domain-check';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { withBasePath } from '@/lib/basePath';
@@ -88,7 +88,7 @@ async function handleFormSubmit(
   };
 
   let nextPageURL: string | null = null;
-  if (isAcceptableEmail(rawFormData.regmail)) {
+  if (isNonEmptyString(rawFormData.regmail)) {
     const response = await fetch(withBasePath('/api/onboarding-la'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
