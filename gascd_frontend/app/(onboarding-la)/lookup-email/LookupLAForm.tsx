@@ -95,22 +95,21 @@ async function handleFormSubmit(
       body: JSON.stringify({ email: rawFormData.regmail }),
     });
     const verdict = await response.json();
-    console.log('$===$', { verdict }); //
+    console.log('$===$', ...verdict); //
     if (verdict) {
       nextPageURL = '/home';
+      // Proceed to the OneLogin flow
+      await authClient.signIn.oauth2({
+        providerId: 'govuk-one-login',
+        callbackURL: '/home',
+        additionalData: {
+          isAcceptableEmail: true,
+        },
+      });
     } else {
       // Redirect to page for User Signup
       nextPageURL = `/signup-la`;
     }
-
-    // Proceed to the OneLogin flow
-    await authClient.signIn.oauth2({
-      providerId: 'govuk-one-login',
-      callbackURL: '/home',
-      additionalData: {
-        isAcceptableEmail: true,
-      },
-    });
   } else {
     nextPageURL = `/signup-la`;
   }
