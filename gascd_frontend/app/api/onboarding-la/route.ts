@@ -3,7 +3,7 @@ import { createNewDBUser } from '@/lib/create-new-user';
 import { NextRequest, NextResponse } from 'next/server';
 import logger from '@/utils/logger';
 
-type RegisterLAUserResult = { registered: boolean; error?: unknown };
+type RegisterLAUserResult = { registered: boolean; error?: string | null };
 export async function POST(req: NextRequest) {
   const { email } = await req.json();
 
@@ -38,7 +38,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(DEFAULT_RESPONSE, { status: 200 });
   } catch (error) {
     logger.error('There was a problem with your request', { error });
-    DEFAULT_RESPONSE.error = error;
+
+    if (error instanceof Error) {
+      DEFAULT_RESPONSE.error = error?.message ?? null;
+    }
     return NextResponse.json(DEFAULT_RESPONSE, { status: 400 });
   }
 }
