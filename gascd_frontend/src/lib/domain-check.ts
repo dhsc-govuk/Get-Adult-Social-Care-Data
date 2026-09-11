@@ -160,12 +160,14 @@ export const ACCEPTABLE_EMAIL_DOMAINS: string[] = Object.keys(
   LA_EMAIL_DOMAIN_ID_MAP
 );
 
-export function isAcceptableEmail(email: unknown): boolean {
+export function isAcceptableEmail(
+  email: unknown,
+  webEnv: string | null
+): ReturnType<typeof parseEmail> {
   if (typeof email === 'string') {
-    const domain = email.split('@')[1];
-    return ACCEPTABLE_EMAIL_DOMAINS.includes(domain);
+    return parseEmail(email, isDev(webEnv));
   }
-  return false;
+  return null;
 }
 
 // ================================
@@ -185,4 +187,34 @@ export function validateFormFields(fields: WhoamiFormData): WhoamiErrors {
 
 export function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
+}
+
+export type ParsedEmailResult = {
+  domain: string;
+  location_id: string;
+  email: string;
+};
+export function parseEmail(
+  email: string,
+  isDev: boolean
+): ParsedEmailResult | null {
+  const domain = email.split('@')[1];
+  const location_id = isDev
+    ? {
+        ...LA_EMAIL_DOMAIN_ID_MAP,
+        'dhsc.gov.uk': 'E09000027',
+        'edgehealth.co.uk': 'E09000003',
+        'deloitte.co.uk': 'E08000024',
+      }[domain]
+    : LA_EMAIL_DOMAIN_ID_MAP[domain];
+
+  if (isNonEmptyString(location_id)) {
+    return { domain, location_id, email };
+  }
+
+  return null;
+}
+
+function isDev(baseURL: string | null): boolean {
+  return (baseURL ?? '').startsWith('https://dev.analytics.dhsc.gov.uk');
 }

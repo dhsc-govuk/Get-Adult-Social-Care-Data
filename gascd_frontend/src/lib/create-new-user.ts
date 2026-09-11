@@ -1,10 +1,5 @@
-import { redactUserInfo } from '../../scripts/obfuscate';
 import { authDB } from './auth';
-import {
-  isAcceptableEmail,
-  isNonEmptyString,
-  LA_EMAIL_DOMAIN_ID_MAP,
-} from './domain-check';
+import { ParsedEmailResult } from './domain-check';
 import { generateId } from 'better-auth';
 import { generateAnalyticsId } from '@/helpers/telemetry/analyticsId';
 
@@ -29,17 +24,14 @@ const USER_DATABASE_NAME = 'user';
 
 type Verdict = 'EXISTS' | 'CREATED';
 type Result = { result: Verdict };
-export async function createNewDBUser(email: unknown): Promise<Result> {
-  if (isNonEmptyString(email) === false) {
-    throw new Error(`A valid email cannot be empty`);
-  }
-
-  const parsedResult = parseEmail(email);
-  if (parsedResult == null) {
+export async function createNewDBUser(
+  parsedEmail: ParsedEmailResult | null
+): Promise<Result> {
+  if (parsedEmail == null) {
     throw new Error(`The email did not pass our validation check`);
   }
 
-  const { location_id } = parsedResult;
+  const { location_id, email } = parsedEmail;
 
   const email_lower = email.toLowerCase();
   const user_match = await authDB
@@ -76,33 +68,4 @@ export async function createNewDBUser(email: unknown): Promise<Result> {
   } catch (error) {
     throw new Error('An error occurred trying to create the new user');
   }
-}
-
-type ParsedEmailResult = { domain: string; location_id: string };
-export function parseEmail(email: string): ParsedEmailResult | null {
-  if (isAcceptableEmail(email)) {
-    const domain = email.split('@')[1];
-    const location_id = isDev()
-      ? {
-          ...LA_EMAIL_DOMAIN_ID_MAP,
-          'dhsc.gov.uk': 'E09000027',
-          'edgehealth.co.uk': 'E09000003',
-          'deloitte.co.uk': 'E08000024',
-        }[domain]
-      : LA_EMAIL_DOMAIN_ID_MAP[domain];
-
-    if (isNonEmptyString(location_id)) {
-      return { domain, location_id };
-    }
-  }
-
-  return null;
-}
-
-function isDev(): boolean {
-  return (
-    (process.env.BASE_URL ?? '').startsWith(
-      'https://dev.analytics.dhsc.gov.uk'
-    ) || process.env.NODE_ENV === 'development'
-  );
 }

@@ -2,6 +2,7 @@ import { getAPIClient } from '@/data/dataAPI';
 import { createNewDBUser } from '@/lib/create-new-user';
 import { NextRequest, NextResponse } from 'next/server';
 import logger from '@/utils/logger';
+import { isAcceptableEmail } from '@/lib/domain-check';
 
 type RegisterLAUserResult = { registered: boolean; error?: string | null };
 export async function POST(req: NextRequest) {
@@ -15,7 +16,12 @@ export async function POST(req: NextRequest) {
       console.log('@@@@', url, requestHeaders);
 
       // Insert into database
-      const result = await createNewDBUser(email ?? null);
+      const result = await createNewDBUser(
+        isAcceptableEmail(
+          email,
+          process.env.BASE_URL ?? requestHeaders.get('origin')
+        )
+      );
       if (result) {
         // Trigger email invitation via the external dotnet Data API
         const api = getAPIClient();

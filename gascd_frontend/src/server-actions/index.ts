@@ -1,19 +1,9 @@
 'use server';
-import {
-  isAcceptableEmail,
-  isNonEmptyString,
-  validateFormFields,
-} from '@/lib/domain-check';
+import { isNonEmptyString, validateFormFields } from '@/lib/domain-check';
 import { redirect } from 'next/navigation';
-import type {
-  ActionResponse,
-  LookupLAFormData,
-  SignupLAFormData,
-  WhoamiFormData,
-} from './types';
+import type { ActionResponse, SignupLAFormData, WhoamiFormData } from './types';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
-import { createNewDBUser } from '@/lib/create-new-user';
 import { getAPIClient } from '@/data/dataAPI';
 
 // Placeholder link, for demo purposes - INTERIM TEMP SOLUTION
@@ -57,43 +47,6 @@ export async function handleFormSignupLA(
   // ...
 
   redirect(CONFIRM_LA_LINK);
-}
-
-export async function handleFormLookupLA(
-  _prev: ActionResponse<LookupLAFormData>,
-  formData: FormData
-): Promise<ActionResponse<LookupLAFormData>> {
-  const regmail = formData.get('regmail');
-
-  const rawFormData: LookupLAFormData = {
-    regmail: isNonEmptyString(regmail) ? regmail : '',
-    // ...
-  };
-
-  if (isAcceptableEmail(rawFormData.regmail)) {
-    // Insert into database
-    // ...
-    const verdict = await createNewDBUser(rawFormData.regmail);
-
-    if (verdict.result == 'EXISTS') {
-      // Proceed to the OneLogin flow
-      const responseAuth = await auth.api.signInWithOAuth2({
-        body: {
-          providerId: 'govuk-one-login',
-          callbackURL: '/home',
-        },
-        headers: await headers(),
-      });
-
-      redirect(responseAuth.url!);
-    } else {
-      // Redirect to Confirmation page
-      redirect(CONFIRM_LA_LINK);
-    }
-  } else {
-    // Redirect to page for User Signup
-    redirect(`/signup-la`);
-  }
 }
 
 export async function handleFormWhoami(

@@ -1,7 +1,6 @@
 'use client';
 
 import { ACCEPTABLE_EMAIL_DOMAINS, isNonEmptyString } from '@/lib/domain-check';
-import { handleFormSignupLA } from '@/server-actions';
 import { ActionResponse, SignupLAFormData } from '@/server-actions/types';
 import Form from 'next/form';
 import Link from 'next/link';
