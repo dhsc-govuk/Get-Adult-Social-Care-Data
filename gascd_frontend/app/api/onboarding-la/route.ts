@@ -9,6 +9,7 @@ export async function POST(req: NextRequest) {
   const { email } = await req.json();
 
   const DEFAULT_RESPONSE: RegisterLAUserResult = { registered: false };
+  const ONBOARDING_USER_STATUS_OPTIONS = ['CREATED', 'EXISTS'];
   try {
     if (email != null) {
       const requestHeaders = new Headers(req.headers);
@@ -22,21 +23,20 @@ export async function POST(req: NextRequest) {
           process.env.BASE_URL ?? requestHeaders.get('origin')
         )
       );
-      if (result) {
+      if (result && ONBOARDING_USER_STATUS_OPTIONS.includes(result.dbustatus)) {
         // Trigger email invitation via the external dotnet Data API
         const api = getAPIClient();
         const { data, error } = await api.POST('/onboarding/register', {
-          body: { email },
+          body: { reg_mail: email, reg_full_name: result.dbuid },
         });
 
-        if (error || !data?.registered) {
+        if (error || !data?.message) {
           return NextResponse.json(DEFAULT_RESPONSE, { status: 200 });
         }
 
         console.log('++++', data);
 
-        const isRegistered = data.registered;
-        DEFAULT_RESPONSE.registered = isRegistered;
+        DEFAULT_RESPONSE.registered = true;
 
         return NextResponse.json(DEFAULT_RESPONSE, { status: 200 });
       }

@@ -383,8 +383,8 @@ paths:
 
   /onboarding/register:
     post:
-      summary: "Register a local authority user"
-      description: "Registers an approved LA email before the One Login OAuth2 flow."
+      summary: "Submits a registration request and emails the requester"
+      description: "Registers an approved LA user and triggers their onboarding email invitation."
       security:
         - ApiKey: []
       requestBody:
@@ -393,25 +393,30 @@ paths:
           application/json:
             schema:
               type: object
-              required: [email]
+              required: [reg_full_name, reg_mail]
               properties:
-                email:
+                reg_full_name:
+                  type: string
+                  maxLength: 100
+                reg_mail:
                   type: string
                   format: email
+                  maxLength: 254
       responses:
         "200":
-          description: "Registration successful"
+          description: "Registration request received"
           content:
             application/json:
               schema:
                 type: object
+                required: [message]
                 properties:
-                  registered:
-                    type: boolean
+                  message:
+                    type: string
         "400":
           description: "Invalid request"
-        "422":
-          description: "Email not on approved LA domains list"
+        "502":
+          description: "Failed to send registration email"
 
 # Reusable components
 components:

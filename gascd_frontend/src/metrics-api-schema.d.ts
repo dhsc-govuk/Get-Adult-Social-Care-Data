@@ -718,8 +718,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Register a local authority user
-         * @description Registers an approved LA email before the One Login OAuth2 flow.
+         * Submits a registration request and emails the requester
+         * @description Registers an approved LA user and triggers their onboarding email invitation.
          */
         post: {
             parameters: {
@@ -731,20 +731,21 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
+                        reg_full_name: string;
                         /** Format: email */
-                        email: string;
+                        reg_mail: string;
                     };
                 };
             };
             responses: {
-                /** @description Registration successful */
+                /** @description Registration request received */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            registered?: boolean;
+                            message: string;
                         };
                     };
                 };
@@ -755,8 +756,8 @@ export interface paths {
                     };
                     content?: never;
                 };
-                /** @description Email not on approved LA domains list */
-                422: {
+                /** @description Failed to send registration email */
+                502: {
                     headers: {
                         [name: string]: unknown;
                     };

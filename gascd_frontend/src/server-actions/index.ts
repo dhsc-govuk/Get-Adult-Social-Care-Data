@@ -4,26 +4,8 @@ import { redirect } from 'next/navigation';
 import type { ActionResponse, SignupLAFormData, WhoamiFormData } from './types';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
-import { getAPIClient } from '@/data/dataAPI';
-
 // Placeholder link, for demo purposes - INTERIM TEMP SOLUTION
 const CONFIRM_LA_LINK = '/confirm-la';
-
-export type RegisterLAUserResult = { registered: boolean };
-export async function registerLAUser(
-  email: string
-): Promise<RegisterLAUserResult> {
-  const api = getAPIClient();
-  const { data, error } = await api.POST('/onboarding/register', {
-    body: { email },
-  });
-
-  if (error || !data?.registered) {
-    return { registered: false };
-  }
-
-  return { registered: data.registered };
-}
 
 export async function handleFormSignupLA(
   _prev: ActionResponse<SignupLAFormData>,

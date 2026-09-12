@@ -23,7 +23,7 @@ type DBRecordNewUser = {
 const USER_DATABASE_NAME = 'user';
 
 type Verdict = 'EXISTS' | 'CREATED';
-type Result = { result: Verdict };
+type Result = { dbustatus: Verdict; dbuid: string };
 export async function createNewDBUser(
   parsedEmail: ParsedEmailResult | null
 ): Promise<Result> {
@@ -41,7 +41,7 @@ export async function createNewDBUser(
     .executeTakeFirst();
 
   if (user_match) {
-    return { result: 'EXISTS' };
+    return { dbustatus: 'EXISTS', dbuid: user_match.id };
   }
 
   const user_id = generateId();
@@ -64,7 +64,7 @@ export async function createNewDBUser(
     await authDB.insertInto(USER_DATABASE_NAME).values(newDataRow).execute();
 
     console.log('New user created successfully.', { user_id });
-    return { result: 'CREATED' };
+    return { dbustatus: 'CREATED', dbuid: user_id };
   } catch (error) {
     throw new Error('An error occurred trying to create the new user');
   }
