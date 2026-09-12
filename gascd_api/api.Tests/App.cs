@@ -1,6 +1,10 @@
+using api.Services.Onboarding;
+using api.Tests.Fixtures;
 using FastEndpoints.Testing;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.PostgreSql;
 
 namespace api.Tests;
@@ -8,7 +12,7 @@ namespace api.Tests;
 public class App : AppFixture<Program>
 {
     public required PostgreSqlContainer PostgresContainer { get; set; }
-
+    public SpyEmailSender EmailSender { get; } = new();
     protected override async ValueTask PreSetupAsync()
     {
         PostgresContainer = new PostgreSqlBuilder("postgis/postgis:18-3.6-alpine")
@@ -27,6 +31,12 @@ public class App : AppFixture<Program>
 
     protected override void ConfigureApp(IWebHostBuilder a)
     {
+        a.ConfigureServices(services =>
+        {
+            services.RemoveAll<IEmailSender>();
+            services.AddSingleton<IEmailSender>(EmailSender);
+        });
+
         a.ConfigureAppConfiguration((_, configBuilder) =>
         {
             var connStr = PostgresContainer.GetConnectionString();

@@ -11,6 +11,8 @@
       - "5050:5050"
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
+      - GOVNOTIFY_API_KEY=${GOVNOTIFY_API_KEY}
+      - GOVNOTIFY_TEMPLATE_ID=${GOVNOTIFY_TEMPLATE_ID}
   
   
   generate-sql:

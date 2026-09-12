@@ -31,6 +31,7 @@
       <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.2" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="10.0.0" />
+      <PackageReference Include="GovukNotify" Version="8.1.0" />
     </ItemGroup>
 
     <ItemGroup>
