@@ -5,12 +5,17 @@ import {
   LA_EMAIL_DOMAIN_ID_MAP,
   isAcceptableEmail,
   isNonEmptyString,
-  parseEmail,
+  parseInternalTestDomains,
+  resolveLaEmail,
   validateFormFields,
 } from '@/lib/domain-check';
 
-const DEV_URL = 'https://dev.analytics.dhsc.gov.uk/gascd-frontend-dev';
-const PROD_URL = 'https://analytics.dhsc.gov.uk/gascd-frontend';
+const INTERNAL =
+  'dhsc.gov.uk=E09000027,edgehealth.co.uk=E09000003,deloitte.co.uk=E08000024';
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
 
 describe('LA_EMAIL_DOMAIN_ID_MAP', () => {
   it('matches the early-access domain mapping source file', () => {
@@ -27,11 +32,21 @@ describe('LA_EMAIL_DOMAIN_ID_MAP', () => {
       Object.keys(LA_EMAIL_DOMAIN_ID_MAP)
     );
   });
+
+  it('does not contain internal test domains', () => {
+    for (const domain of [
+      'dhsc.gov.uk',
+      'edgehealth.co.uk',
+      'deloitte.co.uk',
+    ]) {
+      expect(ACCEPTABLE_EMAIL_DOMAINS).not.toContain(domain);
+    }
+  });
 });
 
-describe('parseEmail', () => {
+describe('resolveLaEmail', () => {
   it('returns the ONS code for a listed council domain', () => {
-    expect(parseEmail('officer@barnet.gov.uk', false)).toEqual({
+    expect(resolveLaEmail('officer@barnet.gov.uk')).toEqual({
       domain: 'barnet.gov.uk',
       location_id: 'E09000003',
       email: 'officer@barnet.gov.uk',
@@ -39,80 +54,94 @@ describe('parseEmail', () => {
   });
 
   it('is case-insensitive on the domain', () => {
-    expect(parseEmail('Officer@Barnet.GOV.UK', false)?.location_id).toBe(
+    expect(resolveLaEmail('Officer@Barnet.GOV.UK')?.location_id).toBe(
       'E09000003'
     );
   });
 
   it('rejects an unlisted domain', () => {
-    expect(parseEmail('someone@example.com', false)).toBeNull();
+    expect(resolveLaEmail('someone@example.com')).toBeNull();
   });
 
   it('rejects a subdomain of a listed domain', () => {
-    expect(parseEmail('someone@mail.barnet.gov.uk', false)).toBeNull();
+    expect(resolveLaEmail('someone@mail.barnet.gov.uk')).toBeNull();
   });
 
-  it('rejects a value with no domain part', () => {
-    expect(parseEmail('not-an-email', false)).toBeNull();
-    expect(parseEmail('', false)).toBeNull();
+  it('rejects values without exactly one @', () => {
+    expect(resolveLaEmail('not-an-email')).toBeNull();
+    expect(resolveLaEmail('')).toBeNull();
+    expect(resolveLaEmail('a@b@barnet.gov.uk')).toBeNull();
   });
 
-  it('rejects a value with more than one @', () => {
-    expect(parseEmail('a@b@barnet.gov.uk', false)).toBeNull();
+  it('accepts extra domains only when supplied', () => {
+    const extra = { 'edgehealth.co.uk': 'E09000003' };
+    expect(resolveLaEmail('x@edgehealth.co.uk')).toBeNull();
+    expect(resolveLaEmail('x@EdgeHealth.co.uk', extra)?.location_id).toBe(
+      'E09000003'
+    );
   });
 
-  describe('internal test domains', () => {
-    const internal = ['dhsc.gov.uk', 'edgehealth.co.uk', 'deloitte.co.uk'];
+  it('prefers the public map over an extra domain with the same name', () => {
+    expect(
+      resolveLaEmail('x@barnet.gov.uk', { 'barnet.gov.uk': 'OVERRIDE' })
+        ?.location_id
+    ).toBe('E09000003');
+  });
+});
 
-    it.each(internal)('accepts %s only when isDev is true', (domain) => {
-      expect(parseEmail(`tester@${domain}`, true)).not.toBeNull();
-      expect(parseEmail(`tester@${domain}`, false)).toBeNull();
+describe('parseInternalTestDomains', () => {
+  it('parses comma-separated domain=code pairs', () => {
+    expect(parseInternalTestDomains(INTERNAL)).toEqual({
+      'dhsc.gov.uk': 'E09000027',
+      'edgehealth.co.uk': 'E09000003',
+      'deloitte.co.uk': 'E08000024',
     });
+  });
 
-    it('does not leak internal domains into the public allowlist', () => {
-      for (const domain of internal) {
-        expect(ACCEPTABLE_EMAIL_DOMAINS).not.toContain(domain);
-      }
-    });
+  it('trims whitespace and lower-cases domains', () => {
+    expect(
+      parseInternalTestDomains(
+        ' DHSC.gov.uk = E09000027 , edgehealth.co.uk=E09000003 '
+      )
+    ).toEqual({ 'dhsc.gov.uk': 'E09000027', 'edgehealth.co.uk': 'E09000003' });
+  });
+
+  it('returns an empty map when unset or empty', () => {
+    expect(parseInternalTestDomains(undefined)).toEqual({});
+    expect(parseInternalTestDomains(null)).toEqual({});
+    expect(parseInternalTestDomains('')).toEqual({});
+    expect(parseInternalTestDomains('   ')).toEqual({});
+  });
+
+  it('ignores malformed entries and keeps the valid ones', () => {
+    expect(
+      parseInternalTestDomains(
+        'dhsc.gov.uk=E09000027,nocode,=E1,bare=E2,a=b=c,edgehealth.co.uk=E09000003,,'
+      )
+    ).toEqual({ 'dhsc.gov.uk': 'E09000027', 'edgehealth.co.uk': 'E09000003' });
   });
 });
 
 describe('isAcceptableEmail', () => {
   it('returns null for non-string input', () => {
-    expect(isAcceptableEmail(undefined, PROD_URL)).toBeNull();
-    expect(isAcceptableEmail(null, PROD_URL)).toBeNull();
-    expect(isAcceptableEmail(42, PROD_URL)).toBeNull();
-    expect(
-      isAcceptableEmail({ email: 'x@barnet.gov.uk' }, PROD_URL)
-    ).toBeNull();
+    expect(isAcceptableEmail(undefined)).toBeNull();
+    expect(isAcceptableEmail(null)).toBeNull();
+    expect(isAcceptableEmail(42)).toBeNull();
+    expect(isAcceptableEmail({ email: 'x@barnet.gov.uk' })).toBeNull();
   });
 
-  it('accepts a council address regardless of environment', () => {
-    expect(isAcceptableEmail('x@barnet.gov.uk', PROD_URL)).not.toBeNull();
-    expect(isAcceptableEmail('x@barnet.gov.uk', DEV_URL)).not.toBeNull();
-    expect(isAcceptableEmail('x@barnet.gov.uk', null)).not.toBeNull();
+  it('accepts a council address without any environment config', () => {
+    expect(isAcceptableEmail('x@barnet.gov.uk')).not.toBeNull();
   });
 
-  it('only accepts internal domains under the dev URL', () => {
-    expect(isAcceptableEmail('x@edgehealth.co.uk', DEV_URL)).not.toBeNull();
-    expect(isAcceptableEmail('x@edgehealth.co.uk', PROD_URL)).toBeNull();
-    expect(isAcceptableEmail('x@edgehealth.co.uk', null)).toBeNull();
-    expect(isAcceptableEmail('x@edgehealth.co.uk', '')).toBeNull();
-  });
+  it('rejects internal domains unless LA_INTERNAL_TEST_DOMAINS grants them', () => {
+    expect(isAcceptableEmail('x@edgehealth.co.uk')).toBeNull();
 
-  it('does not treat a look-alike host as dev', () => {
-    expect(
-      isAcceptableEmail(
-        'x@edgehealth.co.uk',
-        'https://dev.analytics.dhsc.gov.uk.evil.example'
-      )
-    ).toBeNull();
-    expect(
-      isAcceptableEmail(
-        'x@edgehealth.co.uk',
-        'http://dev.analytics.dhsc.gov.uk'
-      )
-    ).toBeNull();
+    vi.stubEnv('LA_INTERNAL_TEST_DOMAINS', INTERNAL);
+    expect(isAcceptableEmail('x@edgehealth.co.uk')?.location_id).toBe(
+      'E09000003'
+    );
+    expect(isAcceptableEmail('x@example.com')).toBeNull();
   });
 });
 

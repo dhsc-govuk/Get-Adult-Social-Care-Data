@@ -160,14 +160,68 @@ export const ACCEPTABLE_EMAIL_DOMAINS: string[] = Object.keys(
   LA_EMAIL_DOMAIN_ID_MAP
 );
 
-export function isAcceptableEmail(
-  email: unknown,
-  webEnv: string | null
-): ReturnType<typeof parseEmail> {
-  if (typeof email === 'string') {
-    return parseEmail(email, isDev(webEnv));
+export type ParsedEmailResult = {
+  domain: string;
+  location_id: string;
+  email: string;
+};
+
+/**
+ * Resolve an email address to the Local Authority it belongs to.
+ * The domain match is case-insensitive and exact (no subdomains).
+ * `extraDomains` lets an environment grant access to additional domains
+ * (see `internalTestDomains`).
+ */
+export function resolveLaEmail(
+  email: string,
+  extraDomains: Record<string, string> = {}
+): ParsedEmailResult | null {
+  const parts = email.split('@');
+  if (parts.length !== 2) return null;
+
+  const domain = parts[1].toLowerCase();
+  const location_id = LA_EMAIL_DOMAIN_ID_MAP[domain] ?? extraDomains[domain];
+
+  if (isNonEmptyString(location_id)) {
+    return { domain, location_id, email };
   }
   return null;
+}
+
+/**
+ * Parse LA_INTERNAL_TEST_DOMAINS, a comma-separated list of `domain=ONS_CODE`
+ * pairs that grant LA access to internal testers, e.g.
+ *   "dhsc.gov.uk=E09000027,edgehealth.co.uk=E09000003"
+ * Malformed entries are ignored. Unset or empty means no extra domains.
+ */
+export function parseInternalTestDomains(
+  raw: string | undefined | null
+): Record<string, string> {
+  const result: Record<string, string> = {};
+  if (!isNonEmptyString(raw)) return result;
+
+  for (const entry of raw.split(',')) {
+    const [domain, code, ...rest] = entry.split('=').map((s) => s.trim());
+    if (rest.length > 0) continue;
+    if (!isNonEmptyString(domain) || !isNonEmptyString(code)) continue;
+    if (!domain.includes('.')) continue;
+    result[domain.toLowerCase()] = code;
+  }
+  return result;
+}
+
+/** Internal test domains configured for this server process. Empty in the browser. */
+export function internalTestDomains(): Record<string, string> {
+  return parseInternalTestDomains(process.env.LA_INTERNAL_TEST_DOMAINS);
+}
+
+/**
+ * Server-side check: does this value look like an email on an allowed LA domain
+ * (including any internal test domains configured for the environment)?
+ */
+export function isAcceptableEmail(email: unknown): ParsedEmailResult | null {
+  if (typeof email !== 'string') return null;
+  return resolveLaEmail(email, internalTestDomains());
 }
 
 // ================================
@@ -187,44 +241,4 @@ export function validateFormFields(fields: WhoamiFormData): WhoamiErrors {
 
 export function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
-}
-
-export type ParsedEmailResult = {
-  domain: string;
-  location_id: string;
-  email: string;
-};
-export function parseEmail(
-  email: string,
-  isDev: boolean
-): ParsedEmailResult | null {
-  const domain = email.split('@')[1]?.toLowerCase();
-  const location_id = isDev
-    ? {
-        ...LA_EMAIL_DOMAIN_ID_MAP,
-        'dhsc.gov.uk': 'E09000027',
-        'edgehealth.co.uk': 'E09000003',
-        'deloitte.co.uk': 'E08000024',
-      }[domain]
-    : LA_EMAIL_DOMAIN_ID_MAP[domain];
-
-  if (isNonEmptyString(location_id)) {
-    return { domain, location_id, email };
-  }
-
-  return null;
-}
-
-const DEV_HOSTNAME = 'dev.analytics.dhsc.gov.uk';
-
-// Only an exact https match on the dev hostname enables the internal test
-// domains. A prefix match would also accept look-alike hosts.
-function isDev(baseURL: string | null): boolean {
-  if (!baseURL) return false;
-  try {
-    const url = new URL(baseURL);
-    return url.protocol === 'https:' && url.hostname === DEV_HOSTNAME;
-  } catch {
-    return false;
-  }
 }
