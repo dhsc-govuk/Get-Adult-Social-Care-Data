@@ -96,11 +96,10 @@ async function handleFormSubmit(
     });
     const verdict = await response.json();
     if (verdict?.registered === true) {
-      nextPageURL = '/home';
       // Proceed to the OneLogin flow
       await authClient.signIn.oauth2({
         providerId: 'govuk-one-login',
-        callbackURL: '/home',
+        callbackURL: withBasePath('/home'),
         additionalData: {
           isAcceptableEmail: true,
         },

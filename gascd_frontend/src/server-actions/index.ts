@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import type { ActionResponse, SignupLAFormData, WhoamiFormData } from './types';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
+import { withBasePath } from '@/lib/basePath';
 // Placeholder link, for demo purposes - INTERIM TEMP SOLUTION
 const CONFIRM_LA_LINK = '/confirm-la';
 
@@ -17,7 +18,6 @@ export async function handleFormSignupLA(
   const regorgname = formData.get('regorgname');
   const regrole = formData.get('regrole');
 
-  // ...Object.fromEntries(formData)
   const rawFormData: SignupLAFormData = {
     regfullname: isNonEmptyString(regfullname) ? regfullname : '',
     regla: isNonEmptyString(regla) ? regla : '',
@@ -61,8 +61,6 @@ export async function handleFormWhoami(
     }
 
     case 'u:cqc': {
-      // router.push('/home');
-      // window.history.pushState({}, '', '/home');
       let responseAuth = null;
       try {
         if (process.env.NODE_ENV === 'development') {
@@ -74,31 +72,21 @@ export async function handleFormWhoami(
               'LOCAL_AUTH_EMAIL or LOCAL_AUTH_PASSWORD not found in env'
             );
           }
-
-          // responseAuth = await authClient.signIn.email({
-          //   email: process.env.LOCAL_AUTH_EMAIL,
-          //   password: process.env.LOCAL_AUTH_PASSWORD,
-          //   callbackURL: '/home',
-          // });
           responseAuth = await auth.api.signInEmail({
             body: {
               email: process.env.LOCAL_AUTH_EMAIL,
               password: process.env.LOCAL_AUTH_PASSWORD,
-              callbackURL: '/home',
+              callbackURL: withBasePath('/home'),
             },
             headers: await headers(),
           });
 
           console.info('Local auth session started');
         } else {
-          // responseAuth = await authClient.signIn.oauth2({
-          //   providerId: 'govuk-one-login',
-          //   callbackURL: '/home',
-          // });
           responseAuth = await auth.api.signInWithOAuth2({
             body: {
               providerId: 'govuk-one-login',
-              callbackURL: '/home',
+              callbackURL: withBasePath('/home'),
             },
             headers: await headers(),
           });
@@ -108,7 +96,6 @@ export async function handleFormWhoami(
           'Sorry, there is a problem with the service. Please try again later.';
         console.error(ERROR_MSG, { error });
 
-        // throw new Error(ERROR_MSG);
         return {
           error: ERROR_MSG,
         };
