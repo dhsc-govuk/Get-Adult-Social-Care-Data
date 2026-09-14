@@ -27,7 +27,7 @@ const ConfirmLAPage: React.FC<Props> = async ({ searchParams }) => {
             </div>
             <h2 className="govuk-heading-m">What happens next</h2>
             <p className="govuk-body">
-              We've sent your application to the DHSC team.
+              We&apos;ve sent your application to the DHSC team.
             </p>
             <p className="govuk-body">
               They will contact you either to confirm your registration, or to
