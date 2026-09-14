@@ -95,10 +95,7 @@ async function handleFormSubmit(
       body: JSON.stringify({ email: rawFormData.regmail }),
     });
     const verdict = await response.json();
-    if (response.status !== 200) {
-      console.log('$===$', { ...verdict }); //
-    }
-    if (verdict) {
+    if (verdict?.registered === true) {
       nextPageURL = '/home';
       // Proceed to the OneLogin flow
       await authClient.signIn.oauth2({
