@@ -65,6 +65,8 @@ const LookupLAForm: React.FC = () => {
           Continue
         </button>
 
+        {state?.error && <p className="govuk-error-message">{state.error}</p>}
+
         <Link href={BACK_LINK} className="govuk-link">
           Cancel and go back
         </Link>
@@ -96,15 +98,21 @@ async function handleFormSubmit(
     });
     const verdict = await response.json();
     if (verdict?.registered === true) {
-      nextPageURL = '/home';
-      // Proceed to the OneLogin flow
-      await authClient.signIn.oauth2({
+      // Proceed to the OneLogin flow. The auth client redirects the browser to
+      // the provider itself, so no in-app navigation is set on this path.
+      const { error } = await authClient.signIn.oauth2({
         providerId: 'govuk-one-login',
-        callbackURL: '/home',
+        callbackURL: withBasePath('/home'),
         additionalData: {
           isAcceptableEmail: true,
         },
       });
+      if (error) {
+        return {
+          error:
+            'Sorry, there is a problem with the service. Please try again later.',
+        };
+      }
     } else {
       // Redirect to page for User Signup
       nextPageURL = `/signup-la`;
