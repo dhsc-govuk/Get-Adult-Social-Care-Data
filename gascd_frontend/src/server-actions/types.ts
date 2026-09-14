@@ -5,7 +5,7 @@
 //   values?: Partial<T>; // form-fields
 // };
 export type ActionResponse<T> =
-  | { error: string; errors?: Partial<T> }
+  | { error: string; errors?: Partial<T>; fields?: Partial<T> }
   | { error?: null; fields: Partial<T>; next: string | null };
 // | { error?: null; goto: string }
 // | { error: string; errors?: Partial<T> };

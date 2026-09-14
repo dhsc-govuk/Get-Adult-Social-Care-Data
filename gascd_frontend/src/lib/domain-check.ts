@@ -242,3 +242,27 @@ export function validateFormFields(fields: WhoamiFormData): WhoamiErrors {
 export function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
 }
+
+/**
+ * GOV.UK-style validation for the LA email lookup field. Returns the error
+ * message to show, or null when the value is a plausible email address.
+ * Domain eligibility is deliberately not checked here.
+ */
+export function validateLaLookupEmail(value: unknown): string | null {
+  if (!isNonEmptyString(value)) {
+    return 'Enter your email address';
+  }
+  const trimmed = value.trim();
+  const parts = trimmed.split('@');
+  if (
+    parts.length !== 2 ||
+    parts[0].length === 0 ||
+    !parts[1].includes('.') ||
+    parts[1].startsWith('.') ||
+    parts[1].endsWith('.') ||
+    /\s/.test(trimmed)
+  ) {
+    return 'Enter an email address in the correct format, like name@example.gov.uk';
+  }
+  return null;
+}

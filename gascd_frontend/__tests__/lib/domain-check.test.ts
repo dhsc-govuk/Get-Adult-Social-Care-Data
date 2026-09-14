@@ -8,6 +8,7 @@ import {
   parseInternalTestDomains,
   resolveLaEmail,
   validateFormFields,
+  validateLaLookupEmail,
 } from '@/lib/domain-check';
 
 const INTERNAL =
@@ -170,5 +171,31 @@ describe('validateFormFields', () => {
       id: 'Select an option',
     });
     expect(validateFormFields({ id: '' })).toEqual({ id: 'Select an option' });
+  });
+});
+
+describe('validateLaLookupEmail', () => {
+  it('requires a value', () => {
+    expect(validateLaLookupEmail('')).toBe('Enter your email address');
+    expect(validateLaLookupEmail('   ')).toBe('Enter your email address');
+    expect(validateLaLookupEmail(null)).toBe('Enter your email address');
+    expect(validateLaLookupEmail(undefined)).toBe('Enter your email address');
+  });
+
+  it('requires a plausible email format', () => {
+    const FORMAT =
+      'Enter an email address in the correct format, like name@example.gov.uk';
+    expect(validateLaLookupEmail('officer')).toBe(FORMAT);
+    expect(validateLaLookupEmail('officer@')).toBe(FORMAT);
+    expect(validateLaLookupEmail('@barnet.gov.uk')).toBe(FORMAT);
+    expect(validateLaLookupEmail('officer@barnet')).toBe(FORMAT);
+    expect(validateLaLookupEmail('officer@.gov.uk')).toBe(FORMAT);
+    expect(validateLaLookupEmail('a@b@barnet.gov.uk')).toBe(FORMAT);
+    expect(validateLaLookupEmail('offi cer@barnet.gov.uk')).toBe(FORMAT);
+  });
+
+  it('accepts a well-formed address regardless of domain eligibility', () => {
+    expect(validateLaLookupEmail('officer@barnet.gov.uk')).toBeNull();
+    expect(validateLaLookupEmail('  someone@example.com  ')).toBeNull();
   });
 });
