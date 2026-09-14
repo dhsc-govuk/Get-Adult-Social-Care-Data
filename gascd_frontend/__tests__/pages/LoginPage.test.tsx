@@ -22,11 +22,10 @@ describe('LoginPage', () => {
     expect(bodyTextElement).toBeInTheDocument();
   });
 
-  it('should render a login link', () => {
+  it('should render a start link to the user-type question', () => {
     render(<LoginPage />);
 
-    const signin_button = screen.getByRole('button', {
-      name: /Start now/i,
-    });
+    const startLink = screen.getByRole('link', { name: /Start now/i });
+    expect(startLink).toHaveAttribute('href', '/whoami');
   });
 });
