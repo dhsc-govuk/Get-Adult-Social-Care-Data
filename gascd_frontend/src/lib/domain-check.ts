@@ -198,7 +198,7 @@ export function parseEmail(
   email: string,
   isDev: boolean
 ): ParsedEmailResult | null {
-  const domain = email.split('@')[1];
+  const domain = email.split('@')[1]?.toLowerCase();
   const location_id = isDev
     ? {
         ...LA_EMAIL_DOMAIN_ID_MAP,
@@ -215,6 +215,16 @@ export function parseEmail(
   return null;
 }
 
+const DEV_HOSTNAME = 'dev.analytics.dhsc.gov.uk';
+
+// Only an exact https match on the dev hostname enables the internal test
+// domains. A prefix match would also accept look-alike hosts.
 function isDev(baseURL: string | null): boolean {
-  return (baseURL ?? '').startsWith('https://dev.analytics.dhsc.gov.uk');
+  if (!baseURL) return false;
+  try {
+    const url = new URL(baseURL);
+    return url.protocol === 'https:' && url.hostname === DEV_HOSTNAME;
+  } catch {
+    return false;
+  }
 }
