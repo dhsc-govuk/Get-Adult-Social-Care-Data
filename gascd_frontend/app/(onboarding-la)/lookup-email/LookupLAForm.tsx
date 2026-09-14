@@ -6,6 +6,7 @@ import { isNonEmptyString } from '@/lib/domain-check';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { withBasePath } from '@/lib/basePath';
+import { checkLaEmailDomain } from './actions';
 
 const BACK_LINK = '/whoami';
 
@@ -91,21 +92,16 @@ async function handleFormSubmit(
 
   let nextPageURL: string | null = null;
   if (isNonEmptyString(rawFormData.regmail)) {
-    const response = await fetch(withBasePath('/api/onboarding-la'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: rawFormData.regmail }),
-    });
-    const verdict = await response.json();
-    if (verdict?.registered === true) {
-      // Proceed to the OneLogin flow. The auth client redirects the browser to
-      // the provider itself, so no in-app navigation is set on this path.
+    const looksEligible = await checkLaEmailDomain(rawFormData.regmail);
+    if (looksEligible) {
+      // Proceed to One Login with sign-up requested. The auth client redirects
+      // the browser to the provider itself, so no in-app navigation is set on
+      // this path. Eligibility is enforced server-side when One Login returns
+      // the verified email (src/lib/la-signup.ts).
       const { error } = await authClient.signIn.oauth2({
         providerId: 'govuk-one-login',
         callbackURL: withBasePath('/home'),
-        additionalData: {
-          isAcceptableEmail: true,
-        },
+        requestSignUp: true,
       });
       if (error) {
         return {

@@ -148,16 +148,6 @@ async function handleFormSubmit(
     }
 
     case 'u:la': {
-      const res = await fetch(withBasePath('/api/la-challenge'), {
-        method: 'POST',
-      });
-      const { ok } = await res.json();
-      if (!ok) {
-        return {
-          error:
-            'Sorry, there is a problem with the service. Please try again later.',
-        };
-      }
       nextPageURL = `/lookup-email`;
       break;
     }
