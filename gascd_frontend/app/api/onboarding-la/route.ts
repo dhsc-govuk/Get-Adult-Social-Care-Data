@@ -21,8 +21,6 @@ export async function POST(req: NextRequest) {
 
     if (email != null) {
       const requestHeaders = new Headers(req.headers);
-      const url = new URL(req.url);
-      console.log('@@@@', url, requestHeaders);
 
       // Insert into database
       const result = await createNewDBUser(
