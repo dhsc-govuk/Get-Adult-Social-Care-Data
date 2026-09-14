@@ -4,7 +4,7 @@ import { NextRequest } from 'next/server';
 
 const handlers = toNextJsHandler(auth);
 
-const baseURL = `${process.env.BETTER_AUTH_URL}${process.env.BASE_PATH}`;
+const baseURL = `${process.env.BETTER_AUTH_URL}${process.env.BASE_PATH ?? ''}`;
 
 function rewriteRequest(req: NextRequest) {
   const { search, pathname } = req.nextUrl;
