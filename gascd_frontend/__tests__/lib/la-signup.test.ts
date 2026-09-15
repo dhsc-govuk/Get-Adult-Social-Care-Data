@@ -4,12 +4,22 @@ import {
   LA_DOMAIN_REJECTED_ERROR,
   LA_SELF_SERVICE_SOURCE,
   buildLaUserFields,
+  isOAuthCallback,
   isOneLoginCallback,
   laSignupBeforeCreateHook,
+  oauthProviderId,
 } from '@/lib/la-signup';
 
-const oneLoginCtx = { path: '/oauth2/callback/govuk-one-login' } as any;
-const b2cCtx = { path: '/oauth2/callback/azure-ad-b2c-signin' } as any;
+// Better Auth passes the endpoint's route pattern and params, not the request URL.
+const oneLoginCtx = {
+  path: '/oauth2/callback/:providerId',
+  params: { providerId: 'govuk-one-login' },
+} as any;
+const b2cCtx = {
+  path: '/oauth2/callback/:providerId',
+  params: { providerId: 'azure-ad-b2c-signin' },
+} as any;
+const socialCtx = { path: '/callback/:id', params: { id: 'github' } } as any;
 const emailSignUpCtx = { path: '/sign-up/email' } as any;
 
 afterEach(() => {
@@ -51,14 +61,27 @@ describe('buildLaUserFields', () => {
   });
 });
 
-describe('isOneLoginCallback', () => {
-  it('matches only the One Login OAuth callback', () => {
+describe('isOAuthCallback / oauthProviderId / isOneLoginCallback', () => {
+  it('recognises generic and social OAuth callback route patterns', () => {
+    expect(isOAuthCallback(oneLoginCtx)).toBe(true);
+    expect(isOAuthCallback(b2cCtx)).toBe(true);
+    expect(isOAuthCallback(socialCtx)).toBe(true);
+    expect(isOAuthCallback(emailSignUpCtx)).toBe(false);
+    expect(isOAuthCallback(null)).toBe(false);
+    expect(isOAuthCallback(undefined)).toBe(false);
+    expect(isOAuthCallback({} as any)).toBe(false);
+  });
+
+  it('reads the provider from route params', () => {
+    expect(oauthProviderId(oneLoginCtx)).toBe('govuk-one-login');
+    expect(oauthProviderId(socialCtx)).toBe('github');
+    expect(oauthProviderId(emailSignUpCtx)).toBeUndefined();
+  });
+
+  it('identifies the One Login callback specifically', () => {
     expect(isOneLoginCallback(oneLoginCtx)).toBe(true);
     expect(isOneLoginCallback(b2cCtx)).toBe(false);
     expect(isOneLoginCallback(emailSignUpCtx)).toBe(false);
-    expect(isOneLoginCallback(null)).toBe(false);
-    expect(isOneLoginCallback(undefined)).toBe(false);
-    expect(isOneLoginCallback({} as any)).toBe(false);
   });
 });
 
@@ -88,10 +111,16 @@ describe('laSignupBeforeCreateHook', () => {
     });
   });
 
-  it('leaves other creation paths untouched', async () => {
+  it('applies the same check to sign-ups via any other OAuth provider', async () => {
     await expect(
       laSignupBeforeCreateHook({ email: 'someone@example.com' }, b2cCtx)
-    ).resolves.toBeUndefined();
+    ).rejects.toMatchObject({ message: LA_DOMAIN_REJECTED_ERROR });
+    await expect(
+      laSignupBeforeCreateHook({ email: 'someone@example.com' }, socialCtx)
+    ).rejects.toMatchObject({ message: LA_DOMAIN_REJECTED_ERROR });
+  });
+
+  it('leaves non-OAuth creation paths untouched (local email seed)', async () => {
     await expect(
       laSignupBeforeCreateHook({ email: 'someone@example.com' }, emailSignUpCtx)
     ).resolves.toBeUndefined();

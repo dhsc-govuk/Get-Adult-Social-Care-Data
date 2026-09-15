@@ -42,33 +42,54 @@ export function buildLaUserFields(email: string): LaUserFields | null {
 }
 
 /**
- * The slice of Better Auth's endpoint context this hook relies on. Typed
- * structurally so it does not depend on which copy of @better-auth/core is
- * resolved.
+ * The slice of Better Auth's endpoint context this hook relies on. Better Auth
+ * runs database hooks inside the endpoint's async context, so `path` is the
+ * route *pattern* (e.g. "/oauth2/callback/:providerId"), not the request URL,
+ * and the provider is in `params`. Typed structurally so it does not depend on
+ * which copy of @better-auth/core is resolved.
  */
-export type HookContext = { path?: string } | null | undefined;
+export type HookContext =
+  | { path?: string; params?: Record<string, string | undefined> }
+  | null
+  | undefined;
 
-/** True when the request is the One Login OAuth callback. */
+/**
+ * True when the user is being created from an OAuth callback (generic OAuth
+ * "/oauth2/callback/:providerId" or social "/callback/:id"). Any OAuth sign-up
+ * is subject to the LA eligibility check: it is the only way a user row can be
+ * created in deployed environments, and the client controls `requestSignUp`.
+ */
+export function isOAuthCallback(ctx: HookContext): boolean {
+  const path = ctx?.path ?? '';
+  return path.includes('/callback/');
+}
+
+/** Provider id for an OAuth callback context, if known. */
+export function oauthProviderId(ctx: HookContext): string | undefined {
+  return ctx?.params?.providerId ?? ctx?.params?.id;
+}
+
+/** @deprecated kept for callers/tests that only care about One Login. */
 export function isOneLoginCallback(ctx: HookContext): boolean {
-  return (
-    ctx?.path?.includes(`/oauth2/callback/${ONE_LOGIN_PROVIDER_ID}`) ?? false
-  );
+  return isOAuthCallback(ctx) && oauthProviderId(ctx) === ONE_LOGIN_PROVIDER_ID;
 }
 
 /**
  * Better Auth `databaseHooks.user.create.before`.
  *
- * User creation through One Login only happens when the client requested
- * sign-up (the Local Authority journey). The email has been verified by One
- * Login at this point, so it is checked against the LA domain allowlist and the
- * LA-specific fields are added to the row. Any other domain is refused.
- * Other creation paths (B2C, local email/password) are left untouched.
+ * User creation through an OAuth provider only happens when the client
+ * requested sign-up (the Local Authority journey via One Login). The email has
+ * been verified by the provider at this point, so it is checked against the LA
+ * domain allowlist and the LA-specific fields are added to the row. Any other
+ * domain is refused. This applies to every OAuth callback so a sign-up request
+ * against another provider cannot bypass it. Non-OAuth creation paths (the
+ * local email/password seed used in development) are left untouched.
  */
 export async function laSignupBeforeCreateHook(
   user: { email: string },
   ctx: HookContext
 ): Promise<{ data: LaUserFields } | undefined> {
-  if (!isOneLoginCallback(ctx)) return undefined;
+  if (!isOAuthCallback(ctx)) return undefined;
 
   const fields = buildLaUserFields(user.email);
   if (!fields) {
