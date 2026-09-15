@@ -113,6 +113,45 @@ describe('Table component tests', () => {
     });
   });
 
+  test('renders the comparator average column when a ComparatorLabel header is provided', async () => {
+    const comparatorData = [
+      ...mockTableData,
+      {
+        metric_id: 'perc_65over',
+        metric_date_type: 'Test' as const,
+        metric_date: new Date('01/01/2025') as Date,
+        location_type: 'ComparatorAverage',
+        location_id: 'Test',
+        numerator: 50 as number,
+        denominator: 50 as number,
+        multiplier: 100 as number,
+        data_point: 55.5,
+        load_date_time: new Date('2025-03-02T20:12:22.550Z') as Date,
+      },
+    ];
+
+    render(
+      <DataTable
+        columnHeaders={{
+          CPLabel: null,
+          LALabel: 'Northumberland',
+          RegionLabel: 'North East',
+          ComparatorLabel: 'NHS peer group average',
+          CountryLabel: 'England',
+        }}
+        rowHeaders={{ perc_65over: 'Aged 65 and over' }}
+        data={comparatorData as any}
+        showCareProvider={false}
+        percentageRows={['perc_65over']}
+      ></DataTable>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('NHS peer group average')).toBeInTheDocument();
+      expect(screen.getByText('55.5%')).toBeInTheDocument();
+    });
+  });
+
   test('fetches data and displays correctly in the DataTable component when there are percentage rows added', async () => {
     const html = render(
       <DataTable

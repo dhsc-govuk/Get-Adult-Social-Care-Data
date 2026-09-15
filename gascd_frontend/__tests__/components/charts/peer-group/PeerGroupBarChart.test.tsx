@@ -37,6 +37,7 @@ const defaultProps = {
   laName: 'Liverpool',
   currentLaValue: 52.5,
   nationalAverageValue: 10.5,
+  regionalAverageValue: 48.5,
   peerData,
   loading: false,
   error: false,
@@ -89,6 +90,31 @@ describe('PeerGroupBarChart', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders the regional average legend entry with the page-provided label', () => {
+    render(
+      <PeerGroupBarChart
+        {...defaultProps}
+        regionalAverageLabel="North East (regional average)"
+      />
+    );
+    expect(
+      screen.getByText(/North East \(regional average\) \(48\.5%\)/i)
+    ).toBeInTheDocument();
+  });
+
+  it('shows the regional average as unavailable when the region value is missing', () => {
+    render(
+      <PeerGroupBarChart
+        {...defaultProps}
+        regionalAverageValue={null}
+        regionalAverageLabel="North East (regional average)"
+      />
+    );
+    expect(
+      screen.getByText(/North East \(regional average\) \(N\/A\)/i)
+    ).toBeInTheDocument();
+  });
+
   it('renders custom comparator labels in the summary and legend', () => {
     render(
       <PeerGroupBarChart
@@ -136,7 +162,9 @@ describe('PeerGroupBarChart', () => {
         },
       ],
     };
-    render(<PeerGroupBarChart {...defaultProps} peerData={dataWithRecodedPeer} />);
+    render(
+      <PeerGroupBarChart {...defaultProps} peerData={dataWithRecodedPeer} />
+    );
     const chartData = JSON.parse(
       screen.getByTestId('chart-data').textContent ?? '[]'
     );

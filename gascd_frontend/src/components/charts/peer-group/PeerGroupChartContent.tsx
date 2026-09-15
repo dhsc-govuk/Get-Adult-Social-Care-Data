@@ -2,7 +2,11 @@ import React, { useMemo } from 'react';
 import { Shape } from 'plotly.js';
 import BarChart from '../BarChart';
 import PeerGroupChartLegend from './PeerGroupChartLegend';
-import { NATIONAL_AVG_COLOUR, PEER_AVG_COLOUR } from './constants';
+import {
+  NATIONAL_AVG_COLOUR,
+  PEER_AVG_COLOUR,
+  REGIONAL_AVG_COLOUR,
+} from './constants';
 import { PeerGroupData } from './types';
 
 interface PeerGroupChartContentProps {
@@ -13,11 +17,15 @@ interface PeerGroupChartContentProps {
   // table can never disagree; peerData.nationalAverage is not used as a
   // fallback because the peers API does not filter National rows by code.
   nationalAverageValue: number | null;
+  // The user's region value from the same metric-data query the tables use,
+  // for the same reason as the national average.
+  regionalAverageValue: number | null;
   peerData: PeerGroupData;
   // The user's own LA code - excluded from the peer rows so a custom group
   // containing the user's LA cannot render it twice.
   ownLaCode?: string;
   comparatorAverageLabel?: string;
+  regionalAverageLabel?: string;
   nationalAverageLabel?: string;
   valueSuffix?: string;
   sourceText?: string;
@@ -30,9 +38,11 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
   laName,
   currentLaValue,
   nationalAverageValue,
+  regionalAverageValue,
   peerData,
   ownLaCode,
   comparatorAverageLabel,
+  regionalAverageLabel,
   nationalAverageLabel,
   valueSuffix = '%',
   sourceText = 'Source: Census 2021 from the Office for National Statistics (ONS)',
@@ -89,6 +99,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
       peerData.averagePeerGroup
     );
     const resolvedNationalAverage = roundToOneDecimal(nationalAverageValue);
+    const resolvedRegionalAverage = roundToOneDecimal(regionalAverageValue);
 
     if (resolvedPeerGroupAverage !== null) {
       shapes.push({
@@ -116,8 +127,21 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
       });
     }
 
+    if (resolvedRegionalAverage !== null) {
+      shapes.push({
+        type: 'line',
+        xref: 'x',
+        yref: 'paper',
+        x0: resolvedRegionalAverage,
+        x1: resolvedRegionalAverage,
+        y0: 0,
+        y1: 1,
+        line: { color: REGIONAL_AVG_COLOUR, width: 2, dash: 'dot' },
+      });
+    }
+
     return shapes;
-  }, [nationalAverageValue, peerData.averagePeerGroup]);
+  }, [nationalAverageValue, peerData.averagePeerGroup, regionalAverageValue]);
 
   if (!hasPeers) {
     return (
@@ -135,7 +159,9 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
         laName={laName}
         peerGroupAverage={roundToOneDecimal(peerData.averagePeerGroup)}
         nationalAverage={resolvedNationalAverage}
+        regionalAverage={roundToOneDecimal(regionalAverageValue)}
         comparatorAverageLabel={comparatorAverageLabel}
+        regionalAverageLabel={regionalAverageLabel}
         nationalAverageLabel={nationalAverageLabel}
         valueSuffix={valueSuffix}
       />

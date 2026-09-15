@@ -36,7 +36,7 @@ export default function UnpaidCarePage() {
   const [locationNames, setLocationNames] = useState<LocationNames>({
     CPLabel: null,
     LALabel: 'Loading...',
-    RegionLabel: 'NHS peer group average',
+    RegionLabel: 'Loading...',
     CountryLabel: 'Loading...',
   } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
@@ -110,7 +110,7 @@ export default function UnpaidCarePage() {
     : NHS_PEER_GROUP_AVERAGE_LABEL;
   const tableColumnHeaders = {
     ...locationNames,
-    RegionLabel: comparatorAverageLabel,
+    ComparatorLabel: comparatorAverageLabel,
   };
 
   const handleComparatorChange = (newSelection: ComparatorSelection) => {
@@ -247,7 +247,7 @@ export default function UnpaidCarePage() {
           setLocationNames({
             CPLabel: locationNames.CPLabel,
             LALabel: locationNames.LALabel,
-            RegionLabel: 'NHS peer group average',
+            RegionLabel: locationNames.RegionLabel,
             CountryLabel: 'England (national average)',
           });
         } catch (error) {
@@ -290,12 +290,12 @@ export default function UnpaidCarePage() {
     };
   }, [demographicQuery, CPLocationId]);
 
-  // The Regional row is repurposed to show the selected comparison group's
-  // average (synthesised if the metrics API returned no Regional row). Derived
+  // The true Regional row is preserved and the selected comparison group's
+  // average is added as a separate ComparatorAverage column (synthesised if
+  // the metrics API returned no Regional row for the metric). Derived
   // synchronously so the table can never show a stale or mislabelled value:
-  // while comparator data is unresolved (loading or failed), the row is null
-  // and renders as unavailable rather than falling back to the true regional
-  // value under a comparator-average heading.
+  // while comparator data is unresolved (loading or failed), the comparator
+  // column is null and renders as unavailable.
   const filteredDemographicData = useMemo(
     () =>
       mergeComparatorAverage(
@@ -403,7 +403,8 @@ export default function UnpaidCarePage() {
                     Table 1: percentage of people aged 5 and over who provide
                     unpaid care – {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
-                    {tableColumnHeaders.RegionLabel} and{' '}
+                    {locationNames.RegionLabel} (regional average),{' '}
+                    {tableColumnHeaders.ComparatorLabel} and{' '}
                     {locationNames.CountryLabel},{' '}
                     {IndicatorService.getMostRecentDate(
                       filteredDemographicData
@@ -454,6 +455,14 @@ export default function UnpaidCarePage() {
                     d.location_type === 'National'
                 )?.data_point ?? null
               }
+              regionalAverageValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_unpaid_care_provider' &&
+                    d.location_type === 'Regional'
+                )?.data_point ?? null
+              }
+              regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric['perc_unpaid_care_provider'] ?? null}
               loading={chartLoading}
               error={chartError}
