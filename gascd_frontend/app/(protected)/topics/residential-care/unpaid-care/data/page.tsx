@@ -109,8 +109,11 @@ export default function UnpaidCarePage() {
     ? `${selectedGroup.name} average`
     : NHS_PEER_GROUP_AVERAGE_LABEL;
   const tableColumnHeaders = {
-    ...locationNames,
+    CPLabel: locationNames.CPLabel,
+    LALabel: locationNames.LALabel,
+    RegionLabel: locationNames.RegionLabel,
     ComparatorLabel: comparatorAverageLabel,
+    CountryLabel: locationNames.CountryLabel,
   };
 
   const handleComparatorChange = (newSelection: ComparatorSelection) => {

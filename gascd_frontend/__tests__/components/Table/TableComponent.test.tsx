@@ -58,7 +58,7 @@ describe('Table component tests', () => {
       });
       // Every column should say 'loading' when data is empty
       expect(loading_els.length).toBe(
-        (mockTableColumnHeaders.length - 1) *
+        (Object.keys(mockTableColumnHeaders).length) *
           Object.keys(mockTableRowHeaders).length
       );
     });
@@ -101,7 +101,7 @@ describe('Table component tests', () => {
     );
 
     await waitFor(() => {
-      mockTableColumnHeaders.forEach((item) => {
+      Object.values(mockTableColumnHeaders).forEach((item) => {
         expect(screen.getByText(item)).toBeInTheDocument();
       });
 
@@ -208,7 +208,7 @@ describe('Table component tests', () => {
 
         expect(screen.getByText(expectedDataPoint)).toBeInTheDocument();
       });
-      mockTableColumnHeadersCareProvider.forEach((item) => {
+      Object.values(mockTableColumnHeadersCareProvider).forEach((item) => {
         expect(screen.getByText(item)).toBeInTheDocument();
       });
       Object.values(mockTableRowHeadersCareProvider).forEach((value) => {
