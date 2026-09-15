@@ -156,7 +156,9 @@ export default function DisabilityPrevalence() {
     : NHS_PEER_GROUP_AVERAGE_LABEL;
   // Column headers for the benchmarked tables: true regional average + comparator
   const benchmarkedColumnHeaders = {
-    ...locationNames,
+    CPLabel: locationNames.CPLabel,
+    LALabel: locationNames.LALabel,
+    RegionLabel: locationNames.RegionLabel,
     ComparatorLabel: comparatorAverageLabel,
     CountryLabel: 'England (national average)',
   };

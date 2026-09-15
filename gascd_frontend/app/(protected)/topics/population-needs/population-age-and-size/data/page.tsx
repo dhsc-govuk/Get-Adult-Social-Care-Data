@@ -135,8 +135,11 @@ export default function ProvisionAndOccupancyPage() {
   // group's average. The country column keeps the plain country name on this
   // page.
   const benchmarkedColumnHeaders = {
-    ...locationNames,
+    CPLabel: locationNames.CPLabel,
+    LALabel: locationNames.LALabel,
+    RegionLabel: locationNames.RegionLabel,
     ComparatorLabel: comparatorAverageLabel,
+    CountryLabel: locationNames.CountryLabel,
   };
   // The population size table shows the comparator group's combined
   // population instead of a mean, which is what reads naturally next to
@@ -145,8 +148,11 @@ export default function ProvisionAndOccupancyPage() {
     ? `${selectedGroup.name} total`
     : 'NHS peer group total';
   const populationSizeColumnHeaders = {
-    ...locationNames,
+    CPLabel: locationNames.CPLabel,
+    LALabel: locationNames.LALabel,
+    RegionLabel: locationNames.RegionLabel,
     ComparatorLabel: comparatorTotalLabel,
+    CountryLabel: locationNames.CountryLabel,
   };
 
   const handleComparatorChange = (newSelection: ComparatorSelection) => {
