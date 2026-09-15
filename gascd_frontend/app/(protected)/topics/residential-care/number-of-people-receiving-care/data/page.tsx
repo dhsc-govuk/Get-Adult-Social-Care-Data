@@ -264,7 +264,8 @@ export default function NumberPeopleReceivingCarePage() {
 
       <LocalMarketInformation
         localAuthority={locationNames.LALabel}
-        localAuthorityId={locationIds[1]}
+        // care provider included which shifts local authority id to index 2
+        localAuthorityId={locationIds[2]}
       />
       <BackToTop />
     </Layout>
