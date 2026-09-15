@@ -1,10 +1,21 @@
 import React from 'react';
+import { notFound } from 'next/navigation';
 import Layout from '@/components/common/layout/Layout';
+
+// The request-access form that leads here is not yet built (see
+// signup-la/SignupLAForm.tsx). Until it is, this page must not be reachable
+// by URL, as its panel would falsely tell a visitor their registration is
+// complete. Remove this guard when the form is wired up.
+const REQUEST_ACCESS_FORM_ENABLED = false;
 
 type Props = {
   searchParams: Promise<{ sref?: string }>;
 };
 const ConfirmLAPage: React.FC<Props> = async ({ searchParams }) => {
+  if (!REQUEST_ACCESS_FORM_ENABLED) {
+    notFound();
+  }
+
   const { sref } = await searchParams;
 
   return (
