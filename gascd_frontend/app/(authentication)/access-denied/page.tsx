@@ -41,14 +41,24 @@ const AccessDeniedPage: React.FC = () => {
               </a>
               .
             </p>
-            <p className="govuk-body">We will need your:</p>
+            <p className="govuk-body">Everyone will need to tell us their:</p>
             <ul className="govuk-list govuk-list--bullet">
               <li>name</li>
               <li>organisation name</li>
               <li>role in organisation</li>
+            </ul>
+            <p className="govuk-body">
+              If you are a CQC registered care provider, also include your:
+            </p>
+            <ul className="govuk-list govuk-list--bullet">
               <li>CQC registration number</li>
               <li>CQC registered email address</li>
-              <li>gov.uk email address</li>
+            </ul>
+            <p className="govuk-body">
+              If you are a Local Authority officer, also include your:
+            </p>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>Local Authority email address</li>
             </ul>
 
             <p className="govuk-body">
