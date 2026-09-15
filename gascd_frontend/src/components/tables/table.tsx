@@ -1,6 +1,7 @@
 import React, { Ref } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
 import TableService from '@/services/Table/TableService';
+import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
 
 type DataTableProps = {
   caption?: React.ReactNode;
@@ -43,6 +44,13 @@ const DataTable: React.FC<DataTableProps> = ({
   tableref = undefined,
   smallNumberSuppression = false,
 }) => {
+  const comparatorLabel = (columnHeaders as { ComparatorLabel?: string | null })
+    .ComparatorLabel;
+  const showComparatorAverage =
+    comparatorLabel !== undefined &&
+    comparatorLabel !== null &&
+    comparatorLabel !== '';
+
   const columnClass = (columnIndex: number) => {
     if (columnIndex === 0) {
       return 'govuk-table__header govuk-!-width-one-third scrollable-table__header';
@@ -104,18 +112,26 @@ const DataTable: React.FC<DataTableProps> = ({
               <th key="0" scope="col" className={columnClass(0)}>
                 {metricColumnName}
               </th>
-              {Object.entries(columnHeaders)
+              {[
+                ...(showCareProvider ? ['CPLabel'] : []),
+                'LALabel',
+                'RegionLabel',
+                ...(showComparatorAverage ? ['ComparatorLabel'] : []),
+                'CountryLabel',
+              ]
                 .filter(
-                  ([columnKey]) =>
-                    !(columnKey === 'CPLabel' && !showCareProvider)
+                  (key) =>
+                    (columnHeaders as Record<string, string | null | undefined>)[key] !== undefined &&
+                    (columnHeaders as Record<string, string | null | undefined>)[key] !== null &&
+                    (columnHeaders as Record<string, string | null | undefined>)[key] !== ''
                 )
-                .map(([columnKey, columnLabel], columnIndex) => (
+                .map((columnKey, columnIndex) => (
                   <th
                     key={columnKey + 1}
                     scope="col"
                     className={columnClass(columnIndex + 1)}
                   >
-                    {columnLabel}
+                    {(columnHeaders as Record<string, string | null | undefined>)[columnKey]}
                   </th>
                 ))}
             </tr>
@@ -160,6 +176,18 @@ const DataTable: React.FC<DataTableProps> = ({
                     showAverageLabel
                   )}
                 </td>
+                {showComparatorAverage && (
+                  <td className="govuk-table__cell govuk-table__cell--numeric">
+                    {getFormattedDataPoint(
+                      data,
+                      key,
+                      COMPARATOR_AVERAGE_LOCATION_TYPE,
+                      percentageRows?.some((item) => item === key) ?? false,
+                      currency,
+                      showAverageLabel
+                    )}
+                  </td>
+                )}
                 <td className="govuk-table__cell govuk-table__cell--numeric">
                   {getFormattedDataPoint(
                     data,

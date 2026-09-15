@@ -154,11 +154,12 @@ export default function DisabilityPrevalence() {
   const comparatorAverageLabel = selectedGroup
     ? `${selectedGroup.name} average`
     : NHS_PEER_GROUP_AVERAGE_LABEL;
-  // Column headers for the benchmarked tables: their Regional column is
-  // repurposed to show the comparator group's average
+  // Column headers for the benchmarked tables: true regional average + comparator
   const benchmarkedColumnHeaders = {
-    ...locationNames,
-    RegionLabel: comparatorAverageLabel,
+    CPLabel: locationNames.CPLabel,
+    LALabel: locationNames.LALabel,
+    RegionLabel: locationNames.RegionLabel,
+    ComparatorLabel: comparatorAverageLabel,
     CountryLabel: 'England (national average)',
   };
 
@@ -286,15 +287,14 @@ export default function DisabilityPrevalence() {
         >
           statistical neighbours model
         </a>{' '}
-        developed by NHS digital in 2022/23 to support benchmarking. This is
-        one of a number of approaches that aim to group authorities with
-        similar socio-economic and geographic factors (e.g. age, ethnicity,
-        education). It is important to note that there is limited evidence of
-        which factors are the most important drivers of variation in adult
-        social care. As a result, these statistical neighbours should be viewed
-        as a helpful starting point for benchmarking, rather than a definitive
-        indication of which authorities are most alike or measuring relative
-        performance.
+        developed by NHS digital in 2022/23 to support benchmarking. This is one
+        of a number of approaches that aim to group authorities with similar
+        socio-economic and geographic factors (e.g. age, ethnicity, education).
+        It is important to note that there is limited evidence of which factors
+        are the most important drivers of variation in adult social care. As a
+        result, these statistical neighbours should be viewed as a helpful
+        starting point for benchmarking, rather than a definitive indication of
+        which authorities are most alike or measuring relative performance.
       </div>
     </details>
   );
@@ -405,14 +405,14 @@ export default function DisabilityPrevalence() {
     };
   }, [disabilityQuery, CPLocationId]);
 
-  // Benchmarked metric data with the Regional rows repurposed to show the
-  // selected comparison group's average (synthesised if the metrics API
-  // returned no Regional row). Passed only to the benchmarked tables and
+  // Benchmarked metric data: the true Regional rows are preserved and the
+  // selected comparison group's average is added as a separate
+  // ComparatorAverage column (synthesised if the metrics API returned no
+  // Regional row for the metric). Passed only to the benchmarked tables and
   // charts; the primary support reason table keeps its true regional values.
   // Derived synchronously so the tables can never show a stale or mislabelled
-  // value: while comparator data is unresolved (loading or failed), the row
-  // is null and renders as unavailable rather than falling back to the true
-  // regional value under a comparator-average heading.
+  // value: while comparator data is unresolved (loading or failed), the
+  // comparator column is null and renders as unavailable.
   const benchmarkedDisabilityData = useMemo(
     () =>
       mergeComparatorAverage(
@@ -535,7 +535,8 @@ export default function DisabilityPrevalence() {
                     Table 1: people who reported bad or very bad health –{' '}
                     {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
-                    {benchmarkedColumnHeaders.RegionLabel} and{' '}
+                    {locationNames.RegionLabel} (regional average),{' '}
+                    {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
                     {benchmarkedColumnHeaders.CountryLabel},{' '}
                     {IndicatorService.getMostRecentMonthYear(
                       benchmarkedDisabilityData,
@@ -587,6 +588,14 @@ export default function DisabilityPrevalence() {
                     d.location_type === 'National'
                 )?.data_point ?? null
               }
+              regionalAverageValue={
+                benchmarkedDisabilityData.find(
+                  (d) =>
+                    d.metric_id === 'perc_general_health' &&
+                    d.location_type === 'Regional'
+                )?.data_point ?? null
+              }
+              regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric['perc_general_health'] ?? null}
               loading={chartLoading}
               error={chartError}
@@ -634,10 +643,10 @@ export default function DisabilityPrevalence() {
                   <>
                     Table 2: percentage of the population who reported a
                     long-term physical or mental health condition, or illness
-                    that limits day-to-day activities –{' '}
-                    {locationNames.LALabel}{' '}
+                    that limits day-to-day activities – {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
-                    {benchmarkedColumnHeaders.RegionLabel} and{' '}
+                    {locationNames.RegionLabel} (regional average),{' '}
+                    {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
                     {benchmarkedColumnHeaders.CountryLabel},{' '}
                     {IndicatorService.getMostRecentMonthYear(
                       benchmarkedDisabilityData,
@@ -689,6 +698,14 @@ export default function DisabilityPrevalence() {
                     d.location_type === 'National'
                 )?.data_point ?? null
               }
+              regionalAverageValue={
+                benchmarkedDisabilityData.find(
+                  (d) =>
+                    d.metric_id === 'perc_population_disability' &&
+                    d.location_type === 'Regional'
+                )?.data_point ?? null
+              }
+              regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric['perc_population_disability'] ?? null}
               loading={chartLoading}
               error={chartError}
@@ -733,7 +750,8 @@ export default function DisabilityPrevalence() {
                     Table 3: learning disability prevalence –{' '}
                     {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
-                    {benchmarkedColumnHeaders.RegionLabel} and{' '}
+                    {locationNames.RegionLabel} (regional average),{' '}
+                    {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
                     {benchmarkedColumnHeaders.CountryLabel},{' '}
                     {IndicatorService.getMostRecentDate(
                       benchmarkedDisabilityData,
@@ -785,6 +803,14 @@ export default function DisabilityPrevalence() {
                     d.location_type === 'National'
                 )?.data_point ?? null
               }
+              regionalAverageValue={
+                benchmarkedDisabilityData.find(
+                  (d) =>
+                    d.metric_id === 'learning_disability_prevalence' &&
+                    d.location_type === 'Regional'
+                )?.data_point ?? null
+              }
+              regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric['learning_disability_prevalence'] ?? null}
               loading={chartLoading}
               error={chartError}
