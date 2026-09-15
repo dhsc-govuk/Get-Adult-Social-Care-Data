@@ -176,8 +176,10 @@ export const auth = betterAuth({
           throw ctx.redirect(withBasePath('/access-denied'));
         }
         if (error === LA_DOMAIN_REJECTED_ERROR) {
-          // LA self-service sign-up where the One Login email is not on an allowed LA domain
-          throw ctx.redirect(withBasePath('/signup-la'));
+          // LA self-service sign-up where the One Login account's email is not
+          // on an allowed LA domain. Access Denied explains the likely cause
+          // (signed in to One Login with a different email) and how to request access.
+          throw ctx.redirect(withBasePath('/access-denied'));
         }
       }
     }),
