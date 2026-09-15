@@ -33,6 +33,7 @@ export default [
       'react/react-in-jsx-scope': 'off',
       ...pluginNext.configs.recommended.rules,
       ...pluginNext.configs['core-web-vitals'].rules,
+      'react/no-unescaped-entities': 'off',
     },
   },
 ];

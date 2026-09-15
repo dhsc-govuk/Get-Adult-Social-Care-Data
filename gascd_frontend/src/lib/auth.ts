@@ -40,6 +40,11 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: process.env.LOCAL_AUTH == 'true',
   },
+  account: {
+    accountLinking: {
+      trustedProviders: ['govuk-one-login'],
+    },
+  },
   user: {
     additionalFields: {
       // The email address we think they should be using
