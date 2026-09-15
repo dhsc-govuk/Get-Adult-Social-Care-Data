@@ -14,6 +14,7 @@ bld.Services
     .AddOpenTelemetryConfiguration(bld.Configuration)
     .RegisterSwaggerConfiguration()
     .RegisterAuth();
+
 var app = bld.Build();
 app.UseMiddleware<LogContextMiddleware>()
     .RegisterFastEndpoints()

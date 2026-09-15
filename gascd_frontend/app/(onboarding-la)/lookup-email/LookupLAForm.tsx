@@ -75,7 +75,6 @@ const LookupLAForm: React.FC = () => {
 
 export default LookupLAForm;
 
-const CONFIRM_LA_LINK = '/confirm-la';
 async function handleFormSubmit(
   _prev: ActionResponse<LookupLAFormData>,
   formData: FormData
@@ -100,9 +99,6 @@ async function handleFormSubmit(
       await authClient.signIn.oauth2({
         providerId: 'govuk-one-login',
         callbackURL: withBasePath('/home'),
-        additionalData: {
-          isAcceptableEmail: true,
-        },
       });
     } else {
       // Redirect to page for User Signup

@@ -134,7 +134,6 @@ const SignupLAForm: React.FC = () => {
 
 export default SignupLAForm;
 
-const CONFIRM_LA_LINK = '/confirm-la';
 async function handleFormSubmit(
   _prev: ActionResponse<SignupLAFormData>,
   formData: FormData
@@ -156,5 +155,5 @@ async function handleFormSubmit(
 
   // ...
 
-  return { fields: rawFormData, next: CONFIRM_LA_LINK };
+  return { fields: rawFormData, next: null };
 }

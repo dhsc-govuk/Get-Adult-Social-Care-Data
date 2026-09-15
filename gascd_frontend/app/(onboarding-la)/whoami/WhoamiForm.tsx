@@ -165,7 +165,6 @@ async function handleFormSubmit(
     case 'u:cqc': {
       nextPageURL = '/home';
 
-      let responseAuth = null;
       try {
         if (process.env.NODE_ENV === 'development') {
           if (
@@ -177,7 +176,7 @@ async function handleFormSubmit(
             );
           }
 
-          responseAuth = await authClient.signIn.email({
+          await authClient.signIn.email({
             email: process.env.NEXT_PUBLIC_LOCAL_AUTH_EMAIL,
             password: process.env.NEXT_PUBLIC_LOCAL_AUTH_PASSWORD,
             callbackURL: withBasePath('/home'),
@@ -185,7 +184,7 @@ async function handleFormSubmit(
 
           console.info('Local auth session started');
         } else {
-          responseAuth = await authClient.signIn.oauth2({
+          await authClient.signIn.oauth2({
             providerId: 'govuk-one-login',
             callbackURL: withBasePath('/home'),
           });
