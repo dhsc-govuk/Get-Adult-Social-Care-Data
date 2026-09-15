@@ -31,18 +31,15 @@ import {
   PERC_SEN_SUPPORT_BY_AGE,
   SEN_EHCP_METRIC_IDS,
   SEN_SOURCE,
-  TOTALLED_METRIC_IDS,
   academicYearLabel,
   shortAcademicYearLabel,
 } from '@/data/dfeMetrics';
 import {
-  ComparatorLaCounts,
   comparisonLabels,
   locationBarSeries,
   locationTimeSeries,
   periodRows,
   seriesDates,
-  toLaAverages,
 } from '@/helpers/locationComparison';
 
 const LOADING_LOCATION_NAMES = {
@@ -96,10 +93,6 @@ export default function SenAndEhcpPage() {
     metric_ids: [],
     location_ids: [],
   });
-  // INTERIM (GASCD-236): comparator totals are converted to per-authority
-  // averages in the browser until the pipeline writes averages
-  const [laCounts, setLaCounts] = useState<ComparatorLaCounts | null>(null);
-
   const breadcrumbs = [
     {
       text: 'Home',
@@ -197,28 +190,9 @@ export default function SenAndEhcpPage() {
     fetchByAgeData();
   }, [byAgeQuery]);
 
-  // INTERIM (GASCD-236): see toLaAverages
-  useEffect(() => {
-    const fetchLaCounts = async () => {
-      setLaCounts(await LocationService.getComparatorLaCounts());
-    };
-    fetchLaCounts();
-  }, []);
-
   const columnLabels = useMemo(
     () => comparisonLabels(locationNames),
     [locationNames]
-  );
-
-  // Everything below reads the averaged data, so the charts, the tables and
-  // the CSV export can never disagree
-  const overTimeAverages = useMemo(
-    () => toLaAverages(overTimeData, laCounts, TOTALLED_METRIC_IDS),
-    [overTimeData, laCounts]
-  );
-  const byAgeAverages = useMemo(
-    () => toLaAverages(byAgeData, laCounts, TOTALLED_METRIC_IDS),
-    [byAgeData, laCounts]
   );
 
   // The academic year the age breakdowns cover, taken from the data so the
@@ -237,54 +211,54 @@ export default function SenAndEhcpPage() {
 
   const numSenSeries = useMemo(
     () =>
-      locationTimeSeries(overTimeAverages, NUM_SEN_SUPPORT_14PLUS, columnLabels),
-    [overTimeAverages, columnLabels]
+      locationTimeSeries(overTimeData, NUM_SEN_SUPPORT_14PLUS, columnLabels),
+    [overTimeData, columnLabels]
   );
   const percSenSeries = useMemo(
     () =>
-      locationTimeSeries(overTimeAverages, PERC_SEN_SUPPORT_14PLUS, columnLabels),
-    [overTimeAverages, columnLabels]
+      locationTimeSeries(overTimeData, PERC_SEN_SUPPORT_14PLUS, columnLabels),
+    [overTimeData, columnLabels]
   );
   const numEhcpSeries = useMemo(
-    () => locationTimeSeries(overTimeAverages, NUM_EHCP_14PLUS, columnLabels),
-    [overTimeAverages, columnLabels]
+    () => locationTimeSeries(overTimeData, NUM_EHCP_14PLUS, columnLabels),
+    [overTimeData, columnLabels]
   );
 
   const numSenRows = useMemo(
-    () => periodRows(overTimeAverages, NUM_SEN_SUPPORT_14PLUS, academicYearLabel),
-    [overTimeAverages]
+    () => periodRows(overTimeData, NUM_SEN_SUPPORT_14PLUS, academicYearLabel),
+    [overTimeData]
   );
   const percSenRows = useMemo(
-    () => periodRows(overTimeAverages, PERC_SEN_SUPPORT_14PLUS, academicYearLabel),
-    [overTimeAverages]
+    () => periodRows(overTimeData, PERC_SEN_SUPPORT_14PLUS, academicYearLabel),
+    [overTimeData]
   );
   const numEhcpRows = useMemo(
-    () => periodRows(overTimeAverages, NUM_EHCP_14PLUS, academicYearLabel),
-    [overTimeAverages]
+    () => periodRows(overTimeData, NUM_EHCP_14PLUS, academicYearLabel),
+    [overTimeData]
   );
 
   const numSenByAgeSeries = useMemo(
     () =>
       locationBarSeries(
-        byAgeAverages,
+        byAgeData,
         Object.keys(NUM_SEN_SUPPORT_BY_AGE),
         columnLabels
       ),
-    [byAgeAverages, columnLabels]
+    [byAgeData, columnLabels]
   );
   const percSenByAgeSeries = useMemo(
     () =>
       locationBarSeries(
-        byAgeAverages,
+        byAgeData,
         Object.keys(PERC_SEN_SUPPORT_BY_AGE),
         columnLabels
       ),
-    [byAgeAverages, columnLabels]
+    [byAgeData, columnLabels]
   );
   const numEhcpByAgeSeries = useMemo(
     () =>
-      locationBarSeries(byAgeAverages, Object.keys(NUM_EHCP_BY_AGE), columnLabels),
-    [byAgeAverages, columnLabels]
+      locationBarSeries(byAgeData, Object.keys(NUM_EHCP_BY_AGE), columnLabels),
+    [byAgeData, columnLabels]
   );
 
   const comparedLocations = (
@@ -373,7 +347,7 @@ export default function SenAndEhcpPage() {
                     series={numSenSeries}
                     decimalPoints={0}
                     hoverDateFormat="%Y"
-                    {...academicYearTicks(overTimeAverages, NUM_SEN_SUPPORT_14PLUS)}
+                    {...academicYearTicks(overTimeData, NUM_SEN_SUPPORT_14PLUS)}
                   />
                 </div>
               )) || <p className="govuk-body">Loading graph</p>}
@@ -426,7 +400,7 @@ export default function SenAndEhcpPage() {
                 a special educational need (SEN) {byAgePeriod} -{' '}
                 {comparedLocations}
               </h4>
-              {(byAgeAverages.length > 0 && (
+              {(byAgeData.length > 0 && (
                 <div style={chartHeight}>
                   <GroupedBarChart
                     categories={Object.values(NUM_SEN_SUPPORT_BY_AGE)}
@@ -451,7 +425,7 @@ export default function SenAndEhcpPage() {
               metricColumnName="Age"
               columnHeaders={columnLabels}
               rowHeaders={NUM_SEN_SUPPORT_BY_AGE}
-              data={byAgeAverages}
+              data={byAgeData}
               showCareProvider={false}
             ></DataTable>
           }
@@ -493,7 +467,7 @@ export default function SenAndEhcpPage() {
                     decimalPoints={1}
                     hoverDateFormat="%Y"
                     {...academicYearTicks(
-                      overTimeAverages,
+                      overTimeData,
                       PERC_SEN_SUPPORT_14PLUS
                     )}
                   />
@@ -551,7 +525,7 @@ export default function SenAndEhcpPage() {
                 having a special educational need (SEN) {byAgePeriod} -{' '}
                 {comparedLocations}
               </h4>
-              {(byAgeAverages.length > 0 && (
+              {(byAgeData.length > 0 && (
                 <div style={chartHeight}>
                   <GroupedBarChart
                     categories={Object.values(PERC_SEN_SUPPORT_BY_AGE)}
@@ -578,7 +552,7 @@ export default function SenAndEhcpPage() {
               metricColumnName="Age"
               columnHeaders={columnLabels}
               rowHeaders={PERC_SEN_SUPPORT_BY_AGE}
-              data={byAgeAverages}
+              data={byAgeData}
               percentageRows={Object.keys(PERC_SEN_SUPPORT_BY_AGE)}
               showCareProvider={false}
             ></DataTable>
@@ -624,7 +598,7 @@ export default function SenAndEhcpPage() {
                     series={numEhcpSeries}
                     decimalPoints={0}
                     hoverDateFormat="%Y"
-                    {...academicYearTicks(overTimeAverages, NUM_EHCP_14PLUS)}
+                    {...academicYearTicks(overTimeData, NUM_EHCP_14PLUS)}
                   />
                 </div>
               )) || <p className="govuk-body">Loading graph</p>}
@@ -685,7 +659,7 @@ export default function SenAndEhcpPage() {
                 <abbr title="Education, Health and Care Plan">EHCP</abbr>{' '}
                 {byAgePeriod} - {comparedLocations}
               </h4>
-              {(byAgeAverages.length > 0 && (
+              {(byAgeData.length > 0 && (
                 <div style={chartHeight}>
                   <GroupedBarChart
                     categories={Object.values(NUM_EHCP_BY_AGE)}
@@ -711,7 +685,7 @@ export default function SenAndEhcpPage() {
               metricColumnName="Age"
               columnHeaders={columnLabels}
               rowHeaders={NUM_EHCP_BY_AGE}
-              data={byAgeAverages}
+              data={byAgeData}
               showCareProvider={false}
             ></DataTable>
           }
