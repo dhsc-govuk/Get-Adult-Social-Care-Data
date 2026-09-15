@@ -175,6 +175,11 @@ export const auth = betterAuth({
           // This occurs for valid oauth flows which don't match existing users in the db
           throw ctx.redirect(withBasePath('/access-denied'));
         }
+        if (error === 'account_not_linked') {
+          // An existing user whose row is not email-verified cannot be linked to
+          // an OAuth account (Better Auth requireLocalEmailVerified). Treat as no access.
+          throw ctx.redirect(withBasePath('/access-denied'));
+        }
         if (error === LA_DOMAIN_REJECTED_ERROR) {
           // LA self-service sign-up where the One Login account's email is not
           // on an allowed LA domain. Access Denied explains the likely cause
