@@ -153,41 +153,18 @@ async function handleFormSubmit(
     }
 
     case 'u:cqc': {
-      nextPageURL = '/home';
-
-      let responseAuth = null;
-      try {
-        if (process.env.NODE_ENV === 'development') {
-          if (
-            !process.env.NEXT_PUBLIC_LOCAL_AUTH_EMAIL ||
-            !process.env.NEXT_PUBLIC_LOCAL_AUTH_PASSWORD
-          ) {
-            throw new Error(
-              'NEXT_PUBLIC_LOCAL_AUTH_EMAIL or NEXT_PUBLIC_LOCAL_AUTH_PASSWORD not found in env'
-            );
-          }
-
-          responseAuth = await authClient.signIn.email({
-            email: process.env.NEXT_PUBLIC_LOCAL_AUTH_EMAIL,
-            password: process.env.NEXT_PUBLIC_LOCAL_AUTH_PASSWORD,
-            callbackURL: withBasePath('/home'),
-          });
-
-          console.info('Local auth session started');
-        } else {
-          responseAuth = await authClient.signIn.oauth2({
-            providerId: 'govuk-one-login',
-            callbackURL: withBasePath('/home'),
-          });
-        }
-      } catch (error) {
-        const ERROR_MSG =
-          'Sorry, there is a problem with the service. Please try again later.';
-        console.error(ERROR_MSG, { error });
-
-        // throw new Error(ERROR_MSG);
+      // Start One Login. The auth client redirects the browser to the provider
+      // itself, so no in-app navigation is set on this path. For local
+      // development sign-in use the /api/auth/local route (see README).
+      const { error } = await authClient.signIn.oauth2({
+        providerId: 'govuk-one-login',
+        callbackURL: withBasePath('/home'),
+      });
+      if (error) {
         return {
-          error: ERROR_MSG,
+          error:
+            'Sorry, there is a problem with the service. Please try again later.',
+          fields: rawFormData,
         };
       }
       break;
