@@ -17,14 +17,14 @@ describe('AccessDeniedPage', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: /You do not have access to this service/i,
+        name: /You cannot access this service/i,
       })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/logged into GOV.UK One Login with a different email/i)
+      screen.getByText(/Why you cannot access the service/i)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/If you think you need access/i)
+      screen.getByText(/If you think you should have access/i)
     ).toBeInTheDocument();
   });
 
@@ -36,10 +36,10 @@ describe('AccessDeniedPage', () => {
       screen.getByRole('heading', { name: /You cannot use this service/i })
     ).toBeInTheDocument();
     expect(
-      screen.queryByText(/logged into GOV.UK One Login with a different email/i)
+      screen.queryByText(/Why you cannot access the service/i)
     ).not.toBeInTheDocument();
     expect(
-      screen.getByText(/If you think you need access/i)
+      screen.getByText(/If you think you should have access/i)
     ).toBeInTheDocument();
   });
 });
