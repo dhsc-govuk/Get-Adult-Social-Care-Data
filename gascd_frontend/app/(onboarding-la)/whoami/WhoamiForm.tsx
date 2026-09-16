@@ -47,7 +47,6 @@ const WhoamiForm: React.FC = () => {
               name="id"
               value="u:la"
               defaultChecked={state.error == null && state.fields.id === 'u:la'}
-              aria-describedby="user-la-item-hint"
             />
             <label
               className="govuk-label govuk-radios__label"
@@ -55,13 +54,6 @@ const WhoamiForm: React.FC = () => {
             >
               Local Authority officer
             </label>
-            <div
-              id="user-la-item-hint"
-              className="govuk-hint govuk-radios__hint"
-            >
-              Use the same email address for your GOV.UK One Login as your Local
-              Authority email address.
-            </div>
           </div>
           <div className="govuk-radios__item">
             <input
