@@ -182,9 +182,11 @@ export const auth = betterAuth({
         }
         if (error === LA_DOMAIN_REJECTED_ERROR) {
           // LA self-service sign-up where the One Login account's email is not
-          // on an allowed LA domain. Access Denied explains the likely cause
-          // (signed in to One Login with a different email) and how to request access.
-          throw ctx.redirect(withBasePath('/access-denied'));
+          // on an allowed LA domain. Normally the journey's errorCallbackURL
+          // handles this; this is the fallback for the default /error route.
+          throw ctx.redirect(
+            withBasePath(`/signup-la?error=${LA_DOMAIN_REJECTED_ERROR}`)
+          );
         }
       }
     }),

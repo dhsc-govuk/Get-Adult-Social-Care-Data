@@ -22,6 +22,7 @@ describe('OneLoginSignIn', () => {
     const body = oauth2.mock.calls[0][0] as Record<string, unknown>;
     expect(body.providerId).toBe('govuk-one-login');
     expect(body.callbackURL).toMatch(/\/home$/);
+    expect(body.errorCallbackURL).toMatch(/\/access-denied$/);
     expect(body).not.toHaveProperty('requestSignUp');
   });
 

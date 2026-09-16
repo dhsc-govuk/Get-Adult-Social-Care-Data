@@ -160,6 +160,7 @@ async function handleFormSubmit(
       const { error } = await authClient.signIn.oauth2({
         providerId: 'govuk-one-login',
         callbackURL: withBasePath('/home'),
+        errorCallbackURL: withBasePath('/access-denied'),
       });
       if (error) {
         return {

@@ -25,6 +25,7 @@ const OneLoginSignIn: React.FC = () => {
     const { error } = await authClient.signIn.oauth2({
       providerId: 'govuk-one-login',
       callbackURL: withBasePath('/home'),
+      errorCallbackURL: withBasePath('/access-denied'),
     });
     if (error) {
       setError(ERROR_MSG);
