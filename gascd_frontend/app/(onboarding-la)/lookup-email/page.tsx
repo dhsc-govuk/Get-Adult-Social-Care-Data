@@ -2,6 +2,7 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
 import LookupLAForm from './LookupLAForm';
+import OneLoginSignIn from '../OneLoginSignIn';
 
 const EmailLookupPage: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const EmailLookupPage: React.FC = () => {
           <div className="govuk-form-group">
             <LookupLAForm />
           </div>
+          <OneLoginSignIn />
         </div>
       </div>
     </Layout>

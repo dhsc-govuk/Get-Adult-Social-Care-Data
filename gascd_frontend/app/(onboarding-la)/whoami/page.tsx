@@ -2,6 +2,7 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
 import WhoamiForm from './WhoamiForm';
+import OneLoginSignIn from '../OneLoginSignIn';
 
 const WhoamiPage: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const WhoamiPage: React.FC = () => {
             <div className="govuk-form-group">
               <WhoamiForm />
             </div>
+            <OneLoginSignIn />
           </div>
         </div>
       </Layout>
