@@ -234,7 +234,6 @@ export default function ResidentialCareProvidersPage() {
           }
           download={
             <>
-              <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref2}
                 filename="number_of_adult_social_care_providers.csv"

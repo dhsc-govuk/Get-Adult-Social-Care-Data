@@ -430,8 +430,9 @@ export default function UnpaidCarePage() {
           }
           download={
             <>
-              {renderComparatorControl('comparator-download-1')}
-              <h4 className="govuk-heading-s">Download</h4>
+              <div className="govuk-!-margin-bottom-4">
+                {renderComparatorControl('comparator-download-1')}
+              </div>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
                 filename="percent_unpaid_care.csv"
