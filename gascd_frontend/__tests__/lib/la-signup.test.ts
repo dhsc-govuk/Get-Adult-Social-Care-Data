@@ -2,6 +2,7 @@ import { APIError } from 'better-auth/api';
 
 import {
   LA_DOMAIN_REJECTED_ERROR,
+  LA_EMAIL_UNVERIFIED_ERROR,
   LA_SELF_SERVICE_SOURCE,
   buildLaUserFields,
   isOAuthCallback,
@@ -88,7 +89,7 @@ describe('isOAuthCallback / oauthProviderId / isOneLoginCallback', () => {
 describe('laSignupBeforeCreateHook', () => {
   it('adds LA fields for an allowed One Login email', async () => {
     const result = await laSignupBeforeCreateHook(
-      { email: 'officer@barnet.gov.uk' },
+      { email: 'officer@barnet.gov.uk', emailVerified: true },
       oneLoginCtx
     );
     expect(result?.data).toMatchObject({
@@ -101,7 +102,7 @@ describe('laSignupBeforeCreateHook', () => {
 
   it('refuses a One Login email on a domain that is not allowed', async () => {
     const attempt = laSignupBeforeCreateHook(
-      { email: 'someone@example.com' },
+      { email: 'someone@example.com', emailVerified: true },
       oneLoginCtx
     );
     await expect(attempt).rejects.toBeInstanceOf(APIError);
@@ -113,10 +114,16 @@ describe('laSignupBeforeCreateHook', () => {
 
   it('applies the same check to sign-ups via any other OAuth provider', async () => {
     await expect(
-      laSignupBeforeCreateHook({ email: 'someone@example.com' }, b2cCtx)
+      laSignupBeforeCreateHook(
+        { email: 'someone@example.com', emailVerified: true },
+        b2cCtx
+      )
     ).rejects.toMatchObject({ message: LA_DOMAIN_REJECTED_ERROR });
     await expect(
-      laSignupBeforeCreateHook({ email: 'someone@example.com' }, socialCtx)
+      laSignupBeforeCreateHook(
+        { email: 'someone@example.com', emailVerified: true },
+        socialCtx
+      )
     ).rejects.toMatchObject({ message: LA_DOMAIN_REJECTED_ERROR });
   });
 
@@ -129,7 +136,32 @@ describe('laSignupBeforeCreateHook', () => {
     ).resolves.toBeUndefined();
   });
 
-  it('uses an error code that survives Better Auth error redirect formatting', () => {
+  it.each([false, undefined, null])(
+    'refuses an allowed-domain email whose verification flag is %s',
+    async (flag) => {
+      const attempt = laSignupBeforeCreateHook(
+        { email: 'officer@barnet.gov.uk', emailVerified: flag as any },
+        oneLoginCtx
+      );
+      await expect(attempt).rejects.toBeInstanceOf(APIError);
+      await expect(attempt).rejects.toMatchObject({
+        status: 'FORBIDDEN',
+        message: LA_EMAIL_UNVERIFIED_ERROR,
+      });
+    }
+  );
+
+  it('checks verification before the domain, so an unverified unlisted email reports unverified', async () => {
+    await expect(
+      laSignupBeforeCreateHook(
+        { email: 'someone@example.com', emailVerified: false },
+        oneLoginCtx
+      )
+    ).rejects.toMatchObject({ message: LA_EMAIL_UNVERIFIED_ERROR });
+  });
+
+  it('uses error codes that survive Better Auth error redirect formatting', () => {
+    expect(LA_EMAIL_UNVERIFIED_ERROR).not.toMatch(/\s/);
     // routes.mjs does result.error.split(' ').join('_'); a code with no spaces
     // arrives unchanged in the ?error= query param the after-hook matches on.
     expect(LA_DOMAIN_REJECTED_ERROR).not.toMatch(/\s/);

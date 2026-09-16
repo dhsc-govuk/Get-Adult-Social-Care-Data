@@ -3,8 +3,10 @@ import { isAcceptableEmail } from './domain-check';
 import { generateAnalyticsId } from '@/helpers/telemetry/analyticsId';
 import { LA_USER_TYPE } from '@/constants';
 
-/** Error code surfaced on the Better Auth /error redirect when the domain is not allowed. */
+/** Error code surfaced on the OAuth error redirect when the domain is not allowed. */
 export const LA_DOMAIN_REJECTED_ERROR = 'la_domain_not_allowed';
+/** Error code when the provider did not assert the email address as verified. */
+export const LA_EMAIL_UNVERIFIED_ERROR = 'la_email_not_verified';
 
 const ONE_LOGIN_PROVIDER_ID = 'govuk-one-login';
 export const LA_SELF_SERVICE_SOURCE = 'self-service';
@@ -78,18 +80,24 @@ export function isOneLoginCallback(ctx: HookContext): boolean {
  * Better Auth `databaseHooks.user.create.before`.
  *
  * User creation through an OAuth provider only happens when the client
- * requested sign-up (the Local Authority journey via One Login). The email has
- * been verified by the provider at this point, so it is checked against the LA
- * domain allowlist and the LA-specific fields are added to the row. Any other
- * domain is refused. This applies to every OAuth callback so a sign-up request
+ * requested sign-up (the Local Authority journey via One Login). The provider
+ * must have verified the email; it is then checked against the LA domain
+ * allowlist and the LA-specific fields are added to the row. An unverified
+ * email or any other domain is refused. This applies to every OAuth callback so a sign-up request
  * against another provider cannot bypass it. Non-OAuth creation paths (the
  * local email/password seed used in development) are left untouched.
  */
 export async function laSignupBeforeCreateHook(
-  user: { email: string },
+  user: { email: string; emailVerified?: boolean | null },
   ctx: HookContext
 ): Promise<{ data: LaUserFields } | undefined> {
   if (!isOAuthCallback(ctx)) return undefined;
+
+  // Eligibility rests entirely on the email domain, so the provider must have
+  // verified the address. Never grant LA access on an unverified email.
+  if (user.emailVerified !== true) {
+    throw new APIError('FORBIDDEN', { message: LA_EMAIL_UNVERIFIED_ERROR });
+  }
 
   const fields = buildLaUserFields(user.email);
   if (!fields) {
