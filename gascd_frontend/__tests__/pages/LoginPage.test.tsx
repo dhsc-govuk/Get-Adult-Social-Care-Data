@@ -17,7 +17,7 @@ describe('LoginPage', () => {
     expect(subheadingElement).toBeInTheDocument();
 
     const bodyTextElement = screen.getByText(
-      /You can only use this service if you are the nominated individual/i
+      /You can only use this service if you are the Nominated Individual or Registered Manager/i
     );
     expect(bodyTextElement).toBeInTheDocument();
   });

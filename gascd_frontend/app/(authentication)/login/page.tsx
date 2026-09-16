@@ -42,9 +42,9 @@ const LoginPage: React.FC = () => {
 
             <h2 className="govuk-heading-m">Who can use this service</h2>
             <p className="govuk-body">
-              You can only use this service if you are the nominated individual
-              for a CQC registered care provider organisation or are a local
-              authority officer.
+              You can only use this service if you are the Nominated Individual
+              or Registered Manager for a CQC registered care provider
+              organisation, or are a Local Authority officer.
             </p>
 
             <div className="govuk-inset-text">
