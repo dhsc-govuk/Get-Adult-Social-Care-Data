@@ -1,15 +1,28 @@
 'use client';
-import React from 'react';
+import React, { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Layout from '@/components/common/layout/Layout';
 
-const AccessDeniedPage: React.FC = () => {
+/**
+ * ?reason=ineligible is set when the visitor told us they are neither a care
+ * provider nor a Local Authority officer. They have not tried to sign in, so
+ * the One Login advice is omitted and the heading is phrased accordingly.
+ */
+const INELIGIBLE_REASON = 'ineligible';
+
+const AccessDeniedContent: React.FC = () => {
+  const searchParams = useSearchParams();
+  const ineligible = searchParams?.get('reason') === INELIGIBLE_REASON;
+
   return (
     <>
       <Layout title="Access Denied" currentPage="access-denied">
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-xl">
-              You do not have access to this service
+              {ineligible
+                ? 'You cannot use this service'
+                : 'You do not have access to this service'}
             </h1>
             <div className="govuk-inset-text">
               <h2 className="govuk-heading-m">People with access</h2>
@@ -22,14 +35,16 @@ const AccessDeniedPage: React.FC = () => {
               </ul>
             </div>
 
-            <p className="govuk-body">
-              If you are logged into GOV.UK One Login with a different email
-              address, you may need to{' '}
-              <a className="govuk-link" href="https://home.account.gov.uk">
-                sign out of your GOV.UK One Login account
-              </a>{' '}
-              before trying to access this service.
-            </p>
+            {!ineligible && (
+              <p className="govuk-body">
+                If you are logged into GOV.UK One Login with a different email
+                address, you may need to{' '}
+                <a className="govuk-link" href="https://home.account.gov.uk">
+                  sign out of your GOV.UK One Login account
+                </a>{' '}
+                before trying to access this service.
+              </p>
+            )}
 
             <p className="govuk-body">
               If you think you need access,{' '}
@@ -76,5 +91,11 @@ const AccessDeniedPage: React.FC = () => {
     </>
   );
 };
+
+const AccessDeniedPage: React.FC = () => (
+  <Suspense fallback={null}>
+    <AccessDeniedContent />
+  </Suspense>
+);
 
 export default AccessDeniedPage;

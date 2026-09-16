@@ -143,7 +143,7 @@ async function handleFormSubmit(
   let nextPageURL: string | null = null;
   switch (rawFormData.id) {
     case 'u:x': {
-      nextPageURL = '/access-denied';
+      nextPageURL = '/access-denied?reason=ineligible';
       break;
     }
 
