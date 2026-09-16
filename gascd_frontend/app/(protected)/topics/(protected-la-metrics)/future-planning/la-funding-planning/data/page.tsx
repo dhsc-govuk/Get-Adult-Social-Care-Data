@@ -295,7 +295,6 @@ export default function LAFundingPlanningPage() {
           }
           download={
             <>
-              <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
                 filename="estimated_population_with_selected_health_conditions.csv"
@@ -401,7 +400,6 @@ export default function LAFundingPlanningPage() {
           }
           download={
             <>
-              <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref2}
                 filename="estimated_percentage_change_in_population_with_selected_health_conditions.csv"

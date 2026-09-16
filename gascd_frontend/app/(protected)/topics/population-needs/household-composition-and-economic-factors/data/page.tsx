@@ -453,8 +453,9 @@ export default function ProvisionAndOccupancyPage() {
           }
           download={
             <>
-              {renderComparatorControl('comparator-download-1')}
-              <h4 className="govuk-heading-s">Download</h4>
+              <div className="govuk-!-margin-bottom-4">
+                {renderComparatorControl('comparator-download-1')}
+              </div>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
                 filename="households_deprived_in_4_dimensions.csv"
@@ -577,8 +578,9 @@ export default function ProvisionAndOccupancyPage() {
           }
           download={
             <>
-              {renderComparatorControl('comparator-download-2')}
-              <h4 className="govuk-heading-s">Download</h4>
+              <div className="govuk-!-margin-bottom-4">
+                {renderComparatorControl('comparator-download-2')}
+              </div>
               <DownloadTableDataCSVLink
                 tableref={tableref2}
                 filename="property_owned_outright.csv"
@@ -699,8 +701,9 @@ export default function ProvisionAndOccupancyPage() {
           }
           download={
             <>
-              {renderComparatorControl('comparator-download-3')}
-              <h4 className="govuk-heading-s">Download</h4>
+              <div className="govuk-!-margin-bottom-4">
+                {renderComparatorControl('comparator-download-3')}
+              </div>
               <DownloadTableDataCSVLink
                 tableref={tableref3}
                 filename="one_person_households_over_65.csv"

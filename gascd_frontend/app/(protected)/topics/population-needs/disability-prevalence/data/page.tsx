@@ -560,8 +560,9 @@ export default function DisabilityPrevalence() {
           }
           download={
             <>
-              {renderComparatorControl('comparator-download-1')}
-              <h4 className="govuk-heading-s">Download</h4>
+              <div className="govuk-!-margin-bottom-4">
+                {renderComparatorControl('comparator-download-1')}
+              </div>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
                 filename="people_who_reported_bad_or_very_bad_health.csv"
@@ -670,8 +671,9 @@ export default function DisabilityPrevalence() {
           }
           download={
             <>
-              {renderComparatorControl('comparator-download-2')}
-              <h4 className="govuk-heading-s">Download</h4>
+              <div className="govuk-!-margin-bottom-4">
+                {renderComparatorControl('comparator-download-2')}
+              </div>
               <DownloadTableDataCSVLink
                 tableref={tableref2}
                 filename="disability_prevalence.csv"
@@ -775,8 +777,9 @@ export default function DisabilityPrevalence() {
           }
           download={
             <>
-              {renderComparatorControl('comparator-download-3')}
-              <h4 className="govuk-heading-s">Download</h4>
+              <div className="govuk-!-margin-bottom-4">
+                {renderComparatorControl('comparator-download-3')}
+              </div>
               <DownloadTableDataCSVLink
                 tableref={tableref3}
                 filename="learning_disability_prevalence.csv"
@@ -883,7 +886,6 @@ export default function DisabilityPrevalence() {
           }
           download={
             <>
-              <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref4}
                 filename="primary_reasons_for_accessing_care.csv"
