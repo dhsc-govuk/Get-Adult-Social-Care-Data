@@ -11,7 +11,9 @@ const ERROR_MSG =
  * Direct sign-in for people who already have an account. Starts GOV.UK One
  * Login without requesting sign-up, so an unknown account lands on Access
  * Denied rather than creating a user. Works for both user types because One
- * Login identifies the person by account.
+ * Login identifies the person by account. Rendered above the form so it is
+ * visible without scrolling; it deliberately has no heading so the page's h1
+ * stays first in document order.
  */
 const OneLoginSignIn: React.FC = () => {
   const [isPending, setIsPending] = useState(false);
@@ -31,15 +33,14 @@ const OneLoginSignIn: React.FC = () => {
   };
 
   return (
-    <div className="govuk-!-margin-top-6">
-      <h2 className="govuk-heading-m">Already registered?</h2>
+    <div className="govuk-inset-text govuk-!-margin-top-0">
       <p className="govuk-body">
-        If you already have access to this service you do not need to answer
-        these questions.
+        <strong>Already registered?</strong> You do not need to answer this
+        question.
       </p>
       <button
         type="button"
-        className="govuk-button govuk-button--secondary"
+        className="govuk-button govuk-button--secondary govuk-!-margin-bottom-0"
         data-module="govuk-button"
         disabled={isPending}
         onClick={signIn}
@@ -47,7 +48,7 @@ const OneLoginSignIn: React.FC = () => {
         {isPending ? 'Signing in...' : 'Sign in with GOV.UK One Login'}
       </button>
       {error && (
-        <p className="govuk-error-message" role="alert">
+        <p className="govuk-error-message govuk-!-margin-top-2" role="alert">
           <span className="govuk-visually-hidden">Error:</span> {error}
         </p>
       )}

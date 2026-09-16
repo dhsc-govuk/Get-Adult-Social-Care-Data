@@ -15,10 +15,10 @@ const WhoamiPage: React.FC = () => {
       >
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
+            <OneLoginSignIn />
             <div className="govuk-form-group">
               <WhoamiForm />
             </div>
-            <OneLoginSignIn />
           </div>
         </div>
       </Layout>

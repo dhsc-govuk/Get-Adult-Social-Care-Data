@@ -14,10 +14,10 @@ const EmailLookupPage: React.FC = () => {
     >
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
+          <OneLoginSignIn />
           <div className="govuk-form-group">
             <LookupLAForm />
           </div>
-          <OneLoginSignIn />
         </div>
       </div>
     </Layout>
