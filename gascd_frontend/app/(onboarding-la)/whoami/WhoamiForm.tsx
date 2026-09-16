@@ -47,13 +47,21 @@ const WhoamiForm: React.FC = () => {
               name="id"
               value="u:la"
               defaultChecked={state.error == null && state.fields.id === 'u:la'}
+              aria-describedby="user-la-item-hint"
             />
             <label
               className="govuk-label govuk-radios__label"
               htmlFor="user-la"
             >
-              Local Authority Officer
+              Local Authority officer
             </label>
+            <div
+              id="user-la-item-hint"
+              className="govuk-hint govuk-radios__hint"
+            >
+              Use the same email address for your GOV.UK One Login as your Local
+              Authority email address.
+            </div>
           </div>
           <div className="govuk-radios__item">
             <input
@@ -77,8 +85,9 @@ const WhoamiForm: React.FC = () => {
               id="user-cqc-item-hint"
               className="govuk-hint govuk-radios__hint"
             >
-              This encompasses being either a Nominated individual (NI) or a
-              Registered Manager (RM)
+              This encompasses being either a Nominated Individual (NI) or a
+              Registered Manager (RM). Use the same email address for your
+              GOV.UK One Login that you use for your CQC registration.
             </div>
           </div>
 
