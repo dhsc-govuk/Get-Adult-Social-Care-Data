@@ -54,7 +54,9 @@ const LookupLAForm: React.FC = () => {
 
       <fieldset className="govuk-fieldset" aria-describedby="signIn-hint">
         <legend className="govuk-fieldset__legend govuk-fieldset__legend--l">
-          <h1 className="govuk-fieldset__heading">Check your email here</h1>
+          <h1 className="govuk-fieldset__heading">
+            Enter your Local Authority email address
+          </h1>
         </legend>
 
         <div
@@ -67,7 +69,9 @@ const LookupLAForm: React.FC = () => {
             id={`${INPUT_ID}-hint`}
             className="govuk-hint govuk-!-margin-top-0"
           >
-            It will be checked against a list of approved LA domains.
+            Use the work email address issued by your Local Authority. We check
+            that it belongs to a Local Authority before you sign in with GOV.UK
+            One Login.
           </p>
           {fieldError && (
             <p id={`${INPUT_ID}-error`} className="govuk-error-message">

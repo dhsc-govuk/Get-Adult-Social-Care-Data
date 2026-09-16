@@ -7,7 +7,7 @@ import OneLoginSignIn from '../OneLoginSignIn';
 const EmailLookupPage: React.FC = () => {
   return (
     <Layout
-      title="Check your email here"
+      title="Enter your Local Authority email address"
       showLoginInformation={false}
       currentPage="lookup-email"
       showNavBar={false}
