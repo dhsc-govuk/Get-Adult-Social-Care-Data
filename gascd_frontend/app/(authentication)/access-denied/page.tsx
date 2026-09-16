@@ -27,10 +27,8 @@ const AccessDeniedContent: React.FC = () => {
             <div className="govuk-inset-text">
               <h2 className="govuk-heading-m">People with access</h2>
               <ul className="govuk-list govuk-list--bullet">
-                <li>
-                  CQC nominated individuals with a CQC registered email
-                  addresses
-                </li>
+                <li>CQC-registered Nominated Individuals</li>
+                <li>CQC-registered Registered Managers</li>
                 <li>Local Authority officers</li>
               </ul>
             </div>
