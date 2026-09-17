@@ -239,6 +239,42 @@ paths:
           description: "Invalid metric code supplied."
         "404":
           description: "Local authority not found."
+  /metric_locations/local_authority_peers/{code}/series:
+    post:
+      summary: "Get peer group average time series for a local authority"
+      description: "Averages each requested metric's time series across the local authority's statistical peers, point by point. Metrics with no peer data are omitted from the response."
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: "The unique identifier for the local authority."
+          schema:
+            type: string
+            example: "E00000001"
+      requestBody:
+        description: "The metric codes to average across the peer group."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              minItems: 1
+              items:
+                type: string
+              example: ["num_children_in_need", "cin_per_10000_children"]
+      responses:
+        "200":
+          description: "One averaged series per requested metric that has peer data."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LocalAuthorityPeerSeries"
+        "400":
+          description: "No metric codes supplied, or an invalid metric code."
+        "404":
+          description: "Local authority not found."
   /metric_locations/custom_local_authority_group:
     get:
       summary: "Get metric values for a custom group of local authorities"
@@ -564,6 +600,35 @@ components:
           type: number
           nullable: true
           description: "Most recent national metric value."
+
+    LocalAuthorityPeerSeries:
+      type: object
+      description: "A metric's time series averaged across a local authority's statistical peers."
+      properties:
+        metric_code:
+          type: string
+          description: "The unique identifier for the metric."
+        peer_count:
+          type: integer
+          description: "Number of peer local authorities whose series contributed to the average."
+        series_start_date:
+          type: string
+          format: date
+          description: "The start date of the averaged series."
+        series_end_date:
+          type: string
+          format: date
+          description: "The end date of the averaged series."
+        series_frequency:
+          type: string
+          description: "The frequency of data points in the averaged series."
+        values:
+          type: array
+          description: "The mean of the peers' values at each point. Null where no peer has a value."
+          items:
+            type: number
+            format: float
+            nullable: true
 
     CustomGroupMember:
       type: object
