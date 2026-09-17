@@ -40,6 +40,8 @@ import {
   comparisonLabels,
   locationBarSeries,
   locationTimeSeries,
+  PEER_GROUP_AVERAGE_LABEL,
+  peerRowsForLatestPeriod,
   periodRows,
   seriesDates,
   toLaAverages,
@@ -88,6 +90,8 @@ export default function SenAndEhcpPage() {
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [overTimeData, setOverTimeData] = useState<Indicator[]>([]);
   const [byAgeData, setByAgeData] = useState<Indicator[]>([]);
+  const [peerOverTimeData, setPeerOverTimeData] = useState<Indicator[]>([]);
+  const [peerByAgeData, setPeerByAgeData] = useState<Indicator[]>([]);
   const [overTimeQuery, setOverTimeQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
@@ -197,6 +201,41 @@ export default function SenAndEhcpPage() {
     fetchByAgeData();
   }, [byAgeQuery]);
 
+  // The statistical peer group average is fetched separately, because the
+  // metric data route only serves the user's own LA, region and country
+  useEffect(() => {
+    const fetchPeerOverTimeData = async () => {
+      if (!overTimeQuery.metric_ids.length) return;
+      try {
+        setPeerOverTimeData(
+          await IndicatorFetchService.getPeerGroupAverages(
+            overTimeQuery.metric_ids
+          )
+        );
+      } catch (error) {
+        console.error('Error fetching peer group averages:', error);
+      }
+    };
+    fetchPeerOverTimeData();
+  }, [overTimeQuery]);
+
+  useEffect(() => {
+    const fetchPeerByAgeData = async () => {
+      if (!byAgeQuery.metric_ids.length) return;
+      try {
+        // Kept whole: the period shown is chosen against the main data below
+        setPeerByAgeData(
+          await IndicatorFetchService.getPeerGroupAverages(
+            byAgeQuery.metric_ids
+          )
+        );
+      } catch (error) {
+        console.error('Error fetching peer group averages:', error);
+      }
+    };
+    fetchPeerByAgeData();
+  }, [byAgeQuery]);
+
   // INTERIM (GASCD-236): see toLaAverages
   useEffect(() => {
     const fetchLaCounts = async () => {
@@ -213,12 +252,22 @@ export default function SenAndEhcpPage() {
   // Everything below reads the averaged data, so the charts, the tables and
   // the CSV export can never disagree
   const overTimeAverages = useMemo(
-    () => toLaAverages(overTimeData, laCounts, TOTALLED_METRIC_IDS),
-    [overTimeData, laCounts]
+    () =>
+      toLaAverages(
+        [...overTimeData, ...peerOverTimeData],
+        laCounts,
+        TOTALLED_METRIC_IDS
+      ),
+    [overTimeData, peerOverTimeData, laCounts]
   );
   const byAgeAverages = useMemo(
-    () => toLaAverages(byAgeData, laCounts, TOTALLED_METRIC_IDS),
-    [byAgeData, laCounts]
+    () =>
+      toLaAverages(
+        [...byAgeData, ...peerRowsForLatestPeriod(peerByAgeData, byAgeData)],
+        laCounts,
+        TOTALLED_METRIC_IDS
+      ),
+    [byAgeData, peerByAgeData, laCounts]
   );
 
   // The academic year the age breakdowns cover, taken from the data so the
@@ -237,12 +286,20 @@ export default function SenAndEhcpPage() {
 
   const numSenSeries = useMemo(
     () =>
-      locationTimeSeries(overTimeAverages, NUM_SEN_SUPPORT_14PLUS, columnLabels),
+      locationTimeSeries(
+        overTimeAverages,
+        NUM_SEN_SUPPORT_14PLUS,
+        columnLabels
+      ),
     [overTimeAverages, columnLabels]
   );
   const percSenSeries = useMemo(
     () =>
-      locationTimeSeries(overTimeAverages, PERC_SEN_SUPPORT_14PLUS, columnLabels),
+      locationTimeSeries(
+        overTimeAverages,
+        PERC_SEN_SUPPORT_14PLUS,
+        columnLabels
+      ),
     [overTimeAverages, columnLabels]
   );
   const numEhcpSeries = useMemo(
@@ -251,11 +308,13 @@ export default function SenAndEhcpPage() {
   );
 
   const numSenRows = useMemo(
-    () => periodRows(overTimeAverages, NUM_SEN_SUPPORT_14PLUS, academicYearLabel),
+    () =>
+      periodRows(overTimeAverages, NUM_SEN_SUPPORT_14PLUS, academicYearLabel),
     [overTimeAverages]
   );
   const percSenRows = useMemo(
-    () => periodRows(overTimeAverages, PERC_SEN_SUPPORT_14PLUS, academicYearLabel),
+    () =>
+      periodRows(overTimeAverages, PERC_SEN_SUPPORT_14PLUS, academicYearLabel),
     [overTimeAverages]
   );
   const numEhcpRows = useMemo(
@@ -283,14 +342,19 @@ export default function SenAndEhcpPage() {
   );
   const numEhcpByAgeSeries = useMemo(
     () =>
-      locationBarSeries(byAgeAverages, Object.keys(NUM_EHCP_BY_AGE), columnLabels),
+      locationBarSeries(
+        byAgeAverages,
+        Object.keys(NUM_EHCP_BY_AGE),
+        columnLabels
+      ),
     [byAgeAverages, columnLabels]
   );
 
   const comparedLocations = (
     <>
       {columnLabels.LALabel} <abbr title="local authority">LA</abbr>,{' '}
-      {columnLabels.RegionLabel} and {columnLabels.CountryLabel}
+      {columnLabels.RegionLabel}, {columnLabels.CountryLabel} and the{' '}
+      {PEER_GROUP_AVERAGE_LABEL.toLowerCase()}
     </>
   );
 
@@ -373,7 +437,10 @@ export default function SenAndEhcpPage() {
                     series={numSenSeries}
                     decimalPoints={0}
                     hoverDateFormat="%Y"
-                    {...academicYearTicks(overTimeAverages, NUM_SEN_SUPPORT_14PLUS)}
+                    {...academicYearTicks(
+                      overTimeAverages,
+                      NUM_SEN_SUPPORT_14PLUS
+                    )}
                   />
                 </div>
               )) || <p className="govuk-body">Loading graph</p>}

@@ -30,6 +30,7 @@ import {
   ComparatorLaCounts,
   comparisonLabels,
   locationTimeSeries,
+  PEER_GROUP_AVERAGE_LABEL,
   periodRows,
   seriesDates,
   toLaAverages,
@@ -78,6 +79,7 @@ export default function ChildrenInNeedPage() {
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
   const [overTimeData, setOverTimeData] = useState<Indicator[]>([]);
+  const [peerOverTimeData, setPeerOverTimeData] = useState<Indicator[]>([]);
   const [overTimeQuery, setOverTimeQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
@@ -166,6 +168,23 @@ export default function ChildrenInNeedPage() {
     fetchOverTimeData();
   }, [overTimeQuery]);
 
+  // The statistical peer group average is fetched separately, because the
+  // metric data route only serves the user's own LA, region and country
+  useEffect(() => {
+    const fetchPeerOverTimeData = async () => {
+      if (!overTimeQuery.metric_ids.length) return;
+      try {
+        setPeerOverTimeData(
+          await IndicatorFetchService.getPeerGroupAverages(
+            overTimeQuery.metric_ids
+          )
+        );
+      } catch (error) {
+        console.error('Error fetching peer group averages:', error);
+      }
+    };
+    fetchPeerOverTimeData();
+  }, [overTimeQuery]);
 
   // INTERIM (GASCD-236): see toLaAverages
   useEffect(() => {
@@ -183,40 +202,56 @@ export default function ChildrenInNeedPage() {
   // Everything below reads the averaged data, so the charts, the tables and
   // the CSV export can never disagree
   const overTimeAverages = useMemo(
-    () => toLaAverages(overTimeData, laCounts, TOTALLED_METRIC_IDS),
-    [overTimeData, laCounts]
+    () =>
+      toLaAverages(
+        [...overTimeData, ...peerOverTimeData],
+        laCounts,
+        TOTALLED_METRIC_IDS
+      ),
+    [overTimeData, peerOverTimeData, laCounts]
   );
 
   const numCinSeries = useMemo(
-    () => locationTimeSeries(overTimeAverages, NUM_CHILDREN_IN_NEED, columnLabels),
+    () =>
+      locationTimeSeries(overTimeAverages, NUM_CHILDREN_IN_NEED, columnLabels),
     [overTimeAverages, columnLabels]
   );
   const cinPer10000Series = useMemo(
-    () => locationTimeSeries(overTimeAverages, CIN_PER_10000_CHILDREN, columnLabels),
+    () =>
+      locationTimeSeries(
+        overTimeAverages,
+        CIN_PER_10000_CHILDREN,
+        columnLabels
+      ),
     [overTimeAverages, columnLabels]
   );
   const cinTransferSeries = useMemo(
-    () => locationTimeSeries(overTimeAverages, NUM_CIN_TRANSFER_ASC, columnLabels),
+    () =>
+      locationTimeSeries(overTimeAverages, NUM_CIN_TRANSFER_ASC, columnLabels),
     [overTimeAverages, columnLabels]
   );
 
   const numCinRows = useMemo(
-    () => periodRows(overTimeAverages, NUM_CHILDREN_IN_NEED, reportingYearLabel),
+    () =>
+      periodRows(overTimeAverages, NUM_CHILDREN_IN_NEED, reportingYearLabel),
     [overTimeAverages]
   );
   const cinPer10000Rows = useMemo(
-    () => periodRows(overTimeAverages, CIN_PER_10000_CHILDREN, reportingYearLabel),
+    () =>
+      periodRows(overTimeAverages, CIN_PER_10000_CHILDREN, reportingYearLabel),
     [overTimeAverages]
   );
   const cinTransferRows = useMemo(
-    () => periodRows(overTimeAverages, NUM_CIN_TRANSFER_ASC, reportingYearLabel),
+    () =>
+      periodRows(overTimeAverages, NUM_CIN_TRANSFER_ASC, reportingYearLabel),
     [overTimeAverages]
   );
 
   const comparedLocations = (
     <>
       {columnLabels.LALabel} <abbr title="local authority">LA</abbr>,{' '}
-      {columnLabels.RegionLabel} and {columnLabels.CountryLabel}
+      {columnLabels.RegionLabel}, {columnLabels.CountryLabel} and the{' '}
+      {PEER_GROUP_AVERAGE_LABEL.toLowerCase()}
     </>
   );
 
@@ -234,9 +269,8 @@ export default function ChildrenInNeedPage() {
         <div className="govuk-grid-column-full">
           <h1 className="govuk-heading-xl">Children in need</h1>
           <p className="govuk-body-l">
-            Data on Children in Need at{' '}
-            <abbr title="local authority">LA</abbr>, regional and national
-            levels for England.
+            Data on Children in Need at <abbr title="local authority">LA</abbr>,
+            regional and national levels for England.
           </p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview
@@ -276,7 +310,10 @@ export default function ChildrenInNeedPage() {
                     series={numCinSeries}
                     decimalPoints={0}
                     hoverDateFormat="%Y"
-                    {...reportingYearTicks(overTimeAverages, NUM_CHILDREN_IN_NEED)}
+                    {...reportingYearTicks(
+                      overTimeAverages,
+                      NUM_CHILDREN_IN_NEED
+                    )}
                   />
                 </div>
               )) || <p className="govuk-body">Loading graph</p>}
@@ -424,7 +461,10 @@ export default function ChildrenInNeedPage() {
                     series={cinTransferSeries}
                     decimalPoints={0}
                     hoverDateFormat="%Y"
-                    {...reportingYearTicks(overTimeAverages, NUM_CIN_TRANSFER_ASC)}
+                    {...reportingYearTicks(
+                      overTimeAverages,
+                      NUM_CIN_TRANSFER_ASC
+                    )}
                   />
                 </div>
               )) || <p className="govuk-body">Loading graph</p>}
