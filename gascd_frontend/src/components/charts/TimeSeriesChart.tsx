@@ -17,6 +17,14 @@ export interface Series {
   name: string;
   data: DataPoint[];
   color?: string;
+  /**
+   * Marks a comparator such as a regional or national average. Drawn dashed so
+   * it can be told apart from the user's own location without relying on
+   * colour alone (WCAG 1.4.1). The legend picks the dashing up automatically,
+   * and the name should still say what the comparator is, since a dashed line
+   * on its own can read as a forecast or provisional figure.
+   */
+  comparator?: boolean;
 }
 
 interface TimeSeriesChartProps {
@@ -78,7 +86,8 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
         line: {
           // Use provided color or fallback to the palette
           color: s.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
-          width: 5,
+          width: s.comparator ? 4 : 5,
+          dash: s.comparator ? 'dash' : 'solid',
         },
         hovertemplate: `<b>${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}</b><br>%{x|${hoverDateFormat}}<extra></extra>`,
       };

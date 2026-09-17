@@ -71,3 +71,25 @@ describe('TimeSeriesChart Component', () => {
     expect(layout.yaxis.showgrid).toBe(true);
   });
 });
+
+describe('TimeSeriesChart comparator series', () => {
+  const series = [
+    { name: 'Test LA 1', data: [{ date: '2024-01-01', value: 10 }] },
+    {
+      name: 'Test Region 1 (regional average)',
+      data: [{ date: '2024-01-01', value: 8 }],
+      comparator: true,
+    },
+  ];
+
+  it('draws comparator series dashed and the LA solid', () => {
+    render(<TimeSeriesChart series={series} />);
+
+    const data = JSON.parse(
+      screen.getByTestId('chart-data').textContent || '[]'
+    );
+
+    expect(data[0].line.dash).toBe('solid');
+    expect(data[1].line.dash).toBe('dash');
+  });
+});
