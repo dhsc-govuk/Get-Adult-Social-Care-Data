@@ -25,3 +25,9 @@ perc_households_one_person
 perc_population_disability
 perc_unpaid_care_provider
 total_population
+num_sen_support_14plus
+perc_sen_support_14plus
+num_ehcp_14plus
+num_children_in_need
+cin_per_10000_children
+num_cin_transfer_asc
