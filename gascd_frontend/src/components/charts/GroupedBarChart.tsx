@@ -11,6 +11,14 @@ export interface BarSeries {
   /** One value per category, in the same order as `categories` */
   values: (number | null)[];
   color?: string;
+  /**
+   * Marks a comparator such as a regional or national average. Drawn as an
+   * outlined bar rather than a filled one so it can be told apart from the
+   * user's own location without relying on colour alone (WCAG 1.4.1). An
+   * outline is used instead of a hatched or dashed fill because the Analysis
+   * Function chart guidance advises against patterns and textures.
+   */
+  comparator?: boolean;
 }
 
 interface GroupedBarChartProps {
@@ -27,6 +35,13 @@ interface GroupedBarChartProps {
  * where a metric is broken down by age for the user's LA, their region and
  * England. `BarChart` covers the single series, horizontal case instead.
  */
+/** Filled bar for the user's location, outlined bar for a comparator */
+const comparatorMarker = (
+  color: string,
+  comparator: boolean | undefined
+): Partial<PlotData>['marker'] =>
+  comparator ? { color: '#ffffff', line: { color, width: 3 } } : { color };
+
 const GroupedBarChart: React.FC<GroupedBarChartProps> = ({
   categories = [],
   series = [],
@@ -53,9 +68,10 @@ const GroupedBarChart: React.FC<GroupedBarChartProps> = ({
           name: s.name,
           x: categories,
           y: s.values,
-          marker: {
-            color: s.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
-          },
+          marker: comparatorMarker(
+            s.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
+            s.comparator
+          ),
           hovertemplate: `<b>${s.name}</b><br>%{x}: ${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}<extra></extra>`,
         };
         return trace as Data;
