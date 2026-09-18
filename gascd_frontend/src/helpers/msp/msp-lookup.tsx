@@ -226,7 +226,7 @@ export const MSPLookup: MSPItems = {
     url: 'https://www.tameside.gov.uk/adults/market-position-statement',
   },
   E08000009: {
-    url: 'https://www.trafford.gov.uk/sites/default/files/2026-01/Market%20position%20statement%20for%20older%20people%27s%20services.pdf',
+    url: 'https://www.trafford.gov.uk/council-data-and-democracy/council-policies-and-plans/social-care-strategies/commissioning-social-care',
   },
   E08000010: {
     url: 'https://www.wigan.gov.uk/Resident/Health-Social-Care/Adults/Market-Position-Statement.aspx',
