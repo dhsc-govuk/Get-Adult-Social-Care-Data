@@ -57,7 +57,7 @@ public class ReferenceMapper
             Address = cpl.Address,
             ProviderCode = cpl.CareProvider.Code,
             ProviderName = cpl.CareProvider.Name,
-            Category = cpl.Category,
+            LocationCategory = cpl.Category,
             NominatedIndividual = cpl.NominatedIndividual,
             GeoData = GeoDataToGeoDataDto(cpl.GeoData),
             LocalAuthorityCode = cpl.LocalAuthority?.Code,
