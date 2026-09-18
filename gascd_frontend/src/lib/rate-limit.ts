@@ -7,7 +7,13 @@ import { metrics } from '@opentelemetry/api';
 
 // A small, separate pool prevents counter traffic from exhausting session connections.
 const counterDb = new Kysely<any>({
-  dialect: createUserDbDialect({ max: 2, timeoutMs: 2000 }),
+  // Managed-identity authentication on a cold replica can exceed two seconds.
+  // Allow connection setup longer while retaining the short SQL command budget.
+  dialect: createUserDbDialect({
+    max: 2,
+    timeoutMs: 2000,
+    connectionTimeoutMs: 10000,
+  }),
 });
 let nextErrorLogAt = 0;
 const meter = metrics.getMeter('gascd-rate-limiting');

@@ -40,6 +40,50 @@ it('overwrites the internal trusted header, including when no trusted address ex
   );
   expect(await response.json()).toEqual({ ip: null });
 });
+it.each(['GET', 'POST'])(
+  'handles a proxied %s request and preserves its body and cancellation',
+  async (method) => {
+    vi.stubEnv('RATE_LIMIT_TRUSTED_IP_HEADER', 'x-verified-ip');
+    const controller = new AbortController();
+    const original = new Request('http://localhost/api/auth/ok', {
+      method,
+      headers: {
+        'x-verified-ip': '203.0.113.7',
+        [AUTH_IP_HEADER]: '192.0.2.1',
+        'content-type': 'application/json',
+      },
+      ...(method === 'POST'
+        ? { body: JSON.stringify({ providerId: 'test' }) }
+        : {}),
+      signal: controller.signal,
+    });
+    // Reflect getters against the real Request, as Next's request proxy does.
+    const proxied = new Proxy(original, {
+      get(target, property) {
+        const value = Reflect.get(target, property, target);
+        return typeof value === 'function' ? value.bind(target) : value;
+      },
+    });
+    let forwarded: Request | undefined;
+    const handler = vi.fn(async (request: Request) => {
+      forwarded = request;
+      return Response.json({
+        method: request.method,
+        ip: request.headers.get(AUTH_IP_HEADER),
+        body: method === 'POST' ? await request.json() : null,
+      });
+    });
+    const response = await withTrustedAuthIp(handler)(proxied);
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({
+      method,
+      ip: '203.0.113.7',
+      body: method === 'POST' ? { providerId: 'test' } : null,
+    });
+    controller.abort();
+    expect(forwarded?.signal.aborted).toBe(true);
+  }
+);
 it('the pinned Better Auth HTTP handler uses atomic consume, rejects, and reports outages as 503', async () => {
   vi.stubEnv('RATE_LIMIT_ENABLED', 'true');
   vi.stubEnv('RATE_LIMIT_TRUSTED_IP_HEADER', 'x-verified-ip');

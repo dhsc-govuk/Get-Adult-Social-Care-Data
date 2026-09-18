@@ -70,7 +70,18 @@ export function withTrustedAuthIp(
     const ip = trustedClientIp(request.headers);
     if (ip) headers.set(AUTH_IP_HEADER, ip);
     try {
-      const response = await handler(new Request(request, { headers }));
+      // Next.js can proxy incoming Request objects. Passing that proxy as the
+      // constructor input fails Undici's private-field checks in production.
+      const init: RequestInit & { duplex?: 'half' } = {
+        method: request.method,
+        headers,
+        signal: request.signal,
+      };
+      if (request.method !== 'GET' && request.method !== 'HEAD') {
+        init.body = request.body;
+        if (init.body) init.duplex = 'half';
+      }
+      const response = await handler(new Request(request.url, init));
       // Better Auth 1.6 uses X-Retry-After; also provide the standard header to consumers.
       if (response.status === 429 || response.status === 503) {
         const headers = new Headers(response.headers);

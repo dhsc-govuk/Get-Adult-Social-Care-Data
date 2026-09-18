@@ -45,6 +45,7 @@ export const getAuthOptions = () => {
 export const createUserDbDialect = (limits?: {
   max: number;
   timeoutMs: number;
+  connectionTimeoutMs?: number;
 }) =>
   new MssqlDialect({
     tarn: {
@@ -54,8 +55,10 @@ export const createUserDbDialect = (limits?: {
         max: limits?.max ?? 10,
         ...(limits
           ? {
-              acquireTimeoutMillis: limits.timeoutMs,
-              createTimeoutMillis: limits.timeoutMs,
+              acquireTimeoutMillis:
+                limits.connectionTimeoutMs ?? limits.timeoutMs,
+              createTimeoutMillis:
+                limits.connectionTimeoutMs ?? limits.timeoutMs,
             }
           : {}),
         propagateCreateError: true,
@@ -72,7 +75,8 @@ export const createUserDbDialect = (limits?: {
             ...(limits
               ? {
                   requestTimeout: limits.timeoutMs,
-                  connectTimeout: limits.timeoutMs,
+                  connectTimeout:
+                    limits.connectionTimeoutMs ?? limits.timeoutMs,
                 }
               : {}),
             enableArithAbort: true,
