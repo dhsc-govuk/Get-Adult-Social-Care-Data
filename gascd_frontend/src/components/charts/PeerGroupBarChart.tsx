@@ -11,6 +11,7 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
   laName,
   currentLaValue,
   nationalAverageValue,
+  regionalAverageValue,
   peerData,
   loading,
   error,
@@ -20,6 +21,7 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
   comparatorControl,
   comparatorLabel,
   comparatorAverageLabel,
+  regionalAverageLabel,
   nationalAverageLabel,
   valueSuffix,
   sourceText,
@@ -53,9 +55,11 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
           laName={laName}
           currentLaValue={currentLaValue}
           nationalAverageValue={nationalAverageValue}
+          regionalAverageValue={regionalAverageValue}
           peerData={peerData}
           ownLaCode={laCode}
           comparatorAverageLabel={comparatorAverageLabel}
+          regionalAverageLabel={regionalAverageLabel}
           nationalAverageLabel={nationalAverageLabel}
           valueSuffix={valueSuffix}
           sourceText={sourceText}

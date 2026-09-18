@@ -96,18 +96,25 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
               <th key="0" scope="col" className={columnClass(0)}>
                 {metricColumnName}
               </th>
-              {Object.entries(columnHeaders)
+              {[
+                ...(showCareProvider ? ['CPLabel'] : []),
+                'LALabel',
+                'RegionLabel',
+                'CountryLabel',
+              ]
                 .filter(
-                  ([columnKey]) =>
-                    !(columnKey === 'CPLabel' && !showCareProvider)
+                  (key) =>
+                    (columnHeaders as Record<string, string | null | undefined>)[key] !== undefined &&
+                    (columnHeaders as Record<string, string | null | undefined>)[key] !== null &&
+                    (columnHeaders as Record<string, string | null | undefined>)[key] !== ''
                 )
-                .map(([columnKey, columnLabel], columnIndex) => (
+                .map((columnKey, columnIndex) => (
                   <th
                     key={columnKey + 1}
                     scope="col"
                     className={columnClass(columnIndex + 1)}
                   >
-                    {columnLabel}
+                    {(columnHeaders as Record<string, string | null | undefined>)[columnKey]}
                   </th>
                 ))}
             </tr>
