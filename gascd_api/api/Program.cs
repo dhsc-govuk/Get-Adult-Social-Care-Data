@@ -7,6 +7,7 @@ var bld = WebApplication.CreateBuilder();
 bld.Logging.RegisterLoggingConfiguration();
 
 bld.Services
+    .RegisterRateLimiting(bld.Configuration)
     .RegisterDatabase(bld.Configuration)
     .RegisterFastEndpoints(bld.Configuration)
     .AddSingletonConfiguration()
@@ -16,6 +17,8 @@ bld.Services
     .RegisterAuth();
 
 var app = bld.Build();
+app.UseRouting();
+app.UseRateLimiter();
 app.UseMiddleware<LogContextMiddleware>()
     .RegisterFastEndpoints()
     .RegisterAuth()

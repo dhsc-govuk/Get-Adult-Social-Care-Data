@@ -26,7 +26,9 @@
     "db:user:add": "tsx scripts/bootstrap-user.ts",
     "openapi:lint": "redocly lint --extends recommended ../gascd_metrics_api/openapi.yaml",
     "openapi:types:generate": "openapi-typescript ../gascd_metrics_api/openapi.yaml -o ./src/metrics-api-schema.d.ts",
-    "openapi:types:check": "openapi-typescript ../gascd_metrics_api/openapi.yaml -o ./src/metrics-api-schema.d.ts --check"
+    "openapi:types:check": "openapi-typescript ../gascd_metrics_api/openapi.yaml -o ./src/metrics-api-schema.d.ts --check",
+    "db:cleanup:rate-limits": "tsx scripts/user-db-post-migrate.ts --cleanup-rate-limits",
+    "test:rate-limit:sql": "vitest run --config vitest.rate-limit-sql.config.ts"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": "eslint --config eslint.config.js",

@@ -20,7 +20,7 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper, IL
     public override async Task HandleAsync(GetMetricRequest req, CancellationToken ct)
     {
         logger.LogDebug("Received data request for Metric code: {code}", req.MetricCode);
-        var timeSeries = GetMetricTimeSeriesList(req);
+        var timeSeries = await GetMetricTimeSeriesList(req, ct);
 
         if (timeSeries.Count == 0)
         {
@@ -34,14 +34,14 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper, IL
         await Send.OkAsync(response, ct);
     }
 
-    private List<MetricTimeSeries> GetMetricTimeSeriesList(GetMetricRequest req)
+    private async Task<List<MetricTimeSeries>> GetMetricTimeSeriesList(GetMetricRequest req, CancellationToken ct)
     {
         if (!req.Locations.Any())
             return [];
 
         var timeSeriesParam = Parameter(typeof(MetricTimeSeries));
 
-        var locations = req.Locations.Select(l => LocationEquals(timeSeriesParam, l.LocationCode, l.LocationType)).ToList();
+        var locations = req.Locations.Distinct().Select(l => LocationEquals(timeSeriesParam, l.LocationCode, l.LocationType)).ToList();
         var locationCriteria = locations.Skip(1).Aggregate(locations.First(), OrElse);
 
         var metricProp = Property(timeSeriesParam, nameof(MetricTimeSeries.Metric));
@@ -51,10 +51,10 @@ public class GetMetricEndpoint(GascdDataContext context, MetricMapper mapper, IL
 
         var lambda = Lambda<Func<MetricTimeSeries, bool>>(criteria, timeSeriesParam);
 
-        return context.GetMetricTimeSeriesQueryable(req.MetricCode)
+        return await context.GetMetricTimeSeriesQueryable(req.MetricCode)
             .Include(d => d.Metric)
             .Where(lambda)
-            .ToList();
+            .ToListAsync(ct);
     }
 
     private BinaryExpression LocationEquals(Expression timeSeries, string locationCode, LocationTypeEnum type)

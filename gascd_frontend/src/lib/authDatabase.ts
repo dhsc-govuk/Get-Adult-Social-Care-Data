@@ -42,36 +42,54 @@ export const getAuthOptions = () => {
 };
 
 // https://www.better-auth.com/docs/adapters/mssql
-export const msdialect = new MssqlDialect({
-  tarn: {
-    ...Tarn,
-    options: {
-      min: 0,
-      max: 10,
-      propagateCreateError: true,
+export const createUserDbDialect = (limits?: {
+  max: number;
+  timeoutMs: number;
+}) =>
+  new MssqlDialect({
+    tarn: {
+      ...Tarn,
+      options: {
+        min: 0,
+        max: limits?.max ?? 10,
+        ...(limits
+          ? {
+              acquireTimeoutMillis: limits.timeoutMs,
+              createTimeoutMillis: limits.timeoutMs,
+            }
+          : {}),
+        propagateCreateError: true,
+      },
     },
-  },
-  tedious: {
-    ...Tedious,
-    connectionFactory: () => {
-      const authOptions = getAuthOptions();
-      const connection = new Tedious.Connection({
-        authentication: authOptions,
-        options: {
-          encrypt: true,
-          enableArithAbort: true,
-          database: process.env.USER_DATABASE,
-          port: Number(process.env.USER_DB_PORT),
-          trustServerCertificate: process.env.LOCAL_AUTH === 'true',
-        },
-        server: process.env.USER_DB_SERVER as string,
-      });
-      connection.on('error', (error) => {
-        logger.error('User DB error from Tedious: ' + error.message, {
-          authType: authOptions.type,
+    tedious: {
+      ...Tedious,
+      connectionFactory: () => {
+        const authOptions = getAuthOptions();
+        const connection = new Tedious.Connection({
+          authentication: authOptions,
+          options: {
+            encrypt: true,
+            ...(limits
+              ? {
+                  requestTimeout: limits.timeoutMs,
+                  connectTimeout: limits.timeoutMs,
+                }
+              : {}),
+            enableArithAbort: true,
+            database: process.env.USER_DATABASE,
+            port: Number(process.env.USER_DB_PORT),
+            trustServerCertificate: process.env.LOCAL_AUTH === 'true',
+          },
+          server: process.env.USER_DB_SERVER as string,
         });
-      });
-      return connection;
+        connection.on('error', (error) => {
+          logger.error('User DB error from Tedious: ' + error.message, {
+            authType: authOptions.type,
+          });
+        });
+        return connection;
+      },
     },
-  },
-});
+  });
+
+export const msdialect = createUserDbDialect();

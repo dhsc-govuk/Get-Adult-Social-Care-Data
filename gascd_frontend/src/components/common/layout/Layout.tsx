@@ -1,3 +1,4 @@
+import ServiceBusyNotice from '../ServiceBusyNotice';
 import React, { ReactNode } from 'react';
 import Footer from '../footer/Footer';
 import PhaseBanner from '../phase-banner/PhaseBanner';
@@ -101,6 +102,7 @@ const Layout: React.FC<Props> = ({
               : 'govuk-main-wrapper'
           }
         >
+          <ServiceBusyNotice />
           {children}
         </main>
       </div>

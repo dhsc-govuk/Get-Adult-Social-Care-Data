@@ -8,6 +8,7 @@ import logger from '@/utils/logger';
 import { msdialect } from './authDatabase';
 import { admin, lastLoginMethod } from 'better-auth/plugins';
 import { Kysely } from 'kysely';
+import { authRateLimitOptions, AUTH_IP_HEADER } from './auth-rate-limit';
 import { withBasePath } from './basePath';
 
 // Export a connection to the user db for usage elsewhere
@@ -16,9 +17,8 @@ export const authDB = new Kysely<any>({ dialect: msdialect });
 
 export const auth = betterAuth({
   basePath: (process.env.NEXT_PUBLIC_BASE_PATH ?? '') + '/api/auth',
-  rateLimit: {
-    enabled: process.env.E2E_TESTING_MODE !== 'true',
-  },
+  rateLimit: authRateLimitOptions(),
+  advanced: { ipAddress: { ipAddressHeaders: [AUTH_IP_HEADER] } },
   session: {
     cookieCache: {
       enabled: true,
@@ -33,7 +33,7 @@ export const auth = betterAuth({
   },
   logger: {
     log: (level, message, ...args) => {
-     // Send logs to our winston logger
+      // Send logs to our winston logger
       logger.log(level, '(Better Auth): ' + message, ...args);
     },
   },

@@ -1,3 +1,4 @@
+import { serviceFetch } from '@/lib/service-fetch';
 import { getAppInsights } from '@/components/analytics/appInsights';
 import {
   LOCATION_CHANGE_EVENT,
@@ -115,7 +116,7 @@ class AnalyticsService {
 
   // Anonymously track cookie opt-out events
   public static async trackOptOut() {
-    const response = await fetch(withBasePath('/api/analytics/optout'), {
+    const response = await serviceFetch(withBasePath('/api/analytics/optout'), {
       method: 'POST',
     });
   }

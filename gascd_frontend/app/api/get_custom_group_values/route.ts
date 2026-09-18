@@ -1,3 +1,4 @@
+import { withDataApiErrors } from '@/lib/data-api-errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import logger from '@/utils/logger';
@@ -6,7 +7,7 @@ import { ALLOWED_CP_USER_TYPES, LA_USER_TYPE } from '@/constants';
 
 const MAX_LA_CODES = 500;
 
-export async function GET(req: NextRequest) {
+async function handleGET(req: NextRequest) {
   const user = await getCurrentUser();
   if (!user || !isUserRegistered(user)) {
     return NextResponse.json({ error: 'No user' }, { status: 401 });
@@ -26,7 +27,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const client = getAPIClient();
+  const client = getAPIClient(req.signal);
 
   // The requesting LA is derived from the session, never from the client,
   // so callers cannot influence which authority is excluded from the average.
@@ -85,3 +86,5 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json(data);
 }
+
+export const GET = withDataApiErrors(handleGET);

@@ -1,4 +1,5 @@
 'use client';
+import { serviceFetch } from '@/lib/service-fetch';
 import { useEffect, useMemo, useState } from 'react';
 import { withBasePath } from '@/lib/basePath';
 import {
@@ -20,7 +21,7 @@ const fetchNhsPeerGroup = async (
   laCode: string,
   metricCode: string
 ): Promise<PeerGroupData> => {
-  const res = await fetch(
+  const res = await serviceFetch(
     withBasePath(
       `/api/get_la_peers?la_code=${encodeURIComponent(laCode)}&metric_code=${encodeURIComponent(metricCode)}`
     )
@@ -37,7 +38,7 @@ const fetchCustomGroup = async (
   const codeParams = laCodes
     .map((code) => `la_codes=${encodeURIComponent(code)}`)
     .join('&');
-  const res = await fetch(
+  const res = await serviceFetch(
     withBasePath(
       `/api/get_custom_group_values?${codeParams}&metric_code=${encodeURIComponent(metricCode)}`
     )

@@ -1,3 +1,4 @@
+import { serviceFetch } from '@/lib/service-fetch';
 import LogService from '../logger/logService';
 import { ClientLogCode } from '../logger/clientLogCodes';
 import { Locations } from '@/data/interfaces/Locations';
@@ -16,7 +17,9 @@ export interface AvailableLocation {
 class LocationService {
   public static async getLocations(query: string): Promise<Locations> {
     try {
-      const response = await fetch(withBasePath('/api/get_location_data'));
+      const response = await serviceFetch(
+        withBasePath('/api/get_location_data')
+      );
 
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
@@ -33,7 +36,9 @@ class LocationService {
 
   public static async getAvailableLocations(): Promise<AvailableLocation[]> {
     try {
-      const response = await fetch(withBasePath(`/api/get_available_locations`));
+      const response = await serviceFetch(
+        withBasePath(`/api/get_available_locations`)
+      );
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
@@ -122,13 +127,16 @@ class LocationService {
       if (!session?.data?.user) {
         throw new Error('No user session found');
       }
-      const response = await fetch(withBasePath(`/api/set_selected_location`), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ location_id: locationId }),
-      });
+      const response = await serviceFetch(
+        withBasePath(`/api/set_selected_location`),
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ location_id: locationId }),
+        }
+      );
       if (!response.ok) {
         throw new Error(`Error setting location: ${response.statusText}`);
       }
@@ -148,7 +156,9 @@ class LocationService {
 
   public static async getLasForRegion(regionCode: string): Promise<any> {
     try {
-      const response = await fetch(withBasePath('/api/get_las_for_region'));
+      const response = await serviceFetch(
+        withBasePath('/api/get_las_for_region')
+      );
 
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);

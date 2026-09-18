@@ -1,3 +1,7 @@
+import {
+  migrateRateLimits,
+  cleanupRateLimits,
+} from '../src/lib/rate-limit-schema';
 import 'dotenv/config';
 import { Kysely, MssqlDialect, sql } from 'kysely';
 import * as Tedious from 'tedious';
@@ -66,6 +70,13 @@ const db = new Kysely<any>({
 });
 
 const run = async () => {
+  if (process.argv.includes('--cleanup-rate-limits')) {
+    // Bounded work per scheduled invocation; invoke repeatedly if retention falls behind.
+    for (let batch = 0; batch < 10; batch++) await cleanupRateLimits(db);
+    console.log('Rate-limit cleanup completed (up to 10,000 rows)');
+    return;
+  }
+  await migrateRateLimits(db);
   // Per-user uniqueness of comparator group names. The server default
   // case-insensitive collation makes this match the app's normalised
   // (lowercased) comparison.

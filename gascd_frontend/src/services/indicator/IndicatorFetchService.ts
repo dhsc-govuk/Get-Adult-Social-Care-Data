@@ -1,3 +1,4 @@
+import { serviceFetch } from '@/lib/service-fetch';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { withBasePath } from '@/lib/basePath';
@@ -14,7 +15,7 @@ class IndicatorFetchService {
       //location_ids: query.location_ids.filter((item) => item !== 'Indicator'),
       query_type: query.query_type || 'UserQuery',
     };
-    const response = await fetch(withBasePath('/api/get_metric_data'), {
+    const response = await serviceFetch(withBasePath('/api/get_metric_data'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
