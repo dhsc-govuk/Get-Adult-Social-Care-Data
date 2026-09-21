@@ -251,17 +251,15 @@ export const mockTableRowHeaders = {
   npl_care_home_residential: 'Residental',
 };
 
-export const mockTableColumnHeaders = [
-  'Filter',
-  'Northumberland',
-  'North East',
-  'England',
-];
+export const mockTableColumnHeaders = {
+  LALabel: 'Northumberland',
+  RegionLabel: 'North East',
+  CountryLabel: 'England',
+};
 
-export const mockTableColumnHeadersCareProvider = [
-  'Filter',
-  'Birkinshaw Manor',
-  'Northumberland',
-  'North East',
-  'England',
-];
+export const mockTableColumnHeadersCareProvider = {
+  CPLabel: 'Birkinshaw Manor',
+  LALabel: 'Northumberland',
+  RegionLabel: 'North East',
+  CountryLabel: 'England',
+};

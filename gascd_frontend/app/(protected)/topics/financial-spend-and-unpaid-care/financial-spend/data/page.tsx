@@ -462,7 +462,6 @@ export default function LAFundingPage() {
           }
           download={
             <>
-              <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
                 filename="social_care_funding_by_duration.csv"
@@ -552,7 +551,6 @@ export default function LAFundingPage() {
           }
           download={
             <>
-              <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref2}
                 filename="funding_for_long_term_adult_social_care.csv"
@@ -622,7 +620,7 @@ export default function LAFundingPage() {
                   <TimeSeriesChart
                     series={timeSeriesDataForGraph}
                     yPrefix="£"
-                    dateFormat="%Y"
+                    financialYear
                   />
                 </div>
               )) || <p>Loading graph</p>}
@@ -663,7 +661,6 @@ export default function LAFundingPage() {
           }
           download={
             <>
-              <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref3}
                 filename="funding_for_long_term_adult_social_care.csv"

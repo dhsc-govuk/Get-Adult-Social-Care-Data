@@ -8,7 +8,6 @@ namespace api.Tests;
 public class App : AppFixture<Program>
 {
     public required PostgreSqlContainer PostgresContainer { get; set; }
-
     protected override async ValueTask PreSetupAsync()
     {
         PostgresContainer = new PostgreSqlBuilder("postgis/postgis:18-3.6-alpine")

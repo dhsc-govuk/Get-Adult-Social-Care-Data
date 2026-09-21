@@ -59,6 +59,10 @@ export interface PeerGroupBarChartProps {
   laName: string;
   currentLaValue: number | null;
   nationalAverageValue: number | null;
+  // The user's region value from the same metric-data query the tables use,
+  // following the same "the chart can never disagree with the table" rule as
+  // the national average.
+  regionalAverageValue: number | null;
   peerData: PeerGroupData | null;
   loading: boolean;
   error: boolean;
@@ -68,6 +72,9 @@ export interface PeerGroupBarChartProps {
   comparatorControl?: ReactNode;
   comparatorLabel?: string;
   comparatorAverageLabel?: string;
+  // Legend label for the regional average line, e.g. "North East (regional
+  // average)".
+  regionalAverageLabel?: string;
   // Legend label for the national average line, e.g. "England" where the
   // page's tables also use the plain country name.
   nationalAverageLabel?: string;

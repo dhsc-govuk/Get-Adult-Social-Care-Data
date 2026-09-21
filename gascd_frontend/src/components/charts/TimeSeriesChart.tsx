@@ -38,12 +38,18 @@ interface TimeSeriesChartProps {
    * ISO dates to label in `tickValues` and the label for each one in
    * `tickLabels` - for example an academic year shown as "2023/24". Both are
    * needed for either to apply; without them the ticks come from `dateFormat`.
+   * Ignored when `financialYear` is set, which labels every point itself.
    */
   tickValues?: string[];
   tickLabels?: string[];
   /** Date shown in the hover label, defaults to the full date */
   hoverDateFormat?: string;
+  financialYear?: boolean;
 }
+const toFinancialYearLabel = (isoDate: string): string => {
+  const yearEnd = new Date(isoDate).getUTCFullYear();
+  return `${yearEnd - 1}-${yearEnd}`;
+};
 
 // --- Component ---
 
@@ -56,9 +62,12 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   tickValues,
   tickLabels,
   hoverDateFormat = '%d %b %Y',
+  financialYear = false,
 }) => {
   const useExplicitTicks =
-    !!tickValues?.length && tickValues.length === tickLabels?.length;
+    !financialYear &&
+    !!tickValues?.length &&
+    tickValues.length === tickLabels?.length;
   const DEFAULT_COLORS = [
     // Colour pallete from
     // https://service-manual.ons.gov.uk/data-visualisation/colours/using-colours-in-charts#multiple-colours
@@ -74,7 +83,9 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   const chartData: Data[] = useMemo(() => {
     return series.map((s, index) => {
       // Create separate arrays for X and Y as Plotly expects
-      const xValues = s.data.map((d) => d.date);
+      const xValues = s.data.map((d) =>
+        financialYear ? toFinancialYearLabel(d.date) : d.date
+      );
       const yValues = s.data.map((d) => d.value);
 
       const trace: Partial<ScatterData> = {
@@ -89,12 +100,14 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
           width: s.comparator ? 4 : 5,
           dash: s.comparator ? 'dash' : 'solid',
         },
-        hovertemplate: `<b>${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}</b><br>%{x|${hoverDateFormat}}<extra></extra>`,
+        hovertemplate: financialYear
+          ? `<b>${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}</b><extra></extra>`
+          : `<b>${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}</b><br>%{x|${hoverDateFormat}}<extra></extra>`,
       };
 
       return trace as Data;
     });
-  }, [series]);
+  }, [series, financialYear, hoverDateFormat]);
 
   const layout: Partial<Layout> = {
     // Legend positioned above the chart, horizontal
@@ -112,7 +125,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
       },
     },
     xaxis: {
-      type: 'date',
+      type: financialYear ? 'category' : 'date',
       showgrid: false, // No vertical grid lines
       ...(useExplicitTicks
         ? {
@@ -121,9 +134,9 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
             ticktext: tickLabels,
           }
         : {
-            tickformat: `${dateFormat}`, // Shows "Jan", "Feb", etc.
+            tickformat: financialYear ? undefined : `${dateFormat}`, // Shows "Jan", "Feb", etc.
             nticks:
-              dateFormat === '%b %y'
+              !financialYear && dateFormat === '%b %y'
                 ? Math.ceil(series[series.length - 1].data.length / 48)
                 : series[series.length - 1].data.length, // uses last item in series which is usually national
           }),
@@ -132,6 +145,8 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
         size: 14,
         color: '#000',
       },
+      tickangle: financialYear ? 45 : undefined,
+      automargin: financialYear,
       fixedrange: true, // prevents zooming
     },
     yaxis: {

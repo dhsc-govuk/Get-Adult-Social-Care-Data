@@ -38,7 +38,7 @@ export default function ProvisionAndOccupancyPage() {
   const [locationNames, setLocationNames] = useState<LocationNames>({
     CPLabel: null,
     LALabel: 'Loading...',
-    RegionLabel: 'NHS peer group average',
+    RegionLabel: 'Loading...',
     CountryLabel: 'Loading...',
   } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
@@ -112,11 +112,14 @@ export default function ProvisionAndOccupancyPage() {
       : undefined;
   const comparatorLabel = selectedGroup ? selectedGroup.name : undefined;
   const comparatorAverageLabel = selectedGroup
-    ? `${selectedGroup.name} average`
+    ? `${selectedGroup.name} (average)`
     : NHS_PEER_GROUP_AVERAGE_LABEL;
   const tableColumnHeaders = {
-    ...locationNames,
-    RegionLabel: comparatorAverageLabel,
+    CPLabel: locationNames.CPLabel,
+    LALabel: locationNames.LALabel,
+    RegionLabel: locationNames.RegionLabel,
+    ComparatorLabel: comparatorAverageLabel,
+    CountryLabel: locationNames.CountryLabel,
   };
 
   const handleComparatorChange = (newSelection: ComparatorSelection) => {
@@ -252,7 +255,7 @@ export default function ProvisionAndOccupancyPage() {
           setLocationNames({
             CPLabel: locationNames.CPLabel,
             LALabel: locationNames.LALabel,
-            RegionLabel: 'NHS peer group average',
+            RegionLabel: locationNames.RegionLabel,
             CountryLabel: 'England (national average)',
           });
         } catch (error) {
@@ -295,12 +298,12 @@ export default function ProvisionAndOccupancyPage() {
     };
   }, [demographicQuery, CPLocationId]);
 
-  // The Regional row is repurposed to show the selected comparison group's
-  // average (synthesised if the metrics API returned no Regional row). Derived
+  // The true Regional row is preserved and the selected comparison group's
+  // average is added as a separate ComparatorAverage column (synthesised if
+  // the metrics API returned no Regional row for the metric). Derived
   // synchronously so the table can never show a stale or mislabelled value:
-  // while comparator data is unresolved (loading or failed), the row is null
-  // and renders as unavailable rather than falling back to the true regional
-  // value under a comparator-average heading.
+  // while comparator data is unresolved (loading or failed), the comparator
+  // column is null and renders as unavailable.
   const filteredDemographicData = useMemo(
     () =>
       mergeComparatorAverage(
@@ -432,7 +435,7 @@ export default function ProvisionAndOccupancyPage() {
               {renderComparatorControl('comparator-table-1')}
               <DataTable
                 tableref={tableref1}
-                caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${tableColumnHeaders.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
+                caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, March 2021`}
                 source={
                   'Census 2021 from the Office for National Statistics (ONS)'
                 }
@@ -450,8 +453,9 @@ export default function ProvisionAndOccupancyPage() {
           }
           download={
             <>
-              {renderComparatorControl('comparator-download-1')}
-              <h4 className="govuk-heading-s">Download</h4>
+              <div className="govuk-!-margin-bottom-4">
+                {renderComparatorControl('comparator-download-1')}
+              </div>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
                 filename="households_deprived_in_4_dimensions.csv"
@@ -478,6 +482,14 @@ export default function ProvisionAndOccupancyPage() {
                     d.location_type === 'National'
                 )?.data_point ?? null
               }
+              regionalAverageValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_households_deprivation_deprived' &&
+                    d.location_type === 'Regional'
+                )?.data_point ?? null
+              }
+              regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={
                 dataByMetric['perc_households_deprivation_deprived'] ?? null
               }
@@ -548,7 +560,7 @@ export default function ProvisionAndOccupancyPage() {
               {renderComparatorControl('comparator-table-2')}
               <DataTable
                 tableref={tableref2}
-                caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${tableColumnHeaders.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
+                caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, March 2021`}
                 source={
                   'Census 2021 from the Office for National Statistics (ONS)'
                 }
@@ -566,8 +578,9 @@ export default function ProvisionAndOccupancyPage() {
           }
           download={
             <>
-              {renderComparatorControl('comparator-download-2')}
-              <h4 className="govuk-heading-s">Download</h4>
+              <div className="govuk-!-margin-bottom-4">
+                {renderComparatorControl('comparator-download-2')}
+              </div>
               <DownloadTableDataCSVLink
                 tableref={tableref2}
                 filename="property_owned_outright.csv"
@@ -594,6 +607,14 @@ export default function ProvisionAndOccupancyPage() {
                     d.location_type === 'National'
                 )?.data_point ?? null
               }
+              regionalAverageValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_household_ownership' &&
+                    d.location_type === 'Regional'
+                )?.data_point ?? null
+              }
+              regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric['perc_household_ownership'] ?? null}
               loading={chartLoading}
               error={chartError}
@@ -662,7 +683,7 @@ export default function ProvisionAndOccupancyPage() {
               {renderComparatorControl('comparator-table-3')}
               <DataTable
                 tableref={tableref3}
-                caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${tableColumnHeaders.RegionLabel} and ${locationNames.CountryLabel}, March 2021`}
+                caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, March 2021`}
                 source={
                   'Census 2021 from the Office for National Statistics (ONS)'
                 }
@@ -680,8 +701,9 @@ export default function ProvisionAndOccupancyPage() {
           }
           download={
             <>
-              {renderComparatorControl('comparator-download-3')}
-              <h4 className="govuk-heading-s">Download</h4>
+              <div className="govuk-!-margin-bottom-4">
+                {renderComparatorControl('comparator-download-3')}
+              </div>
               <DownloadTableDataCSVLink
                 tableref={tableref3}
                 filename="one_person_households_over_65.csv"
@@ -708,6 +730,14 @@ export default function ProvisionAndOccupancyPage() {
                     d.location_type === 'National'
                 )?.data_point ?? null
               }
+              regionalAverageValue={
+                filteredDemographicData.find(
+                  (d) =>
+                    d.metric_id === 'perc_households_one_person' &&
+                    d.location_type === 'Regional'
+                )?.data_point ?? null
+              }
+              regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric['perc_households_one_person'] ?? null}
               loading={chartLoading}
               error={chartError}

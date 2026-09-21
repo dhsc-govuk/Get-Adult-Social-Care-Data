@@ -151,7 +151,7 @@ export const METRIC_SHARING_CATEGORIES: Record<string, SharingCategoryId> = {
   dementia_estimated_diagnosis_rate_65over: 'published',
 
   // Row 15: percentage of adult social care beds occupied (LA, region, England)
-  median_occupancy_total: 'not-for-external-sharing',
+  median_occupancy_total: 'discretion',
 
   // Row 16: beds and occupancy in a care provider location, and the medians it
   // is compared against
@@ -353,7 +353,7 @@ export const HELP_PAGE_SHARING = {
     'capacityTrackerOwnOrganisation',
   'one-person-households-where-person-aged-65-or-over': 'publicDomain',
   'people-who-reported-bad-or-very-bad-health': 'publicDomain',
-  'percentage-beds-occupied': 'capacityTrackerRestricted',
+  'percentage-beds-occupied': 'capacityTrackerOwnOrganisation',
   'percentage-beds-occupied-care-provider-location':
     'capacityTrackerOwnOrganisation',
   'percentage-of-pupils-with-sen-support-aged-14-and-over': 'publicDomain',

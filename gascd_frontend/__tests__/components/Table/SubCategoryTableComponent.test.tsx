@@ -46,7 +46,7 @@ describe('Table component tests', () => {
     );
 
     await waitFor(() => {
-      mockTableColumnHeaders.forEach((item) => {
+      Object.values(mockTableColumnHeaders).forEach((item) => {
         expect(screen.getByText(item)).toBeInTheDocument();
       });
 
@@ -94,7 +94,7 @@ describe('Table component tests', () => {
       ></SubCatergoryTable>
     );
     await waitFor(() => {
-      mockTableColumnHeadersCareProvider.forEach((item) => {
+      Object.values(mockTableColumnHeadersCareProvider).forEach((item) => {
         expect(screen.getByText(item)).toBeInTheDocument();
       });
       Object.values(mockTableRowHeaders).forEach((value) => {
