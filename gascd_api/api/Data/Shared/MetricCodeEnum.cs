@@ -1,4 +1,4 @@
-using api.Data.Models.Metrics.TimeSeries;
+﻿using api.Data.Models.Metrics.TimeSeries;
 using System.Reflection;
 
 namespace api.Data.Shared;
@@ -51,6 +51,8 @@ public enum MetricCodeEnum
     bedcount_per_hundred_thousand_adults_transitional,
     [MetricGroup(typeof(BedcountPerHundredThousandAdults))]
     bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled,
+    [MetricGroup(typeof(CinPer10000Children))]
+    cin_per_10000_children,
     [MetricGroup(typeof(DementiaEstimatedDiagnosisRate65Over))]
     dementia_estimated_diagnosis_rate_65over,
     [MetricGroup(typeof(DementiaPrevalence65Over))]
@@ -269,6 +271,64 @@ public enum MetricCodeEnum
     mental_health_support_18_and_over,
     [MetricGroup(typeof(NumClientsLongTermSupport))]
     mental_health_support_65_and_over,
+    [MetricGroup(typeof(NumChildrenInNeed))]
+    num_children_in_need,
+    [MetricGroup(typeof(NumCinTransferAsc))]
+    num_cin_transfer_asc,
+    [MetricGroup(typeof(NumEhcp14Plus))]
+    num_ehcp_14plus,
+    [MetricGroup(typeof(NumEhcp14Plus))]
+    num_ehcp_age_14,
+    [MetricGroup(typeof(NumEhcp14Plus))]
+    num_ehcp_age_15,
+    [MetricGroup(typeof(NumEhcp14Plus))]
+    num_ehcp_age_16,
+    [MetricGroup(typeof(NumEhcp14Plus))]
+    num_ehcp_age_17,
+    [MetricGroup(typeof(NumEhcp14Plus))]
+    num_ehcp_age_18,
+    [MetricGroup(typeof(NumEhcp14Plus))]
+    num_ehcp_age_19,
+    [MetricGroup(typeof(NumEhcp14Plus))]
+    num_ehcp_age_20,
+    [MetricGroup(typeof(NumEhcp14Plus))]
+    num_ehcp_age_21,
+    [MetricGroup(typeof(NumEhcp14Plus))]
+    num_ehcp_age_22,
+    [MetricGroup(typeof(NumEhcp14Plus))]
+    num_ehcp_age_23,
+    [MetricGroup(typeof(NumEhcp14Plus))]
+    num_ehcp_age_24,
+    [MetricGroup(typeof(NumEhcp14Plus))]
+    num_ehcp_age_25,
+    [MetricGroup(typeof(NumSenSupport14Plus))]
+    num_sen_support_14plus,
+    [MetricGroup(typeof(NumSenSupport14Plus))]
+    num_sen_support_age_14,
+    [MetricGroup(typeof(NumSenSupport14Plus))]
+    num_sen_support_age_15,
+    [MetricGroup(typeof(NumSenSupport14Plus))]
+    num_sen_support_age_16,
+    [MetricGroup(typeof(NumSenSupport14Plus))]
+    num_sen_support_age_17,
+    [MetricGroup(typeof(NumSenSupport14Plus))]
+    num_sen_support_age_18,
+    [MetricGroup(typeof(NumSenSupport14Plus))]
+    num_sen_support_age_19_and_over,
+    [MetricGroup(typeof(PercSenSupport14Plus))]
+    perc_sen_support_14plus,
+    [MetricGroup(typeof(PercSenSupport14Plus))]
+    perc_sen_support_age_14,
+    [MetricGroup(typeof(PercSenSupport14Plus))]
+    perc_sen_support_age_15,
+    [MetricGroup(typeof(PercSenSupport14Plus))]
+    perc_sen_support_age_16,
+    [MetricGroup(typeof(PercSenSupport14Plus))]
+    perc_sen_support_age_17,
+    [MetricGroup(typeof(PercSenSupport14Plus))]
+    perc_sen_support_age_18,
+    [MetricGroup(typeof(PercSenSupport14Plus))]
+    perc_sen_support_age_19_and_over,
     [MetricGroup(typeof(NumClientsLongTermSupport))]
     personal_care_support_physical_support_18_64,
     [MetricGroup(typeof(NumClientsLongTermSupport))]

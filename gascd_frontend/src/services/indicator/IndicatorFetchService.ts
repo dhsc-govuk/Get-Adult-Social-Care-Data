@@ -27,6 +27,32 @@ class IndicatorFetchService {
     }
     return response.json();
   }
+
+  /**
+   * The statistical peer group average of each metric over time for the user's
+   * LA, as indicators with the location type `PeerGroup`.
+   */
+  public static async getPeerGroupAverages(
+    metricIds: string[]
+  ): Promise<Indicator[]> {
+    if (!metricIds.length) {
+      return [];
+    }
+    const response = await fetch(withBasePath('/api/get_la_peer_averages'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ metric_ids: metricIds }),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch peer group averages: ${response.statusText}`
+      );
+    }
+    return response.json();
+  }
 }
 
 export default IndicatorFetchService;
