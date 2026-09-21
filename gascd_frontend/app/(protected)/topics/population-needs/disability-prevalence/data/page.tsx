@@ -157,7 +157,11 @@ export default function DisabilityPrevalence() {
     error: peerError,
   } = usePeerGroupData(
     laCode,
-    [...benchmarkedMetricIds, ...standardisedSupportReasonMetricIds],
+    [
+      ...benchmarkedMetricIds,
+      ...supportReasonMetricIds,
+      ...standardisedSupportReasonMetricIds,
+    ],
     selection,
     groups
   );
@@ -484,6 +488,19 @@ export default function DisabilityPrevalence() {
   useEffect(() => {
     updatePrimaryReasonMetrics();
   }, [primarySupportReasonData]);
+
+  // Primary support reason counts, with the comparator group's average added
+  // alongside the true regional value
+  const benchmarkedPrimaryReasonData = useMemo(
+    () =>
+      mergeComparatorAverage(
+        filteredPrimaryReasonData,
+        supportReasonMetricIds,
+        dataByMetric,
+        locationIds[2]
+      ),
+    [filteredPrimaryReasonData, dataByMetric, locationIds]
+  );
 
   // Standardised primary support reason rows, with the comparator group's
   // average added alongside the true regional value (see mergeComparatorAverage)
@@ -909,30 +926,36 @@ export default function DisabilityPrevalence() {
           id="4"
           sharingMetricIds={supportReasonMetricIds}
           table={
-            <DataTable
-              tableref={tableref4}
-              caption={
-                <>
-                  Table 4: primary reason for all age groups to access long-term
-                  adult social care – {locationNames.LALabel}{' '}
-                  <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getMostRecentDate(filteredDisabilityData)}
-                </>
-              }
-              source={
-                'Adult Social Care Activity Report from Department of Health and Social Care (DHSC)'
-              }
-              columnHeaders={locationNamesWithAverageLabels}
-              metricColumnName="Primary support reason"
-              rowHeaders={supportReasonRowHeaders}
-              data={filteredPrimaryReasonData}
-              showCareProvider={false}
-              smallNumberSuppression={true}
-            >
-              <p className="govuk-body-m">(*) denotes less than 5</p>
-            </DataTable>
+            <>
+              {renderComparatorControl('comparator-table-4')}
+              <DataTable
+                tableref={tableref4}
+                caption={
+                  <>
+                    Table 4: primary reason for all age groups to access
+                    long-term adult social care – {locationNames.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {comparatorAverageLabel}, {locationNames.RegionLabel} region
+                    and {locationNames.CountryLabel},{' '}
+                    {IndicatorService.getMostRecentDate(filteredDisabilityData)}
+                  </>
+                }
+                source={
+                  'Adult Social Care Activity Report from Department of Health and Social Care (DHSC)'
+                }
+                columnHeaders={{
+                  ...locationNamesWithAverageLabels,
+                  ComparatorLabel: comparatorAverageLabel,
+                }}
+                metricColumnName="Primary support reason"
+                rowHeaders={supportReasonRowHeaders}
+                data={benchmarkedPrimaryReasonData}
+                showCareProvider={false}
+                smallNumberSuppression={true}
+              >
+                <p className="govuk-body-m">(*) denotes less than 5</p>
+              </DataTable>
+            </>
           }
           download={
             <>
