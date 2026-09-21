@@ -112,7 +112,7 @@ export default function DementaPrevalencePage() {
       : undefined;
   const comparatorLabel = selectedGroup ? selectedGroup.name : undefined;
   const comparatorAverageLabel = selectedGroup
-    ? `${selectedGroup.name} average`
+    ? `${selectedGroup.name} (average)`
     : NHS_PEER_GROUP_AVERAGE_LABEL;
   const tableColumnHeaders = {
     CPLabel: locationNames.CPLabel,

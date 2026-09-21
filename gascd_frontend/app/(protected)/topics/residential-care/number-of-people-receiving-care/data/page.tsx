@@ -109,7 +109,7 @@ export default function NumberPeopleReceivingCarePage() {
       ? groups.find((group) => group.id === selection.groupId)
       : undefined;
   const comparatorAverageLabel = selectedGroup
-    ? `${selectedGroup.name} average`
+    ? `${selectedGroup.name} (average)`
     : NHS_PEER_GROUP_AVERAGE_LABEL;
 
   // The comparator average is added as its own column alongside the true

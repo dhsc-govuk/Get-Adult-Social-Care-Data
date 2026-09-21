@@ -136,7 +136,7 @@ describe('Table component tests', () => {
           CPLabel: null,
           LALabel: 'Northumberland',
           RegionLabel: 'North East',
-          ComparatorLabel: 'NHS peer group average',
+          ComparatorLabel: 'NHS peer group (average)',
           CountryLabel: 'England',
         }}
         rowHeaders={{ perc_65over: 'Aged 65 and over' }}
@@ -147,7 +147,7 @@ describe('Table component tests', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('NHS peer group average')).toBeInTheDocument();
+      expect(screen.getByText('NHS peer group (average)')).toBeInTheDocument();
       expect(screen.getByText('55.5%')).toBeInTheDocument();
     });
   });

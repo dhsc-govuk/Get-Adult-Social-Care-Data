@@ -152,7 +152,7 @@ export default function DisabilityPrevalence() {
       : undefined;
   const comparatorLabel = selectedGroup ? selectedGroup.name : undefined;
   const comparatorAverageLabel = selectedGroup
-    ? `${selectedGroup.name} average`
+    ? `${selectedGroup.name} (average)`
     : NHS_PEER_GROUP_AVERAGE_LABEL;
   // Column headers for the benchmarked tables: true regional average + comparator
   const benchmarkedColumnHeaders = {
