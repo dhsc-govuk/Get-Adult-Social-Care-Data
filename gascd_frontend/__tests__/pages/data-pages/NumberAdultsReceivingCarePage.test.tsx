@@ -74,6 +74,7 @@ describe('NumberAdultsReceivingCarePage', () => {
 
     const dataBoxHeadings = [
       'Number of adults receiving community social care',
+      '[REPLACE WITH REAL METRIC]: Number of adults receiving community social care – standardised per 100,000 of the total adult population (18+)',
     ];
     for (let dataBoxHeadingText of dataBoxHeadings) {
       expect(
@@ -95,8 +96,9 @@ describe('NumberAdultsReceivingCarePage', () => {
       '/help/number-people-receiving-care-from-community-social-care-provider'
     );
 
-    const tableElement = screen.getByRole('table');
-    expect(tableElement).toBeInTheDocument();
+    // One table per data box: the count and the standardised rate
+    const tableElements = screen.getAllByRole('table');
+    expect(tableElements).toHaveLength(2);
   });
 
   // Regression test for the MPS link being resolved from the wrong element of

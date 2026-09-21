@@ -5,6 +5,7 @@ import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
+import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
 import DataLinkCard from '@/components/data-components/DataLinkCard';
 import LocalMarketInformation from '@/components/data-components/LocalMarketInformation';
@@ -46,6 +47,7 @@ const showCPLevelData = (user: User | null | undefined) => {
 
 export default function NumberPeopleReceivingCarePage() {
   const tableref1 = useRef<HTMLTableElement>(null);
+  const tableref2 = useRef<HTMLTableElement>(null);
   const { data: session } = useSession();
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
@@ -71,6 +73,12 @@ export default function NumberPeopleReceivingCarePage() {
   });
 
   const demographicMetricIds = ['nccc_num_clients_comm_care'];
+  // TODO(GASCD-246): the standardised "per 100,000 of the total adult
+  // population (18+)" metric does not exist yet — it is absent from
+  // MetricCodeEnum and the metrics table. Built against the unstandardised
+  // metric so the presentation can be reviewed; swap this for the real code
+  // once the backend exposes it.
+  const STANDARDISED_METRIC_ID = 'nccc_num_clients_comm_care';
 
   // This page resolves locations with careProvider: true, so the ids are
   // ['Indicator', careProviderLocation, la, region, country] — one further
@@ -94,12 +102,11 @@ export default function NumberPeopleReceivingCarePage() {
     editingGroupId?: string;
   } | null>(null);
   const [builderError, setBuilderError] = useState<string | null>(null);
-  const { dataByMetric } = usePeerGroupData(
-    laCode,
-    demographicMetricIds,
-    selection,
-    groups
-  );
+  const {
+    dataByMetric,
+    loading: chartLoading,
+    error: chartError,
+  } = usePeerGroupData(laCode, demographicMetricIds, selection, groups);
   const { authorities, error: authoritiesError } = useAllLocalAuthorities(
     builderState !== null
   );
@@ -108,6 +115,7 @@ export default function NumberPeopleReceivingCarePage() {
     selection.kind === 'custom'
       ? groups.find((group) => group.id === selection.groupId)
       : undefined;
+  const comparatorLabel = selectedGroup ? selectedGroup.name : undefined;
   const comparatorAverageLabel = selectedGroup
     ? `${selectedGroup.name} (average)`
     : NHS_PEER_GROUP_AVERAGE_LABEL;
@@ -436,6 +444,101 @@ export default function NumberPeopleReceivingCarePage() {
                 filename="number_of_people_receiving_community_social_care.csv"
                 xLabel=""
                 downloadType="number of people receiving community social care in the last month"
+              />
+            </>
+          }
+        />
+      </DataBox>
+      <DataBox
+        dataTitle="[REPLACE WITH REAL METRIC]: Number of adults receiving community social care – standardised per 100,000 of the total adult population (18+)"
+        dataInfo={
+          <>
+            <p className="govuk-body-m">
+              Find out{' '}
+              <a
+                href={withBasePath(
+                  '/help/number-people-receiving-care-from-community-social-care-provider'
+                )}
+                className="govuk-link"
+              >
+                how the number of people receiving community social care is
+                calculated
+              </a>
+              .
+            </p>
+            {nhsPeerGroupDetails}
+          </>
+        }
+      >
+        <DataTabs
+          id="2"
+          sharingMetricIds={[STANDARDISED_METRIC_ID]}
+          chart={
+            <PeerGroupBarChart
+              laCode={laCode}
+              laName={locationNames.LALabel}
+              currentLaValue={
+                benchmarkedDemographicData.find(
+                  (d) =>
+                    d.metric_id === STANDARDISED_METRIC_ID &&
+                    d.location_type === 'LA'
+                )?.data_point ?? null
+              }
+              nationalAverageValue={
+                benchmarkedDemographicData.find(
+                  (d) =>
+                    d.metric_id === STANDARDISED_METRIC_ID &&
+                    d.location_type === 'National'
+                )?.data_point ?? null
+              }
+              regionalAverageValue={
+                benchmarkedDemographicData.find(
+                  (d) =>
+                    d.metric_id === STANDARDISED_METRIC_ID &&
+                    d.location_type === 'Regional'
+                )?.data_point ?? null
+              }
+              regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
+              peerData={dataByMetric[STANDARDISED_METRIC_ID] ?? null}
+              loading={chartLoading}
+              error={chartError}
+              comparatorControl={renderComparatorControl('comparator-chart-1')}
+              comparatorLabel={comparatorLabel}
+              comparatorAverageLabel={comparatorAverageLabel}
+              metricDescription="the number of people receiving community social care, standardised per 100,000 of the total adult population (18+)"
+              figureTitle="Number of people receiving community social care in the last month, standardised per 100,000 of the total population (18+)"
+              figureNumber={1}
+              sourceText="Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS"
+            />
+          }
+          table={
+            <>
+              {renderComparatorControl('comparator-table-2')}
+              <DataTable
+                tableref={tableref2}
+                caption={`Table 2: number of people receiving community social care in the last month, standardised per 100,000 of the total population (18+) – ${locationNames.LALabel} LA, ${comparatorAverageLabel}, ${locationNames.RegionLabel} (regional average) and ${locationNames.CountryLabel} (national average), ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`}
+                source="Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS"
+                columnHeaders={{
+                  ...locationNamesWithAverageLabels,
+                  CPLabel: null,
+                  ComparatorLabel: comparatorAverageLabel,
+                }}
+                rowHeaders={{
+                  [STANDARDISED_METRIC_ID]: `People receiving community social care in ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`,
+                }}
+                data={benchmarkedDemographicData}
+                showCareProvider={false}
+                percentageRows={[]}
+              ></DataTable>
+            </>
+          }
+          download={
+            <>
+              <DownloadTableDataCSVLink
+                tableref={tableref2}
+                filename="number_of_people_receiving_community_social_care_standardised.csv"
+                xLabel=""
+                downloadType="number of people receiving community social care per 100,000 adults in the last month"
               />
             </>
           }
