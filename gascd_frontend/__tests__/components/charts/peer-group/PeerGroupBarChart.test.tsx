@@ -83,7 +83,7 @@ describe('PeerGroupBarChart', () => {
       )
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/NHS peer group average \(53\.5%\)/i)
+      screen.getByText(/NHS peer group \(average\) \(53\.5%\)/i)
     ).toBeInTheDocument();
     expect(
       screen.getByText(/England \(national average\) \(10\.5%\)/i)
