@@ -72,13 +72,13 @@ export default function NumberPeopleReceivingCarePage() {
     location_ids: [],
   });
 
-  const demographicMetricIds = ['nccc_num_clients_comm_care'];
-  // TODO(GASCD-246): the standardised "per 100,000 of the total adult
-  // population (18+)" metric does not exist yet — it is absent from
-  // MetricCodeEnum and the metrics table. Built against the unstandardised
-  // metric so the presentation can be reviewed; swap this for the real code
-  // once the backend exposes it.
-  const STANDARDISED_METRIC_ID = 'nccc_num_clients_comm_care';
+  // The count and its standardised twin (per 100,000 of the adult population,
+  // GASCD-246) are fetched together; each table picks its rows by rowHeaders.
+  const STANDARDISED_METRIC_ID = 'nccc_num_clients_comm_care_per100k_adults';
+  const demographicMetricIds = [
+    'nccc_num_clients_comm_care',
+    STANDARDISED_METRIC_ID,
+  ];
 
   // This page resolves locations with careProvider: true, so the ids are
   // ['Indicator', careProviderLocation, la, region, country] — one further
@@ -411,7 +411,7 @@ export default function NumberPeopleReceivingCarePage() {
       >
         <DataTabs
           id="1"
-          sharingMetricIds={demographicMetricIds}
+          sharingMetricIds={['nccc_num_clients_comm_care']}
           table={
             <>
               {renderComparatorControl('comparator-table-1')}
@@ -450,7 +450,7 @@ export default function NumberPeopleReceivingCarePage() {
         />
       </DataBox>
       <DataBox
-        dataTitle="[REPLACE WITH REAL METRIC]: Number of adults receiving community social care – standardised per 100,000 of the total adult population (18+)"
+        dataTitle="Number of adults receiving community social care – standardised per 100,000 of the total adult population (18+)"
         dataInfo={
           <>
             <p className="govuk-body-m">

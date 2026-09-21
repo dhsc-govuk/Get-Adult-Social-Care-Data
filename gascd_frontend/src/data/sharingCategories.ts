@@ -173,6 +173,51 @@ export const METRIC_SHARING_CATEGORIES: Record<string, SharingCategoryId> = {
   bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled:
     'not-for-external-sharing',
 
+  // September release (GASCD-99): the same beds per 100,000 under the working
+  // age (18 to 64) and older age (65 and over) population denominators. Same
+  // Capacity Tracker numerator, so the same categorisation as rows 17 to 28.
+  bedcount_per_hundred_thousand_18_64_total: 'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_community_care: 'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_dementia_nursing: 'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_dementia_residential:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_general_nursing: 'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_general_residential:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_learning_disability_nursing:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_learning_disability_residential:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_mental_health_nursing:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_mental_health_residential:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_transitional: 'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_ypd_young_physically_disabled:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_total: 'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_community_care:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_dementia_nursing:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_dementia_residential:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_general_nursing:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_general_residential:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_learning_disability_nursing:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_learning_disability_residential:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_mental_health_nursing:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_mental_health_residential:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_transitional: 'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_ypd_young_physically_disabled:
+    'not-for-external-sharing',
+
   // Rows 29 to 32 and 35 to 41: care provider locations and services
   npl_adult_social_care: 'published',
   npl_care_home: 'published',
@@ -246,8 +291,13 @@ export const DEFAULT_SHARING_CATEGORY_ID: SharingCategoryId =
  * Suffixes the service appends to metric ids when it derives series from a base
  * metric. Stripping them lets those derived series inherit the category of the
  * metric they come from.
+ *
+ * `_per100k_adults` is the September-release standardised twin of a count
+ * metric (GASCD-152): the same source data expressed per 100,000 of the adult
+ * population, so it shares the count metric's categorisation. Covers the
+ * primary support reason, expenditure and community care rates.
  */
-const DERIVED_METRIC_SUFFIXES = ['_yearly', '_perc_change'];
+const DERIVED_METRIC_SUFFIXES = ['_yearly', '_perc_change', '_per100k_adults'];
 
 const baseMetricId = (metricId: string): string => {
   let id = metricId;

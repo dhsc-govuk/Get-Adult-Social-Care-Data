@@ -1,4 +1,4 @@
-﻿using api.Data.Models.Metrics;
+using api.Data.Models.Metrics;
 using api.Data.Models.Metrics.TimeSeries;
 using api.Data.Models.Reference;
 using api.Data.Shared;
@@ -55,6 +55,12 @@ public partial class GascdDataContext : DbContext
     public virtual DbSet<PercPopulationDisability> PercPopulationDisabilitySet { get; set; } = null!;
     public virtual DbSet<PercUnpaidCareProvider> PercUnpaidCareProviderSet { get; set; } = null!;
     public virtual DbSet<TotalPopulation> TotalPopulationSet { get; set; } = null!;
+    public virtual DbSet<BedcountPerHundredThousand1864> BedcountPerHundredThousand1864Set { get; set; } = null!;
+    public virtual DbSet<BedcountPerHundredThousand65Over> BedcountPerHundredThousand65OverSet { get; set; } = null!;
+    public virtual DbSet<NumClientsLongTermSupportPer100kAdults> NumClientsLongTermSupportPer100kAdultsSet { get; set; } = null!;
+    public virtual DbSet<ExpenditureDurationPsrPer100kAdults> ExpenditureDurationPsrPer100kAdultsSet { get; set; } = null!;
+    public virtual DbSet<ExpenditureLongtermSupportSettingPer100kAdults> ExpenditureLongtermSupportSettingPer100kAdultsSet { get; set; } = null!;
+    public virtual DbSet<NumClientsCommCarePer100kAdults> NumClientsCommCarePer100kAdultsSet { get; set; } = null!;
 
     public IQueryable<MetricTimeSeries> GetMetricTimeSeriesQueryable(MetricCodeEnum metricCode)
     {

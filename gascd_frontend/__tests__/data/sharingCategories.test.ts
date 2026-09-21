@@ -72,6 +72,24 @@ describe('getSharingCategoryForMetric', () => {
     ).toBe('not-for-external-sharing');
   });
 
+  it('gives a standardised per-100,000 twin the category of its count metric', () => {
+    expect(
+      getSharingCategoryForMetric('nccc_num_clients_comm_care_per100k_adults').id
+    ).toBe('discretion');
+    expect(
+      getSharingCategoryForMetric(
+        'learning_disability_support_18_and_over_per100k_adults'
+      ).id
+    ).toBe('published');
+    expect(
+      getSharingCategoryForMetric('edpsr_lt_total_all_ages_per100k_adults').id
+    ).toBe('published');
+    expect(
+      getSharingCategoryForMetric('bedcount_per_hundred_thousand_65over_total')
+        .id
+    ).toBe('not-for-external-sharing');
+  });
+
   it('falls back to the most restrictive category for an unknown metric', () => {
     expect(getSharingCategoryForMetric('not_a_real_metric').id).toBe(
       DEFAULT_SHARING_CATEGORY_ID

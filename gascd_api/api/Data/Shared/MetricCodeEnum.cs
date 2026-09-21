@@ -397,6 +397,135 @@ public enum MetricCodeEnum
     perc_unpaid_care_provider,
     [MetricGroup(typeof(TotalPopulation))]
     total_population,
+    // ---- bedcount_per_hundred_thousand_18_64 ----
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_total,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_community_care,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_dementia_nursing,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_dementia_residential,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_general_nursing,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_general_residential,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_learning_disability_nursing,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_learning_disability_residential,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_mental_health_nursing,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_mental_health_residential,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_transitional,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_ypd_young_physically_disabled,
+
+    // ---- bedcount_per_hundred_thousand_65over ----
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_total,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_community_care,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_dementia_nursing,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_dementia_residential,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_general_nursing,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_general_residential,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_learning_disability_nursing,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_learning_disability_residential,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_mental_health_nursing,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_mental_health_residential,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_transitional,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_ypd_young_physically_disabled,
+
+    // ---- num_clients_long_term_support_per100k_adults ----
+    [MetricGroup(typeof(NumClientsLongTermSupportPer100kAdults))]
+    access_and_mobility_only_physical_support_18_and_over_per100k_adults,
+    [MetricGroup(typeof(NumClientsLongTermSupportPer100kAdults))]
+    asylum_seeker_support_social_support_18_and_over_per100k_adults,
+    [MetricGroup(typeof(NumClientsLongTermSupportPer100kAdults))]
+    learning_disability_support_18_and_over_per100k_adults,
+    [MetricGroup(typeof(NumClientsLongTermSupportPer100kAdults))]
+    mental_health_support_18_and_over_per100k_adults,
+    [MetricGroup(typeof(NumClientsLongTermSupportPer100kAdults))]
+    personal_care_support_physical_support_18_and_over_per100k_adults,
+    [MetricGroup(typeof(NumClientsLongTermSupportPer100kAdults))]
+    substance_misuse_support_social_support_18_and_over_per100k_adults,
+    [MetricGroup(typeof(NumClientsLongTermSupportPer100kAdults))]
+    support_for_dual_impairment_sensory_support_18_and_over_per100k_adults,
+    [MetricGroup(typeof(NumClientsLongTermSupportPer100kAdults))]
+    support_for_hearing_impairment_sensory_support_18_and_over_per100k_adults,
+    [MetricGroup(typeof(NumClientsLongTermSupportPer100kAdults))]
+    support_for_social_isolation_other_social_support_18_and_over_per100k_adults,
+    [MetricGroup(typeof(NumClientsLongTermSupportPer100kAdults))]
+    support_for_visual_impairment_sensory_support_18_and_over_per100k_adults,
+    [MetricGroup(typeof(NumClientsLongTermSupportPer100kAdults))]
+    support_with_memory_and_cognition_18_and_over_per100k_adults,
+
+    // ---- expenditure_duration_psr_per100k_adults ----
+    [MetricGroup(typeof(ExpenditureDurationPsrPer100kAdults))]
+    edpsr_lt_learning_disability_support_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureDurationPsrPer100kAdults))]
+    edpsr_lt_mental_health_support_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureDurationPsrPer100kAdults))]
+    edpsr_lt_physical_support_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureDurationPsrPer100kAdults))]
+    edpsr_lt_sensory_support_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureDurationPsrPer100kAdults))]
+    edpsr_lt_support_with_memory_and_cognition_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureDurationPsrPer100kAdults))]
+    edpsr_lt_total_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureDurationPsrPer100kAdults))]
+    edpsr_st_learning_disability_support_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureDurationPsrPer100kAdults))]
+    edpsr_st_mental_health_support_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureDurationPsrPer100kAdults))]
+    edpsr_st_physical_support_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureDurationPsrPer100kAdults))]
+    edpsr_st_sensory_support_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureDurationPsrPer100kAdults))]
+    edpsr_st_support_with_memory_and_cognition_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureDurationPsrPer100kAdults))]
+    edpsr_st_total_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureDurationPsrPer100kAdults))]
+    edpsr_stlt_total_all_ages_per100k_adults,
+
+    // ---- expenditure_longterm_support_setting_per100k_adults ----
+    [MetricGroup(typeof(ExpenditureLongtermSupportSettingPer100kAdults))]
+    elss_supported_accommodation_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureLongtermSupportSettingPer100kAdults))]
+    elss_residential_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureLongtermSupportSettingPer100kAdults))]
+    elss_nursing_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureLongtermSupportSettingPer100kAdults))]
+    elss_community_supported_living_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureLongtermSupportSettingPer100kAdults))]
+    elss_community_other_long_term_care_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureLongtermSupportSettingPer100kAdults))]
+    elss_community_home_care_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureLongtermSupportSettingPer100kAdults))]
+    elss_community_direct_payments_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureLongtermSupportSettingPer100kAdults))]
+    elss_all_types_of_community_social_care_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureLongtermSupportSettingPer100kAdults))]
+    elss_all_types_of_care_home_all_ages_per100k_adults,
+    [MetricGroup(typeof(ExpenditureLongtermSupportSettingPer100kAdults))]
+    elss_all_types_of_adult_social_care_all_ages_per100k_adults,
+
+    // ---- num_clients_comm_care_per100k_adults ----
+    [MetricGroup(typeof(NumClientsCommCarePer100kAdults))]
+    nccc_num_clients_comm_care_per100k_adults,
 }
 
 public static class MetricCodeEnumExtensions
