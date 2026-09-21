@@ -24,6 +24,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
   const [componentFilters, setComponentFilters] = useState<Filters[]>([]);
   const [selectedFilters, setSelectedFilters] = useState<Filters[]>([]);
   const [searchedFilters, setSearchedFilters] = useState<Filters[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [displayFilters, setDisplayFilters] = useState<string[] | null>(null);
   const [showClearAll, setShowClearAll] = useState(false);
 
@@ -77,7 +78,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           filter_bedtype: filter.filter_bedtype,
         }))
     );
-    handleSearch();
+    applySearch(searchTerm, newFilters);
   };
 
   const handleSubmit = () => {
@@ -98,16 +99,21 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     );
   };
 
-  const handleSearch = (): void => {
-    const searchBox = document.getElementById(
-      'input-filter-search'
-    ) as HTMLInputElement | null;
-    if (!searchBox) return;
-    const searchTerm = searchBox.value.toLowerCase() ?? '';
-    const searchedFilters = componentFilters.filter((filter) =>
-      filter.filter_bedtype.toLowerCase().includes(searchTerm)
+  // The search term is held in state rather than read back off the input, so
+  // that re-applying it after a checkbox change does not depend on a global
+  // element id (several filters render on one page).
+  const applySearch = (term: string, filters: Filters[]): void => {
+    setSearchedFilters(
+      filters.filter((filter) =>
+        filter.filter_bedtype.toLowerCase().includes(term)
+      )
     );
-    setSearchedFilters(searchedFilters);
+  };
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    const term = (e.target as HTMLInputElement).value.toLowerCase();
+    setSearchTerm(term);
+    applySearch(term, componentFilters);
   };
 
   const clearFilters = () => {
@@ -169,7 +175,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           }
         >
           <span
-            id="dhsc-filter--button-content1"
+            id={`${filterType}-button-content`}
             className="dhsc-filter--button-content"
           >
             {showFilters ? 'Hide' : 'Show'} filters
@@ -182,7 +188,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
         </button>
       </div>
       {showFilters && (
-        <FilterBox>
+        <FilterBox idPrefix={filterType}>
           {componentFilters.length === 0 && (
             <p className="govuk-body govuk-!-padding-left-3">
               Loading filters...
@@ -201,23 +207,23 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                 )}
               </div>
               <div
-                id="radios-search"
+                id={`${filterType}-filter-search`}
                 className="app-c-option-select__filter"
                 hidden
                 style={{ display: 'block' }}
               >
                 <div
-                  id="checkboxes-search"
+                  id={`${filterType}-checkboxes-search`}
                   className="app-c-option-select__container js-options-container"
                 >
                   <label
-                    htmlFor="input-filter-search"
+                    htmlFor={`${filterType}-search-input`}
                     className="govuk-label govuk-visually-hidden"
                   >
                     {filterLabel} search
                   </label>
                   <input
-                    id="input-filter-search"
+                    id={`${filterType}-search-input`}
                     className="app-c-option-select__filter-input govuk-input"
                     type="text"
                     onKeyUp={handleSearch}
@@ -242,7 +248,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                             <input
                               className="govuk-checkboxes__input"
                               id={filterType + filter.metric_id}
-                              name="Table filter"
+                              name={`${filterType}-table-filter`}
                               type="checkbox"
                               value={filter.metric_id}
                               checked={filter.checked || false}

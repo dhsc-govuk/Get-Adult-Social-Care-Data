@@ -41,7 +41,7 @@ describe('Care Home pages exist and contain data', () => {
     cy.get('#chart-1').should('not.be.visible');
 
     cy.get('#numbers-table-metrics-button').click();
-    cy.get('#dhsc-filter--content1').should('be.visible');
+    cy.get('#numbers-table-metrics-content').should('be.visible');
     cy.wait(300);
     cy.get(
       'input[type="radio"][value="bedcount_per_hundred_thousand_adults_total"]'
@@ -80,7 +80,7 @@ describe('Care Home pages exist and contain data', () => {
     cy.get('#textSummary-2').should('not.be.visible');
 
     cy.get('#type-table-metrics-button').click();
-    cy.get('#dhsc-filter--content1').should('be.visible');
+    cy.get('#type-table-metrics-content').should('be.visible');
     cy.wait(300);
     cy.get(
       'input[type="checkbox"][value="bedcount_per_hundred_thousand_adults_total"]'
@@ -130,7 +130,7 @@ describe('Care Home pages exist and contain data', () => {
     cy.get('#textSummary-3').should('not.be.visible');
 
     cy.get('#single-type-chart-metric-button').click();
-    cy.get('#dhsc-filter--content1').should('be.visible');
+    cy.get('#single-type-chart-metric-content').should('be.visible');
     cy.wait(300);
     cy.get(
       'input[type="radio"][value="bedcount_per_hundred_thousand_adults_total"]'

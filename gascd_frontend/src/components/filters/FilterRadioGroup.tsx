@@ -137,7 +137,7 @@ const FilterRadioGroup: React.FC<Props> = ({
         </button>
       </div>
       {showFilters && (
-        <FilterBox>
+        <FilterBox idPrefix={filterType}>
           {componentFilters.length === 0 && (
             <p className="govuk-body govuk-!-padding-left-3">
               Loading filters...
@@ -151,19 +151,19 @@ const FilterRadioGroup: React.FC<Props> = ({
                 </h4>
               </div>
               <div
-                id="radios-search"
+                id={`${filterType}-radios-search`}
                 className="app-c-option-select__filter"
                 hidden
                 style={{ display: 'block' }}
               >
                 <label
-                  htmlFor="input-bedtype-radios"
+                  htmlFor={`${filterType}-search-input`}
                   className="govuk-label govuk-visually-hidden"
                 >
                   {filterLabel} search
                 </label>
                 <input
-                  id="input-bedtype-radios"
+                  id={`${filterType}-search-input`}
                   className="app-c-option-select__filter-input govuk-input"
                   type="text"
                   onKeyUp={handleSearch}
@@ -186,7 +186,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                             <input
                               className="govuk-radios__input"
                               id={filterType + filter.metric_id}
-                              name="Table filter"
+                              name={`${filterType}-table-filter`}
                               type="radio"
                               value={filter.metric_id}
                               checked={

@@ -3,22 +3,25 @@ import { useRouter } from 'next/navigation';
 
 type Props = {
   children?: React.ReactNode;
+  // Namespaces this instance's element ids. Several filters render on one page,
+  // so fixed ids here would be duplicated across them.
+  idPrefix: string;
 };
 
-const FilterBox: React.FC<Props> = ({ children }) => {
+const FilterBox: React.FC<Props> = ({ children, idPrefix }) => {
   const route = useRouter();
 
   return (
     <>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-full">
-          <div id="dhsc-filter--content1" className="dhsc-filter--content">
+          <div id={`${idPrefix}-content`} className="dhsc-filter--content">
             <form>
               <div className="govuk-grid-row">
                 <div className="govuk-grid-column-one-third govuk-grid-column-one-third-searchable-radios-section">
                   <div
                     className="app-c-option-select js-collapsible"
-                    id="bed-type-radios"
+                    id={`${idPrefix}-options`}
                   >
                     {children}
                   </div>
