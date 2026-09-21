@@ -19,10 +19,10 @@ const AccessibilityStatementPage: React.FC = () => {
               This accessibility statement applies to the Get adult social care
               data (GASCD) service at{' '}
               <a
-                href="https://getadultsocialcaredata.com"
+                href="https://analytics.dhsc.gov.uk/gascd/"
                 className="govuk-link"
               >
-                https://getadultsocialcaredata.com
+                https://analytics.dhsc.gov.uk/gascd/
               </a>
               .
             </p>
@@ -160,12 +160,6 @@ const AccessibilityStatementPage: React.FC = () => {
                 Identification).
               </li>
               <li>
-                On the home page, skip links may not go to the start of page
-                content and will move to the middle of the page instead. This
-                affects some assistive technologies. This fails WCAG 2.2 success
-                criterion 2.4.1 (Bypass Blocks).
-              </li>
-              <li>
                 In the provision and occupancy topic the &apos;bed type&apos;
                 search feature presented has been programmed incorrectly. Some
                 search inputs have duplicate ids meaning that some voice
@@ -239,14 +233,15 @@ const AccessibilityStatementPage: React.FC = () => {
               </li>
             </ol>
             <p className="govuk-body">
-              We plan to resolve this by the 1 July 2026.
+              We plan to resolve this by 31 December 2026.
             </p>
 
             <h2 className="govuk-heading-m">
               Preparation of this accessibility statement
             </h2>
             <p className="govuk-body">
-              This statement was prepared on 20 February 2026.
+              This statement was prepared on 20 February 2026. It was last
+              reviewed on 21 September 2026.
             </p>
             <p className="govuk-body">
               The service was last tested on 3 February 2026. The test was
