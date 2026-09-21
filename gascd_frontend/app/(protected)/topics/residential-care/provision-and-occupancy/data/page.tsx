@@ -696,7 +696,6 @@ export default function ProvisionAndOccupancyPage() {
           }
           download={
             <>
-              <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
                 filename="care_home_bed_numbers.csv"
@@ -788,7 +787,6 @@ export default function ProvisionAndOccupancyPage() {
           }
           download={
             <>
-              <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref2}
                 filename="care_home_bed_types.csv"
@@ -916,7 +914,6 @@ export default function ProvisionAndOccupancyPage() {
           }
           download={
             <>
-              <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref3}
                 filename="care_home_bed_numbers_and_occupancy.csv"

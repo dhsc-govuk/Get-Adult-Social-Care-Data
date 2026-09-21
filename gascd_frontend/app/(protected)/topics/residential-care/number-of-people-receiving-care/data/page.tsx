@@ -223,7 +223,6 @@ export default function NumberPeopleReceivingCarePage() {
           }
           download={
             <>
-              <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
                 filename="number_of_people_receiving_community_social_care.csv"
