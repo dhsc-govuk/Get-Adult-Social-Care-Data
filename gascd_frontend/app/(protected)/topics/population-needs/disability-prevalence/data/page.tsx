@@ -21,6 +21,7 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
+import FilterRadioGroup from '@/components/filters/FilterRadioGroup';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
 import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
 import ComparatorGroupBuilder from '@/components/charts/peer-group/ComparatorGroupBuilder';
@@ -36,6 +37,7 @@ export default function DisabilityPrevalence() {
   const tableref2 = useRef<HTMLTableElement>(null);
   const tableref3 = useRef<HTMLTableElement>(null);
   const tableref4 = useRef<HTMLTableElement>(null);
+  const tableref5 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
     LALabel: 'Loading...',
@@ -114,6 +116,23 @@ export default function DisabilityPrevalence() {
     'learning_disability_prevalence',
   ];
 
+  // TODO(GASCD-256): the standardised "per 100,000 adults (18+)" primary
+  // support reason metrics do not exist yet — they are absent from
+  // MetricCodeEnum and the metrics table, so no environment can serve them.
+  // Mapped to the unstandardised codes so the presentation can be reviewed;
+  // replace this map when the backend exposes the real codes.
+  const STANDARDISED_SUPPORT_REASON_IDS: Record<string, string> =
+    Object.fromEntries(supportReasonMetricIds.map((id) => [id, id]));
+  const standardisedSupportReasonMetricIds = Object.values(
+    STANDARDISED_SUPPORT_REASON_IDS
+  );
+
+  // The benchmarking figure takes a single primary support reason at a time
+  const CHART_REASON_FILTER_KEY = 'standardised-support-reason-chart';
+  const [chartSupportReason, setChartSupportReason] = useState<string>(
+    'learning_disability_support_18_and_over'
+  );
+
   const metricPage = 'disability-prevalence';
   const laCode = locationIds[1];
 
@@ -136,7 +155,12 @@ export default function DisabilityPrevalence() {
     dataByMetric,
     loading: peerLoading,
     error: peerError,
-  } = usePeerGroupData(laCode, benchmarkedMetricIds, selection, groups);
+  } = usePeerGroupData(
+    laCode,
+    [...benchmarkedMetricIds, ...standardisedSupportReasonMetricIds],
+    selection,
+    groups
+  );
   // A chart needs both the comparator data and the user's own LA / England
   // values before it is complete, so it waits for (and fails on) either
   // request rather than rendering peer bars without the user's authority.
@@ -460,6 +484,32 @@ export default function DisabilityPrevalence() {
   useEffect(() => {
     updatePrimaryReasonMetrics();
   }, [primarySupportReasonData]);
+
+  // Standardised primary support reason rows, with the comparator group's
+  // average added alongside the true regional value (see mergeComparatorAverage)
+  const standardisedPrimaryReasonData = useMemo(
+    () =>
+      mergeComparatorAverage(
+        filteredPrimaryReasonData,
+        standardisedSupportReasonMetricIds,
+        dataByMetric,
+        locationIds[2]
+      ),
+    [filteredPrimaryReasonData, dataByMetric, locationIds]
+  );
+
+  // The benchmarking figure shows one reason at a time (GASCD-256): the radio
+  // filter writes its choice to localStorage, as the other filters do
+  const updateChartSupportReason = () => {
+    const stored = localStorage.getItem(CHART_REASON_FILTER_KEY);
+    if (!stored) return;
+    try {
+      const parsed = JSON.parse(stored);
+      if (parsed?.metric_id) setChartSupportReason(parsed.metric_id);
+    } catch {
+      // A malformed entry just leaves the current selection in place
+    }
+  };
 
   const updatePrimaryReasonMetrics = () => {
     const storedData = localStorage.getItem('primary-reason-metrics');
@@ -891,6 +941,130 @@ export default function DisabilityPrevalence() {
                 filename="primary_reasons_for_accessing_care.csv"
                 xLabel=""
                 downloadType="primary reason for all age groups to access long-term adult social care"
+              />
+            </>
+          }
+        />
+      </DataBox>
+      <DataBox
+        dataTitle="[REPLACE WITH REAL METRIC]: Primary reason for people to access long-term adult social care – standardised per 100,000 of the total adult population (18+)"
+        dataInfo={
+          <>
+            <p className="govuk-body-m">
+              Find out how{' '}
+              <a
+                href={withBasePath(
+                  '/help/primary-reason-for-accessing-long-term-adult-social-care'
+                )}
+                className="govuk-link"
+              >
+                primary reason for people to access long-term adult social care
+                is calculated
+              </a>
+              .
+            </p>
+            {nhsPeerGroupDetails}
+          </>
+        }
+      >
+        <DataTabs
+          id="5"
+          sharingMetricIds={standardisedSupportReasonMetricIds}
+          chart={
+            <>
+              <FilterRadioGroup
+                filterType={CHART_REASON_FILTER_KEY}
+                filterLabel="Primary support reason"
+                filters={supportReasonRowHeadersDefault}
+                updateMethod={updateChartSupportReason}
+              />
+              <PeerGroupBarChart
+                laCode={laCode}
+                laName={locationNames.LALabel}
+                currentLaValue={
+                  standardisedPrimaryReasonData.find(
+                    (d) =>
+                      d.metric_id === chartSupportReason &&
+                      d.location_type === 'LA'
+                  )?.data_point ?? null
+                }
+                nationalAverageValue={
+                  standardisedPrimaryReasonData.find(
+                    (d) =>
+                      d.metric_id === chartSupportReason &&
+                      d.location_type === 'National'
+                  )?.data_point ?? null
+                }
+                regionalAverageValue={
+                  standardisedPrimaryReasonData.find(
+                    (d) =>
+                      d.metric_id === chartSupportReason &&
+                      d.location_type === 'Regional'
+                  )?.data_point ?? null
+                }
+                regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
+                peerData={dataByMetric[chartSupportReason] ?? null}
+                loading={chartLoading}
+                error={chartError}
+                comparatorControl={renderComparatorControl('comparator-chart-4')}
+                comparatorLabel={comparatorLabel}
+                comparatorAverageLabel={comparatorAverageLabel}
+                metricDescription={`the rate of people accessing long-term adult social care for ${(
+                  supportReasonRowHeadersDefault as Record<string, string>
+                )[chartSupportReason]?.toLowerCase()}, per 100,000 of the total adult population (18+)`}
+                figureTitle={`${
+                  (supportReasonRowHeadersDefault as Record<string, string>)[
+                    chartSupportReason
+                  ]
+                } per 100,000 of the total adult population (18+)`}
+                figureNumber={4}
+                sourceText="Adult Social Care Activity and Finance Report from NHS England & population estimates from ONS"
+              />
+              <p className="govuk-body-s">
+                Local authorities with an underlying count of between 1 and 5
+                are suppressed and are not shown on this chart.
+              </p>
+            </>
+          }
+          table={
+            <>
+              {renderComparatorControl('comparator-table-5')}
+              <DataTable
+                tableref={tableref5}
+                caption={
+                  <>
+                    Table 5: primary reason for all age groups to access
+                    long-term adult social care, standardised per 100,000 of the
+                    total adult population (18+) – {locationNames.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {comparatorAverageLabel}, {locationNames.RegionLabel}{' '}
+                    (regional average) and {locationNames.CountryLabel}{' '}
+                    (national average),{' '}
+                    {IndicatorService.getMostRecentDate(filteredDisabilityData)}
+                  </>
+                }
+                source="Adult Social Care Activity and Finance Report from NHS England & population estimates from ONS"
+                columnHeaders={{
+                  ...locationNamesWithAverageLabels,
+                  ComparatorLabel: comparatorAverageLabel,
+                }}
+                metricColumnName="Primary support reason"
+                rowHeaders={supportReasonRowHeaders}
+                data={standardisedPrimaryReasonData}
+                showCareProvider={false}
+                smallNumberSuppression={true}
+              >
+                <p className="govuk-body-m">(*) denotes less than 5</p>
+              </DataTable>
+            </>
+          }
+          download={
+            <>
+              <DownloadTableDataCSVLink
+                tableref={tableref5}
+                filename="primary_reasons_for_accessing_care_standardised.csv"
+                xLabel=""
+                downloadType="primary reason for all age groups to access long-term adult social care, standardised per 100,000 adults"
               />
             </>
           }
