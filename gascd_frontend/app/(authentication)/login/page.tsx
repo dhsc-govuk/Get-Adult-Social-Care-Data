@@ -118,14 +118,6 @@ const LoginPage: React.FC = () => {
               </a>{' '}
               to find out how we use your information.
             </p>
-            <h2 className="govuk-heading-m">More information</h2>
-            <p className="govuk-body">
-              Find out more about the{' '}
-              <a className="govuk-link" href={withBasePath('/guidance')}>
-                Get adult social care data service
-              </a>
-              .
-            </p>
             <p className="govuk-body">
               For enquiries about the service, please contact the GASCD team at{' '}
               <a
