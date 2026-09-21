@@ -45,6 +45,7 @@ describe('DisabilityPrevalencePage', () => {
       'Disability prevalence',
       'Learning disability prevalence',
       'Primary reason for people to access long-term adult social care',
+      '[REPLACE WITH REAL METRIC]: Primary reason for people to access long-term adult social care – standardised per 100,000 of the total adult population (18+)',
     ];
     for (let dataBoxHeadingText of dataBoxHeadings) {
       expect(
