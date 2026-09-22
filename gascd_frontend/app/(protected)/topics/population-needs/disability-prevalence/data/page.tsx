@@ -21,7 +21,6 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
-import FilterRadioGroup from '@/components/filters/FilterRadioGroup';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
 import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
 import ComparatorGroupBuilder from '@/components/charts/peer-group/ComparatorGroupBuilder';
@@ -127,10 +126,11 @@ export default function DisabilityPrevalence() {
     STANDARDISED_SUPPORT_REASON_IDS
   );
 
-  // The benchmarking figure takes a single primary support reason at a time
-  const CHART_REASON_FILTER_KEY = 'standardised-support-reason-chart';
+  // The benchmarking figure takes a single primary support reason at a time.
+  // The control and the figure read the same default so they cannot disagree.
+  const DEFAULT_CHART_SUPPORT_REASON = 'learning_disability_support_18_and_over';
   const [chartSupportReason, setChartSupportReason] = useState<string>(
-    'learning_disability_support_18_and_over'
+    DEFAULT_CHART_SUPPORT_REASON
   );
 
   const metricPage = 'disability-prevalence';
@@ -502,6 +502,34 @@ export default function DisabilityPrevalence() {
     [filteredPrimaryReasonData, dataByMetric, locationIds]
   );
 
+  // The standardised table filters its own rows, independently of the count
+  // table above it, so each can show a different set of reasons.
+  const STANDARDISED_REASON_FILTER_KEY = 'standardised-primary-reason-metrics';
+  const [standardisedRowHeaders, setStandardisedRowHeaders] = useState<any>(
+    supportReasonRowHeadersDefault
+  );
+  const [standardisedReasonMetricIds, setStandardisedReasonMetricIds] =
+    useState<string[]>(supportReasonMetricIds);
+
+  const updateStandardisedReasonMetrics = () => {
+    const stored = localStorage.getItem(STANDARDISED_REASON_FILTER_KEY);
+    if (!stored) {
+      setStandardisedRowHeaders(supportReasonRowHeadersDefault);
+      setStandardisedReasonMetricIds(supportReasonMetricIds);
+      return;
+    }
+    try {
+      const parsed = JSON.parse(stored);
+      if (!Array.isArray(parsed)) return;
+      const map: any = {};
+      parsed.forEach((item) => (map[item.metric_id] = item.filter_bedtype));
+      setStandardisedRowHeaders(map);
+      setStandardisedReasonMetricIds(parsed.map((item) => item.metric_id));
+    } catch {
+      // A malformed entry leaves the current selection in place
+    }
+  };
+
   // Standardised primary support reason rows, with the comparator group's
   // average added alongside the true regional value (see mergeComparatorAverage)
   const standardisedPrimaryReasonData = useMemo(
@@ -514,19 +542,6 @@ export default function DisabilityPrevalence() {
       ),
     [filteredPrimaryReasonData, dataByMetric, locationIds]
   );
-
-  // The benchmarking figure shows one reason at a time (GASCD-256): the radio
-  // filter writes its choice to localStorage, as the other filters do
-  const updateChartSupportReason = () => {
-    const stored = localStorage.getItem(CHART_REASON_FILTER_KEY);
-    if (!stored) return;
-    try {
-      const parsed = JSON.parse(stored);
-      if (parsed?.metric_id) setChartSupportReason(parsed.metric_id);
-    } catch {
-      // A malformed entry just leaves the current selection in place
-    }
-  };
 
   const updatePrimaryReasonMetrics = () => {
     const storedData = localStorage.getItem('primary-reason-metrics');
@@ -605,7 +620,7 @@ export default function DisabilityPrevalence() {
                     {locationNames.RegionLabel} (regional average),{' '}
                     {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
                     {benchmarkedColumnHeaders.CountryLabel},{' '}
-                    {IndicatorService.getMostRecentMonthYear(
+                    {IndicatorService.getMostRecentDate(
                       benchmarkedDisabilityData,
                       ['perc_general_health']
                     )}
@@ -672,6 +687,10 @@ export default function DisabilityPrevalence() {
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="the percentage of the population who self-reported bad or very bad health"
               figureTitle="People who reported bad or very bad health"
+              dateLabel={IndicatorService.getMostRecentDate(
+                benchmarkedDisabilityData,
+                ['perc_general_health']
+              )}
               figureNumber={1}
             />
           }
@@ -716,7 +735,7 @@ export default function DisabilityPrevalence() {
                     {locationNames.RegionLabel} (regional average),{' '}
                     {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
                     {benchmarkedColumnHeaders.CountryLabel},{' '}
-                    {IndicatorService.getMostRecentMonthYear(
+                    {IndicatorService.getMostRecentDate(
                       benchmarkedDisabilityData,
                       ['perc_population_disability']
                     )}
@@ -783,6 +802,10 @@ export default function DisabilityPrevalence() {
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="the percentage of the population who reported a long-term physical or mental health condition, or illness that limits day-to-day activities"
               figureTitle="Percentage of the population who reported a long-term physical or mental health condition, or illness that limits day-to-day activities"
+              dateLabel={IndicatorService.getMostRecentDate(
+                benchmarkedDisabilityData,
+                ['perc_population_disability']
+              )}
               figureNumber={2}
             />
           }
@@ -889,6 +912,10 @@ export default function DisabilityPrevalence() {
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="learning disability prevalence"
               figureTitle="Learning disability prevalence"
+              dateLabel={IndicatorService.getMostRecentDate(
+                benchmarkedDisabilityData,
+                ['learning_disability_prevalence']
+              )}
               figureNumber={3}
               sourceText="Source: Fingertips public health profiles from the Department of Health and Social Care (DHSC)"
             />
@@ -995,12 +1022,6 @@ export default function DisabilityPrevalence() {
           sharingMetricIds={standardisedSupportReasonMetricIds}
           chart={
             <>
-              <FilterRadioGroup
-                filterType={CHART_REASON_FILTER_KEY}
-                filterLabel="Primary support reason"
-                filters={supportReasonRowHeadersDefault}
-                updateMethod={updateChartSupportReason}
-              />
               <PeerGroupBarChart
                 laCode={laCode}
                 laName={locationNames.LALabel}
@@ -1029,7 +1050,43 @@ export default function DisabilityPrevalence() {
                 peerData={dataByMetric[chartSupportReason] ?? null}
                 loading={chartLoading}
                 error={chartError}
-                comparatorControl={renderComparatorControl('comparator-chart-4')}
+                comparatorControl={
+                  <div className="dhsc-chart-controls">
+                    <div>{renderComparatorControl('comparator-chart-4')}</div>
+                    <div>
+                      {/* The figure shows one reason at a time and must always
+                          show one, so this is a selector rather than a filter:
+                          no clear, no collapse. */}
+                      <div className="govuk-form-group">
+                        <label
+                          className="govuk-label govuk-!-font-weight-bold"
+                          htmlFor="standardised-support-reason-select"
+                        >
+                          Primary support reason
+                        </label>
+                        <select
+                          id="standardised-support-reason-select"
+                          className="govuk-select"
+                          value={chartSupportReason}
+                          onChange={(e) =>
+                            setChartSupportReason(e.target.value)
+                          }
+                        >
+                          {Object.entries(
+                            supportReasonRowHeadersDefault as Record<
+                              string,
+                              string
+                            >
+                          ).map(([metricId, label]) => (
+                            <option key={metricId} value={metricId}>
+                              {label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                }
                 comparatorLabel={comparatorLabel}
                 comparatorAverageLabel={comparatorAverageLabel}
                 metricDescription={`the rate of people accessing long-term adult social care for ${(
@@ -1040,8 +1097,11 @@ export default function DisabilityPrevalence() {
                     chartSupportReason
                   ]
                 } per 100,000 of the total adult population (18+)`}
+                dateLabel={IndicatorService.getMostRecentDate(
+                  filteredDisabilityData
+                )}
                 figureNumber={4}
-                sourceText="Adult Social Care Activity and Finance Report from NHS England & population estimates from ONS"
+                sourceText="Source: Adult Social Care Activity and Finance Report from NHS England & population estimates from ONS"
               />
               <p className="govuk-body-s">
                 Local authorities with an underlying count of between 1 and 5
@@ -1051,6 +1111,12 @@ export default function DisabilityPrevalence() {
           }
           table={
             <>
+              <FilterCheckboxGroup
+                filterType={STANDARDISED_REASON_FILTER_KEY}
+                filterLabel="Primary support reason"
+                filters={supportReasonRowHeadersDefault}
+                updateMethod={updateStandardisedReasonMetrics}
+              />
               {renderComparatorControl('comparator-table-5')}
               <DataTable
                 tableref={tableref5}
@@ -1072,8 +1138,10 @@ export default function DisabilityPrevalence() {
                   ComparatorLabel: comparatorAverageLabel,
                 }}
                 metricColumnName="Primary support reason"
-                rowHeaders={supportReasonRowHeaders}
-                data={standardisedPrimaryReasonData}
+                rowHeaders={standardisedRowHeaders}
+                data={standardisedPrimaryReasonData.filter((d) =>
+                  standardisedReasonMetricIds.includes(d.metric_id)
+                )}
                 showCareProvider={false}
                 smallNumberSuppression={true}
               >

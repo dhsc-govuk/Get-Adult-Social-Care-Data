@@ -507,8 +507,11 @@ export default function NumberPeopleReceivingCarePage() {
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="the number of people receiving community social care, standardised per 100,000 of the total adult population (18+)"
               figureTitle="Number of people receiving community social care in the last month, standardised per 100,000 of the total population (18+)"
+              dateLabel={IndicatorService.getMostRecentMonthYear(
+                benchmarkedDemographicData
+              )}
               figureNumber={1}
-              sourceText="Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS"
+              sourceText="Source: Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS"
             />
           }
           table={

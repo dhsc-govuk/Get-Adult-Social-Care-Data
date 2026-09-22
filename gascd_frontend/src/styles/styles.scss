@@ -1044,3 +1044,13 @@
     }
   }
 }
+.dhsc-chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: govuk-spacing(6);
+
+  > * {
+    margin-bottom: 0;
+  }
+}
