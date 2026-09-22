@@ -51,6 +51,16 @@ public enum MetricCodeEnum
     bedcount_per_hundred_thousand_adults_transitional,
     [MetricGroup(typeof(BedcountPerHundredThousandAdults))]
     bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled,
+    [MetricGroup(typeof(BedcountPerHundredThousandAdults))]
+    bedcount_per_hundred_thousand_adults_grp_older_people_and_dementia,
+    [MetricGroup(typeof(BedcountPerHundredThousandAdults))]
+    bedcount_per_hundred_thousand_adults_grp_learning_disability,
+    [MetricGroup(typeof(BedcountPerHundredThousandAdults))]
+    bedcount_per_hundred_thousand_adults_grp_mental_health,
+    [MetricGroup(typeof(BedcountPerHundredThousandAdults))]
+    bedcount_per_hundred_thousand_adults_grp_young_physically_disabled,
+    [MetricGroup(typeof(BedcountPerHundredThousandAdults))]
+    bedcount_per_hundred_thousand_adults_grp_community_care_and_transitional,
     [MetricGroup(typeof(DementiaEstimatedDiagnosisRate65Over))]
     dementia_estimated_diagnosis_rate_65over,
     [MetricGroup(typeof(DementiaPrevalence65Over))]
@@ -422,6 +432,16 @@ public enum MetricCodeEnum
     bedcount_per_hundred_thousand_18_64_transitional,
     [MetricGroup(typeof(BedcountPerHundredThousand1864))]
     bedcount_per_hundred_thousand_18_64_ypd_young_physically_disabled,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_grp_older_people_and_dementia,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_grp_learning_disability,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_grp_mental_health,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_grp_young_physically_disabled,
+    [MetricGroup(typeof(BedcountPerHundredThousand1864))]
+    bedcount_per_hundred_thousand_18_64_grp_community_care_and_transitional,
 
     // ---- bedcount_per_hundred_thousand_65over ----
     [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
@@ -448,6 +468,16 @@ public enum MetricCodeEnum
     bedcount_per_hundred_thousand_65over_transitional,
     [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
     bedcount_per_hundred_thousand_65over_ypd_young_physically_disabled,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_grp_older_people_and_dementia,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_grp_learning_disability,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_grp_mental_health,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_grp_young_physically_disabled,
+    [MetricGroup(typeof(BedcountPerHundredThousand65Over))]
+    bedcount_per_hundred_thousand_65over_grp_community_care_and_transitional,
 
     // ---- num_clients_long_term_support_per100k_adults ----
     [MetricGroup(typeof(NumClientsLongTermSupportPer100kAdults))]

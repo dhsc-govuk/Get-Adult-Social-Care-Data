@@ -218,6 +218,38 @@ export const METRIC_SHARING_CATEGORIES: Record<string, SharingCategoryId> = {
   bedcount_per_hundred_thousand_65over_ypd_young_physically_disabled:
     'not-for-external-sharing',
 
+  // Table 2B bed-type groupings (sum of the types beneath them), all three denominators
+  bedcount_per_hundred_thousand_adults_grp_older_people_and_dementia:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_adults_grp_learning_disability:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_adults_grp_mental_health:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_adults_grp_young_physically_disabled:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_adults_grp_community_care_and_transitional:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_grp_older_people_and_dementia:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_grp_learning_disability:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_grp_mental_health:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_grp_young_physically_disabled:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_18_64_grp_community_care_and_transitional:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_grp_older_people_and_dementia:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_grp_learning_disability:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_grp_mental_health:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_grp_young_physically_disabled:
+    'not-for-external-sharing',
+  bedcount_per_hundred_thousand_65over_grp_community_care_and_transitional:
+    'not-for-external-sharing',
+
   // Rows 29 to 32 and 35 to 41: care provider locations and services
   npl_adult_social_care: 'published',
   npl_care_home: 'published',
