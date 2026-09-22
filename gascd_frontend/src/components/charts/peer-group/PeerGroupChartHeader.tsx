@@ -11,6 +11,8 @@ interface PeerGroupChartHeaderProps {
   // How the comparison set is referred to in the summary sentence,
   // e.g. "its NHS Peer Group" or a custom group's name.
   comparatorLabel?: string;
+  // Period the figure covers, e.g. "June 2026". Matches the table captions.
+  dateLabel?: string;
 }
 
 const PeerGroupChartHeader: React.FC<PeerGroupChartHeaderProps> = ({
@@ -20,6 +22,7 @@ const PeerGroupChartHeader: React.FC<PeerGroupChartHeaderProps> = ({
   figureNumber,
   comparatorControl,
   comparatorLabel = NHS_PEER_GROUP_COMPARATOR_LABEL,
+  dateLabel,
 }) => {
   return (
     <>
@@ -30,7 +33,7 @@ const PeerGroupChartHeader: React.FC<PeerGroupChartHeaderProps> = ({
       </p>
       <p className="govuk-body govuk-!-font-weight-bold">
         Figure {figureNumber}: {figureTitle} &ndash; {laName} compared with peer
-        group
+        group{dateLabel ? `, ${dateLabel}` : ''}
       </p>
     </>
   );

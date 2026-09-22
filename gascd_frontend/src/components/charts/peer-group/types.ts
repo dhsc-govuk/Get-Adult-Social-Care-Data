@@ -71,6 +71,7 @@ export interface PeerGroupBarChartProps {
   figureNumber?: number;
   comparatorControl?: ReactNode;
   comparatorLabel?: string;
+  dateLabel?: string;
   comparatorAverageLabel?: string;
   // Legend label for the regional average line, e.g. "North East (regional
   // average)".
