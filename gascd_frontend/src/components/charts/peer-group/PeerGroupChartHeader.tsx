@@ -11,7 +11,8 @@ interface PeerGroupChartHeaderProps {
   // How the comparison set is referred to in the summary sentence,
   // e.g. "its NHS Peer Group" or a custom group's name.
   comparatorLabel?: string;
-  // Period the figure covers, e.g. "June 2026". Matches the table captions.
+  // Period the figure covers, e.g. "financial year 2023 to 2024". Rendered
+  // last so the date always ends the heading.
   dateLabel?: string;
 }
 
