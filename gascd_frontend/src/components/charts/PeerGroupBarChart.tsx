@@ -21,6 +21,7 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
   comparatorControl,
   comparatorLabel,
   dateLabel,
+  comparisonSummary,
   comparatorAverageLabel,
   regionalAverageLabel,
   nationalAverageLabel,
@@ -41,6 +42,7 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
         comparatorControl={comparatorControl}
         comparatorLabel={comparatorLabel}
         dateLabel={dateLabel}
+        comparisonSummary={comparisonSummary}
       />
       {loading && <p className="govuk-body">Loading...</p>}
       {/* The chart benchmarks the user's own LA against the comparator group,

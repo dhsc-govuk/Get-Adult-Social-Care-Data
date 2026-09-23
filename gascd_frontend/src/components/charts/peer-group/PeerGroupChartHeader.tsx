@@ -14,6 +14,9 @@ interface PeerGroupChartHeaderProps {
   // Period the figure covers, e.g. "financial year 2023 to 2024". Rendered
   // last so the date always ends the heading.
   dateLabel?: string;
+  // Replaces the default "- <LA> compared with peer group" summary, for
+  // figures that name every series the way the table captions do.
+  comparisonSummary?: string;
 }
 
 const PeerGroupChartHeader: React.FC<PeerGroupChartHeaderProps> = ({
@@ -24,6 +27,7 @@ const PeerGroupChartHeader: React.FC<PeerGroupChartHeaderProps> = ({
   comparatorControl,
   comparatorLabel = NHS_PEER_GROUP_COMPARATOR_LABEL,
   dateLabel,
+  comparisonSummary,
 }) => {
   return (
     <>
@@ -33,8 +37,9 @@ const PeerGroupChartHeader: React.FC<PeerGroupChartHeaderProps> = ({
         {metricDescription}.
       </p>
       <p className="govuk-body govuk-!-font-weight-bold">
-        Figure {figureNumber}: {figureTitle} &ndash; {laName} compared with peer
-        group{dateLabel ? `, ${dateLabel}` : ''}
+        Figure {figureNumber}: {figureTitle} &ndash;{' '}
+        {comparisonSummary ?? `${laName} compared with peer group`}
+        {dateLabel ? `, ${dateLabel}` : ''}
       </p>
     </>
   );
