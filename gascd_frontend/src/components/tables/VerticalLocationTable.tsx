@@ -14,6 +14,9 @@ type VerticalLocationTableProps = {
   showAverageLabel?: boolean;
   tableref?: Ref<HTMLTableElement>;
   userLa: string;
+  // An extra row to show in bold alongside the national and regional averages,
+  // e.g. the selected comparator group's average.
+  boldLabel?: string;
 };
 
 const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
@@ -25,6 +28,7 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
   source,
   tableref = undefined,
   userLa,
+  boldLabel,
 }) => {
   useEffect(() => {
     const sortTables = async () => {
@@ -80,6 +84,8 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({
     } else if (index === 1) {
       return <strong>{location}</strong>;
     } else if (location === userLa) {
+      return <strong>{location}</strong>;
+    } else if (boldLabel && location === boldLabel) {
       return <strong>{location}</strong>;
     }
 

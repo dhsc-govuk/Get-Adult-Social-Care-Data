@@ -73,6 +73,8 @@ export interface PeerGroupBarChartProps {
   comparatorLabel?: string;
   // Period the figure covers
   dateLabel?: string;
+  // Replaces the default comparison summary in the figure heading
+  comparisonSummary?: string;
   comparatorAverageLabel?: string;
   // Legend label for the regional average line, e.g. "North East (regional
   // average)".
