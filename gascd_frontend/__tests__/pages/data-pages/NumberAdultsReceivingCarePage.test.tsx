@@ -74,7 +74,7 @@ describe('NumberAdultsReceivingCarePage', () => {
 
     const dataBoxHeadings = [
       'Number of adults receiving community social care',
-      '[REPLACE WITH REAL METRIC]: Number of adults receiving community social care – standardised per 100,000 of the total adult population (18+)',
+      'Number of adults receiving community social care – standardised per 100,000 of the total adult population (18+)',
     ];
     for (let dataBoxHeadingText of dataBoxHeadings) {
       expect(

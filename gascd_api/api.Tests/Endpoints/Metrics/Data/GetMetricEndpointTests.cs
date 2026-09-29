@@ -472,6 +472,12 @@ public class GetMetricEndpointTests(App app) : TestBase<App>
             yield return [perc_population_disability, 6.26m];
             yield return [perc_unpaid_care_provider, 6.27m];
             yield return [total_population, 6.28m];
+            yield return [bedcount_per_hundred_thousand_18_64_total, 8.1m];
+            yield return [bedcount_per_hundred_thousand_65over_total, 8.2m];
+            yield return [access_and_mobility_only_physical_support_18_and_over_per100k_adults, 8.3m];
+            yield return [edpsr_lt_learning_disability_support_all_ages_per100k_adults, 8.4m];
+            yield return [elss_supported_accommodation_all_ages_per100k_adults, 8.5m];
+            yield return [nccc_num_clients_comm_care_per100k_adults, 8.6m];
         }
     }
 }
