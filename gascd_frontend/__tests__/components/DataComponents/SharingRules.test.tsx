@@ -73,7 +73,9 @@ describe('DataIndicatorDetails sharing rules row', () => {
 
 describe('SharingRulesTableRow', () => {
   it('renders the row for a table based details page', () => {
-    mockPathname.mockReturnValue('/help/beds-care-provider-location');
+    mockPathname.mockReturnValue(
+      '/help/number-people-receiving-care-from-community-social-care-provider'
+    );
 
     render(
       <table>

@@ -334,7 +334,7 @@ export const resolveSharingCategory = (
  * page has been missed.
  */
 export const HELP_PAGE_SHARING = {
-  'beds-care-provider-location': 'capacityTrackerOwnOrganisation',
+  'beds-care-provider-location': 'capacityTrackerRestricted',
   'beds-per-100000-adult-population': 'capacityTrackerRestricted',
   'beds-per-100000-adult-population-over-time': 'capacityTrackerRestricted',
   'children-and-young-people-with-an-ehcp-aged-14-and-over': 'publicDomain',
@@ -355,9 +355,9 @@ export const HELP_PAGE_SHARING = {
     'capacityTrackerOwnOrganisation',
   'one-person-households-where-person-aged-65-or-over': 'publicDomain',
   'people-who-reported-bad-or-very-bad-health': 'publicDomain',
-  'percentage-beds-occupied': 'capacityTrackerOwnOrganisation',
+  'percentage-beds-occupied': 'capacityTrackerRestricted',
   'percentage-beds-occupied-care-provider-location':
-    'capacityTrackerOwnOrganisation',
+    'capacityTrackerRestricted',
   'percentage-of-pupils-with-sen-support-aged-14-and-over': 'publicDomain',
   'percentage-people-aged-5-and-over-who-provide-unpaid-care': 'publicDomain',
   'percentages-financial-spend-long-term-and-short-term-care': 'publicDomain',
