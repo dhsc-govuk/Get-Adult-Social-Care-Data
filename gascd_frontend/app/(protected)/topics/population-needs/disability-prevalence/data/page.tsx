@@ -61,6 +61,9 @@ export default function DisabilityPrevalence() {
   const [filteredPrimaryReasonData, setFilteredPrimaryReasonData] = useState<
     Indicator[]
   >([]);
+  const [standardisedReasonData, setStandardisedReasonData] = useState<
+    Indicator[]
+  >([]);
   const [disabilityQuery, setDisabilityQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
@@ -115,20 +118,17 @@ export default function DisabilityPrevalence() {
     'learning_disability_prevalence',
   ];
 
-  // TODO(GASCD-256): the standardised "per 100,000 adults (18+)" primary
-  // support reason metrics do not exist yet — they are absent from
-  // MetricCodeEnum and the metrics table, so no environment can serve them.
-  // Mapped to the unstandardised codes so the presentation can be reviewed;
-  // replace this map when the backend exposes the real codes.
-  const STANDARDISED_SUPPORT_REASON_IDS: Record<string, string> =
-    Object.fromEntries(supportReasonMetricIds.map((id) => [id, id]));
-  const standardisedSupportReasonMetricIds = Object.values(
-    STANDARDISED_SUPPORT_REASON_IDS
-  );
+  // Each primary support reason count has a standardised twin, per 100,000 of
+  // the total adult population (18+), under the same code plus this suffix.
+  const toStandardisedId = (id: string) => `${id}_per100k_adults`;
+  const standardisedSupportReasonMetricIds =
+    supportReasonMetricIds.map(toStandardisedId);
 
   // The benchmarking figure takes a single primary support reason at a time.
   // The control and the figure read the same default so they cannot disagree.
-  const DEFAULT_CHART_SUPPORT_REASON = 'learning_disability_support_18_and_over';
+  const DEFAULT_CHART_SUPPORT_REASON = toStandardisedId(
+    'learning_disability_support_18_and_over'
+  );
   const [chartSupportReason, setChartSupportReason] = useState<string>(
     DEFAULT_CHART_SUPPORT_REASON
   );
@@ -349,6 +349,14 @@ export default function DisabilityPrevalence() {
     support_with_memory_and_cognition_18_and_over:
       'Support with memory and cognition',
   };
+  // The same labels, keyed by the standardised codes
+  const standardisedRowHeadersDefault: Record<string, string> =
+    Object.fromEntries(
+      Object.entries(supportReasonRowHeadersDefault).map(([id, label]) => [
+        toStandardisedId(id),
+        label,
+      ])
+    );
 
   const [supportReasonRowHeaders, setSupportReasonRowHeaders] = useState<any>(
     supportReasonRowHeadersDefault
@@ -404,7 +412,10 @@ export default function DisabilityPrevalence() {
         location_ids: locationIds,
       }));
       setSupportReasonQuery(() => ({
-        metric_ids: supportReasonMetricIds,
+        metric_ids: [
+          ...supportReasonMetricIds,
+          ...standardisedSupportReasonMetricIds,
+        ],
         location_ids: locationIds,
       }));
     }
@@ -460,7 +471,18 @@ export default function DisabilityPrevalence() {
           await IndicatorFetchService.getData(supportReasonQuery);
         const filteredSupportReasonData =
           TableService.filterDate(supportReasonData);
-        setPrimarySupportReasonData(filteredSupportReasonData);
+        // One request serves both tables; split the counts from their
+        // standardised twins so each table only sees its own rows.
+        setPrimarySupportReasonData(
+          filteredSupportReasonData.filter((item) =>
+            supportReasonMetricIds.includes(item.metric_id)
+          )
+        );
+        setStandardisedReasonData(
+          filteredSupportReasonData.filter((item) =>
+            standardisedSupportReasonMetricIds.includes(item.metric_id)
+          )
+        );
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -506,25 +528,31 @@ export default function DisabilityPrevalence() {
   // table above it, so each can show a different set of reasons.
   const STANDARDISED_REASON_FILTER_KEY = 'standardised-primary-reason-metrics';
   const [standardisedRowHeaders, setStandardisedRowHeaders] = useState<any>(
-    supportReasonRowHeadersDefault
+    standardisedRowHeadersDefault
   );
   const [standardisedReasonMetricIds, setStandardisedReasonMetricIds] =
-    useState<string[]>(supportReasonMetricIds);
+    useState<string[]>(standardisedSupportReasonMetricIds);
 
+  // The filter lists the reasons by their count codes, shared with the table
+  // above, so a stored selection is mapped onto the standardised codes here.
   const updateStandardisedReasonMetrics = () => {
     const stored = localStorage.getItem(STANDARDISED_REASON_FILTER_KEY);
     if (!stored) {
-      setStandardisedRowHeaders(supportReasonRowHeadersDefault);
-      setStandardisedReasonMetricIds(supportReasonMetricIds);
+      setStandardisedRowHeaders(standardisedRowHeadersDefault);
+      setStandardisedReasonMetricIds(standardisedSupportReasonMetricIds);
       return;
     }
     try {
       const parsed = JSON.parse(stored);
       if (!Array.isArray(parsed)) return;
       const map: any = {};
-      parsed.forEach((item) => (map[item.metric_id] = item.filter_bedtype));
+      parsed.forEach(
+        (item) => (map[toStandardisedId(item.metric_id)] = item.filter_bedtype)
+      );
       setStandardisedRowHeaders(map);
-      setStandardisedReasonMetricIds(parsed.map((item) => item.metric_id));
+      setStandardisedReasonMetricIds(
+        parsed.map((item) => toStandardisedId(item.metric_id))
+      );
     } catch {
       // A malformed entry leaves the current selection in place
     }
@@ -535,12 +563,12 @@ export default function DisabilityPrevalence() {
   const standardisedPrimaryReasonData = useMemo(
     () =>
       mergeComparatorAverage(
-        filteredPrimaryReasonData,
+        standardisedReasonData,
         standardisedSupportReasonMetricIds,
         dataByMetric,
         locationIds[2]
       ),
-    [filteredPrimaryReasonData, dataByMetric, locationIds]
+    [standardisedReasonData, dataByMetric, locationIds]
   );
 
   const updatePrimaryReasonMetrics = () => {
@@ -997,7 +1025,7 @@ export default function DisabilityPrevalence() {
         />
       </DataBox>
       <DataBox
-        dataTitle="[REPLACE WITH REAL METRIC]: Primary reason for people to access long-term adult social care – standardised per 100,000 of the total adult population (18+)"
+        dataTitle="Primary reason for people to access long-term adult social care – standardised per 100,000 of the total adult population (18+)"
         dataInfo={
           <>
             <p className="govuk-body-m">
@@ -1072,16 +1100,13 @@ export default function DisabilityPrevalence() {
                             setChartSupportReason(e.target.value)
                           }
                         >
-                          {Object.entries(
-                            supportReasonRowHeadersDefault as Record<
-                              string,
-                              string
-                            >
-                          ).map(([metricId, label]) => (
-                            <option key={metricId} value={metricId}>
-                              {label}
-                            </option>
-                          ))}
+                          {Object.entries(standardisedRowHeadersDefault).map(
+                            ([metricId, label]) => (
+                              <option key={metricId} value={metricId}>
+                                {label}
+                              </option>
+                            )
+                          )}
                         </select>
                       </div>
                     </div>
@@ -1089,18 +1114,18 @@ export default function DisabilityPrevalence() {
                 }
                 comparatorLabel={comparatorLabel}
                 comparatorAverageLabel={comparatorAverageLabel}
-                metricDescription={`the rate of people accessing long-term adult social care for ${(
-                  supportReasonRowHeadersDefault as Record<string, string>
-                )[chartSupportReason]?.toLowerCase()}, per 100,000 of the total adult population (18+)`}
+                metricDescription={`the rate of people accessing long-term adult social care for ${standardisedRowHeadersDefault[
+                  chartSupportReason
+                ]?.toLowerCase()}, per 100,000 of the total adult population (18+)`}
                 figureTitle={`${
-                  (supportReasonRowHeadersDefault as Record<string, string>)[
-                    chartSupportReason
-                  ]
+                  standardisedRowHeadersDefault[chartSupportReason]
                 } per 100,000 of the total adult population (18+)`}
                 dateLabel={IndicatorService.getMostRecentDate(
-                  filteredDisabilityData
+                  standardisedReasonData
                 )}
                 figureNumber={4}
+                // Rates per 100,000, not percentages
+                valueSuffix=""
                 sourceText="Source: Adult Social Care Activity and Finance Report from NHS England & population estimates from ONS"
               />
               <p className="govuk-body-s">
@@ -1129,7 +1154,7 @@ export default function DisabilityPrevalence() {
                     {comparatorAverageLabel}, {locationNames.RegionLabel}{' '}
                     (regional average) and {locationNames.CountryLabel}{' '}
                     (national average),{' '}
-                    {IndicatorService.getMostRecentDate(filteredDisabilityData)}
+                    {IndicatorService.getMostRecentDate(standardisedReasonData)}
                   </>
                 }
                 source="Adult Social Care Activity and Finance Report from NHS England & population estimates from ONS"
