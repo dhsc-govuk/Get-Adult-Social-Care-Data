@@ -108,6 +108,7 @@ def get_metric_group_record(mg):
     }
 
 def get_metric_record(mg, m):
+    frequency = METRIC_DEFINITIONS[mg][m]['metric_date_type']
     return {
         'id': get_max_id_plus_one_sql('metrics'),
         'code': format_string(m),
@@ -117,7 +118,7 @@ def get_metric_record(mg, m):
         'denominator_description': format_string('demoninator_description'),
         'data_source': format_string('ONS'),
         'data_type': format_string('numbers'),
-        'frequency': format_string('Daily'),
+        'frequency': format_string(frequency),
         'loaded_datetime': 'CURRENT_TIMESTAMP'
     }
 

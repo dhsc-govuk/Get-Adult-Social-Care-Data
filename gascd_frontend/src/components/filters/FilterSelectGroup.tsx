@@ -10,6 +10,12 @@ type Props = {
   filterLabel: string;
   filters: Object;
   updateMethod: () => void;
+  // An optional second select shown in the same panel, applied and cleared by
+  // the same buttons. Used where a figure is broken down two ways, e.g. by
+  // duration of care and then by support setting.
+  secondaryFilterType?: string;
+  secondaryFilterLabel?: string;
+  secondaryFilters?: Object;
 };
 
 const FilterRadioGroup: React.FC<Props> = ({
@@ -17,12 +23,21 @@ const FilterRadioGroup: React.FC<Props> = ({
   filterLabel,
   filters,
   updateMethod,
+  secondaryFilterType,
+  secondaryFilterLabel,
+  secondaryFilters,
 }) => {
+  const hasSecondary = Boolean(secondaryFilterType && secondaryFilters);
   const [showFilters, setShowFilters] = React.useState(false);
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
   const [componentFilters, setComponentFilters] = useState<Filters[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<Filters>();
   const [displayFilter, setDisplayFilter] = useState<string | null>(null);
+  const [secondaryComponentFilters, setSecondaryComponentFilters] = useState<
+    Filters[]
+  >([]);
+  const [secondarySelectedFilter, setSecondarySelectedFilter] =
+    useState<Filters>();
 
   useEffect(() => {
     setLocalFilters();
@@ -48,6 +63,42 @@ const FilterRadioGroup: React.FC<Props> = ({
       setDefaultFilter();
     }
     setComponentFilters(localFilters);
+
+    if (hasSecondary) {
+      const localSecondary: Filters[] = Object.entries(
+        secondaryFilters as Object
+      ).map(([key, value]) => ({
+        metric_id: key,
+        filter_bedtype: value as string,
+        checked: false,
+      }));
+      const storedSecondary = localStorage.getItem(
+        secondaryFilterType as string
+      );
+      if (storedSecondary) {
+        const parsed = JSON.parse(storedSecondary);
+        setSecondarySelectedFilter({
+          metric_id: parsed.metric_id,
+          filter_bedtype: parsed.filter_bedtype,
+        });
+      } else {
+        setSecondarySelectedFilter(localSecondary[0]);
+      }
+      setSecondaryComponentFilters(localSecondary);
+    }
+  };
+
+  const handleSecondaryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const metric_id = event.target.value;
+    setSecondarySelectedFilter({
+      metric_id,
+      filter_bedtype:
+        secondaryComponentFilters.find(
+          (filter) => filter.metric_id === metric_id
+        )?.filter_bedtype || '',
+    });
   };
 
   const handleShowHideToggle = (showFilters: boolean) => {
@@ -68,6 +119,12 @@ const FilterRadioGroup: React.FC<Props> = ({
   };
 
   const handleSubmit = () => {
+    if (hasSecondary) {
+      localStorage.setItem(
+        secondaryFilterType as string,
+        JSON.stringify(secondarySelectedFilter)
+      );
+    }
     localStorage.setItem(filterType, JSON.stringify(selectedFilter));
     setShowFilters(false);
     setShowActiveFilters(true);
@@ -80,6 +137,10 @@ const FilterRadioGroup: React.FC<Props> = ({
   };
 
   const clearFilters = () => {
+    if (hasSecondary) {
+      localStorage.removeItem(secondaryFilterType as string);
+      setSecondarySelectedFilter(secondaryComponentFilters[0]);
+    }
     localStorage.removeItem(filterType);
     setDefaultFilter();
     setShowFilters(false);
@@ -156,6 +217,28 @@ const FilterRadioGroup: React.FC<Props> = ({
                   </option>
                 ))}
               </select>
+              {hasSecondary && (
+                <div className="govuk-!-margin-top-4">
+                  <h4
+                    className="govuk-label govuk-label--s govuk-label-wrapper"
+                    id={`${secondaryFilterType}-label`}
+                  >
+                    {secondaryFilterLabel}
+                  </h4>
+                  <select
+                    aria-labelledby={`${secondaryFilterType}-label`}
+                    className="govuk-select"
+                    value={secondarySelectedFilter?.metric_id ?? ''}
+                    onChange={(e) => handleSecondaryChange(e)}
+                  >
+                    {secondaryComponentFilters.map((filter: any, index) => (
+                      <option key={index} value={filter.metric_id}>
+                        {filter.filter_bedtype}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <div className="govuk-grid-row govuk-!-margin-top-4">
                 <div className="govuk-grid-column-full">
                   <div className="govuk-button-group">

@@ -48,6 +48,8 @@ const mockResidentialUser = {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  // The page now loads comparator groups for peer benchmarking; give it an
+  // empty list so the NHS peer group stays selected.
   mockUseSession.mockReturnValue({ data: mockSession } as any);
   mockGetData.mockResolvedValue([]);
   (mockLocationService.getSelectedLocation as vi.mock).mockResolvedValue(
@@ -71,6 +73,22 @@ beforeEach(() => {
 });
 
 describe('ProvisionAndOccupancyPage', () => {
+  // The page loads comparator groups for peer benchmarking. Scoped to this
+  // describe because the file imports AnalyticsService.test, whose tests
+  // assert on their own fetch mock.
+  let originalFetch: typeof globalThis.fetch;
+  beforeEach(() => {
+    originalFetch = globalThis.fetch;
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ groups: [] }),
+    }) as unknown as typeof fetch;
+  });
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+  });
+
   it('should render the heading, body text, and data tables', () => {
     render(<ProvisionAndOccupancyPage />);
 
@@ -91,7 +109,7 @@ describe('ProvisionAndOccupancyPage', () => {
       ).toBeInTheDocument();
     }
 
-    const dataBoxHeadings = ['Beds per care home and occupancy levels'];
+    const dataBoxHeadings = ['Beds per care home'];
     for (let dataBoxHeadingText of dataBoxHeadings) {
       expect(
         screen.getByRole('heading', {
@@ -115,7 +133,7 @@ describe('ProvisionAndOccupancyPage', () => {
       '/help/beds-per-100000-adult-population'
     );
 
-    const tables = [/Table 3: care home bed numbers and occupancy levels/i];
+    const tables = [/Table 3: care home bed numbers/i];
     for (let table of tables) {
       expect(screen.getByRole('table', { name: table })).toBeInTheDocument();
     }
@@ -123,6 +141,21 @@ describe('ProvisionAndOccupancyPage', () => {
 });
 
 describe('ProvisionAndOccupancyPage', () => {
+  // As above: the page loads comparator groups, and this file imports
+  // AnalyticsService.test, so the stub stays scoped to this describe.
+  let originalFetch2: typeof globalThis.fetch;
+  beforeEach(() => {
+    originalFetch2 = globalThis.fetch;
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ groups: [] }),
+    }) as unknown as typeof fetch;
+  });
+  afterEach(() => {
+    globalThis.fetch = originalFetch2;
+  });
+
   beforeAll(() => {
     initializeAppInsights(TEST_CONNECTION_STRING);
   });

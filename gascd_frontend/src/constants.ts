@@ -28,3 +28,9 @@ export const ALLOWED_CP_USER_TYPES = [
   'Care provider location',
 ];
 export const LA_USER_TYPE = 'LA';
+
+/**
+ * Location type of the statistical peer group average, synthesised by the
+ * `/api/get_la_peer_averages` route rather than returned by the metrics API.
+ */
+export const PEER_GROUP_LOCATION_TYPE = 'PeerGroup';

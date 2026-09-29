@@ -416,6 +416,67 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/metric_locations/local_authority_peers/{code}/series": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Get peer group average time series for a local authority
+         * @description Averages each requested metric's time series across the local authority's statistical peers, point by point. Metrics with no peer data are omitted from the response.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description The unique identifier for the local authority. */
+                    code: string;
+                };
+                cookie?: never;
+            };
+            /** @description The metric codes to average across the peer group. */
+            requestBody: {
+                content: {
+                    "application/json": string[];
+                };
+            };
+            responses: {
+                /** @description One averaged series per requested metric that has peer data. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["LocalAuthorityPeerSeries"][];
+                    };
+                };
+                /** @description No metric codes supplied, or an invalid metric code. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Local authority not found. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/metric_locations/custom_local_authority_group": {
         parameters: {
             query?: never;
@@ -805,6 +866,27 @@ export interface components {
             average_peer_group?: number | null;
             /** @description Most recent national metric value. */
             national_average?: number | null;
+        };
+        /** @description A metric's time series averaged across a local authority's statistical peers. */
+        LocalAuthorityPeerSeries: {
+            /** @description The unique identifier for the metric. */
+            metric_code?: string;
+            /** @description Number of peer local authorities whose series contributed to the average. */
+            peer_count?: number;
+            /**
+             * Format: date
+             * @description The start date of the averaged series.
+             */
+            series_start_date?: string;
+            /**
+             * Format: date
+             * @description The end date of the averaged series.
+             */
+            series_end_date?: string;
+            /** @description The frequency of data points in the averaged series. */
+            series_frequency?: string;
+            /** @description The mean of the peers' values at each point. Null where no peer has a value. */
+            values?: (number | null)[];
         };
         /** @description A local authority within a custom comparator group. */
         CustomGroupMember: {

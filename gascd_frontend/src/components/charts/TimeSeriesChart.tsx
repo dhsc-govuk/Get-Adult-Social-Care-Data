@@ -17,6 +17,14 @@ export interface Series {
   name: string;
   data: DataPoint[];
   color?: string;
+  /**
+   * Marks a comparator such as a regional or national average. Drawn dashed so
+   * it can be told apart from the user's own location without relying on
+   * colour alone (WCAG 1.4.1). The legend picks the dashing up automatically,
+   * and the name should still say what the comparator is, since a dashed line
+   * on its own can read as a forecast or provisional figure.
+   */
+  comparator?: boolean;
 }
 
 interface TimeSeriesChartProps {
@@ -25,6 +33,17 @@ interface TimeSeriesChartProps {
   ySuffix?: string;
   dateFormat?: string;
   decimalPoints?: number;
+  /**
+   * Explicit x axis ticks, for periods a date format cannot express. Pass the
+   * ISO dates to label in `tickValues` and the label for each one in
+   * `tickLabels` - for example an academic year shown as "2023/24". Both are
+   * needed for either to apply; without them the ticks come from `dateFormat`.
+   * Ignored when `financialYear` is set, which labels every point itself.
+   */
+  tickValues?: string[];
+  tickLabels?: string[];
+  /** Date shown in the hover label, defaults to the full date */
+  hoverDateFormat?: string;
   financialYear?: boolean;
 }
 const toFinancialYearLabel = (isoDate: string): string => {
@@ -40,8 +59,15 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   ySuffix = '',
   dateFormat = '%b %y',
   decimalPoints = 1,
+  tickValues,
+  tickLabels,
+  hoverDateFormat = '%d %b %Y',
   financialYear = false,
 }) => {
+  const useExplicitTicks =
+    !financialYear &&
+    !!tickValues?.length &&
+    tickValues.length === tickLabels?.length;
   const DEFAULT_COLORS = [
     // Colour pallete from
     // https://service-manual.ons.gov.uk/data-visualisation/colours/using-colours-in-charts#multiple-colours
@@ -71,16 +97,17 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
         line: {
           // Use provided color or fallback to the palette
           color: s.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
-          width: 5,
+          width: s.comparator ? 4 : 5,
+          dash: s.comparator ? 'dash' : 'solid',
         },
         hovertemplate: financialYear
           ? `<b>${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}</b><extra></extra>`
-          : `<b>${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}</b><br>%{x|%d %b %Y}<extra></extra>`,
+          : `<b>${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}</b><br>%{x|${hoverDateFormat}}<extra></extra>`,
       };
 
       return trace as Data;
     });
-  }, [series, financialYear]);
+  }, [series, financialYear, hoverDateFormat]);
 
   const layout: Partial<Layout> = {
     // Legend positioned above the chart, horizontal
@@ -99,12 +126,20 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
     },
     xaxis: {
       type: financialYear ? 'category' : 'date',
-      tickformat: financialYear ? undefined : `${dateFormat}`, // Shows "Jan", "Feb", etc.
       showgrid: false, // No vertical grid lines
-      nticks:
-        !financialYear && dateFormat === '%b %y'
-          ? Math.ceil(series[series.length - 1].data.length / 48)
-          : series[series.length - 1].data.length, // uses last item in series which is usually national
+      ...(useExplicitTicks
+        ? {
+            tickmode: 'array' as const,
+            tickvals: tickValues,
+            ticktext: tickLabels,
+          }
+        : {
+            tickformat: financialYear ? undefined : `${dateFormat}`, // Shows "Jan", "Feb", etc.
+            nticks:
+              !financialYear && dateFormat === '%b %y'
+                ? Math.ceil(series[series.length - 1].data.length / 48)
+                : series[series.length - 1].data.length, // uses last item in series which is usually national
+          }),
       tickfont: {
         family: '"GDS Transport", Arial, sans-serif',
         size: 14,
