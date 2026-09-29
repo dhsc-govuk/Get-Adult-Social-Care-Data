@@ -11,6 +11,7 @@ import LocalMarketInformation from '@/components/data-components/LocalMarketInfo
 import BackToTop from '@/components/data-components/BackToTop';
 import DataTable from '@/components/tables/table';
 import SubCatergoryTable from '@/components/tables/SubCatergoryTable';
+import PeerGroupTable from '@/components/tables/PeerGroupTable';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
 import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
@@ -389,10 +390,29 @@ export default function LAFundingPage() {
     ...standardisedMetricIds,
   ];
   const {
-    dataByMetric,
+    dataByMetric: unscaledDataByMetric,
     loading: chartLoading,
     error: chartError,
   } = usePeerGroupData(laCode, benchmarkedMetricIds, selection, groups);
+  // Peer values are in thousands of pounds too, so they get the same x1000
+  const dataByMetric = useMemo(() => {
+    const scale = (value: number | null) =>
+      value === null ? null : value * 1000;
+    return Object.fromEntries(
+      Object.entries(unscaledDataByMetric).map(([metricId, data]) => [
+        metricId,
+        data && {
+          ...data,
+          averagePeerGroup: scale(data.averagePeerGroup),
+          nationalAverage: scale(data.nationalAverage),
+          localAuthorityPeers: data.localAuthorityPeers.map((peer) => ({
+            ...peer,
+            metricValue: scale(peer.metricValue),
+          })),
+        },
+      ])
+    );
+  }, [unscaledDataByMetric]);
 
   const benchmarkedDemographicData = useMemo(
     () =>
@@ -404,6 +424,21 @@ export default function LAFundingPage() {
       ),
     [filteredDemographicData, dataByMetric, locationIds]
   );
+
+  // Read once, so each chart and the table beside it show the same values
+  const areaValues = (metricId: string) => {
+    const valueFor = (locationType: string) =>
+      benchmarkedDemographicData.find(
+        (d) => d.metric_id === metricId && d.location_type === locationType
+      )?.data_point ?? null;
+    return {
+      la: valueFor('LA'),
+      regional: valueFor('Regional'),
+      national: valueFor('National'),
+    };
+  };
+  const fundingValues = areaValues(standardisedFundingMetricId);
+  const careTypeValues = areaValues(standardisedCareTypeId);
 
   const supportSettingsForFundingTrendsDefault = {
     metric_id: 'elss_all_types_of_adult_social_care_all_ages',
@@ -810,27 +845,9 @@ export default function LAFundingPage() {
             <PeerGroupBarChart
               laCode={laCode}
               laName={locationNames.LALabel}
-              currentLaValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === standardisedFundingMetricId &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === standardisedFundingMetricId &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === standardisedFundingMetricId &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              currentLaValue={fundingValues.la}
+              nationalAverageValue={fundingValues.national}
+              regionalAverageValue={fundingValues.regional}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric[standardisedFundingMetricId] ?? null}
               loading={chartLoading}
@@ -864,15 +881,15 @@ export default function LAFundingPage() {
           table={
             <>
               {renderComparatorControl('comparator-table-4')}
-              <SubCatergoryTable
+              <PeerGroupTable
                 tableref={tableref4}
                 caption={
                   <>
                     Table 4: total <abbr title="Local Authority">LA</abbr>{' '}
                     spending on adult social care, standardised per 100,000
                     adult population (18+) &ndash; {locationNames.LALabel}{' '}
-                    <abbr title="local authority">LA</abbr>,{' '}
-                    {comparatorAverageLabel}, {locationNames.RegionLabel}{' '}
+                    <abbr title="local authority">LA</abbr> and its comparison
+                    group, {comparatorAverageLabel}, {locationNames.RegionLabel}{' '}
                     (regional average) and {locationNames.CountryLabel}{' '}
                     (national average),{' '}
                     {IndicatorService.getFinancialYear(
@@ -882,26 +899,27 @@ export default function LAFundingPage() {
                   </>
                 }
                 source="Adult Social Care Finance Report from the Department of Health and Social Care (DHSC) and population estimates from ONS"
-                columnHeaders={{
-                  ...locationNamesWithAverageLabels,
-                  ComparatorLabel: comparatorAverageLabel,
-                }}
-                metricColumnName="Duration of care"
-                rowHeaders={{
-                  [standardisedFundingMetricId]: `${
-                    (DURATION_OF_CARE_OPTIONS as Record<string, string>)[
-                      chartDuration
-                    ]
-                  } - ${
-                    (SUPPORT_REASON_OPTIONS as Record<string, string>)[
-                      chartSupportReason
-                    ]
-                  }`,
-                }}
-                data={benchmarkedDemographicData}
-                showCareProvider={false}
-                currency={true}
-              ></SubCatergoryTable>
+                valueHeader={`${
+                  (DURATION_OF_CARE_OPTIONS as Record<string, string>)[
+                    chartDuration
+                  ]
+                } - ${
+                  (SUPPORT_REASON_OPTIONS as Record<string, string>)[
+                    chartSupportReason
+                  ]
+                }`}
+                valueFormat="currency"
+                laCode={laCode}
+                laName={locationNames.LALabel}
+                currentLaValue={fundingValues.la}
+                regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
+                regionalAverageValue={fundingValues.regional}
+                nationalAverageValue={fundingValues.national}
+                peerData={dataByMetric[standardisedFundingMetricId] ?? null}
+                loading={chartLoading}
+                error={chartError}
+                comparatorAverageLabel={comparatorAverageLabel}
+              />
             </>
           }
           download={
@@ -1050,27 +1068,9 @@ export default function LAFundingPage() {
             <PeerGroupBarChart
               laCode={laCode}
               laName={locationNames.LALabel}
-              currentLaValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === standardisedCareTypeId &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === standardisedCareTypeId &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === standardisedCareTypeId &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              currentLaValue={careTypeValues.la}
+              nationalAverageValue={careTypeValues.national}
+              regionalAverageValue={careTypeValues.regional}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric[standardisedCareTypeId] ?? null}
               loading={chartLoading}
@@ -1100,7 +1100,7 @@ export default function LAFundingPage() {
           table={
             <>
               {renderComparatorControl('comparator-table-5')}
-              <SubCatergoryTable
+              <PeerGroupTable
                 tableref={tableref5}
                 caption={
                   <>
@@ -1108,8 +1108,8 @@ export default function LAFundingPage() {
                     funding for long-term adult social care by support setting,
                     standardised per 100,000 adult population (18+) &ndash;{' '}
                     {locationNames.LALabel}{' '}
-                    <abbr title="local authority">LA</abbr>,{' '}
-                    {comparatorAverageLabel}, {locationNames.RegionLabel}{' '}
+                    <abbr title="local authority">LA</abbr> and its comparison
+                    group, {comparatorAverageLabel}, {locationNames.RegionLabel}{' '}
                     (regional average) and {locationNames.CountryLabel}{' '}
                     (national average),{' '}
                     {IndicatorService.getFinancialYear(
@@ -1119,20 +1119,21 @@ export default function LAFundingPage() {
                   </>
                 }
                 source="Adult Social Care Finance Report from the Department of Health and Social Care (DHSC) and population estimates from ONS"
-                columnHeaders={{
-                  ...locationNamesWithAverageLabels,
-                  ComparatorLabel: comparatorAverageLabel,
-                }}
-                metricColumnName="Care type or funding method"
-                rowHeaders={{
-                  [standardisedCareTypeId]: (
-                    CARE_TYPE_OPTIONS as Record<string, string>
-                  )[chartCareType],
-                }}
-                data={benchmarkedDemographicData}
-                showCareProvider={false}
-                currency={true}
-              ></SubCatergoryTable>
+                valueHeader={
+                  (CARE_TYPE_OPTIONS as Record<string, string>)[chartCareType]
+                }
+                valueFormat="currency"
+                laCode={laCode}
+                laName={locationNames.LALabel}
+                currentLaValue={careTypeValues.la}
+                regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
+                regionalAverageValue={careTypeValues.regional}
+                nationalAverageValue={careTypeValues.national}
+                peerData={dataByMetric[standardisedCareTypeId] ?? null}
+                loading={chartLoading}
+                error={chartError}
+                comparatorAverageLabel={comparatorAverageLabel}
+              />
             </>
           }
           download={
