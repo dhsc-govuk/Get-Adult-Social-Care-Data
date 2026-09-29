@@ -511,6 +511,8 @@ export default function NumberPeopleReceivingCarePage() {
                 benchmarkedDemographicData
               )}
               figureNumber={1}
+              // Rates per 100,000, not percentages
+              valueSuffix=""
               sourceText="Source: Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS"
             />
           }
