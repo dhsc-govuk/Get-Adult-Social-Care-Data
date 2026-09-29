@@ -21,6 +21,8 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
+import FilterSelectGroup from '@/components/filters/FilterSelectGroup';
+import PeerGroupTable from '@/components/tables/PeerGroupTable';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
 import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
 import ComparatorGroupBuilder from '@/components/charts/peer-group/ComparatorGroupBuilder';
@@ -59,6 +61,9 @@ export default function DisabilityPrevalence() {
     Indicator[]
   >([]);
   const [filteredPrimaryReasonData, setFilteredPrimaryReasonData] = useState<
+    Indicator[]
+  >([]);
+  const [standardisedReasonData, setStandardisedReasonData] = useState<
     Indicator[]
   >([]);
   const [disabilityQuery, setDisabilityQuery] = useState<IndicatorQuery>({
@@ -115,20 +120,15 @@ export default function DisabilityPrevalence() {
     'learning_disability_prevalence',
   ];
 
-  // TODO(GASCD-256): the standardised "per 100,000 adults (18+)" primary
-  // support reason metrics do not exist yet — they are absent from
-  // MetricCodeEnum and the metrics table, so no environment can serve them.
-  // Mapped to the unstandardised codes so the presentation can be reviewed;
-  // replace this map when the backend exposes the real codes.
-  const STANDARDISED_SUPPORT_REASON_IDS: Record<string, string> =
-    Object.fromEntries(supportReasonMetricIds.map((id) => [id, id]));
-  const standardisedSupportReasonMetricIds = Object.values(
-    STANDARDISED_SUPPORT_REASON_IDS
-  );
+  const toStandardisedId = (id: string) => `${id}_per100k_adults`;
+  const standardisedSupportReasonMetricIds =
+    supportReasonMetricIds.map(toStandardisedId);
 
   // The benchmarking figure takes a single primary support reason at a time.
   // The control and the figure read the same default so they cannot disagree.
-  const DEFAULT_CHART_SUPPORT_REASON = 'learning_disability_support_18_and_over';
+  const DEFAULT_CHART_SUPPORT_REASON = toStandardisedId(
+    'learning_disability_support_18_and_over'
+  );
   const [chartSupportReason, setChartSupportReason] = useState<string>(
     DEFAULT_CHART_SUPPORT_REASON
   );
@@ -349,6 +349,13 @@ export default function DisabilityPrevalence() {
     support_with_memory_and_cognition_18_and_over:
       'Support with memory and cognition',
   };
+  const standardisedRowHeadersDefault: Record<string, string> =
+    Object.fromEntries(
+      Object.entries(supportReasonRowHeadersDefault).map(([id, label]) => [
+        toStandardisedId(id),
+        label,
+      ])
+    );
 
   const [supportReasonRowHeaders, setSupportReasonRowHeaders] = useState<any>(
     supportReasonRowHeadersDefault
@@ -404,7 +411,10 @@ export default function DisabilityPrevalence() {
         location_ids: locationIds,
       }));
       setSupportReasonQuery(() => ({
-        metric_ids: supportReasonMetricIds,
+        metric_ids: [
+          ...supportReasonMetricIds,
+          ...standardisedSupportReasonMetricIds,
+        ],
         location_ids: locationIds,
       }));
     }
@@ -460,7 +470,17 @@ export default function DisabilityPrevalence() {
           await IndicatorFetchService.getData(supportReasonQuery);
         const filteredSupportReasonData =
           TableService.filterDate(supportReasonData);
-        setPrimarySupportReasonData(filteredSupportReasonData);
+        // One request serves both tables
+        setPrimarySupportReasonData(
+          filteredSupportReasonData.filter((item) =>
+            supportReasonMetricIds.includes(item.metric_id)
+          )
+        );
+        setStandardisedReasonData(
+          filteredSupportReasonData.filter((item) =>
+            standardisedSupportReasonMetricIds.includes(item.metric_id)
+          )
+        );
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -502,46 +522,39 @@ export default function DisabilityPrevalence() {
     [filteredPrimaryReasonData, dataByMetric, locationIds]
   );
 
-  // The standardised table filters its own rows, independently of the count
-  // table above it, so each can show a different set of reasons.
-  const STANDARDISED_REASON_FILTER_KEY = 'standardised-primary-reason-metrics';
-  const [standardisedRowHeaders, setStandardisedRowHeaders] = useState<any>(
-    supportReasonRowHeadersDefault
-  );
-  const [standardisedReasonMetricIds, setStandardisedReasonMetricIds] =
-    useState<string[]>(supportReasonMetricIds);
-
-  const updateStandardisedReasonMetrics = () => {
-    const stored = localStorage.getItem(STANDARDISED_REASON_FILTER_KEY);
-    if (!stored) {
-      setStandardisedRowHeaders(supportReasonRowHeadersDefault);
-      setStandardisedReasonMetricIds(supportReasonMetricIds);
-      return;
-    }
+  // One reason at a time, for the figure and the table, keyed by its count code
+  const STANDARDISED_REASON_FILTER_KEY = 'standardised-primary-reason-metric';
+  const updateChartSupportReason = () => {
     try {
-      const parsed = JSON.parse(stored);
-      if (!Array.isArray(parsed)) return;
-      const map: any = {};
-      parsed.forEach((item) => (map[item.metric_id] = item.filter_bedtype));
-      setStandardisedRowHeaders(map);
-      setStandardisedReasonMetricIds(parsed.map((item) => item.metric_id));
+      const stored = JSON.parse(
+        localStorage.getItem(STANDARDISED_REASON_FILTER_KEY) ?? 'null'
+      );
+      setChartSupportReason(
+        stored?.metric_id in supportReasonRowHeadersDefault
+          ? toStandardisedId(stored.metric_id)
+          : DEFAULT_CHART_SUPPORT_REASON
+      );
     } catch {
-      // A malformed entry leaves the current selection in place
+      setChartSupportReason(DEFAULT_CHART_SUPPORT_REASON);
     }
   };
+  useEffect(() => {
+    updateChartSupportReason();
+  }, []);
 
-  // Standardised primary support reason rows, with the comparator group's
-  // average added alongside the true regional value (see mergeComparatorAverage)
-  const standardisedPrimaryReasonData = useMemo(
-    () =>
-      mergeComparatorAverage(
-        filteredPrimaryReasonData,
-        standardisedSupportReasonMetricIds,
-        dataByMetric,
-        locationIds[2]
-      ),
-    [filteredPrimaryReasonData, dataByMetric, locationIds]
-  );
+  // Read once, so the figure and the table show the same values
+  const standardisedReasonValues = (() => {
+    const valueFor = (locationType: string) =>
+      standardisedReasonData.find(
+        (d) =>
+          d.metric_id === chartSupportReason && d.location_type === locationType
+      )?.data_point ?? null;
+    return {
+      la: valueFor('LA'),
+      regional: valueFor('Regional'),
+      national: valueFor('National'),
+    };
+  })();
 
   const updatePrimaryReasonMetrics = () => {
     const storedData = localStorage.getItem('primary-reason-metrics');
@@ -997,7 +1010,7 @@ export default function DisabilityPrevalence() {
         />
       </DataBox>
       <DataBox
-        dataTitle="[REPLACE WITH REAL METRIC]: Primary reason for people to access long-term adult social care – standardised per 100,000 of the total adult population (18+)"
+        dataTitle="Primary reason for people to access long-term adult social care – standardised per 100,000 of the total adult population (18+)"
         dataInfo={
           <>
             <p className="govuk-body-m">
@@ -1017,90 +1030,44 @@ export default function DisabilityPrevalence() {
           </>
         }
       >
+        <FilterSelectGroup
+          filterType={STANDARDISED_REASON_FILTER_KEY}
+          filterLabel="Primary support reason"
+          filters={supportReasonRowHeadersDefault}
+          updateMethod={updateChartSupportReason}
+        />
         <DataTabs
           id="5"
-          sharingMetricIds={standardisedSupportReasonMetricIds}
+          sharingMetricIds={[chartSupportReason]}
           chart={
             <>
               <PeerGroupBarChart
                 laCode={laCode}
                 laName={locationNames.LALabel}
-                currentLaValue={
-                  standardisedPrimaryReasonData.find(
-                    (d) =>
-                      d.metric_id === chartSupportReason &&
-                      d.location_type === 'LA'
-                  )?.data_point ?? null
-                }
-                nationalAverageValue={
-                  standardisedPrimaryReasonData.find(
-                    (d) =>
-                      d.metric_id === chartSupportReason &&
-                      d.location_type === 'National'
-                  )?.data_point ?? null
-                }
-                regionalAverageValue={
-                  standardisedPrimaryReasonData.find(
-                    (d) =>
-                      d.metric_id === chartSupportReason &&
-                      d.location_type === 'Regional'
-                  )?.data_point ?? null
-                }
+                currentLaValue={standardisedReasonValues.la}
+                nationalAverageValue={standardisedReasonValues.national}
+                regionalAverageValue={standardisedReasonValues.regional}
                 regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
                 peerData={dataByMetric[chartSupportReason] ?? null}
                 loading={chartLoading}
                 error={chartError}
-                comparatorControl={
-                  <div className="dhsc-chart-controls">
-                    <div>{renderComparatorControl('comparator-chart-4')}</div>
-                    <div>
-                      {/* The figure shows one reason at a time and must always
-                          show one, so this is a selector rather than a filter:
-                          no clear, no collapse. */}
-                      <div className="govuk-form-group">
-                        <label
-                          className="govuk-label govuk-!-font-weight-bold"
-                          htmlFor="standardised-support-reason-select"
-                        >
-                          Primary support reason
-                        </label>
-                        <select
-                          id="standardised-support-reason-select"
-                          className="govuk-select"
-                          value={chartSupportReason}
-                          onChange={(e) =>
-                            setChartSupportReason(e.target.value)
-                          }
-                        >
-                          {Object.entries(
-                            supportReasonRowHeadersDefault as Record<
-                              string,
-                              string
-                            >
-                          ).map(([metricId, label]) => (
-                            <option key={metricId} value={metricId}>
-                              {label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                }
+                comparatorControl={renderComparatorControl(
+                  'comparator-chart-4'
+                )}
                 comparatorLabel={comparatorLabel}
                 comparatorAverageLabel={comparatorAverageLabel}
-                metricDescription={`the rate of people accessing long-term adult social care for ${(
-                  supportReasonRowHeadersDefault as Record<string, string>
-                )[chartSupportReason]?.toLowerCase()}, per 100,000 of the total adult population (18+)`}
+                metricDescription={`the rate of people accessing long-term adult social care for ${standardisedRowHeadersDefault[
+                  chartSupportReason
+                ]?.toLowerCase()}, per 100,000 of the total adult population (18+)`}
                 figureTitle={`${
-                  (supportReasonRowHeadersDefault as Record<string, string>)[
-                    chartSupportReason
-                  ]
+                  standardisedRowHeadersDefault[chartSupportReason]
                 } per 100,000 of the total adult population (18+)`}
                 dateLabel={IndicatorService.getMostRecentDate(
-                  filteredDisabilityData
+                  standardisedReasonData
                 )}
                 figureNumber={4}
+                // Rates per 100,000, not percentages
+                valueSuffix=""
                 sourceText="Source: Adult Social Care Activity and Finance Report from NHS England & population estimates from ONS"
               />
               <p className="govuk-body-s">
@@ -1111,42 +1078,41 @@ export default function DisabilityPrevalence() {
           }
           table={
             <>
-              <FilterCheckboxGroup
-                filterType={STANDARDISED_REASON_FILTER_KEY}
-                filterLabel="Primary support reason"
-                filters={supportReasonRowHeadersDefault}
-                updateMethod={updateStandardisedReasonMetrics}
-              />
               {renderComparatorControl('comparator-table-5')}
-              <DataTable
+              <PeerGroupTable
                 tableref={tableref5}
                 caption={
                   <>
-                    Table 5: primary reason for all age groups to access
-                    long-term adult social care, standardised per 100,000 of the
-                    total adult population (18+) – {locationNames.LALabel}{' '}
-                    <abbr title="local authority">LA</abbr>,{' '}
-                    {comparatorAverageLabel}, {locationNames.RegionLabel}{' '}
+                    Table 5: people accessing long-term adult social care for{' '}
+                    {standardisedRowHeadersDefault[
+                      chartSupportReason
+                    ]?.toLowerCase()}
+                    , standardised per 100,000 of the total adult population
+                    (18+) – {locationNames.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr> and its comparison
+                    group, {comparatorAverageLabel}, {locationNames.RegionLabel}{' '}
                     (regional average) and {locationNames.CountryLabel}{' '}
                     (national average),{' '}
-                    {IndicatorService.getMostRecentDate(filteredDisabilityData)}
+                    {IndicatorService.getMostRecentDate(standardisedReasonData)}
                   </>
                 }
                 source="Adult Social Care Activity and Finance Report from NHS England & population estimates from ONS"
-                columnHeaders={{
-                  ...locationNamesWithAverageLabels,
-                  ComparatorLabel: comparatorAverageLabel,
-                }}
-                metricColumnName="Primary support reason"
-                rowHeaders={standardisedRowHeaders}
-                data={standardisedPrimaryReasonData.filter((d) =>
-                  standardisedReasonMetricIds.includes(d.metric_id)
-                )}
-                showCareProvider={false}
-                smallNumberSuppression={true}
+                valueHeader={`${standardisedRowHeadersDefault[chartSupportReason]} per 100,000 adults`}
+                laCode={laCode}
+                laName={locationNames.LALabel}
+                currentLaValue={standardisedReasonValues.la}
+                regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
+                regionalAverageValue={standardisedReasonValues.regional}
+                nationalAverageValue={standardisedReasonValues.national}
+                peerData={dataByMetric[chartSupportReason] ?? null}
+                loading={chartLoading}
+                comparatorAverageLabel={comparatorAverageLabel}
               >
-                <p className="govuk-body-m">(*) denotes less than 5</p>
-              </DataTable>
+                <p className="govuk-body-s">
+                  Local authorities with an underlying count of between 1 and 5
+                  are suppressed and are not shown in this table.
+                </p>
+              </PeerGroupTable>
             </>
           }
           download={

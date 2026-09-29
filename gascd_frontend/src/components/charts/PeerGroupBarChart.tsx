@@ -26,6 +26,7 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
   regionalAverageLabel,
   nationalAverageLabel,
   valueSuffix,
+  currency,
   sourceText,
 }) => {
   if (!laCode || laCode === 'Loading...' || laCode === 'undefined') {
@@ -66,6 +67,7 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
           regionalAverageLabel={regionalAverageLabel}
           nationalAverageLabel={nationalAverageLabel}
           valueSuffix={valueSuffix}
+          currency={currency}
           sourceText={sourceText}
         />
       )}

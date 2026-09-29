@@ -16,6 +16,8 @@ type Props = {
   secondaryFilterType?: string;
   secondaryFilterLabel?: string;
   secondaryFilters?: Object;
+  // Main selections the second select does not apply to, so it is hidden
+  secondaryHiddenFor?: string[];
 };
 
 const FilterRadioGroup: React.FC<Props> = ({
@@ -26,6 +28,7 @@ const FilterRadioGroup: React.FC<Props> = ({
   secondaryFilterType,
   secondaryFilterLabel,
   secondaryFilters,
+  secondaryHiddenFor = [],
 }) => {
   const hasSecondary = Boolean(secondaryFilterType && secondaryFilters);
   const [showFilters, setShowFilters] = React.useState(false);
@@ -38,6 +41,9 @@ const FilterRadioGroup: React.FC<Props> = ({
   >([]);
   const [secondarySelectedFilter, setSecondarySelectedFilter] =
     useState<Filters>();
+  const [secondaryDisplayFilter, setSecondaryDisplayFilter] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     setLocalFilters();
@@ -81,6 +87,10 @@ const FilterRadioGroup: React.FC<Props> = ({
           metric_id: parsed.metric_id,
           filter_bedtype: parsed.filter_bedtype,
         });
+        const storedMain = storedData ? JSON.parse(storedData).metric_id : '';
+        if (storedData && !secondaryHiddenFor.includes(storedMain)) {
+          setSecondaryDisplayFilter(parsed.filter_bedtype);
+        }
       } else {
         setSecondarySelectedFilter(localSecondary[0]);
       }
@@ -119,12 +129,18 @@ const FilterRadioGroup: React.FC<Props> = ({
   };
 
   const handleSubmit = () => {
-    if (hasSecondary) {
+    if (showSecondary) {
       localStorage.setItem(
         secondaryFilterType as string,
         JSON.stringify(secondarySelectedFilter)
       );
+    } else if (hasSecondary) {
+      localStorage.removeItem(secondaryFilterType as string);
+      setSecondarySelectedFilter(secondaryComponentFilters[0]);
     }
+    setSecondaryDisplayFilter(
+      showSecondary ? (secondarySelectedFilter?.filter_bedtype ?? null) : null
+    );
     localStorage.setItem(filterType, JSON.stringify(selectedFilter));
     setShowFilters(false);
     setShowActiveFilters(true);
@@ -142,6 +158,7 @@ const FilterRadioGroup: React.FC<Props> = ({
       setSecondarySelectedFilter(secondaryComponentFilters[0]);
     }
     localStorage.removeItem(filterType);
+    setSecondaryDisplayFilter(null);
     setDefaultFilter();
     setShowFilters(false);
     setShowActiveFilters(false);
@@ -153,14 +170,35 @@ const FilterRadioGroup: React.FC<Props> = ({
     );
   };
 
+  // Removes only the second selection, keeping the main one
+  const clearSecondaryFilter = () => {
+    localStorage.removeItem(secondaryFilterType as string);
+    setSecondarySelectedFilter(secondaryComponentFilters[0]);
+    setSecondaryDisplayFilter(null);
+    updateMethod();
+    AnalyticsService.trackFilterRemove(
+      secondarySelectedFilter?.metric_id ?? '',
+      secondaryFilterType as string
+    );
+  };
+
   const setDefaultFilter = () => {
     if (filterType === 'long-term-funding-support-type') {
       setSelectedFilter({
         metric_id: 'elss_all_types_of_adult_social_care_all_ages',
         filter_bedtype: 'All types of adult social care',
       });
+    } else {
+      // Otherwise the first option, which the select shows anyway
+      const [first] = Object.entries(filters);
+      if (first)
+        setSelectedFilter({ metric_id: first[0], filter_bedtype: first[1] });
     }
   };
+
+  const showSecondary =
+    hasSecondary &&
+    !secondaryHiddenFor.includes(selectedFilter?.metric_id ?? '');
 
   return (
     <div className="govuk-!-padding-bottom-4 govuk-!-padding-top-4">
@@ -217,8 +255,8 @@ const FilterRadioGroup: React.FC<Props> = ({
                   </option>
                 ))}
               </select>
-              {hasSecondary && (
-                <div className="govuk-!-margin-top-4">
+              {showSecondary && (
+                <div className="govuk-!-margin-top-4 dhsc-filter--conditional">
                   <h4
                     className="govuk-label govuk-label--s govuk-label-wrapper"
                     id={`${secondaryFilterType}-label`}
@@ -274,6 +312,15 @@ const FilterRadioGroup: React.FC<Props> = ({
               <span className="govuk-visually-hidden">Remove filter</span>
               {filterLabel}: {displayFilter}
             </button>
+            {secondaryDisplayFilter && (
+              <button
+                className="app-c-filter-summary__remove-filter govuk-link govuk-body-m"
+                onClick={() => clearSecondaryFilter()}
+              >
+                <span className="govuk-visually-hidden">Remove filter</span>
+                {secondaryFilterLabel}: {secondaryDisplayFilter}
+              </button>
+            )}
           </div>
           <div>
             <button

@@ -12,6 +12,7 @@ import LocalMarketInformation from '@/components/data-components/LocalMarketInfo
 import BackToTop from '@/components/data-components/BackToTop';
 import LocationService from '@/services/location/locationService';
 import DataTable from '@/components/tables/table';
+import PeerGroupTable from '@/components/tables/PeerGroupTable';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { Indicator } from '@/data/interfaces/Indicator';
@@ -134,6 +135,21 @@ export default function NumberPeopleReceivingCarePage() {
       ),
     [filteredDemographicData, dataByMetric, regionCode]
   );
+
+  // Read once, so the figure and the table show the same values
+  const standardisedValues = (() => {
+    const valueFor = (locationType: string) =>
+      benchmarkedDemographicData.find(
+        (d) =>
+          d.metric_id === STANDARDISED_METRIC_ID &&
+          d.location_type === locationType
+      )?.data_point ?? null;
+    return {
+      la: valueFor('LA'),
+      regional: valueFor('Regional'),
+      national: valueFor('National'),
+    };
+  })();
 
   const handleComparatorChange = (newSelection: ComparatorSelection) => {
     setSelection(newSelection);
@@ -282,7 +298,6 @@ export default function NumberPeopleReceivingCarePage() {
       url: '/topics/residential-care/subtopics',
     },
   ];
-
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -477,27 +492,9 @@ export default function NumberPeopleReceivingCarePage() {
             <PeerGroupBarChart
               laCode={laCode}
               laName={locationNames.LALabel}
-              currentLaValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === STANDARDISED_METRIC_ID &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === STANDARDISED_METRIC_ID &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === STANDARDISED_METRIC_ID &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              currentLaValue={standardisedValues.la}
+              nationalAverageValue={standardisedValues.national}
+              regionalAverageValue={standardisedValues.regional}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric[STANDARDISED_METRIC_ID] ?? null}
               loading={chartLoading}
@@ -511,28 +508,29 @@ export default function NumberPeopleReceivingCarePage() {
                 benchmarkedDemographicData
               )}
               figureNumber={1}
+              // Rates per 100,000, not percentages
+              valueSuffix=""
               sourceText="Source: Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS"
             />
           }
           table={
             <>
               {renderComparatorControl('comparator-table-2')}
-              <DataTable
+              <PeerGroupTable
                 tableref={tableref2}
-                caption={`Table 2: number of people receiving community social care in the last month, standardised per 100,000 of the total population (18+) – ${locationNames.LALabel} LA, ${comparatorAverageLabel}, ${locationNames.RegionLabel} (regional average) and ${locationNames.CountryLabel} (national average), ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`}
+                caption={`Table 2: number of people receiving community social care in the last month, standardised per 100,000 of the total population (18+) – ${locationNames.LALabel} LA and its comparison group, ${comparatorAverageLabel}, ${locationNames.RegionLabel} (regional average) and ${locationNames.CountryLabel} (national average), ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`}
                 source="Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS"
-                columnHeaders={{
-                  ...locationNamesWithAverageLabels,
-                  CPLabel: null,
-                  ComparatorLabel: comparatorAverageLabel,
-                }}
-                rowHeaders={{
-                  [STANDARDISED_METRIC_ID]: `People receiving community social care in ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`,
-                }}
-                data={benchmarkedDemographicData}
-                showCareProvider={false}
-                percentageRows={[]}
-              ></DataTable>
+                valueHeader={`People receiving community social care in ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}, per 100,000 adults`}
+                laCode={laCode}
+                laName={locationNames.LALabel}
+                currentLaValue={standardisedValues.la}
+                regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
+                regionalAverageValue={standardisedValues.regional}
+                nationalAverageValue={standardisedValues.national}
+                peerData={dataByMetric[STANDARDISED_METRIC_ID] ?? null}
+                loading={chartLoading}
+                comparatorAverageLabel={comparatorAverageLabel}
+              />
             </>
           }
           download={

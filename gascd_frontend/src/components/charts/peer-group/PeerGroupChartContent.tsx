@@ -8,6 +8,7 @@ import {
   REGIONAL_AVG_COLOUR,
 } from './constants';
 import { PeerGroupData } from './types';
+import { getPeerChartRows } from './peerChartRows';
 
 interface PeerGroupChartContentProps {
   laName: string;
@@ -28,6 +29,7 @@ interface PeerGroupChartContentProps {
   regionalAverageLabel?: string;
   nationalAverageLabel?: string;
   valueSuffix?: string;
+  currency?: boolean;
   sourceText?: string;
 }
 
@@ -45,53 +47,19 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
   regionalAverageLabel,
   nationalAverageLabel,
   valueSuffix = '%',
+  currency = false,
   sourceText = 'Source: Census 2021 from the Office for National Statistics (ONS)',
 }) => {
   const hasPeers = peerData.localAuthorityPeers.length > 0;
 
   const { categories, values } = useMemo(() => {
     if (!hasPeers) return { categories: [], values: [] };
-
-    const peers = ownLaCode
-      ? peerData.localAuthorityPeers.filter((peer) => peer.code !== ownLaCode)
-      : peerData.localAuthorityPeers;
-
-    const allItems: { name: string; value: number }[] = [
-      ...(currentLaValue !== null
-        ? [{ name: laName, value: currentLaValue }]
-        : []),
-      ...peers
-        .filter((peer) => peer.metricValue !== null)
-        .map((peer) => ({
-          name: peer.displayName,
-          value: peer.metricValue as number,
-        })),
-    ];
-
-    const sorted = [...allItems].sort((a, b) => b.value - a.value);
-
-    // Plotly's categorical axis merges rows that share a label, which would
-    // leave the highlight shape positioned past the end of the axis and the
-    // chart rendering blank label-less rows below the bars. Distinct LAs never
-    // share a name, so keep one bar per label (the sort means the highest
-    // value survives) - this also drops an LA that appears under both an old
-    // and a new ONS code.
-    const seenNames = new Set<string>();
-    const uniqueItems = sorted.filter(
-      (item) => !seenNames.has(item.name) && Boolean(seenNames.add(item.name))
-    );
-
+    const rows = getPeerChartRows(laName, currentLaValue, peerData, ownLaCode);
     return {
-      categories: uniqueItems.map((item) => item.name),
-      values: uniqueItems.map((item) => item.value),
+      categories: rows.map((row) => row.name),
+      values: rows.map((row) => row.value),
     };
-  }, [
-    currentLaValue,
-    hasPeers,
-    laName,
-    ownLaCode,
-    peerData.localAuthorityPeers,
-  ]);
+  }, [currentLaValue, hasPeers, laName, ownLaCode, peerData]);
 
   const referenceShapes = useMemo((): Partial<Shape>[] => {
     const shapes: Partial<Shape>[] = [];
@@ -164,6 +132,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
         regionalAverageLabel={regionalAverageLabel}
         nationalAverageLabel={nationalAverageLabel}
         valueSuffix={valueSuffix}
+        currency={currency}
       />
       {categories.length > 0 && (
         <div style={{ height: `${Math.max(400, categories.length * 50)}px` }}>
@@ -173,8 +142,9 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
             highlightCategory={laName}
             darkBlueCount={0}
             additionalShapes={referenceShapes}
-            xAxisTickSuffix={valueSuffix}
-            hoverValueFormat=".1f"
+            xAxisTickPrefix={currency ? '£' : undefined}
+            xAxisTickSuffix={currency ? undefined : valueSuffix}
+            hoverValueFormat={currency ? ',.0f' : '.1f'}
           />
         </div>
       )}

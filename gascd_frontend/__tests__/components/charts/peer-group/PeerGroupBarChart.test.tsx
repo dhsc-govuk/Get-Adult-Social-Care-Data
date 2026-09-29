@@ -90,6 +90,35 @@ describe('PeerGroupBarChart', () => {
     ).toBeInTheDocument();
   });
 
+  it('drops the percentage sign when valueSuffix is empty', () => {
+    render(<PeerGroupBarChart {...defaultProps} valueSuffix="" />);
+    expect(
+      screen.getByText(/England \(national average\) \(10\.5\)/i)
+    ).toBeInTheDocument();
+    const layout = JSON.parse(screen.getByTestId('chart-layout').textContent!);
+    expect(layout.xaxis.ticksuffix).toBeUndefined();
+  });
+
+  it('shows currency values as whole pounds with a £ prefix', () => {
+    render(
+      <PeerGroupBarChart
+        {...defaultProps}
+        currency
+        currentLaValue={52000000}
+        nationalAverageValue={1234567.4}
+        regionalAverageValue={48000000}
+      />
+    );
+    expect(
+      screen.getByText(/England \(national average\) \(£1,234,567\)/i)
+    ).toBeInTheDocument();
+    const layout = JSON.parse(screen.getByTestId('chart-layout').textContent!);
+    expect(layout.xaxis.tickprefix).toBe('£');
+    expect(layout.xaxis.ticksuffix).toBeUndefined();
+    const [bars] = JSON.parse(screen.getByTestId('chart-data').textContent!);
+    expect(bars.hovertemplate).toContain('£%{x:,.0f}');
+  });
+
   it('renders the regional average legend entry with the page-provided label', () => {
     render(
       <PeerGroupBarChart
