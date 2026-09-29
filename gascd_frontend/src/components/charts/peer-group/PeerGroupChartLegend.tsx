@@ -8,6 +8,7 @@ import {
 } from './constants';
 
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from './constants';
+import TableService from '@/services/Table/TableService';
 
 interface PeerGroupChartLegendProps {
   laName: string;
@@ -23,6 +24,8 @@ interface PeerGroupChartLegendProps {
   // Legend label for the national average line.
   nationalAverageLabel?: string;
   valueSuffix?: string;
+  // Pounds: whole pounds with a £ prefix, as the tables show them
+  currency?: boolean;
 }
 
 const PeerGroupChartLegend: React.FC<PeerGroupChartLegendProps> = ({
@@ -34,11 +37,14 @@ const PeerGroupChartLegend: React.FC<PeerGroupChartLegendProps> = ({
   regionalAverageLabel = 'England (regional average)',
   nationalAverageLabel = 'England (national average)',
   valueSuffix = '%',
+  currency = false,
 }) => {
-  const formatValue = (value: number | null | undefined): string =>
-    value !== null && value !== undefined
-      ? `${value.toFixed(1)}${valueSuffix}`
-      : 'N/A';
+  const formatValue = (value: number | null | undefined): string => {
+    if (value === null || value === undefined) return 'N/A';
+    if (currency)
+      return TableService.formatDataPoint(value, { isCurrency: true });
+    return `${value.toFixed(1)}${valueSuffix}`;
+  };
 
   return (
     <ul

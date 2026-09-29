@@ -297,11 +297,11 @@ export default function LAFundingPage() {
     'elss_supported_accommodation_all_ages',
   ];
 
-  // TODO(GASCD-257): the standardised "per 100,000 adult population (18+)"
-  // funding metrics do not exist yet - they are absent from MetricCodeEnum and
-  // the metrics table, so no environment can serve them. The selection below
-  // composes an unstandardised edpsr_ code so the presentation can be
-  // reviewed; replace standardisedFundingMetricId when the real codes land.
+  // Each funding metric has a standardised twin, per 100,000 adult population
+  // (18+), under the same code plus this suffix. Like the counts, they are
+  // reported in thousands of pounds, so they share the fetch (and its x1000).
+  const toStandardisedId = (id: string) => `${id}_per100k_adults`;
+  const standardisedMetricIds = demographicMetricIds.map(toStandardisedId);
   const DURATION_OF_CARE_OPTIONS = {
     stlt: 'Long & short-term',
     lt: 'Long-term only',
@@ -317,7 +317,8 @@ export default function LAFundingPage() {
   };
   // Figure 2: long-term funding broken down by care type or funding method
   const CARE_TYPE_OPTIONS = {
-    elss_all_types_of_adult_social_care_all_ages: 'All types of adult social care',
+    elss_all_types_of_adult_social_care_all_ages:
+      'All types of adult social care',
     elss_all_types_of_care_home_all_ages:
       'All types of care home, including residential and nursing',
     elss_nursing_all_ages: 'Nursing',
@@ -339,15 +340,17 @@ export default function LAFundingPage() {
   const SUPPORT_REASON_FILTER_KEY = 'standardised-funding-support-reason';
 
   const [chartDuration, setChartDuration] = useState<string>('stlt');
-  const [chartSupportReason, setChartSupportReason] =
-    useState<string>('total');
+  const [chartSupportReason, setChartSupportReason] = useState<string>('total');
 
   // Only the short-and-long-term total exists; every other combination is
   // broken down by support reason.
-  const standardisedFundingMetricId =
+  const standardisedFundingMetricId = toStandardisedId(
     chartDuration === 'stlt'
       ? 'edpsr_stlt_total_all_ages'
-      : `edpsr_${chartDuration}_${chartSupportReason}_all_ages`;
+      : `edpsr_${chartDuration}_${chartSupportReason}_all_ages`
+  );
+  // The care type filter stores the count code; Figure 2 reads its twin
+  const standardisedCareTypeId = toStandardisedId(chartCareType);
 
   const readStoredFilter = (key: string, fallback: string) => {
     const stored = localStorage.getItem(key);
@@ -386,6 +389,7 @@ export default function LAFundingPage() {
   const benchmarkedMetricIds = [
     ...durationOfCareMetricIds,
     ...supportSettingMetricIds,
+    ...standardisedMetricIds,
   ];
   const {
     dataByMetric,
@@ -403,7 +407,6 @@ export default function LAFundingPage() {
       ),
     [filteredDemographicData, dataByMetric, locationIds]
   );
-
 
   const supportSettingsForFundingTrendsDefault = {
     metric_id: 'elss_all_types_of_adult_social_care_all_ages',
@@ -485,7 +488,7 @@ export default function LAFundingPage() {
   useEffect(() => {
     if (locationIds.length > 0) {
       setDemographicQuery(() => ({
-        metric_ids: demographicMetricIds,
+        metric_ids: [...demographicMetricIds, ...standardisedMetricIds],
         location_ids: locationIds,
       }));
       setLAFundingOverTimeDataQuery(() => ({
@@ -699,59 +702,59 @@ export default function LAFundingPage() {
               {renderComparatorControl('comparator-table-1')}
               <SubCatergoryTable
                 tableref={tableref1}
-              caption={
-                <>
-                  Table 1: Total <abbr title="Local Authority">LA</abbr>{' '}
-                  spending on long and short-term adult social care for all
-                  primary support reasons and all age groups –{' '}
-                  {locationNames.LALabel}{' '}
-                  <abbr title="Local Authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getFinancialYear(
-                    filteredDemographicData,
-                    1
-                  )}
-                </>
-              }
-              source={
-                'Adult Social Care Finance Report from the Department of Health and Social Care'
-              }
-              columnHeaders={{
-                ...locationNamesWithAverageLabels,
-                ComparatorLabel: comparatorAverageLabel,
-              }}
-              metricColumnName={metricColumnNames[0]}
-              rowHeaders={{
-                edpsr_stlt_total_all_ages: 'Both short-term and long-term',
-                edpsr_lt_total_all_ages: 'Long-term',
-                edpsr_lt_learning_disability_support_all_ages:
-                  'Learning disability support',
-                edpsr_lt_mental_health_support_all_ages:
-                  'Mental health support',
-                edpsr_lt_physical_support_all_ages: 'Physical support',
-                edpsr_lt_sensory_support_all_ages: 'Sensory support',
-                edpsr_lt_support_with_memory_and_cognition_all_ages:
-                  'Support with memory and cognition',
-                edpsr_st_total_all_ages: 'Short-term',
-                edpsr_st_learning_disability_support_all_ages:
-                  'Learning disability support',
-                edpsr_st_mental_health_support_all_ages:
-                  'Mental health support',
-                edpsr_st_physical_support_all_ages: 'Physical support',
-                edpsr_st_sensory_support_all_ages: 'Sensory support',
-                edpsr_st_support_with_memory_and_cognition_all_ages:
-                  'Support with memory and cognition',
-              }}
-              data={benchmarkedDemographicData}
-              showCareProvider={false}
-              percentageRows={[]}
-              currency={true}
-              totalsRows={[
-                'edpsr_stlt_total_all_ages',
-                'edpsr_lt_total_all_ages',
-                'edpsr_st_total_all_ages',
-              ]}
+                caption={
+                  <>
+                    Table 1: Total <abbr title="Local Authority">LA</abbr>{' '}
+                    spending on long and short-term adult social care for all
+                    primary support reasons and all age groups –{' '}
+                    {locationNames.LALabel}{' '}
+                    <abbr title="Local Authority">LA</abbr>,{' '}
+                    {locationNames.RegionLabel} region and{' '}
+                    {locationNames.CountryLabel},{' '}
+                    {IndicatorService.getFinancialYear(
+                      filteredDemographicData,
+                      1
+                    )}
+                  </>
+                }
+                source={
+                  'Adult Social Care Finance Report from the Department of Health and Social Care'
+                }
+                columnHeaders={{
+                  ...locationNamesWithAverageLabels,
+                  ComparatorLabel: comparatorAverageLabel,
+                }}
+                metricColumnName={metricColumnNames[0]}
+                rowHeaders={{
+                  edpsr_stlt_total_all_ages: 'Both short-term and long-term',
+                  edpsr_lt_total_all_ages: 'Long-term',
+                  edpsr_lt_learning_disability_support_all_ages:
+                    'Learning disability support',
+                  edpsr_lt_mental_health_support_all_ages:
+                    'Mental health support',
+                  edpsr_lt_physical_support_all_ages: 'Physical support',
+                  edpsr_lt_sensory_support_all_ages: 'Sensory support',
+                  edpsr_lt_support_with_memory_and_cognition_all_ages:
+                    'Support with memory and cognition',
+                  edpsr_st_total_all_ages: 'Short-term',
+                  edpsr_st_learning_disability_support_all_ages:
+                    'Learning disability support',
+                  edpsr_st_mental_health_support_all_ages:
+                    'Mental health support',
+                  edpsr_st_physical_support_all_ages: 'Physical support',
+                  edpsr_st_sensory_support_all_ages: 'Sensory support',
+                  edpsr_st_support_with_memory_and_cognition_all_ages:
+                    'Support with memory and cognition',
+                }}
+                data={benchmarkedDemographicData}
+                showCareProvider={false}
+                percentageRows={[]}
+                currency={true}
+                totalsRows={[
+                  'edpsr_stlt_total_all_ages',
+                  'edpsr_lt_total_all_ages',
+                  'edpsr_st_total_all_ages',
+                ]}
               ></SubCatergoryTable>
             </>
           }
@@ -770,7 +773,6 @@ export default function LAFundingPage() {
       <DataBox
         dataTitle={
           <>
-            [REPLACE WITH REAL METRIC]:{' '}
             <abbr title="Local Authority">LA</abbr> adult social care funding by
             duration of care &ndash; standardised per 100,000 adult population
             (18+)
@@ -843,13 +845,18 @@ export default function LAFundingPage() {
                 DURATION_OF_CARE_OPTIONS as Record<string, string>
               )[chartDuration].toLowerCase()} adult social care for ${(
                 SUPPORT_REASON_OPTIONS as Record<string, string>
-              )[chartSupportReason].toLowerCase()}, standardised per 100,000 adult population (18+)`}
+              )[
+                chartSupportReason
+              ].toLowerCase()}, standardised per 100,000 adult population (18+)`}
               figureTitle={`Total LA spending on ${(
                 DURATION_OF_CARE_OPTIONS as Record<string, string>
               )[chartDuration].toLowerCase()} adult social care for ${(
                 SUPPORT_REASON_OPTIONS as Record<string, string>
-              )[chartSupportReason].toLowerCase()}, standardised per 100,000 adult population (18+)`}
+              )[
+                chartSupportReason
+              ].toLowerCase()}, standardised per 100,000 adult population (18+)`}
               figureNumber={1}
+              currency
               dateLabel={IndicatorService.getFinancialYear(
                 benchmarkedDemographicData,
                 1
@@ -944,55 +951,56 @@ export default function LAFundingPage() {
               {renderComparatorControl('comparator-table-2')}
               <SubCatergoryTable
                 tableref={tableref2}
-              caption={
-                <>
-                  Table 2: Total <abbr title="Local Authority">LA</abbr> funding
-                  for long-term adult social care by support setting for all age
-                  groups – {locationNames.LALabel}{' '}
-                  <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getFinancialYear(
-                    filteredDemographicData,
-                    1
-                  )}
-                </>
-              }
-              source={
-                'Adult Social Care Finance Report from the Department of Health and Social Care'
-              }
+                caption={
+                  <>
+                    Table 2: Total <abbr title="Local Authority">LA</abbr>{' '}
+                    funding for long-term adult social care by support setting
+                    for all age groups – {locationNames.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {locationNames.RegionLabel} region and{' '}
+                    {locationNames.CountryLabel},{' '}
+                    {IndicatorService.getFinancialYear(
+                      filteredDemographicData,
+                      1
+                    )}
+                  </>
+                }
+                source={
+                  'Adult Social Care Finance Report from the Department of Health and Social Care'
+                }
                 columnHeaders={{
                   ...locationNamesWithAverageLabels,
                   ComparatorLabel: comparatorAverageLabel,
                 }}
-              metricColumnName={metricColumnNames[1]}
-              rowHeaders={{
-                elss_all_types_of_adult_social_care_all_ages:
-                  'All types of adult social care',
-                elss_all_types_of_care_home_all_ages:
-                  'All types of care home, including residential and nursing',
-                elss_nursing_all_ages: 'Nursing',
-                elss_residential_all_ages: 'Residential',
-                elss_all_types_of_community_social_care_all_ages:
-                  'All types of community social care, including home care, supported living, community direct payments and other schemes',
-                elss_community_home_care_all_ages: 'Home care',
-                elss_community_supported_living_all_ages: 'Supported living',
-                elss_community_direct_payments_all_ages:
-                  'Community direct payments',
-                elss_community_other_long_term_care_all_ages: 'Other',
-                elss_supported_accommodation_all_ages: 'Supported accomodation',
-              }}
-              data={benchmarkedDemographicData}
-              showCareProvider={false}
-              percentageRows={[]}
-              currency={true}
-              totalsRows={[
-                'elss_all_types_of_adult_social_care_all_ages',
-                'elss_all_types_of_care_home_all_ages',
-                'elss_all_types_of_community_social_care_all_ages',
-                'elss_supported_accommodation_all_ages',
-              ]}
-            ></SubCatergoryTable>
+                metricColumnName={metricColumnNames[1]}
+                rowHeaders={{
+                  elss_all_types_of_adult_social_care_all_ages:
+                    'All types of adult social care',
+                  elss_all_types_of_care_home_all_ages:
+                    'All types of care home, including residential and nursing',
+                  elss_nursing_all_ages: 'Nursing',
+                  elss_residential_all_ages: 'Residential',
+                  elss_all_types_of_community_social_care_all_ages:
+                    'All types of community social care, including home care, supported living, community direct payments and other schemes',
+                  elss_community_home_care_all_ages: 'Home care',
+                  elss_community_supported_living_all_ages: 'Supported living',
+                  elss_community_direct_payments_all_ages:
+                    'Community direct payments',
+                  elss_community_other_long_term_care_all_ages: 'Other',
+                  elss_supported_accommodation_all_ages:
+                    'Supported accomodation',
+                }}
+                data={benchmarkedDemographicData}
+                showCareProvider={false}
+                percentageRows={[]}
+                currency={true}
+                totalsRows={[
+                  'elss_all_types_of_adult_social_care_all_ages',
+                  'elss_all_types_of_care_home_all_ages',
+                  'elss_all_types_of_community_social_care_all_ages',
+                  'elss_supported_accommodation_all_ages',
+                ]}
+              ></SubCatergoryTable>
             </>
           }
           download={
@@ -1010,7 +1018,6 @@ export default function LAFundingPage() {
       <DataBox
         dataTitle={
           <>
-            [REPLACE WITH REAL METRIC]:{' '}
             <abbr title="Local Authority">LA</abbr> funding for long-term adult
             social care &ndash; standardised per 100,000 adult population (18+)
           </>
@@ -1041,7 +1048,7 @@ export default function LAFundingPage() {
         />
         <DataTabs
           id="5"
-          sharingMetricIds={[chartCareType]}
+          sharingMetricIds={[standardisedCareTypeId]}
           chart={
             <PeerGroupBarChart
               laCode={laCode}
@@ -1049,25 +1056,26 @@ export default function LAFundingPage() {
               currentLaValue={
                 benchmarkedDemographicData.find(
                   (d) =>
-                    d.metric_id === chartCareType && d.location_type === 'LA'
+                    d.metric_id === standardisedCareTypeId &&
+                    d.location_type === 'LA'
                 )?.data_point ?? null
               }
               nationalAverageValue={
                 benchmarkedDemographicData.find(
                   (d) =>
-                    d.metric_id === chartCareType &&
+                    d.metric_id === standardisedCareTypeId &&
                     d.location_type === 'National'
                 )?.data_point ?? null
               }
               regionalAverageValue={
                 benchmarkedDemographicData.find(
                   (d) =>
-                    d.metric_id === chartCareType &&
+                    d.metric_id === standardisedCareTypeId &&
                     d.location_type === 'Regional'
                 )?.data_point ?? null
               }
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
-              peerData={dataByMetric[chartCareType] ?? null}
+              peerData={dataByMetric[standardisedCareTypeId] ?? null}
               loading={chartLoading}
               error={chartError}
               comparatorControl={renderComparatorControl('comparator-chart-5')}
@@ -1075,11 +1083,16 @@ export default function LAFundingPage() {
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription={`long-term adult social care funding for ${(
                 CARE_TYPE_OPTIONS as Record<string, string>
-              )[chartCareType].toLowerCase()}, standardised per 100,000 adult population (18+)`}
+              )[
+                chartCareType
+              ].toLowerCase()}, standardised per 100,000 adult population (18+)`}
               figureTitle={`Total LA funding for long-term adult social care for ${(
                 CARE_TYPE_OPTIONS as Record<string, string>
-              )[chartCareType].toLowerCase()}, for all age groups, standardised per 100,000 adult population (18+)`}
+              )[
+                chartCareType
+              ].toLowerCase()}, for all age groups, standardised per 100,000 adult population (18+)`}
               figureNumber={2}
+              currency
               dateLabel={IndicatorService.getFinancialYear(
                 benchmarkedDemographicData,
                 1
@@ -1115,7 +1128,7 @@ export default function LAFundingPage() {
                 }}
                 metricColumnName="Care type or funding method"
                 rowHeaders={{
-                  [chartCareType]: (
+                  [standardisedCareTypeId]: (
                     CARE_TYPE_OPTIONS as Record<string, string>
                   )[chartCareType],
                 }}

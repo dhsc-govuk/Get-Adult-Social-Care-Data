@@ -14,6 +14,7 @@ interface BarChartProps {
   additionalShapes?: Partial<Shape>[];
   xAxisRange?: [number, number];
   xAxisTickSuffix?: string;
+  xAxisTickPrefix?: string;
   showHighlightOutline?: boolean;
   // d3-format string for hover values; the default trims the decimal for
   // whole numbers (e.g. counts) while fractional values show 1 decimal place
@@ -28,6 +29,7 @@ const BarChart: React.FC<BarChartProps> = ({
   additionalShapes = [],
   xAxisRange,
   xAxisTickSuffix,
+  xAxisTickPrefix,
   showHighlightOutline = true,
   hoverValueFormat = ',.1~f',
 }) => {
@@ -95,7 +97,7 @@ const BarChart: React.FC<BarChartProps> = ({
       marker: {
         color: barColors,
       },
-      hovertemplate: `<b>%{y}</b><br>Value: %{x:${hoverValueFormat}}${xAxisTickSuffix ?? ''}<extra></extra>`,
+      hovertemplate: `<b>%{y}</b><br>Value: ${xAxisTickPrefix ?? ''}%{x:${hoverValueFormat}}${xAxisTickSuffix ?? ''}<extra></extra>`,
     },
   ];
 
@@ -111,6 +113,7 @@ const BarChart: React.FC<BarChartProps> = ({
       fixedrange: true, // prevents zooming
       ...(xAxisRange ? { range: xAxisRange } : {}),
       ...(xAxisTickSuffix ? { ticksuffix: xAxisTickSuffix } : {}),
+      ...(xAxisTickPrefix ? { tickprefix: xAxisTickPrefix } : {}),
     },
     yaxis: {
       autorange: 'reversed',

@@ -28,6 +28,7 @@ interface PeerGroupChartContentProps {
   regionalAverageLabel?: string;
   nationalAverageLabel?: string;
   valueSuffix?: string;
+  currency?: boolean;
   sourceText?: string;
 }
 
@@ -45,6 +46,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
   regionalAverageLabel,
   nationalAverageLabel,
   valueSuffix = '%',
+  currency = false,
   sourceText = 'Source: Census 2021 from the Office for National Statistics (ONS)',
 }) => {
   const hasPeers = peerData.localAuthorityPeers.length > 0;
@@ -164,6 +166,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
         regionalAverageLabel={regionalAverageLabel}
         nationalAverageLabel={nationalAverageLabel}
         valueSuffix={valueSuffix}
+        currency={currency}
       />
       {categories.length > 0 && (
         <div style={{ height: `${Math.max(400, categories.length * 50)}px` }}>
@@ -173,8 +176,9 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
             highlightCategory={laName}
             darkBlueCount={0}
             additionalShapes={referenceShapes}
-            xAxisTickSuffix={valueSuffix}
-            hoverValueFormat=".1f"
+            xAxisTickPrefix={currency ? '£' : undefined}
+            xAxisTickSuffix={currency ? undefined : valueSuffix}
+            hoverValueFormat={currency ? ',.0f' : '.1f'}
           />
         </div>
       )}
