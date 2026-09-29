@@ -256,7 +256,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                 ))}
               </select>
               {showSecondary && (
-                <div className="govuk-!-margin-top-4">
+                <div className="govuk-!-margin-top-4 dhsc-filter--conditional">
                   <h4
                     className="govuk-label govuk-label--s govuk-label-wrapper"
                     id={`${secondaryFilterType}-label`}

@@ -1054,3 +1054,11 @@
     margin-bottom: 0;
   }
 }
+
+/* A select that depends on the one above it (e.g. support setting under
+   duration of care), marked with a grey bar as in the design */
+.dhsc-filter--conditional {
+  background: #ffffff;
+  box-shadow: inset 10px 0 0 #b1b4b6;
+  padding: 15px 15px 15px 25px;
+}
