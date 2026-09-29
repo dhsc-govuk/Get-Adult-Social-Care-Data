@@ -60,4 +60,38 @@ describe('FilterSelectGroup', () => {
     );
     expect(localStorage.getItem('setting')).toBeNull();
   });
+
+  it('lists the support setting in the active filters when it applies', () => {
+    renderFilter();
+    open();
+    fireEvent.change(screen.getAllByRole('combobox')[0], {
+      target: { value: 'st' },
+    });
+    fireEvent.change(screen.getAllByRole('combobox')[1], {
+      target: { value: 'nursing' },
+    });
+    fireEvent.click(screen.getByText('Apply'));
+    expect(
+      screen.getByText('Duration of care: Short-term only')
+    ).toBeInTheDocument();
+    expect(screen.getByText('Support setting: Nursing')).toBeInTheDocument();
+
+    // Removing it keeps the duration
+    fireEvent.click(screen.getByText('Support setting: Nursing'));
+    expect(screen.queryByText(/Support setting:/)).not.toBeInTheDocument();
+    expect(
+      screen.getByText('Duration of care: Short-term only')
+    ).toBeInTheDocument();
+    expect(localStorage.getItem('setting')).toBeNull();
+  });
+
+  it('leaves the support setting out for long & short-term', () => {
+    renderFilter();
+    open();
+    fireEvent.click(screen.getByText('Apply'));
+    expect(
+      screen.getByText('Duration of care: Long & short-term')
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/Support setting:/)).not.toBeInTheDocument();
+  });
 });
