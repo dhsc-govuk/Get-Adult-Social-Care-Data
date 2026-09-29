@@ -374,8 +374,6 @@ export default function LAFundingPage() {
     setChartSupportReason(readStoredFilter(SUPPORT_REASON_FILTER_KEY, 'total'));
   };
 
-  // Table 1 (funding by duration of care) is the benchmarked table: the
-  // comparator group's average is added alongside the true regional value.
   // Both benchmarked tables: funding by duration of care (edpsr_) and funding
   // for long-term care by support setting (elss_).
   const durationOfCareMetricIds = demographicMetricIds.filter((id) =>
@@ -885,7 +883,7 @@ export default function LAFundingPage() {
                 tableref={tableref4}
                 caption={
                   <>
-                    Table 4: total <abbr title="Local Authority">LA</abbr>{' '}
+                    Table 2: total <abbr title="Local Authority">LA</abbr>{' '}
                     spending on adult social care, standardised per 100,000
                     adult population (18+) &ndash; {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr> and its comparison
@@ -967,7 +965,7 @@ export default function LAFundingPage() {
                 tableref={tableref2}
                 caption={
                   <>
-                    Table 2: Total <abbr title="Local Authority">LA</abbr>{' '}
+                    Table 3: Total <abbr title="Local Authority">LA</abbr>{' '}
                     funding for long-term adult social care by support setting
                     for all age groups – {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
@@ -1103,7 +1101,7 @@ export default function LAFundingPage() {
                 tableref={tableref5}
                 caption={
                   <>
-                    Table 5: total <abbr title="Local Authority">LA</abbr>{' '}
+                    Table 4: total <abbr title="Local Authority">LA</abbr>{' '}
                     funding for long-term adult social care by support setting,
                     standardised per 100,000 adult population (18+) &ndash;{' '}
                     {locationNames.LALabel}{' '}
@@ -1190,7 +1188,7 @@ export default function LAFundingPage() {
           graph={
             <>
               <h4 className="govuk-heading-s">
-                Figure 1: Total funding for long-term adult social care for{' '}
+                Figure 3: Total funding for long-term adult social care for{' '}
                 {supportTypeFilterName.toLowerCase()} for all age groups –{' '}
                 {locationNames.LALabel} <abbr title="Local Authority">LA</abbr>,{' '}
                 {locationNames.RegionLabel} region and{' '}
@@ -1220,7 +1218,7 @@ export default function LAFundingPage() {
               tableref={tableref3}
               caption={
                 <>
-                  Table 3: Total funding for long-term adult social care for{' '}
+                  Table 5: Total funding for long-term adult social care for{' '}
                   {supportTypeFilterName.toLowerCase()} for all age groups –{' '}
                   {locationNames.LALabel}{' '}
                   <abbr title="local authority">LA</abbr>,{' '}

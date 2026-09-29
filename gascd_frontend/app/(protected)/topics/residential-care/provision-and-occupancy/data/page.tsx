@@ -1088,7 +1088,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref3}
                 caption={
                   <>
-                    Table 3: care home bed numbers –{' '}
+                    Table 1: care home bed numbers –{' '}
                     {session && showCPLevelData(session.user)
                       ? locationNamesCP.CPLabel + ','
                       : ''}{' '}
@@ -1205,7 +1205,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref1}
                 caption={
                   <>
-                    Table 1: care home bed numbers per 100,000{' '}
+                    Table 2: care home bed numbers per 100,000{' '}
                     {POPULATION_DESCRIPTIONS[numbersPopulation]} (
                     {numbersTableFilterName.toLowerCase()}) &ndash;{' '}
                     {locationNamesCP.LALabel}{' '}
@@ -1282,7 +1282,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref2}
                 caption={
                   <>
-                    Table 2: care home bed numbers per 100,000{' '}
+                    Table 3: care home bed numbers per 100,000{' '}
                     {POPULATION_DESCRIPTIONS[typesPopulation]} &ndash;{' '}
                     {locationNamesCP.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}

@@ -133,7 +133,7 @@ describe('ProvisionAndOccupancyPage', () => {
       '/help/beds-per-100000-adult-population'
     );
 
-    const tables = [/Table 3: care home bed numbers/i];
+    const tables = [/Table 1: care home bed numbers/i];
     for (let table of tables) {
       expect(screen.getByRole('table', { name: table })).toBeInTheDocument();
     }
