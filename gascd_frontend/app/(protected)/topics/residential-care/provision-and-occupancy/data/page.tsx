@@ -12,7 +12,7 @@ import LocalMarketInformation from '@/components/data-components/LocalMarketInfo
 import BackToTop from '@/components/data-components/BackToTop';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import DataTable from '@/components/tables/table';
-import VerticalLocationTable from '@/components/tables/VerticalLocationTable';
+import PeerGroupTable from '@/components/tables/PeerGroupTable';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import BarChart from '@/components/charts/BarChart';
@@ -216,25 +216,10 @@ export default function ProvisionAndOccupancyPage() {
     }),
     [typesBedType, typesPopulation]
   );
-  const groupedBedTypeRowHeaders = useMemo(
-    () => ({
-      [withPopulation(groupedBedType.metric_id, groupedPopulation)]:
-        groupedBedType.filter_bedtype,
-    }),
-    [groupedBedType, groupedPopulation]
-  );
 
-  // The bed types chart shows one bed type at a time, chosen beside the
-  // comparison group rather than in the page filter.
-  const [bedTypesChartMetricId, setBedTypesChartMetricId] = useState<string>(
-    'bedcount_per_hundred_thousand_adults_total'
-  );
-  const bedTypesChartFilterName =
-    groupedBedTypeRowHeadersDefault[
-      bedTypesChartMetricId as keyof typeof groupedBedTypeRowHeadersDefault
-    ] ?? 'All bed types';
+  const bedTypesChartFilterName = groupedBedType.filter_bedtype;
   const bedTypesChartDisplayId = withPopulation(
-    bedTypesChartMetricId,
+    groupedBedType.metric_id,
     groupedPopulation
   );
 
@@ -288,13 +273,9 @@ export default function ProvisionAndOccupancyPage() {
   const bedTypesComparatorMetricIds = useMemo(
     () =>
       Array.from(
-        new Set([
-          bedTypesChartDisplayId,
-          ...Object.keys(bedTypeRowHeaders),
-          ...Object.keys(groupedBedTypeRowHeaders),
-        ])
+        new Set([bedTypesChartDisplayId, ...Object.keys(bedTypeRowHeaders)])
       ),
-    [bedTypesChartDisplayId, bedTypeRowHeaders, groupedBedTypeRowHeaders]
+    [bedTypesChartDisplayId, bedTypeRowHeaders]
   );
 
   const {
@@ -499,13 +480,6 @@ export default function ProvisionAndOccupancyPage() {
       latestBedTypeData.filter((item) => item.metric_id in bedTypeRowHeaders),
     [latestBedTypeData, bedTypeRowHeaders]
   );
-  const filteredGroupedBedTypesData = useMemo(
-    () =>
-      latestBedTypeData.filter(
-        (item) => item.metric_id in groupedBedTypeRowHeaders
-      ),
-    [latestBedTypeData, groupedBedTypeRowHeaders]
-  );
 
   const benchmarkedBedNumbersData = useMemo(
     () =>
@@ -518,20 +492,38 @@ export default function ProvisionAndOccupancyPage() {
     [filteredCareHomeBedNumbersData, numbersMetricId, dataByMetric]
   );
 
-  // Inserted after the regional average, before the individual authorities
-  const bedNumberRowHeadersWithComparator = useMemo(() => {
-    const entries = Object.entries(
-      bedNumberRowHeaders as unknown as Record<string, string>
-    );
-    if (entries.length < 2) return bedNumberRowHeaders;
-    const [country, region, ...localAuthorities] = entries;
-    return Object.fromEntries([
-      country,
-      region,
-      [COMPARATOR_ROW_ID, comparatorAverageLabel],
-      ...localAuthorities,
-    ]);
-  }, [bedNumberRowHeaders, comparatorAverageLabel]);
+  // Read once, so each chart and the table beside it show the same values
+  const valueFor = (
+    data: Indicator[],
+    metricId: string,
+    matches: (item: Indicator) => boolean
+  ) =>
+    data.find((item) => item.metric_id === metricId && matches(item))
+      ?.data_point ?? null;
+  const areaValues = (
+    data: Indicator[],
+    metricId: string,
+    isOwnLa: (item: Indicator) => boolean = (item) =>
+      item.location_type === 'LA'
+  ) => ({
+    la: valueFor(data, metricId, isOwnLa),
+    regional: valueFor(
+      data,
+      metricId,
+      (item) => item.location_type === 'Regional'
+    ),
+    national: valueFor(
+      data,
+      metricId,
+      (item) => item.location_type === 'National'
+    ),
+  });
+  // The bed numbers data covers every LA in the region, so match by code
+  const bedNumbersValues = areaValues(
+    benchmarkedBedNumbersData,
+    numbersMetricId,
+    (item) => item.location_id === laCode
+  );
 
   // Care home bed types: the comparator group's average is added as an extra
   // column beside the region and country, for every bed type on show.
@@ -546,19 +538,9 @@ export default function ProvisionAndOccupancyPage() {
     [filteredCareHomeBedTypesData, bedTypeRowHeaders, bedTypesDataByMetric]
   );
 
-  const benchmarkedBedTypesData = useMemo(
-    () =>
-      mergeComparatorAverage(
-        filteredGroupedBedTypesData,
-        Object.keys(groupedBedTypeRowHeaders),
-        bedTypesDataByMetric,
-        COMPARATOR_ROW_ID
-      ),
-    [
-      filteredGroupedBedTypesData,
-      groupedBedTypeRowHeaders,
-      bedTypesDataByMetric,
-    ]
+  const groupedBedTypesValues = areaValues(
+    latestBedTypeData,
+    bedTypesChartDisplayId
   );
 
   // Beside the comparison group, as it changes the rate rather than the rows
@@ -589,32 +571,6 @@ export default function ProvisionAndOccupancyPage() {
     </div>
   );
 
-  const bedTypesChartSelect = (
-    <div className="govuk-form-group">
-      <label
-        className="govuk-label govuk-!-font-weight-bold"
-        htmlFor="bed-types-chart-select"
-      >
-        Bed type
-      </label>
-      <select
-        id="bed-types-chart-select"
-        className="govuk-select"
-        value={bedTypesChartMetricId}
-        onChange={(event) => setBedTypesChartMetricId(event.target.value)}
-        aria-label="Select bed type"
-      >
-        {Object.entries(groupedBedTypeRowHeadersDefault).map(
-          ([metricId, label]) => (
-            <option key={metricId} value={metricId}>
-              {label}
-            </option>
-          )
-        )}
-      </select>
-    </div>
-  );
-
   const benchmarkedCpData = useMemo(
     () =>
       mergeComparatorAverage(
@@ -625,6 +581,7 @@ export default function ProvisionAndOccupancyPage() {
       ),
     [finalCpData, dataByMetric, locationIds]
   );
+  const occupancyValues = areaValues(benchmarkedCpData, OCCUPANCY_METRIC);
 
   const careProviderMetricIds1 = ['bedcount_total', 'occupancy_rate_total'];
 
@@ -1202,29 +1159,9 @@ export default function ProvisionAndOccupancyPage() {
               <PeerGroupBarChart
                 laCode={laCode}
                 laName={locationNamesCP.LALabel}
-                currentLaValue={
-                  // The table covers every authority in the region, so match
-                  // the user's own LA by code rather than taking the first row
-                  benchmarkedBedNumbersData.find(
-                    (d) =>
-                      d.metric_id === numbersMetricId &&
-                      d.location_id === laCode
-                  )?.data_point ?? null
-                }
-                nationalAverageValue={
-                  benchmarkedBedNumbersData.find(
-                    (d) =>
-                      d.metric_id === numbersMetricId &&
-                      d.location_type === 'National'
-                  )?.data_point ?? null
-                }
-                regionalAverageValue={
-                  benchmarkedBedNumbersData.find(
-                    (d) =>
-                      d.metric_id === numbersMetricId &&
-                      d.location_type === 'Regional'
-                  )?.data_point ?? null
-                }
+                currentLaValue={bedNumbersValues.la}
+                nationalAverageValue={bedNumbersValues.national}
+                regionalAverageValue={bedNumbersValues.regional}
                 regionalAverageLabel={`${locationNamesCP.RegionLabel} (regional average)`}
                 peerData={dataByMetric[numbersMetricId] ?? null}
                 loading={chartLoading}
@@ -1264,7 +1201,7 @@ export default function ProvisionAndOccupancyPage() {
                   setNumbersPopulation
                 )
               )}
-              <VerticalLocationTable
+              <PeerGroupTable
                 tableref={tableref1}
                 caption={
                   <>
@@ -1272,24 +1209,26 @@ export default function ProvisionAndOccupancyPage() {
                     {POPULATION_DESCRIPTIONS[numbersPopulation]} (
                     {numbersTableFilterName.toLowerCase()}) &ndash;{' '}
                     {locationNamesCP.LALabel}{' '}
-                    <abbr title="local authority">LA</abbr>,{' '}
-                    {comparatorAverageLabel}, {locationNamesCP.RegionLabel}{' '}
-                    regional average and national average,{' '}
+                    <abbr title="local authority">LA</abbr> and its comparison
+                    group, {comparatorAverageLabel},{' '}
+                    {locationNamesCP.RegionLabel} regional average and national
+                    average,{' '}
                     {IndicatorService.getMostRecentDate(bedNumbersData)}
                   </>
                 }
-                source={
-                  'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
-                }
-                columnHeaders={[
-                  'Area',
-                  `Care home beds per 100,000 ${POPULATION_DESCRIPTIONS[numbersPopulation]}`,
-                ]}
-                rowHeaders={bedNumberRowHeadersWithComparator}
-                data={benchmarkedBedNumbersData}
-                userLa={locationNamesCP.LALabel}
-                boldLabel={comparatorAverageLabel}
-              ></VerticalLocationTable>
+                source="Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)"
+                valueHeader={`Care home beds per 100,000 ${POPULATION_DESCRIPTIONS[numbersPopulation]}`}
+                laCode={laCode}
+                laName={locationNamesCP.LALabel}
+                currentLaValue={bedNumbersValues.la}
+                regionalAverageLabel={`${locationNamesCP.RegionLabel} (regional average)`}
+                regionalAverageValue={bedNumbersValues.regional}
+                nationalAverageValue={bedNumbersValues.national}
+                peerData={dataByMetric[numbersMetricId] ?? null}
+                loading={chartLoading}
+                error={chartError}
+                comparatorAverageLabel={comparatorAverageLabel}
+              />
             </>
           }
           download={
@@ -1442,43 +1381,20 @@ export default function ProvisionAndOccupancyPage() {
               <PeerGroupBarChart
                 laCode={laCode}
                 laName={locationNamesCP.LALabel}
-                currentLaValue={
-                  latestBedTypeData.find(
-                    (d) =>
-                      d.metric_id === bedTypesChartDisplayId &&
-                      d.location_type === 'LA'
-                  )?.data_point ?? null
-                }
-                nationalAverageValue={
-                  latestBedTypeData.find(
-                    (d) =>
-                      d.metric_id === bedTypesChartDisplayId &&
-                      d.location_type === 'National'
-                  )?.data_point ?? null
-                }
-                regionalAverageValue={
-                  latestBedTypeData.find(
-                    (d) =>
-                      d.metric_id === bedTypesChartDisplayId &&
-                      d.location_type === 'Regional'
-                  )?.data_point ?? null
-                }
+                currentLaValue={groupedBedTypesValues.la}
+                nationalAverageValue={groupedBedTypesValues.national}
+                regionalAverageValue={groupedBedTypesValues.regional}
                 regionalAverageLabel={`${locationNamesCP.RegionLabel} (regional average)`}
                 peerData={bedTypesDataByMetric[bedTypesChartDisplayId] ?? null}
                 loading={bedTypesChartLoading}
                 error={bedTypesChartError}
-                // The bed type sits beside the comparison group, as the chart
-                // shows one type at a time, with the population beside it
                 comparatorControl={renderComparatorControl(
                   'comparator-chart-2',
-                  <>
-                    {bedTypesChartSelect}
-                    {renderPopulationSelect(
-                      'comparator-chart-2',
-                      groupedPopulation,
-                      setGroupedPopulation
-                    )}
-                  </>
+                  renderPopulationSelect(
+                    'comparator-chart-2',
+                    groupedPopulation,
+                    setGroupedPopulation
+                  )
                 )}
                 comparatorLabel={comparatorLabel}
                 comparatorAverageLabel={comparatorAverageLabel}
@@ -1508,32 +1424,34 @@ export default function ProvisionAndOccupancyPage() {
                   setGroupedPopulation
                 )
               )}
-              <DataTable
+              <PeerGroupTable
                 tableref={tableref4}
                 caption={
                   <>
                     Table 4: care home bed numbers per 100,000{' '}
-                    {POPULATION_DESCRIPTIONS[groupedPopulation]} (grouped by bed
-                    type) &ndash; {locationNamesCP.LALabel}{' '}
-                    <abbr title="local authority">LA</abbr>,{' '}
-                    {comparatorAverageLabel}, {locationNamesCP.RegionLabel}{' '}
-                    regional average and national average,{' '}
+                    {POPULATION_DESCRIPTIONS[groupedPopulation]} (
+                    {bedTypesChartFilterName.toLowerCase()}) &ndash;{' '}
+                    {locationNamesCP.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr> and its comparison
+                    group, {comparatorAverageLabel},{' '}
+                    {locationNamesCP.RegionLabel} regional average and national
+                    average,{' '}
                     {IndicatorService.getMostRecentDate(latestBedTypeData)}
                   </>
                 }
-                metricColumnName="Care home bed type"
-                source={
-                  'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
-                }
-                columnHeaders={{
-                  ...locationNamesWithAverageLabels,
-                  ComparatorLabel: comparatorAverageLabel,
-                }}
-                rowHeaders={groupedBedTypeRowHeaders}
-                data={benchmarkedBedTypesData}
-                showCareProvider={false}
-                percentageRows={[]}
-              ></DataTable>
+                source="Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)"
+                valueHeader={`Care home beds per 100,000 ${POPULATION_DESCRIPTIONS[groupedPopulation]}`}
+                laCode={laCode}
+                laName={locationNamesCP.LALabel}
+                currentLaValue={groupedBedTypesValues.la}
+                regionalAverageLabel={`${locationNamesCP.RegionLabel} (regional average)`}
+                regionalAverageValue={groupedBedTypesValues.regional}
+                nationalAverageValue={groupedBedTypesValues.national}
+                peerData={bedTypesDataByMetric[bedTypesChartDisplayId] ?? null}
+                loading={bedTypesChartLoading}
+                error={bedTypesChartError}
+                comparatorAverageLabel={comparatorAverageLabel}
+              />
             </>
           }
           download={
@@ -1626,26 +1544,9 @@ export default function ProvisionAndOccupancyPage() {
             <PeerGroupBarChart
               laCode={laCode}
               laName={locationNamesCP.LALabel}
-              currentLaValue={
-                benchmarkedCpData.find(
-                  (d) =>
-                    d.metric_id === OCCUPANCY_METRIC && d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                benchmarkedCpData.find(
-                  (d) =>
-                    d.metric_id === OCCUPANCY_METRIC &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                benchmarkedCpData.find(
-                  (d) =>
-                    d.metric_id === OCCUPANCY_METRIC &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              currentLaValue={occupancyValues.la}
+              nationalAverageValue={occupancyValues.national}
+              regionalAverageValue={occupancyValues.regional}
               regionalAverageLabel={`${locationNamesCP.RegionLabel} (regional average)`}
               peerData={dataByMetric[OCCUPANCY_METRIC] ?? null}
               loading={chartLoading}
@@ -1664,37 +1565,47 @@ export default function ProvisionAndOccupancyPage() {
           table={
             <>
               {renderComparatorControl('comparator-table-5')}
-              <DataTable
+              <PeerGroupTable
                 tableref={tableref5}
                 caption={
                   <>
                     Table 5: care home occupancy levels &ndash;{' '}
-                    {session && showCPLevelData(session.user)
-                      ? locationNamesCP.CPLabel + ','
-                      : ''}{' '}
                     {locationNamesCP.LALabel}{' '}
-                    <abbr title="local authority">LA</abbr>,{' '}
-                    {comparatorAverageLabel}, {locationNamesCP.RegionLabel}{' '}
-                    regional average and national average,{' '}
-                    {IndicatorService.getMostRecentDate(finalCpData)}
+                    <abbr title="local authority">LA</abbr> and its comparison
+                    group, {comparatorAverageLabel},{' '}
+                    {locationNamesCP.RegionLabel} regional average and national
+                    average, {IndicatorService.getMostRecentDate(finalCpData)}
                   </>
                 }
-                source={
-                  'Capacity Tracker from the Department of Health and Social Care (DHSC)'
+                source="Capacity Tracker from the Department of Health and Social Care (DHSC)"
+                valueHeader="Occupancy level"
+                valueFormat="percentage"
+                // Care home users also see their own care home
+                extraRows={
+                  showCPLevelData(session?.user)
+                    ? [
+                        {
+                          label: locationNamesCP.CPLabel ?? 'Your care home',
+                          value: valueFor(
+                            finalCpData,
+                            'occupancy_rate_total',
+                            () => true
+                          ),
+                        },
+                      ]
+                    : []
                 }
-                columnHeaders={{
-                  ...locationNamesCP,
-                  ComparatorLabel: comparatorAverageLabel,
-                }}
-                rowHeaders={{
-                  [OCCUPANCY_METRIC]: 'Occupancy level',
-                }}
-                data={benchmarkedCpData}
-                showCareProvider={showCPLevelData(session?.user)}
-                careProviderMedianMetrics={careProviderMedianMetrics}
-                percentageRows={[OCCUPANCY_METRIC]}
-                showAverageLabel={true}
-              ></DataTable>
+                laCode={laCode}
+                laName={locationNamesCP.LALabel}
+                currentLaValue={occupancyValues.la}
+                regionalAverageLabel={`${locationNamesCP.RegionLabel} (regional average)`}
+                regionalAverageValue={occupancyValues.regional}
+                nationalAverageValue={occupancyValues.national}
+                peerData={dataByMetric[OCCUPANCY_METRIC] ?? null}
+                loading={chartLoading}
+                error={chartError}
+                comparatorAverageLabel={comparatorAverageLabel}
+              />
             </>
           }
           textSummary={
