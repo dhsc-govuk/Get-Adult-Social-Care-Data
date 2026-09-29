@@ -118,8 +118,6 @@ export default function DisabilityPrevalence() {
     'learning_disability_prevalence',
   ];
 
-  // Each primary support reason count has a standardised twin, per 100,000 of
-  // the total adult population (18+), under the same code plus this suffix.
   const toStandardisedId = (id: string) => `${id}_per100k_adults`;
   const standardisedSupportReasonMetricIds =
     supportReasonMetricIds.map(toStandardisedId);
@@ -349,7 +347,6 @@ export default function DisabilityPrevalence() {
     support_with_memory_and_cognition_18_and_over:
       'Support with memory and cognition',
   };
-  // The same labels, keyed by the standardised codes
   const standardisedRowHeadersDefault: Record<string, string> =
     Object.fromEntries(
       Object.entries(supportReasonRowHeadersDefault).map(([id, label]) => [
@@ -471,8 +468,7 @@ export default function DisabilityPrevalence() {
           await IndicatorFetchService.getData(supportReasonQuery);
         const filteredSupportReasonData =
           TableService.filterDate(supportReasonData);
-        // One request serves both tables; split the counts from their
-        // standardised twins so each table only sees its own rows.
+        // One request serves both tables
         setPrimarySupportReasonData(
           filteredSupportReasonData.filter((item) =>
             supportReasonMetricIds.includes(item.metric_id)
@@ -533,8 +529,7 @@ export default function DisabilityPrevalence() {
   const [standardisedReasonMetricIds, setStandardisedReasonMetricIds] =
     useState<string[]>(standardisedSupportReasonMetricIds);
 
-  // The filter lists the reasons by their count codes, shared with the table
-  // above, so a stored selection is mapped onto the standardised codes here.
+  // The filter is keyed by the count codes
   const updateStandardisedReasonMetrics = () => {
     const stored = localStorage.getItem(STANDARDISED_REASON_FILTER_KEY);
     if (!stored) {

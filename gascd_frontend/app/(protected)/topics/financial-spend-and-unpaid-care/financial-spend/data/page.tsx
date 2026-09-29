@@ -297,9 +297,7 @@ export default function LAFundingPage() {
     'elss_supported_accommodation_all_ages',
   ];
 
-  // Each funding metric has a standardised twin, per 100,000 adult population
-  // (18+), under the same code plus this suffix. Like the counts, they are
-  // reported in thousands of pounds, so they share the fetch (and its x1000).
+  // Per-100,000 twins share the counts' fetch, so they get the same x1000
   const toStandardisedId = (id: string) => `${id}_per100k_adults`;
   const standardisedMetricIds = demographicMetricIds.map(toStandardisedId);
   const DURATION_OF_CARE_OPTIONS = {
@@ -349,7 +347,6 @@ export default function LAFundingPage() {
       ? 'edpsr_stlt_total_all_ages'
       : `edpsr_${chartDuration}_${chartSupportReason}_all_ages`
   );
-  // The care type filter stores the count code; Figure 2 reads its twin
   const standardisedCareTypeId = toStandardisedId(chartCareType);
 
   const readStoredFilter = (key: string, fallback: string) => {

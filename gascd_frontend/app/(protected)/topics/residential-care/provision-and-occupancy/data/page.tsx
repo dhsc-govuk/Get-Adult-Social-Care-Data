@@ -128,17 +128,13 @@ export default function ProvisionAndOccupancyPage() {
     location_ids: [],
   });
 
-  // The rate's denominator. Each bed type is served for every population under
-  // the same code with the population segment swapped (adults, 18_64, 65over),
-  // so the filters and selectors stay keyed by the 18+ code and each section
-  // derives the code it shows from its own population choice.
+  // Filters stay keyed by the 18+ code; each section swaps in its population
   type Population = 'adults' | '18_64' | '65over';
   const POPULATION_OPTIONS: Record<Population, string> = {
     adults: 'Total adult population (18+)',
     '18_64': 'Working Age Population (18\u201364)',
     '65over': '65+ Adult Population',
   };
-  // How each population reads after "per 100,000" in titles and captions
   const POPULATION_DESCRIPTIONS: Record<Population, string> = {
     adults: 'adult population (18+)',
     '18_64': 'working age adult population (18\u201364)',
@@ -159,7 +155,6 @@ export default function ProvisionAndOccupancyPage() {
   const [typesPopulation, setTypesPopulation] = useState<Population>('adults');
   const [groupedPopulation, setGroupedPopulation] =
     useState<Population>('adults');
-  // Bed numbers: the bed type filter's code, under the section's population
   const numbersMetricId = withPopulation(
     numbersTableMetricId,
     numbersPopulation
@@ -188,8 +183,7 @@ export default function ProvisionAndOccupancyPage() {
       'Young physically disabled',
   };
 
-  // "Care home bed types (grouped by bed type)" shows the six categories from
-  // the design, served as _grp_ codes, rather than the individual types.
+  // The six grouped categories from the design
   const groupedBedTypeRowHeadersDefault = {
     bedcount_per_hundred_thousand_adults_total: 'All bed types',
     bedcount_per_hundred_thousand_adults_grp_older_people_and_dementia:
@@ -203,7 +197,6 @@ export default function ProvisionAndOccupancyPage() {
       'Community care and transitional',
   };
 
-  // The bed type each table's filter is set to, by its 18+ code
   type BedTypeSelection = { metric_id: string; filter_bedtype: string };
   const ALL_BED_TYPES: BedTypeSelection = {
     metric_id: 'bedcount_per_hundred_thousand_adults_total',
@@ -216,7 +209,6 @@ export default function ProvisionAndOccupancyPage() {
   const [groupedBedType, setGroupedBedType] =
     useState<BedTypeSelection>(ALL_BED_TYPES);
 
-  // One row per table: the selected bed type, under the section's population
   const bedTypeRowHeaders = useMemo(
     () => ({
       [withPopulation(typesBedType.metric_id, typesPopulation)]:
@@ -569,9 +561,7 @@ export default function ProvisionAndOccupancyPage() {
     ]
   );
 
-  // The population recalculates the rate rather than filtering the rows, so it
-  // sits beside the comparison group (on both the chart and the table) rather
-  // than in the section filter.
+  // Beside the comparison group, as it changes the rate rather than the rows
   const renderPopulationSelect = (
     idPrefix: string,
     value: Population,
@@ -677,7 +667,6 @@ export default function ProvisionAndOccupancyPage() {
     'bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled',
   ];
 
-  // Latest values for every bed type and bed type group, in every population
   const bedTypeLatestMetricIds = inEveryPopulation(
     Array.from(
       new Set([
@@ -973,8 +962,6 @@ export default function ProvisionAndOccupancyPage() {
   // FilterRadioGroup stores one { metric_id, filter_bedtype }; anything else
   // (including a selection left over from when these were checkboxes) falls
   // back to the default.
-  // A stored code that is not one of the section's options (e.g. an individual
-  // bed type left over in the grouped section) also falls back.
   const readStoredBedTypeFilter = (
     key: string,
     options: Record<string, string>

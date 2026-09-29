@@ -83,8 +83,7 @@ export interface PeerGroupBarChartProps {
   // page's tables also use the plain country name.
   nationalAverageLabel?: string;
   valueSuffix?: string;
-  // Values are pounds: shown as whole pounds with a £ prefix, and valueSuffix
-  // is ignored
+  // Whole pounds with a £ prefix; valueSuffix is ignored
   currency?: boolean;
   sourceText?: string;
 }

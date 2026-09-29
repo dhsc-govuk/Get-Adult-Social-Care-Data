@@ -24,7 +24,6 @@ interface PeerGroupChartLegendProps {
   // Legend label for the national average line.
   nationalAverageLabel?: string;
   valueSuffix?: string;
-  // Pounds: whole pounds with a £ prefix, as the tables show them
   currency?: boolean;
 }
 
