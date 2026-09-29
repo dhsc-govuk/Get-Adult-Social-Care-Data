@@ -16,6 +16,8 @@ type Props = {
   secondaryFilterType?: string;
   secondaryFilterLabel?: string;
   secondaryFilters?: Object;
+  // Main selections the second select does not apply to, so it is hidden
+  secondaryHiddenFor?: string[];
 };
 
 const FilterRadioGroup: React.FC<Props> = ({
@@ -26,6 +28,7 @@ const FilterRadioGroup: React.FC<Props> = ({
   secondaryFilterType,
   secondaryFilterLabel,
   secondaryFilters,
+  secondaryHiddenFor = [],
 }) => {
   const hasSecondary = Boolean(secondaryFilterType && secondaryFilters);
   const [showFilters, setShowFilters] = React.useState(false);
@@ -119,11 +122,14 @@ const FilterRadioGroup: React.FC<Props> = ({
   };
 
   const handleSubmit = () => {
-    if (hasSecondary) {
+    if (showSecondary) {
       localStorage.setItem(
         secondaryFilterType as string,
         JSON.stringify(secondarySelectedFilter)
       );
+    } else if (hasSecondary) {
+      localStorage.removeItem(secondaryFilterType as string);
+      setSecondarySelectedFilter(secondaryComponentFilters[0]);
     }
     localStorage.setItem(filterType, JSON.stringify(selectedFilter));
     setShowFilters(false);
@@ -159,8 +165,17 @@ const FilterRadioGroup: React.FC<Props> = ({
         metric_id: 'elss_all_types_of_adult_social_care_all_ages',
         filter_bedtype: 'All types of adult social care',
       });
+    } else {
+      // Otherwise the first option, which the select shows anyway
+      const [first] = Object.entries(filters);
+      if (first)
+        setSelectedFilter({ metric_id: first[0], filter_bedtype: first[1] });
     }
   };
+
+  const showSecondary =
+    hasSecondary &&
+    !secondaryHiddenFor.includes(selectedFilter?.metric_id ?? '');
 
   return (
     <div className="govuk-!-padding-bottom-4 govuk-!-padding-top-4">
@@ -217,7 +232,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                   </option>
                 ))}
               </select>
-              {hasSecondary && (
+              {showSecondary && (
                 <div className="govuk-!-margin-top-4">
                   <h4
                     className="govuk-label govuk-label--s govuk-label-wrapper"

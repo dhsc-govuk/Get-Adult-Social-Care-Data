@@ -832,6 +832,8 @@ export default function LAFundingPage() {
           filterLabel="Duration of care"
           filters={DURATION_OF_CARE_OPTIONS}
           secondaryFilterType={SUPPORT_REASON_FILTER_KEY}
+          // Only long-term and short-term care are broken down by setting
+          secondaryHiddenFor={['stlt']}
           secondaryFilterLabel="Support setting"
           secondaryFilters={SUPPORT_REASON_OPTIONS}
           updateMethod={updateStandardisedFundingFilters}
