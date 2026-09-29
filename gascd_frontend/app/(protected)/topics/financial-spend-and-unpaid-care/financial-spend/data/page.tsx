@@ -917,7 +917,6 @@ export default function LAFundingPage() {
                 nationalAverageValue={fundingValues.national}
                 peerData={dataByMetric[standardisedFundingMetricId] ?? null}
                 loading={chartLoading}
-                error={chartError}
                 comparatorAverageLabel={comparatorAverageLabel}
               />
             </>
@@ -1131,7 +1130,6 @@ export default function LAFundingPage() {
                 nationalAverageValue={careTypeValues.national}
                 peerData={dataByMetric[standardisedCareTypeId] ?? null}
                 loading={chartLoading}
-                error={chartError}
                 comparatorAverageLabel={comparatorAverageLabel}
               />
             </>

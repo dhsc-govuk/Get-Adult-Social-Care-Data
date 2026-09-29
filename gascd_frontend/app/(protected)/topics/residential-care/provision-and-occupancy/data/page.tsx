@@ -1226,7 +1226,6 @@ export default function ProvisionAndOccupancyPage() {
                 nationalAverageValue={bedNumbersValues.national}
                 peerData={dataByMetric[numbersMetricId] ?? null}
                 loading={chartLoading}
-                error={chartError}
                 comparatorAverageLabel={comparatorAverageLabel}
               />
             </>
@@ -1449,7 +1448,6 @@ export default function ProvisionAndOccupancyPage() {
                 nationalAverageValue={groupedBedTypesValues.national}
                 peerData={bedTypesDataByMetric[bedTypesChartDisplayId] ?? null}
                 loading={bedTypesChartLoading}
-                error={bedTypesChartError}
                 comparatorAverageLabel={comparatorAverageLabel}
               />
             </>
@@ -1603,7 +1601,6 @@ export default function ProvisionAndOccupancyPage() {
                 nationalAverageValue={occupancyValues.national}
                 peerData={dataByMetric[OCCUPANCY_METRIC] ?? null}
                 loading={chartLoading}
-                error={chartError}
                 comparatorAverageLabel={comparatorAverageLabel}
               />
             </>

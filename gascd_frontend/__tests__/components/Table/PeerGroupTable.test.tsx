@@ -45,7 +45,6 @@ const props = {
   currentLaValue: 52.5,
   peerData,
   loading: false,
-  error: false,
   regionalAverageLabel: 'North West (regional average)',
   regionalAverageValue: 48.5,
   nationalAverageValue: 10.5,
@@ -88,10 +87,17 @@ describe('PeerGroupTable', () => {
     expect(bodyRows()[4]).toEqual(['North West (regional average)', 'N/A']);
   });
 
-  it('matches the chart when data is loading or missing', () => {
-    const { rerender } = render(<PeerGroupTable {...props} loading />);
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
-    rerender(<PeerGroupTable {...props} currentLaValue={null} />);
-    expect(screen.getByText('Data not available')).toBeInTheDocument();
+  it('keeps the LA and averages while the peers load or when they fail', () => {
+    const { rerender } = render(
+      <PeerGroupTable {...props} peerData={null} loading />
+    );
+    expect(bodyRows()).toEqual([
+      ['Liverpool', '52.5'],
+      ['NHS peer group (average)', 'Loading...'],
+      ['North West (regional average)', '48.5'],
+      ['England (national average)', '10.5'],
+    ]);
+    rerender(<PeerGroupTable {...props} peerData={null} />);
+    expect(bodyRows()[1]).toEqual(['NHS peer group (average)', 'N/A']);
   });
 });

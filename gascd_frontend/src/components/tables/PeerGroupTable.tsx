@@ -15,7 +15,6 @@ type PeerGroupTableProps = {
   currentLaValue: number | null;
   peerData: PeerGroupData | null;
   loading: boolean;
-  error: boolean;
   comparatorAverageLabel?: string;
   regionalAverageLabel?: string;
   regionalAverageValue: number | null;
@@ -40,7 +39,6 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
   currentLaValue,
   peerData,
   loading,
-  error,
   comparatorAverageLabel = NHS_PEER_GROUP_AVERAGE_LABEL,
   regionalAverageLabel = 'England (regional average)',
   regionalAverageValue,
@@ -51,31 +49,33 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
   tableref,
   children,
 }) => {
-  if (loading) return <p className="govuk-body">Loading...</p>;
-  if (error || !peerData || currentLaValue === null) {
-    return <p className="govuk-body">Data not available</p>;
-  }
+  const formatValue = (value: number | null) => {
+    if (value === null) return loading ? 'Loading...' : 'N/A';
+    return TableService.formatDataPoint(value, {
+      isPercentage: valueFormat === 'percentage',
+      isCurrency: valueFormat === 'currency',
+    });
+  };
 
-  const formatValue = (value: number | null) =>
-    value === null
-      ? 'N/A'
-      : TableService.formatDataPoint(value, {
-          isPercentage: valueFormat === 'percentage',
-          isCurrency: valueFormat === 'currency',
-        });
+  // Always rendered, like the other tables (the download reads it); until the
+  // peers load, or if they fail, the LA still gets its row
+  const chartRows =
+    peerData && currentLaValue !== null
+      ? getPeerChartRows(laName, currentLaValue, peerData, laCode).map(
+          (row) => ({
+            label: row.name,
+            value: row.value as number | null,
+            bold: row.name === laName,
+          })
+        )
+      : [{ label: laName, value: currentLaValue, bold: true }];
 
   const rows = [
     ...extraRows.map((row) => ({ ...row, bold: true })),
-    ...getPeerChartRows(laName, currentLaValue, peerData, laCode).map(
-      (row) => ({
-        label: row.name,
-        value: row.value,
-        bold: row.name === laName,
-      })
-    ),
+    ...chartRows,
     {
       label: comparatorAverageLabel,
-      value: peerData.averagePeerGroup,
+      value: peerData?.averagePeerGroup ?? null,
       bold: true,
     },
     { label: regionalAverageLabel, value: regionalAverageValue, bold: true },

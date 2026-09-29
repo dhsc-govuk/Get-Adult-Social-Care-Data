@@ -1106,7 +1106,6 @@ export default function DisabilityPrevalence() {
                 nationalAverageValue={standardisedReasonValues.national}
                 peerData={dataByMetric[chartSupportReason] ?? null}
                 loading={chartLoading}
-                error={chartError}
                 comparatorAverageLabel={comparatorAverageLabel}
               >
                 <p className="govuk-body-s">
