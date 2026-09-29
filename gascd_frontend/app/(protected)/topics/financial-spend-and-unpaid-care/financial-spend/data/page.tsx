@@ -267,7 +267,7 @@ export default function LAFundingPage() {
 
   const metricColumnNames = [
     'Duration of care',
-    'Care type or funding method',
+    'Support setting',
     'Financial year',
   ];
 
@@ -314,7 +314,7 @@ export default function LAFundingPage() {
     sensory_support: 'Sensory support',
     support_with_memory_and_cognition: 'Support with memory and cognition',
   };
-  // Figure 2: long-term funding broken down by care type or funding method
+  // Figure 2: long-term funding broken down by support setting
   const CARE_TYPE_OPTIONS = {
     elss_all_types_of_adult_social_care_all_ages:
       'All types of adult social care',
@@ -1056,7 +1056,7 @@ export default function LAFundingPage() {
       >
         <FilterSelectGroup
           filterType={CARE_TYPE_FILTER_KEY}
-          filterLabel="Care type or funding method"
+          filterLabel="Support setting"
           filters={CARE_TYPE_OPTIONS}
           updateMethod={updateStandardisedCareTypeFilter}
         />
