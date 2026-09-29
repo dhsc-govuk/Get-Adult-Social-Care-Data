@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import React from 'react';
 import PeerGroupTable from '@/components/tables/PeerGroupTable';
 import { PeerGroupData } from '@/components/charts/peer-group/types';
@@ -68,6 +68,31 @@ describe('PeerGroupTable', () => {
       ['NHS peer group (average)', '53.5'],
       ['North West (regional average)', '48.5'],
       ['England (national average)', '10.5'],
+    ]);
+  });
+
+  it('sorts by area or by value', async () => {
+    // GOV.UK Frontend components only start on a supported page, as the
+    // app's layout declares
+    document.body.classList.add('govuk-frontend-supported');
+    render(<PeerGroupTable {...props} />);
+    fireEvent.click(await screen.findByRole('button', { name: /Area/ }));
+    expect(bodyRows().map(([area]) => area)).toEqual([
+      'England (national average)',
+      'Liverpool',
+      'Manchester',
+      'NHS peer group (average)',
+      'North West (regional average)',
+      'Sheffield',
+    ]);
+    fireEvent.click(screen.getByRole('button', { name: /Beds per 100,000/ }));
+    expect(bodyRows().map(([, value]) => value)).toEqual([
+      '10.5',
+      '48.5',
+      '51.5',
+      '52.5',
+      '53.5',
+      '55.5',
     ]);
   });
 

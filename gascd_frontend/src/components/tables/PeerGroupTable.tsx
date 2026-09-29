@@ -1,4 +1,4 @@
-import React, { Ref } from 'react';
+import React, { MutableRefObject, Ref, useEffect, useRef } from 'react';
 import TableService from '@/services/Table/TableService';
 import { getPeerChartRows } from '@/components/charts/peer-group/peerChartRows';
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
@@ -29,7 +29,7 @@ type PeerGroupTableProps = {
 
 // The rows of the peer group chart beside it: the user's LA and each peer in
 // the chart's order, then the comparator, regional and national averages.
-// Not sortable, so the order always matches the chart.
+// Sortable by either column, like the other tables.
 const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
   caption,
   source,
@@ -49,6 +49,32 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
   tableref,
   children,
 }) => {
+  const ownRef = useRef<HTMLTableElement | null>(null);
+  const setTableRef = (element: HTMLTableElement | null) => {
+    ownRef.current = element;
+    if (typeof tableref === 'function') tableref(element);
+    else if (tableref)
+      (tableref as MutableRefObject<HTMLTableElement | null>).current = element;
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+    const makeSortable = async () => {
+      // Import this at page load time to avoid NextJS SSR errors
+      const MOJFrontend = await import('@ministryofjustice/frontend');
+      if (cancelled || !ownRef.current) return;
+      try {
+        new MOJFrontend.SortableTable(ownRef.current);
+      } catch {
+        // Already set up: the other tables set up every table on the page
+      }
+    };
+    makeSortable();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const formatValue = (value: number | null) => {
     if (value === null) return loading ? 'Loading...' : 'N/A';
     return TableService.formatDataPoint(value, {
@@ -85,7 +111,11 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
   return (
     <div>
       <div className="moj-scrollable-pane" role="region">
-        <table className="govuk-table" ref={tableref}>
+        <table
+          className="govuk-table"
+          ref={setTableRef}
+          data-module="moj-sortable-table"
+        >
           {caption && (
             <caption className="govuk-table__caption govuk-table__caption--s">
               {caption}
@@ -96,12 +126,14 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
               <th
                 scope="col"
                 className="govuk-table__header scrollable-table__header"
+                aria-sort="none"
               >
                 Area
               </th>
               <th
                 scope="col"
                 className="govuk-table__header govuk-table__cell--numeric scrollable-table__header"
+                aria-sort="none"
               >
                 {valueHeader}
               </th>
@@ -113,10 +145,15 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
                 <th
                   scope="row"
                   className="govuk-table__cell govuk-!-font-weight-regular"
+                  // Sort by the name, not the bold markup around it
+                  data-sort-value={row.label}
                 >
                   {row.bold ? <strong>{row.label}</strong> : row.label}
                 </th>
-                <td className="govuk-table__cell govuk-table__cell--numeric">
+                <td
+                  className="govuk-table__cell govuk-table__cell--numeric"
+                  data-sort-value={row.value ?? ''}
+                >
                   {formatValue(row.value)}
                 </td>
               </tr>
