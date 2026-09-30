@@ -814,12 +814,12 @@ export default function LAFundingPage() {
               Find out{' '}
               <a
                 href={withBasePath(
-                  '/help/percentages-financial-spend-long-term-and-short-term-care'
+                  '/help/financial-spend-long-term-and-short-term-care-per-100000-adults'
                 )}
                 className="govuk-link"
               >
-                how the financial spend for short-term and long-term care is
-                calculated
+                how the financial spend for short-term and long-term care per
+                100,000 adults is calculated
               </a>
               .
             </p>
@@ -1042,11 +1042,12 @@ export default function LAFundingPage() {
               Find out{' '}
               <a
                 href={withBasePath(
-                  '/help/total-financial-spend-long-term-community-adult-social-care'
+                  '/help/financial-spend-long-term-care-per-100000-adults'
                 )}
                 className="govuk-link"
               >
-                how the financial spend is calculated by service type
+                how the financial spend per 100,000 adults is calculated by
+                support setting
               </a>
               .
             </p>
@@ -1281,6 +1282,32 @@ export default function LAFundingPage() {
           updateFrequency="Yearly updates"
           limitations={false}
           url="/help/percentages-financial-spend-long-term-and-short-term-care"
+        />
+        <DataLinkCard
+          label={
+            <>
+              <abbr title="Local Authority">LA</abbr> funding for short-term and
+              long-term adult social care – standardised per 100,000 of the
+              total adult (18+) population
+            </>
+          }
+          sources="Department of Health and Social Care, Office for National Statistics"
+          updateFrequency="Yearly updates"
+          limitations={true}
+          url="/help/financial-spend-long-term-and-short-term-care-per-100000-adults"
+        />
+        <DataLinkCard
+          label={
+            <>
+              <abbr title="Local Authority">LA</abbr> funding for long-term
+              adult social care – standardised per 100,000 of the total adult
+              (18+) population
+            </>
+          }
+          sources="Department of Health and Social Care, Office for National Statistics"
+          updateFrequency="Yearly updates"
+          limitations={true}
+          url="/help/financial-spend-long-term-care-per-100000-adults"
         />
       </DataIndicatorDetailsList>
 

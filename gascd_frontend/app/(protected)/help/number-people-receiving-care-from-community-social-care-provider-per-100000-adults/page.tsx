@@ -1,0 +1,132 @@
+import Layout from '@/components/common/layout/Layout';
+import DataIndicatorDetails from '@/components/data-components/DataIndicatorDetails';
+import Link from 'next/link';
+
+const TITLE =
+  'Number of adults receiving care from a community social care provider – standardised per 100,000 of the total adult (18+) population';
+
+const ReceivingCareFromCommCarePer100000Adults: React.FC = () => {
+  return (
+    <>
+      <Layout
+        title={TITLE}
+        showLoginInformation={false}
+        currentPage={
+          'number-people-receiving-care-from-community-social-care-provider-per-100000-adults'
+        }
+        backURL="/service-information/data-indicator-details"
+      >
+        <DataIndicatorDetails
+          title={TITLE}
+          whatThisMeasures={
+            <p className="govuk-!-margin-top-0">
+              The rate of adults (18+) receiving care from care providers
+              registered as community social care providers with the Care
+              Quality Commission (CQC) (as recorded in Capacity Tracker) per
+              100,000 population.
+            </p>
+          }
+          source={
+            <>
+              <p className="govuk-!-margin-top-0">
+                <Link
+                  href="https://www.necsu.nhs.uk/digital-applications/capacity-tracker/"
+                  className="govuk-link"
+                  target="_blank"
+                >
+                  Capacity Tracker from the Department of Health and Social Care
+                  (DHSC) (opens in new tab)
+                </Link>
+              </p>
+              <p className="govuk-!-margin-top-0">
+                <Link
+                  href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/populationestimatesforenglandandwales/mid2023"
+                  className="govuk-link"
+                  target="_blank"
+                >
+                  Office for National Statistics (ONS) population estimates
+                  (opens in new tab)
+                </Link>
+              </p>
+            </>
+          }
+          updateFrequency={
+            <>
+              <p className="govuk-!-margin-top-0">
+                Daily for Capacity Tracker data from DHSC.
+              </p>
+              <p className="govuk-!-margin-top-0">
+                Annual (or as updated) for ONS population estimates.
+              </p>
+            </>
+          }
+          methodology={
+            <>
+              <p className="govuk-!-margin-top-0">
+                The number of people receiving community care is first
+                calculated by summing the total number of people receiving care
+                within each provider registered as a community social care
+                provider with the{' '}
+                <abbr title="Care Quality Commission">CQC</abbr>.
+              </p>
+              <p className="govuk-!-margin-top-0">
+                Regional and national averages are calculated by summing total
+                figures and dividing by number of{' '}
+                <abbr title="Local Authority">LA</abbr>s relevant to the area.
+              </p>
+              <p className="govuk-!-margin-top-0">
+                Adults receiving community care per 100,000 = (number of adults
+                receiving community-based social care ÷ total adult population)
+                × 100,000.
+              </p>
+              <p className="govuk-!-margin-top-0">
+                Denominator: the total adult (18+) population from ONS
+                population estimates.
+              </p>
+              <p className="govuk-!-margin-top-0">
+                Geography: calculated at <abbr title="Local Authority">LA</abbr>
+                , regional and national levels.
+              </p>
+              <p className="govuk-!-margin-top-0">
+                Care providers registered with the{' '}
+                <abbr title="Care Quality Commission">CQC</abbr> must update
+                this information at least monthly using the Capacity Tracker
+                tool. The mandated reporting period is between the 8th and 14th
+                every month, or the next working day if the 14th falls on a
+                weekend or holiday.
+              </p>
+              <p className="govuk-!-margin-top-0">
+                Service user counts are suppressed at provider level where they
+                fall below 6, to protect the confidentiality of individuals. At
+                local authority, regional, and national level, figures are also
+                suppressed where there are too few care providers contributing
+                to a total, to avoid identification of individual provider
+                figures by subtraction. Suppressed values appear as 0. The Isles
+                of Scilly are excluded at all geographic levels.
+              </p>
+            </>
+          }
+          limitations={
+            <>
+              <p className="govuk-!-margin-top-0">
+                Care providers may update Capacity Tracker data at different
+                times outside the mandated reporting period.
+              </p>
+              <p className="govuk-!-margin-top-0">
+                The metric does not represent an exact single-moment snapshot
+                across all providers; it reflects the latest available data at
+                retrieval.
+              </p>
+              <p className="govuk-!-margin-top-0">
+                Capacity Tracker data is self-reported and not independently
+                verified.
+              </p>
+            </>
+          }
+        />
+      </Layout>
+    </>
+  );
+};
+
+export default ReceivingCareFromCommCarePer100000Adults;

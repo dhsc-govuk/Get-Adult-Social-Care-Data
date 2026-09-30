@@ -472,12 +472,12 @@ export default function NumberPeopleReceivingCarePage() {
               Find out{' '}
               <a
                 href={withBasePath(
-                  '/help/number-people-receiving-care-from-community-social-care-provider'
+                  '/help/number-people-receiving-care-from-community-social-care-provider-per-100000-adults'
                 )}
                 className="govuk-link"
               >
-                how the number of people receiving community social care is
-                calculated
+                how the number of people receiving community social care per
+                100,000 adults is calculated
               </a>
               .
             </p>
@@ -552,6 +552,13 @@ export default function NumberPeopleReceivingCarePage() {
           updateFrequency="Daily updates"
           limitations={true}
           url="/help/number-people-receiving-care-from-community-social-care-provider"
+        />
+        <DataLinkCard
+          label="Number of adults receiving care from a community social care provider – standardised per 100,000 of the total adult (18+) population"
+          sources="Capacity Tracker, Office for National Statistics"
+          updateFrequency="Daily updates"
+          limitations={true}
+          url="/help/number-people-receiving-care-from-community-social-care-provider-per-100000-adults"
         />
       </DataIndicatorDetailsList>
 

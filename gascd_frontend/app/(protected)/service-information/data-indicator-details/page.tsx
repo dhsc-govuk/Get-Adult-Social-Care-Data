@@ -54,6 +54,13 @@ export default function DataIndicatorDetailsPage() {
               url="/help/number-people-receiving-care-from-community-social-care-provider"
             />
             <DataLinkCard
+              label="Number of adults receiving care from a community social care provider – standardised per 100,000 of the total adult (18+) population"
+              sources="Capacity Tracker, Office for National Statistics"
+              updateFrequency="Daily updates"
+              limitations={true}
+              url="/help/number-people-receiving-care-from-community-social-care-provider-per-100000-adults"
+            />
+            <DataLinkCard
               label="Occupancy level percentages for adult social care beds"
               sources="Capacity Tracker"
               updateFrequency="Daily updates"
@@ -87,6 +94,19 @@ export default function DataIndicatorDetailsPage() {
             <DataLinkCard
               label={
                 <>
+                  <abbr title="Local Authority">LA</abbr> funding for long-term
+                  adult social care – standardised per 100,000 of the total
+                  adult (18+) population
+                </>
+              }
+              sources="Department of Health and Social Care, Office for National Statistics"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/financial-spend-long-term-care-per-100000-adults"
+            />
+            <DataLinkCard
+              label={
+                <>
                   <abbr title="Local Authority">LA</abbr> funding for short-term
                   and long-term adult social care
                 </>
@@ -95,6 +115,19 @@ export default function DataIndicatorDetailsPage() {
               updateFrequency="Yearly updates"
               limitations={true}
               url="/help/percentages-financial-spend-long-term-and-short-term-care"
+            />
+            <DataLinkCard
+              label={
+                <>
+                  <abbr title="Local Authority">LA</abbr> funding for short-term
+                  and long-term adult social care – standardised per 100,000 of
+                  the total adult (18+) population
+                </>
+              }
+              sources="Department of Health and Social Care, Office for National Statistics"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/financial-spend-long-term-and-short-term-care-per-100000-adults"
             />
             <DataLinkCard
               label={
@@ -182,6 +215,13 @@ export default function DataIndicatorDetailsPage() {
               updateFrequency="Yearly updates"
               limitations={false}
               url="/help/primary-reason-for-accessing-long-term-adult-social-care"
+            />
+            <DataLinkCard
+              label="Primary reason for people to access long-term adult social care – standardised per 100,000 of the total adult (18+) population"
+              sources="NHS England, Office for National Statistics"
+              updateFrequency="Yearly updates"
+              limitations={false}
+              url="/help/primary-reason-for-accessing-long-term-adult-social-care-per-100000-adults"
             />
           </ul>
           <h2 className="govuk-heading-m govuk-!-margin-top-9">

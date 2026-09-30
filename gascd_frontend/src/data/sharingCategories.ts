@@ -240,6 +240,51 @@ export const METRIC_SHARING_CATEGORIES: Record<string, SharingCategoryId> = {
   asylum_seeker_support_social_support_18_and_over: 'published',
   support_for_social_isolation_other_social_support_18_and_over: 'published',
 
+  // Standardised per 100,000 adults, as categorised on their data indicator pages
+  elss_all_types_of_adult_social_care_all_ages_per100k_adults: 'published',
+  elss_all_types_of_care_home_all_ages_per100k_adults: 'published',
+  elss_all_types_of_community_social_care_all_ages_per100k_adults: 'published',
+  elss_community_direct_payments_all_ages_per100k_adults: 'published',
+  elss_community_home_care_all_ages_per100k_adults: 'published',
+  elss_community_other_long_term_care_all_ages_per100k_adults: 'published',
+  elss_community_supported_living_all_ages_per100k_adults: 'published',
+  elss_nursing_all_ages_per100k_adults: 'published',
+  elss_residential_all_ages_per100k_adults: 'published',
+  elss_supported_accommodation_all_ages_per100k_adults: 'published',
+  edpsr_lt_learning_disability_support_all_ages_per100k_adults: 'published',
+  edpsr_lt_mental_health_support_all_ages_per100k_adults: 'published',
+  edpsr_lt_physical_support_all_ages_per100k_adults: 'published',
+  edpsr_lt_sensory_support_all_ages_per100k_adults: 'published',
+  edpsr_lt_support_with_memory_and_cognition_all_ages_per100k_adults:
+    'published',
+  edpsr_lt_total_all_ages_per100k_adults: 'published',
+  edpsr_st_learning_disability_support_all_ages_per100k_adults: 'published',
+  edpsr_st_mental_health_support_all_ages_per100k_adults: 'published',
+  edpsr_st_physical_support_all_ages_per100k_adults: 'published',
+  edpsr_st_sensory_support_all_ages_per100k_adults: 'published',
+  edpsr_st_support_with_memory_and_cognition_all_ages_per100k_adults:
+    'published',
+  edpsr_st_total_all_ages_per100k_adults: 'published',
+  edpsr_stlt_total_all_ages_per100k_adults: 'published',
+  access_and_mobility_only_physical_support_18_and_over_per100k_adults:
+    'published',
+  personal_care_support_physical_support_18_and_over_per100k_adults:
+    'published',
+  support_for_visual_impairment_sensory_support_18_and_over_per100k_adults:
+    'published',
+  support_for_hearing_impairment_sensory_support_18_and_over_per100k_adults:
+    'published',
+  support_for_dual_impairment_sensory_support_18_and_over_per100k_adults:
+    'published',
+  support_with_memory_and_cognition_18_and_over_per100k_adults: 'published',
+  learning_disability_support_18_and_over_per100k_adults: 'published',
+  mental_health_support_18_and_over_per100k_adults: 'published',
+  substance_misuse_support_social_support_18_and_over_per100k_adults:
+    'published',
+  asylum_seeker_support_social_support_18_and_over_per100k_adults: 'published',
+  support_for_social_isolation_other_social_support_18_and_over_per100k_adults:
+    'published',
+  nccc_num_clients_comm_care_per100k_adults: 'discretion',
   // Rows 65 to 68: POPPI and PANSI future planning projections
   pansi_pred_pop_asd_aged_18_64: 'not-for-external-sharing',
   pansi_pred_pop_challenging_behaviour_aged_18_64: 'not-for-external-sharing',
@@ -353,6 +398,8 @@ export const HELP_PAGE_SHARING = {
   'learning-disability-prevalence': 'publicDomain',
   'number-people-receiving-care-from-community-social-care-provider':
     'capacityTrackerOwnOrganisation',
+  'number-people-receiving-care-from-community-social-care-provider-per-100000-adults':
+    'capacityTrackerOwnOrganisation',
   'one-person-households-where-person-aged-65-or-over': 'publicDomain',
   'people-who-reported-bad-or-very-bad-health': 'publicDomain',
   'percentage-beds-occupied': 'capacityTrackerRestricted',
@@ -361,9 +408,14 @@ export const HELP_PAGE_SHARING = {
   'percentage-of-pupils-with-sen-support-aged-14-and-over': 'publicDomain',
   'percentage-people-aged-5-and-over-who-provide-unpaid-care': 'publicDomain',
   'percentages-financial-spend-long-term-and-short-term-care': 'publicDomain',
+  'financial-spend-long-term-and-short-term-care-per-100000-adults':
+    'publicDomain',
+  'financial-spend-long-term-care-per-100000-adults': 'publicDomain',
   'population-age': 'publicDomain',
   'population-size': 'publicDomain',
   'primary-reason-for-accessing-long-term-adult-social-care': 'publicDomain',
+  'primary-reason-for-accessing-long-term-adult-social-care-per-100000-adults':
+    'publicDomain',
   'pupils-with-sen-support-aged-14-and-over': 'publicDomain',
   'total-financial-spend-long-term-care-trends-over-time': 'publicDomain',
   'total-financial-spend-long-term-community-adult-social-care': 'publicDomain',
