@@ -1017,7 +1017,7 @@ export default function DisabilityPrevalence() {
               Find out how{' '}
               <a
                 href={withBasePath(
-                  '/help/primary-reason-for-accessing-long-term-adult-social-care'
+                  '/help/primary-reason-for-accessing-long-term-adult-social-care-per-100000-adults'
                 )}
                 className="govuk-link"
               >
@@ -1155,6 +1155,13 @@ export default function DisabilityPrevalence() {
           updateFrequency="Yearly updates"
           limitations={false}
           url="/help/primary-reason-for-accessing-long-term-adult-social-care"
+        />
+        <DataLinkCard
+          label="Primary reason for people to access long-term adult social care – standardised per 100,000 of the total adult (18+) population"
+          sources="NHS England, Office for National Statistics"
+          updateFrequency="Yearly updates"
+          limitations={false}
+          url="/help/primary-reason-for-accessing-long-term-adult-social-care-per-100000-adults"
         />
       </DataIndicatorDetailsList>
 
