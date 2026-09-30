@@ -1022,7 +1022,7 @@ export default function DisabilityPrevalence() {
                 className="govuk-link"
               >
                 primary reason for people to access long-term adult social care
-                is calculated
+                per 100,000 adults is calculated
               </a>
               .
             </p>

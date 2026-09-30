@@ -818,8 +818,8 @@ export default function LAFundingPage() {
                 )}
                 className="govuk-link"
               >
-                how the financial spend for short-term and long-term care is
-                calculated
+                how the financial spend for short-term and long-term care per
+                100,000 adults is calculated
               </a>
               .
             </p>
@@ -1046,7 +1046,8 @@ export default function LAFundingPage() {
                 )}
                 className="govuk-link"
               >
-                how the financial spend is calculated by service type
+                how the financial spend per 100,000 adults is calculated by
+                support setting
               </a>
               .
             </p>

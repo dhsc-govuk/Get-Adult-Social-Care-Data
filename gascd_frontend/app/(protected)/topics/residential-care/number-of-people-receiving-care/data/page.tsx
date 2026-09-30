@@ -476,8 +476,8 @@ export default function NumberPeopleReceivingCarePage() {
                 )}
                 className="govuk-link"
               >
-                how the number of people receiving community social care is
-                calculated
+                how the number of people receiving community social care per
+                100,000 adults is calculated
               </a>
               .
             </p>
