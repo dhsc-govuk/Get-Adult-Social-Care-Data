@@ -207,8 +207,6 @@ export default function ProvisionAndOccupancyPage() {
   const [groupedBedType, setGroupedBedType] =
     useState<BedTypeSelection>(ALL_BED_TYPES);
 
-  // Care home bed types (Table 3) lists every bed type, A to Z, under the
-  // section's population
   const bedTypeRowHeaders = useMemo(
     () =>
       Object.fromEntries(
@@ -941,8 +939,6 @@ export default function ProvisionAndOccupancyPage() {
     updateGroupedTypesTableMetrics();
   }, [latestBedTypeData]);
 
-  // The grouped section's single-select bed type filter, against its own
-  // stored selection.
   const updateGroupedTypesTableMetrics = () => {
     setGroupedBedType(
       readStoredBedTypeFilter(

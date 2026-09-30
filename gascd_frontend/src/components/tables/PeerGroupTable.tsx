@@ -23,23 +23,18 @@ type PeerGroupTableProps = {
   nationalAverageLabel?: string;
   nationalAverageValue: number | null;
   valueFormat?: ValueFormat;
-  // Rows beyond the chart's, e.g. the user's own care home
   extraRows?: { label: string; value: number | null }[];
   tableref?: Ref<HTMLTableElement>;
   children?: React.ReactNode;
 };
 
-// The same arrows as the MOJ sortable table, whose heading styles apply here
 const SORT_ICONS: Record<SortDirection | 'none', string> = {
   ascending: 'M6.5625 15.5L11 6.63125L15.4375 15.5H6.5625Z',
   descending: 'M15.4375 7L11 15.8687L6.5625 7L15.4375 7Z',
   none: 'M8.1875 9.5L10.9609 3.95703L13.7344 9.5H8.1875Z M13.7344 12.0781L10.9609 17.6211L8.1875 12.0781H13.7344Z',
 };
 
-// The rows of the peer group chart beside it (the user's LA and each peer),
-// and the comparator, regional and national averages, highest value first.
-// Sorting is kept in React state rather than done by the MOJ script, which
-// reorders the DOM and so loses the order when the rows change.
+// Sorted in React: the MOJ script reorders the DOM, which breaks when rows change
 const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
   caption,
   source,
@@ -72,8 +67,7 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
     });
   };
 
-  // Always rendered, like the other tables (the download reads it); until the
-  // peers load, or if they fail, the LA still gets its row
+  // Always rendered, as the download reads it, so the LA row stands in for peers
   const chartRows =
     peerData && currentLaValue !== null
       ? getPeerChartRows(laName, currentLaValue, peerData, laCode).map(
@@ -100,7 +94,6 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
   const sign = sort.direction === 'ascending' ? 1 : -1;
   const sortedRows = [...rows].sort((a, b) => {
     if (sort.column === 'area') return sign * a.label.localeCompare(b.label);
-    // Missing values go last either way
     if (a.value === null) return b.value === null ? 0 : 1;
     if (b.value === null) return -1;
     return sign * (a.value - b.value);
