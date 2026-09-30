@@ -202,19 +202,24 @@ export default function ProvisionAndOccupancyPage() {
     metric_id: 'bedcount_per_hundred_thousand_adults_total',
     filter_bedtype: 'All bed types',
   };
-  const [typesBedType, setTypesBedType] =
-    useState<BedTypeSelection>(ALL_BED_TYPES);
   // "Care home bed types (grouped by bed type)" is a separate metric from
   // "Care home bed types" above it, so it keeps its own filter selection.
   const [groupedBedType, setGroupedBedType] =
     useState<BedTypeSelection>(ALL_BED_TYPES);
 
+  // Care home bed types (Table 3) lists every bed type, A to Z, under the
+  // section's population
   const bedTypeRowHeaders = useMemo(
-    () => ({
-      [withPopulation(typesBedType.metric_id, typesPopulation)]:
-        typesBedType.filter_bedtype,
-    }),
-    [typesBedType, typesPopulation]
+    () =>
+      Object.fromEntries(
+        Object.entries(bedTypeRowHeadersDefault)
+          .sort(([, a], [, b]) => a.localeCompare(b))
+          .map(([metricId, label]) => [
+            withPopulation(metricId, typesPopulation),
+            label,
+          ])
+      ),
+    [typesPopulation]
   );
 
   const bedTypesChartFilterName = groupedBedType.filter_bedtype;
@@ -911,11 +916,6 @@ export default function ProvisionAndOccupancyPage() {
     careHomeBedNumbersData();
   }, [careHomeBedNumbersDataQuery]);
 
-  // update data based on filter changes
-  useEffect(() => {
-    updateTypesTableMetrics();
-  }, [latestBedTypeData]);
-
   // FilterRadioGroup stores one { metric_id, filter_bedtype }; anything else
   // (including a selection left over from when these were checkboxes) falls
   // back to the default.
@@ -937,19 +937,11 @@ export default function ProvisionAndOccupancyPage() {
     }
   };
 
-  // Single select: the table shows the one bed type the filter is set to,
-  // defaulting to "All bed types".
-  const updateTypesTableMetrics = () => {
-    setTypesBedType(
-      readStoredBedTypeFilter('type-table-metrics', bedTypeRowHeadersDefault)
-    );
-  };
-
   useEffect(() => {
     updateGroupedTypesTableMetrics();
   }, [latestBedTypeData]);
 
-  // Same shape as updateTypesTableMetrics, against the grouped section's own
+  // The grouped section's single-select bed type filter, against its own
   // stored selection.
   const updateGroupedTypesTableMetrics = () => {
     setGroupedBedType(
@@ -1259,12 +1251,6 @@ export default function ProvisionAndOccupancyPage() {
           </>
         }
       >
-        <FilterRadioGroup
-          filterType="type-table-metrics"
-          filterLabel="Bed type"
-          filters={bedTypeRowHeadersDefault}
-          updateMethod={updateTypesTableMetrics}
-        />
         <DataTabs
           id="2"
           sharingMetricIds={bedTypeMetricIds}
