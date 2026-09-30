@@ -2,6 +2,7 @@
 import React, { useMemo } from 'react';
 import { Layout, Data, ScatterData } from 'plotly.js';
 import dynamic from 'next/dynamic';
+import { usePlotlyResize } from './usePlotlyResize';
 
 // Skip any SSR compilation for plotly
 const Plotly = dynamic(() => import('react-plotly.js'), { ssr: false });
@@ -64,6 +65,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   hoverDateFormat = '%d %b %Y',
   financialYear = false,
 }) => {
+  const { containerRef, onGraphReady } = usePlotlyResize();
   const useExplicitTicks =
     !financialYear &&
     !!tickValues?.length &&
@@ -172,13 +174,17 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   };
 
   return (
-    <Plotly
-      style={{ width: '100%', height: '100%' }}
-      useResizeHandler={true}
-      data={chartData}
-      layout={layout}
-      config={{ displayModeBar: false }}
-    />
+    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+      <Plotly
+        onInitialized={onGraphReady}
+        onUpdate={onGraphReady}
+        style={{ width: '100%', height: '100%' }}
+        useResizeHandler={true}
+        data={chartData}
+        layout={layout}
+        config={{ displayModeBar: false }}
+      />
+    </div>
   );
 };
 
