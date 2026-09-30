@@ -2,6 +2,7 @@
 import React, { useMemo } from 'react';
 import { Layout, Data, Shape } from 'plotly.js';
 import dynamic from 'next/dynamic';
+import { usePlotlyResize } from './usePlotlyResize';
 
 // Skip any SSR compilation for plotly
 const Plotly = dynamic(() => import('react-plotly.js'), { ssr: false });
@@ -33,6 +34,7 @@ const BarChart: React.FC<BarChartProps> = ({
   showHighlightOutline = true,
   hoverValueFormat = ',.1~f',
 }) => {
+  const { containerRef, onGraphReady } = usePlotlyResize();
   // Top highlight colours
   const TOP_HIGHLIGHT_COL = '#959495';
   // Main highlight row
@@ -138,13 +140,17 @@ const BarChart: React.FC<BarChartProps> = ({
   };
 
   return (
-    <Plotly
-      style={{ width: '100%', height: '100%' }}
-      data={chartData}
-      layout={layout}
-      useResizeHandler={true}
-      config={{ displayModeBar: false, responsive: true }}
-    />
+    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+      <Plotly
+        onInitialized={onGraphReady}
+        onUpdate={onGraphReady}
+        style={{ width: '100%', height: '100%' }}
+        data={chartData}
+        layout={layout}
+        useResizeHandler={true}
+        config={{ displayModeBar: false, responsive: true }}
+      />
+    </div>
   );
 };
 
