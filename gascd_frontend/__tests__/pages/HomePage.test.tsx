@@ -56,35 +56,39 @@ describe('HomePage', () => {
     expect(linkElement2).toBeInTheDocument();
     expect(linkElement2).toHaveAttribute(
       'href',
-      'topics/population-needs/subtopics'
+      '/topics/population-needs/subtopics'
     );
   });
 
-  it('should not render LA links to CP users', async () => {
+  // Future planning is shown to everyone; only population projections
+  // (PANSI, licensed for LA users) is LA-only
+  it('should not render LA-only links to CP users', async () => {
     mockGetSession.mockResolvedValue(mockSession);
-    // render(<HomePage />);
-    // This is a server component page, so we need to render it slightly differently
     const ResolvedPage = await HomePage({});
     render(ResolvedPage);
 
-    const laLink = screen.queryByRole('link', {
-      name: /Future planning/i,
-    });
-    expect(laLink).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /Future planning/i })
+    ).toHaveAttribute('href', '/topics/future-planning/subtopics');
+    expect(
+      screen.queryByRole('link', {
+        name: /Population projections within local authorities/i,
+      })
+    ).not.toBeInTheDocument();
   });
 
-  it('should render LA links to LA users', async () => {
+  it('should render LA-only links to LA users', async () => {
     mockGetSession.mockResolvedValue(mockSessionLAUser);
-
-    // render(<HomePage />);
-    // This is a server component page, so we need to render it slightly differently
     const ResolvedPage = await HomePage({});
     render(ResolvedPage);
 
-    const laLink = screen.getByRole('link', {
-      name: /Future planning/i,
-    });
-    expect(laLink).toBeInTheDocument();
-    expect(laLink).toHaveAttribute('href', 'topics/future-planning/subtopics');
+    expect(
+      screen.getByRole('link', {
+        name: /Population projections within local authorities/i,
+      })
+    ).toHaveAttribute(
+      'href',
+      '/topics/future-planning/la-funding-planning/data'
+    );
   });
 });
