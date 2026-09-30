@@ -59,24 +59,49 @@ const bodyRows = () =>
     ]);
 
 describe('PeerGroupTable', () => {
-  it("lists the chart's rows in the chart's order, then the averages", () => {
+  it("lists the chart's rows and the averages, highest value first", () => {
     render(<PeerGroupTable {...props} />);
     expect(bodyRows()).toEqual([
       ['Sheffield', '55.5'],
+      ['NHS peer group (average)', '53.5'],
       ['Liverpool', '52.5'],
       ['Manchester', '51.5'],
-      ['NHS peer group (average)', '53.5'],
       ['North West (regional average)', '48.5'],
       ['England (national average)', '10.5'],
     ]);
   });
 
-  it('sorts by area or by value', async () => {
-    // GOV.UK Frontend components only start on a supported page, as the
-    // app's layout declares
-    document.body.classList.add('govuk-frontend-supported');
+  it('keeps sorting highest first when the rows change', () => {
+    const { rerender } = render(<PeerGroupTable {...props} />);
+    rerender(
+      <PeerGroupTable
+        {...props}
+        peerData={{
+          ...peerData,
+          localAuthorityPeers: [
+            {
+              code: 'E08000020',
+              displayName: 'Bolton',
+              peerRanking: 1,
+              metricValue: 60,
+            },
+          ],
+          averagePeerGroup: 60,
+        }}
+      />
+    );
+    expect(bodyRows().map(([area]) => area)).toEqual([
+      'Bolton',
+      'NHS peer group (average)',
+      'Liverpool',
+      'North West (regional average)',
+      'England (national average)',
+    ]);
+  });
+
+  it('sorts by area or by value from the column headings', () => {
     render(<PeerGroupTable {...props} />);
-    fireEvent.click(await screen.findByRole('button', { name: /Area/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Area/ }));
     expect(bodyRows().map(([area]) => area)).toEqual([
       'England (national average)',
       'Liverpool',
@@ -85,7 +110,18 @@ describe('PeerGroupTable', () => {
       'North West (regional average)',
       'Sheffield',
     ]);
-    fireEvent.click(screen.getByRole('button', { name: /Beds per 100,000/ }));
+    expect(screen.getByRole('columnheader', { name: /Area/ })).toHaveAttribute(
+      'aria-sort',
+      'ascending'
+    );
+
+    // Back to the value column: highest first, then flip to lowest first
+    const valueButton = screen.getByRole('button', {
+      name: /Beds per 100,000/,
+    });
+    fireEvent.click(valueButton);
+    expect(bodyRows()[0][1]).toBe('55.5');
+    fireEvent.click(valueButton);
     expect(bodyRows().map(([, value]) => value)).toEqual([
       '10.5',
       '48.5',
@@ -96,7 +132,7 @@ describe('PeerGroupTable', () => {
     ]);
   });
 
-  it('puts extra rows first and formats currency', () => {
+  it('sorts extra rows with the rest and formats currency', () => {
     render(
       <PeerGroupTable
         {...props}
@@ -107,9 +143,9 @@ describe('PeerGroupTable', () => {
     expect(bodyRows()[0]).toEqual(['My care home', '£1,234']);
   });
 
-  it('shows N/A for a missing average', () => {
+  it('shows N/A for a missing average, sorted last', () => {
     render(<PeerGroupTable {...props} regionalAverageValue={null} />);
-    expect(bodyRows()[4]).toEqual(['North West (regional average)', 'N/A']);
+    expect(bodyRows().at(-1)).toEqual(['North West (regional average)', 'N/A']);
   });
 
   it('keeps the LA and averages while the peers load or when they fail', () => {
@@ -118,11 +154,11 @@ describe('PeerGroupTable', () => {
     );
     expect(bodyRows()).toEqual([
       ['Liverpool', '52.5'],
-      ['NHS peer group (average)', 'Loading...'],
       ['North West (regional average)', '48.5'],
       ['England (national average)', '10.5'],
+      ['NHS peer group (average)', 'Loading...'],
     ]);
     rerender(<PeerGroupTable {...props} peerData={null} />);
-    expect(bodyRows()[1]).toEqual(['NHS peer group (average)', 'N/A']);
+    expect(bodyRows().at(-1)).toEqual(['NHS peer group (average)', 'N/A']);
   });
 });

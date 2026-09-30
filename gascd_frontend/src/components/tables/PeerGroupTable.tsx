@@ -1,10 +1,12 @@
-import React, { MutableRefObject, Ref, useEffect, useRef } from 'react';
+import React, { Ref, useState } from 'react';
 import TableService from '@/services/Table/TableService';
 import { getPeerChartRows } from '@/components/charts/peer-group/peerChartRows';
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
 import { PeerGroupData } from '@/components/charts/peer-group/types';
 
 type ValueFormat = 'number' | 'percentage' | 'currency';
+type SortColumn = 'area' | 'value';
+type SortDirection = 'ascending' | 'descending';
 
 type PeerGroupTableProps = {
   caption?: React.ReactNode;
@@ -21,15 +23,23 @@ type PeerGroupTableProps = {
   nationalAverageLabel?: string;
   nationalAverageValue: number | null;
   valueFormat?: ValueFormat;
-  // Shown above the chart's rows, e.g. the user's own care home
+  // Rows beyond the chart's, e.g. the user's own care home
   extraRows?: { label: string; value: number | null }[];
   tableref?: Ref<HTMLTableElement>;
   children?: React.ReactNode;
 };
 
-// The rows of the peer group chart beside it: the user's LA and each peer in
-// the chart's order, then the comparator, regional and national averages.
-// Sortable by either column, like the other tables.
+// The same arrows as the MOJ sortable table, whose heading styles apply here
+const SORT_ICONS: Record<SortDirection | 'none', string> = {
+  ascending: 'M6.5625 15.5L11 6.63125L15.4375 15.5H6.5625Z',
+  descending: 'M15.4375 7L11 15.8687L6.5625 7L15.4375 7Z',
+  none: 'M8.1875 9.5L10.9609 3.95703L13.7344 9.5H8.1875Z M13.7344 12.0781L10.9609 17.6211L8.1875 12.0781H13.7344Z',
+};
+
+// The rows of the peer group chart beside it (the user's LA and each peer),
+// and the comparator, regional and national averages, highest value first.
+// Sorting is kept in React state rather than done by the MOJ script, which
+// reorders the DOM and so loses the order when the rows change.
 const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
   caption,
   source,
@@ -49,31 +59,10 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
   tableref,
   children,
 }) => {
-  const ownRef = useRef<HTMLTableElement | null>(null);
-  const setTableRef = (element: HTMLTableElement | null) => {
-    ownRef.current = element;
-    if (typeof tableref === 'function') tableref(element);
-    else if (tableref)
-      (tableref as MutableRefObject<HTMLTableElement | null>).current = element;
-  };
-
-  useEffect(() => {
-    let cancelled = false;
-    const makeSortable = async () => {
-      // Import this at page load time to avoid NextJS SSR errors
-      const MOJFrontend = await import('@ministryofjustice/frontend');
-      if (cancelled || !ownRef.current) return;
-      try {
-        new MOJFrontend.SortableTable(ownRef.current);
-      } catch {
-        // Already set up: the other tables set up every table on the page
-      }
-    };
-    makeSortable();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const [sort, setSort] = useState<{
+    column: SortColumn;
+    direction: SortDirection;
+  }>({ column: 'value', direction: 'descending' });
 
   const formatValue = (value: number | null) => {
     if (value === null) return loading ? 'Loading...' : 'N/A';
@@ -108,58 +97,96 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
     { label: nationalAverageLabel, value: nationalAverageValue, bold: true },
   ];
 
+  const sign = sort.direction === 'ascending' ? 1 : -1;
+  const sortedRows = [...rows].sort((a, b) => {
+    if (sort.column === 'area') return sign * a.label.localeCompare(b.label);
+    // Missing values go last either way
+    if (a.value === null) return b.value === null ? 0 : 1;
+    if (b.value === null) return -1;
+    return sign * (a.value - b.value);
+  });
+
+  const sortBy = (column: SortColumn) =>
+    setSort((current) =>
+      current.column === column
+        ? {
+            column,
+            direction:
+              current.direction === 'ascending' ? 'descending' : 'ascending',
+          }
+        : { column, direction: column === 'area' ? 'ascending' : 'descending' }
+    );
+
+  const heading = (column: SortColumn, label: string, className: string) => {
+    const direction = sort.column === column ? sort.direction : 'none';
+    return (
+      <th scope="col" className={className} aria-sort={direction}>
+        <button type="button" onClick={() => sortBy(column)}>
+          {label}
+          <svg
+            width="22"
+            height="22"
+            focusable="false"
+            aria-hidden="true"
+            role="img"
+            viewBox="0 0 22 22"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d={SORT_ICONS[direction]} fill="currentColor" />
+          </svg>
+        </button>
+      </th>
+    );
+  };
+
   return (
     <div>
       <div className="moj-scrollable-pane" role="region">
-        <table
-          className="govuk-table"
-          ref={setTableRef}
-          data-module="moj-sortable-table"
-        >
+        <table className="govuk-table" ref={tableref}>
           {caption && (
             <caption className="govuk-table__caption govuk-table__caption--s">
               {caption}
+              <span className="govuk-visually-hidden">
+                {' '}
+                (column headers with buttons are sortable).
+              </span>
             </caption>
           )}
           <thead className="govuk-table__head">
             <tr className="govuk-table__row">
-              <th
-                scope="col"
-                className="govuk-table__header scrollable-table__header"
-                aria-sort="none"
-              >
-                Area
-              </th>
-              <th
-                scope="col"
-                className="govuk-table__header govuk-table__cell--numeric scrollable-table__header"
-                aria-sort="none"
-              >
-                {valueHeader}
-              </th>
+              {heading(
+                'area',
+                'Area',
+                'govuk-table__header scrollable-table__header'
+              )}
+              {heading(
+                'value',
+                valueHeader,
+                'govuk-table__header govuk-table__cell--numeric scrollable-table__header'
+              )}
             </tr>
           </thead>
           <tbody className="govuk-table__body">
-            {rows.map((row) => (
+            {sortedRows.map((row) => (
               <tr key={row.label} className="govuk-table__row">
                 <th
                   scope="row"
                   className="govuk-table__cell govuk-!-font-weight-regular"
-                  // Sort by the name, not the bold markup around it
-                  data-sort-value={row.label}
                 >
                   {row.bold ? <strong>{row.label}</strong> : row.label}
                 </th>
-                <td
-                  className="govuk-table__cell govuk-table__cell--numeric"
-                  data-sort-value={row.value ?? ''}
-                >
+                <td className="govuk-table__cell govuk-table__cell--numeric">
                   {formatValue(row.value)}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="govuk-visually-hidden" role="status" aria-live="polite">
+        Sort by {sort.column === 'area' ? 'Area' : valueHeader} (
+        {sort.direction})
       </div>
       {children}
       <p className="govuk-body">Source: {source}</p>
