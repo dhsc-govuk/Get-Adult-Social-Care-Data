@@ -60,6 +60,7 @@ export default function ProvisionAndOccupancyPage() {
   const tableref3 = useRef<HTMLTableElement>(null);
   const tableref4 = useRef<HTMLTableElement>(null);
   const tableref5 = useRef<HTMLTableElement>(null);
+  const tableref6 = useRef<HTMLTableElement>(null);
 
   const [visibleCareProviderMetricIds1, setVisibleCareProviderMetricIds1] =
     useState<string[]>([]);
@@ -154,6 +155,8 @@ export default function ProvisionAndOccupancyPage() {
     useState<Population>('adults');
   const [typesPopulation, setTypesPopulation] = useState<Population>('adults');
   const [groupedPopulation, setGroupedPopulation] =
+    useState<Population>('adults');
+  const [groupedTablePopulation, setGroupedTablePopulation] =
     useState<Population>('adults');
   const numbersMetricId = withPopulation(
     numbersTableMetricId,
@@ -273,12 +276,29 @@ export default function ProvisionAndOccupancyPage() {
   // share one deduped fetch - the two tables draw from the same twelve bed
   // type metrics - kept separate from the charts above so a change to a bed
   // type filter does not blank them while the new comparator values load.
+  const groupedTableRowHeaders = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(groupedBedTypeRowHeadersDefault).map(
+          ([metricId, label]) => [
+            withPopulation(metricId, groupedTablePopulation),
+            label,
+          ]
+        )
+      ),
+    [groupedTablePopulation]
+  );
+
   const bedTypesComparatorMetricIds = useMemo(
     () =>
       Array.from(
-        new Set([bedTypesChartDisplayId, ...Object.keys(bedTypeRowHeaders)])
+        new Set([
+          bedTypesChartDisplayId,
+          ...Object.keys(bedTypeRowHeaders),
+          ...Object.keys(groupedTableRowHeaders),
+        ])
       ),
-    [bedTypesChartDisplayId, bedTypeRowHeaders]
+    [bedTypesChartDisplayId, bedTypeRowHeaders, groupedTableRowHeaders]
   );
 
   const {
@@ -386,26 +406,6 @@ export default function ProvisionAndOccupancyPage() {
         result, these statistical neighbours should be viewed as a helpful
         starting point for benchmarking, rather than a definitive indication of
         which authorities are most alike or measuring relative performance.
-      </div>
-    </details>
-  );
-
-  const medianDefinitionDetails = (
-    <details className="govuk-details">
-      <summary className="govuk-details__summary">
-        <span className="govuk-details__summary-text">
-          Definition of a &lsquo;median&rsquo; number
-        </span>
-      </summary>
-      <div className="govuk-details__text">
-        <p>
-          If you place a set of numbers in order, the middle one of the set is
-          the median number.
-        </p>
-        <p>
-          When there are two middle numbers, the median is the average of those
-          two numbers.
-        </p>
       </div>
     </details>
   );
@@ -539,6 +539,19 @@ export default function ProvisionAndOccupancyPage() {
         COMPARATOR_ROW_ID
       ),
     [filteredCareHomeBedTypesData, bedTypeRowHeaders, bedTypesDataByMetric]
+  );
+
+  const benchmarkedGroupedTypesData = useMemo(
+    () =>
+      mergeComparatorAverage(
+        latestBedTypeData.filter(
+          (item) => item.metric_id in groupedTableRowHeaders
+        ),
+        Object.keys(groupedTableRowHeaders),
+        bedTypesDataByMetric,
+        COMPARATOR_ROW_ID
+      ),
+    [latestBedTypeData, groupedTableRowHeaders, bedTypesDataByMetric]
   );
 
   const groupedBedTypesValues = areaValues(
@@ -1062,7 +1075,6 @@ export default function ProvisionAndOccupancyPage() {
           </p>
         }
       >
-        {medianDefinitionDetails}
         <DataTabs
           id="3"
           sharingMetricIds={[
@@ -1193,7 +1205,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref1}
                 caption={
                   <>
-                    Table 2: care home bed numbers per 100,000{' '}
+                    Table 2a: care home bed numbers per 100,000{' '}
                     {POPULATION_DESCRIPTIONS[numbersPopulation]} (
                     {numbersTableFilterName.toLowerCase()}) &ndash;{' '}
                     {locationNamesCP.LALabel}{' '}
@@ -1243,7 +1255,6 @@ export default function ProvisionAndOccupancyPage() {
             </a>{' '}
             are calculated.
             {nhsPeerGroupDetails}
-            {medianDefinitionDetails}
           </>
         }
       >
@@ -1264,7 +1275,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref2}
                 caption={
                   <>
-                    Table 3: care home bed numbers per 100,000{' '}
+                    Table 2b: care home bed numbers per 100,000{' '}
                     {POPULATION_DESCRIPTIONS[typesPopulation]} &ndash;{' '}
                     {locationNamesCP.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
@@ -1344,7 +1355,6 @@ export default function ProvisionAndOccupancyPage() {
             </a>{' '}
             are calculated.
             {nhsPeerGroupDetails}
-            {medianDefinitionDetails}
           </>
         }
       >
@@ -1409,7 +1419,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref4}
                 caption={
                   <>
-                    Table 4: care home bed numbers per 100,000{' '}
+                    Table 3a: care home bed numbers per 100,000{' '}
                     {POPULATION_DESCRIPTIONS[groupedPopulation]} (
                     {bedTypesChartFilterName.toLowerCase()}) &ndash;{' '}
                     {locationNamesCP.LALabel}{' '}
@@ -1441,6 +1451,73 @@ export default function ProvisionAndOccupancyPage() {
                 filename="care_home_bed_types_grouped.csv"
                 xLabel=""
                 downloadType="care home bed numbers per 100,000 adult population grouped by bed type"
+              />
+            </>
+          }
+        />
+      </DataBox>
+      <DataBox
+        dataTitle="Care home bed types by group"
+        dataInfo={
+          <>
+            Find out how{' '}
+            <a
+              href={withBasePath('/help/beds-per-100000-adult-population')}
+              className="govuk-link"
+            >
+              the number of adult social care beds per 100,000 adult population
+            </a>{' '}
+            are calculated.
+            {nhsPeerGroupDetails}
+          </>
+        }
+      >
+        <DataTabs
+          id="7"
+          sharingMetricIds={bedTypeMetricIds}
+          table={
+            <>
+              {renderComparatorControl(
+                'comparator-table-6',
+                renderPopulationSelect(
+                  'comparator-table-6',
+                  groupedTablePopulation,
+                  setGroupedTablePopulation
+                )
+              )}
+              <DataTable
+                tableref={tableref6}
+                caption={
+                  <>
+                    Table 3b: care home bed numbers per 100,000{' '}
+                    {POPULATION_DESCRIPTIONS[groupedTablePopulation]} (grouped
+                    by bed type) &ndash; {locationNamesCP.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {comparatorAverageLabel}, {locationNamesCP.RegionLabel}{' '}
+                    regional average and national average,{' '}
+                    {IndicatorService.getMostRecentDate(latestBedTypeData)}
+                  </>
+                }
+                metricColumnName="Care home bed type"
+                source="Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)"
+                columnHeaders={{
+                  ...locationNamesWithAverageLabels,
+                  ComparatorLabel: comparatorAverageLabel,
+                }}
+                rowHeaders={groupedTableRowHeaders}
+                data={benchmarkedGroupedTypesData}
+                showCareProvider={false}
+                percentageRows={[]}
+              ></DataTable>
+            </>
+          }
+          download={
+            <>
+              <DownloadTableDataCSVLink
+                tableref={tableref6}
+                filename="care_home_bed_types_grouped_by_area.csv"
+                xLabel=""
+                downloadType="care home bed numbers per 100,000 adult population for each bed type group"
               />
             </>
           }
@@ -1549,7 +1626,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref5}
                 caption={
                   <>
-                    Table 5: care home occupancy levels &ndash;{' '}
+                    Table 4: care home occupancy levels &ndash;{' '}
                     {locationNamesCP.LALabel}{' '}
                     <abbr title="local authority">LA</abbr> and its comparison
                     group, {comparatorAverageLabel},{' '}
