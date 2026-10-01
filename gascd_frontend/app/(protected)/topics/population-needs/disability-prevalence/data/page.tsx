@@ -856,8 +856,9 @@ export default function DisabilityPrevalence() {
                     {locationNames.RegionLabel} (regional average),{' '}
                     {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
                     {benchmarkedColumnHeaders.CountryLabel},{' '}
-                    {IndicatorService.getMostRecentDate(
+                    {IndicatorService.getFinancialYear(
                       benchmarkedDisabilityData,
+                      1,
                       ['learning_disability_prevalence']
                     )}
                   </>
@@ -923,8 +924,9 @@ export default function DisabilityPrevalence() {
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="learning disability prevalence"
               figureTitle="Learning disability prevalence"
-              dateLabel={IndicatorService.getMostRecentDate(
+              dateLabel={IndicatorService.getFinancialYear(
                 benchmarkedDisabilityData,
+                1,
                 ['learning_disability_prevalence']
               )}
               figureNumber={3}
@@ -975,7 +977,10 @@ export default function DisabilityPrevalence() {
                     <abbr title="local authority">LA</abbr>,{' '}
                     {comparatorAverageLabel}, {locationNames.RegionLabel} region
                     and {locationNames.CountryLabel},{' '}
-                    {IndicatorService.getMostRecentDate(filteredDisabilityData)}
+                    {IndicatorService.getFinancialYear(
+                      primarySupportReasonData,
+                      1
+                    )}
                   </>
                 }
                 source={
@@ -1060,8 +1065,9 @@ export default function DisabilityPrevalence() {
                 figureTitle={`${
                   standardisedRowHeadersDefault[chartSupportReason]
                 } per 100,000 of the total adult population (18+)`}
-                dateLabel={IndicatorService.getMostRecentDate(
-                  standardisedReasonData
+                dateLabel={IndicatorService.getFinancialYear(
+                  standardisedReasonData,
+                  1
                 )}
                 figureNumber={4}
                 // Rates per 100,000, not percentages
@@ -1091,7 +1097,10 @@ export default function DisabilityPrevalence() {
                     group, {comparatorAverageLabel}, {locationNames.RegionLabel}{' '}
                     (regional average) and {locationNames.CountryLabel}{' '}
                     (national average),{' '}
-                    {IndicatorService.getMostRecentDate(standardisedReasonData)}
+                    {IndicatorService.getFinancialYear(
+                      standardisedReasonData,
+                      1
+                    )}
                   </>
                 }
                 source="Adult Social Care Activity and Finance Report from NHS England & population estimates from ONS"
