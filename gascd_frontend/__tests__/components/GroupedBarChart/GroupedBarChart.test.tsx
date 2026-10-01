@@ -45,4 +45,19 @@ describe('GroupedBarChart', () => {
     expect(data[1].marker.line.color).not.toBe('#ffffff');
     expect(data[1].marker.line.width).toBeGreaterThan(0);
   });
+
+  it('gives comparator hover labels dark text, as their bars are white', () => {
+    render(<GroupedBarChart categories={categories} series={series} />);
+
+    const data = JSON.parse(
+      screen.getByTestId('chart-data').textContent || '[]'
+    );
+
+    expect(data[0].hoverlabel).toBeUndefined();
+    expect(data[1].hoverlabel).toEqual({
+      bgcolor: '#ffffff',
+      bordercolor: data[1].marker.line.color,
+      font: { color: '#0b0c0c' },
+    });
+  });
 });
