@@ -291,3 +291,42 @@ describe('getMostRecentDate', () => {
     expect(result).toBe('');
   });
 });
+
+describe('financial years', () => {
+  const dated = (metric_date: string): Indicator[] => [
+    {
+      metric_date,
+      location_id: '1',
+      metric_id: 'A',
+      data_point: 1,
+      metric_date_type: '',
+      location_type: '',
+      numerator: 0,
+      multiplier: 0,
+      denominator: 0,
+      load_date_time: new Date(2024, 0, 1),
+    } as unknown as Indicator,
+  ];
+
+  it('puts 1 April to 31 March in the same financial year', () => {
+    expect(IndicatorService.getFinancialYear(dated('2024-03-31'), 1)).toBe(
+      'financial year 2023 to 2024'
+    );
+    expect(IndicatorService.getFinancialYear(dated('2024-04-01'), 1)).toBe(
+      'financial year 2024 to 2025'
+    );
+    expect(IndicatorService.getFinancialYear(dated('2025-01-01'), 1)).toBe(
+      'financial year 2024 to 2025'
+    );
+    expect(IndicatorService.getFinancialYear(dated('31/03/2025'), 1)).toBe(
+      'financial year 2024 to 2025'
+    );
+    expect(IndicatorService.getFinancialYear([], 1)).toBe('');
+  });
+
+  it('counts a range back from the latest financial year', () => {
+    expect(IndicatorService.getFinancialYear(dated('2024-03-31'), 10)).toBe(
+      'financial year 2014 to 2024'
+    );
+  });
+});
