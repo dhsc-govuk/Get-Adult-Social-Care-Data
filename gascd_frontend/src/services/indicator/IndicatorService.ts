@@ -295,26 +295,23 @@ class IndicatorService {
     }
   }
 
+  // UK financial years run from 1 April to 31 March
+  public static financialYearStart(date: Date): number {
+    return date.getMonth() >= 3 ? date.getFullYear() : date.getFullYear() - 1;
+  }
+
+  // The financial year of the latest date, or the `spread` years ending with it
   public static getFinancialYear(
     data: Indicator[],
     spread: number,
     metric_ids?: string[]
   ): string {
     const recentData = this.getMostRecentIndicator(data, metric_ids);
-    if (recentData) {
-      const date = this.parseDate(
-        data.find((d) => d.metric_date.toString() === recentData)!
-      );
-      let yearString = new Intl.DateTimeFormat('en-GB', {
-        year: 'numeric',
-      }).format(date);
-
-      let year = parseInt(yearString);
-
-      return `financial year ${year - spread} to ${year}`;
-    } else {
-      return '';
-    }
+    if (!recentData) return '';
+    const latestStart = this.financialYearStart(
+      this.parseDate(data.find((d) => d.metric_date.toString() === recentData)!)
+    );
+    return `financial year ${latestStart - spread + 1} to ${latestStart + 1}`;
   }
 }
 
