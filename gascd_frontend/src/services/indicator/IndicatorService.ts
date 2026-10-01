@@ -265,6 +265,19 @@ class IndicatorService {
     }
   }
 
+  // Census figures are a snapshot, so the census year is the meaningful period
+  public static getCensusYear(
+    data: Indicator[],
+    metric_ids?: string[]
+  ): string {
+    const recentData = this.getMostRecentIndicator(data, metric_ids);
+    if (!recentData) return '';
+    const date = this.parseDate(
+      data.find((d) => d.metric_date.toString() === recentData)!
+    );
+    return `Census ${date.getFullYear()}`;
+  }
+
   public static getEarliestDate(
     data: Indicator[],
     metric_ids?: string[]

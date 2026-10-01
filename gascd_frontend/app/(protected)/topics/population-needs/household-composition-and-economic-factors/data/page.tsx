@@ -435,7 +435,7 @@ export default function ProvisionAndOccupancyPage() {
               {renderComparatorControl('comparator-table-1')}
               <DataTable
                 tableref={tableref1}
-                caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, March 2021`}
+                caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
                 source={
                   'Census 2021 from the Office for National Statistics (ONS)'
                 }
@@ -560,7 +560,7 @@ export default function ProvisionAndOccupancyPage() {
               {renderComparatorControl('comparator-table-2')}
               <DataTable
                 tableref={tableref2}
-                caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, March 2021`}
+                caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
                 source={
                   'Census 2021 from the Office for National Statistics (ONS)'
                 }
@@ -683,7 +683,7 @@ export default function ProvisionAndOccupancyPage() {
               {renderComparatorControl('comparator-table-3')}
               <DataTable
                 tableref={tableref3}
-                caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, March 2021`}
+                caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
                 source={
                   'Census 2021 from the Office for National Statistics (ONS)'
                 }

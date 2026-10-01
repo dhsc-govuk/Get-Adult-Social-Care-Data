@@ -409,9 +409,7 @@ export default function UnpaidCarePage() {
                     {locationNames.RegionLabel} (regional average),{' '}
                     {tableColumnHeaders.ComparatorLabel} and{' '}
                     {locationNames.CountryLabel},{' '}
-                    {IndicatorService.getMostRecentDate(
-                      filteredDemographicData
-                    )}
+                    {IndicatorService.getCensusYear(filteredDemographicData)}
                   </>
                 }
                 source={
