@@ -63,15 +63,21 @@ const GroupedBarChart: React.FC<GroupedBarChartProps> = ({
   const chartData: Data[] = useMemo(
     () =>
       series.map((s, index) => {
+        const color = s.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length];
         const trace: Partial<PlotData> = {
           type: 'bar',
           name: s.name,
           x: categories,
           y: s.values,
-          marker: comparatorMarker(
-            s.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
-            s.comparator
-          ),
+          marker: comparatorMarker(color, s.comparator),
+          // The hover box takes the bar's white fill, so give it dark text
+          ...(s.comparator && {
+            hoverlabel: {
+              bgcolor: '#ffffff',
+              bordercolor: color,
+              font: { color: '#0b0c0c' },
+            },
+          }),
           hovertemplate: `<b>${s.name}</b><br>%{x}: ${yPrefix}%{y:,.${decimalPoints}f}${ySuffix}<extra></extra>`,
         };
         return trace as Data;
