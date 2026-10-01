@@ -633,10 +633,9 @@ export default function DisabilityPrevalence() {
                     {locationNames.RegionLabel} (regional average),{' '}
                     {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
                     {benchmarkedColumnHeaders.CountryLabel},{' '}
-                    {IndicatorService.getMostRecentDate(
-                      benchmarkedDisabilityData,
-                      ['perc_general_health']
-                    )}
+                    {IndicatorService.getCensusYear(benchmarkedDisabilityData, [
+                      'perc_general_health',
+                    ])}
                   </>
                 }
                 source={
@@ -700,7 +699,7 @@ export default function DisabilityPrevalence() {
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="the percentage of the population who self-reported bad or very bad health"
               figureTitle="People who reported bad or very bad health"
-              dateLabel={IndicatorService.getMostRecentDate(
+              dateLabel={IndicatorService.getCensusYear(
                 benchmarkedDisabilityData,
                 ['perc_general_health']
               )}
@@ -748,10 +747,9 @@ export default function DisabilityPrevalence() {
                     {locationNames.RegionLabel} (regional average),{' '}
                     {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
                     {benchmarkedColumnHeaders.CountryLabel},{' '}
-                    {IndicatorService.getMostRecentDate(
-                      benchmarkedDisabilityData,
-                      ['perc_population_disability']
-                    )}
+                    {IndicatorService.getCensusYear(benchmarkedDisabilityData, [
+                      'perc_population_disability',
+                    ])}
                   </>
                 }
                 source={
@@ -815,7 +813,7 @@ export default function DisabilityPrevalence() {
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="the percentage of the population who reported a long-term physical or mental health condition, or illness that limits day-to-day activities"
               figureTitle="Percentage of the population who reported a long-term physical or mental health condition, or illness that limits day-to-day activities"
-              dateLabel={IndicatorService.getMostRecentDate(
+              dateLabel={IndicatorService.getCensusYear(
                 benchmarkedDisabilityData,
                 ['perc_population_disability']
               )}

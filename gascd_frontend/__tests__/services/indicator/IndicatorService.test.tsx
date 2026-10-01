@@ -330,3 +330,23 @@ describe('financial years', () => {
     );
   });
 });
+
+describe('getCensusYear', () => {
+  const census = {
+    metric_date: '2021-01-01',
+    location_id: '1',
+    metric_id: 'perc_general_health',
+    data_point: 1,
+    metric_date_type: '',
+    location_type: '',
+    numerator: 0,
+    multiplier: 0,
+    denominator: 0,
+    load_date_time: new Date(2021, 0, 1),
+  } as unknown as Indicator;
+
+  it('labels Census data by its census year', () => {
+    expect(IndicatorService.getCensusYear([census])).toBe('Census 2021');
+    expect(IndicatorService.getCensusYear([])).toBe('');
+  });
+});
