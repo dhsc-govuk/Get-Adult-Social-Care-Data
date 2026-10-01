@@ -14,13 +14,23 @@ const ChildrenInNeed: React.FC = () => {
         <DataIndicatorDetails
           title="Children in need"
           whatThisMeasures={
-            <p className="govuk-!-margin-top-0">
-              The number of children and young people in the selected
-              administrative area within England assessed as needing help and
-              protection as a result of risks to their development or health
-              under the Children Act 1989. It is shown for the local authority,
-              its region and England over time.
-            </p>
+            <>
+              <p className="govuk-!-margin-top-0">
+                The number of children and young people assessed as needing help
+                and protection as a result of risks to their development or
+                health under the Children Act 1989. This includes children on
+                child in need (CIN) plans, child protection plans, children
+                looked after by local authorities, care leavers, and disabled
+                children. It also includes unborn children, young people aged 18
+                or over who continue to receive support from children&apos;s
+                services, and children currently awaiting a referral decision or
+                a social care assessment.
+              </p>
+              <p className="govuk-!-margin-top-0">
+                On this service, figures are shown for the local authority, its
+                region and England over time.
+              </p>
+            </>
           }
           source={
             <>
@@ -30,20 +40,26 @@ const ChildrenInNeed: React.FC = () => {
                 target="_blank"
               >
                 Children in need in England from the Department for Education
-                (opens in new tab)
+                (DfE) (opens in new tab)
               </Link>
+              , Table B1 (national, regional and local authority level)
             </>
           }
-          updateFrequency="Yearly updates"
+          updateFrequency="Yearly (published in mid to late autumn, usually October)"
           methodology={
             <p className="govuk-!-margin-top-0">
-              The Department for Education collects this data from local
-              authorities through the children in need census, covering the
-              reporting year ending 31 March. The figure counts the children who
-              were in need at any point during that year, and is attributed to
-              the local authority responsible for the child. Regional and
-              England figures are the totals for all local authorities within
-              them.
+              The total headcount of children in England classified as &ldquo;in
+              need&rdquo; on a specific snapshot date (31 March) of the
+              reporting year. The data is collected through the annual{' '}
+              <Link
+                href="https://www.gov.uk/guidance/children-in-need-census"
+                className="govuk-link"
+                target="_blank"
+              >
+                Children in Need Census (opens in new tab)
+              </Link>
+              , which is a mandatory return completed by all 153 local
+              authorities across England.
             </p>
           }
           limitations={

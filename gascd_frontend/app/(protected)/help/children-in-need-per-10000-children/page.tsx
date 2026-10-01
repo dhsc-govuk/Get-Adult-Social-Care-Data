@@ -14,12 +14,19 @@ const ChildrenInNeedPer10000Children: React.FC = () => {
         <DataIndicatorDetails
           title="Children in need per 10,000 children"
           whatThisMeasures={
-            <p className="govuk-!-margin-top-0">
-              The proportion of the child population in the selected
-              administrative area within England that is actively identified as
-              a child in need, expressed as a rate per 10,000 children. It is
-              shown for the local authority, its region and England over time.
-            </p>
+            <>
+              <p className="govuk-!-margin-top-0">
+                The proportion of the child population in England that is
+                actively identified as a child in need on the snapshot date (31
+                March), allowing for standardised comparisons across different
+                regions and local authorities regardless of their population
+                size.
+              </p>
+              <p className="govuk-!-margin-top-0">
+                On this service, figures are shown for the local authority, its
+                region and England over time.
+              </p>
+            </>
           }
           source={
             <>
@@ -29,28 +36,40 @@ const ChildrenInNeedPer10000Children: React.FC = () => {
                 target="_blank"
               >
                 Children in need in England from the Department for Education
-                (opens in new tab)
+                (DfE) (opens in new tab)
               </Link>
+              , Table A1 (national)
             </>
           }
-          updateFrequency="Yearly updates"
+          updateFrequency="Yearly"
           methodology={
             <p className="govuk-!-margin-top-0">
-              The number of children in need at 31 March is divided by the child
-              population of the same area, and multiplied by 10,000. The child
-              population comes from Office for National Statistics mid-year
-              population estimates for children aged under 18. Expressing the
-              figure as a rate makes areas of different sizes comparable.
+              The rate is calculated by taking the total number of children in
+              need as of 31 March, dividing it by the Office for National
+              Statistics (ONS) mid-year population estimates for children aged 0
+              to 17 years, and multiplying the result by 10,000. The calculation
+              uses the population estimates from the preceding calendar year
+              (for example, the 2025 rates use the 2024 ONS population
+              estimates).
             </p>
           }
           limitations={
-            <p className="govuk-!-margin-top-0">
-              The rate depends on both the children in need count and the
-              population estimate, so it is affected by revisions to either.
-              Local authority assessment practice and thresholds vary between
-              areas, so differences in the rate are not necessarily differences
-              in need. See the data source for full details.
-            </p>
+            <>
+              <p className="govuk-!-margin-top-0">
+                The rates of children in need per 10,000 children aged under 18
+                years are calculated using ONS mid-year population estimates for
+                children aged 0 to 17 years (the denominator).
+              </p>
+              <p className="govuk-!-margin-top-0">
+                Children in need figures (the numerator) include young people
+                aged 18 years and over who continue to receive support from
+                children&apos;s social care services. In 2024, 14.1% of children
+                in need at 31 March were aged 18 years and over, up from 13.3%
+                in 2023 and 8.2% in 2013. Children in need figures also include
+                unborn children. In 2024, 1.7% of children in need at 31 March
+                were unborn, unchanged from 2023 and up from 1.6% in 2013.
+              </p>
+            </>
           }
           dataDefinitions={
             <p className="govuk-!-margin-top-0">

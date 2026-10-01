@@ -14,13 +14,21 @@ const ChildrenAndYoungPeopleWithAnEhcp: React.FC = () => {
         <DataIndicatorDetails
           title="Children and young people with an EHCP, aged 14 and over"
           whatThisMeasures={
-            <p className="govuk-!-margin-top-0">
-              The number of children and young people aged 14 and over in the
-              selected administrative area within England who have a legally
-              binding Education, Health and Care Plan (EHCP) over an academic
-              year. It is shown for the local authority, its region and England,
-              both over time and broken down by single year of age.
-            </p>
+            <>
+              <p className="govuk-!-margin-top-0">
+                The number of children and young people who have a legally
+                binding Education, Health and Care (EHC) plan over an academic
+                year. This covers all children and young people with an EHC plan
+                of ages 0 to 25, including those where the child or young person
+                attends early years settings, further education or is educated
+                other than in school.
+              </p>
+              <p className="govuk-!-margin-top-0">
+                On this service, figures are shown for those aged 14 and over,
+                for the local authority, its region and England, over time and
+                by single year of age.
+              </p>
+            </>
           }
           source={
             <>
@@ -30,20 +38,30 @@ const ChildrenAndYoungPeopleWithAnEhcp: React.FC = () => {
                 target="_blank"
               >
                 Education, Health and Care Plans in England from the Department
-                for Education (opens in new tab)
+                for Education (DfE) (opens in new tab)
               </Link>
             </>
           }
-          updateFrequency="Yearly updates"
+          updateFrequency="Yearly"
           methodology={
-            <p className="govuk-!-margin-top-0">
-              The Department for Education collects this data from local
-              authorities through the SEN2 return, which counts the plans each
-              local authority maintains as at January each year. Plans are
-              attributed to the local authority that maintains them. Regional
-              and England figures are the totals for all local authorities
-              within them.
-            </p>
+            <>
+              <p className="govuk-!-margin-top-0">
+                Number of children and young people (ages 0 to 25) in England
+                with an education, health and care (EHC) plan.
+              </p>
+              <p className="govuk-!-margin-top-0">
+                The information collected in the SEN2 return is the only source
+                of data on all education, health and care (EHC) plans maintained
+                by individual local authorities.
+              </p>
+              <p className="govuk-!-margin-top-0">
+                The SEN2 return is a mandatory data collection for all local
+                authorities and collects data on all children and young people
+                aged between 0 and 25 who have an EHC plan, regardless of where
+                they are educated, and includes information on children and
+                young people in placements other than in school.
+              </p>
+            </>
           }
           limitations={
             <p className="govuk-!-margin-top-0">
