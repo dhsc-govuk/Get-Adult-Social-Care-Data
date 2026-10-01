@@ -16,13 +16,20 @@ const ChildrenInNeedEpisodesEndingTransferToAdultSocialCare: React.FC = () => {
         <DataIndicatorDetails
           title="Children in need episodes ending due to transfer to adult social care"
           whatThisMeasures={
-            <p className="govuk-!-margin-top-0">
-              The number of &ldquo;episodes of need&rdquo; for children and
-              young people in the selected administrative area within England
-              that were officially closed during a reporting year, ending due to
-              transfer to adult social services. It is shown for the local
-              authority, its region and England over time.
-            </p>
+            <>
+              <p className="govuk-!-margin-top-0">
+                The total number of &ldquo;episodes of need&rdquo; for children
+                and young people that were officially closed during a reporting
+                year specifically because the individual reached adulthood and
+                their care and support responsibilities were formally
+                transitioned from children&apos;s social care services to adult
+                social services (reason for closure code: RC6).
+              </p>
+              <p className="govuk-!-margin-top-0">
+                On this service, figures are shown for the local authority, its
+                region and England over time.
+              </p>
+            </>
           }
           source={
             <>
@@ -32,29 +39,30 @@ const ChildrenInNeedEpisodesEndingTransferToAdultSocialCare: React.FC = () => {
                 target="_blank"
               >
                 Children in need in England from the Department for Education
-                (opens in new tab)
+                (DfE) (opens in new tab)
               </Link>
+              , Table B6: Episodes of need ending during year by reason for
+              closure and local authority
             </>
           }
-          updateFrequency="Yearly updates"
+          updateFrequency="Yearly"
           methodology={
             <p className="govuk-!-margin-top-0">
-              The Department for Education collects the reason each episode of
-              need closed through the children in need census, covering the
-              reporting year ending 31 March. This indicator counts only the
-              episodes recorded as closing because the young person transferred
-              to adult social services. Regional and England figures are the
-              totals for all local authorities within them.
+              The data represents a full-year count (from 1 April to 31 March)
+              rather than a single-day snapshot. When a local authority&apos;s
+              social worker closes a child&apos;s case file because the young
+              person is transitioning to adult care, they should record reason
+              for closure code RC6. Each local authority extracts these closed
+              episodes and submits them to the DfE via the mandatory annual
+              Children in Need Census.
             </p>
           }
           limitations={
             <p className="govuk-!-margin-top-0">
-              The figure counts episodes, not individual young people, so a
-              young person with more than one episode closing in the year is
-              counted more than once. Recording of the closure reason varies
-              between local authorities, and the numbers involved are small in
-              some areas, so year on year movements can look large. See the data
-              source for full details.
+              This statistic measures episodes, not unique individuals. While
+              rare for this specific closure reason, if a young person had an
+              episode close, reopen, and transfer again within the same 12-month
+              period, they could be counted more than once.
             </p>
           }
           dataDefinitions={
