@@ -1062,3 +1062,31 @@
   box-shadow: inset 10px 0 0 #b1b4b6;
   padding: 15px 15px 15px 25px;
 }
+
+.govuk-radios__label::after {
+  top: 22px;
+  left: 22px;
+  width: 20px;
+  height: 20px;
+  border: 0;
+  transform: translate(-50%, -50%);
+}
+.govuk-radios--small .govuk-radios__label::after {
+  top: 22px;
+  left: 12px;
+  width: 10px;
+  height: 10px;
+  border: 0;
+}
+@media (forced-colors: active) {
+  .govuk-radios__label::after {
+    width: 0;
+    height: 0;
+    border: 10px solid currentcolor;
+  }
+  .govuk-radios--small .govuk-radios__label::after {
+    width: 0;
+    height: 0;
+    border: 5px solid currentcolor;
+  }
+}
