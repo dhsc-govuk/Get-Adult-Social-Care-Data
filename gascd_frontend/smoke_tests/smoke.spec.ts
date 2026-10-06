@@ -25,7 +25,7 @@ test.beforeAll(() => {
 // 1. App reachable at env URL
 // ─────────────────────────────────────────────────────────────────────────────
 test('1. app reachable at env URL', async ({ page }) => {
-  const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const response = await page.goto('', { waitUntil: 'domcontentloaded' });
   expect(response, 'no response from server').toBeTruthy();
   expect(response!.status(), `unexpected status ${response!.status()}`).toBeLessThan(500);
   // The app may redirect /  ->  /home  ->  /login. As long as we land somewhere
@@ -52,7 +52,7 @@ test('2. One Login sign-in initiates with correct OIDC params', async ({ page, c
     }
   });
 
-  await page.goto('/login', { waitUntil: 'domcontentloaded' });
+  await page.goto('login', { waitUntil: 'domcontentloaded' });
 
   // Click the GOV.UK One Login button. Adjust the selector if the label differs.
   const oneLoginBtn = page.getByRole('button', { name: /one login/i }).or(
@@ -87,7 +87,7 @@ test.describe('authenticated journeys', () => {
   test.skip(SKIP_AUTH, 'SMOKE_STORAGE_STATE not set - no authenticated session available');
 
   test('3. dashboard /home renders post-login', async ({ page }) => {
-    const response = await page.goto('/home');
+    const response = await page.goto('home');
     expect(response?.status()).toBe(200);
     // Page should render service-name "Get adult social care data" and topic tiles.
     await expect(page.getByRole('heading', { name: /get adult social care data/i })).toBeVisible();
@@ -99,7 +99,7 @@ test.describe('authenticated journeys', () => {
 
   test('4. a metric / data page renders real data', async ({ page }) => {
     // Pick a known-stable data page populated by the data load
-    await page.goto('/topics/residential-care/provision-and-occupancy/data');
+    await page.goto('topics/residential-care/provision-and-occupancy/data');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     // The page should have data content - not the spinner/empty-state for too long.
     // Tighten the assertion below to a known string that only renders when data is loaded.
@@ -108,7 +108,7 @@ test.describe('authenticated journeys', () => {
   });
 
   test('6. logout clears session', async ({ page, context }) => {
-    await page.goto('/home');
+    await page.goto('home');
     // Click the logout link/button - selector may need tweaking depending on header markup
     const logout = page.getByRole('link', { name: /sign out|log out/i }).or(
       page.getByRole('button', { name: /sign out|log out/i })
@@ -141,7 +141,7 @@ test('5. protected page bounces unauthenticated user to /login', async ({ browse
 // 7. Error page  (a bad URL renders the 404 / error page, no stack trace)
 // ─────────────────────────────────────────────────────────────────────────────
 test('7. unknown route renders 404 with no stack trace', async ({ page }) => {
-  const response = await page.goto('/this-route-definitely-does-not-exist-xyz123');
+  const response = await page.goto('this-route-definitely-does-not-exist-xyz123');
   expect(response?.status(), 'expected a 404 for unknown route').toBe(404);
   const body = await page.content();
   // Heuristic: a leaked Node/Next stack trace would contain "at " followed by
