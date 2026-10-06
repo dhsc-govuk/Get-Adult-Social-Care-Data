@@ -52,16 +52,13 @@ test('2. One Login sign-in initiates with correct OIDC params', async ({ page, c
     }
   });
 
-  await page.goto('login', { waitUntil: 'domcontentloaded' });
+  await page.goto('whoami', { waitUntil: 'domcontentloaded' });
 
-  // Click the GOV.UK One Login button. Adjust the selector if the label differs.
-  const oneLoginBtn = page.getByRole('button', { name: /one login/i }).or(
-    page.getByRole('link', { name: /one login/i })
-  );
-  await expect(oneLoginBtn, 'One Login button not found on /login').toBeVisible({ timeout: 10_000 });
+  const oneLoginBtn = page.getByRole('button', { name: 'Sign in with GOV.UK One Login', exact: true });
+  await expect(oneLoginBtn, 'One Login button not found on /whoami').toBeVisible({ timeout: 10_000 });
 
-  // Stop the navigation away from our origin once we see the OIDC URL
-  await Promise.race([
+  // The button calls Better Auth before redirecting, so wait for the redirect after the click
+  await Promise.all([
     page.waitForURL(/oidc\.integration\.account\.gov\.uk/, { timeout: 15_000 }).catch(() => {}),
     oneLoginBtn.click(),
   ]);
