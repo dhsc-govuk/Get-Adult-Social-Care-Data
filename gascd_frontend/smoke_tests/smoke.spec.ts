@@ -39,31 +39,20 @@ test('1. app reachable at env URL', async ({ page }) => {
 //    side: clicking the button redirects to One Login with correct OIDC params.)
 // ─────────────────────────────────────────────────────────────────────────────
 test('2. One Login sign-in initiates with correct OIDC params', async ({ page, context }) => {
-  // Don't follow the cross-origin redirect into oidc.integration.account.gov.uk
-  // (it leaves our domain and we can't easily assert there). Instead, capture
-  // the Location header from the OAuth-init response.
-  let oidcUrl: string | null = null;
-  page.on('response', async (resp) => {
-    if (resp.url().includes('/api/auth/sign-in/oauth2')) {
-      const loc = resp.headers()['location'];
-      if (loc && loc.includes('oidc.integration.account.gov.uk')) {
-        oidcUrl = loc;
-      }
-    }
-  });
-
   await page.goto('whoami', { waitUntil: 'domcontentloaded' });
 
   const oneLoginBtn = page.getByRole('button', { name: 'Sign in with GOV.UK One Login', exact: true });
   await expect(oneLoginBtn, 'One Login button not found on /whoami').toBeVisible({ timeout: 10_000 });
 
-  // The button calls Better Auth before redirecting, so wait for the redirect after the click
-  await Promise.all([
-    page.waitForURL(/oidc\.integration\.account\.gov\.uk/, { timeout: 15_000 }).catch(() => {}),
+  // One Login redirects /authorize straight on to signin.*, so capture the request we send rather than the final URL
+  const [authorizeRequest] = await Promise.all([
+    page.waitForRequest((req) => req.url().startsWith('https://oidc.integration.account.gov.uk/authorize'), {
+      timeout: 15_000,
+    }),
     oneLoginBtn.click(),
   ]);
 
-  const target = oidcUrl ?? page.url();
+  const target = authorizeRequest.url();
   expect(target, 'never saw redirect to One Login').toContain('oidc.integration.account.gov.uk');
 
   const parsed = new URL(target);
