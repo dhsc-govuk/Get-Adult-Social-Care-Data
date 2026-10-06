@@ -69,7 +69,7 @@ const AccessibilityStatementPage: React.FC = () => {
             </p>
             <ul className="govuk-list govuk-list--bullet">
               <li>
-                There are several issues with the Provision and occupancy topic
+                There are several issues with the provision and occupancy topic
                 area which assisted technology users may wish to avoid for the
                 time being
               </li>
@@ -167,7 +167,7 @@ const AccessibilityStatementPage: React.FC = () => {
                 (Label in Name) and 2.4.3 (Focus Order).
               </li>
               <li>
-                In the Provision and occupancy topic, there is an html error
+                In the provision and occupancy topic, there is an html error
                 which may cause some screen readers to display incomplete
                 information. This fails WCAG 2.2 success criterion 4.1.2 (Name,
                 Role, Value).
