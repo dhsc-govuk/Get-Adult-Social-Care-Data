@@ -231,25 +231,28 @@ const AccessibilityStatementPage: React.FC = () => {
             </p>
 
             <h3 className="govuk-heading-s">
-              Issues fixed since the last test
+              Issues addressed since the last audit
             </h3>
             <p className="govuk-body">
-              Since the service was tested, we have fixed the following issues:
+              The following issues identified in the February 2026 audit have
+              since been addressed:
             </p>
             <ul className="govuk-list govuk-list--bullet">
               <li>
-                skip links on the home page now go to the start of the page
-                content (WCAG 2.2 success criterion 2.4.1 Bypass Blocks)
+                Skip links on the home page now move focus to the start of the
+                main page content. This addresses WCAG 2.2 success criterion
+                2.4.1 (Bypass Blocks).
               </li>
               <li>
-                the location select page now has a location selected by default,
-                so it can no longer be submitted with no location chosen (WCAG
-                2.2 success criterion 3.3.1 Error Identification)
+                On the location select page, a location is now selected by
+                default, so the form cannot be submitted without a selection.
+                This addresses WCAG 2.2 success criterion 3.3.1 (Error
+                Identification).
               </li>
             </ul>
             <p className="govuk-body">
-              We will ask DAC to confirm these fixes when the service is
-              retested later in 2026.
+              These changes are awaiting re-audit, alongside fixes for the
+              remaining issues.
             </p>
 
             <h2 className="govuk-heading-m">
