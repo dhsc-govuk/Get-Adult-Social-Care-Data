@@ -39,7 +39,8 @@ test('1. app reachable at env URL', async ({ page }) => {
 //    side: clicking the button redirects to One Login with correct OIDC params.)
 // ─────────────────────────────────────────────────────────────────────────────
 test('2. One Login sign-in initiates with correct OIDC params', async ({ page, context }) => {
-  await page.goto('whoami', { waitUntil: 'domcontentloaded' });
+  // Wait for hydration: clicking before React attaches the handler does nothing
+  await page.goto('whoami', { waitUntil: 'networkidle' });
 
   const oneLoginBtn = page.getByRole('button', { name: 'Sign in with GOV.UK One Login', exact: true });
   await expect(oneLoginBtn, 'One Login button not found on /whoami').toBeVisible({ timeout: 10_000 });
