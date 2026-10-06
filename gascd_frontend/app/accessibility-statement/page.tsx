@@ -154,12 +154,6 @@ const AccessibilityStatementPage: React.FC = () => {
             </h3>
             <ol className="govuk-list govuk-list--number">
               <li>
-                On the location select page, there is currently incomplete error
-                messaging when users try to submit with mandatory fields left
-                empty. This fails WCAG 2.2 success criterion 3.3.1 (Error
-                Identification).
-              </li>
-              <li>
                 In the provision and occupancy topic the &apos;bed type&apos;
                 search feature presented has been programmed incorrectly. Some
                 search inputs have duplicate ids meaning that some voice
@@ -236,12 +230,34 @@ const AccessibilityStatementPage: React.FC = () => {
               We plan to resolve this by 31 December 2026.
             </p>
 
+            <h3 className="govuk-heading-s">
+              Issues fixed since the last test
+            </h3>
+            <p className="govuk-body">
+              Since the service was tested, we have fixed the following issues:
+            </p>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>
+                skip links on the home page now go to the start of the page
+                content (WCAG 2.2 success criterion 2.4.1 Bypass Blocks)
+              </li>
+              <li>
+                the location select page now has a location selected by default,
+                so it can no longer be submitted with no location chosen (WCAG
+                2.2 success criterion 3.3.1 Error Identification)
+              </li>
+            </ul>
+            <p className="govuk-body">
+              We will ask DAC to confirm these fixes when the service is
+              retested later in 2026.
+            </p>
+
             <h2 className="govuk-heading-m">
               Preparation of this accessibility statement
             </h2>
             <p className="govuk-body">
               This statement was prepared on 20 February 2026. It was last
-              reviewed on 21 September 2026.
+              reviewed on 6 October 2026.
             </p>
             <p className="govuk-body">
               The service was last tested on 3 February 2026. The test was
