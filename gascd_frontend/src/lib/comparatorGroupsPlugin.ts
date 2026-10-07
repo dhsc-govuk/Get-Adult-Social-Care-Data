@@ -1,7 +1,7 @@
 import type { BetterAuthPlugin } from 'better-auth';
 
 // Schema-only plugin declaring the comparatorGroup table so that
-// `@better-auth/cli migrate` (npm run db:migrate) creates it - the same
+// `auth migrate` (npm run db:migrate) creates it - the same
 // mechanism the admin() and lastLoginMethod() plugins use for their fields.
 // The table is read/written directly via the authDB Kysely instance in the
 // /api/comparator_groups routes; Better Auth itself never touches it.
