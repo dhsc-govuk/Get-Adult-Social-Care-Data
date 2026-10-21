@@ -161,8 +161,9 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
             </tr>
           </thead>
           <tbody className="govuk-table__body">
-            {sortedRows.map((row) => (
-              <tr key={row.label} className="govuk-table__row">
+            {/* Keyed by position: labels repeat while names are loading */}
+            {sortedRows.map((row, i) => (
+              <tr key={i} className="govuk-table__row">
                 <th
                   scope="row"
                   className="govuk-table__cell govuk-!-font-weight-regular"
