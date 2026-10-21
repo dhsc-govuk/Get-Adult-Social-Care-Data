@@ -134,8 +134,8 @@ describe('ProvisionAndOccupancyPage', () => {
     );
 
     const tables = [
-      /Table 1a: care home bed numbers/i,
-      /Table 1b: care home occupancy levels/i,
+      /Table 1: care home bed numbers/i,
+      /Table 4: care home occupancy level per care home/i,
     ];
     for (let table of tables) {
       expect(screen.getByRole('table', { name: table })).toBeInTheDocument();
