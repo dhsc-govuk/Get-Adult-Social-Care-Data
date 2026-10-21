@@ -22,11 +22,14 @@ import {
   CIN_PER_10000_CHILDREN,
   CIN_SOURCE,
   CHILDREN_IN_NEED_METRIC_IDS,
+  DFE_COUNT_METRIC_IDS,
   NUM_CHILDREN_IN_NEED,
   NUM_CIN_TRANSFER_ASC,
 } from '@/data/dfeMetrics';
 import {
+  averageLocationTotals,
   comparisonLabels,
+  LaCounts,
   locationTimeSeries,
   PEER_GROUP_AVERAGE_LABEL,
   periodRows,
@@ -179,6 +182,13 @@ export default function ChildrenInNeedPage() {
     fetchPeerOverTimeData();
   }, [overTimeQuery]);
 
+  const [laCounts, setLaCounts] = useState<LaCounts>();
+  useEffect(() => {
+    IndicatorFetchService.getLaCounts()
+      .then(setLaCounts)
+      .catch((error) => console.error('Error fetching LA counts:', error));
+  }, []);
+
   const columnLabels = useMemo(
     () => comparisonLabels(locationNames),
     [locationNames]
@@ -187,8 +197,18 @@ export default function ChildrenInNeedPage() {
   // The user's own LA, region and country plus the peer group average, read
   // together so the charts, the tables and the CSV export can never disagree
   const allOverTimeData = useMemo(
-    () => [...overTimeData, ...peerOverTimeData],
-    [overTimeData, peerOverTimeData]
+    () =>
+      laCounts
+        ? [
+            ...averageLocationTotals(
+              overTimeData,
+              DFE_COUNT_METRIC_IDS,
+              laCounts
+            ),
+            ...peerOverTimeData,
+          ]
+        : [],
+    [overTimeData, peerOverTimeData, laCounts]
   );
 
   const numCinSeries = useMemo(
@@ -198,11 +218,7 @@ export default function ChildrenInNeedPage() {
   );
   const cinPer10000Series = useMemo(
     () =>
-      locationTimeSeries(
-        allOverTimeData,
-        CIN_PER_10000_CHILDREN,
-        columnLabels
-      ),
+      locationTimeSeries(allOverTimeData, CIN_PER_10000_CHILDREN, columnLabels),
     [allOverTimeData, columnLabels]
   );
   const cinTransferSeries = useMemo(
@@ -212,8 +228,7 @@ export default function ChildrenInNeedPage() {
   );
 
   const numCinRows = useMemo(
-    () =>
-      periodRows(allOverTimeData, NUM_CHILDREN_IN_NEED, reportingYearLabel),
+    () => periodRows(allOverTimeData, NUM_CHILDREN_IN_NEED, reportingYearLabel),
     [allOverTimeData]
   );
   const cinPer10000Rows = useMemo(
@@ -222,8 +237,7 @@ export default function ChildrenInNeedPage() {
     [allOverTimeData]
   );
   const cinTransferRows = useMemo(
-    () =>
-      periodRows(allOverTimeData, NUM_CIN_TRANSFER_ASC, reportingYearLabel),
+    () => periodRows(allOverTimeData, NUM_CIN_TRANSFER_ASC, reportingYearLabel),
     [allOverTimeData]
   );
 

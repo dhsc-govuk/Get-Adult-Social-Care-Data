@@ -94,6 +94,16 @@ export const CHILDREN_IN_NEED_METRIC_IDS = [
   NUM_CIN_TRANSFER_ASC,
 ];
 
+/** Metrics published as counts, whose regional and England rows are totals */
+export const DFE_COUNT_METRIC_IDS = [
+  NUM_SEN_SUPPORT_14PLUS,
+  ...Object.keys(NUM_SEN_SUPPORT_BY_AGE),
+  NUM_EHCP_14PLUS,
+  ...Object.keys(NUM_EHCP_BY_AGE),
+  NUM_CHILDREN_IN_NEED,
+  NUM_CIN_TRANSFER_ASC,
+];
+
 /**
  * Turns the year a yearly series is reported against into the academic year it
  * covers. The DfE publishes against the year the academic year ends in, so

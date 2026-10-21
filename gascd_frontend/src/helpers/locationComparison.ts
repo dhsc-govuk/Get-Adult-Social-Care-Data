@@ -107,6 +107,33 @@ export const locationTimeSeries = (
   return series;
 };
 
+/** How many LAs are in the user's region and in England */
+export type LaCounts = { regional: number; national: number };
+
+/**
+ * Turns the regional and national totals of count metrics into averages per
+ * LA. Divides by today's LA count, so earlier years are approximate.
+ */
+export const averageLocationTotals = (
+  data: Indicator[],
+  countMetricIds: string[],
+  laCounts: LaCounts
+): Indicator[] =>
+  data.map((item) => {
+    if (!countMetricIds.includes(item.metric_id) || item.data_point == null) {
+      return item;
+    }
+    const count =
+      item.location_type === 'Regional'
+        ? laCounts.regional
+        : item.location_type === 'National'
+          ? laCounts.national
+          : undefined;
+    return count
+      ? { ...item, data_point: Math.round(Number(item.data_point) / count) }
+      : item;
+  });
+
 /**
  * The distinct dates a metric has values for, most recent first, as raw
  * `metric_date` values.
