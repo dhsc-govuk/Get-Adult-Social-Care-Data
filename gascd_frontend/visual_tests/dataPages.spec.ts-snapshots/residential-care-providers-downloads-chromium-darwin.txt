@@ -1,0 +1,14 @@
+# number_of_adult_social_care_providers.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Service provider type","Sunderland","North East (regional average)","England (national average)"
+"Total adult social care providers","203","396","269"
+"Care home providers","214","343","372"
+"Nursing","115","32","38"
+"Residental","287","81","94"
+"Community social care providers","361","101","135"
+"Home care providers","234","325","303"
+"Supported living providers","87","127","64"
+"Extra care housing providers","15.2","14.5","14.5"
+"Other community based care provider","5.1","2.1","3.4"

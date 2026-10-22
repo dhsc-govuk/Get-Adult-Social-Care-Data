@@ -1,0 +1,62 @@
+# people_who_reported_bad_or_very_bad_health.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Indicator","Sunderland","North East","NHS peer group (average)","England (national average)"
+"People who reported bad or very bad health","4.6%","7.0%","7.3%","6.9%"
+
+# disability_prevalence.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Indicator","Sunderland","North East","NHS peer group (average)","England (national average)"
+"Disability prevalence – people who reported a long-term physical or mental health condition, or illness that limits day-to-day activities","19.9%","17.9%","16.3%","17.4%"
+
+# learning_disability_prevalence.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Indicator","Sunderland","North East","NHS peer group (average)","England (national average)"
+"Learning disability prevalence","0.5%","0.4%","0.6%","0.5%"
+
+# primary_reasons_for_accessing_care.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Primary support reason","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
+"Learning disability support","3,105","1,827","4,982.6","5,470"
+"Mental health support","1,205","602","749.5","462"
+"Physical support: Access and mobility only","2,196","1,691","2,235.5","1,285"
+"Physical support: Personal care support","5,240","4,554","3,636.8","5,350"
+"Sensory support: Support for dual impairment","40.5","24.6","24.8","28.1"
+"Sensory support: Support for hearing impairment","58.1","52.9","43.5","61.9"
+"Sensory support: Support for visual impairment","73","43","62.4","47"
+"Social support: Asylum seeker support","9.1","24.2","19.8","20.4"
+"Social support: Substance misuse support","24.5","18.5","29","19"
+"Social support: Support for social isolation or other reason","383","182","193.2","381"
+"Support with memory and cognition","1,487","2,092","1,146.1","1,757"
+
+# primary_reasons_for_accessing_care_standardised.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Area","Learning disability support per 100,000 adults"
+"North East (regional average)","700"
+"Peer LA 10","399"
+"Peer LA 11","384"
+"Peer LA 13","382"
+"Sunderland","370"
+"Peer LA 14","369"
+"Peer LA 15","369"
+"Peer LA 12","368"
+"Peer LA 1","363"
+"Peer LA 3","363"
+"Peer LA 6","363"
+"Peer LA 7","363"
+"NHS peer group (average)","362.7"
+"Peer LA 9","350"
+"Peer LA 5","349"
+"Peer LA 2","348"
+"Peer LA 4","336"
+"Peer LA 8","334"
+"England (national average)","320"
