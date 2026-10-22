@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import {
-  averageLocationTotals,
   comparisonLabels,
   locationBarSeries,
   locationTimeSeries,
@@ -166,25 +165,5 @@ describe('peerRowsForLatestPeriod', () => {
     ];
 
     expect(peerRowsForLatestPeriod(peers, shown)).toEqual([]);
-  });
-});
-
-describe('averageLocationTotals', () => {
-  it('divides regional and national counts by the number of LAs', () => {
-    const data = [
-      indicator('num_children_in_need', 'LA', '2024', 100),
-      indicator('num_children_in_need', 'Regional', '2024', 1000),
-      indicator('num_children_in_need', 'National', '2024', 15300),
-      indicator('cin_per_10000_children', 'Regional', '2024', 300),
-    ];
-
-    const averaged = averageLocationTotals(data, ['num_children_in_need'], {
-      regional: 10,
-      national: 153,
-    });
-
-    expect(averaged.map((item) => item.data_point)).toEqual([
-      100, 100, 100, 300,
-    ]);
   });
 });

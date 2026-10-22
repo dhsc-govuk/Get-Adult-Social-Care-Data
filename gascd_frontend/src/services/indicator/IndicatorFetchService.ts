@@ -1,7 +1,6 @@
 import { Indicator } from '@/data/interfaces/Indicator';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { withBasePath } from '@/lib/basePath';
-import { LaCounts } from '@/helpers/locationComparison';
 
 class IndicatorFetchService {
   public static async getData(query: IndicatorQuery): Promise<Indicator[]> {
@@ -51,14 +50,6 @@ class IndicatorFetchService {
       throw new Error(
         `Failed to fetch peer group averages: ${response.statusText}`
       );
-    }
-    return response.json();
-  }
-
-  public static async getLaCounts(): Promise<LaCounts> {
-    const response = await fetch(withBasePath('/api/get_la_counts'));
-    if (!response.ok) {
-      throw new Error(`Failed to fetch LA counts: ${response.statusText}`);
     }
     return response.json();
   }

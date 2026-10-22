@@ -32,13 +32,10 @@ import {
   SEN_EHCP_METRIC_IDS,
   SEN_SOURCE,
   academicYearLabel,
-  DFE_COUNT_METRIC_IDS,
   shortAcademicYearLabel,
 } from '@/data/dfeMetrics';
 import {
-  averageLocationTotals,
   comparisonLabels,
-  LaCounts,
   locationBarSeries,
   locationTimeSeries,
   PEER_GROUP_AVERAGE_LABEL,
@@ -232,13 +229,6 @@ export default function SenAndEhcpPage() {
     fetchPeerByAgeData();
   }, [byAgeQuery]);
 
-  const [laCounts, setLaCounts] = useState<LaCounts>();
-  useEffect(() => {
-    IndicatorFetchService.getLaCounts()
-      .then(setLaCounts)
-      .catch((error) => console.error('Error fetching LA counts:', error));
-  }, []);
-
   const columnLabels = useMemo(
     () => comparisonLabels(locationNames),
     [locationNames]
@@ -247,28 +237,12 @@ export default function SenAndEhcpPage() {
   // The user's own LA, region and country plus the peer group average, read
   // together so the charts, the tables and the CSV export can never disagree
   const allOverTimeData = useMemo(
-    () =>
-      laCounts
-        ? [
-            ...averageLocationTotals(
-              overTimeData,
-              DFE_COUNT_METRIC_IDS,
-              laCounts
-            ),
-            ...peerOverTimeData,
-          ]
-        : [],
-    [overTimeData, peerOverTimeData, laCounts]
+    () => [...overTimeData, ...peerOverTimeData],
+    [overTimeData, peerOverTimeData]
   );
   const allByAgeData = useMemo(
-    () =>
-      laCounts
-        ? [
-            ...averageLocationTotals(byAgeData, DFE_COUNT_METRIC_IDS, laCounts),
-            ...peerRowsForLatestPeriod(peerByAgeData, byAgeData),
-          ]
-        : [],
-    [byAgeData, peerByAgeData, laCounts]
+    () => [...byAgeData, ...peerRowsForLatestPeriod(peerByAgeData, byAgeData)],
+    [byAgeData, peerByAgeData]
   );
 
   // The academic year the age breakdowns cover, taken from the data so the
@@ -287,7 +261,11 @@ export default function SenAndEhcpPage() {
 
   const numSenSeries = useMemo(
     () =>
-      locationTimeSeries(allOverTimeData, NUM_SEN_SUPPORT_14PLUS, columnLabels),
+      locationTimeSeries(
+        allOverTimeData,
+        NUM_SEN_SUPPORT_14PLUS,
+        columnLabels
+      ),
     [allOverTimeData, columnLabels]
   );
   const percSenSeries = useMemo(
