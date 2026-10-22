@@ -2,8 +2,10 @@
 import { useEffect, useState } from 'react';
 import { withBasePath } from '@/lib/basePath';
 import { ComparatorSelection, CustomComparatorGroup } from './types';
+import { REGION_GROUP_ID } from './constants';
 
 const GROUPS_URL = '/api/comparator_groups';
+const REGION_URL = '/api/get_region_comparator';
 
 const parseGroup = (raw: unknown): CustomComparatorGroup | null => {
   const group = raw as Partial<CustomComparatorGroup> | null;
@@ -88,6 +90,32 @@ export function useComparatorGroups(): {
     };
   }, []);
 
+  const [regionGroup, setRegionGroup] = useState<CustomComparatorGroup>();
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(withBasePath(REGION_URL))
+      .then((res) => {
+        if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+        return res.json();
+      })
+      .then((data: { region_name?: string; la_codes?: string[] }) => {
+        if (cancelled || !data.region_name || !data.la_codes?.length) return;
+        setRegionGroup({
+          id: REGION_GROUP_ID,
+          name: `Other LAs in ${data.region_name}`,
+          laCodes: data.la_codes,
+          builtIn: true,
+        });
+      })
+      .catch((error) => {
+        console.error('Error loading region comparator:', error);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const saveGroup = async (group: { name: string; laCodes: string[] }) => {
     const res = await fetch(withBasePath(GROUPS_URL), {
       method: 'POST',
@@ -140,7 +168,7 @@ export function useComparatorGroups(): {
   };
 
   return {
-    groups,
+    groups: regionGroup ? [regionGroup, ...groups] : groups,
     selection,
     setSelection,
     saveGroup,
