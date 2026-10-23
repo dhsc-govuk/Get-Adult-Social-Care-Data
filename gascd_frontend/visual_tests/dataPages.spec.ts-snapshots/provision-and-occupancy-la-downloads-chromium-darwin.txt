@@ -90,6 +90,14 @@
 "Young physically disabled","373","939","476.1","653"
 "Community care and transitional","453","715","790.1","459"
 
+# care_home_occupancy_per_care_home.csv
+"Sharing label: Not for sharing externally"
+"The data in the chart is not to be shared outside your organisation."
+"This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
+
+"Indicator","Sunderland","North East","NHS peer group (average)","England"
+"Occupancy level per care home","76.3% (average)","64.8% (average)","48.9% (average)","75.2% (average)"
+
 # care_home_occupancy_levels.csv
 "Sharing label: Not for sharing externally"
 "The data in the chart is not to be shared outside your organisation."

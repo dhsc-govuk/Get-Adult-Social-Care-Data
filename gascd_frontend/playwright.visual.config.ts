@@ -14,15 +14,16 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   workers: 1,
   reporter: [['list'], ['html', { open: 'never' }]],
-  timeout: 60_000,
+  timeout: 120_000,
 
   expect: {
     toHaveScreenshot: {
       animations: 'disabled',
       caret: 'hide',
       stylePath: './visual_tests/screenshot.css',
-      // Absorbs anti-aliasing noise without hiding a moved bar or changed label
-      maxDiffPixelRatio: 0.002,
+      // A ratio let a one-digit change in a long table pass, so allow no
+      // differing pixels beyond the per-pixel colour threshold
+      maxDiffPixels: 0,
     },
   },
 

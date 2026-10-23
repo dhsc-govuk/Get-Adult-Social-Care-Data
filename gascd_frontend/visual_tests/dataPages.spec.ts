@@ -91,11 +91,8 @@ const downloadCsvs = async (page: Page, panelId: string) => {
 const waitForSectionToSettle = async (page: Page, panelId: string) => {
   const panel = page.locator(`#${panelId}`);
   await expect(panel).toBeVisible();
-  // Some panels never stop saying "Loading" (e.g. PeerGroupTable's duplicate
-  // row keys); a slow load still fails the screenshot comparison
-  await expect(panel)
-    .not.toContainText(/Loading/, { timeout: 5_000 })
-    .catch(() => {});
+  // Long enough for the dev server to compile the data routes on first use
+  await expect(panel).not.toContainText(/Loading/, { timeout: 30_000 });
   if (await panel.locator('.js-plotly-plot').count()) {
     await expect(
       panel.locator('.js-plotly-plot .main-svg').first()
