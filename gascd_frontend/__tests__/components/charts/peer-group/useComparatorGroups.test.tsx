@@ -268,7 +268,7 @@ describe('useComparatorGroups', () => {
     );
     expect(result.current.groups[0]).toEqual({
       id: 'region',
-      name: 'Other LAs in West Midlands',
+      name: 'Region (West Midlands)',
       laCodes: ['E08000025', 'E08000026'],
       builtIn: true,
     });
