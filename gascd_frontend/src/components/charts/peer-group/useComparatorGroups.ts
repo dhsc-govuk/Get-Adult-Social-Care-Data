@@ -103,7 +103,7 @@ export function useComparatorGroups(): {
         if (cancelled || !data.region_name || !data.la_codes?.length) return;
         setRegionGroup({
           id: REGION_GROUP_ID,
-          name: `Other LAs in ${data.region_name}`,
+          name: `Region (${data.region_name})`,
           laCodes: data.la_codes,
           builtIn: true,
         });
