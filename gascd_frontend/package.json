@@ -14,8 +14,6 @@
     "lint-staged": "lint-staged",
     "audit": "playwright test",
     "smoke": "playwright test --config=playwright.smoke.config.ts",
-    "test:visual": "playwright test --config=playwright.visual.config.ts",
-    "test:visual:update": "playwright test --config=playwright.visual.config.ts --update-snapshots",
     "test": "vitest run --coverage",
     "test:nocov": "vitest run",
     "test:watch": "vitest",
