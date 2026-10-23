@@ -243,4 +243,34 @@ describe('useComparatorGroups', () => {
       groupId: 'second',
     });
   });
+
+  it("offers the other LAs in the user's region first, as a built-in group", async () => {
+    mockFetch.mockImplementation(async (url: string) =>
+      url === '/api/get_region_comparator'
+        ? jsonResponse({
+            region_name: 'West Midlands',
+            la_codes: ['E08000025', 'E08000026'],
+          })
+        : jsonResponse({
+            groups: [
+              { id: 'abc', name: 'Stored group', laCodes: ['E08000018'] },
+            ],
+          })
+    );
+
+    const { result } = renderHook(() => useComparatorGroups());
+
+    await waitFor(() =>
+      expect(result.current.groups.map((group) => group.id)).toEqual([
+        'region',
+        'abc',
+      ])
+    );
+    expect(result.current.groups[0]).toEqual({
+      id: 'region',
+      name: 'Other LAs in West Midlands',
+      laCodes: ['E08000025', 'E08000026'],
+      builtIn: true,
+    });
+  });
 });

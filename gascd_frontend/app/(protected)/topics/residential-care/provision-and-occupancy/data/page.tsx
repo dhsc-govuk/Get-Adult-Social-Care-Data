@@ -61,6 +61,7 @@ export default function ProvisionAndOccupancyPage() {
   const tableref4 = useRef<HTMLTableElement>(null);
   const tableref5 = useRef<HTMLTableElement>(null);
   const tableref6 = useRef<HTMLTableElement>(null);
+  const tableref7 = useRef<HTMLTableElement>(null);
 
   const [visibleCareProviderMetricIds1, setVisibleCareProviderMetricIds1] =
     useState<string[]>([]);
@@ -1579,6 +1580,72 @@ export default function ProvisionAndOccupancyPage() {
       </DataBox>
 
       <DataBox
+        dataTitle="Occupancy level per care home"
+        dataInfo={
+          <p className="govuk-body-m">
+            Find out how{' '}
+            <a
+              href={withBasePath('/help/percentage-beds-occupied')}
+              className="govuk-link"
+            >
+              occupancy level percentages
+            </a>{' '}
+            are calculated.
+          </p>
+        }
+      >
+        <DataTabs
+          id="8"
+          sharingMetricIds={['occupancy_rate_total', OCCUPANCY_METRIC]}
+          table={
+            <>
+              {renderComparatorControl('comparator-table-8')}
+              <DataTable
+                tableref={tableref7}
+                caption={
+                  <>
+                    Table 4: care home occupancy level per care home –{' '}
+                    {session && showCPLevelData(session.user)
+                      ? locationNamesCP.CPLabel + ','
+                      : ''}{' '}
+                    {locationNamesCP.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {comparatorAverageLabel}, {locationNamesCP.RegionLabel}{' '}
+                    regional average and national average,{' '}
+                    {IndicatorService.getMostRecentDate(finalCpData)}
+                  </>
+                }
+                source={
+                  'Capacity Tracker from the Department of Health and Social Care (DHSC)'
+                }
+                columnHeaders={{
+                  ...locationNamesCP,
+                  ComparatorLabel: comparatorAverageLabel,
+                }}
+                rowHeaders={{
+                  [OCCUPANCY_METRIC]: 'Occupancy level per care home',
+                }}
+                data={benchmarkedCpData}
+                showCareProvider={showCPLevelData(session?.user)}
+                careProviderMedianMetrics={careProviderMedianMetrics}
+                percentageRows={[OCCUPANCY_METRIC]}
+                showAverageLabel={true}
+              ></DataTable>
+            </>
+          }
+          download={
+            <>
+              <DownloadTableDataCSVLink
+                tableref={tableref7}
+                filename="care_home_occupancy_per_care_home.csv"
+                xLabel=""
+                downloadType="care home occupancy levels per care home"
+              />
+            </>
+          }
+        />
+      </DataBox>
+      <DataBox
         dataTitle="Occupancy levels"
         dataInfo={
           <>
@@ -1626,7 +1693,7 @@ export default function ProvisionAndOccupancyPage() {
                 tableref={tableref5}
                 caption={
                   <>
-                    Table 4: care home occupancy levels &ndash;{' '}
+                    Table 5: care home occupancy levels &ndash;{' '}
                     {locationNamesCP.LALabel}{' '}
                     <abbr title="local authority">LA</abbr> and its comparison
                     group, {comparatorAverageLabel},{' '}

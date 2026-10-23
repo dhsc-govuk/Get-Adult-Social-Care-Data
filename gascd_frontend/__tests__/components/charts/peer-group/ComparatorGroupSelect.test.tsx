@@ -215,4 +215,31 @@ describe('ComparatorGroupSelect', () => {
     expect(selects).toHaveLength(2);
     expect(selects[0].id).not.toBe(selects[1].id);
   });
+
+  it('hides Edit this group for the built-in region group', () => {
+    render(
+      <ComparatorGroupSelect
+        idPrefix="test"
+        selection={{ kind: 'custom', groupId: 'region' }}
+        groups={[
+          {
+            id: 'region',
+            name: 'Other LAs in West Midlands',
+            laCodes: ['E08000025'],
+            builtIn: true,
+          },
+          ...groups,
+        ]}
+        onChange={vi.fn()}
+        onEdit={vi.fn()}
+      />
+    );
+
+    expect(
+      screen.getByRole('combobox', { name: /comparison group/i })
+    ).toHaveValue('custom:region');
+    expect(
+      screen.queryByRole('button', { name: 'Edit this group' })
+    ).not.toBeInTheDocument();
+  });
 });

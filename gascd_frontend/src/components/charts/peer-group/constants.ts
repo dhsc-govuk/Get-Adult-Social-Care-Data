@@ -6,6 +6,7 @@ export type ComparisonGroup = {
 export const NHS_PEER_GROUP_VALUE = 'nhs_peer_group';
 export const CUSTOM_NEW_VALUE = 'custom';
 export const CUSTOM_GROUP_VALUE_PREFIX = 'custom:';
+export const REGION_GROUP_ID = 'region';
 
 export const NHS_PEER_GROUP_LABEL = 'Statistically similar peer group (NHS)';
 export const NHS_PEER_GROUP_AVERAGE_LABEL = 'NHS peer group (average)';
