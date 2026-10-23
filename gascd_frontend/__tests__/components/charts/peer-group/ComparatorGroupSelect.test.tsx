@@ -224,7 +224,7 @@ describe('ComparatorGroupSelect', () => {
         groups={[
           {
             id: 'region',
-            name: 'Other LAs in West Midlands',
+            name: 'Region (West Midlands)',
             laCodes: ['E08000025'],
             builtIn: true,
           },
