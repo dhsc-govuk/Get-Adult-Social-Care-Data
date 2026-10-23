@@ -22,6 +22,24 @@ import TimeSeriesChart, {
   Series,
 } from '@/components/charts/TimeSeriesChart';
 import IndicatorService from '@/services/indicator/IndicatorService';
+import {
+  METRICS,
+  MetricId,
+  metricLabels,
+  percentageMetrics,
+  SOURCES,
+} from '@/config/metrics';
+
+const POPULATION_METRICS: MetricId[] = [
+  'pansi_pred_pop_early_dem_aged_30_64',
+  'pansi_pred_pop_challenging_behaviour_aged_18_64',
+  'pansi_pred_pop_asd_aged_18_64',
+];
+const PERC_CHANGE_METRICS: MetricId[] = [
+  'pansi_pred_pop_early_dem_aged_30_64_perc_change',
+  'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change',
+  'pansi_pred_pop_asd_aged_18_64_perc_change',
+];
 
 export default function LAFundingPlanningPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -73,14 +91,7 @@ export default function LAFundingPlanningPage() {
     'pansi_pred_pop_early_dem_aged_30_64_perc_change_yearly',
   ];
 
-  const percChangeHeaders = {
-    pansi_pred_pop_early_dem_aged_30_64_perc_change:
-      'Total population aged 30-64 predicted to have early onset dementia',
-    pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change:
-      'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
-    pansi_pred_pop_asd_aged_18_64_perc_change:
-      'Total population aged 18-64 predicted to have autistic spectrum disorders',
-  };
+  const percChangeHeaders = metricLabels(PERC_CHANGE_METRICS);
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -235,7 +246,7 @@ export default function LAFundingPlanningPage() {
               Find out how{' '}
               <a
                 href={withBasePath(
-                  '/help/estimated-population-early-onset-dementia'
+                  METRICS.pansi_pred_pop_early_dem_aged_30_64.helpUrl
                 )}
                 className="govuk-link"
               >
@@ -244,7 +255,8 @@ export default function LAFundingPlanningPage() {
               ,{' '}
               <a
                 href={withBasePath(
-                  '/help/estimated-population-learning-disability'
+                  METRICS.pansi_pred_pop_challenging_behaviour_aged_18_64
+                    .helpUrl
                 )}
                 className="govuk-link"
               >
@@ -253,7 +265,9 @@ export default function LAFundingPlanningPage() {
               </a>{' '}
               and{' '}
               <a
-                href={withBasePath('/help/estimated-population-asd')}
+                href={withBasePath(
+                  METRICS.pansi_pred_pop_asd_aged_18_64.helpUrl
+                )}
                 className="govuk-link"
               >
                 people aged 18-64 predicted to have autistic spectrum disorders
@@ -276,20 +290,11 @@ export default function LAFundingPlanningPage() {
                   <abbr title="local authority">LA</abbr> area
                 </>
               }
-              source={
-                'Projected Adult Needs and Service Information (PANSI) v15 August 2025 from the Institute of Public Care'
-              }
+              source={SOURCES.pansi}
               columnHeaders={columnDates}
-              rowHeaders={{
-                pansi_pred_pop_early_dem_aged_30_64:
-                  'Total population aged 30-64 predicted to have early onset dementia',
-                pansi_pred_pop_challenging_behaviour_aged_18_64:
-                  'Total population aged 18-64 with a learning disability, predicted to display challenging behaviour',
-                pansi_pred_pop_asd_aged_18_64:
-                  'Total population aged 18-64 predicted to have autistic spectrum disorders',
-              }}
+              rowHeaders={metricLabels(POPULATION_METRICS)}
               data={filteredDemographicData}
-              percentageRows={[]}
+              percentageRows={percentageMetrics(POPULATION_METRICS)}
               currency={false}
             ></TimeSeriesTable>
           }
@@ -320,7 +325,7 @@ export default function LAFundingPlanningPage() {
               Find out how{' '}
               <a
                 href={withBasePath(
-                  '/help/estimated-population-early-onset-dementia'
+                  METRICS.pansi_pred_pop_early_dem_aged_30_64.helpUrl
                 )}
                 className="govuk-link"
               >
@@ -329,7 +334,8 @@ export default function LAFundingPlanningPage() {
               ,{' '}
               <a
                 href={withBasePath(
-                  '/help/estimated-population-learning-disability'
+                  METRICS.pansi_pred_pop_challenging_behaviour_aged_18_64
+                    .helpUrl
                 )}
                 className="govuk-link"
               >
@@ -338,7 +344,9 @@ export default function LAFundingPlanningPage() {
               </a>{' '}
               and{' '}
               <a
-                href={withBasePath('/help/estimated-population-asd')}
+                href={withBasePath(
+                  METRICS.pansi_pred_pop_asd_aged_18_64.helpUrl
+                )}
                 className="govuk-link"
               >
                 people aged 18-64 predicted to have autistic spectrum disorders
@@ -368,10 +376,7 @@ export default function LAFundingPlanningPage() {
                   />
                 </div>
               )) || <p>Loading graph</p>}
-              <p className="govuk-body">
-                Source: Projected Adult Needs and Service Information (PANSI)
-                v15 August 2025 from the Institute of Public Care
-              </p>
+              <p className="govuk-body">Source: {SOURCES.pansi}</p>
             </>
           }
           table={
@@ -384,17 +389,11 @@ export default function LAFundingPlanningPage() {
                   <abbr title="local authority">LA</abbr> area
                 </>
               }
-              source={
-                'Projected Adult Needs and Service Information (PANSI) v15 August 2025 from the Institute of Public Care'
-              }
+              source={SOURCES.pansi}
               columnHeaders={columnDates}
               rowHeaders={percChangeHeaders}
               data={filteredDemographicData}
-              percentageRows={[
-                'pansi_pred_pop_early_dem_aged_30_64_perc_change',
-                'pansi_pred_pop_challenging_behaviour_aged_18_64_perc_change',
-                'pansi_pred_pop_asd_aged_18_64_perc_change',
-              ]}
+              percentageRows={percentageMetrics(PERC_CHANGE_METRICS)}
               currency={false}
             ></TimeSeriesTable>
           }
