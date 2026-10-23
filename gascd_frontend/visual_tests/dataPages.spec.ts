@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { expect, Page, test } from '@playwright/test';
 import { AUTH_FILES, TestUser } from './users';
 
@@ -53,6 +54,12 @@ const PAGES: { name: string; url: string; user: TestUser }[] = [
     url: '/topics/residential-care/provision-and-occupancy/data',
     user: 'careProviderLocation',
   },
+  // Care home users get extra rows, so the page is checked without them too
+  {
+    name: 'provision-and-occupancy-la',
+    url: '/topics/residential-care/provision-and-occupancy/data',
+    user: 'localAuthority',
+  },
   {
     name: 'residential-care-providers',
     url: '/topics/residential-care/residential-care-providers/data',
@@ -65,17 +72,27 @@ const PAGES: { name: string; url: string; user: TestUser }[] = [
   },
 ];
 
-// Download panels are text only, so they're left out
-const TAB_TYPES = ['map', 'chart', 'graph', 'table'];
+const SCREENSHOT_TAB_TYPES = ['map', 'chart', 'graph', 'table'];
+
+const downloadCsvs = async (page: Page, panelId: string) => {
+  const links = page.locator(`#${panelId}`).getByText(/^Export .* \(CSV\)$/);
+  const csvs: string[] = [];
+  for (let l = 0; l < (await links.count()); l++) {
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      links.nth(l).click(),
+    ]);
+    const content = fs.readFileSync(await download.path(), 'utf8');
+    csvs.push(`# ${download.suggestedFilename()}\n${content}`);
+  }
+  return csvs;
+};
 
 const waitForSectionToSettle = async (page: Page, panelId: string) => {
   const panel = page.locator(`#${panelId}`);
   await expect(panel).toBeVisible();
-  // Some panels never stop saying "Loading" (e.g. PeerGroupTable's duplicate
-  // row keys); a slow load still fails the screenshot comparison
-  await expect(panel)
-    .not.toContainText(/Loading/, { timeout: 5_000 })
-    .catch(() => {});
+  // Long enough for the dev server to compile the data routes on first use
+  await expect(panel).not.toContainText(/Loading/, { timeout: 30_000 });
   if (await panel.locator('.js-plotly-plot').count()) {
     await expect(
       panel.locator('.js-plotly-plot .main-svg').first()
@@ -96,6 +113,7 @@ for (const { name, url, user } of PAGES) {
       const sections = page.locator('.data-box');
       const sectionCount = await sections.count();
       expect(sectionCount).toBeGreaterThan(0);
+      const csvs: string[] = [];
 
       for (let i = 0; i < sectionCount; i++) {
         const section = sections.nth(i);
@@ -104,13 +122,28 @@ for (const { name, url, user } of PAGES) {
         for (let t = 0; t < (await tabs.count()); t++) {
           const panelId = (await tabs.nth(t).getAttribute('href'))!.slice(1);
           const tabType = panelId.split('-')[0];
-          if (!TAB_TYPES.includes(tabType)) continue;
 
-          await tabs.nth(t).click();
-          await waitForSectionToSettle(page, panelId);
-          await expect(section).toHaveScreenshot(`${name}-${panelId}.png`);
+          if (tabType === 'download') {
+            await tabs.nth(t).click();
+            csvs.push(...(await downloadCsvs(page, panelId)));
+          } else if (SCREENSHOT_TAB_TYPES.includes(tabType)) {
+            await tabs.nth(t).click();
+            await waitForSectionToSettle(page, panelId);
+            await expect(section).toHaveScreenshot(`${name}-${panelId}.png`);
+          }
         }
       }
+
+      // Screenshots show link text but not where links go
+      const links = await page
+        .locator('#main-content a[href]')
+        .evaluateAll((anchors) =>
+          anchors
+            .map((a) => a.getAttribute('href'))
+            .filter((href) => href && !href.startsWith('#'))
+        );
+      expect.soft(links.join('\n')).toMatchSnapshot(`${name}-links.txt`);
+      expect(csvs.join('\n')).toMatchSnapshot(`${name}-downloads.txt`);
     });
   });
 }

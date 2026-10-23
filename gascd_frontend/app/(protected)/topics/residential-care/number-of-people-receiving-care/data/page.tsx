@@ -32,6 +32,9 @@ import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComp
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import { ALLOWED_CP_USER_TYPES } from '@/constants';
 import { User, useSession } from '@/lib/auth-client';
+import { METRICS, SOURCES } from '@/config/metrics';
+
+const COUNT_METRIC_ID = 'nccc_num_clients_comm_care';
 
 const CARE_HOME_COMM_CATEGORY = 'community';
 
@@ -76,10 +79,7 @@ export default function NumberPeopleReceivingCarePage() {
   // The count and its standardised twin (per 100,000 of the adult population,
   // GASCD-246) are fetched together; each table picks its rows by rowHeaders.
   const STANDARDISED_METRIC_ID = 'nccc_num_clients_comm_care_per100k_adults';
-  const demographicMetricIds = [
-    'nccc_num_clients_comm_care',
-    STANDARDISED_METRIC_ID,
-  ];
+  const demographicMetricIds = [COUNT_METRIC_ID, STANDARDISED_METRIC_ID];
 
   // This page resolves locations with careProvider: true, so the ids are
   // ['Indicator', careProviderLocation, la, region, country] — one further
@@ -410,9 +410,7 @@ export default function NumberPeopleReceivingCarePage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href={withBasePath(
-                  '/help/number-people-receiving-care-from-community-social-care-provider'
-                )}
+                href={withBasePath(METRICS[COUNT_METRIC_ID].helpUrl)}
                 className="govuk-link"
               >
                 how the number of people receiving community social care is
@@ -426,27 +424,25 @@ export default function NumberPeopleReceivingCarePage() {
       >
         <DataTabs
           id="1"
-          sharingMetricIds={['nccc_num_clients_comm_care']}
+          sharingMetricIds={[COUNT_METRIC_ID]}
           table={
             <>
               {renderComparatorControl('comparator-table-1')}
               <DataTable
                 tableref={tableref1}
                 caption={`Table 1: number of people receiving community social care in the last month – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} region, ${comparatorAverageLabel} and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`}
-                source={
-                  'Capacity Tracker from the Department of Health and Social Care (DHSC)'
-                }
+                source={SOURCES.capacityTracker}
                 columnHeaders={{
                   ...locationNamesWithAverageLabels,
                   ComparatorLabel: comparatorAverageLabel,
                 }}
                 rowHeaders={{
-                  nccc_num_clients_comm_care: `People receiving community social care in ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`,
+                  [COUNT_METRIC_ID]: `${METRICS[COUNT_METRIC_ID].label} in ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`,
                 }}
                 data={benchmarkedDemographicData}
                 showCareProvider={showCPLevelData(session?.user)}
                 careProviderMedianMetrics={{
-                  nccc_num_clients_comm_care: 'nccc_num_clients_comm_care',
+                  [COUNT_METRIC_ID]: COUNT_METRIC_ID,
                 }}
                 percentageRows={[]}
               ></DataTable>
@@ -471,9 +467,7 @@ export default function NumberPeopleReceivingCarePage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href={withBasePath(
-                  '/help/number-people-receiving-care-from-community-social-care-provider-per-100000-adults'
-                )}
+                href={withBasePath(METRICS[STANDARDISED_METRIC_ID].helpUrl)}
                 className="govuk-link"
               >
                 how the number of people receiving community social care per
@@ -510,7 +504,7 @@ export default function NumberPeopleReceivingCarePage() {
               figureNumber={1}
               // Rates per 100,000, not percentages
               valueSuffix=""
-              sourceText="Source: Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS"
+              sourceText={`Source: ${SOURCES.capacityTrackerWithOnsPopulation}`}
             />
           }
           table={
@@ -519,8 +513,8 @@ export default function NumberPeopleReceivingCarePage() {
               <PeerGroupTable
                 tableref={tableref2}
                 caption={`Table 2: number of people receiving community social care in the last month, standardised per 100,000 of the total population (18+) – ${locationNames.LALabel} LA and its comparison group, ${comparatorAverageLabel}, ${locationNames.RegionLabel} (regional average) and ${locationNames.CountryLabel} (national average), ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`}
-                source="Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS"
-                valueHeader={`People receiving community social care in ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}, per 100,000 adults`}
+                source={SOURCES.capacityTrackerWithOnsPopulation}
+                valueHeader={`${METRICS[COUNT_METRIC_ID].label} in ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}, per 100,000 adults`}
                 laCode={laCode}
                 laName={locationNames.LALabel}
                 currentLaValue={standardisedValues.la}
@@ -551,14 +545,14 @@ export default function NumberPeopleReceivingCarePage() {
           sources="Capacity Tracker"
           updateFrequency="Daily updates"
           limitations={true}
-          url="/help/number-people-receiving-care-from-community-social-care-provider"
+          url={METRICS[COUNT_METRIC_ID].helpUrl}
         />
         <DataLinkCard
           label="Number of adults receiving care from a community social care provider – standardised per 100,000 of the total adult (18+) population"
           sources="Capacity Tracker, Office for National Statistics"
           updateFrequency="Daily updates"
           limitations={true}
-          url="/help/number-people-receiving-care-from-community-social-care-provider-per-100000-adults"
+          url={METRICS[STANDARDISED_METRIC_ID].helpUrl}
         />
       </DataIndicatorDetailsList>
 
