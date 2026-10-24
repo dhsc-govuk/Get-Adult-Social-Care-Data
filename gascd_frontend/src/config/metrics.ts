@@ -22,6 +22,12 @@ export const SOURCES = {
     'Adult Social Care Finance Report from the Department of Health and Social Care',
   ascFinanceReportWithOnsPopulation:
     'Adult Social Care Finance Report from the Department of Health and Social Care (DHSC) and population estimates from ONS',
+  dfeSen:
+    'Special educational needs in England, Department for Education (DfE)',
+  dfeEhcp:
+    'Education, Health and Care Plans in England, Department for Education (DfE)',
+  dfeChildrenInNeed:
+    'Children in need in England, Department for Education (DfE)',
   onsPopulationEstimates:
     'Population estimates from the Office for National Statistics (ONS)',
   capacityTrackerWithOnsPopulation:
@@ -373,6 +379,45 @@ export const METRICS = {
     format: 'percentage',
     source: SOURCES.fingertipsPublicHealth,
     helpUrl: '/help/learning-disability-prevalence',
+  },
+
+  num_sen_support_14plus: {
+    label: 'Pupils with SEN support, aged 14 and over',
+    format: 'number',
+    source: SOURCES.dfeSen,
+    helpUrl: '/help/pupils-with-sen-support-aged-14-and-over',
+  },
+  perc_sen_support_14plus: {
+    label: 'Percentage of pupils with SEN support, aged 14 and over',
+    format: 'percentage',
+    source: SOURCES.dfeSen,
+    helpUrl: '/help/percentage-of-pupils-with-sen-support-aged-14-and-over',
+  },
+  num_ehcp_14plus: {
+    label: 'Children and young people with an EHCP, aged 14 and over',
+    format: 'number',
+    source: SOURCES.dfeEhcp,
+    helpUrl: '/help/children-and-young-people-with-an-ehcp-aged-14-and-over',
+  },
+  num_children_in_need: {
+    label: 'Children in need',
+    format: 'number',
+    source: SOURCES.dfeChildrenInNeed,
+    helpUrl: '/help/children-in-need',
+  },
+  cin_per_10000_children: {
+    label: 'Children in need per 10,000 children',
+    format: 'number',
+    source: SOURCES.dfeChildrenInNeed,
+    helpUrl: '/help/children-in-need-per-10000-children',
+  },
+  num_cin_transfer_asc: {
+    label:
+      'Children in need episodes ending due to transfer to adult social care',
+    format: 'number',
+    source: SOURCES.dfeChildrenInNeed,
+    helpUrl:
+      '/help/children-in-need-episodes-ending-due-to-transfer-to-adult-social-care',
   },
 } as const satisfies Record<string, MetricConfig>;
 
