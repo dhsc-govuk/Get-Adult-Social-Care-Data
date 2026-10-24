@@ -129,6 +129,8 @@ for (const { name, url, user } of PAGES) {
           } else if (SCREENSHOT_TAB_TYPES.includes(tabType)) {
             await tabs.nth(t).click();
             await waitForSectionToSettle(page, panelId);
+            // A re-render when the data arrives can drop the click's focus
+            await tabs.nth(t).focus();
             await expect(section).toHaveScreenshot(`${name}-${panelId}.png`);
           }
         }
