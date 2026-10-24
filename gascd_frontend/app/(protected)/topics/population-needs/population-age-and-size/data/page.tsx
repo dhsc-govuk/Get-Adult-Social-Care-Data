@@ -33,13 +33,14 @@ import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/con
 import { ComparatorSelection } from '@/components/charts/peer-group/types';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
 import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
+import { METRICS, metricLabels, SOURCES } from '@/config/metrics';
 
-const AGE_GROUP_LABELS: Record<string, string> = {
-  perc_18_64: 'Aged 18 to 64',
-  perc_65over: 'Aged 65 and over',
-  perc_75over: 'Aged 75 and over',
-  perc_85over: 'Aged 85 and over',
-};
+const AGE_GROUP_LABELS = metricLabels([
+  'perc_18_64',
+  'perc_65over',
+  'perc_75over',
+  'perc_85over',
+]);
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -527,7 +528,7 @@ export default function ProvisionAndOccupancyPage() {
             <p>
               Find out how{' '}
               <a
-                href={withBasePath('/help/population-size')}
+                href={withBasePath(METRICS.total_population.helpUrl)}
                 className="govuk-link"
               >
                 population size
@@ -559,13 +560,9 @@ export default function ProvisionAndOccupancyPage() {
                     )}
                   </>
                 }
-                source={
-                  'Population estimates from the Office for National Statistics (ONS)'
-                }
+                source={SOURCES.onsPopulationEstimates}
                 columnHeaders={populationSizeColumnHeaders}
-                rowHeaders={{
-                  total_population: 'Total adult population',
-                }}
+                rowHeaders={metricLabels(['total_population'])}
                 data={benchmarkedDemographicData}
                 showCareProvider={false}
                 showAverageLabel={false}
@@ -605,7 +602,7 @@ export default function ProvisionAndOccupancyPage() {
             <p>
               Find out how{' '}
               <a
-                href={withBasePath('/help/population-age')}
+                href={withBasePath(METRICS.perc_18_64.helpUrl)}
                 className="govuk-link"
               >
                 age group percentages
@@ -637,9 +634,7 @@ export default function ProvisionAndOccupancyPage() {
                     )}
                   </>
                 }
-                source={
-                  'Population estimates from the Office for National Statistics (ONS)'
-                }
+                source={SOURCES.onsPopulationEstimates}
                 columnHeaders={benchmarkedColumnHeaders}
                 rowHeaders={AGE_GROUP_LABELS}
                 data={benchmarkedDemographicData}
@@ -701,7 +696,7 @@ export default function ProvisionAndOccupancyPage() {
               metricDescription={`the percentage of the population ${selectedAgeLabel.toLowerCase()}`}
               figureTitle={`Percentage of the population ${selectedAgeLabel.toLowerCase()}`}
               figureNumber={1}
-              sourceText="Source: Population estimates from the Office for National Statistics (ONS)"
+              sourceText={`Source: ${SOURCES.onsPopulationEstimates}`}
             />
           }
         />
@@ -713,14 +708,14 @@ export default function ProvisionAndOccupancyPage() {
           sources="Office for National Statistics"
           updateFrequency="Yearly updates"
           limitations={true}
-          url="/help/population-age"
+          url={METRICS.perc_18_64.helpUrl}
         />
         <DataLinkCard
           label="Population size"
           sources="Office for National Statistics"
           updateFrequency="Yearly updates"
           limitations={true}
-          url="/help/population-size"
+          url={METRICS.total_population.helpUrl}
         />
       </DataIndicatorDetailsList>
 
