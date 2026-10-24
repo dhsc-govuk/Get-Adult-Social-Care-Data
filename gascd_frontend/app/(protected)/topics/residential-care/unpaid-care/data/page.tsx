@@ -29,6 +29,14 @@ import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLoc
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
 import { ComparatorSelection } from '@/components/charts/peer-group/types';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
+import {
+  METRICS,
+  metricLabels,
+  percentageMetrics,
+  SOURCES,
+} from '@/config/metrics';
+
+const UNPAID_CARE = 'perc_unpaid_care_provider';
 
 export default function UnpaidCarePage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -66,7 +74,7 @@ export default function UnpaidCarePage() {
     },
   ];
 
-  const demographicMetricIds = ['perc_unpaid_care_provider'];
+  const demographicMetricIds = [UNPAID_CARE];
 
   const metricPage = 'unpaid-care';
   const laCode = locationIds[1];
@@ -354,9 +362,7 @@ export default function UnpaidCarePage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href={withBasePath(
-                  '/help/percentage-people-aged-5-and-over-who-provide-unpaid-care'
-                )}
+                href={withBasePath(METRICS[UNPAID_CARE].helpUrl)}
                 className="govuk-link"
               >
                 how unpaid care is measured.
@@ -412,17 +418,12 @@ export default function UnpaidCarePage() {
                     {IndicatorService.getCensusYear(filteredDemographicData)}
                   </>
                 }
-                source={
-                  'Census 2021 from the Office for National Statistics (ONS)'
-                }
+                source={SOURCES.census2021}
                 columnHeaders={tableColumnHeaders}
-                rowHeaders={{
-                  perc_unpaid_care_provider:
-                    'Percentage of people aged 5 or over who provide unpaid care',
-                }}
+                rowHeaders={metricLabels([UNPAID_CARE])}
                 data={filteredDemographicData}
                 showCareProvider={false}
-                percentageRows={['perc_unpaid_care_provider']}
+                percentageRows={percentageMetrics([UNPAID_CARE])}
               ></DataTable>
             </>
           }
@@ -445,34 +446,32 @@ export default function UnpaidCarePage() {
               laName={locationNames.LALabel}
               currentLaValue={
                 filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_unpaid_care_provider' &&
-                    d.location_type === 'LA'
+                  (d) => d.metric_id === UNPAID_CARE && d.location_type === 'LA'
                 )?.data_point ?? null
               }
               nationalAverageValue={
                 filteredDemographicData.find(
                   (d) =>
-                    d.metric_id === 'perc_unpaid_care_provider' &&
+                    d.metric_id === UNPAID_CARE &&
                     d.location_type === 'National'
                 )?.data_point ?? null
               }
               regionalAverageValue={
                 filteredDemographicData.find(
                   (d) =>
-                    d.metric_id === 'perc_unpaid_care_provider' &&
+                    d.metric_id === UNPAID_CARE &&
                     d.location_type === 'Regional'
                 )?.data_point ?? null
               }
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
-              peerData={dataByMetric['perc_unpaid_care_provider'] ?? null}
+              peerData={dataByMetric[UNPAID_CARE] ?? null}
               loading={chartLoading}
               error={chartError}
               comparatorControl={renderComparatorControl('comparator-chart-1')}
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="the percentage of people aged 5 and over who provide unpaid care"
-              figureTitle="Percentage of people aged 5 or over who provide unpaid care"
+              figureTitle={METRICS[UNPAID_CARE].label}
               figureNumber={1}
             />
           }
@@ -484,7 +483,7 @@ export default function UnpaidCarePage() {
           sources="Office for National Statistics."
           updateFrequency="Updated every 10 years"
           limitations={false}
-          url="/help/percentage-people-aged-5-and-over-who-provide-unpaid-care"
+          url={METRICS[UNPAID_CARE].helpUrl}
         />
       </DataIndicatorDetailsList>
 
