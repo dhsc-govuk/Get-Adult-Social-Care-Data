@@ -39,6 +39,37 @@ import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComp
 import LocationService from '@/services/location/locationService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { ALLOWED_CP_USER_TYPES } from '@/constants';
+import {
+  METRICS,
+  MetricId,
+  metricLabels,
+  percentageMetrics,
+  SOURCES,
+} from '@/config/metrics';
+
+const BED_TYPE_ROWS: MetricId[] = [
+  'bedcount_per_hundred_thousand_adults_total',
+  'bedcount_per_hundred_thousand_adults_community_care',
+  'bedcount_per_hundred_thousand_adults_dementia_nursing',
+  'bedcount_per_hundred_thousand_adults_dementia_residential',
+  'bedcount_per_hundred_thousand_adults_general_nursing',
+  'bedcount_per_hundred_thousand_adults_general_residential',
+  'bedcount_per_hundred_thousand_adults_learning_disability_nursing',
+  'bedcount_per_hundred_thousand_adults_learning_disability_residential',
+  'bedcount_per_hundred_thousand_adults_mental_health_nursing',
+  'bedcount_per_hundred_thousand_adults_mental_health_residential',
+  'bedcount_per_hundred_thousand_adults_transitional',
+  'bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled',
+];
+// The six grouped categories from the design
+const GROUPED_BED_TYPE_ROWS: MetricId[] = [
+  'bedcount_per_hundred_thousand_adults_total',
+  'bedcount_per_hundred_thousand_adults_grp_older_people_and_dementia',
+  'bedcount_per_hundred_thousand_adults_grp_learning_disability',
+  'bedcount_per_hundred_thousand_adults_grp_mental_health',
+  'bedcount_per_hundred_thousand_adults_grp_young_physically_disabled',
+  'bedcount_per_hundred_thousand_adults_grp_community_care_and_transitional',
+];
 
 const CARE_HOME_RESIDENTIAL_CATEGORY = 'residential';
 
@@ -165,41 +196,9 @@ export default function ProvisionAndOccupancyPage() {
   );
 
   // headers for tables and charts
-  const bedTypeRowHeadersDefault = {
-    bedcount_per_hundred_thousand_adults_total: 'All bed types',
-    bedcount_per_hundred_thousand_adults_community_care: 'Community care bed',
-    bedcount_per_hundred_thousand_adults_dementia_nursing: 'Dementia nursing',
-    bedcount_per_hundred_thousand_adults_dementia_residential:
-      'Dementia residential',
-    bedcount_per_hundred_thousand_adults_general_nursing: 'General nursing',
-    bedcount_per_hundred_thousand_adults_general_residential:
-      'General residential',
-    bedcount_per_hundred_thousand_adults_learning_disability_nursing:
-      'Learning disability nursing',
-    bedcount_per_hundred_thousand_adults_learning_disability_residential:
-      'Learning disability residential',
-    bedcount_per_hundred_thousand_adults_mental_health_nursing:
-      'Mental health nursing',
-    bedcount_per_hundred_thousand_adults_mental_health_residential:
-      'Mental health residential',
-    bedcount_per_hundred_thousand_adults_transitional: 'Transitional',
-    bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled:
-      'Young physically disabled',
-  };
+  const bedTypeRowHeadersDefault = metricLabels(BED_TYPE_ROWS);
 
-  // The six grouped categories from the design
-  const groupedBedTypeRowHeadersDefault = {
-    bedcount_per_hundred_thousand_adults_total: 'All bed types',
-    bedcount_per_hundred_thousand_adults_grp_older_people_and_dementia:
-      'Older people and dementia',
-    bedcount_per_hundred_thousand_adults_grp_learning_disability:
-      'Learning disability',
-    bedcount_per_hundred_thousand_adults_grp_mental_health: 'Mental health',
-    bedcount_per_hundred_thousand_adults_grp_young_physically_disabled:
-      'Young physically disabled',
-    bedcount_per_hundred_thousand_adults_grp_community_care_and_transitional:
-      'Community care and transitional',
-  };
+  const groupedBedTypeRowHeadersDefault = metricLabels(GROUPED_BED_TYPE_ROWS);
 
   type BedTypeSelection = { metric_id: string; filter_bedtype: string };
   const ALL_BED_TYPES: BedTypeSelection = {
@@ -1067,7 +1066,7 @@ export default function ProvisionAndOccupancyPage() {
           <p className="govuk-body-m">
             Find out how{' '}
             <a
-              href={withBasePath('/help/beds-care-provider-location')}
+              href={withBasePath(METRICS.median_bed_count_total.helpUrl)}
               className="govuk-link"
             >
               number of adult social care beds in a care provider location
@@ -1100,16 +1099,12 @@ export default function ProvisionAndOccupancyPage() {
                     {IndicatorService.getMostRecentDate(finalCpData)}
                   </>
                 }
-                source={
-                  'Capacity Tracker from the Department of Health and Social Care (DHSC)'
-                }
+                source={SOURCES.capacityTracker}
                 columnHeaders={{
                   ...locationNamesCP,
                   ComparatorLabel: comparatorAverageLabel,
                 }}
-                rowHeaders={{
-                  median_bed_count_total: 'Beds per care home',
-                }}
+                rowHeaders={metricLabels(['median_bed_count_total'])}
                 data={benchmarkedCpData}
                 showCareProvider={showCPLevelData(session?.user)}
                 careProviderMedianMetrics={careProviderMedianMetrics}
@@ -1136,7 +1131,9 @@ export default function ProvisionAndOccupancyPage() {
           <>
             Find out how{' '}
             <a
-              href={withBasePath('/help/beds-per-100000-adult-population')}
+              href={withBasePath(
+                METRICS.bedcount_per_hundred_thousand_adults_total.helpUrl
+              )}
               className="govuk-link"
             >
               the number of adult social care beds per 100,000 adult population
@@ -1185,7 +1182,7 @@ export default function ProvisionAndOccupancyPage() {
                 // Rates per 100,000, not percentages
                 valueSuffix=""
                 dateLabel={IndicatorService.getMostRecentDate(bedNumbersData)}
-                sourceText="Source: Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)"
+                sourceText={`Source: ${SOURCES.capacityTrackerWithOnsPopulationEstimates}`}
               />
               <p className="govuk-body">
                 Note: small numbers have been suppressed and will appear as zero
@@ -1217,7 +1214,7 @@ export default function ProvisionAndOccupancyPage() {
                     {IndicatorService.getMostRecentDate(bedNumbersData)}
                   </>
                 }
-                source="Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)"
+                source={SOURCES.capacityTrackerWithOnsPopulationEstimates}
                 valueHeader={`Care home beds per 100,000 ${POPULATION_DESCRIPTIONS[numbersPopulation]}`}
                 laCode={laCode}
                 laName={locationNamesCP.LALabel}
@@ -1249,7 +1246,9 @@ export default function ProvisionAndOccupancyPage() {
           <>
             Find out how{' '}
             <a
-              href={withBasePath('/help/beds-per-100000-adult-population')}
+              href={withBasePath(
+                METRICS.bedcount_per_hundred_thousand_adults_total.helpUrl
+              )}
               className="govuk-link"
             >
               the number of adult social care beds per 100,000 adult population
@@ -1286,9 +1285,7 @@ export default function ProvisionAndOccupancyPage() {
                   </>
                 }
                 metricColumnName="Care home bed type"
-                source={
-                  'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
-                }
+                source={SOURCES.capacityTrackerWithOnsPopulationEstimates}
                 columnHeaders={{
                   ...locationNamesWithAverageLabels,
                   ComparatorLabel: comparatorAverageLabel,
@@ -1349,7 +1346,9 @@ export default function ProvisionAndOccupancyPage() {
           <>
             Find out how{' '}
             <a
-              href={withBasePath('/help/beds-per-100000-adult-population')}
+              href={withBasePath(
+                METRICS.bedcount_per_hundred_thousand_adults_total.helpUrl
+              )}
               className="govuk-link"
             >
               the number of adult social care beds per 100,000 adult population
@@ -1399,7 +1398,7 @@ export default function ProvisionAndOccupancyPage() {
                 dateLabel={IndicatorService.getMostRecentDate(
                   latestBedTypeData
                 )}
-                sourceText="Source: Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)"
+                sourceText={`Source: ${SOURCES.capacityTrackerWithOnsPopulationEstimates}`}
               />
               <p className="govuk-body">
                 Note: small numbers have been suppressed and will appear as zero
@@ -1431,7 +1430,7 @@ export default function ProvisionAndOccupancyPage() {
                     {IndicatorService.getMostRecentDate(latestBedTypeData)}
                   </>
                 }
-                source="Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)"
+                source={SOURCES.capacityTrackerWithOnsPopulationEstimates}
                 valueHeader={`Care home beds per 100,000 ${POPULATION_DESCRIPTIONS[groupedPopulation]}`}
                 laCode={laCode}
                 laName={locationNamesCP.LALabel}
@@ -1463,7 +1462,9 @@ export default function ProvisionAndOccupancyPage() {
           <>
             Find out how{' '}
             <a
-              href={withBasePath('/help/beds-per-100000-adult-population')}
+              href={withBasePath(
+                METRICS.bedcount_per_hundred_thousand_adults_total.helpUrl
+              )}
               className="govuk-link"
             >
               the number of adult social care beds per 100,000 adult population
@@ -1500,7 +1501,7 @@ export default function ProvisionAndOccupancyPage() {
                   </>
                 }
                 metricColumnName="Care home bed type"
-                source="Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)"
+                source={SOURCES.capacityTrackerWithOnsPopulationEstimates}
                 columnHeaders={{
                   ...locationNamesWithAverageLabels,
                   ComparatorLabel: comparatorAverageLabel,
@@ -1570,9 +1571,7 @@ export default function ProvisionAndOccupancyPage() {
                 Note: small numbers have been suppressed and will appear as zero
               </p>
               <p className="govuk-body">
-                Source: Capacity Tracker from the Department of Health and
-                Social Care (DHSC), population estimates from the Office for
-                National Statistics (ONS)
+                {`Source: ${SOURCES.capacityTrackerWithOnsPopulationEstimates}`}
               </p>
             </>
           }
@@ -1585,7 +1584,7 @@ export default function ProvisionAndOccupancyPage() {
           <p className="govuk-body-m">
             Find out how{' '}
             <a
-              href={withBasePath('/help/percentage-beds-occupied')}
+              href={withBasePath(METRICS.median_occupancy_total.helpUrl)}
               className="govuk-link"
             >
               occupancy level percentages
@@ -1615,20 +1614,16 @@ export default function ProvisionAndOccupancyPage() {
                     {IndicatorService.getMostRecentDate(finalCpData)}
                   </>
                 }
-                source={
-                  'Capacity Tracker from the Department of Health and Social Care (DHSC)'
-                }
+                source={SOURCES.capacityTracker}
                 columnHeaders={{
                   ...locationNamesCP,
                   ComparatorLabel: comparatorAverageLabel,
                 }}
-                rowHeaders={{
-                  [OCCUPANCY_METRIC]: 'Occupancy level per care home',
-                }}
+                rowHeaders={metricLabels(['median_occupancy_total'])}
                 data={benchmarkedCpData}
                 showCareProvider={showCPLevelData(session?.user)}
                 careProviderMedianMetrics={careProviderMedianMetrics}
-                percentageRows={[OCCUPANCY_METRIC]}
+                percentageRows={percentageMetrics(['median_occupancy_total'])}
                 showAverageLabel={true}
               ></DataTable>
             </>
@@ -1651,7 +1646,7 @@ export default function ProvisionAndOccupancyPage() {
           <>
             Find out how{' '}
             <a
-              href={withBasePath('/help/percentage-beds-occupied')}
+              href={withBasePath(METRICS.median_occupancy_total.helpUrl)}
               className="govuk-link"
             >
               occupancy level percentages
@@ -1683,7 +1678,7 @@ export default function ProvisionAndOccupancyPage() {
               figureNumber={4}
               comparisonSummary={`${locationNamesCP.LALabel}, ${comparatorAverageLabel}, ${locationNamesCP.RegionLabel} regional average and national average`}
               dateLabel={IndicatorService.getMostRecentDate(finalCpData)}
-              sourceText="Source: Capacity Tracker from the Department of Health and Social Care (DHSC)"
+              sourceText={`Source: ${SOURCES.capacityTracker}`}
             />
           }
           table={
@@ -1701,7 +1696,7 @@ export default function ProvisionAndOccupancyPage() {
                     average, {IndicatorService.getMostRecentDate(finalCpData)}
                   </>
                 }
-                source="Capacity Tracker from the Department of Health and Social Care (DHSC)"
+                source={SOURCES.capacityTracker}
                 valueHeader="Occupancy level"
                 valueFormat="percentage"
                 // Care home users also see their own care home
@@ -1770,7 +1765,7 @@ export default function ProvisionAndOccupancyPage() {
           sources="Capacity Tracker, Office for National Statistics"
           updateFrequency="Daily updates"
           limitations={true}
-          url="/help/beds-per-100000-adult-population"
+          url={METRICS.bedcount_per_hundred_thousand_adults_total.helpUrl}
         />
         <DataLinkCard
           label="Adult social care beds per 100,000 adult population - over time"
@@ -1784,7 +1779,7 @@ export default function ProvisionAndOccupancyPage() {
           sources="Capacity Tracker"
           updateFrequency="Daily updates"
           limitations={true}
-          url="/help/percentage-beds-occupied"
+          url={METRICS.median_occupancy_total.helpUrl}
         />
       </DataIndicatorDetailsList>
 
