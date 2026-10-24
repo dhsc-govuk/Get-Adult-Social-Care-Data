@@ -1,0 +1,19 @@
+# estimated_population_with_selected_health_conditions.csv
+"Sharing label: Not for sharing externally"
+"The data in the chart is not to be shared outside your organisation."
+"This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
+
+"Indicator","2011","2016","2021","2022","2023","2024","2025"
+"Total population aged 30-64 predicted to have early onset dementia","693","715","737","355","366","378","390"
+"Total population aged 18-64 with a learning disability, predicted to display challenging behaviour","1,250","1,290","1,331","257","266","274","282"
+"Total population aged 18-64 predicted to have autistic spectrum disorders","32,224","33,242","34,259","603","622","642","662"
+
+# estimated_percentage_change_in_population_with_selected_health_conditions.csv
+"Sharing label: Not for sharing externally"
+"The data in the chart is not to be shared outside your organisation."
+"This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
+
+"Indicator","2011","2016","2021","2022","2023","2024","2025"
+"Total population aged 30-64 predicted to have early onset dementia","7.0%","7.2%","7.4%","597.0%","617.0%","636.0%","656.0%"
+"Total population aged 18-64 with a learning disability, predicted to display challenging behaviour","5.7%","5.9%","6.1%","608.0%","627.0%","648.0%","667.0%"
+"Total population aged 18-64 predicted to have autistic spectrum disorders","13.5%","13.9%","14.3%","636.0%","657.0%","679.0%","698.0%"

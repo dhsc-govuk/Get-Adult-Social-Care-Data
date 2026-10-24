@@ -1,0 +1,32 @@
+# number_of_children_in_need.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Reporting year","Sunderland","North East (regional average)","England (national average)"
+"2024 to 2025","5,099","8,164","8,686"
+"2023 to 2024","4,935","7,912","8,418"
+"2022 to 2023","4,784","7,669","8,160"
+"2021 to 2022","4,633","7,418","7,892"
+"2020 to 2021","4,481","7,175","7,634"
+
+# children_in_need_per_10000_children.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Reporting year","Sunderland","North East (regional average)","England (national average)"
+"2024 to 2025","316","365","360"
+"2023 to 2024","307","354","349"
+"2022 to 2023","297","343","338"
+"2021 to 2022","288","332","328"
+"2020 to 2021","278","321","317"
+
+# children_in_need_episodes_ending_due_to_transfer_to_adult_social_care.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Reporting year","Sunderland","North East (regional average)","England (national average)"
+"2024 to 2025","148","148","141"
+"2023 to 2024","143","143","137"
+"2022 to 2023","139","138","132"
+"2021 to 2022","135","134","128"
+"2020 to 2021","130","130","124"

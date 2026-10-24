@@ -25,6 +25,7 @@ import {
   NUM_CHILDREN_IN_NEED,
   NUM_CIN_TRANSFER_ASC,
 } from '@/data/dfeMetrics';
+import { METRICS } from '@/config/metrics';
 import {
   comparisonLabels,
   locationTimeSeries,
@@ -198,11 +199,7 @@ export default function ChildrenInNeedPage() {
   );
   const cinPer10000Series = useMemo(
     () =>
-      locationTimeSeries(
-        allOverTimeData,
-        CIN_PER_10000_CHILDREN,
-        columnLabels
-      ),
+      locationTimeSeries(allOverTimeData, CIN_PER_10000_CHILDREN, columnLabels),
     [allOverTimeData, columnLabels]
   );
   const cinTransferSeries = useMemo(
@@ -212,8 +209,7 @@ export default function ChildrenInNeedPage() {
   );
 
   const numCinRows = useMemo(
-    () =>
-      periodRows(allOverTimeData, NUM_CHILDREN_IN_NEED, reportingYearLabel),
+    () => periodRows(allOverTimeData, NUM_CHILDREN_IN_NEED, reportingYearLabel),
     [allOverTimeData]
   );
   const cinPer10000Rows = useMemo(
@@ -222,8 +218,7 @@ export default function ChildrenInNeedPage() {
     [allOverTimeData]
   );
   const cinTransferRows = useMemo(
-    () =>
-      periodRows(allOverTimeData, NUM_CIN_TRANSFER_ASC, reportingYearLabel),
+    () => periodRows(allOverTimeData, NUM_CIN_TRANSFER_ASC, reportingYearLabel),
     [allOverTimeData]
   );
 
@@ -264,7 +259,7 @@ export default function ChildrenInNeedPage() {
           <p className="govuk-body">
             Find out{' '}
             <a
-              href={withBasePath('/help/children-in-need')}
+              href={withBasePath(METRICS[NUM_CHILDREN_IN_NEED].helpUrl)}
               className="govuk-link"
             >
               how the number of children in need is calculated
@@ -339,7 +334,7 @@ export default function ChildrenInNeedPage() {
           <p className="govuk-body">
             Find out{' '}
             <a
-              href={withBasePath('/help/children-in-need-per-10000-children')}
+              href={withBasePath(METRICS[CIN_PER_10000_CHILDREN].helpUrl)}
               className="govuk-link"
             >
               how the proportion of children in need is calculated
@@ -412,9 +407,7 @@ export default function ChildrenInNeedPage() {
           <p className="govuk-body">
             Find out{' '}
             <a
-              href={withBasePath(
-                '/help/children-in-need-episodes-ending-due-to-transfer-to-adult-social-care'
-              )}
+              href={withBasePath(METRICS[NUM_CIN_TRANSFER_ASC].helpUrl)}
               className="govuk-link"
             >
               how the number of children in need episodes ending due to transfer
@@ -490,21 +483,21 @@ export default function ChildrenInNeedPage() {
           sources="Department for Education"
           updateFrequency="Yearly updates"
           limitations={true}
-          url="/help/children-in-need"
+          url={METRICS[NUM_CHILDREN_IN_NEED].helpUrl}
         />
         <DataLinkCard
           label="Children in need per 10,000 children"
           sources="Department for Education"
           updateFrequency="Yearly updates"
           limitations={true}
-          url="/help/children-in-need-per-10000-children"
+          url={METRICS[CIN_PER_10000_CHILDREN].helpUrl}
         />
         <DataLinkCard
           label="Children in need episodes ending due to transfer to adult social care"
           sources="Department for Education"
           updateFrequency="Yearly updates"
           limitations={true}
-          url="/help/children-in-need-episodes-ending-due-to-transfer-to-adult-social-care"
+          url={METRICS[NUM_CIN_TRANSFER_ASC].helpUrl}
         />
       </DataIndicatorDetailsList>
 

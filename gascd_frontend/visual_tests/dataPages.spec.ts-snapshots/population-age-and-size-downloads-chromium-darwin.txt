@@ -1,0 +1,16 @@
+# adult_population_size.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Indicator","Sunderland","North East","NHS peer group total","England"
+"Total adult population","29,547,881","32,473,265","538,051,822","34,889,391"
+
+# age_group_percentages.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Indicator","Sunderland","North East","NHS peer group (average)","England"
+"Aged 18 to 64","75.8%","61.9%","73.7%","74.9%"
+"Aged 65 and over","10.9%","20.2%","21.2%","20.0%"
+"Aged 75 and over","11.8%","9.8%","8.5%","10.4%"
+"Aged 85 and over","3.3%","2.0%","2.7%","2.2%"

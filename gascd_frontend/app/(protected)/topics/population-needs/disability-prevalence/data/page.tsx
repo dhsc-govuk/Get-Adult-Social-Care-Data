@@ -32,6 +32,28 @@ import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLoc
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
 import { ComparatorSelection } from '@/components/charts/peer-group/types';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
+import {
+  METRICS,
+  MetricId,
+  metricLabels,
+  percentageMetrics,
+  SOURCES,
+} from '@/config/metrics';
+
+// In the order the tables and filters show them
+const SUPPORT_REASON_ROWS: MetricId[] = [
+  'learning_disability_support_18_and_over',
+  'mental_health_support_18_and_over',
+  'access_and_mobility_only_physical_support_18_and_over',
+  'personal_care_support_physical_support_18_and_over',
+  'support_for_dual_impairment_sensory_support_18_and_over',
+  'support_for_hearing_impairment_sensory_support_18_and_over',
+  'support_for_visual_impairment_sensory_support_18_and_over',
+  'asylum_seeker_support_social_support_18_and_over',
+  'substance_misuse_support_social_support_18_and_over',
+  'support_for_social_isolation_other_social_support_18_and_over',
+  'support_with_memory_and_cognition_18_and_over',
+];
 
 export default function DisabilityPrevalence() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -327,28 +349,7 @@ export default function DisabilityPrevalence() {
     </details>
   );
 
-  const supportReasonRowHeadersDefault = {
-    learning_disability_support_18_and_over: 'Learning disability support',
-    mental_health_support_18_and_over: 'Mental health support',
-    access_and_mobility_only_physical_support_18_and_over:
-      'Physical support: Access and mobility only',
-    personal_care_support_physical_support_18_and_over:
-      'Physical support: Personal care support',
-    support_for_dual_impairment_sensory_support_18_and_over:
-      'Sensory support: Support for dual impairment',
-    support_for_hearing_impairment_sensory_support_18_and_over:
-      'Sensory support: Support for hearing impairment',
-    support_for_visual_impairment_sensory_support_18_and_over:
-      'Sensory support: Support for visual impairment',
-    asylum_seeker_support_social_support_18_and_over:
-      'Social support: Asylum seeker support',
-    substance_misuse_support_social_support_18_and_over:
-      'Social support: Substance misuse support',
-    support_for_social_isolation_other_social_support_18_and_over:
-      'Social support: Support for social isolation or other reason',
-    support_with_memory_and_cognition_18_and_over:
-      'Support with memory and cognition',
-  };
+  const supportReasonRowHeadersDefault = metricLabels(SUPPORT_REASON_ROWS);
   const standardisedRowHeadersDefault: Record<string, string> =
     Object.fromEntries(
       Object.entries(supportReasonRowHeadersDefault).map(([id, label]) => [
@@ -604,9 +605,7 @@ export default function DisabilityPrevalence() {
             <p className="govuk-body-m">
               Find out how{' '}
               <a
-                href={withBasePath(
-                  '/help/people-who-reported-bad-or-very-bad-health'
-                )}
+                href={withBasePath(METRICS.perc_general_health.helpUrl)}
                 className="govuk-link"
               >
                 people who reported bad or very bad health
@@ -638,17 +637,12 @@ export default function DisabilityPrevalence() {
                     ])}
                   </>
                 }
-                source={
-                  'Census 2021 from the Office for National Statistics (ONS)'
-                }
+                source={SOURCES.census2021}
                 columnHeaders={benchmarkedColumnHeaders}
-                rowHeaders={{
-                  perc_general_health:
-                    'People who reported bad or very bad health',
-                }}
+                rowHeaders={metricLabels(['perc_general_health'])}
                 data={benchmarkedDisabilityData}
                 showCareProvider={false}
-                percentageRows={['perc_general_health']}
+                percentageRows={percentageMetrics(['perc_general_health'])}
               ></DataTable>
             </>
           }
@@ -698,7 +692,7 @@ export default function DisabilityPrevalence() {
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="the percentage of the population who self-reported bad or very bad health"
-              figureTitle="People who reported bad or very bad health"
+              figureTitle={METRICS.perc_general_health.label}
               dateLabel={IndicatorService.getCensusYear(
                 benchmarkedDisabilityData,
                 ['perc_general_health']
@@ -719,7 +713,7 @@ export default function DisabilityPrevalence() {
             <p className="govuk-body-m">
               Find out how{' '}
               <a
-                href={withBasePath('/help/disability-prevalence')}
+                href={withBasePath(METRICS.perc_population_disability.helpUrl)}
                 className="govuk-link"
               >
                 disability prevalence
@@ -752,17 +746,14 @@ export default function DisabilityPrevalence() {
                     ])}
                   </>
                 }
-                source={
-                  'Census 2021 from the Office for National Statistics (ONS)'
-                }
+                source={SOURCES.census2021}
                 columnHeaders={benchmarkedColumnHeaders}
-                rowHeaders={{
-                  perc_population_disability:
-                    'Disability prevalence – people who reported a long-term physical or mental health condition, or illness that limits day-to-day activities',
-                }}
+                rowHeaders={metricLabels(['perc_population_disability'])}
                 data={benchmarkedDisabilityData}
                 showCareProvider={false}
-                percentageRows={['perc_population_disability']}
+                percentageRows={percentageMetrics([
+                  'perc_population_disability',
+                ])}
               ></DataTable>
             </>
           }
@@ -829,7 +820,9 @@ export default function DisabilityPrevalence() {
             <p className="govuk-body-m">
               Find out how{' '}
               <a
-                href={withBasePath('/help/learning-disability-prevalence')}
+                href={withBasePath(
+                  METRICS.learning_disability_prevalence.helpUrl
+                )}
                 className="govuk-link"
               >
                 learning disability prevalence is calculated
@@ -863,17 +856,14 @@ export default function DisabilityPrevalence() {
                     )}
                   </>
                 }
-                source={
-                  'Fingertips public health profiles from the Department of Health and Social Care (DHSC)'
-                }
+                source={SOURCES.fingertipsPublicHealth}
                 columnHeaders={benchmarkedColumnHeaders}
-                rowHeaders={{
-                  learning_disability_prevalence:
-                    'Learning disability prevalence',
-                }}
+                rowHeaders={metricLabels(['learning_disability_prevalence'])}
                 data={benchmarkedDisabilityData}
                 showCareProvider={false}
-                percentageRows={['learning_disability_prevalence']}
+                percentageRows={percentageMetrics([
+                  'learning_disability_prevalence',
+                ])}
               ></DataTable>
             </>
           }
@@ -923,14 +913,14 @@ export default function DisabilityPrevalence() {
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="learning disability prevalence"
-              figureTitle="Learning disability prevalence"
+              figureTitle={METRICS.learning_disability_prevalence.label}
               dateLabel={IndicatorService.getFinancialYear(
                 benchmarkedDisabilityData,
                 1,
                 ['learning_disability_prevalence']
               )}
               figureNumber={3}
-              sourceText="Source: Fingertips public health profiles from the Department of Health and Social Care (DHSC)"
+              sourceText={`Source: ${SOURCES.fingertipsPublicHealth}`}
             />
           }
         />
@@ -944,7 +934,7 @@ export default function DisabilityPrevalence() {
               Find out how{' '}
               <a
                 href={withBasePath(
-                  '/help/primary-reason-for-accessing-long-term-adult-social-care'
+                  METRICS.learning_disability_support_18_and_over.helpUrl
                 )}
                 className="govuk-link"
               >
@@ -983,9 +973,7 @@ export default function DisabilityPrevalence() {
                     )}
                   </>
                 }
-                source={
-                  'Adult Social Care Activity Report from Department of Health and Social Care (DHSC)'
-                }
+                source={SOURCES.ascActivityReport}
                 columnHeaders={{
                   ...locationNamesWithAverageLabels,
                   ComparatorLabel: comparatorAverageLabel,
@@ -1020,7 +1008,8 @@ export default function DisabilityPrevalence() {
               Find out how{' '}
               <a
                 href={withBasePath(
-                  '/help/primary-reason-for-accessing-long-term-adult-social-care-per-100000-adults'
+                  METRICS.learning_disability_support_18_and_over_per100k_adults
+                    .helpUrl
                 )}
                 className="govuk-link"
               >
@@ -1072,7 +1061,7 @@ export default function DisabilityPrevalence() {
                 figureNumber={4}
                 // Rates per 100,000, not percentages
                 valueSuffix=""
-                sourceText="Source: Adult Social Care Activity and Finance Report from NHS England & population estimates from ONS"
+                sourceText={`Source: ${SOURCES.ascActivityFinanceWithOnsPopulation}`}
               />
               <p className="govuk-body-s">
                 Local authorities with an underlying count of between 1 and 5
@@ -1103,7 +1092,7 @@ export default function DisabilityPrevalence() {
                     )}
                   </>
                 }
-                source="Adult Social Care Activity and Finance Report from NHS England & population estimates from ONS"
+                source={SOURCES.ascActivityFinanceWithOnsPopulation}
                 valueHeader={`${standardisedRowHeadersDefault[chartSupportReason]} per 100,000 adults`}
                 laCode={laCode}
                 laName={locationNames.LALabel}
@@ -1140,35 +1129,38 @@ export default function DisabilityPrevalence() {
           sources="Office for National Statistics"
           updateFrequency="Updated every 10 years"
           limitations={false}
-          url="/help/disability-prevalence"
+          url={METRICS.perc_population_disability.helpUrl}
         />
         <DataLinkCard
           label="Learning disability prevalence"
           sources="Department of Health and Social Care"
           updateFrequency="Yearly updates"
           limitations={true}
-          url="/help/learning-disability-prevalence"
+          url={METRICS.learning_disability_prevalence.helpUrl}
         />
         <DataLinkCard
           label="People who reported bad or very bad health"
           sources="Office for National Statistics"
           updateFrequency="Updated every 10 years"
           limitations={false}
-          url="/help/people-who-reported-bad-or-very-bad-health"
+          url={METRICS.perc_general_health.helpUrl}
         />
         <DataLinkCard
           label="Primary reason for people to access long-term adult social care"
           sources="NHS England"
           updateFrequency="Yearly updates"
           limitations={false}
-          url="/help/primary-reason-for-accessing-long-term-adult-social-care"
+          url={METRICS.learning_disability_support_18_and_over.helpUrl}
         />
         <DataLinkCard
           label="Primary reason for people to access long-term adult social care – standardised per 100,000 of the total adult (18+) population"
           sources="NHS England, Office for National Statistics"
           updateFrequency="Yearly updates"
           limitations={false}
-          url="/help/primary-reason-for-accessing-long-term-adult-social-care-per-100000-adults"
+          url={
+            METRICS.learning_disability_support_18_and_over_per100k_adults
+              .helpUrl
+          }
         />
       </DataIndicatorDetailsList>
 

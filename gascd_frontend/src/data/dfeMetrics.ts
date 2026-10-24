@@ -7,14 +7,11 @@
  * `<measure>_age_<age>` convention used by the DfE loader.
  */
 
-export const SEN_SOURCE =
-  'Special educational needs in England, Department for Education (DfE)';
+import { SOURCES } from '@/config/metrics';
 
-export const EHCP_SOURCE =
-  'Education, Health and Care Plans in England, Department for Education (DfE)';
-
-export const CIN_SOURCE =
-  'Children in need in England, Department for Education (DfE)';
+export const SEN_SOURCE = SOURCES.dfeSen;
+export const EHCP_SOURCE = SOURCES.dfeEhcp;
+export const CIN_SOURCE = SOURCES.dfeChildrenInNeed;
 
 /** Number of pupils aged 14+ with SEN support, over an academic year */
 export const NUM_SEN_SUPPORT_14PLUS = 'num_sen_support_14plus';
