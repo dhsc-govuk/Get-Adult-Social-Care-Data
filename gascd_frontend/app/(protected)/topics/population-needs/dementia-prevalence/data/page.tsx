@@ -29,6 +29,14 @@ import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLoc
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
 import { ComparatorSelection } from '@/components/charts/peer-group/types';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
+import {
+  METRICS,
+  metricLabels,
+  percentageMetrics,
+  SOURCES,
+} from '@/config/metrics';
+
+const PREVALENCE = 'dementia_qof_prevalence';
 
 export default function DementaPrevalencePage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -67,12 +75,12 @@ export default function DementaPrevalencePage() {
   ];
 
   const demographicMetricIds = [
-    'dementia_qof_prevalence',
+    PREVALENCE,
     'dementia_estimated_diagnosis_rate_65over',
   ];
 
   // Metrics with peer group / custom comparator benchmarking
-  const benchmarkedMetricIds = ['dementia_qof_prevalence'];
+  const benchmarkedMetricIds = [PREVALENCE];
 
   const metricPage = 'dementia-prevalence';
   const laCode = locationIds[1];
@@ -357,7 +365,7 @@ export default function DementaPrevalencePage() {
             <p className="govuk-body">
               Find out{' '}
               <a
-                href={withBasePath('/help/dementia-prevalence')}
+                href={withBasePath(METRICS[PREVALENCE].helpUrl)}
                 className="govuk-link"
               >
                 how dementia prevalence is calculated
@@ -415,17 +423,12 @@ export default function DementaPrevalencePage() {
                     )}
                   </>
                 }
-                source={
-                  'Fingertips from the Department of Health and Social Care (DHSC)'
-                }
+                source={SOURCES.fingertips}
                 columnHeaders={tableColumnHeaders}
-                rowHeaders={{
-                  dementia_qof_prevalence:
-                    'Dementia prevalence - all ages, as a proportion of people registered at GP practices',
-                }}
+                rowHeaders={metricLabels([PREVALENCE])}
                 data={filteredDemographicData}
                 showCareProvider={false}
-                percentageRows={['dementia_qof_prevalence']}
+                percentageRows={percentageMetrics([PREVALENCE])}
               ></DataTable>
             </>
           }
@@ -448,36 +451,32 @@ export default function DementaPrevalencePage() {
               laName={locationNames.LALabel}
               currentLaValue={
                 filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'dementia_qof_prevalence' &&
-                    d.location_type === 'LA'
+                  (d) => d.metric_id === PREVALENCE && d.location_type === 'LA'
                 )?.data_point ?? null
               }
               nationalAverageValue={
                 filteredDemographicData.find(
                   (d) =>
-                    d.metric_id === 'dementia_qof_prevalence' &&
-                    d.location_type === 'National'
+                    d.metric_id === PREVALENCE && d.location_type === 'National'
                 )?.data_point ?? null
               }
               regionalAverageValue={
                 filteredDemographicData.find(
                   (d) =>
-                    d.metric_id === 'dementia_qof_prevalence' &&
-                    d.location_type === 'Regional'
+                    d.metric_id === PREVALENCE && d.location_type === 'Regional'
                 )?.data_point ?? null
               }
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
-              peerData={dataByMetric['dementia_qof_prevalence'] ?? null}
+              peerData={dataByMetric[PREVALENCE] ?? null}
               loading={chartLoading}
               error={chartError}
               comparatorControl={renderComparatorControl('comparator-chart-1')}
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="dementia prevalence in all ages, as a proportion of people registered at GP practices"
-              figureTitle="Dementia prevalence - all ages, as a proportion of people registered at GP practices"
+              figureTitle={METRICS[PREVALENCE].label}
               figureNumber={1}
-              sourceText="Source: Fingertips from the Department of Health and Social Care (DHSC)"
+              sourceText={`Source: ${SOURCES.fingertips}`}
             />
           }
         />
@@ -488,7 +487,7 @@ export default function DementaPrevalencePage() {
           sources="Department of Health and Social Care"
           updateFrequency="Yearly updates"
           limitations={true}
-          url="/help/dementia-prevalence"
+          url={METRICS[PREVALENCE].helpUrl}
         />
       </DataIndicatorDetailsList>
 

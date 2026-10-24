@@ -20,6 +20,20 @@ import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import SubCatergoryTable from '@/components/tables/SubCatergoryTable';
 import IndicatorService from '@/services/indicator/IndicatorService';
+import { METRICS, MetricId, metricLabels, SOURCES } from '@/config/metrics';
+
+// In the order the table shows them
+const PROVIDER_METRICS: MetricId[] = [
+  'npl_adult_social_care',
+  'npl_care_home',
+  'npl_care_home_nursing',
+  'npl_care_home_residential',
+  'npl_community_care',
+  'npl_domiciliary_care',
+  'npl_supported_living',
+  'npl_extra_care_housing',
+  'npl_other_community_care',
+];
 
 export default function ResidentialCareProvidersPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -178,9 +192,7 @@ export default function ResidentialCareProvidersPage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href={withBasePath(
-                  '/help/total-number-community-social-care-providers'
-                )}
+                href={withBasePath(METRICS.npl_adult_social_care.helpUrl)}
                 className="govuk-link"
               >
                 how the number of adult social care providers is calculated
@@ -208,20 +220,10 @@ export default function ResidentialCareProvidersPage() {
                   )}
                 </>
               }
-              source={'Care Directory from the Care Quality Commission (CQC)'}
+              source={SOURCES.cqcCareDirectory}
               columnHeaders={locationNamesWithAverageLabels}
               metricColumnName="Service provider type"
-              rowHeaders={{
-                npl_adult_social_care: 'Total adult social care providers',
-                npl_care_home: 'Care home providers',
-                npl_care_home_nursing: 'Nursing',
-                npl_care_home_residential: 'Residental',
-                npl_community_care: 'Community social care providers',
-                npl_domiciliary_care: 'Home care providers',
-                npl_supported_living: 'Supported living providers',
-                npl_extra_care_housing: 'Extra care housing providers',
-                npl_other_community_care: 'Other community based care provider',
-              }}
+              rowHeaders={metricLabels(PROVIDER_METRICS)}
               data={filteredDemographicData}
               showCareProvider={false}
               percentageRows={[]}
@@ -250,7 +252,7 @@ export default function ResidentialCareProvidersPage() {
           sources="Care Quality Commission"
           updateFrequency="Monthly updates"
           limitations={true}
-          url="/help/total-number-community-social-care-providers"
+          url={METRICS.npl_adult_social_care.helpUrl}
         />
       </DataIndicatorDetailsList>
 

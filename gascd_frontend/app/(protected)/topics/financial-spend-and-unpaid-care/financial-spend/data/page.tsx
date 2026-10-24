@@ -36,6 +36,36 @@ import TimeSeriesChart, {
 } from '@/components/charts/TimeSeriesChart';
 import FilterSelectGroup from '@/components/filters/FilterSelectGroup';
 import { cloneDeep } from 'lodash';
+import { METRICS, MetricId, metricLabels, SOURCES } from '@/config/metrics';
+
+// Table rows, in the order shown
+const DURATION_OF_CARE_ROWS: MetricId[] = [
+  'edpsr_stlt_total_all_ages',
+  'edpsr_lt_total_all_ages',
+  'edpsr_lt_learning_disability_support_all_ages',
+  'edpsr_lt_mental_health_support_all_ages',
+  'edpsr_lt_physical_support_all_ages',
+  'edpsr_lt_sensory_support_all_ages',
+  'edpsr_lt_support_with_memory_and_cognition_all_ages',
+  'edpsr_st_total_all_ages',
+  'edpsr_st_learning_disability_support_all_ages',
+  'edpsr_st_mental_health_support_all_ages',
+  'edpsr_st_physical_support_all_ages',
+  'edpsr_st_sensory_support_all_ages',
+  'edpsr_st_support_with_memory_and_cognition_all_ages',
+];
+const SUPPORT_SETTING_ROWS: MetricId[] = [
+  'elss_all_types_of_adult_social_care_all_ages',
+  'elss_all_types_of_care_home_all_ages',
+  'elss_nursing_all_ages',
+  'elss_residential_all_ages',
+  'elss_all_types_of_community_social_care_all_ages',
+  'elss_community_home_care_all_ages',
+  'elss_community_supported_living_all_ages',
+  'elss_community_direct_payments_all_ages',
+  'elss_community_other_long_term_care_all_ages',
+  'elss_supported_accommodation_all_ages',
+];
 
 export default function LAFundingPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -710,9 +740,7 @@ export default function LAFundingPage() {
           <p className="govuk-body-m">
             Find out{' '}
             <a
-              href={withBasePath(
-                '/help/percentages-financial-spend-long-term-and-short-term-care'
-              )}
+              href={withBasePath(METRICS.edpsr_stlt_total_all_ages.helpUrl)}
               className="govuk-link"
             >
               how the financial spend for short-term and long-term care is
@@ -747,35 +775,13 @@ export default function LAFundingPage() {
                     )}
                   </>
                 }
-                source={
-                  'Adult Social Care Finance Report from the Department of Health and Social Care'
-                }
+                source={SOURCES.ascFinanceReport}
                 columnHeaders={{
                   ...locationNamesWithAverageLabels,
                   ComparatorLabel: comparatorAverageLabel,
                 }}
                 metricColumnName={metricColumnNames[0]}
-                rowHeaders={{
-                  edpsr_stlt_total_all_ages: 'Both short-term and long-term',
-                  edpsr_lt_total_all_ages: 'Long-term',
-                  edpsr_lt_learning_disability_support_all_ages:
-                    'Learning disability support',
-                  edpsr_lt_mental_health_support_all_ages:
-                    'Mental health support',
-                  edpsr_lt_physical_support_all_ages: 'Physical support',
-                  edpsr_lt_sensory_support_all_ages: 'Sensory support',
-                  edpsr_lt_support_with_memory_and_cognition_all_ages:
-                    'Support with memory and cognition',
-                  edpsr_st_total_all_ages: 'Short-term',
-                  edpsr_st_learning_disability_support_all_ages:
-                    'Learning disability support',
-                  edpsr_st_mental_health_support_all_ages:
-                    'Mental health support',
-                  edpsr_st_physical_support_all_ages: 'Physical support',
-                  edpsr_st_sensory_support_all_ages: 'Sensory support',
-                  edpsr_st_support_with_memory_and_cognition_all_ages:
-                    'Support with memory and cognition',
-                }}
+                rowHeaders={metricLabels(DURATION_OF_CARE_ROWS)}
                 data={benchmarkedDemographicData}
                 showCareProvider={false}
                 percentageRows={[]}
@@ -814,7 +820,7 @@ export default function LAFundingPage() {
               Find out{' '}
               <a
                 href={withBasePath(
-                  '/help/financial-spend-long-term-and-short-term-care-per-100000-adults'
+                  METRICS.edpsr_stlt_total_all_ages_per100k_adults.helpUrl
                 )}
                 className="govuk-link"
               >
@@ -875,7 +881,7 @@ export default function LAFundingPage() {
                 benchmarkedDemographicData,
                 1
               )}
-              sourceText="Source: Adult Social Care Finance Report from the Department of Health and Social Care (DHSC) and population estimates from ONS"
+              sourceText={`Source: ${SOURCES.ascFinanceReportWithOnsPopulation}`}
             />
           }
           table={
@@ -898,7 +904,7 @@ export default function LAFundingPage() {
                     )}
                   </>
                 }
-                source="Adult Social Care Finance Report from the Department of Health and Social Care (DHSC) and population estimates from ONS"
+                source={SOURCES.ascFinanceReportWithOnsPopulation}
                 valueHeader={`${
                   (DURATION_OF_CARE_OPTIONS as Record<string, string>)[
                     chartDuration
@@ -945,7 +951,7 @@ export default function LAFundingPage() {
             Find out{' '}
             <a
               href={withBasePath(
-                '/help/total-financial-spend-long-term-community-adult-social-care'
+                METRICS.elss_all_types_of_adult_social_care_all_ages.helpUrl
               )}
               className="govuk-link"
             >
@@ -979,31 +985,13 @@ export default function LAFundingPage() {
                     )}
                   </>
                 }
-                source={
-                  'Adult Social Care Finance Report from the Department of Health and Social Care'
-                }
+                source={SOURCES.ascFinanceReport}
                 columnHeaders={{
                   ...locationNamesWithAverageLabels,
                   ComparatorLabel: comparatorAverageLabel,
                 }}
                 metricColumnName={metricColumnNames[1]}
-                rowHeaders={{
-                  elss_all_types_of_adult_social_care_all_ages:
-                    'All types of adult social care',
-                  elss_all_types_of_care_home_all_ages:
-                    'All types of care home, including residential and nursing',
-                  elss_nursing_all_ages: 'Nursing',
-                  elss_residential_all_ages: 'Residential',
-                  elss_all_types_of_community_social_care_all_ages:
-                    'All types of community social care, including home care, supported living, community direct payments and other schemes',
-                  elss_community_home_care_all_ages: 'Home care',
-                  elss_community_supported_living_all_ages: 'Supported living',
-                  elss_community_direct_payments_all_ages:
-                    'Community direct payments',
-                  elss_community_other_long_term_care_all_ages: 'Other',
-                  elss_supported_accommodation_all_ages:
-                    'Supported accomodation',
-                }}
+                rowHeaders={metricLabels(SUPPORT_SETTING_ROWS)}
                 data={benchmarkedDemographicData}
                 showCareProvider={false}
                 percentageRows={[]}
@@ -1042,7 +1030,9 @@ export default function LAFundingPage() {
               Find out{' '}
               <a
                 href={withBasePath(
-                  '/help/financial-spend-long-term-care-per-100000-adults'
+                  METRICS
+                    .elss_all_types_of_adult_social_care_all_ages_per100k_adults
+                    .helpUrl
                 )}
                 className="govuk-link"
               >
@@ -1094,7 +1084,7 @@ export default function LAFundingPage() {
                 benchmarkedDemographicData,
                 1
               )}
-              sourceText="Source: Adult Social Care Finance Report from the Department of Health and Social Care (DHSC) and population estimates from ONS"
+              sourceText={`Source: ${SOURCES.ascFinanceReportWithOnsPopulation}`}
             />
           }
           table={
@@ -1118,7 +1108,7 @@ export default function LAFundingPage() {
                     )}
                   </>
                 }
-                source="Adult Social Care Finance Report from the Department of Health and Social Care (DHSC) and population estimates from ONS"
+                source={SOURCES.ascFinanceReportWithOnsPopulation}
                 valueHeader={
                   (CARE_TYPE_OPTIONS as Record<string, string>)[chartCareType]
                 }
@@ -1210,10 +1200,7 @@ export default function LAFundingPage() {
                   />
                 </div>
               )) || <p>Loading graph</p>}
-              <p className="govuk-body">
-                Source: Adult Social Care Finance Report from the Department of
-                Health and Social Care
-              </p>
+              <p className="govuk-body">{`Source: ${SOURCES.ascFinanceReport}`}</p>
             </>
           }
           table={
@@ -1233,9 +1220,7 @@ export default function LAFundingPage() {
                   )}
                 </>
               }
-              source={
-                'Adult Social Care Finance Report from the Department of Health and Social Care'
-              }
+              source={SOURCES.ascFinanceReport}
               columnHeaders={locationNamesWithAverageLabels}
               metricColumnName={metricColumnNames[2]}
               rowHeaders={laFundingTableRowHeaders}
@@ -1269,7 +1254,7 @@ export default function LAFundingPage() {
           sources="NHS England"
           updateFrequency="Yearly updates"
           limitations={false}
-          url="/help/total-financial-spend-long-term-community-adult-social-care"
+          url={METRICS.elss_all_types_of_adult_social_care_all_ages.helpUrl}
         />
         <DataLinkCard
           label={
@@ -1281,7 +1266,7 @@ export default function LAFundingPage() {
           sources="NHS England"
           updateFrequency="Yearly updates"
           limitations={false}
-          url="/help/percentages-financial-spend-long-term-and-short-term-care"
+          url={METRICS.edpsr_stlt_total_all_ages.helpUrl}
         />
         <DataLinkCard
           label={
@@ -1294,7 +1279,7 @@ export default function LAFundingPage() {
           sources="Department of Health and Social Care, Office for National Statistics"
           updateFrequency="Yearly updates"
           limitations={true}
-          url="/help/financial-spend-long-term-and-short-term-care-per-100000-adults"
+          url={METRICS.edpsr_stlt_total_all_ages_per100k_adults.helpUrl}
         />
         <DataLinkCard
           label={
@@ -1307,7 +1292,10 @@ export default function LAFundingPage() {
           sources="Department of Health and Social Care, Office for National Statistics"
           updateFrequency="Yearly updates"
           limitations={true}
-          url="/help/financial-spend-long-term-care-per-100000-adults"
+          url={
+            METRICS.elss_all_types_of_adult_social_care_all_ages_per100k_adults
+              .helpUrl
+          }
         />
       </DataIndicatorDetailsList>
 
