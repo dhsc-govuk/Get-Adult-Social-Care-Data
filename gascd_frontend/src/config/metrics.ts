@@ -11,6 +11,7 @@ export const SOURCES = {
   census2021: 'Census 2021 from the Office for National Statistics (ONS)',
   capacityTracker:
     'Capacity Tracker from the Department of Health and Social Care (DHSC)',
+  fingertips: 'Fingertips from the Department of Health and Social Care (DHSC)',
   capacityTrackerWithOnsPopulation:
     'Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS',
 } as const;
@@ -146,6 +147,14 @@ export const METRICS = {
     source: SOURCES.capacityTrackerWithOnsPopulation,
     helpUrl:
       '/help/number-people-receiving-care-from-community-social-care-provider-per-100000-adults',
+  },
+
+  dementia_qof_prevalence: {
+    label:
+      'Dementia prevalence - all ages, as a proportion of people registered at GP practices',
+    format: 'percentage',
+    source: SOURCES.fingertips,
+    helpUrl: '/help/dementia-prevalence',
   },
 } as const satisfies Record<string, MetricConfig>;
 
