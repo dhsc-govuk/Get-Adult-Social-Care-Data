@@ -29,6 +29,12 @@ import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLoc
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
 import { ComparatorSelection } from '@/components/charts/peer-group/types';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
+import {
+  METRICS,
+  metricLabels,
+  percentageMetrics,
+  SOURCES,
+} from '@/config/metrics';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -395,7 +401,10 @@ export default function ProvisionAndOccupancyPage() {
                 shared dwelling, or has no central heating.
               </li>
             </ol>
-            <Link className="govuk-link" href="/help/household-deprivation">
+            <Link
+              className="govuk-link"
+              href={METRICS.perc_households_deprivation_deprived.helpUrl}
+            >
               More details on household deprivation data.
             </Link>
           </div>
@@ -436,17 +445,16 @@ export default function ProvisionAndOccupancyPage() {
               <DataTable
                 tableref={tableref1}
                 caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
-                source={
-                  'Census 2021 from the Office for National Statistics (ONS)'
-                }
+                source={SOURCES.census2021}
                 columnHeaders={tableColumnHeaders}
-                rowHeaders={{
-                  perc_households_deprivation_deprived:
-                    'Percentage of households deprived in 4 dimensions: education, employment, health and housing',
-                }}
+                rowHeaders={metricLabels([
+                  'perc_households_deprivation_deprived',
+                ])}
                 data={filteredDemographicData}
                 showCareProvider={false}
-                percentageRows={['perc_households_deprivation_deprived']}
+                percentageRows={percentageMetrics([
+                  'perc_households_deprivation_deprived',
+                ])}
                 showAverageLabel={false}
               ></DataTable>
             </>
@@ -513,9 +521,7 @@ export default function ProvisionAndOccupancyPage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href={withBasePath(
-                  '/help/households-where-property-is-owned-outright'
-                )}
+                href={withBasePath(METRICS.perc_household_ownership.helpUrl)}
                 className="govuk-link"
               >
                 how data on property ownership is collected
@@ -561,17 +567,12 @@ export default function ProvisionAndOccupancyPage() {
               <DataTable
                 tableref={tableref2}
                 caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
-                source={
-                  'Census 2021 from the Office for National Statistics (ONS)'
-                }
+                source={SOURCES.census2021}
                 columnHeaders={tableColumnHeaders}
-                rowHeaders={{
-                  perc_household_ownership:
-                    'Percentage of households where the property is owned outright',
-                }}
+                rowHeaders={metricLabels(['perc_household_ownership'])}
                 data={filteredDemographicData}
                 showCareProvider={false}
-                percentageRows={['perc_household_ownership']}
+                percentageRows={percentageMetrics(['perc_household_ownership'])}
                 showAverageLabel={false}
               ></DataTable>
             </>
@@ -622,7 +623,7 @@ export default function ProvisionAndOccupancyPage() {
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="the percentage of households where the property is owned outright"
-              figureTitle="Percentage of households where the property is owned outright"
+              figureTitle={METRICS.perc_household_ownership.label}
               figureNumber={2}
             />
           }
@@ -635,9 +636,7 @@ export default function ProvisionAndOccupancyPage() {
             <p className="govuk-body-m">
               Find out{' '}
               <a
-                href={withBasePath(
-                  '/help/one-person-households-where-person-aged-65-or-over'
-                )}
+                href={withBasePath(METRICS.perc_households_one_person.helpUrl)}
                 className="govuk-link"
               >
                 how the percentage of one-person households where the person is
@@ -684,17 +683,14 @@ export default function ProvisionAndOccupancyPage() {
               <DataTable
                 tableref={tableref3}
                 caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
-                source={
-                  'Census 2021 from the Office for National Statistics (ONS)'
-                }
+                source={SOURCES.census2021}
                 columnHeaders={tableColumnHeaders}
-                rowHeaders={{
-                  perc_households_one_person:
-                    'Percentage of one-person households where the person is aged 65 or over',
-                }}
+                rowHeaders={metricLabels(['perc_households_one_person'])}
                 data={filteredDemographicData}
                 showCareProvider={false}
-                percentageRows={['perc_households_one_person']}
+                percentageRows={percentageMetrics([
+                  'perc_households_one_person',
+                ])}
                 showAverageLabel={false}
               ></DataTable>
             </>
@@ -745,7 +741,7 @@ export default function ProvisionAndOccupancyPage() {
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription="the percentage of one-person households where the person is aged 65 or over"
-              figureTitle="Percentage of one-person households where the person is aged 65 or over"
+              figureTitle={METRICS.perc_households_one_person.label}
               figureNumber={3}
             />
           }
@@ -757,21 +753,21 @@ export default function ProvisionAndOccupancyPage() {
           sources="Office for National Statistics"
           updateFrequency="Updates every 10 years"
           limitations={false}
-          url="/help/household-deprivation"
+          url={METRICS.perc_households_deprivation_deprived.helpUrl}
         />
         <DataLinkCard
           label="Households where the property is owned outright"
           sources="Office for National Statistics"
           updateFrequency="Updates every 10 years"
           limitations={false}
-          url="/help/households-where-property-is-owned-outright"
+          url={METRICS.perc_household_ownership.helpUrl}
         />
         <DataLinkCard
           label="One-person households where the person is aged 65 or over"
           sources="Office for National Statistics"
           updateFrequency="Updates every 10 years"
           limitations={false}
-          url="/help/one-person-households-where-person-aged-65-or-over"
+          url={METRICS.perc_households_one_person.helpUrl}
         />
       </DataIndicatorDetailsList>
 

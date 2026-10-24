@@ -189,6 +189,27 @@ export const METRICS = {
     source: SOURCES.onsPopulationEstimates,
     helpUrl: '/help/population-age',
   },
+
+  perc_households_deprivation_deprived: {
+    label:
+      'Percentage of households deprived in 4 dimensions: education, employment, health and housing',
+    format: 'percentage',
+    source: SOURCES.census2021,
+    helpUrl: '/help/household-deprivation',
+  },
+  perc_household_ownership: {
+    label: 'Percentage of households where the property is owned outright',
+    format: 'percentage',
+    source: SOURCES.census2021,
+    helpUrl: '/help/households-where-property-is-owned-outright',
+  },
+  perc_households_one_person: {
+    label:
+      'Percentage of one-person households where the person is aged 65 or over',
+    format: 'percentage',
+    source: SOURCES.census2021,
+    helpUrl: '/help/one-person-households-where-person-aged-65-or-over',
+  },
 } as const satisfies Record<string, MetricConfig>;
 
 export type MetricId = keyof typeof METRICS;
