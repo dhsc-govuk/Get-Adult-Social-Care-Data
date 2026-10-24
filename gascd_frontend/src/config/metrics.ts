@@ -12,6 +12,8 @@ export const SOURCES = {
   capacityTracker:
     'Capacity Tracker from the Department of Health and Social Care (DHSC)',
   fingertips: 'Fingertips from the Department of Health and Social Care (DHSC)',
+  onsPopulationEstimates:
+    'Population estimates from the Office for National Statistics (ONS)',
   capacityTrackerWithOnsPopulation:
     'Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS',
 } as const;
@@ -155,6 +157,37 @@ export const METRICS = {
     format: 'percentage',
     source: SOURCES.fingertips,
     helpUrl: '/help/dementia-prevalence',
+  },
+
+  total_population: {
+    label: 'Total adult population',
+    format: 'number',
+    source: SOURCES.onsPopulationEstimates,
+    helpUrl: '/help/population-size',
+  },
+  perc_18_64: {
+    label: 'Aged 18 to 64',
+    format: 'percentage',
+    source: SOURCES.onsPopulationEstimates,
+    helpUrl: '/help/population-age',
+  },
+  perc_65over: {
+    label: 'Aged 65 and over',
+    format: 'percentage',
+    source: SOURCES.onsPopulationEstimates,
+    helpUrl: '/help/population-age',
+  },
+  perc_75over: {
+    label: 'Aged 75 and over',
+    format: 'percentage',
+    source: SOURCES.onsPopulationEstimates,
+    helpUrl: '/help/population-age',
+  },
+  perc_85over: {
+    label: 'Aged 85 and over',
+    format: 'percentage',
+    source: SOURCES.onsPopulationEstimates,
+    helpUrl: '/help/population-age',
   },
 } as const satisfies Record<string, MetricConfig>;
 
