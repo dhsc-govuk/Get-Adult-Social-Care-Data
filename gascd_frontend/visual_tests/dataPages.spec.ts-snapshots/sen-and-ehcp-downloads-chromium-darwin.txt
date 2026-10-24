@@ -1,0 +1,74 @@
+# number_of_pupils_with_sen_support_over_time.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Academic year","Sunderland","North East (regional average)","England (national average)"
+"2024 to 2025","3,028","2,065","2,475"
+"2023 to 2024","2,935","2,004","2,401"
+"2022 to 2023","2,845","1,943","2,328"
+"2021 to 2022","2,751","1,881","2,254"
+"2020 to 2021","2,661","1,820","2,181"
+
+# number_of_pupils_with_sen_support_by_age.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Age","Sunderland","North East (regional average)","England (national average)"
+"Age 14","484","1,035","1,062"
+"Age 15","531","448","867"
+"Age 16","713","853","804"
+"Age 17","729","656","666"
+"Age 18","217","185","150"
+"Age 19+","74","191","180"
+
+# percentage_of_pupils_with_sen_support_over_time.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Academic year","Sunderland","North East (regional average)","England (national average)"
+"2024 to 2025","10.5%","11.4%","11.8%"
+"2023 to 2024","10.1%","11.0%","11.5%"
+"2022 to 2023","9.8%","10.7%","11.1%"
+"2021 to 2022","9.5%","10.4%","10.7%"
+"2020 to 2021","9.2%","10.0%","10.4%"
+
+# percentage_of_pupils_with_sen_support_by_age.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Age","Sunderland","North East (regional average)","England (national average)"
+"Age 14","14.1%","13.1%","14.6%"
+"Age 15","11.4%","15.9%","14.9%"
+"Age 16","9.4%","10.8%","11.5%"
+"Age 17","12.2%","12.7%","8.4%"
+"Age 18","7.4%","7.3%","7.1%"
+"Age 19+","4.9%","8.0%","8.4%"
+
+# number_of_children_and_young_people_with_an_ehcp_over_time.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Academic year","Sunderland","North East (regional average)","England (national average)"
+"2024 to 2025","3,303","1,703","1,781"
+"2023 to 2024","3,200","1,653","1,728"
+"2022 to 2023","3,102","1,602","1,675"
+"2021 to 2022","3,000","1,551","1,622"
+"2020 to 2021","2,903","1,501","1,569"
+
+# number_of_children_and_young_people_with_an_ehcp_by_age.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+
+"Age","Sunderland","North East (regional average)","England (national average)"
+"Age 14","424","570","471"
+"Age 15","398","256","440"
+"Age 16","249","279","634"
+"Age 17","569","243","233"
+"Age 18","468","244","341"
+"Age 19","305","324","353"
+"Age 20","138","101","289"
+"Age 21","112","132","143"
+"Age 22","60","138","78"
+"Age 23","75","43","106"
+"Age 24","40.1","55.8","49.3"
+"Age 25","34","28.3","25.9"
