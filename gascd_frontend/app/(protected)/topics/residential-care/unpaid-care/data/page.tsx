@@ -444,6 +444,7 @@ export default function UnpaidCarePage() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
+              metric={UNPAID_CARE}
               currentLaValue={
                 filteredDemographicData.find(
                   (d) => d.metric_id === UNPAID_CARE && d.location_type === 'LA'

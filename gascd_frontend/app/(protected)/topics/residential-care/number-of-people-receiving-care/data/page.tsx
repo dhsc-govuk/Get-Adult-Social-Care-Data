@@ -486,6 +486,7 @@ export default function NumberPeopleReceivingCarePage() {
             <PeerGroupBarChart
               laCode={laCode}
               laName={locationNames.LALabel}
+              metric={STANDARDISED_METRIC_ID}
               currentLaValue={standardisedValues.la}
               nationalAverageValue={standardisedValues.national}
               regionalAverageValue={standardisedValues.regional}
@@ -502,9 +503,6 @@ export default function NumberPeopleReceivingCarePage() {
                 benchmarkedDemographicData
               )}
               figureNumber={1}
-              // Rates per 100,000, not percentages
-              valueSuffix=""
-              sourceText={`Source: ${SOURCES.capacityTrackerWithOnsPopulation}`}
             />
           }
           table={

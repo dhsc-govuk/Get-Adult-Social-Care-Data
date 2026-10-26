@@ -1185,6 +1185,7 @@ export default function ProvisionAndOccupancyPage() {
               <PeerGroupBarChart
                 laCode={laCode}
                 laName={locationNamesCP.LALabel}
+                metric={numbersTableMetricId}
                 currentLaValue={bedNumbersValues.la}
                 nationalAverageValue={bedNumbersValues.national}
                 regionalAverageValue={bedNumbersValues.regional}
@@ -1210,10 +1211,7 @@ export default function ProvisionAndOccupancyPage() {
                 figureNumber={1}
                 // Names every series, as the table caption does
                 comparisonSummary={`${locationNamesCP.LALabel}, ${comparatorAverageLabel}, ${locationNamesCP.RegionLabel} regional average and national average`}
-                // Rates per 100,000, not percentages
-                valueSuffix=""
                 dateLabel={IndicatorService.getMostRecentDate(bedNumbersData)}
-                sourceText={`Source: ${SOURCES.capacityTrackerWithOnsPopulationEstimates}`}
               />
               <p className="govuk-body">
                 Note: small numbers have been suppressed and will appear as zero
@@ -1398,6 +1396,7 @@ export default function ProvisionAndOccupancyPage() {
               <PeerGroupBarChart
                 laCode={laCode}
                 laName={locationNamesCP.LALabel}
+                metric={groupedBedType.metric_id}
                 currentLaValue={groupedBedTypesValues.la}
                 nationalAverageValue={groupedBedTypesValues.national}
                 regionalAverageValue={groupedBedTypesValues.regional}
@@ -1422,12 +1421,9 @@ export default function ProvisionAndOccupancyPage() {
                 figureTitle={`Care home bed numbers per 100,000 ${POPULATION_DESCRIPTIONS[groupedPopulation]} (${bedTypesChartFilterName.toLowerCase()})`}
                 figureNumber={2}
                 comparisonSummary={`${locationNamesCP.LALabel}, ${comparatorAverageLabel}, ${locationNamesCP.RegionLabel} regional average and national average`}
-                // Rates per 100,000, not percentages
-                valueSuffix=""
                 dateLabel={IndicatorService.getMostRecentDate(
                   latestBedTypeData
                 )}
-                sourceText={`Source: ${SOURCES.capacityTrackerWithOnsPopulationEstimates}`}
               />
               <p className="govuk-body">
                 Note: small numbers have been suppressed and will appear as zero
@@ -1702,6 +1698,7 @@ export default function ProvisionAndOccupancyPage() {
             <PeerGroupBarChart
               laCode={laCode}
               laName={locationNamesCP.LALabel}
+              metric={OCCUPANCY_METRIC}
               currentLaValue={occupancyValues.la}
               nationalAverageValue={occupancyValues.national}
               regionalAverageValue={occupancyValues.regional}
@@ -1717,7 +1714,6 @@ export default function ProvisionAndOccupancyPage() {
               figureNumber={4}
               comparisonSummary={`${locationNamesCP.LALabel}, ${comparatorAverageLabel}, ${locationNamesCP.RegionLabel} regional average and national average`}
               dateLabel={IndicatorService.getMostRecentDate(finalCpData)}
-              sourceText={`Source: ${SOURCES.capacityTracker}`}
             />
           }
           table={

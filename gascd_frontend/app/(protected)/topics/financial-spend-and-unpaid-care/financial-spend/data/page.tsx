@@ -893,6 +893,7 @@ export default function LAFundingPage() {
             <PeerGroupBarChart
               laCode={laCode}
               laName={locationNames.LALabel}
+              metric={standardisedFundingMetricId}
               currentLaValue={fundingValues.la}
               nationalAverageValue={fundingValues.national}
               regionalAverageValue={fundingValues.regional}
@@ -923,12 +924,10 @@ export default function LAFundingPage() {
                 chartSupportReason
               ].toLowerCase()}, standardised per 100,000 adult population (18+)`}
               figureNumber={1}
-              currency
               dateLabel={IndicatorService.getFinancialYear(
                 benchmarkedDemographicData,
                 1
               )}
-              sourceText={`Source: ${SOURCES.ascFinanceReportWithOnsPopulation}`}
             />
           }
           table={
@@ -1102,6 +1101,7 @@ export default function LAFundingPage() {
             <PeerGroupBarChart
               laCode={laCode}
               laName={locationNames.LALabel}
+              metric={standardisedCareTypeId}
               currentLaValue={careTypeValues.la}
               nationalAverageValue={careTypeValues.national}
               regionalAverageValue={careTypeValues.regional}
@@ -1128,12 +1128,10 @@ export default function LAFundingPage() {
                 chartCareType
               ].toLowerCase()}, for all age groups, standardised per 100,000 adult population (18+)`}
               figureNumber={2}
-              currency
               dateLabel={IndicatorService.getFinancialYear(
                 benchmarkedDemographicData,
                 1
               )}
-              sourceText={`Source: ${SOURCES.ascFinanceReportWithOnsPopulation}`}
             />
           }
           table={

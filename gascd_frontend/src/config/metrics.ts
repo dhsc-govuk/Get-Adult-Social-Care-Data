@@ -491,3 +491,13 @@ export const metricLabels = (
 /** The ids shown as percentages, for a table's `percentageRows` */
 export const percentageMetrics = (ids: readonly MetricId[]): MetricId[] =>
   ids.filter((id) => METRICS[id].format === 'percentage');
+
+export const isMetricId = (id: string): id is MetricId => id in METRICS;
+
+/** The format of a metric id that may only be known at runtime */
+export const metricFormat = (id: string): MetricFormat => {
+  if (!isMetricId(id)) {
+    throw new Error(`No metric config for ${id}`);
+  }
+  return METRICS[id].format;
+};

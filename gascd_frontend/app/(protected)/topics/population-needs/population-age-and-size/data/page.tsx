@@ -661,6 +661,7 @@ export default function ProvisionAndOccupancyPage() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
+              metric={selectedAgeMetric}
               currentLaValue={
                 benchmarkedDemographicData.find(
                   (d) =>
@@ -696,7 +697,6 @@ export default function ProvisionAndOccupancyPage() {
               metricDescription={`the percentage of the population ${selectedAgeLabel.toLowerCase()}`}
               figureTitle={`Percentage of the population ${selectedAgeLabel.toLowerCase()}`}
               figureNumber={1}
-              sourceText={`Source: ${SOURCES.onsPopulationEstimates}`}
             />
           }
         />

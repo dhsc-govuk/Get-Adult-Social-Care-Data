@@ -449,6 +449,7 @@ export default function DementaPrevalencePage() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
+              metric={PREVALENCE}
               currentLaValue={
                 filteredDemographicData.find(
                   (d) => d.metric_id === PREVALENCE && d.location_type === 'LA'
@@ -476,7 +477,6 @@ export default function DementaPrevalencePage() {
               metricDescription="dementia prevalence in all ages, as a proportion of people registered at GP practices"
               figureTitle={METRICS[PREVALENCE].label}
               figureNumber={1}
-              sourceText={`Source: ${SOURCES.fingertips}`}
             />
           }
         />

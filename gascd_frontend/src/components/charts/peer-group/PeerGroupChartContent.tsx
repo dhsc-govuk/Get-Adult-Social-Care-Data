@@ -28,9 +28,9 @@ interface PeerGroupChartContentProps {
   comparatorAverageLabel?: string;
   regionalAverageLabel?: string;
   nationalAverageLabel?: string;
-  valueSuffix?: string;
-  currency?: boolean;
-  sourceText?: string;
+  valueSuffix: string;
+  currency: boolean;
+  sourceText: string;
 }
 
 const roundToOneDecimal = (value: number | null): number | null =>
@@ -46,9 +46,9 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
   comparatorAverageLabel,
   regionalAverageLabel,
   nationalAverageLabel,
-  valueSuffix = '%',
-  currency = false,
-  sourceText = 'Source: Census 2021 from the Office for National Statistics (ONS)',
+  valueSuffix,
+  currency,
+  sourceText,
 }) => {
   const hasPeers = peerData.localAuthorityPeers.length > 0;
 

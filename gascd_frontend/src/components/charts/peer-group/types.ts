@@ -59,6 +59,8 @@ export interface LocalAuthoritySummary {
 export interface PeerGroupBarChartProps {
   laCode: string;
   laName: string;
+  // Sets the value format (%, plain number or £) and the default source line
+  metric: string;
   currentLaValue: number | null;
   nationalAverageValue: number | null;
   // The user's region value from the same metric-data query the tables use,
@@ -68,8 +70,8 @@ export interface PeerGroupBarChartProps {
   peerData: PeerGroupData | null;
   loading: boolean;
   error: boolean;
-  metricDescription?: string;
-  figureTitle?: string;
+  metricDescription: string;
+  figureTitle: string;
   figureNumber?: number;
   comparatorControl?: ReactNode;
   comparatorLabel?: string;
@@ -84,8 +86,6 @@ export interface PeerGroupBarChartProps {
   // Legend label for the national average line, e.g. "England" where the
   // page's tables also use the plain country name.
   nationalAverageLabel?: string;
-  valueSuffix?: string;
-  // Whole pounds with a £ prefix; valueSuffix is ignored
-  currency?: boolean;
+  // Defaults to the metric's source
   sourceText?: string;
 }

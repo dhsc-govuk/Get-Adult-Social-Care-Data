@@ -683,6 +683,7 @@ export default function DisabilityPrevalence() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
+              metric={'perc_general_health'}
               currentLaValue={
                 benchmarkedDisabilityData.find(
                   (d) =>
@@ -794,6 +795,7 @@ export default function DisabilityPrevalence() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
+              metric={'perc_population_disability'}
               currentLaValue={
                 benchmarkedDisabilityData.find(
                   (d) =>
@@ -904,6 +906,7 @@ export default function DisabilityPrevalence() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
+              metric={'learning_disability_prevalence'}
               currentLaValue={
                 benchmarkedDisabilityData.find(
                   (d) =>
@@ -940,7 +943,6 @@ export default function DisabilityPrevalence() {
                 ['learning_disability_prevalence']
               )}
               figureNumber={3}
-              sourceText={`Source: ${SOURCES.fingertipsPublicHealth}`}
             />
           }
         />
@@ -1055,6 +1057,7 @@ export default function DisabilityPrevalence() {
               <PeerGroupBarChart
                 laCode={laCode}
                 laName={locationNames.LALabel}
+                metric={chartSupportReason}
                 currentLaValue={standardisedReasonValues.la}
                 nationalAverageValue={standardisedReasonValues.national}
                 regionalAverageValue={standardisedReasonValues.regional}
@@ -1081,9 +1084,6 @@ export default function DisabilityPrevalence() {
                   1
                 )}
                 figureNumber={4}
-                // Rates per 100,000, not percentages
-                valueSuffix=""
-                sourceText={`Source: ${SOURCES.ascActivityFinanceWithOnsPopulation}`}
               />
               <p className="govuk-body-s">
                 Local authorities with an underlying count of between 1 and 5

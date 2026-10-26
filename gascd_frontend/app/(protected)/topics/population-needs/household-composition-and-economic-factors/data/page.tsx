@@ -476,6 +476,7 @@ export default function ProvisionAndOccupancyPage() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
+              metric={'perc_households_deprivation_deprived'}
               currentLaValue={
                 filteredDemographicData.find(
                   (d) =>
@@ -506,6 +507,8 @@ export default function ProvisionAndOccupancyPage() {
               comparatorControl={renderComparatorControl('comparator-chart-1')}
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
+              metricDescription="the percentage of households deprived in 4 dimensions"
+              figureTitle="Percentage of households deprived in 4 dimensions"
             />
           }
         />
@@ -594,6 +597,7 @@ export default function ProvisionAndOccupancyPage() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
+              metric={'perc_household_ownership'}
               currentLaValue={
                 filteredDemographicData.find(
                   (d) =>
@@ -712,6 +716,7 @@ export default function ProvisionAndOccupancyPage() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
+              metric={'perc_households_one_person'}
               currentLaValue={
                 filteredDemographicData.find(
                   (d) =>
