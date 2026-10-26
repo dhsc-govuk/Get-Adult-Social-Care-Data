@@ -20,7 +20,7 @@ import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import SubCatergoryTable from '@/components/tables/SubCatergoryTable';
 import IndicatorService from '@/services/indicator/IndicatorService';
-import { METRICS, MetricId, metricLabels, SOURCES } from '@/config/metrics';
+import { METRICS, MetricId } from '@/config/metrics';
 
 // In the order the table shows them
 const PROVIDER_METRICS: MetricId[] = [
@@ -207,6 +207,7 @@ export default function ResidentialCareProvidersPage() {
           sharingMetricIds={demographicMetricIds}
           table={
             <SubCatergoryTable
+              metrics={PROVIDER_METRICS}
               tableref={tableref2}
               caption={
                 <>
@@ -220,13 +221,10 @@ export default function ResidentialCareProvidersPage() {
                   )}
                 </>
               }
-              source={SOURCES.cqcCareDirectory}
               columnHeaders={locationNamesWithAverageLabels}
               metricColumnName="Service provider type"
-              rowHeaders={metricLabels(PROVIDER_METRICS)}
               data={filteredDemographicData}
               showCareProvider={false}
-              percentageRows={[]}
               totalsRows={[
                 'npl_adult_social_care',
                 'npl_care_home',

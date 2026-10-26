@@ -1,16 +1,13 @@
 import React, { Ref } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
 import TableService from '@/services/Table/TableService';
+import { MetricRowProps, resolveMetricRows } from './metricRows';
 
-type DataTableProps = {
+type DataTableProps = MetricRowProps & {
   caption?: React.ReactNode;
   metricColumnName?: string;
   columnHeaders: Array<string>;
-  rowHeaders: Object;
   data: Indicator[];
-  percentageRows?: string[];
-  currency?: boolean;
-  source?: string;
   last_updated?: string;
   children?: React.ReactNode;
   showAverageLabel?: boolean;
@@ -49,15 +46,23 @@ const DataTable: React.FC<DataTableProps> = ({
   caption,
   columnHeaders,
   metricColumnName = 'Indicator',
-  rowHeaders,
+  metrics,
+  rowHeaders: rowHeadersProp,
   data,
-  percentageRows,
-  currency,
+  percentageRows: percentageRowsProp,
+  currency: currencyProp,
   children,
-  source,
+  source: sourceProp,
   showAverageLabel = false,
   tableref = undefined,
 }) => {
+  const { rowHeaders, percentageRows, currency, source } = resolveMetricRows({
+    metrics,
+    rowHeaders: rowHeadersProp,
+    percentageRows: percentageRowsProp,
+    currency: currencyProp,
+    source: sourceProp,
+  });
   const columnClass = (columnIndex: number) => {
     if (columnIndex === 0) {
       return 'govuk-table__header govuk-!-width-one-third scrollable-table__header';

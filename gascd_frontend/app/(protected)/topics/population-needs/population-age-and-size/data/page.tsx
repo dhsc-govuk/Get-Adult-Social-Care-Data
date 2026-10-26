@@ -33,15 +33,16 @@ import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/con
 import { ComparatorSelection } from '@/components/charts/peer-group/types';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
 import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
-import { METRICS, metricLabels, SOURCES } from '@/config/metrics';
+import { METRICS, MetricId, metricLabels } from '@/config/metrics';
 import { chartLocationValues } from '@/helpers/locationComparison';
 
-const AGE_GROUP_LABELS = metricLabels([
+const AGE_GROUP_METRICS: MetricId[] = [
   'perc_18_64',
   'perc_65over',
   'perc_75over',
   'perc_85over',
-]);
+];
+const AGE_GROUP_LABELS = metricLabels(AGE_GROUP_METRICS);
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -547,6 +548,7 @@ export default function ProvisionAndOccupancyPage() {
             <>
               {renderComparatorControl('comparator-table-1')}
               <DataTable
+                metrics={['total_population']}
                 tableref={tableref1}
                 caption={
                   <>
@@ -561,9 +563,7 @@ export default function ProvisionAndOccupancyPage() {
                     )}
                   </>
                 }
-                source={SOURCES.onsPopulationEstimates}
                 columnHeaders={populationSizeColumnHeaders}
-                rowHeaders={metricLabels(['total_population'])}
                 data={benchmarkedDemographicData}
                 showCareProvider={false}
                 showAverageLabel={false}
@@ -621,6 +621,7 @@ export default function ProvisionAndOccupancyPage() {
             <>
               {renderComparatorControl('comparator-table-2')}
               <DataTable
+                metrics={AGE_GROUP_METRICS}
                 tableref={tableref2}
                 caption={
                   <>
@@ -635,12 +636,9 @@ export default function ProvisionAndOccupancyPage() {
                     )}
                   </>
                 }
-                source={SOURCES.onsPopulationEstimates}
                 columnHeaders={benchmarkedColumnHeaders}
-                rowHeaders={AGE_GROUP_LABELS}
                 data={benchmarkedDemographicData}
                 showCareProvider={false}
-                percentageRows={ageGroupMetricIds}
                 showAverageLabel={false}
               ></DataTable>
             </>

@@ -38,7 +38,7 @@ import FilterSelectGroup from '@/components/filters/FilterSelectGroup';
 import { useFilterSync } from '@/components/filters/useFilterSync';
 import SectionControls from '@/components/data-components/SectionControls';
 import { cloneDeep } from 'lodash';
-import { METRICS, MetricId, metricLabels, SOURCES } from '@/config/metrics';
+import { METRICS, MetricId, SOURCES } from '@/config/metrics';
 import { locationValues } from '@/helpers/locationComparison';
 
 // Table rows, in the order shown
@@ -804,6 +804,7 @@ export default function LAFundingPage() {
             <>
               {renderComparatorControl('comparator-table-1')}
               <SubCatergoryTable
+                metrics={DURATION_OF_CARE_ROWS}
                 tableref={tableref1}
                 caption={
                   <>
@@ -820,17 +821,13 @@ export default function LAFundingPage() {
                     )}
                   </>
                 }
-                source={SOURCES.ascFinanceReport}
                 columnHeaders={{
                   ...locationNamesWithAverageLabels,
                   ComparatorLabel: comparatorAverageLabel,
                 }}
                 metricColumnName={metricColumnNames[0]}
-                rowHeaders={metricLabels(DURATION_OF_CARE_ROWS)}
                 data={benchmarkedDemographicData}
                 showCareProvider={false}
-                percentageRows={[]}
-                currency={true}
                 totalsRows={[
                   'edpsr_stlt_total_all_ages',
                   'edpsr_lt_total_all_ages',
@@ -930,6 +927,7 @@ export default function LAFundingPage() {
               />
               <PeerGroupTable
                 tableref={tableref4}
+                metric={standardisedFundingMetricId}
                 caption={
                   <>
                     Table 2: total <abbr title="Local Authority">LA</abbr>{' '}
@@ -945,7 +943,6 @@ export default function LAFundingPage() {
                     )}
                   </>
                 }
-                source={SOURCES.ascFinanceReportWithOnsPopulation}
                 valueHeader={`${
                   (DURATION_OF_CARE_OPTIONS as Record<string, string>)[
                     chartDuration
@@ -955,7 +952,6 @@ export default function LAFundingPage() {
                     chartSupportReason
                   ]
                 }`}
-                valueFormat="currency"
                 laCode={laCode}
                 laName={locationNames.LALabel}
                 currentLaValue={fundingValues.la}
@@ -1011,6 +1007,7 @@ export default function LAFundingPage() {
             <>
               {renderComparatorControl('comparator-table-2')}
               <SubCatergoryTable
+                metrics={SUPPORT_SETTING_ROWS}
                 tableref={tableref2}
                 caption={
                   <>
@@ -1026,17 +1023,13 @@ export default function LAFundingPage() {
                     )}
                   </>
                 }
-                source={SOURCES.ascFinanceReport}
                 columnHeaders={{
                   ...locationNamesWithAverageLabels,
                   ComparatorLabel: comparatorAverageLabel,
                 }}
                 metricColumnName={metricColumnNames[1]}
-                rowHeaders={metricLabels(SUPPORT_SETTING_ROWS)}
                 data={benchmarkedDemographicData}
                 showCareProvider={false}
-                percentageRows={[]}
-                currency={true}
                 totalsRows={[
                   'elss_all_types_of_adult_social_care_all_ages',
                   'elss_all_types_of_care_home_all_ages',
@@ -1134,6 +1127,7 @@ export default function LAFundingPage() {
               />
               <PeerGroupTable
                 tableref={tableref5}
+                metric={standardisedCareTypeId}
                 caption={
                   <>
                     Table 4: total <abbr title="Local Authority">LA</abbr>{' '}
@@ -1150,11 +1144,9 @@ export default function LAFundingPage() {
                     )}
                   </>
                 }
-                source={SOURCES.ascFinanceReportWithOnsPopulation}
                 valueHeader={
                   (CARE_TYPE_OPTIONS as Record<string, string>)[chartCareType]
                 }
-                valueFormat="currency"
                 laCode={laCode}
                 laName={locationNames.LALabel}
                 currentLaValue={careTypeValues.la}

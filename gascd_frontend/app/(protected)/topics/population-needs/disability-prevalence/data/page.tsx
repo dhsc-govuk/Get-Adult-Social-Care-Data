@@ -34,13 +34,7 @@ import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLoc
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
 import { ComparatorSelection } from '@/components/charts/peer-group/types';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
-import {
-  METRICS,
-  MetricId,
-  metricLabels,
-  percentageMetrics,
-  SOURCES,
-} from '@/config/metrics';
+import { METRICS, MetricId, metricLabels, SOURCES } from '@/config/metrics';
 import {
   chartLocationValues,
   locationValues,
@@ -639,6 +633,7 @@ export default function DisabilityPrevalence() {
             <>
               {renderComparatorControl('comparator-table-1')}
               <DataTable
+                metrics={['perc_general_health']}
                 tableref={tableref1}
                 caption={
                   <>
@@ -653,12 +648,9 @@ export default function DisabilityPrevalence() {
                     ])}
                   </>
                 }
-                source={SOURCES.census2021}
                 columnHeaders={benchmarkedColumnHeaders}
-                rowHeaders={metricLabels(['perc_general_health'])}
                 data={benchmarkedDisabilityData}
                 showCareProvider={false}
-                percentageRows={percentageMetrics(['perc_general_health'])}
               ></DataTable>
             </>
           }
@@ -731,6 +723,7 @@ export default function DisabilityPrevalence() {
             <>
               {renderComparatorControl('comparator-table-2')}
               <DataTable
+                metrics={['perc_population_disability']}
                 tableref={tableref2}
                 caption={
                   <>
@@ -746,14 +739,9 @@ export default function DisabilityPrevalence() {
                     ])}
                   </>
                 }
-                source={SOURCES.census2021}
                 columnHeaders={benchmarkedColumnHeaders}
-                rowHeaders={metricLabels(['perc_population_disability'])}
                 data={benchmarkedDisabilityData}
                 showCareProvider={false}
-                percentageRows={percentageMetrics([
-                  'perc_population_disability',
-                ])}
               ></DataTable>
             </>
           }
@@ -824,6 +812,7 @@ export default function DisabilityPrevalence() {
             <>
               {renderComparatorControl('comparator-table-3')}
               <DataTable
+                metrics={['learning_disability_prevalence']}
                 tableref={tableref3}
                 caption={
                   <>
@@ -840,14 +829,9 @@ export default function DisabilityPrevalence() {
                     )}
                   </>
                 }
-                source={SOURCES.fingertipsPublicHealth}
                 columnHeaders={benchmarkedColumnHeaders}
-                rowHeaders={metricLabels(['learning_disability_prevalence'])}
                 data={benchmarkedDisabilityData}
                 showCareProvider={false}
-                percentageRows={percentageMetrics([
-                  'learning_disability_prevalence',
-                ])}
               ></DataTable>
             </>
           }
@@ -1044,6 +1028,7 @@ export default function DisabilityPrevalence() {
               />
               <PeerGroupTable
                 tableref={tableref5}
+                metric={chartSupportReason}
                 caption={
                   <>
                     Table 5: people accessing long-term adult social care for{' '}
@@ -1062,7 +1047,6 @@ export default function DisabilityPrevalence() {
                     )}
                   </>
                 }
-                source={SOURCES.ascActivityFinanceWithOnsPopulation}
                 valueHeader={`${standardisedRowHeadersDefault[chartSupportReason]} per 100,000 adults`}
                 laCode={laCode}
                 laName={locationNames.LALabel}
