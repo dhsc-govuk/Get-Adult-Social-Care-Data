@@ -40,13 +40,7 @@ import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComp
 import LocationService from '@/services/location/locationService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { ALLOWED_CP_USER_TYPES } from '@/constants';
-import {
-  METRICS,
-  MetricId,
-  metricLabels,
-  percentageMetrics,
-  SOURCES,
-} from '@/config/metrics';
+import { METRICS, MetricId, metricLabels, SOURCES } from '@/config/metrics';
 import { locationValues } from '@/helpers/locationComparison';
 
 const BED_TYPE_ROWS: MetricId[] = [
@@ -1101,6 +1095,7 @@ export default function ProvisionAndOccupancyPage() {
             <>
               {renderComparatorControl('comparator-table-3')}
               <DataTable
+                metrics={['median_bed_count_total']}
                 tableref={tableref3}
                 caption={
                   <>
@@ -1115,16 +1110,13 @@ export default function ProvisionAndOccupancyPage() {
                     {IndicatorService.getMostRecentDate(finalCpData)}
                   </>
                 }
-                source={SOURCES.capacityTracker}
                 columnHeaders={{
                   ...locationNamesCP,
                   ComparatorLabel: comparatorAverageLabel,
                 }}
-                rowHeaders={metricLabels(['median_bed_count_total'])}
                 data={benchmarkedCpData}
                 showCareProvider={showCPLevelData(session?.user)}
                 careProviderMedianMetrics={careProviderMedianMetrics}
-                percentageRows={[]}
                 showAverageLabel={true}
               ></DataTable>
             </>
@@ -1213,6 +1205,7 @@ export default function ProvisionAndOccupancyPage() {
               />
               <PeerGroupTable
                 tableref={tableref1}
+                metric={numbersTableMetricId}
                 caption={
                   <>
                     Table 2a: care home bed numbers per 100,000{' '}
@@ -1226,7 +1219,6 @@ export default function ProvisionAndOccupancyPage() {
                     {IndicatorService.getMostRecentDate(bedNumbersData)}
                   </>
                 }
-                source={SOURCES.capacityTrackerWithOnsPopulationEstimates}
                 valueHeader={`Care home beds per 100,000 ${POPULATION_DESCRIPTIONS[numbersPopulation]}`}
                 laCode={laCode}
                 laName={locationNamesCP.LALabel}
@@ -1425,6 +1417,7 @@ export default function ProvisionAndOccupancyPage() {
               />
               <PeerGroupTable
                 tableref={tableref4}
+                metric={groupedBedType.metric_id}
                 caption={
                   <>
                     Table 3a: care home bed numbers per 100,000{' '}
@@ -1438,7 +1431,6 @@ export default function ProvisionAndOccupancyPage() {
                     {IndicatorService.getMostRecentDate(latestBedTypeData)}
                   </>
                 }
-                source={SOURCES.capacityTrackerWithOnsPopulationEstimates}
                 valueHeader={`Care home beds per 100,000 ${POPULATION_DESCRIPTIONS[groupedPopulation]}`}
                 laCode={laCode}
                 laName={locationNamesCP.LALabel}
@@ -1621,6 +1613,7 @@ export default function ProvisionAndOccupancyPage() {
             <>
               {renderComparatorControl('comparator-table-8')}
               <DataTable
+                metrics={['median_occupancy_total']}
                 tableref={tableref7}
                 caption={
                   <>
@@ -1635,16 +1628,13 @@ export default function ProvisionAndOccupancyPage() {
                     {IndicatorService.getMostRecentDate(finalCpData)}
                   </>
                 }
-                source={SOURCES.capacityTracker}
                 columnHeaders={{
                   ...locationNamesCP,
                   ComparatorLabel: comparatorAverageLabel,
                 }}
-                rowHeaders={metricLabels(['median_occupancy_total'])}
                 data={benchmarkedCpData}
                 showCareProvider={showCPLevelData(session?.user)}
                 careProviderMedianMetrics={careProviderMedianMetrics}
-                percentageRows={percentageMetrics(['median_occupancy_total'])}
                 showAverageLabel={true}
               ></DataTable>
             </>
@@ -1707,6 +1697,7 @@ export default function ProvisionAndOccupancyPage() {
               {renderComparatorControl('comparator-table-5')}
               <PeerGroupTable
                 tableref={tableref5}
+                metric={OCCUPANCY_METRIC}
                 caption={
                   <>
                     Table 5: care home occupancy levels &ndash;{' '}
@@ -1717,9 +1708,7 @@ export default function ProvisionAndOccupancyPage() {
                     average, {IndicatorService.getMostRecentDate(finalCpData)}
                   </>
                 }
-                source={SOURCES.capacityTracker}
                 valueHeader="Occupancy level"
-                valueFormat="percentage"
                 // Care home users also see their own care home
                 extraRows={
                   showCPLevelData(session?.user)

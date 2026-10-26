@@ -3,14 +3,16 @@ import TableService from '@/services/Table/TableService';
 import { getPeerChartRows } from '@/components/charts/peer-group/peerChartRows';
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
 import { PeerGroupData } from '@/components/charts/peer-group/types';
+import { METRICS, metricFormat, MetricId } from '@/config/metrics';
 
-type ValueFormat = 'number' | 'percentage' | 'currency';
 type SortColumn = 'area' | 'value';
 type SortDirection = 'ascending' | 'descending';
 
 type PeerGroupTableProps = {
   caption?: React.ReactNode;
-  source: string;
+  // Sets the value format (%, plain number or £) and the default source
+  metric: string;
+  source?: string;
   valueHeader: string;
   laCode: string;
   laName: string;
@@ -22,7 +24,6 @@ type PeerGroupTableProps = {
   regionalAverageValue: number | null;
   nationalAverageLabel?: string;
   nationalAverageValue: number | null;
-  valueFormat?: ValueFormat;
   extraRows?: { label: string; value: number | null }[];
   tableref?: Ref<HTMLTableElement>;
   children?: React.ReactNode;
@@ -37,7 +38,8 @@ const SORT_ICONS: Record<SortDirection | 'none', string> = {
 // Sorted in React: the MOJ script reorders the DOM, which breaks when rows change
 const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
   caption,
-  source,
+  metric,
+  source = `${METRICS[metric as MetricId]?.source}`,
   valueHeader,
   laCode,
   laName,
@@ -49,11 +51,11 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
   regionalAverageValue,
   nationalAverageLabel = 'England (national average)',
   nationalAverageValue,
-  valueFormat = 'number',
   extraRows = [],
   tableref,
   children,
 }) => {
+  const valueFormat = metricFormat(metric);
   const [sort, setSort] = useState<{
     column: SortColumn;
     direction: SortDirection;

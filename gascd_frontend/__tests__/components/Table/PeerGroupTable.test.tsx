@@ -38,6 +38,7 @@ const peerData: PeerGroupData = {
 };
 
 const props = {
+  metric: 'total_population',
   source: 'Test source',
   valueHeader: 'Beds per 100,000',
   laCode: 'E08000014',
@@ -136,7 +137,7 @@ describe('PeerGroupTable', () => {
     render(
       <PeerGroupTable
         {...props}
-        valueFormat="currency"
+        metric="edpsr_stlt_total_all_ages"
         extraRows={[{ label: 'My care home', value: 1234.4 }]}
       />
     );
@@ -160,5 +161,16 @@ describe('PeerGroupTable', () => {
     ]);
     rerender(<PeerGroupTable {...props} peerData={null} />);
     expect(bodyRows().at(-1)).toEqual(['NHS peer group (average)', 'N/A']);
+  });
+
+  it("defaults the source line to the metric's source", () => {
+    const { source, ...withoutSource } = props;
+    render(<PeerGroupTable {...withoutSource} />);
+    expect(source).toBe('Test source');
+    expect(
+      screen.getByText(
+        'Source: Population estimates from the Office for National Statistics (ONS)'
+      )
+    ).toBeInTheDocument();
   });
 });

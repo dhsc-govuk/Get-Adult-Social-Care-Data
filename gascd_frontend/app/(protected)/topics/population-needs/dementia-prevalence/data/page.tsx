@@ -29,12 +29,7 @@ import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLoc
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
 import { ComparatorSelection } from '@/components/charts/peer-group/types';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
-import {
-  METRICS,
-  metricLabels,
-  percentageMetrics,
-  SOURCES,
-} from '@/config/metrics';
+import { METRICS } from '@/config/metrics';
 import { chartLocationValues } from '@/helpers/locationComparison';
 
 const PREVALENCE = 'dementia_qof_prevalence';
@@ -411,6 +406,7 @@ export default function DementaPrevalencePage() {
             <>
               {renderComparatorControl('comparator-table-1')}
               <DataTable
+                metrics={[PREVALENCE]}
                 tableref={tableref1}
                 caption={
                   <>
@@ -424,12 +420,9 @@ export default function DementaPrevalencePage() {
                     )}
                   </>
                 }
-                source={SOURCES.fingertips}
                 columnHeaders={tableColumnHeaders}
-                rowHeaders={metricLabels([PREVALENCE])}
                 data={filteredDemographicData}
                 showCareProvider={false}
-                percentageRows={percentageMetrics([PREVALENCE])}
               ></DataTable>
             </>
           }

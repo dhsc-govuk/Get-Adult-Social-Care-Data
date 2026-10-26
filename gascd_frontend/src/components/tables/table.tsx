@@ -2,18 +2,15 @@ import React, { Ref } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
 import TableService from '@/services/Table/TableService';
 import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
+import { MetricRowProps, resolveMetricRows } from './metricRows';
 
-type DataTableProps = {
+type DataTableProps = MetricRowProps & {
   caption?: React.ReactNode;
   columnHeaders: Object;
   metricColumnName?: string;
-  rowHeaders: Object;
   data: Indicator[];
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
-  percentageRows?: string[];
-  currency?: boolean;
-  source?: string;
   last_updated?: string;
   children?: React.ReactNode;
   showAverageLabel?: boolean;
@@ -32,18 +29,26 @@ const DataTable: React.FC<DataTableProps> = ({
   caption,
   columnHeaders,
   metricColumnName = 'Indicator',
-  rowHeaders,
+  metrics,
+  rowHeaders: rowHeadersProp,
   data,
   showCareProvider,
   careProviderMedianMetrics,
-  percentageRows,
-  currency,
+  percentageRows: percentageRowsProp,
+  currency: currencyProp,
   children,
-  source,
+  source: sourceProp,
   showAverageLabel = false,
   tableref = undefined,
   smallNumberSuppression = false,
 }) => {
+  const { rowHeaders, percentageRows, currency, source } = resolveMetricRows({
+    metrics,
+    rowHeaders: rowHeadersProp,
+    percentageRows: percentageRowsProp,
+    currency: currencyProp,
+    source: sourceProp,
+  });
   const comparatorLabel = (columnHeaders as { ComparatorLabel?: string | null })
     .ComparatorLabel;
   const showComparatorAverage =
@@ -121,9 +126,15 @@ const DataTable: React.FC<DataTableProps> = ({
               ]
                 .filter(
                   (key) =>
-                    (columnHeaders as Record<string, string | null | undefined>)[key] !== undefined &&
-                    (columnHeaders as Record<string, string | null | undefined>)[key] !== null &&
-                    (columnHeaders as Record<string, string | null | undefined>)[key] !== ''
+                    (
+                      columnHeaders as Record<string, string | null | undefined>
+                    )[key] !== undefined &&
+                    (
+                      columnHeaders as Record<string, string | null | undefined>
+                    )[key] !== null &&
+                    (
+                      columnHeaders as Record<string, string | null | undefined>
+                    )[key] !== ''
                 )
                 .map((columnKey, columnIndex) => (
                   <th
@@ -131,7 +142,14 @@ const DataTable: React.FC<DataTableProps> = ({
                     scope="col"
                     className={columnClass(columnIndex + 1)}
                   >
-                    {(columnHeaders as Record<string, string | null | undefined>)[columnKey]}
+                    {
+                      (
+                        columnHeaders as Record<
+                          string,
+                          string | null | undefined
+                        >
+                      )[columnKey]
+                    }
                   </th>
                 ))}
             </tr>

@@ -29,12 +29,7 @@ import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLoc
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
 import { ComparatorSelection } from '@/components/charts/peer-group/types';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
-import {
-  METRICS,
-  metricLabels,
-  percentageMetrics,
-  SOURCES,
-} from '@/config/metrics';
+import { METRICS } from '@/config/metrics';
 import { chartLocationValues } from '@/helpers/locationComparison';
 
 export default function ProvisionAndOccupancyPage() {
@@ -444,18 +439,12 @@ export default function ProvisionAndOccupancyPage() {
             <>
               {renderComparatorControl('comparator-table-1')}
               <DataTable
+                metrics={['perc_households_deprivation_deprived']}
                 tableref={tableref1}
                 caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
-                source={SOURCES.census2021}
                 columnHeaders={tableColumnHeaders}
-                rowHeaders={metricLabels([
-                  'perc_households_deprivation_deprived',
-                ])}
                 data={filteredDemographicData}
                 showCareProvider={false}
-                percentageRows={percentageMetrics([
-                  'perc_households_deprivation_deprived',
-                ])}
                 showAverageLabel={false}
               ></DataTable>
             </>
@@ -552,14 +541,12 @@ export default function ProvisionAndOccupancyPage() {
             <>
               {renderComparatorControl('comparator-table-2')}
               <DataTable
+                metrics={['perc_household_ownership']}
                 tableref={tableref2}
                 caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
-                source={SOURCES.census2021}
                 columnHeaders={tableColumnHeaders}
-                rowHeaders={metricLabels(['perc_household_ownership'])}
                 data={filteredDemographicData}
                 showCareProvider={false}
-                percentageRows={percentageMetrics(['perc_household_ownership'])}
                 showAverageLabel={false}
               ></DataTable>
             </>
@@ -652,16 +639,12 @@ export default function ProvisionAndOccupancyPage() {
             <>
               {renderComparatorControl('comparator-table-3')}
               <DataTable
+                metrics={['perc_households_one_person']}
                 tableref={tableref3}
                 caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
-                source={SOURCES.census2021}
                 columnHeaders={tableColumnHeaders}
-                rowHeaders={metricLabels(['perc_households_one_person'])}
                 data={filteredDemographicData}
                 showCareProvider={false}
-                percentageRows={percentageMetrics([
-                  'perc_households_one_person',
-                ])}
                 showAverageLabel={false}
               ></DataTable>
             </>

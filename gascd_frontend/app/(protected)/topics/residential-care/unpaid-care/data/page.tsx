@@ -29,12 +29,7 @@ import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLoc
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
 import { ComparatorSelection } from '@/components/charts/peer-group/types';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
-import {
-  METRICS,
-  metricLabels,
-  percentageMetrics,
-  SOURCES,
-} from '@/config/metrics';
+import { METRICS } from '@/config/metrics';
 import { chartLocationValues } from '@/helpers/locationComparison';
 
 const UNPAID_CARE = 'perc_unpaid_care_provider';
@@ -407,6 +402,7 @@ export default function UnpaidCarePage() {
             <>
               {renderComparatorControl('comparator-table-1')}
               <DataTable
+                metrics={[UNPAID_CARE]}
                 tableref={tableref1}
                 caption={
                   <>
@@ -419,12 +415,9 @@ export default function UnpaidCarePage() {
                     {IndicatorService.getCensusYear(filteredDemographicData)}
                   </>
                 }
-                source={SOURCES.census2021}
                 columnHeaders={tableColumnHeaders}
-                rowHeaders={metricLabels([UNPAID_CARE])}
                 data={filteredDemographicData}
                 showCareProvider={false}
-                percentageRows={percentageMetrics([UNPAID_CARE])}
               ></DataTable>
             </>
           }

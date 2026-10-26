@@ -502,8 +502,8 @@ export default function NumberPeopleReceivingCarePage() {
               {renderComparatorControl('comparator-table-2')}
               <PeerGroupTable
                 tableref={tableref2}
+                metric={STANDARDISED_METRIC_ID}
                 caption={`Table 2: number of people receiving community social care in the last month, standardised per 100,000 of the total population (18+) – ${locationNames.LALabel} LA and its comparison group, ${comparatorAverageLabel}, ${locationNames.RegionLabel} (regional average) and ${locationNames.CountryLabel} (national average), ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`}
-                source={SOURCES.capacityTrackerWithOnsPopulation}
                 valueHeader={`${METRICS[COUNT_METRIC_ID].label} in ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}, per 100,000 adults`}
                 laCode={laCode}
                 laName={locationNames.LALabel}

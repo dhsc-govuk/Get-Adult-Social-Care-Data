@@ -2,19 +2,16 @@ import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group
 import React, { Ref } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
 import TableService from '@/services/Table/TableService';
+import { MetricRowProps, resolveMetricRows } from './metricRows';
 
-type DataTableProps = {
+type DataTableProps = MetricRowProps & {
   caption?: React.ReactNode;
   columnHeaders: Object;
   metricColumnName?: string;
-  rowHeaders: Object;
   data: Indicator[];
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
-  percentageRows?: string[];
-  currency?: boolean;
   totalsRows?: string[];
-  source?: string;
   last_updated?: string;
   children?: React.ReactNode;
   showAverageLabel?: boolean;
@@ -64,21 +61,28 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
   caption,
   columnHeaders,
   metricColumnName,
-  rowHeaders,
+  metrics,
+  rowHeaders: rowHeadersProp,
   data,
   showCareProvider,
   careProviderMedianMetrics,
-  percentageRows,
-  currency = false,
+  percentageRows: percentageRowsProp,
+  currency: currencyProp = false,
   totalsRows,
   children,
-  source,
+  source: sourceProp,
   showAverageLabel = false,
   tableref = undefined,
 }) => {
-  const comparatorLabel = (
-    columnHeaders as { ComparatorLabel?: string | null }
-  ).ComparatorLabel;
+  const { rowHeaders, percentageRows, currency, source } = resolveMetricRows({
+    metrics,
+    rowHeaders: rowHeadersProp,
+    percentageRows: percentageRowsProp,
+    currency: currencyProp,
+    source: sourceProp,
+  });
+  const comparatorLabel = (columnHeaders as { ComparatorLabel?: string | null })
+    .ComparatorLabel;
   const showComparatorAverage =
     comparatorLabel !== undefined &&
     comparatorLabel !== null &&
@@ -114,9 +118,15 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
               ]
                 .filter(
                   (key) =>
-                    (columnHeaders as Record<string, string | null | undefined>)[key] !== undefined &&
-                    (columnHeaders as Record<string, string | null | undefined>)[key] !== null &&
-                    (columnHeaders as Record<string, string | null | undefined>)[key] !== ''
+                    (
+                      columnHeaders as Record<string, string | null | undefined>
+                    )[key] !== undefined &&
+                    (
+                      columnHeaders as Record<string, string | null | undefined>
+                    )[key] !== null &&
+                    (
+                      columnHeaders as Record<string, string | null | undefined>
+                    )[key] !== ''
                 )
                 .map((columnKey, columnIndex) => (
                   <th
@@ -124,7 +134,14 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
                     scope="col"
                     className={columnClass(columnIndex + 1)}
                   >
-                    {(columnHeaders as Record<string, string | null | undefined>)[columnKey]}
+                    {
+                      (
+                        columnHeaders as Record<
+                          string,
+                          string | null | undefined
+                        >
+                      )[columnKey]
+                    }
                   </th>
                 ))}
             </tr>

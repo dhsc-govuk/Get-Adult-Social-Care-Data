@@ -22,13 +22,7 @@ import TimeSeriesChart, {
   Series,
 } from '@/components/charts/TimeSeriesChart';
 import IndicatorService from '@/services/indicator/IndicatorService';
-import {
-  METRICS,
-  MetricId,
-  metricLabels,
-  percentageMetrics,
-  SOURCES,
-} from '@/config/metrics';
+import { METRICS, MetricId, metricLabels, SOURCES } from '@/config/metrics';
 
 const POPULATION_METRICS: MetricId[] = [
   'pansi_pred_pop_early_dem_aged_30_64',
@@ -282,6 +276,7 @@ export default function LAFundingPlanningPage() {
           sharingMetricIds={demographicMetricIds}
           table={
             <TimeSeriesTable
+              metrics={POPULATION_METRICS}
               tableref={tableref1}
               caption={
                 <>
@@ -290,12 +285,8 @@ export default function LAFundingPlanningPage() {
                   <abbr title="local authority">LA</abbr> area
                 </>
               }
-              source={SOURCES.pansi}
               columnHeaders={columnDates}
-              rowHeaders={metricLabels(POPULATION_METRICS)}
               data={filteredDemographicData}
-              percentageRows={percentageMetrics(POPULATION_METRICS)}
-              currency={false}
             ></TimeSeriesTable>
           }
           download={
@@ -381,6 +372,7 @@ export default function LAFundingPlanningPage() {
           }
           table={
             <TimeSeriesTable
+              metrics={PERC_CHANGE_METRICS}
               tableref={tableref2}
               caption={
                 <>
@@ -389,12 +381,8 @@ export default function LAFundingPlanningPage() {
                   <abbr title="local authority">LA</abbr> area
                 </>
               }
-              source={SOURCES.pansi}
               columnHeaders={columnDates}
-              rowHeaders={percChangeHeaders}
               data={filteredDemographicData}
-              percentageRows={percentageMetrics(PERC_CHANGE_METRICS)}
-              currency={false}
             ></TimeSeriesTable>
           }
           download={
