@@ -28,6 +28,8 @@ export const SOURCES = {
     'Education, Health and Care Plans in England, Department for Education (DfE)',
   dfeChildrenInNeed:
     'Children in need in England, Department for Education (DfE)',
+  capacityTrackerWithOnsPopulationEstimates:
+    'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)',
   onsPopulationEstimates:
     'Population estimates from the Office for National Statistics (ONS)',
   capacityTrackerWithOnsPopulation:
@@ -181,8 +183,54 @@ const spendingMetrics = Object.fromEntries(
   MetricConfig & { helpUrl: string }
 >;
 
+// Care home beds per 100,000 adults by bed type, and the grouped categories.
+// Other populations swap 'adults' in the id for the same labels.
+const BED_TYPES = {
+  bedcount_per_hundred_thousand_adults_total: 'All bed types',
+  bedcount_per_hundred_thousand_adults_community_care: 'Community care bed',
+  bedcount_per_hundred_thousand_adults_dementia_nursing: 'Dementia nursing',
+  bedcount_per_hundred_thousand_adults_dementia_residential:
+    'Dementia residential',
+  bedcount_per_hundred_thousand_adults_general_nursing: 'General nursing',
+  bedcount_per_hundred_thousand_adults_general_residential:
+    'General residential',
+  bedcount_per_hundred_thousand_adults_learning_disability_nursing:
+    'Learning disability nursing',
+  bedcount_per_hundred_thousand_adults_learning_disability_residential:
+    'Learning disability residential',
+  bedcount_per_hundred_thousand_adults_mental_health_nursing:
+    'Mental health nursing',
+  bedcount_per_hundred_thousand_adults_mental_health_residential:
+    'Mental health residential',
+  bedcount_per_hundred_thousand_adults_transitional: 'Transitional',
+  bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled:
+    'Young physically disabled',
+  bedcount_per_hundred_thousand_adults_grp_older_people_and_dementia:
+    'Older people and dementia',
+  bedcount_per_hundred_thousand_adults_grp_learning_disability:
+    'Learning disability',
+  bedcount_per_hundred_thousand_adults_grp_mental_health: 'Mental health',
+  bedcount_per_hundred_thousand_adults_grp_young_physically_disabled:
+    'Young physically disabled',
+  bedcount_per_hundred_thousand_adults_grp_community_care_and_transitional:
+    'Community care and transitional',
+} as const;
+
+const bedTypeMetrics = Object.fromEntries(
+  Object.entries(BED_TYPES).map(([id, label]) => [
+    id,
+    {
+      label,
+      format: 'number',
+      source: SOURCES.capacityTrackerWithOnsPopulationEstimates,
+      helpUrl: '/help/beds-per-100000-adult-population',
+    },
+  ])
+) as Record<keyof typeof BED_TYPES, MetricConfig & { helpUrl: string }>;
+
 export const METRICS = {
   ...supportReasonMetrics,
+  ...bedTypeMetrics,
   ...spendingMetrics,
 
   pansi_pred_pop_early_dem_aged_30_64: {
@@ -418,6 +466,19 @@ export const METRICS = {
     source: SOURCES.dfeChildrenInNeed,
     helpUrl:
       '/help/children-in-need-episodes-ending-due-to-transfer-to-adult-social-care',
+  },
+
+  median_bed_count_total: {
+    label: 'Beds per care home',
+    format: 'number',
+    source: SOURCES.capacityTracker,
+    helpUrl: '/help/beds-care-provider-location',
+  },
+  median_occupancy_total: {
+    label: 'Occupancy level per care home',
+    format: 'percentage',
+    source: SOURCES.capacityTracker,
+    helpUrl: '/help/percentage-beds-occupied',
   },
 } as const satisfies Record<string, MetricConfig>;
 
