@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
@@ -243,7 +243,8 @@ describe('ComparatorGroupSelect', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('shows a disabled group but does not let it be chosen', () => {
+  it('lets the region be chosen while it is loading', () => {
+    const onChange = vi.fn();
     render(
       <ComparatorGroupSelect
         idPrefix="test"
@@ -251,7 +252,38 @@ describe('ComparatorGroupSelect', () => {
         groups={[
           {
             id: 'region',
-            name: 'Region (loading…)',
+            name: 'Region (Loading…)',
+            laCodes: [],
+            builtIn: true,
+            loading: true,
+          },
+        ]}
+        onChange={onChange}
+      />
+    );
+
+    expect(
+      screen.getByRole('option', { name: 'Region (Loading…)' })
+    ).toBeEnabled();
+    fireEvent.change(
+      screen.getByRole('combobox', { name: /comparison group/i }),
+      { target: { value: 'custom:region' } }
+    );
+    expect(onChange).toHaveBeenCalledWith({
+      kind: 'custom',
+      groupId: 'region',
+    });
+  });
+
+  it('does not let an unavailable region be chosen', () => {
+    render(
+      <ComparatorGroupSelect
+        idPrefix="test"
+        selection={{ kind: 'nhs_peer_group' }}
+        groups={[
+          {
+            id: 'region',
+            name: 'Region (unavailable)',
             laCodes: [],
             builtIn: true,
             disabled: true,
@@ -262,7 +294,7 @@ describe('ComparatorGroupSelect', () => {
     );
 
     expect(
-      screen.getByRole('option', { name: 'Region (loading…)' })
+      screen.getByRole('option', { name: 'Region (unavailable)' })
     ).toBeDisabled();
   });
 });

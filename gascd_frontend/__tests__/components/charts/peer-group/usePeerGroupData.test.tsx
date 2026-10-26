@@ -138,4 +138,45 @@ describe('usePeerGroupData', () => {
       metric_b: null,
     });
   });
+
+  it('waits for a group that is still loading, then fetches it', async () => {
+    mockFetch.mockResolvedValue(
+      jsonResponse({ group_members: [], custom_group_average: 33 })
+    );
+    const loadingRegion: CustomComparatorGroup = {
+      id: 'region',
+      name: 'Region (Loading…)',
+      laCodes: [],
+      builtIn: true,
+      loading: true,
+    };
+    const selection: ComparatorSelection = {
+      kind: 'custom',
+      groupId: 'region',
+    };
+    const { result, rerender } = renderHook(
+      ({ region }: { region: CustomComparatorGroup }) =>
+        usePeerGroupData('E08000014', metrics, selection, [region]),
+      { initialProps: { region: loadingRegion } }
+    );
+
+    expect(result.current.loading).toBe(true);
+    expect(result.current.error).toBe(false);
+    expect(mockFetch).not.toHaveBeenCalled();
+
+    rerender({
+      region: {
+        id: 'region',
+        name: 'Region (West Midlands)',
+        laCodes: ['E08000025'],
+        builtIn: true,
+      },
+    });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.stringContaining('la_codes=E08000025')
+    );
+    expect(result.current.dataByMetric.metric_a?.averagePeerGroup).toBe(33);
+  });
 });

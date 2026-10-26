@@ -92,10 +92,10 @@ export function useComparatorGroups(): {
 
   const [regionGroup, setRegionGroup] = useState<CustomComparatorGroup>({
     id: REGION_GROUP_ID,
-    name: 'Region (loading…)',
+    name: 'Region (Loading…)',
     laCodes: [],
     builtIn: true,
-    disabled: true,
+    loading: true,
   });
 
   useEffect(() => {
@@ -123,7 +123,14 @@ export function useComparatorGroups(): {
         setRegionGroup((current) => ({
           ...current,
           name: 'Region (unavailable)',
+          loading: false,
+          disabled: true,
         }));
+        setSelection((current) =>
+          current.kind === 'custom' && current.groupId === REGION_GROUP_ID
+            ? { kind: 'nhs_peer_group' }
+            : current
+        );
       });
     return () => {
       cancelled = true;

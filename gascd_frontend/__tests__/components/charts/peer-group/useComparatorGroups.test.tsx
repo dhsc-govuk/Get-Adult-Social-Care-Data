@@ -278,7 +278,7 @@ describe('useComparatorGroups', () => {
     });
   });
 
-  it('shows the region as loading, and not selectable, until it arrives', async () => {
+  it('shows the region as loading until it arrives', async () => {
     let resolveRegion!: (value: Response) => void;
     mockFetch.mockImplementation((url: string) =>
       url === '/api/get_region_comparator'
@@ -292,10 +292,10 @@ describe('useComparatorGroups', () => {
 
     expect(result.current.groups[0]).toEqual({
       id: 'region',
-      name: 'Region (loading…)',
+      name: 'Region (Loading…)',
       laCodes: [],
       builtIn: true,
-      disabled: true,
+      loading: true,
     });
 
     await act(async () => {
@@ -335,6 +335,33 @@ describe('useComparatorGroups', () => {
         name: 'Region (unavailable)',
         disabled: true,
       })
+    );
+  });
+
+  it('falls back to the NHS peer group if the region was chosen and then fails', async () => {
+    let failRegion!: (value: Response) => void;
+    mockFetch.mockImplementation((url: string) =>
+      url === '/api/get_region_comparator'
+        ? new Promise<Response>((res) => {
+            failRegion = res;
+          })
+        : Promise.resolve(jsonResponse({ groups: [] }))
+    );
+    const { result } = renderHook(() => useComparatorGroups());
+
+    act(() =>
+      result.current.setSelection({ kind: 'custom', groupId: 'region' })
+    );
+    expect(result.current.selection).toEqual({
+      kind: 'custom',
+      groupId: 'region',
+    });
+
+    await act(async () => {
+      failRegion(jsonResponse({ error: 'No region for user' }, 500));
+    });
+    await waitFor(() =>
+      expect(result.current.selection).toEqual({ kind: 'nhs_peer_group' })
     );
   });
 });
