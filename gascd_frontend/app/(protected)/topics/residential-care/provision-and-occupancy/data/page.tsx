@@ -21,6 +21,8 @@ import TimeSeriesChart, {
   Series,
 } from '@/components/charts/TimeSeriesChart';
 import FilterRadioGroup from '@/components/filters/FilterRadioGroup';
+import { useFilterSync } from '@/components/filters/useFilterSync';
+import SectionControls from '@/components/data-components/SectionControls';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { Indicator } from '@/data/interfaces/Indicator';
@@ -408,6 +410,38 @@ export default function ProvisionAndOccupancyPage() {
         which authorities are most alike or measuring relative performance.
       </div>
     </details>
+  );
+
+  // Each filter is shown in its section's chart and table tabs
+  const numbersFilterSync = useFilterSync('numbers-table-metrics');
+  const groupedFilterSync = useFilterSync(GROUPED_TYPE_FILTER_KEY);
+  const trendsFilterSync = useFilterSync('single-type-chart-metric');
+
+  const renderNumbersFilter = (idPrefix: string) => (
+    <FilterRadioGroup
+      key={numbersFilterSync.key}
+      idPrefix={idPrefix}
+      filterType="numbers-table-metrics"
+      filterLabel="Bed type"
+      filters={bedTypeRowHeadersDefault}
+      updateMethod={() => {
+        updateNumbersTableMetrics();
+        numbersFilterSync.announce();
+      }}
+    />
+  );
+  const renderGroupedFilter = (idPrefix: string) => (
+    <FilterRadioGroup
+      key={groupedFilterSync.key}
+      idPrefix={idPrefix}
+      filterType={GROUPED_TYPE_FILTER_KEY}
+      filterLabel="Bed type"
+      filters={groupedBedTypeRowHeadersDefault}
+      updateMethod={() => {
+        updateGroupedTypesTableMetrics();
+        groupedFilterSync.announce();
+      }}
+    />
   );
 
   const renderComparatorControl = (
@@ -1143,12 +1177,6 @@ export default function ProvisionAndOccupancyPage() {
           </>
         }
       >
-        <FilterRadioGroup
-          filterType="numbers-table-metrics"
-          filterLabel="Bed type"
-          filters={bedTypeRowHeadersDefault}
-          updateMethod={updateNumbersTableMetrics}
-        />
         <DataTabs
           id="1"
           sharingMetricIds={bedTypeMetricIds}
@@ -1164,14 +1192,17 @@ export default function ProvisionAndOccupancyPage() {
                 peerData={dataByMetric[numbersMetricId] ?? null}
                 loading={chartLoading}
                 error={chartError}
-                comparatorControl={renderComparatorControl(
-                  'comparator-chart-1',
-                  renderPopulationSelect(
-                    'comparator-chart-1',
-                    numbersPopulation,
-                    setNumbersPopulation
-                  )
-                )}
+                comparatorControl={
+                  <SectionControls
+                    comparator={renderComparatorControl('comparator-chart-1')}
+                    extraControls={renderPopulationSelect(
+                      'comparator-chart-1',
+                      numbersPopulation,
+                      setNumbersPopulation
+                    )}
+                    filters={renderNumbersFilter('chart-1')}
+                  />
+                }
                 comparatorLabel={comparatorLabel}
                 comparatorAverageLabel={comparatorAverageLabel}
                 metricDescription={`care home bed numbers per 100,000 ${POPULATION_DESCRIPTIONS[numbersPopulation]} (${numbersTableFilterName.toLowerCase()})`}
@@ -1191,14 +1222,15 @@ export default function ProvisionAndOccupancyPage() {
           }
           table={
             <>
-              {renderComparatorControl(
-                'comparator-table-1',
-                renderPopulationSelect(
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-1')}
+                extraControls={renderPopulationSelect(
                   'comparator-table-1',
                   numbersPopulation,
                   setNumbersPopulation
-                )
-              )}
+                )}
+                filters={renderNumbersFilter('table-1')}
+              />
               <PeerGroupTable
                 tableref={tableref1}
                 caption={
@@ -1358,12 +1390,6 @@ export default function ProvisionAndOccupancyPage() {
           </>
         }
       >
-        <FilterRadioGroup
-          filterType={GROUPED_TYPE_FILTER_KEY}
-          filterLabel="Bed type"
-          filters={groupedBedTypeRowHeadersDefault}
-          updateMethod={updateGroupedTypesTableMetrics}
-        />
         <DataTabs
           id="5"
           sharingMetricIds={bedTypeMetricIds}
@@ -1379,14 +1405,17 @@ export default function ProvisionAndOccupancyPage() {
                 peerData={bedTypesDataByMetric[bedTypesChartDisplayId] ?? null}
                 loading={bedTypesChartLoading}
                 error={bedTypesChartError}
-                comparatorControl={renderComparatorControl(
-                  'comparator-chart-2',
-                  renderPopulationSelect(
-                    'comparator-chart-2',
-                    groupedPopulation,
-                    setGroupedPopulation
-                  )
-                )}
+                comparatorControl={
+                  <SectionControls
+                    comparator={renderComparatorControl('comparator-chart-2')}
+                    extraControls={renderPopulationSelect(
+                      'comparator-chart-2',
+                      groupedPopulation,
+                      setGroupedPopulation
+                    )}
+                    filters={renderGroupedFilter('chart-5')}
+                  />
+                }
                 comparatorLabel={comparatorLabel}
                 comparatorAverageLabel={comparatorAverageLabel}
                 metricDescription={`care home bed numbers per 100,000 ${POPULATION_DESCRIPTIONS[groupedPopulation]} (${bedTypesChartFilterName.toLowerCase()})`}
@@ -1407,14 +1436,15 @@ export default function ProvisionAndOccupancyPage() {
           }
           table={
             <>
-              {renderComparatorControl(
-                'comparator-table-4',
-                renderPopulationSelect(
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-4')}
+                extraControls={renderPopulationSelect(
                   'comparator-table-4',
                   groupedPopulation,
                   setGroupedPopulation
-                )
-              )}
+                )}
+                filters={renderGroupedFilter('table-5')}
+              />
               <PeerGroupTable
                 tableref={tableref4}
                 caption={
@@ -1543,17 +1573,26 @@ export default function ProvisionAndOccupancyPage() {
           </p>
         }
       >
-        <FilterRadioGroup
-          filterType="single-type-chart-metric"
-          filterLabel="Bed type"
-          filters={bedTypeRowHeadersDefault}
-          updateMethod={updateTypesChartMetrics}
-        />
         <DataTabs
           id="4"
           sharingMetricIds={bedTypeMetricIds}
           graph={
             <>
+              <SectionControls
+                filters={
+                  <FilterRadioGroup
+                    key={trendsFilterSync.key}
+                    idPrefix="graph-4"
+                    filterType="single-type-chart-metric"
+                    filterLabel="Bed type"
+                    filters={bedTypeRowHeadersDefault}
+                    updateMethod={() => {
+                      updateTypesChartMetrics();
+                      trendsFilterSync.announce();
+                    }}
+                  />
+                }
+              />
               <h3 className="govuk-heading-s">
                 Figure 3: care home bed numbers per 100,000 adult population (
                 {typesChartFilterName.toLowerCase()}) –{' '}

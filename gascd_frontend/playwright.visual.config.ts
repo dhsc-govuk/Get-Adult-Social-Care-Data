@@ -24,6 +24,8 @@ export default defineConfig({
       // A ratio let a one-digit change in a long table pass, so allow no
       // differing pixels beyond the per-pixel colour threshold
       maxDiffPixels: 0,
+      // The default 0.2 let a blue button turning dark green pass
+      threshold: 0.05,
     },
   },
 

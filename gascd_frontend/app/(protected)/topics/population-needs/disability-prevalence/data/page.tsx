@@ -21,7 +21,9 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
+import SectionControls from '@/components/data-components/SectionControls';
 import FilterSelectGroup from '@/components/filters/FilterSelectGroup';
+import { useFilterSync } from '@/components/filters/useFilterSync';
 import PeerGroupTable from '@/components/tables/PeerGroupTable';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
 import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
@@ -525,6 +527,24 @@ export default function DisabilityPrevalence() {
 
   // One reason at a time, for the figure and the table, keyed by its count code
   const STANDARDISED_REASON_FILTER_KEY = 'standardised-primary-reason-metric';
+  // Shown in both the chart and table tabs
+  const standardisedReasonFilterSync = useFilterSync(
+    STANDARDISED_REASON_FILTER_KEY
+  );
+  const renderStandardisedReasonFilter = (idPrefix: string) => (
+    <FilterSelectGroup
+      key={standardisedReasonFilterSync.key}
+      idPrefix={idPrefix}
+      filterType={STANDARDISED_REASON_FILTER_KEY}
+      filterLabel="Primary support reason"
+      filters={supportReasonRowHeadersDefault}
+      updateMethod={() => {
+        updateChartSupportReason();
+        standardisedReasonFilterSync.announce();
+      }}
+    />
+  );
+
   const updateChartSupportReason = () => {
     try {
       const stored = JSON.parse(
@@ -946,18 +966,23 @@ export default function DisabilityPrevalence() {
           </>
         }
       >
-        <FilterCheckboxGroup
-          filterType="primary-reason-metrics"
-          filterLabel="Primary support reason"
-          filters={supportReasonRowHeadersDefault}
-          updateMethod={updatePrimaryReasonMetrics}
-        />
         <DataTabs
           id="4"
           sharingMetricIds={supportReasonMetricIds}
           table={
             <>
-              {renderComparatorControl('comparator-table-4')}
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-4')}
+                filters={
+                  <FilterCheckboxGroup
+                    idPrefix="table-4"
+                    filterType="primary-reason-metrics"
+                    filterLabel="Primary support reason"
+                    filters={supportReasonRowHeadersDefault}
+                    updateMethod={updatePrimaryReasonMetrics}
+                  />
+                }
+              />
               <DataTable
                 tableref={tableref4}
                 caption={
@@ -1022,12 +1047,6 @@ export default function DisabilityPrevalence() {
           </>
         }
       >
-        <FilterSelectGroup
-          filterType={STANDARDISED_REASON_FILTER_KEY}
-          filterLabel="Primary support reason"
-          filters={supportReasonRowHeadersDefault}
-          updateMethod={updateChartSupportReason}
-        />
         <DataTabs
           id="5"
           sharingMetricIds={[chartSupportReason]}
@@ -1043,9 +1062,12 @@ export default function DisabilityPrevalence() {
                 peerData={dataByMetric[chartSupportReason] ?? null}
                 loading={chartLoading}
                 error={chartError}
-                comparatorControl={renderComparatorControl(
-                  'comparator-chart-4'
-                )}
+                comparatorControl={
+                  <SectionControls
+                    comparator={renderComparatorControl('comparator-chart-4')}
+                    filters={renderStandardisedReasonFilter('chart-5')}
+                  />
+                }
                 comparatorLabel={comparatorLabel}
                 comparatorAverageLabel={comparatorAverageLabel}
                 metricDescription={`the rate of people accessing long-term adult social care for ${standardisedRowHeadersDefault[
@@ -1071,7 +1093,10 @@ export default function DisabilityPrevalence() {
           }
           table={
             <>
-              {renderComparatorControl('comparator-table-5')}
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-5')}
+                filters={renderStandardisedReasonFilter('table-5')}
+              />
               <PeerGroupTable
                 tableref={tableref5}
                 caption={
