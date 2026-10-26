@@ -14,7 +14,6 @@ import LocationService from '@/services/location/locationService';
 // Mock out things we are not testing at the moment to prevent them making api requests
 vi.mock('@/components/common/buttons/logoutButton');
 vi.mock('@/services/logger/logService');
-vi.mock('@/components/tables/VerticalLocationTable');
 vi.mock('@/services/indicator/IndicatorFetchService', () => ({
   default: {
     getData: vi.fn().mockResolvedValue([]),
