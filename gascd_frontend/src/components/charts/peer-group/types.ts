@@ -44,7 +44,9 @@ export interface CustomComparatorGroup {
   laCodes: string[];
   // Provided by the service (the user's region), so it can't be edited
   builtIn?: boolean;
-  // Shown but can't be chosen yet: the region is still loading or failed
+  // Can be chosen, but its LAs haven't arrived yet
+  loading?: boolean;
+  // Shown but can't be chosen: the region failed to load
   disabled?: boolean;
 }
 
