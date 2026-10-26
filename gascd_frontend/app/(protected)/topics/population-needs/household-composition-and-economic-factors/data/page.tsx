@@ -21,21 +21,15 @@ import DownloadTableDataCSVLink from '@/components/metric-components/download-ta
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
-import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
-import ComparatorGroupBuilder from '@/components/charts/peer-group/ComparatorGroupBuilder';
-import { useComparatorGroups } from '@/components/charts/peer-group/useComparatorGroups';
 import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
-import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLocalAuthorities';
-import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
-import { ComparatorSelection } from '@/components/charts/peer-group/types';
+import { useComparatorControls } from '@/components/charts/peer-group/useComparatorControls';
+import MetricSection from '@/components/data-components/MetricSection';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
 import { METRICS } from '@/config/metrics';
 import { chartLocationValues } from '@/helpers/locationComparison';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
-  const tableref2 = useRef<HTMLTableElement>(null);
-  const tableref3 = useRef<HTMLTableElement>(null);
 
   const [locationNames, setLocationNames] = useState<LocationNames>({
     CPLabel: null,
@@ -79,155 +73,28 @@ export default function ProvisionAndOccupancyPage() {
   const metricPage = 'household-composition-and-economic-factors';
   const laCode = locationIds[1];
 
-  const {
-    groups,
-    selection,
-    setSelection,
-    saveGroup,
-    updateGroup,
-    deleteGroup,
-  } = useComparatorGroups();
-  // Which comparator control has its builder panel open, and whether it is
-  // editing an existing group (by id) or creating a new one
-  const [builderState, setBuilderState] = useState<{
-    idPrefix: string;
-    editingGroupId?: string;
-  } | null>(null);
-  const [builderError, setBuilderError] = useState<string | null>(null);
+  const comparator = useComparatorControls({ laCode, metricPage });
   const {
     dataByMetric,
     loading: peerLoading,
     error: peerError,
-  } = usePeerGroupData(laCode, demographicMetricIds, selection, groups);
+  } = usePeerGroupData(
+    laCode,
+    demographicMetricIds,
+    comparator.selection,
+    comparator.groups
+  );
   // A chart needs both the comparator data and the user's own LA / England
   // values before it is complete, so it waits for (and fails on) either
   // request rather than rendering peer bars without the user's authority.
   const chartLoading = peerLoading || baseDataStatus === 'loading';
   const chartError = peerError || baseDataStatus === 'error';
-  const { authorities, error: authoritiesError } = useAllLocalAuthorities(
-    builderState !== null
-  );
-
-  const selectedGroup =
-    selection.kind === 'custom'
-      ? groups.find((group) => group.id === selection.groupId)
-      : undefined;
-  const comparatorLabel = selectedGroup ? selectedGroup.name : undefined;
-  const comparatorAverageLabel = selectedGroup
-    ? `${selectedGroup.name} (average)`
-    : NHS_PEER_GROUP_AVERAGE_LABEL;
   const tableColumnHeaders = {
     CPLabel: locationNames.CPLabel,
     LALabel: locationNames.LALabel,
     RegionLabel: locationNames.RegionLabel,
-    ComparatorLabel: comparatorAverageLabel,
+    ComparatorLabel: comparator.comparatorAverageLabel,
     CountryLabel: locationNames.CountryLabel,
-  };
-
-  const handleComparatorChange = (newSelection: ComparatorSelection) => {
-    setSelection(newSelection);
-    setBuilderState(null);
-    setBuilderError(null);
-    AnalyticsService.trackComparatorChange(newSelection.kind, metricPage);
-  };
-
-  const handleGroupSave = async (group: {
-    name: string;
-    laCodes: string[];
-  }) => {
-    setBuilderError(null);
-    try {
-      if (builderState?.editingGroupId) {
-        await updateGroup(builderState.editingGroupId, group);
-        AnalyticsService.trackComparatorGroupEdit(group.laCodes.length);
-      } else {
-        await saveGroup(group);
-        AnalyticsService.trackComparatorGroupSave(group.laCodes.length);
-        AnalyticsService.trackComparatorChange('custom', metricPage);
-      }
-      setBuilderState(null);
-    } catch (error) {
-      // Keep the builder open so nothing the user entered is lost
-      setBuilderError(
-        error instanceof Error
-          ? error.message
-          : 'Your comparator group could not be saved. Try again.'
-      );
-    }
-  };
-
-  const handleGroupDelete = async () => {
-    setBuilderError(null);
-    try {
-      if (builderState?.editingGroupId) {
-        await deleteGroup(builderState.editingGroupId);
-        AnalyticsService.trackComparatorGroupDelete();
-      }
-      setBuilderState(null);
-    } catch (error) {
-      setBuilderError(
-        error instanceof Error
-          ? error.message
-          : 'The comparator group could not be deleted. Try again.'
-      );
-    }
-  };
-
-  const handleEditToggle = (idPrefix: string) => {
-    if (selection.kind !== 'custom') return;
-    setBuilderError(null);
-    setBuilderState((current) =>
-      current?.idPrefix === idPrefix && current.editingGroupId
-        ? null
-        : { idPrefix, editingGroupId: selection.groupId }
-    );
-  };
-
-  const renderComparatorControl = (idPrefix: string) => {
-    const builderOpenHere = builderState?.idPrefix === idPrefix;
-    const editingGroup = builderOpenHere
-      ? groups.find((group) => group.id === builderState?.editingGroupId)
-      : undefined;
-
-    return (
-      <>
-        <ComparatorGroupSelect
-          idPrefix={idPrefix}
-          selection={selection}
-          groups={groups}
-          onChange={handleComparatorChange}
-          onCreateNew={() => setBuilderState({ idPrefix })}
-          onEdit={() => handleEditToggle(idPrefix)}
-          builderMode={
-            builderOpenHere ? (editingGroup ? 'edit' : 'create') : null
-          }
-        />
-        {builderOpenHere && (
-          <ComparatorGroupBuilder
-            // Remount when switching between create and edit so the form
-            // state is reinitialised from the right group
-            key={editingGroup?.id ?? 'create'}
-            idPrefix={idPrefix}
-            allAuthorities={authorities}
-            authoritiesError={authoritiesError}
-            ownLaCode={laCode}
-            existingNames={groups
-              .filter((group) => group.id !== editingGroup?.id)
-              .map((group) => group.name)}
-            onSave={handleGroupSave}
-            onCancel={() => {
-              setBuilderState(null);
-              setBuilderError(null);
-            }}
-            mode={editingGroup ? 'edit' : 'create'}
-            initialName={editingGroup?.name}
-            initialCodes={editingGroup?.laCodes}
-            onDelete={editingGroup ? handleGroupDelete : undefined}
-            serverError={builderError ?? undefined}
-          />
-        )}
-      </>
-    );
   };
 
   useEffect(() => {
@@ -437,7 +304,7 @@ export default function ProvisionAndOccupancyPage() {
           sharingMetricIds={['perc_households_deprivation_deprived']}
           table={
             <>
-              {renderComparatorControl('comparator-table-1')}
+              {comparator.renderComparatorControl('comparator-table-1')}
               <DataTable
                 metrics={['perc_households_deprivation_deprived']}
                 tableref={tableref1}
@@ -452,7 +319,7 @@ export default function ProvisionAndOccupancyPage() {
           download={
             <>
               <div className="govuk-!-margin-bottom-4">
-                {renderComparatorControl('comparator-download-1')}
+                {comparator.renderComparatorControl('comparator-download-1')}
               </div>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
@@ -477,18 +344,22 @@ export default function ProvisionAndOccupancyPage() {
               }
               loading={chartLoading}
               error={chartError}
-              comparatorControl={renderComparatorControl('comparator-chart-1')}
-              comparatorLabel={comparatorLabel}
-              comparatorAverageLabel={comparatorAverageLabel}
+              comparatorControl={comparator.renderComparatorControl(
+                'comparator-chart-1'
+              )}
+              comparatorLabel={comparator.comparatorLabel}
+              comparatorAverageLabel={comparator.comparatorAverageLabel}
               metricDescription="the percentage of households deprived in 4 dimensions"
               figureTitle="Percentage of households deprived in 4 dimensions"
             />
           }
         />
       </DataBox>
-      <DataBox
-        dataTitle="Households where the property is owned outright"
-        dataInfo={
+      <MetricSection
+        id="2"
+        title="Households where the property is owned outright"
+        metric={'perc_household_ownership'}
+        intro={
           <>
             <p className="govuk-body-m">
               This is when the property does not have an outstanding mortgage or
@@ -503,93 +374,33 @@ export default function ProvisionAndOccupancyPage() {
                 how data on property ownership is collected
               </a>
             </p>
-            <details className="govuk-details govuk-!-margin-top-3">
-              <summary className="govuk-details__summary">
-                <span className="govuk-details__summary-text">
-                  Interpreting the NHS Peer Group
-                </span>
-              </summary>
-              <div className="govuk-details__text">
-                GASCD currently uses a{' '}
-                <a
-                  className="govuk-link"
-                  href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  statistical neighbours model
-                </a>{' '}
-                developed by NHS digital in 2022/23 to support benchmarking.
-                This is one of a number of approaches that aim to group
-                authorities with similar socio-economic and geographic factors
-                (e.g. age, ethnicity, education). It is important to note that
-                there is limited evidence of which factors are the most
-                important drivers of variation in adult social care. As a
-                result, these statistical neighbours should be viewed as a
-                helpful starting point for benchmarking, rather than a
-                definitive indication of which authorities are most alike or
-                measuring relative performance.
-              </div>
-            </details>
           </>
         }
-      >
-        <DataTabs
-          id="2"
-          sharingMetricIds={['perc_household_ownership']}
-          table={
-            <>
-              {renderComparatorControl('comparator-table-2')}
-              <DataTable
-                metrics={['perc_household_ownership']}
-                tableref={tableref2}
-                caption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
-                columnHeaders={tableColumnHeaders}
-                data={filteredDemographicData}
-                showCareProvider={false}
-                showAverageLabel={false}
-              ></DataTable>
-            </>
-          }
-          download={
-            <>
-              <div className="govuk-!-margin-bottom-4">
-                {renderComparatorControl('comparator-download-2')}
-              </div>
-              <DownloadTableDataCSVLink
-                tableref={tableref2}
-                filename="property_owned_outright.csv"
-                xLabel=""
-                downloadType="percentage of households where the property is owned outright"
-              />
-            </>
-          }
-          chart={
-            <PeerGroupBarChart
-              laCode={locationIds[1]}
-              laName={locationNames.LALabel}
-              metric={'perc_household_ownership'}
-              {...chartLocationValues(
-                filteredDemographicData,
-                'perc_household_ownership'
-              )}
-              regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
-              peerData={dataByMetric['perc_household_ownership'] ?? null}
-              loading={chartLoading}
-              error={chartError}
-              comparatorControl={renderComparatorControl('comparator-chart-2')}
-              comparatorLabel={comparatorLabel}
-              comparatorAverageLabel={comparatorAverageLabel}
-              metricDescription="the percentage of households where the property is owned outright"
-              figureTitle={METRICS.perc_household_ownership.label}
-              figureNumber={2}
-            />
-          }
-        />
-      </DataBox>
-      <DataBox
-        dataTitle="One-person households where the person is aged 65 or over"
-        dataInfo={
+        figureNumber={2}
+        metricDescription="the percentage of households where the property is owned outright"
+        tableCaption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
+        columnHeaders={tableColumnHeaders}
+        download={{
+          filename: 'property_owned_outright.csv',
+          description:
+            'percentage of households where the property is owned outright',
+        }}
+        data={filteredDemographicData}
+        laCode={locationIds[1]}
+        laName={locationNames.LALabel}
+        regionLabel={locationNames.RegionLabel}
+        comparator={comparator}
+        peer={{
+          dataByMetric: dataByMetric,
+          loading: chartLoading,
+          error: chartError,
+        }}
+      />
+      <MetricSection
+        id="3"
+        title="One-person households where the person is aged 65 or over"
+        metric={'perc_households_one_person'}
+        intro={
           <>
             <p className="govuk-body-m">
               Find out{' '}
@@ -601,90 +412,28 @@ export default function ProvisionAndOccupancyPage() {
                 aged 65 or over is calculated
               </a>
             </p>
-            <details className="govuk-details govuk-!-margin-top-3">
-              <summary className="govuk-details__summary">
-                <span className="govuk-details__summary-text">
-                  Interpreting the NHS Peer Group
-                </span>
-              </summary>
-              <div className="govuk-details__text">
-                GASCD currently uses a{' '}
-                <a
-                  className="govuk-link"
-                  href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  statistical neighbours model
-                </a>{' '}
-                developed by NHS digital in 2022/23 to support benchmarking.
-                This is one of a number of approaches that aim to group
-                authorities with similar socio-economic and geographic factors
-                (e.g. age, ethnicity, education). It is important to note that
-                there is limited evidence of which factors are the most
-                important drivers of variation in adult social care. As a
-                result, these statistical neighbours should be viewed as a
-                helpful starting point for benchmarking, rather than a
-                definitive indication of which authorities are most alike or
-                measuring relative performance.
-              </div>
-            </details>
           </>
         }
-      >
-        <DataTabs
-          id="3"
-          sharingMetricIds={['perc_households_one_person']}
-          table={
-            <>
-              {renderComparatorControl('comparator-table-3')}
-              <DataTable
-                metrics={['perc_households_one_person']}
-                tableref={tableref3}
-                caption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
-                columnHeaders={tableColumnHeaders}
-                data={filteredDemographicData}
-                showCareProvider={false}
-                showAverageLabel={false}
-              ></DataTable>
-            </>
-          }
-          download={
-            <>
-              <div className="govuk-!-margin-bottom-4">
-                {renderComparatorControl('comparator-download-3')}
-              </div>
-              <DownloadTableDataCSVLink
-                tableref={tableref3}
-                filename="one_person_households_over_65.csv"
-                xLabel=""
-                downloadType="percentage of one-person households where the person is aged 65 or over"
-              />
-            </>
-          }
-          chart={
-            <PeerGroupBarChart
-              laCode={locationIds[1]}
-              laName={locationNames.LALabel}
-              metric={'perc_households_one_person'}
-              {...chartLocationValues(
-                filteredDemographicData,
-                'perc_households_one_person'
-              )}
-              regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
-              peerData={dataByMetric['perc_households_one_person'] ?? null}
-              loading={chartLoading}
-              error={chartError}
-              comparatorControl={renderComparatorControl('comparator-chart-3')}
-              comparatorLabel={comparatorLabel}
-              comparatorAverageLabel={comparatorAverageLabel}
-              metricDescription="the percentage of one-person households where the person is aged 65 or over"
-              figureTitle={METRICS.perc_households_one_person.label}
-              figureNumber={3}
-            />
-          }
-        />
-      </DataBox>
+        figureNumber={3}
+        metricDescription="the percentage of one-person households where the person is aged 65 or over"
+        tableCaption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
+        columnHeaders={tableColumnHeaders}
+        download={{
+          filename: 'one_person_households_over_65.csv',
+          description:
+            'percentage of one-person households where the person is aged 65 or over',
+        }}
+        data={filteredDemographicData}
+        laCode={locationIds[1]}
+        laName={locationNames.LALabel}
+        regionLabel={locationNames.RegionLabel}
+        comparator={comparator}
+        peer={{
+          dataByMetric: dataByMetric,
+          loading: chartLoading,
+          error: chartError,
+        }}
+      />
       <DataIndicatorDetailsList>
         <DataLinkCard
           label="Households &lsquo;deprived in 4 dimensions&rsquo;"

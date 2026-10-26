@@ -26,19 +26,13 @@ import FilterSelectGroup from '@/components/filters/FilterSelectGroup';
 import { useFilterSync } from '@/components/filters/useFilterSync';
 import PeerGroupTable from '@/components/tables/PeerGroupTable';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
-import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
-import ComparatorGroupBuilder from '@/components/charts/peer-group/ComparatorGroupBuilder';
-import { useComparatorGroups } from '@/components/charts/peer-group/useComparatorGroups';
 import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
-import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLocalAuthorities';
-import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
-import { ComparatorSelection } from '@/components/charts/peer-group/types';
+import { useComparatorControls } from '@/components/charts/peer-group/useComparatorControls';
+import MetricSection from '@/components/data-components/MetricSection';
+import NhsPeerGroupDetails from '@/components/data-components/NhsPeerGroupDetails';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
 import { METRICS, MetricId, metricLabels, SOURCES } from '@/config/metrics';
-import {
-  chartLocationValues,
-  locationValues,
-} from '@/helpers/locationComparison';
+import { locationValues } from '@/helpers/locationComparison';
 
 // In the order the tables and filters show them
 const SUPPORT_REASON_ROWS: MetricId[] = [
@@ -56,9 +50,6 @@ const SUPPORT_REASON_ROWS: MetricId[] = [
 ];
 
 export default function DisabilityPrevalence() {
-  const tableref1 = useRef<HTMLTableElement>(null);
-  const tableref2 = useRef<HTMLTableElement>(null);
-  const tableref3 = useRef<HTMLTableElement>(null);
   const tableref4 = useRef<HTMLTableElement>(null);
   const tableref5 = useRef<HTMLTableElement>(null);
 
@@ -158,21 +149,7 @@ export default function DisabilityPrevalence() {
   const metricPage = 'disability-prevalence';
   const laCode = locationIds[1];
 
-  const {
-    groups,
-    selection,
-    setSelection,
-    saveGroup,
-    updateGroup,
-    deleteGroup,
-  } = useComparatorGroups();
-  // Which comparator control has its builder panel open, and whether it is
-  // editing an existing group (by id) or creating a new one
-  const [builderState, setBuilderState] = useState<{
-    idPrefix: string;
-    editingGroupId?: string;
-  } | null>(null);
-  const [builderError, setBuilderError] = useState<string | null>(null);
+  const comparator = useComparatorControls({ laCode, metricPage });
   const {
     dataByMetric,
     loading: peerLoading,
@@ -184,171 +161,24 @@ export default function DisabilityPrevalence() {
       ...supportReasonMetricIds,
       ...standardisedSupportReasonMetricIds,
     ],
-    selection,
-    groups
+    comparator.selection,
+    comparator.groups
   );
   // A chart needs both the comparator data and the user's own LA / England
   // values before it is complete, so it waits for (and fails on) either
   // request rather than rendering peer bars without the user's authority.
   const chartLoading = peerLoading || baseDataStatus === 'loading';
   const chartError = peerError || baseDataStatus === 'error';
-  const { authorities, error: authoritiesError } = useAllLocalAuthorities(
-    builderState !== null
-  );
-
-  const selectedGroup =
-    selection.kind === 'custom'
-      ? groups.find((group) => group.id === selection.groupId)
-      : undefined;
-  const comparatorLabel = selectedGroup ? selectedGroup.name : undefined;
-  const comparatorAverageLabel = selectedGroup
-    ? `${selectedGroup.name} (average)`
-    : NHS_PEER_GROUP_AVERAGE_LABEL;
   // Column headers for the benchmarked tables: true regional average + comparator
   const benchmarkedColumnHeaders = {
     CPLabel: locationNames.CPLabel,
     LALabel: locationNames.LALabel,
     RegionLabel: locationNames.RegionLabel,
-    ComparatorLabel: comparatorAverageLabel,
+    ComparatorLabel: comparator.comparatorAverageLabel,
     CountryLabel: 'England (national average)',
   };
 
-  const handleComparatorChange = (newSelection: ComparatorSelection) => {
-    setSelection(newSelection);
-    setBuilderState(null);
-    setBuilderError(null);
-    AnalyticsService.trackComparatorChange(newSelection.kind, metricPage);
-  };
-
-  const handleGroupSave = async (group: {
-    name: string;
-    laCodes: string[];
-  }) => {
-    setBuilderError(null);
-    try {
-      if (builderState?.editingGroupId) {
-        await updateGroup(builderState.editingGroupId, group);
-        AnalyticsService.trackComparatorGroupEdit(group.laCodes.length);
-      } else {
-        await saveGroup(group);
-        AnalyticsService.trackComparatorGroupSave(group.laCodes.length);
-        AnalyticsService.trackComparatorChange('custom', metricPage);
-      }
-      setBuilderState(null);
-    } catch (error) {
-      // Keep the builder open so nothing the user entered is lost
-      setBuilderError(
-        error instanceof Error
-          ? error.message
-          : 'Your comparator group could not be saved. Try again.'
-      );
-    }
-  };
-
-  const handleGroupDelete = async () => {
-    setBuilderError(null);
-    try {
-      if (builderState?.editingGroupId) {
-        await deleteGroup(builderState.editingGroupId);
-        AnalyticsService.trackComparatorGroupDelete();
-      }
-      setBuilderState(null);
-    } catch (error) {
-      setBuilderError(
-        error instanceof Error
-          ? error.message
-          : 'The comparator group could not be deleted. Try again.'
-      );
-    }
-  };
-
-  const handleEditToggle = (idPrefix: string) => {
-    if (selection.kind !== 'custom') return;
-    setBuilderError(null);
-    setBuilderState((current) =>
-      current?.idPrefix === idPrefix && current.editingGroupId
-        ? null
-        : { idPrefix, editingGroupId: selection.groupId }
-    );
-  };
-
-  const renderComparatorControl = (idPrefix: string) => {
-    const builderOpenHere = builderState?.idPrefix === idPrefix;
-    const editingGroup = builderOpenHere
-      ? groups.find((group) => group.id === builderState?.editingGroupId)
-      : undefined;
-
-    return (
-      <>
-        <ComparatorGroupSelect
-          idPrefix={idPrefix}
-          selection={selection}
-          groups={groups}
-          onChange={handleComparatorChange}
-          onCreateNew={() => setBuilderState({ idPrefix })}
-          onEdit={() => handleEditToggle(idPrefix)}
-          builderMode={
-            builderOpenHere ? (editingGroup ? 'edit' : 'create') : null
-          }
-        />
-        {builderOpenHere && (
-          <ComparatorGroupBuilder
-            // Remount when switching between create and edit so the form
-            // state is reinitialised from the right group
-            key={editingGroup?.id ?? 'create'}
-            idPrefix={idPrefix}
-            allAuthorities={authorities}
-            authoritiesError={authoritiesError}
-            ownLaCode={laCode}
-            existingNames={groups
-              .filter((group) => group.id !== editingGroup?.id)
-              .map((group) => group.name)}
-            onSave={handleGroupSave}
-            onCancel={() => {
-              setBuilderState(null);
-              setBuilderError(null);
-            }}
-            mode={editingGroup ? 'edit' : 'create'}
-            initialName={editingGroup?.name}
-            initialCodes={editingGroup?.laCodes}
-            onDelete={editingGroup ? handleGroupDelete : undefined}
-            serverError={builderError ?? undefined}
-          />
-        )}
-      </>
-    );
-  };
-
   // Shared explanatory note shown in every benchmarked data box
-  const nhsPeerGroupDetails = (
-    <details className="govuk-details govuk-!-margin-top-3">
-      <summary className="govuk-details__summary">
-        <span className="govuk-details__summary-text">
-          Interpreting the NHS Peer Group
-        </span>
-      </summary>
-      <div className="govuk-details__text">
-        GASCD currently uses a{' '}
-        <a
-          className="govuk-link"
-          href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          statistical neighbours model
-        </a>{' '}
-        developed by NHS digital in 2022/23 to support benchmarking. This is one
-        of a number of approaches that aim to group authorities with similar
-        socio-economic and geographic factors (e.g. age, ethnicity, education).
-        It is important to note that there is limited evidence of which factors
-        are the most important drivers of variation in adult social care. As a
-        result, these statistical neighbours should be viewed as a helpful
-        starting point for benchmarking, rather than a definitive indication of
-        which authorities are most alike or measuring relative performance.
-      </div>
-    </details>
-  );
-
   const supportReasonRowHeadersDefault = metricLabels(SUPPORT_REASON_ROWS);
   const standardisedRowHeadersDefault: Record<string, string> =
     Object.fromEntries(
@@ -608,9 +438,11 @@ export default function DisabilityPrevalence() {
           </h2>
         </div>
       </div>
-      <DataBox
-        dataTitle="People who reported bad or very bad health"
-        dataInfo={
+      <MetricSection
+        id="1"
+        title="People who reported bad or very bad health"
+        metric={'perc_general_health'}
+        intro={
           <>
             <p className="govuk-body-m">
               Find out how{' '}
@@ -622,81 +454,46 @@ export default function DisabilityPrevalence() {
               </a>{' '}
               is calculated.
             </p>
-            {nhsPeerGroupDetails}
           </>
         }
-      >
-        <DataTabs
-          id="1"
-          sharingMetricIds={['perc_general_health']}
-          table={
-            <>
-              {renderComparatorControl('comparator-table-1')}
-              <DataTable
-                metrics={['perc_general_health']}
-                tableref={tableref1}
-                caption={
-                  <>
-                    Table 1: people who reported bad or very bad health –{' '}
-                    {locationNames.LALabel}{' '}
-                    <abbr title="local authority">LA</abbr>,{' '}
-                    {locationNames.RegionLabel} (regional average),{' '}
-                    {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
-                    {benchmarkedColumnHeaders.CountryLabel},{' '}
-                    {IndicatorService.getCensusYear(benchmarkedDisabilityData, [
-                      'perc_general_health',
-                    ])}
-                  </>
-                }
-                columnHeaders={benchmarkedColumnHeaders}
-                data={benchmarkedDisabilityData}
-                showCareProvider={false}
-              ></DataTable>
-            </>
-          }
-          download={
-            <>
-              <div className="govuk-!-margin-bottom-4">
-                {renderComparatorControl('comparator-download-1')}
-              </div>
-              <DownloadTableDataCSVLink
-                tableref={tableref1}
-                filename="people_who_reported_bad_or_very_bad_health.csv"
-                xLabel=""
-                downloadType="people who reported bad or very bad health"
-              />
-            </>
-          }
-          chart={
-            <PeerGroupBarChart
-              laCode={locationIds[1]}
-              laName={locationNames.LALabel}
-              metric={'perc_general_health'}
-              {...chartLocationValues(
-                benchmarkedDisabilityData,
-                'perc_general_health'
-              )}
-              regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
-              peerData={dataByMetric['perc_general_health'] ?? null}
-              loading={chartLoading}
-              error={chartError}
-              comparatorControl={renderComparatorControl('comparator-chart-1')}
-              comparatorLabel={comparatorLabel}
-              comparatorAverageLabel={comparatorAverageLabel}
-              metricDescription="the percentage of the population who self-reported bad or very bad health"
-              figureTitle={METRICS.perc_general_health.label}
-              dateLabel={IndicatorService.getCensusYear(
-                benchmarkedDisabilityData,
-                ['perc_general_health']
-              )}
-              figureNumber={1}
-            />
-          }
-        />
-      </DataBox>
-      <DataBox
-        dataTitle="Disability prevalence"
-        dataInfo={
+        figureNumber={1}
+        metricDescription="the percentage of the population who self-reported bad or very bad health"
+        dateLabel={IndicatorService.getCensusYear(benchmarkedDisabilityData, [
+          'perc_general_health',
+        ])}
+        tableCaption={
+          <>
+            Table 1: people who reported bad or very bad health –{' '}
+            {locationNames.LALabel} <abbr title="local authority">LA</abbr>,{' '}
+            {locationNames.RegionLabel} (regional average),{' '}
+            {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
+            {benchmarkedColumnHeaders.CountryLabel},{' '}
+            {IndicatorService.getCensusYear(benchmarkedDisabilityData, [
+              'perc_general_health',
+            ])}
+          </>
+        }
+        columnHeaders={benchmarkedColumnHeaders}
+        download={{
+          filename: 'people_who_reported_bad_or_very_bad_health.csv',
+          description: 'people who reported bad or very bad health',
+        }}
+        data={benchmarkedDisabilityData}
+        laCode={locationIds[1]}
+        laName={locationNames.LALabel}
+        regionLabel={locationNames.RegionLabel}
+        comparator={comparator}
+        peer={{
+          dataByMetric: dataByMetric,
+          loading: chartLoading,
+          error: chartError,
+        }}
+      />
+      <MetricSection
+        id="2"
+        title="Disability prevalence"
+        metric={'perc_population_disability'}
+        intro={
           <>
             <p className="govuk-body-m">
               People who reported a long-term physical or mental health
@@ -712,82 +509,48 @@ export default function DisabilityPrevalence() {
               </a>{' '}
               is calculated.
             </p>
-            {nhsPeerGroupDetails}
           </>
         }
-      >
-        <DataTabs
-          id="2"
-          sharingMetricIds={['perc_population_disability']}
-          table={
-            <>
-              {renderComparatorControl('comparator-table-2')}
-              <DataTable
-                metrics={['perc_population_disability']}
-                tableref={tableref2}
-                caption={
-                  <>
-                    Table 2: percentage of the population who reported a
-                    long-term physical or mental health condition, or illness
-                    that limits day-to-day activities – {locationNames.LALabel}{' '}
-                    <abbr title="local authority">LA</abbr>,{' '}
-                    {locationNames.RegionLabel} (regional average),{' '}
-                    {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
-                    {benchmarkedColumnHeaders.CountryLabel},{' '}
-                    {IndicatorService.getCensusYear(benchmarkedDisabilityData, [
-                      'perc_population_disability',
-                    ])}
-                  </>
-                }
-                columnHeaders={benchmarkedColumnHeaders}
-                data={benchmarkedDisabilityData}
-                showCareProvider={false}
-              ></DataTable>
-            </>
-          }
-          download={
-            <>
-              <div className="govuk-!-margin-bottom-4">
-                {renderComparatorControl('comparator-download-2')}
-              </div>
-              <DownloadTableDataCSVLink
-                tableref={tableref2}
-                filename="disability_prevalence.csv"
-                xLabel=""
-                downloadType="disability prevalence"
-              />
-            </>
-          }
-          chart={
-            <PeerGroupBarChart
-              laCode={locationIds[1]}
-              laName={locationNames.LALabel}
-              metric={'perc_population_disability'}
-              {...chartLocationValues(
-                benchmarkedDisabilityData,
-                'perc_population_disability'
-              )}
-              regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
-              peerData={dataByMetric['perc_population_disability'] ?? null}
-              loading={chartLoading}
-              error={chartError}
-              comparatorControl={renderComparatorControl('comparator-chart-2')}
-              comparatorLabel={comparatorLabel}
-              comparatorAverageLabel={comparatorAverageLabel}
-              metricDescription="the percentage of the population who reported a long-term physical or mental health condition, or illness that limits day-to-day activities"
-              figureTitle="Percentage of the population who reported a long-term physical or mental health condition, or illness that limits day-to-day activities"
-              dateLabel={IndicatorService.getCensusYear(
-                benchmarkedDisabilityData,
-                ['perc_population_disability']
-              )}
-              figureNumber={2}
-            />
-          }
-        />
-      </DataBox>
-      <DataBox
-        dataTitle="Learning disability prevalence"
-        dataInfo={
+        figureNumber={2}
+        metricDescription="the percentage of the population who reported a long-term physical or mental health condition, or illness that limits day-to-day activities"
+        figureTitle="Percentage of the population who reported a long-term physical or mental health condition, or illness that limits day-to-day activities"
+        dateLabel={IndicatorService.getCensusYear(benchmarkedDisabilityData, [
+          'perc_population_disability',
+        ])}
+        tableCaption={
+          <>
+            Table 2: percentage of the population who reported a long-term
+            physical or mental health condition, or illness that limits
+            day-to-day activities – {locationNames.LALabel}{' '}
+            <abbr title="local authority">LA</abbr>, {locationNames.RegionLabel}{' '}
+            (regional average), {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
+            {benchmarkedColumnHeaders.CountryLabel},{' '}
+            {IndicatorService.getCensusYear(benchmarkedDisabilityData, [
+              'perc_population_disability',
+            ])}
+          </>
+        }
+        columnHeaders={benchmarkedColumnHeaders}
+        download={{
+          filename: 'disability_prevalence.csv',
+          description: 'disability prevalence',
+        }}
+        data={benchmarkedDisabilityData}
+        laCode={locationIds[1]}
+        laName={locationNames.LALabel}
+        regionLabel={locationNames.RegionLabel}
+        comparator={comparator}
+        peer={{
+          dataByMetric: dataByMetric,
+          loading: chartLoading,
+          error: chartError,
+        }}
+      />
+      <MetricSection
+        id="3"
+        title="Learning disability prevalence"
+        metric={'learning_disability_prevalence'}
+        intro={
           <>
             <p className="govuk-body-m">
               Find out how{' '}
@@ -801,81 +564,42 @@ export default function DisabilityPrevalence() {
               </a>
               .
             </p>
-            {nhsPeerGroupDetails}
           </>
         }
-      >
-        <DataTabs
-          id="3"
-          sharingMetricIds={['learning_disability_prevalence']}
-          table={
-            <>
-              {renderComparatorControl('comparator-table-3')}
-              <DataTable
-                metrics={['learning_disability_prevalence']}
-                tableref={tableref3}
-                caption={
-                  <>
-                    Table 3: learning disability prevalence –{' '}
-                    {locationNames.LALabel}{' '}
-                    <abbr title="local authority">LA</abbr>,{' '}
-                    {locationNames.RegionLabel} (regional average),{' '}
-                    {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
-                    {benchmarkedColumnHeaders.CountryLabel},{' '}
-                    {IndicatorService.getFinancialYear(
-                      benchmarkedDisabilityData,
-                      1,
-                      ['learning_disability_prevalence']
-                    )}
-                  </>
-                }
-                columnHeaders={benchmarkedColumnHeaders}
-                data={benchmarkedDisabilityData}
-                showCareProvider={false}
-              ></DataTable>
-            </>
-          }
-          download={
-            <>
-              <div className="govuk-!-margin-bottom-4">
-                {renderComparatorControl('comparator-download-3')}
-              </div>
-              <DownloadTableDataCSVLink
-                tableref={tableref3}
-                filename="learning_disability_prevalence.csv"
-                xLabel=""
-                downloadType="learning disability prevalence"
-              />
-            </>
-          }
-          chart={
-            <PeerGroupBarChart
-              laCode={locationIds[1]}
-              laName={locationNames.LALabel}
-              metric={'learning_disability_prevalence'}
-              {...chartLocationValues(
-                benchmarkedDisabilityData,
-                'learning_disability_prevalence'
-              )}
-              regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
-              peerData={dataByMetric['learning_disability_prevalence'] ?? null}
-              loading={chartLoading}
-              error={chartError}
-              comparatorControl={renderComparatorControl('comparator-chart-3')}
-              comparatorLabel={comparatorLabel}
-              comparatorAverageLabel={comparatorAverageLabel}
-              metricDescription="learning disability prevalence"
-              figureTitle={METRICS.learning_disability_prevalence.label}
-              dateLabel={IndicatorService.getFinancialYear(
-                benchmarkedDisabilityData,
-                1,
-                ['learning_disability_prevalence']
-              )}
-              figureNumber={3}
-            />
-          }
-        />
-      </DataBox>
+        figureNumber={3}
+        metricDescription="learning disability prevalence"
+        dateLabel={IndicatorService.getFinancialYear(
+          benchmarkedDisabilityData,
+          1,
+          ['learning_disability_prevalence']
+        )}
+        tableCaption={
+          <>
+            Table 3: learning disability prevalence – {locationNames.LALabel}{' '}
+            <abbr title="local authority">LA</abbr>, {locationNames.RegionLabel}{' '}
+            (regional average), {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
+            {benchmarkedColumnHeaders.CountryLabel},{' '}
+            {IndicatorService.getFinancialYear(benchmarkedDisabilityData, 1, [
+              'learning_disability_prevalence',
+            ])}
+          </>
+        }
+        columnHeaders={benchmarkedColumnHeaders}
+        download={{
+          filename: 'learning_disability_prevalence.csv',
+          description: 'learning disability prevalence',
+        }}
+        data={benchmarkedDisabilityData}
+        laCode={locationIds[1]}
+        laName={locationNames.LALabel}
+        regionLabel={locationNames.RegionLabel}
+        comparator={comparator}
+        peer={{
+          dataByMetric: dataByMetric,
+          loading: chartLoading,
+          error: chartError,
+        }}
+      />
 
       <DataBox
         dataTitle="Primary reason for people to access long-term adult social care"
@@ -903,7 +627,9 @@ export default function DisabilityPrevalence() {
           table={
             <>
               <SectionControls
-                comparator={renderComparatorControl('comparator-table-4')}
+                comparator={comparator.renderComparatorControl(
+                  'comparator-table-4'
+                )}
                 filters={
                   <FilterCheckboxGroup
                     idPrefix="table-4"
@@ -921,8 +647,9 @@ export default function DisabilityPrevalence() {
                     Table 4: primary reason for all age groups to access
                     long-term adult social care – {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
-                    {comparatorAverageLabel}, {locationNames.RegionLabel} region
-                    and {locationNames.CountryLabel},{' '}
+                    {comparator.comparatorAverageLabel},{' '}
+                    {locationNames.RegionLabel} region and{' '}
+                    {locationNames.CountryLabel},{' '}
                     {IndicatorService.getFinancialYear(
                       primarySupportReasonData,
                       1
@@ -932,7 +659,7 @@ export default function DisabilityPrevalence() {
                 source={SOURCES.ascActivityReport}
                 columnHeaders={{
                   ...locationNamesWithAverageLabels,
-                  ComparatorLabel: comparatorAverageLabel,
+                  ComparatorLabel: comparator.comparatorAverageLabel,
                 }}
                 metricColumnName="Primary support reason"
                 rowHeaders={supportReasonRowHeaders}
@@ -974,7 +701,7 @@ export default function DisabilityPrevalence() {
               </a>
               .
             </p>
-            {nhsPeerGroupDetails}
+            <NhsPeerGroupDetails />
           </>
         }
       >
@@ -996,12 +723,14 @@ export default function DisabilityPrevalence() {
                 error={chartError}
                 comparatorControl={
                   <SectionControls
-                    comparator={renderComparatorControl('comparator-chart-4')}
+                    comparator={comparator.renderComparatorControl(
+                      'comparator-chart-4'
+                    )}
                     filters={renderStandardisedReasonFilter('chart-5')}
                   />
                 }
-                comparatorLabel={comparatorLabel}
-                comparatorAverageLabel={comparatorAverageLabel}
+                comparatorLabel={comparator.comparatorLabel}
+                comparatorAverageLabel={comparator.comparatorAverageLabel}
                 metricDescription={`the rate of people accessing long-term adult social care for ${standardisedRowHeadersDefault[
                   chartSupportReason
                 ]?.toLowerCase()}, per 100,000 of the total adult population (18+)`}
@@ -1023,7 +752,9 @@ export default function DisabilityPrevalence() {
           table={
             <>
               <SectionControls
-                comparator={renderComparatorControl('comparator-table-5')}
+                comparator={comparator.renderComparatorControl(
+                  'comparator-table-5'
+                )}
                 filters={renderStandardisedReasonFilter('table-5')}
               />
               <PeerGroupTable
@@ -1038,9 +769,9 @@ export default function DisabilityPrevalence() {
                     , standardised per 100,000 of the total adult population
                     (18+) – {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr> and its comparison
-                    group, {comparatorAverageLabel}, {locationNames.RegionLabel}{' '}
-                    (regional average) and {locationNames.CountryLabel}{' '}
-                    (national average),{' '}
+                    group, {comparator.comparatorAverageLabel},{' '}
+                    {locationNames.RegionLabel} (regional average) and{' '}
+                    {locationNames.CountryLabel} (national average),{' '}
                     {IndicatorService.getFinancialYear(
                       standardisedReasonData,
                       1
@@ -1056,7 +787,7 @@ export default function DisabilityPrevalence() {
                 nationalAverageValue={standardisedReasonValues.national}
                 peerData={dataByMetric[chartSupportReason] ?? null}
                 loading={chartLoading}
-                comparatorAverageLabel={comparatorAverageLabel}
+                comparatorAverageLabel={comparator.comparatorAverageLabel}
               >
                 <p className="govuk-body-s">
                   Local authorities with an underlying count of between 1 and 5
