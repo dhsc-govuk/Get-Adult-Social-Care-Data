@@ -101,6 +101,7 @@ const ComparatorGroupSelect: React.FC<ComparatorGroupSelectProps> = ({
           <option
             key={group.id}
             value={`${CUSTOM_GROUP_VALUE_PREFIX}${group.id}`}
+            disabled={group.disabled}
           >
             {group.name}
           </option>
