@@ -153,4 +153,13 @@ describe('MpsSearch', () => {
     ).toBeInTheDocument();
     expect(window.open).not.toHaveBeenCalled();
   });
+
+  it('links to the list of all statements', async () => {
+    render(<MpsSearch />);
+    await openDetails();
+
+    expect(
+      screen.getByRole('link', { name: 'Browse all statements' })
+    ).toHaveAttribute('href', '/market-position-statements');
+  });
 });

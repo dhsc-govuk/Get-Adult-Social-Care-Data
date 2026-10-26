@@ -1167,3 +1167,28 @@
     background-color: #1d70b8;
   }
 }
+
+.app-contents-list {
+  margin: 0 0 30px;
+  padding: 0;
+  list-style: none;
+
+  li::before {
+    content: '— ';
+    margin-left: -20px;
+  }
+
+  li {
+    margin-left: 20px;
+  }
+}
+
+.app-mps-list__letter {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #b1b4b6;
+}
+
+.app-mps-list__item {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #b1b4b6;
+}
