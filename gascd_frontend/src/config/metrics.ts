@@ -18,13 +18,17 @@ export const SOURCES = {
     'Adult Social Care Activity Report from Department of Health and Social Care (DHSC)',
   ascActivityFinanceWithOnsPopulation:
     'Adult Social Care Activity and Finance Report from NHS England & population estimates from ONS',
+  ascFinanceReport:
+    'Adult Social Care Finance Report from the Department of Health and Social Care',
+  ascFinanceReportWithOnsPopulation:
+    'Adult Social Care Finance Report from the Department of Health and Social Care (DHSC) and population estimates from ONS',
   onsPopulationEstimates:
     'Population estimates from the Office for National Statistics (ONS)',
   capacityTrackerWithOnsPopulation:
     'Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS',
 } as const;
 
-export type MetricFormat = 'number' | 'percentage';
+export type MetricFormat = 'number' | 'percentage' | 'currency';
 
 export type MetricConfig = {
   label: string;
@@ -94,8 +98,86 @@ const supportReasonMetrics = Object.fromEntries(
   MetricConfig & { helpUrl: string }
 >;
 
+// LA spending (thousands of pounds) by duration of care and primary support
+// reason (edpsr_), and long-term spending by support setting (elss_). Each has
+// a per 100,000 adults twin.
+const SPENDING = {
+  edpsr_stlt_total_all_ages: 'Both short-term and long-term',
+  edpsr_lt_total_all_ages: 'Long-term',
+  edpsr_lt_learning_disability_support_all_ages: 'Learning disability support',
+  edpsr_lt_mental_health_support_all_ages: 'Mental health support',
+  edpsr_lt_physical_support_all_ages: 'Physical support',
+  edpsr_lt_sensory_support_all_ages: 'Sensory support',
+  edpsr_lt_support_with_memory_and_cognition_all_ages:
+    'Support with memory and cognition',
+  edpsr_st_total_all_ages: 'Short-term',
+  edpsr_st_learning_disability_support_all_ages: 'Learning disability support',
+  edpsr_st_mental_health_support_all_ages: 'Mental health support',
+  edpsr_st_physical_support_all_ages: 'Physical support',
+  edpsr_st_sensory_support_all_ages: 'Sensory support',
+  edpsr_st_support_with_memory_and_cognition_all_ages:
+    'Support with memory and cognition',
+  elss_all_types_of_adult_social_care_all_ages:
+    'All types of adult social care',
+  elss_all_types_of_care_home_all_ages:
+    'All types of care home, including residential and nursing',
+  elss_nursing_all_ages: 'Nursing',
+  elss_residential_all_ages: 'Residential',
+  elss_all_types_of_community_social_care_all_ages:
+    'All types of community social care, including home care, supported living, community direct payments and other schemes',
+  elss_community_home_care_all_ages: 'Home care',
+  elss_community_supported_living_all_ages: 'Supported living',
+  elss_community_direct_payments_all_ages: 'Community direct payments',
+  elss_community_other_long_term_care_all_ages: 'Other',
+  // Typo is on the live site; fix separately so this refactor changes nothing
+  elss_supported_accommodation_all_ages: 'Supported accomodation',
+} as const;
+
+type SpendingId = keyof typeof SPENDING;
+
+const spendingHelpUrls = (id: string) =>
+  id.startsWith('edpsr_')
+    ? {
+        count:
+          '/help/percentages-financial-spend-long-term-and-short-term-care',
+        per100k:
+          '/help/financial-spend-long-term-and-short-term-care-per-100000-adults',
+      }
+    : {
+        count:
+          '/help/total-financial-spend-long-term-community-adult-social-care',
+        per100k: '/help/financial-spend-long-term-care-per-100000-adults',
+      };
+
+const spendingMetrics = Object.fromEntries(
+  Object.entries(SPENDING).flatMap(([id, label]) => [
+    [
+      id,
+      {
+        label,
+        format: 'currency',
+        source: SOURCES.ascFinanceReport,
+        helpUrl: spendingHelpUrls(id).count,
+      },
+    ],
+    [
+      `${id}_per100k_adults`,
+      {
+        label,
+        format: 'currency',
+        source: SOURCES.ascFinanceReportWithOnsPopulation,
+        helpUrl: spendingHelpUrls(id).per100k,
+      },
+    ],
+  ])
+) as Record<
+  SpendingId | `${SpendingId}_per100k_adults`,
+  MetricConfig & { helpUrl: string }
+>;
+
 export const METRICS = {
   ...supportReasonMetrics,
+  ...spendingMetrics,
 
   pansi_pred_pop_early_dem_aged_30_64: {
     label: EARLY_ONSET_DEMENTIA,
