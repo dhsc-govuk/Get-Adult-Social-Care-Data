@@ -34,6 +34,7 @@ import { ComparatorSelection } from '@/components/charts/peer-group/types';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
 import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
 import { METRICS, metricLabels, SOURCES } from '@/config/metrics';
+import { chartLocationValues } from '@/helpers/locationComparison';
 
 const AGE_GROUP_LABELS = metricLabels([
   'perc_18_64',
@@ -662,27 +663,10 @@ export default function ProvisionAndOccupancyPage() {
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
               metric={selectedAgeMetric}
-              currentLaValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === selectedAgeMetric &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === selectedAgeMetric &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === selectedAgeMetric &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              {...chartLocationValues(
+                benchmarkedDemographicData,
+                selectedAgeMetric
+              )}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric[selectedAgeMetric] ?? null}
               loading={chartLoading}

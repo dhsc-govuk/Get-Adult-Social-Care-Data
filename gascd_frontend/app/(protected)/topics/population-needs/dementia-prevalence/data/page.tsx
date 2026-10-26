@@ -35,6 +35,7 @@ import {
   percentageMetrics,
   SOURCES,
 } from '@/config/metrics';
+import { chartLocationValues } from '@/helpers/locationComparison';
 
 const PREVALENCE = 'dementia_qof_prevalence';
 
@@ -450,23 +451,7 @@ export default function DementaPrevalencePage() {
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
               metric={PREVALENCE}
-              currentLaValue={
-                filteredDemographicData.find(
-                  (d) => d.metric_id === PREVALENCE && d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === PREVALENCE && d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === PREVALENCE && d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              {...chartLocationValues(filteredDemographicData, PREVALENCE)}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric[PREVALENCE] ?? null}
               loading={chartLoading}

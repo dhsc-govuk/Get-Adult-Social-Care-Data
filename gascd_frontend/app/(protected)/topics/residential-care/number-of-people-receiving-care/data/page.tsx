@@ -33,6 +33,7 @@ import RelatedDataList from '@/components/data-components/RelatedDataList';
 import { ALLOWED_CP_USER_TYPES } from '@/constants';
 import { User, useSession } from '@/lib/auth-client';
 import { METRICS, SOURCES } from '@/config/metrics';
+import { locationValues } from '@/helpers/locationComparison';
 
 const COUNT_METRIC_ID = 'nccc_num_clients_comm_care';
 
@@ -137,19 +138,10 @@ export default function NumberPeopleReceivingCarePage() {
   );
 
   // Read once, so the figure and the table show the same values
-  const standardisedValues = (() => {
-    const valueFor = (locationType: string) =>
-      benchmarkedDemographicData.find(
-        (d) =>
-          d.metric_id === STANDARDISED_METRIC_ID &&
-          d.location_type === locationType
-      )?.data_point ?? null;
-    return {
-      la: valueFor('LA'),
-      regional: valueFor('Regional'),
-      national: valueFor('National'),
-    };
-  })();
+  const standardisedValues = locationValues(
+    benchmarkedDemographicData,
+    STANDARDISED_METRIC_ID
+  );
 
   const handleComparatorChange = (newSelection: ComparatorSelection) => {
     setSelection(newSelection);

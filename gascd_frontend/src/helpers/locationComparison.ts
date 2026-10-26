@@ -108,6 +108,35 @@ export const locationTimeSeries = (
 };
 
 /**
+ * A metric's value for the user's LA, their region and England. The chart and
+ * the table beside it read the same values, so they can never disagree.
+ */
+export const locationValues = (
+  data: Indicator[],
+  metricId: string,
+  isOwnLa: (item: Indicator) => boolean = (item) => item.location_type === 'LA'
+): { la: number | null; regional: number | null; national: number | null } => {
+  const valueFor = (matches: (item: Indicator) => boolean) =>
+    data.find((item) => item.metric_id === metricId && matches(item))
+      ?.data_point ?? null;
+  return {
+    la: valueFor(isOwnLa),
+    regional: valueFor((item) => item.location_type === 'Regional'),
+    national: valueFor((item) => item.location_type === 'National'),
+  };
+};
+
+/** `locationValues` under the prop names `PeerGroupBarChart` takes */
+export const chartLocationValues = (data: Indicator[], metricId: string) => {
+  const { la, regional, national } = locationValues(data, metricId);
+  return {
+    currentLaValue: la,
+    regionalAverageValue: regional,
+    nationalAverageValue: national,
+  };
+};
+
+/**
  * The distinct dates a metric has values for, most recent first, as raw
  * `metric_date` values.
  */

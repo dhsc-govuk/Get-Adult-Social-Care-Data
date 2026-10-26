@@ -41,6 +41,10 @@ import {
   percentageMetrics,
   SOURCES,
 } from '@/config/metrics';
+import {
+  chartLocationValues,
+  locationValues,
+} from '@/helpers/locationComparison';
 
 // In the order the tables and filters show them
 const SUPPORT_REASON_ROWS: MetricId[] = [
@@ -564,18 +568,10 @@ export default function DisabilityPrevalence() {
   }, []);
 
   // Read once, so the figure and the table show the same values
-  const standardisedReasonValues = (() => {
-    const valueFor = (locationType: string) =>
-      standardisedReasonData.find(
-        (d) =>
-          d.metric_id === chartSupportReason && d.location_type === locationType
-      )?.data_point ?? null;
-    return {
-      la: valueFor('LA'),
-      regional: valueFor('Regional'),
-      national: valueFor('National'),
-    };
-  })();
+  const standardisedReasonValues = locationValues(
+    standardisedReasonData,
+    chartSupportReason
+  );
 
   const updatePrimaryReasonMetrics = () => {
     const storedData = localStorage.getItem('primary-reason-metrics');
@@ -684,27 +680,10 @@ export default function DisabilityPrevalence() {
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
               metric={'perc_general_health'}
-              currentLaValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'perc_general_health' &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'perc_general_health' &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'perc_general_health' &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              {...chartLocationValues(
+                benchmarkedDisabilityData,
+                'perc_general_health'
+              )}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric['perc_general_health'] ?? null}
               loading={chartLoading}
@@ -796,27 +775,10 @@ export default function DisabilityPrevalence() {
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
               metric={'perc_population_disability'}
-              currentLaValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'perc_population_disability' &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'perc_population_disability' &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'perc_population_disability' &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              {...chartLocationValues(
+                benchmarkedDisabilityData,
+                'perc_population_disability'
+              )}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric['perc_population_disability'] ?? null}
               loading={chartLoading}
@@ -907,27 +869,10 @@ export default function DisabilityPrevalence() {
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
               metric={'learning_disability_prevalence'}
-              currentLaValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'learning_disability_prevalence' &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'learning_disability_prevalence' &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'learning_disability_prevalence' &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              {...chartLocationValues(
+                benchmarkedDisabilityData,
+                'learning_disability_prevalence'
+              )}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric['learning_disability_prevalence'] ?? null}
               loading={chartLoading}

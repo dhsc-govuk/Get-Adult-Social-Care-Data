@@ -48,6 +48,7 @@ import {
   percentageMetrics,
   SOURCES,
 } from '@/config/metrics';
+import { locationValues } from '@/helpers/locationComparison';
 
 const BED_TYPE_ROWS: MetricId[] = [
   'bedcount_per_hundred_thousand_adults_total',
@@ -529,7 +530,7 @@ export default function ProvisionAndOccupancyPage() {
     [filteredCareHomeBedNumbersData, numbersMetricId, dataByMetric]
   );
 
-  // Read once, so each chart and the table beside it show the same values
+  // The care home's own value, for the extra row
   const valueFor = (
     data: Indicator[],
     metricId: string,
@@ -537,26 +538,8 @@ export default function ProvisionAndOccupancyPage() {
   ) =>
     data.find((item) => item.metric_id === metricId && matches(item))
       ?.data_point ?? null;
-  const areaValues = (
-    data: Indicator[],
-    metricId: string,
-    isOwnLa: (item: Indicator) => boolean = (item) =>
-      item.location_type === 'LA'
-  ) => ({
-    la: valueFor(data, metricId, isOwnLa),
-    regional: valueFor(
-      data,
-      metricId,
-      (item) => item.location_type === 'Regional'
-    ),
-    national: valueFor(
-      data,
-      metricId,
-      (item) => item.location_type === 'National'
-    ),
-  });
   // The bed numbers data covers every LA in the region, so match by code
-  const bedNumbersValues = areaValues(
+  const bedNumbersValues = locationValues(
     benchmarkedBedNumbersData,
     numbersMetricId,
     (item) => item.location_id === laCode
@@ -588,7 +571,7 @@ export default function ProvisionAndOccupancyPage() {
     [latestBedTypeData, groupedTableRowHeaders, bedTypesDataByMetric]
   );
 
-  const groupedBedTypesValues = areaValues(
+  const groupedBedTypesValues = locationValues(
     latestBedTypeData,
     bedTypesChartDisplayId
   );
@@ -631,7 +614,7 @@ export default function ProvisionAndOccupancyPage() {
       ),
     [finalCpData, dataByMetric, locationIds]
   );
-  const occupancyValues = areaValues(benchmarkedCpData, OCCUPANCY_METRIC);
+  const occupancyValues = locationValues(benchmarkedCpData, OCCUPANCY_METRIC);
 
   const careProviderMetricIds1 = ['bedcount_total', 'occupancy_rate_total'];
 

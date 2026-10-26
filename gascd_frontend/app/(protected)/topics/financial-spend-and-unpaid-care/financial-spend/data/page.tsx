@@ -39,6 +39,7 @@ import { useFilterSync } from '@/components/filters/useFilterSync';
 import SectionControls from '@/components/data-components/SectionControls';
 import { cloneDeep } from 'lodash';
 import { METRICS, MetricId, metricLabels, SOURCES } from '@/config/metrics';
+import { locationValues } from '@/helpers/locationComparison';
 
 // Table rows, in the order shown
 const DURATION_OF_CARE_ROWS: MetricId[] = [
@@ -456,17 +457,8 @@ export default function LAFundingPage() {
   );
 
   // Read once, so each chart and the table beside it show the same values
-  const areaValues = (metricId: string) => {
-    const valueFor = (locationType: string) =>
-      benchmarkedDemographicData.find(
-        (d) => d.metric_id === metricId && d.location_type === locationType
-      )?.data_point ?? null;
-    return {
-      la: valueFor('LA'),
-      regional: valueFor('Regional'),
-      national: valueFor('National'),
-    };
-  };
+  const areaValues = (metricId: string) =>
+    locationValues(benchmarkedDemographicData, metricId);
   const fundingValues = areaValues(standardisedFundingMetricId);
   const careTypeValues = areaValues(standardisedCareTypeId);
 

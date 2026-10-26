@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
+  chartLocationValues,
   comparisonLabels,
+  locationValues,
   locationBarSeries,
   locationTimeSeries,
   PEER_GROUP_AVERAGE_LABEL,
@@ -165,5 +167,38 @@ describe('peerRowsForLatestPeriod', () => {
     ];
 
     expect(peerRowsForLatestPeriod(peers, shown)).toEqual([]);
+  });
+});
+
+describe('locationValues', () => {
+  const data = [
+    indicator('perc_unpaid_care_provider', 'LA', '2021', 10),
+    indicator('perc_unpaid_care_provider', 'Regional', '2021', 20),
+    indicator('perc_unpaid_care_provider', 'National', '2021', 30),
+    indicator('num_children_in_need', 'LA', '2021', 99),
+  ];
+
+  it('reads the LA, region and England values for one metric', () => {
+    expect(locationValues(data, 'perc_unpaid_care_provider')).toEqual({
+      la: 10,
+      regional: 20,
+      national: 30,
+    });
+  });
+
+  it('gives null for a location with no value', () => {
+    expect(locationValues(data, 'num_children_in_need')).toEqual({
+      la: 99,
+      regional: null,
+      national: null,
+    });
+  });
+
+  it('names them as the peer group chart props', () => {
+    expect(chartLocationValues(data, 'perc_unpaid_care_provider')).toEqual({
+      currentLaValue: 10,
+      regionalAverageValue: 20,
+      nationalAverageValue: 30,
+    });
   });
 });
