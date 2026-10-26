@@ -762,7 +762,7 @@
 /* Filter component inspired by Apply for plant export certificates and inspections (https://www.gov.uk/guidance/apply-for-plant-export-certificates-and-inspections) and GOV.UK search (https://www.gov.uk) */
 
 .dhsc-filter--action .govuk-button {
-  background-color: #1d70b8;
+  background-color: #005a30;
   color: #ffffff;
   font-weight: 700;
   margin-bottom: 0;
@@ -770,12 +770,12 @@
 
 .dhsc-filter--open .govuk-button {
   box-shadow: none !important;
-  background-color: #1d70b8;
+  background-color: #005a30;
   color: #ffffff !important;
 }
 
 .dhsc-filter--closed:hover {
-  background-color: #084275;
+  background-color: #00401f;
 }
 
 
