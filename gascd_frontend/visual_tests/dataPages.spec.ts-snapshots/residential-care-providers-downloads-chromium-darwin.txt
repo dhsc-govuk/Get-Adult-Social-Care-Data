@@ -6,7 +6,7 @@
 "Total adult social care providers","203","396","269"
 "Care home providers","214","343","372"
 "Nursing","115","32","38"
-"Residental","287","81","94"
+"Residential","287","81","94"
 "Community social care providers","361","101","135"
 "Home care providers","234","325","303"
 "Supported living providers","87","127","64"

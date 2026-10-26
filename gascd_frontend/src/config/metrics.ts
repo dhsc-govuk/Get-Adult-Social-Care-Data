@@ -137,8 +137,7 @@ const SPENDING = {
   elss_community_supported_living_all_ages: 'Supported living',
   elss_community_direct_payments_all_ages: 'Community direct payments',
   elss_community_other_long_term_care_all_ages: 'Other',
-  // Typo is on the live site; fix separately so this refactor changes nothing
-  elss_supported_accommodation_all_ages: 'Supported accomodation',
+  elss_supported_accommodation_all_ages: 'Supported accommodation',
 } as const;
 
 type SpendingId = keyof typeof SPENDING;
@@ -290,8 +289,7 @@ export const METRICS = {
     helpUrl: '/help/total-number-community-social-care-providers',
   },
   npl_care_home_residential: {
-    // Typo is on the live site; fix separately so this refactor changes nothing
-    label: 'Residental',
+    label: 'Residential',
     format: 'number',
     source: SOURCES.cqcCareDirectory,
     helpUrl: '/help/total-number-community-social-care-providers',
