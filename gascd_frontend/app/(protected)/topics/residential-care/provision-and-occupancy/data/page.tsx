@@ -15,7 +15,6 @@ import DataTable from '@/components/tables/table';
 import PeerGroupTable from '@/components/tables/PeerGroupTable';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
-import BarChart from '@/components/charts/BarChart';
 import TimeSeriesChart, {
   DataPoint,
   Series,
@@ -1582,7 +1581,11 @@ export default function ProvisionAndOccupancyPage() {
               </h3>
               {(timeData.length > 0 && (
                 <div style={{ width: '100%', height: `500px` }}>
-                  <TimeSeriesChart series={timeData} />
+                  <TimeSeriesChart
+                    series={timeData}
+                    // Every bed type option shares this format
+                    metric={bedTypeChartHeaderDefault.metric_id}
+                  />
                 </div>
               )) || <p>Loading graph</p>}
               <p className="govuk-body">

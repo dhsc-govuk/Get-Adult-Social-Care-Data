@@ -1232,7 +1232,8 @@ export default function LAFundingPage() {
                 <div style={{ width: '100%', height: `500px` }}>
                   <TimeSeriesChart
                     series={timeSeriesDataForGraph}
-                    yPrefix="£"
+                    // Every support setting option shares this format
+                    metric={supportSettingsForFundingTrendsDefault.metric_id}
                     financialYear
                   />
                 </div>
