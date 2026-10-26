@@ -104,9 +104,11 @@ export default function UnpaidCarePage() {
     selection.kind === 'custom'
       ? groups.find((group) => group.id === selection.groupId)
       : undefined;
-  const comparatorLabel = selectedGroup ? selectedGroup.name : undefined;
+  const comparatorLabel = selectedGroup
+    ? (selectedGroup.comparisonLabel ?? selectedGroup.name)
+    : undefined;
   const comparatorAverageLabel = selectedGroup
-    ? `${selectedGroup.name} (average)`
+    ? (selectedGroup.averageLabel ?? `${selectedGroup.name} (average)`)
     : NHS_PEER_GROUP_AVERAGE_LABEL;
   const tableColumnHeaders = {
     CPLabel: locationNames.CPLabel,

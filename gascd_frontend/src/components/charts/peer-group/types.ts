@@ -44,6 +44,10 @@ export interface CustomComparatorGroup {
   laCodes: string[];
   // Provided by the service (the user's region), so it can't be edited
   builtIn?: boolean;
+  // Replace the default "<name> (average)" and "<name>" in tables, legends
+  // and captions
+  averageLabel?: string;
+  comparisonLabel?: string;
   // Can be chosen, but its LAs haven't arrived yet
   loading?: boolean;
   // Shown but can't be chosen: the region failed to load
