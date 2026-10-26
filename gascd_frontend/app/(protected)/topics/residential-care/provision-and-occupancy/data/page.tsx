@@ -15,7 +15,6 @@ import DataTable from '@/components/tables/table';
 import PeerGroupTable from '@/components/tables/PeerGroupTable';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
-import BarChart from '@/components/charts/BarChart';
 import TimeSeriesChart, {
   DataPoint,
   Series,
@@ -48,6 +47,7 @@ import {
   percentageMetrics,
   SOURCES,
 } from '@/config/metrics';
+import { locationValues } from '@/helpers/locationComparison';
 
 const BED_TYPE_ROWS: MetricId[] = [
   'bedcount_per_hundred_thousand_adults_total',
@@ -529,7 +529,7 @@ export default function ProvisionAndOccupancyPage() {
     [filteredCareHomeBedNumbersData, numbersMetricId, dataByMetric]
   );
 
-  // Read once, so each chart and the table beside it show the same values
+  // The care home's own value, for the extra row
   const valueFor = (
     data: Indicator[],
     metricId: string,
@@ -537,26 +537,8 @@ export default function ProvisionAndOccupancyPage() {
   ) =>
     data.find((item) => item.metric_id === metricId && matches(item))
       ?.data_point ?? null;
-  const areaValues = (
-    data: Indicator[],
-    metricId: string,
-    isOwnLa: (item: Indicator) => boolean = (item) =>
-      item.location_type === 'LA'
-  ) => ({
-    la: valueFor(data, metricId, isOwnLa),
-    regional: valueFor(
-      data,
-      metricId,
-      (item) => item.location_type === 'Regional'
-    ),
-    national: valueFor(
-      data,
-      metricId,
-      (item) => item.location_type === 'National'
-    ),
-  });
   // The bed numbers data covers every LA in the region, so match by code
-  const bedNumbersValues = areaValues(
+  const bedNumbersValues = locationValues(
     benchmarkedBedNumbersData,
     numbersMetricId,
     (item) => item.location_id === laCode
@@ -588,7 +570,7 @@ export default function ProvisionAndOccupancyPage() {
     [latestBedTypeData, groupedTableRowHeaders, bedTypesDataByMetric]
   );
 
-  const groupedBedTypesValues = areaValues(
+  const groupedBedTypesValues = locationValues(
     latestBedTypeData,
     bedTypesChartDisplayId
   );
@@ -631,7 +613,7 @@ export default function ProvisionAndOccupancyPage() {
       ),
     [finalCpData, dataByMetric, locationIds]
   );
-  const occupancyValues = areaValues(benchmarkedCpData, OCCUPANCY_METRIC);
+  const occupancyValues = locationValues(benchmarkedCpData, OCCUPANCY_METRIC);
 
   const careProviderMetricIds1 = ['bedcount_total', 'occupancy_rate_total'];
 
@@ -1185,6 +1167,7 @@ export default function ProvisionAndOccupancyPage() {
               <PeerGroupBarChart
                 laCode={laCode}
                 laName={locationNamesCP.LALabel}
+                metric={numbersTableMetricId}
                 currentLaValue={bedNumbersValues.la}
                 nationalAverageValue={bedNumbersValues.national}
                 regionalAverageValue={bedNumbersValues.regional}
@@ -1210,10 +1193,7 @@ export default function ProvisionAndOccupancyPage() {
                 figureNumber={1}
                 // Names every series, as the table caption does
                 comparisonSummary={`${locationNamesCP.LALabel}, ${comparatorAverageLabel}, ${locationNamesCP.RegionLabel} regional average and national average`}
-                // Rates per 100,000, not percentages
-                valueSuffix=""
                 dateLabel={IndicatorService.getMostRecentDate(bedNumbersData)}
-                sourceText={`Source: ${SOURCES.capacityTrackerWithOnsPopulationEstimates}`}
               />
               <p className="govuk-body">
                 Note: small numbers have been suppressed and will appear as zero
@@ -1398,6 +1378,7 @@ export default function ProvisionAndOccupancyPage() {
               <PeerGroupBarChart
                 laCode={laCode}
                 laName={locationNamesCP.LALabel}
+                metric={groupedBedType.metric_id}
                 currentLaValue={groupedBedTypesValues.la}
                 nationalAverageValue={groupedBedTypesValues.national}
                 regionalAverageValue={groupedBedTypesValues.regional}
@@ -1422,12 +1403,9 @@ export default function ProvisionAndOccupancyPage() {
                 figureTitle={`Care home bed numbers per 100,000 ${POPULATION_DESCRIPTIONS[groupedPopulation]} (${bedTypesChartFilterName.toLowerCase()})`}
                 figureNumber={2}
                 comparisonSummary={`${locationNamesCP.LALabel}, ${comparatorAverageLabel}, ${locationNamesCP.RegionLabel} regional average and national average`}
-                // Rates per 100,000, not percentages
-                valueSuffix=""
                 dateLabel={IndicatorService.getMostRecentDate(
                   latestBedTypeData
                 )}
-                sourceText={`Source: ${SOURCES.capacityTrackerWithOnsPopulationEstimates}`}
               />
               <p className="govuk-body">
                 Note: small numbers have been suppressed and will appear as zero
@@ -1603,7 +1581,11 @@ export default function ProvisionAndOccupancyPage() {
               </h3>
               {(timeData.length > 0 && (
                 <div style={{ width: '100%', height: `500px` }}>
-                  <TimeSeriesChart series={timeData} />
+                  <TimeSeriesChart
+                    series={timeData}
+                    // Every bed type option shares this format
+                    metric={bedTypeChartHeaderDefault.metric_id}
+                  />
                 </div>
               )) || <p>Loading graph</p>}
               <p className="govuk-body">
@@ -1702,6 +1684,7 @@ export default function ProvisionAndOccupancyPage() {
             <PeerGroupBarChart
               laCode={laCode}
               laName={locationNamesCP.LALabel}
+              metric={OCCUPANCY_METRIC}
               currentLaValue={occupancyValues.la}
               nationalAverageValue={occupancyValues.national}
               regionalAverageValue={occupancyValues.regional}
@@ -1717,7 +1700,6 @@ export default function ProvisionAndOccupancyPage() {
               figureNumber={4}
               comparisonSummary={`${locationNamesCP.LALabel}, ${comparatorAverageLabel}, ${locationNamesCP.RegionLabel} regional average and national average`}
               dateLabel={IndicatorService.getMostRecentDate(finalCpData)}
-              sourceText={`Source: ${SOURCES.capacityTracker}`}
             />
           }
           table={

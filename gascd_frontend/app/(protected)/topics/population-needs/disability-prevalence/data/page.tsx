@@ -41,6 +41,10 @@ import {
   percentageMetrics,
   SOURCES,
 } from '@/config/metrics';
+import {
+  chartLocationValues,
+  locationValues,
+} from '@/helpers/locationComparison';
 
 // In the order the tables and filters show them
 const SUPPORT_REASON_ROWS: MetricId[] = [
@@ -564,18 +568,10 @@ export default function DisabilityPrevalence() {
   }, []);
 
   // Read once, so the figure and the table show the same values
-  const standardisedReasonValues = (() => {
-    const valueFor = (locationType: string) =>
-      standardisedReasonData.find(
-        (d) =>
-          d.metric_id === chartSupportReason && d.location_type === locationType
-      )?.data_point ?? null;
-    return {
-      la: valueFor('LA'),
-      regional: valueFor('Regional'),
-      national: valueFor('National'),
-    };
-  })();
+  const standardisedReasonValues = locationValues(
+    standardisedReasonData,
+    chartSupportReason
+  );
 
   const updatePrimaryReasonMetrics = () => {
     const storedData = localStorage.getItem('primary-reason-metrics');
@@ -683,27 +679,11 @@ export default function DisabilityPrevalence() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
-              currentLaValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'perc_general_health' &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'perc_general_health' &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'perc_general_health' &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              metric={'perc_general_health'}
+              {...chartLocationValues(
+                benchmarkedDisabilityData,
+                'perc_general_health'
+              )}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric['perc_general_health'] ?? null}
               loading={chartLoading}
@@ -794,27 +774,11 @@ export default function DisabilityPrevalence() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
-              currentLaValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'perc_population_disability' &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'perc_population_disability' &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'perc_population_disability' &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              metric={'perc_population_disability'}
+              {...chartLocationValues(
+                benchmarkedDisabilityData,
+                'perc_population_disability'
+              )}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric['perc_population_disability'] ?? null}
               loading={chartLoading}
@@ -904,27 +868,11 @@ export default function DisabilityPrevalence() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
-              currentLaValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'learning_disability_prevalence' &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'learning_disability_prevalence' &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                benchmarkedDisabilityData.find(
-                  (d) =>
-                    d.metric_id === 'learning_disability_prevalence' &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              metric={'learning_disability_prevalence'}
+              {...chartLocationValues(
+                benchmarkedDisabilityData,
+                'learning_disability_prevalence'
+              )}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric['learning_disability_prevalence'] ?? null}
               loading={chartLoading}
@@ -940,7 +888,6 @@ export default function DisabilityPrevalence() {
                 ['learning_disability_prevalence']
               )}
               figureNumber={3}
-              sourceText={`Source: ${SOURCES.fingertipsPublicHealth}`}
             />
           }
         />
@@ -1055,6 +1002,7 @@ export default function DisabilityPrevalence() {
               <PeerGroupBarChart
                 laCode={laCode}
                 laName={locationNames.LALabel}
+                metric={chartSupportReason}
                 currentLaValue={standardisedReasonValues.la}
                 nationalAverageValue={standardisedReasonValues.national}
                 regionalAverageValue={standardisedReasonValues.regional}
@@ -1081,9 +1029,6 @@ export default function DisabilityPrevalence() {
                   1
                 )}
                 figureNumber={4}
-                // Rates per 100,000, not percentages
-                valueSuffix=""
-                sourceText={`Source: ${SOURCES.ascActivityFinanceWithOnsPopulation}`}
               />
               <p className="govuk-body-s">
                 Local authorities with an underlying count of between 1 and 5

@@ -35,6 +35,7 @@ import {
   percentageMetrics,
   SOURCES,
 } from '@/config/metrics';
+import { chartLocationValues } from '@/helpers/locationComparison';
 
 const PREVALENCE = 'dementia_qof_prevalence';
 
@@ -449,23 +450,8 @@ export default function DementaPrevalencePage() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
-              currentLaValue={
-                filteredDemographicData.find(
-                  (d) => d.metric_id === PREVALENCE && d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === PREVALENCE && d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === PREVALENCE && d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              metric={PREVALENCE}
+              {...chartLocationValues(filteredDemographicData, PREVALENCE)}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric[PREVALENCE] ?? null}
               loading={chartLoading}
@@ -476,7 +462,6 @@ export default function DementaPrevalencePage() {
               metricDescription="dementia prevalence in all ages, as a proportion of people registered at GP practices"
               figureTitle={METRICS[PREVALENCE].label}
               figureNumber={1}
-              sourceText={`Source: ${SOURCES.fingertips}`}
             />
           }
         />

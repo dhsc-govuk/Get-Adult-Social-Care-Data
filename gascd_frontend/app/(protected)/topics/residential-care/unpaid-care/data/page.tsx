@@ -35,6 +35,7 @@ import {
   percentageMetrics,
   SOURCES,
 } from '@/config/metrics';
+import { chartLocationValues } from '@/helpers/locationComparison';
 
 const UNPAID_CARE = 'perc_unpaid_care_provider';
 
@@ -444,25 +445,8 @@ export default function UnpaidCarePage() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
-              currentLaValue={
-                filteredDemographicData.find(
-                  (d) => d.metric_id === UNPAID_CARE && d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === UNPAID_CARE &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === UNPAID_CARE &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              metric={UNPAID_CARE}
+              {...chartLocationValues(filteredDemographicData, UNPAID_CARE)}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric[UNPAID_CARE] ?? null}
               loading={chartLoading}

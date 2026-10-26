@@ -370,8 +370,8 @@ export default function LAFundingPlanningPage() {
                 <div style={{ width: '100%', height: `500px` }}>
                   <TimeSeriesChart
                     series={timeSeriesDataForGraph}
+                    metric={PERC_CHANGE_METRICS[0]}
                     dateFormat="%Y"
-                    ySuffix="%"
                     decimalPoints={1}
                   />
                 </div>

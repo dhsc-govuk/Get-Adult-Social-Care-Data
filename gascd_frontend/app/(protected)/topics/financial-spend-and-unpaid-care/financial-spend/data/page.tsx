@@ -39,6 +39,7 @@ import { useFilterSync } from '@/components/filters/useFilterSync';
 import SectionControls from '@/components/data-components/SectionControls';
 import { cloneDeep } from 'lodash';
 import { METRICS, MetricId, metricLabels, SOURCES } from '@/config/metrics';
+import { locationValues } from '@/helpers/locationComparison';
 
 // Table rows, in the order shown
 const DURATION_OF_CARE_ROWS: MetricId[] = [
@@ -456,17 +457,8 @@ export default function LAFundingPage() {
   );
 
   // Read once, so each chart and the table beside it show the same values
-  const areaValues = (metricId: string) => {
-    const valueFor = (locationType: string) =>
-      benchmarkedDemographicData.find(
-        (d) => d.metric_id === metricId && d.location_type === locationType
-      )?.data_point ?? null;
-    return {
-      la: valueFor('LA'),
-      regional: valueFor('Regional'),
-      national: valueFor('National'),
-    };
-  };
+  const areaValues = (metricId: string) =>
+    locationValues(benchmarkedDemographicData, metricId);
   const fundingValues = areaValues(standardisedFundingMetricId);
   const careTypeValues = areaValues(standardisedCareTypeId);
 
@@ -893,6 +885,7 @@ export default function LAFundingPage() {
             <PeerGroupBarChart
               laCode={laCode}
               laName={locationNames.LALabel}
+              metric={standardisedFundingMetricId}
               currentLaValue={fundingValues.la}
               nationalAverageValue={fundingValues.national}
               regionalAverageValue={fundingValues.regional}
@@ -923,12 +916,10 @@ export default function LAFundingPage() {
                 chartSupportReason
               ].toLowerCase()}, standardised per 100,000 adult population (18+)`}
               figureNumber={1}
-              currency
               dateLabel={IndicatorService.getFinancialYear(
                 benchmarkedDemographicData,
                 1
               )}
-              sourceText={`Source: ${SOURCES.ascFinanceReportWithOnsPopulation}`}
             />
           }
           table={
@@ -1102,6 +1093,7 @@ export default function LAFundingPage() {
             <PeerGroupBarChart
               laCode={laCode}
               laName={locationNames.LALabel}
+              metric={standardisedCareTypeId}
               currentLaValue={careTypeValues.la}
               nationalAverageValue={careTypeValues.national}
               regionalAverageValue={careTypeValues.regional}
@@ -1128,12 +1120,10 @@ export default function LAFundingPage() {
                 chartCareType
               ].toLowerCase()}, for all age groups, standardised per 100,000 adult population (18+)`}
               figureNumber={2}
-              currency
               dateLabel={IndicatorService.getFinancialYear(
                 benchmarkedDemographicData,
                 1
               )}
-              sourceText={`Source: ${SOURCES.ascFinanceReportWithOnsPopulation}`}
             />
           }
           table={
@@ -1242,7 +1232,8 @@ export default function LAFundingPage() {
                 <div style={{ width: '100%', height: `500px` }}>
                   <TimeSeriesChart
                     series={timeSeriesDataForGraph}
-                    yPrefix="£"
+                    // Every support setting option shares this format
+                    metric={supportSettingsForFundingTrendsDefault.metric_id}
                     financialYear
                   />
                 </div>

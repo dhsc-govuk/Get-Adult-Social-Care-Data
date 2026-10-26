@@ -35,6 +35,7 @@ import {
   percentageMetrics,
   SOURCES,
 } from '@/config/metrics';
+import { chartLocationValues } from '@/helpers/locationComparison';
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -476,27 +477,11 @@ export default function ProvisionAndOccupancyPage() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
-              currentLaValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_households_deprivation_deprived' &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_households_deprivation_deprived' &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_households_deprivation_deprived' &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              metric={'perc_households_deprivation_deprived'}
+              {...chartLocationValues(
+                filteredDemographicData,
+                'perc_households_deprivation_deprived'
+              )}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={
                 dataByMetric['perc_households_deprivation_deprived'] ?? null
@@ -506,6 +491,8 @@ export default function ProvisionAndOccupancyPage() {
               comparatorControl={renderComparatorControl('comparator-chart-1')}
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
+              metricDescription="the percentage of households deprived in 4 dimensions"
+              figureTitle="Percentage of households deprived in 4 dimensions"
             />
           }
         />
@@ -594,27 +581,11 @@ export default function ProvisionAndOccupancyPage() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
-              currentLaValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_household_ownership' &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_household_ownership' &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_household_ownership' &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              metric={'perc_household_ownership'}
+              {...chartLocationValues(
+                filteredDemographicData,
+                'perc_household_ownership'
+              )}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric['perc_household_ownership'] ?? null}
               loading={chartLoading}
@@ -712,27 +683,11 @@ export default function ProvisionAndOccupancyPage() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
-              currentLaValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_households_one_person' &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_households_one_person' &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                filteredDemographicData.find(
-                  (d) =>
-                    d.metric_id === 'perc_households_one_person' &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              metric={'perc_households_one_person'}
+              {...chartLocationValues(
+                filteredDemographicData,
+                'perc_households_one_person'
+              )}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric['perc_households_one_person'] ?? null}
               loading={chartLoading}

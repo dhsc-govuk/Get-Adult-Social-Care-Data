@@ -403,6 +403,7 @@ export default function SenAndEhcpPage() {
                 <div style={chartHeight}>
                   <TimeSeriesChart
                     series={numSenSeries}
+                    metric={NUM_SEN_SUPPORT_14PLUS}
                     decimalPoints={0}
                     hoverDateFormat="%Y"
                     {...academicYearTicks(
@@ -524,7 +525,7 @@ export default function SenAndEhcpPage() {
                 <div style={chartHeight}>
                   <TimeSeriesChart
                     series={percSenSeries}
-                    ySuffix="%"
+                    metric={PERC_SEN_SUPPORT_14PLUS}
                     decimalPoints={1}
                     hoverDateFormat="%Y"
                     {...academicYearTicks(
@@ -657,6 +658,7 @@ export default function SenAndEhcpPage() {
                 <div style={chartHeight}>
                   <TimeSeriesChart
                     series={numEhcpSeries}
+                    metric={NUM_EHCP_14PLUS}
                     decimalPoints={0}
                     hoverDateFormat="%Y"
                     {...academicYearTicks(allOverTimeData, NUM_EHCP_14PLUS)}

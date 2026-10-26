@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { Layout, Data, ScatterData } from 'plotly.js';
 import dynamic from 'next/dynamic';
 import { usePlotlyResize } from './usePlotlyResize';
+import { metricFormat } from '@/config/metrics';
 
 // Skip any SSR compilation for plotly
 const Plotly = dynamic(() => import('react-plotly.js'), { ssr: false });
@@ -30,8 +31,8 @@ export interface Series {
 
 interface TimeSeriesChartProps {
   series: Series[];
-  yPrefix?: string;
-  ySuffix?: string;
+  // Sets the y axis format: a £ prefix, a % suffix or a plain number
+  metric: string;
   dateFormat?: string;
   decimalPoints?: number;
   /**
@@ -56,8 +57,7 @@ const toFinancialYearLabel = (isoDate: string): string => {
 
 const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   series = [],
-  yPrefix = '',
-  ySuffix = '',
+  metric,
   dateFormat = '%b %y',
   decimalPoints = 1,
   tickValues,
@@ -66,6 +66,9 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   financialYear = false,
 }) => {
   const { containerRef, onGraphReady } = usePlotlyResize();
+  const format = metricFormat(metric);
+  const yPrefix = format === 'currency' ? '£' : '';
+  const ySuffix = format === 'percentage' ? '%' : '';
   const useExplicitTicks =
     !financialYear &&
     !!tickValues?.length &&

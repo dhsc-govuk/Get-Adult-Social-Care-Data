@@ -35,6 +35,9 @@ const peerData: PeerGroupData = {
 const defaultProps = {
   laCode: 'E08000014',
   laName: 'Liverpool',
+  metric: 'perc_households_deprivation_deprived',
+  metricDescription: 'the percentage of households deprived in 4 dimensions',
+  figureTitle: 'Percentage of households deprived in 4 dimensions',
   currentLaValue: 52.5,
   nationalAverageValue: 10.5,
   regionalAverageValue: 48.5,
@@ -90,8 +93,8 @@ describe('PeerGroupBarChart', () => {
     ).toBeInTheDocument();
   });
 
-  it('drops the percentage sign when valueSuffix is empty', () => {
-    render(<PeerGroupBarChart {...defaultProps} valueSuffix="" />);
+  it('drops the percentage sign for a metric that is a plain number', () => {
+    render(<PeerGroupBarChart {...defaultProps} metric="total_population" />);
     expect(
       screen.getByText(/England \(national average\) \(10\.5\)/i)
     ).toBeInTheDocument();
@@ -103,7 +106,7 @@ describe('PeerGroupBarChart', () => {
     render(
       <PeerGroupBarChart
         {...defaultProps}
-        currency
+        metric="edpsr_stlt_total_all_ages"
         currentLaValue={52000000}
         nationalAverageValue={1234567.4}
         regionalAverageValue={48000000}
@@ -267,5 +270,20 @@ describe('PeerGroupBarChart', () => {
     expect(
       screen.getByText('This chart is not available to your Local Authority.')
     ).toBeInTheDocument();
+  });
+
+  it("takes its source line from the metric's config", () => {
+    render(<PeerGroupBarChart {...defaultProps} />);
+    expect(
+      screen.getByText(
+        'Source: Census 2021 from the Office for National Statistics (ONS)'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('refuses a metric with no config, rather than guessing its format', () => {
+    expect(() =>
+      render(<PeerGroupBarChart {...defaultProps} metric="not_a_metric" />)
+    ).toThrow('No metric config for not_a_metric');
   });
 });

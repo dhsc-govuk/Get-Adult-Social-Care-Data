@@ -283,6 +283,7 @@ export default function ChildrenInNeedPage() {
                 <div style={chartHeight}>
                   <TimeSeriesChart
                     series={numCinSeries}
+                    metric={NUM_CHILDREN_IN_NEED}
                     decimalPoints={0}
                     hoverDateFormat="%Y"
                     {...reportingYearTicks(
@@ -357,6 +358,7 @@ export default function ChildrenInNeedPage() {
                 <div style={chartHeight}>
                   <TimeSeriesChart
                     series={cinPer10000Series}
+                    metric={CIN_PER_10000_CHILDREN}
                     decimalPoints={1}
                     hoverDateFormat="%Y"
                     {...reportingYearTicks(
@@ -432,6 +434,7 @@ export default function ChildrenInNeedPage() {
                 <div style={chartHeight}>
                   <TimeSeriesChart
                     series={cinTransferSeries}
+                    metric={NUM_CIN_TRANSFER_ASC}
                     decimalPoints={0}
                     hoverDateFormat="%Y"
                     {...reportingYearTicks(

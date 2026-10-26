@@ -34,6 +34,7 @@ import { ComparatorSelection } from '@/components/charts/peer-group/types';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
 import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
 import { METRICS, metricLabels, SOURCES } from '@/config/metrics';
+import { chartLocationValues } from '@/helpers/locationComparison';
 
 const AGE_GROUP_LABELS = metricLabels([
   'perc_18_64',
@@ -661,27 +662,11 @@ export default function ProvisionAndOccupancyPage() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
-              currentLaValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === selectedAgeMetric &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === selectedAgeMetric &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
-              regionalAverageValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === selectedAgeMetric &&
-                    d.location_type === 'Regional'
-                )?.data_point ?? null
-              }
+              metric={selectedAgeMetric}
+              {...chartLocationValues(
+                benchmarkedDemographicData,
+                selectedAgeMetric
+              )}
               regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric[selectedAgeMetric] ?? null}
               loading={chartLoading}
@@ -696,7 +681,6 @@ export default function ProvisionAndOccupancyPage() {
               metricDescription={`the percentage of the population ${selectedAgeLabel.toLowerCase()}`}
               figureTitle={`Percentage of the population ${selectedAgeLabel.toLowerCase()}`}
               figureNumber={1}
-              sourceText={`Source: ${SOURCES.onsPopulationEstimates}`}
             />
           }
         />
