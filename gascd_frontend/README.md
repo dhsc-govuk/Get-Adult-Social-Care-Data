@@ -43,6 +43,8 @@
 
 For more information on authentication and user types, see [USERS.md](./USERS.md)
 
+To add a new metric to the service, see [ADDING_A_METRIC.md](./ADDING_A_METRIC.md)
+
 ## Usage
 
 ### Running the application
