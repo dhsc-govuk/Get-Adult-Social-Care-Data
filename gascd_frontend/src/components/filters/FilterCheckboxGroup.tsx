@@ -8,6 +8,8 @@ import AnalyticsService from '@/services/analytics/analyticsService';
 
 type Props = {
   filterType: string;
+  // Keeps element ids unique when the same filter is shown in several tabs
+  idPrefix?: string;
   filterLabel: string;
   filters: Object;
   updateMethod: () => void;
@@ -15,10 +17,12 @@ type Props = {
 
 const FilterCheckboxGroup: React.FC<Props> = ({
   filterType,
+  idPrefix,
   filterLabel,
   filters,
   updateMethod,
 }) => {
+  const idBase = idPrefix ? `${idPrefix}-${filterType}` : filterType;
   const [showFilters, setShowFilters] = React.useState(false);
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
   const [componentFilters, setComponentFilters] = useState<Filters[]>([]);
@@ -157,7 +161,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
     <div className="govuk-!-padding-bottom-4 govuk-!-padding-top-4">
       <div className="dhsc-filter--action">
         <button
-          id={`${filterType}-button`}
+          id={`${idBase}-button`}
           className={`govuk-button ${showFilters ? 'dhsc-filter--open' : 'dhsc-filter--closed'}`}
           type="button"
           aria-expanded={`${showFilters ? true : false}`}
@@ -169,7 +173,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
           }
         >
           <span
-            id="dhsc-filter--button-content1"
+            id={`${idBase}-button-content`}
             className="dhsc-filter--button-content"
           >
             {showFilters ? 'Hide' : 'Show'} filters
@@ -182,7 +186,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
         </button>
       </div>
       {showFilters && (
-        <FilterBox>
+        <FilterBox idPrefix={idBase}>
           {componentFilters.length === 0 && (
             <p className="govuk-body govuk-!-padding-left-3">
               Loading filters...
@@ -201,23 +205,23 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                 )}
               </div>
               <div
-                id="radios-search"
+                id={`${idBase}-radios-search`}
                 className="app-c-option-select__filter"
                 hidden
                 style={{ display: 'block' }}
               >
                 <div
-                  id="checkboxes-search"
+                  id={`${idBase}-checkboxes-search`}
                   className="app-c-option-select__container js-options-container"
                 >
                   <label
-                    htmlFor="input-filter-search"
+                    htmlFor={`${idBase}-search-input`}
                     className="govuk-label govuk-visually-hidden"
                   >
                     {filterLabel} search
                   </label>
                   <input
-                    id="input-filter-search"
+                    id={`${idBase}-search-input`}
                     className="app-c-option-select__filter-input govuk-input"
                     type="text"
                     onKeyUp={handleSearch}
@@ -241,7 +245,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                           <li className="govuk-checkboxes__item" key={index}>
                             <input
                               className="govuk-checkboxes__input"
-                              id={filterType + filter.metric_id}
+                              id={idBase + filter.metric_id}
                               name="Table filter"
                               type="checkbox"
                               value={filter.metric_id}
@@ -255,7 +259,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                             />
                             <label
                               className="govuk-label govuk-checkboxes__label"
-                              htmlFor={filterType + filter.metric_id}
+                              htmlFor={idBase + filter.metric_id}
                             >
                               {filter.filter_bedtype}
                             </label>
@@ -275,7 +279,7 @@ const FilterCheckboxGroup: React.FC<Props> = ({
                 <div className="govuk-grid-column-full">
                   <div className="govuk-button-group">
                     <button
-                      id={`${filterType}-submit-button`}
+                      id={`${idBase}-submit-button`}
                       type="submit"
                       className="govuk-button"
                       onClick={() => handleSubmit()}

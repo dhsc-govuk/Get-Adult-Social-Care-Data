@@ -21,6 +21,7 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
+import SectionControls from '@/components/data-components/SectionControls';
 import FilterSelectGroup from '@/components/filters/FilterSelectGroup';
 import PeerGroupTable from '@/components/tables/PeerGroupTable';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
@@ -946,18 +947,23 @@ export default function DisabilityPrevalence() {
           </>
         }
       >
-        <FilterCheckboxGroup
-          filterType="primary-reason-metrics"
-          filterLabel="Primary support reason"
-          filters={supportReasonRowHeadersDefault}
-          updateMethod={updatePrimaryReasonMetrics}
-        />
         <DataTabs
           id="4"
           sharingMetricIds={supportReasonMetricIds}
           table={
             <>
-              {renderComparatorControl('comparator-table-4')}
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-4')}
+                filters={
+                  <FilterCheckboxGroup
+                    idPrefix="table-4"
+                    filterType="primary-reason-metrics"
+                    filterLabel="Primary support reason"
+                    filters={supportReasonRowHeadersDefault}
+                    updateMethod={updatePrimaryReasonMetrics}
+                  />
+                }
+              />
               <DataTable
                 tableref={tableref4}
                 caption={

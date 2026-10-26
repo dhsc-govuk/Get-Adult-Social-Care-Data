@@ -7,6 +7,8 @@ import AnalyticsService from '@/services/analytics/analyticsService';
 
 type Props = {
   filterType: string;
+  // Keeps element ids unique when the same filter is shown in several tabs
+  idPrefix?: string;
   filterLabel: string;
   filters: Object;
   updateMethod: () => void;
@@ -22,6 +24,7 @@ type Props = {
 
 const FilterRadioGroup: React.FC<Props> = ({
   filterType,
+  idPrefix,
   filterLabel,
   filters,
   updateMethod,
@@ -30,6 +33,7 @@ const FilterRadioGroup: React.FC<Props> = ({
   secondaryFilters,
   secondaryHiddenFor = [],
 }) => {
+  const idBase = idPrefix ? `${idPrefix}-${filterType}` : filterType;
   const hasSecondary = Boolean(secondaryFilterType && secondaryFilters);
   const [showFilters, setShowFilters] = React.useState(false);
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
@@ -204,7 +208,7 @@ const FilterRadioGroup: React.FC<Props> = ({
     <div className="govuk-!-padding-bottom-4 govuk-!-padding-top-4">
       <div className="dhsc-filter--action">
         <button
-          id={`${filterType}-button`}
+          id={`${idBase}-button`}
           className={`govuk-button ${showFilters ? 'dhsc-filter--open' : 'dhsc-filter--closed'}`}
           type="button"
           aria-expanded={`${showFilters ? true : false}`}
@@ -226,7 +230,7 @@ const FilterRadioGroup: React.FC<Props> = ({
         </button>
       </div>
       {showFilters && (
-        <FilterBox>
+        <FilterBox idPrefix={idBase}>
           {componentFilters.length === 0 && (
             <p className="govuk-body govuk-!-padding-left-3">
               Loading filters...
@@ -236,7 +240,7 @@ const FilterRadioGroup: React.FC<Props> = ({
             <div className="govuk-form-group govuk-!-padding-left-4">
               <h4
                 className="govuk-label govuk-label--s govuk-label-wrapper"
-                id={`${filterType}-label`}
+                id={`${idBase}-label`}
               >
                 {filterLabel}
               </h4>
@@ -259,7 +263,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                 <div className="govuk-!-margin-top-4 dhsc-filter--conditional">
                   <h4
                     className="govuk-label govuk-label--s govuk-label-wrapper"
-                    id={`${secondaryFilterType}-label`}
+                    id={`${idBase}-${secondaryFilterType}-label`}
                   >
                     {secondaryFilterLabel}
                   </h4>
@@ -281,7 +285,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                 <div className="govuk-grid-column-full">
                   <div className="govuk-button-group">
                     <button
-                      id={`${filterType}-submit-button`}
+                      id={`${idBase}-submit-button`}
                       type="submit"
                       className="govuk-button"
                       onClick={() => handleSubmit()}

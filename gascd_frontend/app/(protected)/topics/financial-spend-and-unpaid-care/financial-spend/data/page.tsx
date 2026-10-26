@@ -35,6 +35,8 @@ import TimeSeriesChart, {
   Series,
 } from '@/components/charts/TimeSeriesChart';
 import FilterSelectGroup from '@/components/filters/FilterSelectGroup';
+import { useFilterSync } from '@/components/filters/useFilterSync';
+import SectionControls from '@/components/data-components/SectionControls';
 import { cloneDeep } from 'lodash';
 import { METRICS, MetricId, metricLabels, SOURCES } from '@/config/metrics';
 
@@ -619,6 +621,24 @@ export default function LAFundingPage() {
     }
   }, [rawLaFundingOverTimeData]);
 
+  // Shown in both the graph and table tabs
+  const fundingTrendsFilterSync = useFilterSync(
+    'long-term-funding-support-type'
+  );
+  const renderFundingTrendsFilter = (idPrefix: string) => (
+    <FilterSelectGroup
+      key={fundingTrendsFilterSync.key}
+      idPrefix={idPrefix}
+      filterType="long-term-funding-support-type"
+      filterLabel="Support setting"
+      filters={supportSettingsForFundingTrends}
+      updateMethod={() => {
+        updateLAFundingOverTimeFilter();
+        fundingTrendsFilterSync.announce();
+      }}
+    />
+  );
+
   const updateLAFundingOverTimeFilter = () => {
     createTimeSeriesForTable();
     createTimeSeries();
@@ -1167,12 +1187,6 @@ export default function LAFundingPage() {
           </p>
         }
       >
-        <FilterSelectGroup
-          filterType="long-term-funding-support-type"
-          filterLabel="Support setting"
-          filters={supportSettingsForFundingTrends}
-          updateMethod={updateLAFundingOverTimeFilter}
-        />
         <DataTabs
           id="3"
           sharingMetricIds={demographicMetricIds.filter((id) =>
@@ -1180,6 +1194,7 @@ export default function LAFundingPage() {
           )}
           graph={
             <>
+              <SectionControls filters={renderFundingTrendsFilter('graph-3')} />
               <h4 className="govuk-heading-s">
                 Figure 3: Total funding for long-term adult social care for{' '}
                 {supportTypeFilterName.toLowerCase()} for all age groups –{' '}
@@ -1204,31 +1219,34 @@ export default function LAFundingPage() {
             </>
           }
           table={
-            <DataTable
-              tableref={tableref3}
-              caption={
-                <>
-                  Table 5: Total funding for long-term adult social care for{' '}
-                  {supportTypeFilterName.toLowerCase()} for all age groups –{' '}
-                  {locationNames.LALabel}{' '}
-                  <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getFinancialYear(
-                    filteredDemographicData,
-                    Object.keys(laFundingTableRowHeaders).length
-                  )}
-                </>
-              }
-              source={SOURCES.ascFinanceReport}
-              columnHeaders={locationNamesWithAverageLabels}
-              metricColumnName={metricColumnNames[2]}
-              rowHeaders={laFundingTableRowHeaders}
-              data={laFundingOverTimeDataForTable}
-              showCareProvider={false}
-              percentageRows={[]}
-              currency={true}
-            ></DataTable>
+            <>
+              <SectionControls filters={renderFundingTrendsFilter('table-3')} />
+              <DataTable
+                tableref={tableref3}
+                caption={
+                  <>
+                    Table 5: Total funding for long-term adult social care for{' '}
+                    {supportTypeFilterName.toLowerCase()} for all age groups –{' '}
+                    {locationNames.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {locationNames.RegionLabel} region and{' '}
+                    {locationNames.CountryLabel},{' '}
+                    {IndicatorService.getFinancialYear(
+                      filteredDemographicData,
+                      Object.keys(laFundingTableRowHeaders).length
+                    )}
+                  </>
+                }
+                source={SOURCES.ascFinanceReport}
+                columnHeaders={locationNamesWithAverageLabels}
+                metricColumnName={metricColumnNames[2]}
+                rowHeaders={laFundingTableRowHeaders}
+                data={laFundingOverTimeDataForTable}
+                showCareProvider={false}
+                percentageRows={[]}
+                currency={true}
+              ></DataTable>
+            </>
           }
           download={
             <>

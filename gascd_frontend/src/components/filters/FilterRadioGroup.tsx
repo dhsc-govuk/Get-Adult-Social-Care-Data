@@ -8,6 +8,8 @@ import AnalyticsService from '@/services/analytics/analyticsService';
 
 type Props = {
   filterType: string;
+  // Keeps element ids unique when the same filter is shown in several tabs
+  idPrefix?: string;
   // An optional second radio group shown beside the first in the same panel,
   // applied and cleared by the same buttons.
   secondaryFilterType?: string;
@@ -21,6 +23,7 @@ type Props = {
 
 const FilterRadioGroup: React.FC<Props> = ({
   filterType,
+  idPrefix,
   secondaryFilterType,
   secondaryFilterLabel,
   secondaryFilterHint,
@@ -29,6 +32,7 @@ const FilterRadioGroup: React.FC<Props> = ({
   filters,
   updateMethod,
 }) => {
+  const idBase = idPrefix ? `${idPrefix}-${filterType}` : filterType;
   const [showFilters, setShowFilters] = React.useState(false);
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
   const [componentFilters, setComponentFilters] = useState<Filters[]>([]);
@@ -142,7 +146,7 @@ const FilterRadioGroup: React.FC<Props> = ({
     <div className="govuk-!-padding-bottom-4 govuk-!-padding-top-4">
       <div className="dhsc-filter--action">
         <button
-          id={`${filterType}-button`}
+          id={`${idBase}-button`}
           className={`govuk-button ${showFilters ? 'dhsc-filter--open' : 'dhsc-filter--closed'}`}
           type="button"
           aria-expanded={`${showFilters ? true : false}`}
@@ -165,6 +169,7 @@ const FilterRadioGroup: React.FC<Props> = ({
       </div>
       {showFilters && (
         <FilterBox
+          idPrefix={idBase}
           aside={
             hasSecondary ? (
               <div className="govuk-form-group">
@@ -182,7 +187,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                       <div className="govuk-radios__item" key={value}>
                         <input
                           className="govuk-radios__input"
-                          id={`${secondaryFilterType}-${value}`}
+                          id={`${idBase}-${secondaryFilterType}-${value}`}
                           name={`${secondaryFilterType}-group`}
                           type="radio"
                           value={value}
@@ -191,7 +196,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                         />
                         <label
                           className="govuk-label govuk-radios__label"
-                          htmlFor={`${secondaryFilterType}-${value}`}
+                          htmlFor={`${idBase}-${secondaryFilterType}-${value}`}
                         >
                           {label}
                         </label>
@@ -216,19 +221,19 @@ const FilterRadioGroup: React.FC<Props> = ({
                 </h4>
               </div>
               <div
-                id="radios-search"
+                id={`${idBase}-radios-search`}
                 className="app-c-option-select__filter"
                 hidden
                 style={{ display: 'block' }}
               >
                 <label
-                  htmlFor="input-bedtype-radios"
+                  htmlFor={`${idBase}-search-input`}
                   className="govuk-label govuk-visually-hidden"
                 >
                   {filterLabel} search
                 </label>
                 <input
-                  id="input-bedtype-radios"
+                  id={`${idBase}-search-input`}
                   className="app-c-option-select__filter-input govuk-input"
                   type="text"
                   onKeyUp={handleSearch}
@@ -250,7 +255,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                           <li className="govuk-radios__item" key={index}>
                             <input
                               className="govuk-radios__input"
-                              id={filterType + filter.metric_id}
+                              id={idBase + filter.metric_id}
                               name="Table filter"
                               type="radio"
                               value={filter.metric_id}
@@ -266,7 +271,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                             />
                             <label
                               className="govuk-label govuk-radios__label"
-                              htmlFor={filterType + filter.metric_id}
+                              htmlFor={idBase + filter.metric_id}
                             >
                               {filter.filter_bedtype}
                             </label>
@@ -286,7 +291,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                 <div className="govuk-grid-column-full">
                   <div className="govuk-button-group">
                     <button
-                      id={`${filterType}-submit-button`}
+                      id={`${idBase}-submit-button`}
                       type="submit"
                       className="govuk-button"
                       onClick={() => handleSubmit()}

@@ -1090,3 +1090,14 @@
     border: 5px solid currentcolor;
   }
 }
+
+/* GASCD-300: a section's comparison group, other selects and filters, stacked
+   above its data. GOV.UK drops the last form group's margin, so space them here */
+.dhsc-section-controls__item + .dhsc-section-controls__item {
+  margin-top: 20px;
+}
+
+.dhsc-section-controls__filters > div {
+  padding-top: 0;
+  padding-bottom: 0;
+}
