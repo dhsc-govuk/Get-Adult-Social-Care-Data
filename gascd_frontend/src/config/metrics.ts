@@ -11,6 +11,15 @@ export const SOURCES = {
   census2021: 'Census 2021 from the Office for National Statistics (ONS)',
   capacityTracker:
     'Capacity Tracker from the Department of Health and Social Care (DHSC)',
+  fingertips: 'Fingertips from the Department of Health and Social Care (DHSC)',
+  fingertipsPublicHealth:
+    'Fingertips public health profiles from the Department of Health and Social Care (DHSC)',
+  ascActivityReport:
+    'Adult Social Care Activity Report from Department of Health and Social Care (DHSC)',
+  ascActivityFinanceWithOnsPopulation:
+    'Adult Social Care Activity and Finance Report from NHS England & population estimates from ONS',
+  onsPopulationEstimates:
+    'Population estimates from the Office for National Statistics (ONS)',
   capacityTrackerWithOnsPopulation:
     'Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS',
 } as const;
@@ -31,7 +40,63 @@ const CHALLENGING_BEHAVIOUR =
 const AUTISTIC_SPECTRUM =
   'Total population aged 18-64 predicted to have autistic spectrum disorders';
 
+// Primary support reasons, each with a count and a per 100,000 adults twin
+const SUPPORT_REASONS = {
+  learning_disability_support_18_and_over: 'Learning disability support',
+  mental_health_support_18_and_over: 'Mental health support',
+  access_and_mobility_only_physical_support_18_and_over:
+    'Physical support: Access and mobility only',
+  personal_care_support_physical_support_18_and_over:
+    'Physical support: Personal care support',
+  support_for_dual_impairment_sensory_support_18_and_over:
+    'Sensory support: Support for dual impairment',
+  support_for_hearing_impairment_sensory_support_18_and_over:
+    'Sensory support: Support for hearing impairment',
+  support_for_visual_impairment_sensory_support_18_and_over:
+    'Sensory support: Support for visual impairment',
+  asylum_seeker_support_social_support_18_and_over:
+    'Social support: Asylum seeker support',
+  substance_misuse_support_social_support_18_and_over:
+    'Social support: Substance misuse support',
+  support_for_social_isolation_other_social_support_18_and_over:
+    'Social support: Support for social isolation or other reason',
+  support_with_memory_and_cognition_18_and_over:
+    'Support with memory and cognition',
+} as const;
+
+type SupportReasonId = keyof typeof SUPPORT_REASONS;
+
+const supportReasonMetrics = Object.fromEntries(
+  Object.entries(SUPPORT_REASONS).flatMap(([id, label]) => [
+    [
+      id,
+      {
+        label,
+        format: 'number',
+        source: SOURCES.ascActivityReport,
+        helpUrl:
+          '/help/primary-reason-for-accessing-long-term-adult-social-care',
+      },
+    ],
+    [
+      `${id}_per100k_adults`,
+      {
+        label,
+        format: 'number',
+        source: SOURCES.ascActivityFinanceWithOnsPopulation,
+        helpUrl:
+          '/help/primary-reason-for-accessing-long-term-adult-social-care-per-100000-adults',
+      },
+    ],
+  ])
+) as Record<
+  SupportReasonId | `${SupportReasonId}_per100k_adults`,
+  MetricConfig & { helpUrl: string }
+>;
+
 export const METRICS = {
+  ...supportReasonMetrics,
+
   pansi_pred_pop_early_dem_aged_30_64: {
     label: EARLY_ONSET_DEMENTIA,
     format: 'number',
@@ -146,6 +211,86 @@ export const METRICS = {
     source: SOURCES.capacityTrackerWithOnsPopulation,
     helpUrl:
       '/help/number-people-receiving-care-from-community-social-care-provider-per-100000-adults',
+  },
+
+  dementia_qof_prevalence: {
+    label:
+      'Dementia prevalence - all ages, as a proportion of people registered at GP practices',
+    format: 'percentage',
+    source: SOURCES.fingertips,
+    helpUrl: '/help/dementia-prevalence',
+  },
+
+  total_population: {
+    label: 'Total adult population',
+    format: 'number',
+    source: SOURCES.onsPopulationEstimates,
+    helpUrl: '/help/population-size',
+  },
+  perc_18_64: {
+    label: 'Aged 18 to 64',
+    format: 'percentage',
+    source: SOURCES.onsPopulationEstimates,
+    helpUrl: '/help/population-age',
+  },
+  perc_65over: {
+    label: 'Aged 65 and over',
+    format: 'percentage',
+    source: SOURCES.onsPopulationEstimates,
+    helpUrl: '/help/population-age',
+  },
+  perc_75over: {
+    label: 'Aged 75 and over',
+    format: 'percentage',
+    source: SOURCES.onsPopulationEstimates,
+    helpUrl: '/help/population-age',
+  },
+  perc_85over: {
+    label: 'Aged 85 and over',
+    format: 'percentage',
+    source: SOURCES.onsPopulationEstimates,
+    helpUrl: '/help/population-age',
+  },
+
+  perc_households_deprivation_deprived: {
+    label:
+      'Percentage of households deprived in 4 dimensions: education, employment, health and housing',
+    format: 'percentage',
+    source: SOURCES.census2021,
+    helpUrl: '/help/household-deprivation',
+  },
+  perc_household_ownership: {
+    label: 'Percentage of households where the property is owned outright',
+    format: 'percentage',
+    source: SOURCES.census2021,
+    helpUrl: '/help/households-where-property-is-owned-outright',
+  },
+  perc_households_one_person: {
+    label:
+      'Percentage of one-person households where the person is aged 65 or over',
+    format: 'percentage',
+    source: SOURCES.census2021,
+    helpUrl: '/help/one-person-households-where-person-aged-65-or-over',
+  },
+
+  perc_general_health: {
+    label: 'People who reported bad or very bad health',
+    format: 'percentage',
+    source: SOURCES.census2021,
+    helpUrl: '/help/people-who-reported-bad-or-very-bad-health',
+  },
+  perc_population_disability: {
+    label:
+      'Disability prevalence – people who reported a long-term physical or mental health condition, or illness that limits day-to-day activities',
+    format: 'percentage',
+    source: SOURCES.census2021,
+    helpUrl: '/help/disability-prevalence',
+  },
+  learning_disability_prevalence: {
+    label: 'Learning disability prevalence',
+    format: 'percentage',
+    source: SOURCES.fingertipsPublicHealth,
+    helpUrl: '/help/learning-disability-prevalence',
   },
 } as const satisfies Record<string, MetricConfig>;
 
