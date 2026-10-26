@@ -7,6 +7,12 @@ import { REGION_GROUP_ID } from './constants';
 const GROUPS_URL = '/api/comparator_groups';
 const REGION_URL = '/api/get_region_comparator';
 
+type RegionResponse = {
+  region_name?: string;
+  la_name?: string;
+  la_codes?: string[];
+};
+
 const parseGroup = (raw: unknown): CustomComparatorGroup | null => {
   const group = raw as Partial<CustomComparatorGroup> | null;
   if (
@@ -105,14 +111,19 @@ export function useComparatorGroups(): {
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
         return res.json();
       })
-      .then((data: { region_name?: string; la_codes?: string[] }) => {
+      .then((data: RegionResponse) => {
         if (cancelled) return;
         if (!data.region_name || !data.la_codes?.length) {
           throw new Error('No LAs in region');
         }
+        // The user's own LA isn't in the group, unlike the published
+        // regional average shown beside it
+        const excluding = data.la_name ?? 'your local authority';
         setRegionGroup({
           id: REGION_GROUP_ID,
           name: `Region (${data.region_name})`,
+          averageLabel: `${data.region_name} (regional average excluding ${excluding})`,
+          comparisonLabel: `${data.region_name} excluding ${excluding}`,
           laCodes: data.la_codes,
           builtIn: true,
         });

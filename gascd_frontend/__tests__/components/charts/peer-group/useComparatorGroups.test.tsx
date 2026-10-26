@@ -253,6 +253,7 @@ describe('useComparatorGroups', () => {
       url === '/api/get_region_comparator'
         ? jsonResponse({
             region_name: 'West Midlands',
+            la_name: 'Coventry',
             la_codes: ['E08000025', 'E08000026'],
           })
         : jsonResponse({
@@ -273,6 +274,8 @@ describe('useComparatorGroups', () => {
     expect(result.current.groups[0]).toEqual({
       id: 'region',
       name: 'Region (West Midlands)',
+      averageLabel: 'West Midlands (regional average excluding Coventry)',
+      comparisonLabel: 'West Midlands excluding Coventry',
       laCodes: ['E08000025', 'E08000026'],
       builtIn: true,
     });
@@ -308,6 +311,9 @@ describe('useComparatorGroups', () => {
       expect(result.current.groups[0]).toEqual({
         id: 'region',
         name: 'Region (West Midlands)',
+        averageLabel:
+          'West Midlands (regional average excluding your local authority)',
+        comparisonLabel: 'West Midlands excluding your local authority',
         laCodes: ['E08000025'],
         builtIn: true,
       })
