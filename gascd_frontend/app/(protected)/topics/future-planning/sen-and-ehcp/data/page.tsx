@@ -34,6 +34,7 @@ import {
   academicYearLabel,
   shortAcademicYearLabel,
 } from '@/data/dfeMetrics';
+import { METRICS } from '@/config/metrics';
 import {
   comparisonLabels,
   locationBarSeries,
@@ -261,11 +262,7 @@ export default function SenAndEhcpPage() {
 
   const numSenSeries = useMemo(
     () =>
-      locationTimeSeries(
-        allOverTimeData,
-        NUM_SEN_SUPPORT_14PLUS,
-        columnLabels
-      ),
+      locationTimeSeries(allOverTimeData, NUM_SEN_SUPPORT_14PLUS, columnLabels),
     [allOverTimeData, columnLabels]
   );
   const percSenSeries = useMemo(
@@ -337,7 +334,7 @@ export default function SenAndEhcpPage() {
 
   const senSupportHelpLink = (
     <a
-      href={withBasePath('/help/pupils-with-sen-support-aged-14-and-over')}
+      href={withBasePath(METRICS[NUM_SEN_SUPPORT_14PLUS].helpUrl)}
       className="govuk-link"
     >
       how the number of pupils with SEN support is calculated
@@ -346,9 +343,7 @@ export default function SenAndEhcpPage() {
 
   const percSenSupportHelpLink = (
     <a
-      href={withBasePath(
-        '/help/percentage-of-pupils-with-sen-support-aged-14-and-over'
-      )}
+      href={withBasePath(METRICS[PERC_SEN_SUPPORT_14PLUS].helpUrl)}
       className="govuk-link"
     >
       how the percentage of pupils with SEN support is calculated
@@ -357,9 +352,7 @@ export default function SenAndEhcpPage() {
 
   const ehcpHelpLink = (
     <a
-      href={withBasePath(
-        '/help/children-and-young-people-with-an-ehcp-aged-14-and-over'
-      )}
+      href={withBasePath(METRICS[NUM_EHCP_14PLUS].helpUrl)}
       className="govuk-link"
     >
       how the number of children and young people with an{' '}
@@ -777,14 +770,14 @@ export default function SenAndEhcpPage() {
           sources="Department for Education"
           updateFrequency="Yearly updates"
           limitations={true}
-          url="/help/pupils-with-sen-support-aged-14-and-over"
+          url={METRICS[NUM_SEN_SUPPORT_14PLUS].helpUrl}
         />
         <DataLinkCard
           label="Percentage of pupils with SEN support, aged 14 and over"
           sources="Department for Education"
           updateFrequency="Yearly updates"
           limitations={true}
-          url="/help/percentage-of-pupils-with-sen-support-aged-14-and-over"
+          url={METRICS[PERC_SEN_SUPPORT_14PLUS].helpUrl}
         />
         <DataLinkCard
           label={
@@ -797,7 +790,7 @@ export default function SenAndEhcpPage() {
           sources="Department for Education"
           updateFrequency="Yearly updates"
           limitations={true}
-          url="/help/children-and-young-people-with-an-ehcp-aged-14-and-over"
+          url={METRICS[NUM_EHCP_14PLUS].helpUrl}
         />
       </DataIndicatorDetailsList>
 
