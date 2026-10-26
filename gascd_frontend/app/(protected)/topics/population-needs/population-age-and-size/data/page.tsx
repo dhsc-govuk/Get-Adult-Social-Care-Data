@@ -130,9 +130,11 @@ export default function ProvisionAndOccupancyPage() {
     selection.kind === 'custom'
       ? groups.find((group) => group.id === selection.groupId)
       : undefined;
-  const comparatorLabel = selectedGroup ? selectedGroup.name : undefined;
+  const comparatorLabel = selectedGroup
+    ? (selectedGroup.comparisonLabel ?? selectedGroup.name)
+    : undefined;
   const comparatorAverageLabel = selectedGroup
-    ? `${selectedGroup.name} (average)`
+    ? (selectedGroup.averageLabel ?? `${selectedGroup.name} (average)`)
     : NHS_PEER_GROUP_AVERAGE_LABEL;
   // Column headers for the benchmarked tables: true regional average + comparator
   // group's average. The country column keeps the plain country name on this

@@ -93,6 +93,14 @@ export function usePeerGroupData(
       return;
     }
 
+    // Fetched once its LAs arrive, which changes selectionKey
+    if (selectedGroup?.loading) {
+      setDataByMetric({});
+      setLoading(true);
+      setError(false);
+      return;
+    }
+
     let cancelled = false;
     setLoading(true);
     setError(false);

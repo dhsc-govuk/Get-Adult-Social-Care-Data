@@ -36,6 +36,9 @@ export async function GET() {
 
   return NextResponse.json({
     region_name: data.display_name,
+    la_name: data.local_authorities.find(
+      (row) => row.la_code === la?.location_code
+    )?.la_name,
     la_codes: data.local_authorities
       .map((row) => row.la_code)
       .filter((code) => code && code !== la?.location_code),
