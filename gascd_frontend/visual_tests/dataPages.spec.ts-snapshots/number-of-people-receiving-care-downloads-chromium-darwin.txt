@@ -1,0 +1,31 @@
+# number_of_people_receiving_community_social_care.csv
+"Sharing label: Share at your own discretion"
+"You can only share data externally where it was provided by your organisation."
+
+"Indicator","Total for Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
+"People receiving community social care in January 2026","8,413","5,544","5,945.6","4,984"
+
+# number_of_people_receiving_community_social_care_standardised.csv
+"Sharing label: Share at your own discretion"
+"You can only share data externally where it was provided by your organisation."
+
+"Area","People receiving community social care in January 2026, per 100,000 adults"
+"Peer LA 1","1,913"
+"Peer LA 3","1,907"
+"Peer LA 2","1,873"
+"Peer LA 5","1,863"
+"Peer LA 8","1,860"
+"Peer LA 6","1,826"
+"Peer LA 7","1,786"
+"Peer LA 4","1,779"
+"Peer LA 9","1,744"
+"NHS peer group (average)","1,630"
+"Sunderland","1587"
+"Peer LA 14","1,352"
+"Peer LA 15","1,337"
+"Peer LA 11","1,328"
+"Peer LA 12","1,302"
+"Peer LA 10","1,300"
+"Peer LA 13","1,280"
+"England (national average)","995"
+"North East (regional average)","740"
