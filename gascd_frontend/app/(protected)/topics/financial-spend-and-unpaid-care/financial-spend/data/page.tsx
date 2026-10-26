@@ -621,7 +621,40 @@ export default function LAFundingPage() {
     }
   }, [rawLaFundingOverTimeData]);
 
-  // Shown in both the graph and table tabs
+  // Each filter below is shown in its section's chart (or graph) and table tabs
+  const durationFilterSync = useFilterSync(DURATION_FILTER_KEY);
+  const renderDurationFilter = (idPrefix: string) => (
+    <FilterSelectGroup
+      key={durationFilterSync.key}
+      idPrefix={idPrefix}
+      filterType={DURATION_FILTER_KEY}
+      filterLabel="Duration of care"
+      filters={DURATION_OF_CARE_OPTIONS}
+      secondaryFilterType={SUPPORT_REASON_FILTER_KEY}
+      // Only long-term and short-term care are broken down by setting
+      secondaryHiddenFor={['stlt']}
+      secondaryFilterLabel="Support setting"
+      secondaryFilters={SUPPORT_REASON_OPTIONS}
+      updateMethod={() => {
+        updateStandardisedFundingFilters();
+        durationFilterSync.announce();
+      }}
+    />
+  );
+  const careTypeFilterSync = useFilterSync(CARE_TYPE_FILTER_KEY);
+  const renderCareTypeFilter = (idPrefix: string) => (
+    <FilterSelectGroup
+      key={careTypeFilterSync.key}
+      idPrefix={idPrefix}
+      filterType={CARE_TYPE_FILTER_KEY}
+      filterLabel="Support setting"
+      filters={CARE_TYPE_OPTIONS}
+      updateMethod={() => {
+        updateStandardisedCareTypeFilter();
+        careTypeFilterSync.announce();
+      }}
+    />
+  );
   const fundingTrendsFilterSync = useFilterSync(
     'long-term-funding-support-type'
   );
@@ -853,17 +886,6 @@ export default function LAFundingPage() {
           </>
         }
       >
-        <FilterSelectGroup
-          filterType={DURATION_FILTER_KEY}
-          filterLabel="Duration of care"
-          filters={DURATION_OF_CARE_OPTIONS}
-          secondaryFilterType={SUPPORT_REASON_FILTER_KEY}
-          // Only long-term and short-term care are broken down by setting
-          secondaryHiddenFor={['stlt']}
-          secondaryFilterLabel="Support setting"
-          secondaryFilters={SUPPORT_REASON_OPTIONS}
-          updateMethod={updateStandardisedFundingFilters}
-        />
         <DataTabs
           id="4"
           sharingMetricIds={[standardisedFundingMetricId]}
@@ -878,7 +900,12 @@ export default function LAFundingPage() {
               peerData={dataByMetric[standardisedFundingMetricId] ?? null}
               loading={chartLoading}
               error={chartError}
-              comparatorControl={renderComparatorControl('comparator-chart-4')}
+              comparatorControl={
+                <SectionControls
+                  comparator={renderComparatorControl('comparator-chart-4')}
+                  filters={renderDurationFilter('chart-4')}
+                />
+              }
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription={`total spending on ${(
@@ -906,7 +933,10 @@ export default function LAFundingPage() {
           }
           table={
             <>
-              {renderComparatorControl('comparator-table-4')}
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-4')}
+                filters={renderDurationFilter('table-4')}
+              />
               <PeerGroupTable
                 tableref={tableref4}
                 caption={
@@ -1065,12 +1095,6 @@ export default function LAFundingPage() {
           </>
         }
       >
-        <FilterSelectGroup
-          filterType={CARE_TYPE_FILTER_KEY}
-          filterLabel="Support setting"
-          filters={CARE_TYPE_OPTIONS}
-          updateMethod={updateStandardisedCareTypeFilter}
-        />
         <DataTabs
           id="5"
           sharingMetricIds={[standardisedCareTypeId]}
@@ -1085,7 +1109,12 @@ export default function LAFundingPage() {
               peerData={dataByMetric[standardisedCareTypeId] ?? null}
               loading={chartLoading}
               error={chartError}
-              comparatorControl={renderComparatorControl('comparator-chart-5')}
+              comparatorControl={
+                <SectionControls
+                  comparator={renderComparatorControl('comparator-chart-5')}
+                  filters={renderCareTypeFilter('chart-5')}
+                />
+              }
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
               metricDescription={`long-term adult social care funding for ${(
@@ -1109,7 +1138,10 @@ export default function LAFundingPage() {
           }
           table={
             <>
-              {renderComparatorControl('comparator-table-5')}
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-5')}
+                filters={renderCareTypeFilter('table-5')}
+              />
               <PeerGroupTable
                 tableref={tableref5}
                 caption={

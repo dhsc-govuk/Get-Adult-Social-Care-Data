@@ -245,7 +245,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                 {filterLabel}
               </h4>
               <select
-                aria-labelledby={`${filterType}-label`}
+                aria-labelledby={`${idBase}-label`}
                 className="govuk-select"
                 onChange={(e) => handleChange(e)}
               >
@@ -268,7 +268,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                     {secondaryFilterLabel}
                   </h4>
                   <select
-                    aria-labelledby={`${secondaryFilterType}-label`}
+                    aria-labelledby={`${idBase}-${secondaryFilterType}-label`}
                     className="govuk-select"
                     value={secondarySelectedFilter?.metric_id ?? ''}
                     onChange={(e) => handleSecondaryChange(e)}
