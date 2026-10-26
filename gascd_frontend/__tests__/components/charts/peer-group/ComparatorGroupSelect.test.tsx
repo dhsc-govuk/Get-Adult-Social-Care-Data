@@ -242,4 +242,27 @@ describe('ComparatorGroupSelect', () => {
       screen.queryByRole('button', { name: 'Edit this group' })
     ).not.toBeInTheDocument();
   });
+
+  it('shows a disabled group but does not let it be chosen', () => {
+    render(
+      <ComparatorGroupSelect
+        idPrefix="test"
+        selection={{ kind: 'nhs_peer_group' }}
+        groups={[
+          {
+            id: 'region',
+            name: 'Region (loading…)',
+            laCodes: [],
+            builtIn: true,
+            disabled: true,
+          },
+        ]}
+        onChange={vi.fn()}
+      />
+    );
+
+    expect(
+      screen.getByRole('option', { name: 'Region (loading…)' })
+    ).toBeDisabled();
+  });
 });

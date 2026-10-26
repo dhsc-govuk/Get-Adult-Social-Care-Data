@@ -44,6 +44,8 @@ export interface CustomComparatorGroup {
   laCodes: string[];
   // Provided by the service (the user's region), so it can't be edited
   builtIn?: boolean;
+  // Shown but can't be chosen yet: the region is still loading or failed
+  disabled?: boolean;
 }
 
 export type ComparatorSelection =

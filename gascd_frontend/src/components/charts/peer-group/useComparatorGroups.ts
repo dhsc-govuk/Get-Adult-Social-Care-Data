@@ -90,7 +90,13 @@ export function useComparatorGroups(): {
     };
   }, []);
 
-  const [regionGroup, setRegionGroup] = useState<CustomComparatorGroup>();
+  const [regionGroup, setRegionGroup] = useState<CustomComparatorGroup>({
+    id: REGION_GROUP_ID,
+    name: 'Region (loading…)',
+    laCodes: [],
+    builtIn: true,
+    disabled: true,
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -100,7 +106,10 @@ export function useComparatorGroups(): {
         return res.json();
       })
       .then((data: { region_name?: string; la_codes?: string[] }) => {
-        if (cancelled || !data.region_name || !data.la_codes?.length) return;
+        if (cancelled) return;
+        if (!data.region_name || !data.la_codes?.length) {
+          throw new Error('No LAs in region');
+        }
         setRegionGroup({
           id: REGION_GROUP_ID,
           name: `Region (${data.region_name})`,
@@ -109,7 +118,12 @@ export function useComparatorGroups(): {
         });
       })
       .catch((error) => {
+        if (cancelled) return;
         console.error('Error loading region comparator:', error);
+        setRegionGroup((current) => ({
+          ...current,
+          name: 'Region (unavailable)',
+        }));
       });
     return () => {
       cancelled = true;
@@ -168,7 +182,7 @@ export function useComparatorGroups(): {
   };
 
   return {
-    groups: regionGroup ? [regionGroup, ...groups] : groups,
+    groups: [regionGroup, ...groups],
     selection,
     setSelection,
     saveGroup,
