@@ -485,7 +485,7 @@ export default function LAFundingPage() {
     elss_community_supported_living_all_ages: 'Supported living',
     elss_nursing_all_ages: 'Nursing',
     elss_residential_all_ages: 'Residential',
-    elss_supported_accommodation_all_ages: 'Supported accomodation',
+    elss_supported_accommodation_all_ages: 'Supported accommodation',
   };
 
   useEffect(() => {

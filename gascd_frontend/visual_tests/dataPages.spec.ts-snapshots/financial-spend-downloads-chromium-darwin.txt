@@ -56,7 +56,7 @@
 "Supported living","£130,006,000","£71,595,867","£75,846,000","£61,080,000"
 "Community direct payments","£49,963,000","£24,908,133","£37,953,000","£31,021,000"
 "Other","£32,318,000","£29,084,133","£17,192,000","£45,231,000"
-"Supported accomodation","£30,864,000","£51,667,600","£39,670,000","£24,990,000"
+"Supported accommodation","£30,864,000","£51,667,600","£39,670,000","£24,990,000"
 
 # la_funding_long_term_care_standardised.csv
 "Sharing label: Published data"
