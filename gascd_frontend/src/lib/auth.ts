@@ -1,6 +1,7 @@
 import { betterAuth, boolean } from 'better-auth';
 import { createAuthMiddleware } from 'better-auth/api';
 import { logLogoutEvent } from './authHooks';
+import { activateInvitedGrants } from './accessGrantActivation';
 import { getOAuthConfig } from './authPlugins';
 import { comparatorGroupsPlugin } from './comparatorGroupsPlugin';
 import { nextCookies } from 'better-auth/next-js';
@@ -163,6 +164,16 @@ export const auth = betterAuth({
             primaryLocationType: ctx.context.newSession.user.locationType,
             activeLocationId: ctx.context.newSession.user.selectedLocationId,
           });
+          // Access comes from user.locationId for now, so a failure here must not block sign-in
+          await activateInvitedGrants(
+            authDB,
+            ctx.context.newSession.user
+          ).catch((error) =>
+            logger.error('Could not activate invited access', {
+              userid: ctx.context.newSession?.user.id,
+              error: error.message,
+            })
+          );
         }
       }
       if (ctx.path == '/error') {
