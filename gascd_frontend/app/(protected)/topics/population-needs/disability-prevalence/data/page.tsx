@@ -188,7 +188,7 @@ export default function DisabilityPrevalence() {
   const benchmarkedColumnHeaders = {
     CPLabel: locationNames.CPLabel,
     LALabel: locationNames.LALabel,
-    RegionLabel: locationNames.RegionLabel,
+    RegionLabel: `${locationNames.RegionLabel} (regional average)`,
     ComparatorLabel: comparatorAverageLabel,
     CountryLabel: 'England (national average)',
   };

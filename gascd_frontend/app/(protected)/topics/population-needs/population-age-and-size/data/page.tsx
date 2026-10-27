@@ -139,7 +139,7 @@ export default function ProvisionAndOccupancyPage() {
   const benchmarkedColumnHeaders = {
     CPLabel: locationNames.CPLabel,
     LALabel: locationNames.LALabel,
-    RegionLabel: locationNames.RegionLabel,
+    RegionLabel: `${locationNames.RegionLabel} (regional average)`,
     ComparatorLabel: comparatorAverageLabel,
     CountryLabel: locationNames.CountryLabel,
   };
