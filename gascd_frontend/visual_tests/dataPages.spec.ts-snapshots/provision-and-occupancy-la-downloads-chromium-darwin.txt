@@ -51,19 +51,6 @@
 "Transitional","33.5","31","25.8","33"
 "Young physically disabled","24.5","16.2","45.3","15.9"
 
-# care_home_bed_types_grouped_by_area.csv
-"Sharing label: Not for sharing externally"
-"The data in the chart is not to be shared outside your organisation."
-"This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
-
-"Care home bed type","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
-"All bed types","539","1,257","706.8","397"
-"Older people and dementia","361","380","667.1","1,185"
-"Learning disability","1,038","981","646.4","1,088"
-"Mental health","909","379","767.1","1,075"
-"Young physically disabled","373","939","476.1","653"
-"Community care and transitional","453","715","790.1","459"
-
 # care_home_bed_types_grouped.csv
 "Sharing label: Not for sharing externally"
 "The data in the chart is not to be shared outside your organisation."
@@ -89,6 +76,19 @@
 "Peer LA 15","434"
 "Peer LA 14","423"
 "England (national average)","397"
+
+# care_home_bed_types_grouped_by_area.csv
+"Sharing label: Not for sharing externally"
+"The data in the chart is not to be shared outside your organisation."
+"This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
+
+"Care home bed type","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
+"All bed types","539","1,257","706.8","397"
+"Older people and dementia","361","380","667.1","1,185"
+"Learning disability","1,038","981","646.4","1,088"
+"Mental health","909","379","767.1","1,075"
+"Young physically disabled","373","939","476.1","653"
+"Community care and transitional","453","715","790.1","459"
 
 # care_home_occupancy_per_care_home.csv
 "Sharing label: Not for sharing externally"
