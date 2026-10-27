@@ -1,11 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getAPIClient } from '@/data/dataAPI';
+import { withDataApiErrors } from '@/lib/data-api-errors';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import { getDefaultLocations } from '@/data/locations';
 import logger from '@/utils/logger';
 
 // The other LAs in the user's region, offered as a ready-made comparator group
-export async function GET() {
+async function handleGET(req: NextRequest) {
   const user = await getCurrentUser();
   if (!user || !isUserRegistered(user)) {
     return NextResponse.json({ error: `No user` }, { status: 401 });
@@ -20,12 +21,12 @@ export async function GET() {
     return NextResponse.json({ error: 'No region for user' }, { status: 500 });
   }
 
-  const { data } = await getAPIClient().GET(
-    '/metric_locations/regions/{code}',
-    {
-      params: { path: { code: region.location_code } },
-    }
+  const client = getAPIClient(
+    AbortSignal.any([req.signal, AbortSignal.timeout(30000)])
   );
+  const { data } = await client.GET('/metric_locations/regions/{code}', {
+    params: { path: { code: region.location_code } },
+  });
   if (!data?.local_authorities) {
     logger.error(`No LAs found for ${region.location_code}`);
     return NextResponse.json(
@@ -44,3 +45,5 @@ export async function GET() {
       .filter((code) => code && code !== la?.location_code),
   });
 }
+
+export const GET = withDataApiErrors(handleGET);

@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     // Keep the fields on one console-log line so Log Analytics can find the complete diagnostic.
     logger.info(
       `Client IP diagnostic ${JSON.stringify({
+        clientIp: request.headers.get('x-azure-clientip'),
         socketIp: request.headers.get('x-azure-socketip'),
         forwardedFor: request.headers.get('x-forwarded-for'),
         requestId: request.headers.get('x-request-id'),

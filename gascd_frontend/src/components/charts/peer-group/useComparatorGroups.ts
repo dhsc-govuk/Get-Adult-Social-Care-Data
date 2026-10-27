@@ -107,7 +107,7 @@ export function useComparatorGroups(): {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(withBasePath(REGION_URL))
+    serviceFetch(withBasePath(REGION_URL))
       .then((res) => {
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
         return res.json();

@@ -39,13 +39,16 @@ class IndicatorFetchService {
     if (!metricIds.length) {
       return [];
     }
-    const response = await fetch(withBasePath('/api/get_la_peer_averages'), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ metric_ids: metricIds }),
-    });
+    const response = await serviceFetch(
+      withBasePath('/api/get_la_peer_averages'),
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ metric_ids: metricIds }),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(
