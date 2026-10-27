@@ -3,7 +3,7 @@
 "The data in the chart is not to be shared outside your organisation."
 "This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
 
-"Indicator","Mock Care Provider Location","Sunderland","North East","NHS peer group (average)","England"
+"Indicator","Mock Care Provider Location","Sunderland","North East (regional average)","NHS peer group (average)","England"
 "Beds per care home","76","19.1 (median)","25.4 (median)","31.1 (median)","34.1 (median)"
 
 # care_home_bed_numbers.csv
@@ -95,7 +95,7 @@
 "The data in the chart is not to be shared outside your organisation."
 "This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
 
-"Indicator","Mock Care Provider Location","Sunderland","North East","NHS peer group (average)","England"
+"Indicator","Mock Care Provider Location","Sunderland","North East (regional average)","NHS peer group (average)","England"
 "Occupancy level per care home","33.0%","76.3% (average)","64.8% (average)","48.9% (average)","75.2% (average)"
 
 # care_home_occupancy_levels.csv

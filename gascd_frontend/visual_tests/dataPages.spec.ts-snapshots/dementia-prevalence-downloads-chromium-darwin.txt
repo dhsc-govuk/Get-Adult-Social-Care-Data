@@ -2,5 +2,5 @@
 "Sharing label: Published data"
 "This data can be shared outside your organisation."
 
-"Indicator","Sunderland","North East","NHS peer group (average)","England (national average)"
+"Indicator","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
 "Dementia prevalence - all ages, as a proportion of people registered at GP practices","0.9%","0.6%","0.7%","0.7%"

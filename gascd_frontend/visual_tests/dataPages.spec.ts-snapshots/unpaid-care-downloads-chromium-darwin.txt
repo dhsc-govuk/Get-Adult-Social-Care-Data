@@ -2,5 +2,5 @@
 "Sharing label: Published data"
 "This data can be shared outside your organisation."
 
-"Indicator","Sunderland","North East","NHS peer group (average)","England (national average)"
+"Indicator","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
 "Percentage of people aged 5 or over who provide unpaid care","10.5%","8.8%","8.6%","9.0%"
