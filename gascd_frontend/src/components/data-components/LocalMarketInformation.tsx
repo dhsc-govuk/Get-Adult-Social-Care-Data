@@ -2,6 +2,7 @@ import React from 'react';
 
 import { MSPLookup } from '@/helpers/msp/msp-lookup';
 import AnalyticsService from '@/services/analytics/analyticsService';
+import MpsSearch from './MpsSearch';
 
 type Props = {
   localAuthority: string;
@@ -73,6 +74,7 @@ const LocalMarketInformation: React.FC<Props> = ({
             pressures
           </li>
         </ul>
+        <MpsSearch excludeLaCode={localAuthorityId} />
       </div>
     </div>
   );
