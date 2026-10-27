@@ -2,21 +2,21 @@
 "Sharing label: Published data"
 "This data can be shared outside your organisation."
 
-"Indicator","Sunderland","North East","NHS peer group (average)","England (national average)"
+"Indicator","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
 "People who reported bad or very bad health","4.6%","7.0%","7.3%","6.9%"
 
 # disability_prevalence.csv
 "Sharing label: Published data"
 "This data can be shared outside your organisation."
 
-"Indicator","Sunderland","North East","NHS peer group (average)","England (national average)"
+"Indicator","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
 "Disability prevalence – people who reported a long-term physical or mental health condition, or illness that limits day-to-day activities","19.9%","17.9%","16.3%","17.4%"
 
 # learning_disability_prevalence.csv
 "Sharing label: Published data"
 "This data can be shared outside your organisation."
 
-"Indicator","Sunderland","North East","NHS peer group (average)","England (national average)"
+"Indicator","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
 "Learning disability prevalence","0.5%","0.4%","0.6%","0.5%"
 
 # primary_reasons_for_accessing_care.csv
