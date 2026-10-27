@@ -367,8 +367,8 @@ const InviteUserForm: React.FC<Props> = ({ providerWide, locations }) => {
                 <div className="govuk-summary-list__row" key={field}>
                   <dt className="govuk-summary-list__key">{label}</dt>
                   <dd className="govuk-summary-list__value">
-                    {values.map((value) => (
-                      <span key={value} className="govuk-!-display-block">
+                    {values.map((value, index) => (
+                      <span key={index} className="govuk-!-display-block">
                         {value}
                       </span>
                     ))}

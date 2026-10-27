@@ -47,8 +47,8 @@ export default function UsersTable({ users }: { users: ManagedUser[] }) {
             <td className="govuk-table__cell">
               {user.allLocations
                 ? 'All locations'
-                : user.locationNames.map((name) => (
-                    <span key={name} className="govuk-!-display-block">
+                : user.locationNames.map((name, index) => (
+                    <span key={index} className="govuk-!-display-block">
                       {name}
                     </span>
                   ))}
