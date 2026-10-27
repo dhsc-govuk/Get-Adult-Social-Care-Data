@@ -113,7 +113,7 @@ export default function UnpaidCarePage() {
   const tableColumnHeaders = {
     CPLabel: locationNames.CPLabel,
     LALabel: locationNames.LALabel,
-    RegionLabel: locationNames.RegionLabel,
+    RegionLabel: `${locationNames.RegionLabel} (regional average)`,
     ComparatorLabel: comparatorAverageLabel,
     CountryLabel: locationNames.CountryLabel,
   };
