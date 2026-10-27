@@ -72,6 +72,22 @@ describe('getDefaultLocations', () => {
     expect(locations).toStrictEqual(expected_locations_la);
   });
 
+  it('should return no locations when the selection is outside the grants', async () => {
+    const locations = await getDefaultLocations({
+      ...mockSessionWithLocationCareProvider.user,
+      access: { providerCodes: ['other'], locationCodes: [], laCodes: [] },
+    });
+    expect(locations).toStrictEqual([]);
+  });
+
+  it('should return no locations for an LA outside the grants', async () => {
+    const locations = await getDefaultLocations({
+      ...mockSessionLAUser.user,
+      access: { providerCodes: [], locationCodes: [], laCodes: ['other'] },
+    });
+    expect(locations).toStrictEqual([]);
+  });
+
   it('should return no locations for unregistered user', async () => {
     const locations = await getDefaultLocations(mockSessionUnregistered.user);
     expect(locations).toStrictEqual([]);
