@@ -71,9 +71,34 @@ const db = new Kysely<any>({
 
 const run = async () => {
   if (process.argv.includes('--cleanup-rate-limits')) {
-    // Bounded work per scheduled invocation; invoke repeatedly if retention falls behind.
-    for (let batch = 0; batch < 10; batch++) await cleanupRateLimits(db);
-    console.log('Rate-limit cleanup completed (up to 10,000 rows)');
+    // Bounded work per scheduled invocation: up to RATE_LIMIT_CLEANUP_BATCHES
+    // batches of 1,000 rows (default 10), stopping early once a batch comes
+    // back short. The scheduler reads the summary line to see whether the
+    // expired backlog is keeping up.
+    const configured = Number(process.env.RATE_LIMIT_CLEANUP_BATCHES ?? 10);
+    const batches =
+      Number.isInteger(configured) && configured >= 1 && configured <= 1000
+        ? configured
+        : 10;
+    const batchSize = 1000;
+    let deleted = 0;
+    for (let batch = 0; batch < batches; batch++) {
+      const result = await cleanupRateLimits(db, batchSize);
+      const affected =
+        result.numAffectedRows === undefined
+          ? undefined
+          : Number(result.numAffectedRows);
+      deleted += affected ?? 0;
+      if (affected !== undefined && affected < batchSize) break;
+    }
+    const remaining = await sql<{ n: number }>`
+      SELECT COUNT_BIG(*) AS n FROM dbo.requestRateLimit
+      WHERE expiresAt < DATEADD(day, -1, SYSUTCDATETIME());
+    `.execute(db);
+    console.log(
+      `Rate-limit cleanup: deleted ${deleted} rows (max ${batches * batchSize}); ` +
+        `${remaining.rows[0]?.n ?? 0} expired rows remain`
+    );
     return;
   }
   await migrateRateLimits(db);

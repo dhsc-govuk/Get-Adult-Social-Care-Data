@@ -37,7 +37,7 @@ Ask the platform team to establish which hop overwrites a client-IP header and w
 
 Set `CLIENT_IP_DIAGNOSTICS=true` on the frontend Container App and visit its normal public `/api/checks/live` URL (including `/gascd` if configured). No query-string marker is needed. Each call to that route, including health probes, then emits a single `Client IP diagnostic` console-log line containing `socketIp`, `forwardedFor`, and `requestId`. Missing headers appear as `null`. Cookies and authorization headers are not logged. The response remains `200 OK`, with `Cache-Control: no-store`; overriding edge-cache rules still need separate verification.
 
-Find the diagnostic in Log Analytics:
+The line records `clientIp` (`x-azure-clientip`, set by Front Door), `socketIp` (`x-azure-socketip`), `forwardedFor` and `requestId`. Find it in Log Analytics (the central workspace may use the Azure Monitor `ContainerAppConsoleLogs` table rather than the custom `_CL` one; the frontend's winston logs also reach App Insights `traces`):
 
 ```kusto
 ContainerAppConsoleLogs_CL
@@ -53,7 +53,9 @@ Set `CLIENT_IP_DIAGNOSTICS=false` again after checking. This switch only enables
 
 This branch includes the rate-limiting implementation as well as the temporary logger. Run the database migration described below before testing enabled frontend limits.
 
-For a header-only check, set `CLIENT_IP_DIAGNOSTICS=true` and `RATE_LIMIT_ENABLED=false` on the frontend Container App. The diagnostic works independently of rate limiting. Leave `RATE_LIMIT_TRUSTED_IP_HEADER` unset until the proxy behaviour is verified. The API limiter has its own `RateLimiting__Enabled` switch.
+Deployment is from the `gascd-apps` repository (`dhsc-govuk-infrastructure`): the frontend and API Container App env vars live in `deploy/<app>/containerapps/values-<env>.yaml`, and **Deploy to Environment** builds and deploys a chosen source ref. The Azure DevOps pipelines in this repository target the previous Edge-hosted estate.
+
+For a header-only check, set `CLIENT_IP_DIAGNOSTICS=true` and `RATE_LIMIT_ENABLED=false` in the frontend values file and deploy. The diagnostic works independently of rate limiting. Leave `RATE_LIMIT_TRUSTED_IP_HEADER` unset until the proxy behaviour is verified. The API limiter has its own `RateLimiting__Enabled` switch.
 
 Visit `/gascd/api/checks/live` through the normal public frontend hostname (omit `/gascd` if no base path is configured), then use the query above. Browser calls and internal health probes can produce different IP values; compare the entries with your request time. Confirming that an address arrives is separate from proving that the proxy overwrites a spoofed header and that untrusted clients cannot reach the origin directly.
 
@@ -72,19 +74,19 @@ Set `CLIENT_IP_DIAGNOSTICS=false` when the check is complete. To test frontend l
 
 ## Migration, cleanup, and rollout
 
-1. Run the existing `npm run db:migrate:ci` deployment step. Its post-migration script creates `dbo.requestRateLimit` and its primary/expiry indexes idempotently. The application never creates the table at startup.
-2. Verify the runtime identity can select, insert, and update this table. The maintenance identity also needs delete access; migration credentials need DDL access.
-3. Schedule `npm run db:cleanup:rate-limits` using the same user-database connection settings. Each run deletes at most 10,000 rows in batches of 1,000, keeping counters until one day after expiry. Start with every five minutes and monitor the expired backlog. Scheduling infrastructure is not present in this repository and must be supplied by the platform.
-4. Establish trusted IP configuration, record the configured replica maxima and revision overlap, then run authenticated staging traffic. Tune provisional values using the measurements below.
-5. Deploy through the existing process. The additive table can remain during rollback. Frontend and API switches are independent; do not disable both without another agreed protection layer.
+1. Run the `gascd-apps` **DB Bootstrap** workflow with task `userdb` and the source ref being released, per environment and before deploying it. Its better-auth migrate step runs `npm run db:migrate:ci`, whose post-migration script creates `dbo.requestRateLimit` and its primary/expiry indexes idempotently. The application never creates the table at startup. The table is additive and can be created ahead of the deploy.
+2. The frontend's managed identity is a member of `db_datareader` and `db_datawriter` (granted by the same workflow), which covers select, insert, update and delete. The migration runs as the deploy service principal, which has DDL.
+3. Cleanup is the `gascd-apps` **Rate Limit Cleanup** workflow: hourly, per environment, running `npm run db:cleanup:rate-limits` with the deploy SP's SQL token. Each run deletes up to `RATE_LIMIT_CLEANUP_BATCHES` (default 10, the workflow passes 100) batches of 1,000 rows, keeping counters until one day after expiry, and prints how many expired rows remain. Dispatch it with a larger batch count if that number grows between runs.
+4. Establish the trusted IP header (step above), record the configured replica maxima (prd: 4 to 8 for both apps) and revision overlap, then run authenticated tst traffic. Tune provisional values using the measurements below.
+5. Deploy with **Deploy to Environment** from `main`, after the same `main` has soaked in tst, at a quiet time. `values-prd.yaml` ships `RATE_LIMIT_ENABLED=false` until the header is verified; enabling it is a values-only redeploy. The API's `RateLimiting__Enabled` is independent. Do not disable both without another agreed protection layer. Rollback is a redeploy of the previous image SHA; the table can stay.
 
 The separate admin app, Front Door rules, private endpoints, and actual ingress restrictions remain external dependencies. This branch does not claim those diagram controls are deployed or verified.
 
-## Measurements to obtain from Grafana and staging
+## Measurements to obtain from App Insights and tst
 
 Capture peak request counts over both 10-second and 60-second windows, not just hourly averages. Separate auth endpoints, frontend data routes, and API data routes. Include active users, per-user bursts if existing telemetry supports them, p50/p95/p99 successful latency, API in-flight requests, SQL pool waits/lock timeouts, PostgreSQL CPU/connections, and API calls per frontend request.
 
-Frontend OpenTelemetry instruments are `gascd.rate_limit.decisions` (policy and outcome labels) and `gascd.rate_limit.duration` (milliseconds, policy label). Configure/export these through the existing telemetry pipeline; metric names may be translated by the exporter. No user IDs or IPs are metric labels. Store-failure logging is sampled to once per 30 seconds per process. Use the .NET built-in rate-limiting instruments alongside request telemetry for API rejection and lease counts.
+Frontend OpenTelemetry instruments are `gascd.rate_limit.decisions` (policy and outcome labels) and `gascd.rate_limit.duration` (milliseconds, policy label). The frontend's Azure Monitor distro exports them to the node App Insights component as `customMetrics`; confirm they appear after the first dev deploy with limits enabled. No user IDs or IPs are metric labels. Store-failure logging is sampled to once per 30 seconds per process. Use the .NET built-in rate-limiting instruments alongside request telemetry for API rejection and lease counts.
 
 The authenticated k6 scenario is `gascd_frontend/load_tests/authenticated-data.js`. Supply an untracked JSON file with staging session cookies and valid metric IDs, one entry per distinct user:
 
@@ -101,7 +103,7 @@ The authenticated k6 scenario is `gascd_frontend/load_tests/authenticated-data.j
 k6 run -e BASE_URL=https://your-staging-host/gascd -e USERS_FILE=/absolute/path/users.json -e VUS=20 -e DURATION=2m load_tests/authenticated-data.js
 ```
 
-Do not commit session files. Run a normal-usage profile with enough users and realistic pauses, then an overload profile. Record successful latency and 429/503 counts separately; a fast rejection is not successful throughput. This script exercises authenticated data and controlled overload, not a complete browser dashboard or OAuth journey. Run actual representative dashboards too. No staging/production load test has been run as part of this implementation.
+The `gascd-apps` **Load Test** workflow runs this as the `authenticated-data` scenario, reading the users JSON from the `K6_AUTH_USERS_JSON` secret on the target GitHub environment and deleting the temporary file afterwards. Do not commit session files. Run a normal-usage profile with enough users and realistic pauses, then an overload profile. Record successful latency and 429/503 counts separately; a fast rejection is not successful throughput. This script exercises authenticated data and controlled overload, not a complete browser dashboard or OAuth journey. Run actual representative dashboards too. No staging/production load test has been run as part of this implementation.
 
 ## Local validation
 
