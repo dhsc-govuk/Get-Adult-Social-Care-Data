@@ -314,21 +314,32 @@ const InviteUserForm: React.FC<Props> = ({ providerWide, locations }) => {
               ))}
             </dl>
 
-            <h2 className="govuk-heading-m">Your responsibilities</h2>
-            <p className="govuk-body">By inviting this user, you agree to:</p>
-            <ul className="govuk-list govuk-list--bullet">
-              <li>check they need access to the data for their role</li>
-              <li>manage their access, and the access of anyone they invite</li>
-              <li>
-                remove their access as soon as they no longer need it, for
-                example if they leave your organisation, change role or are on
-                long-term leave
-              </li>
-            </ul>
-            <p className="govuk-body">
-              GASCD contains sensitive data. You may be asked to confirm who has
-              access and why.
-            </p>
+            <div className="govuk-warning-text">
+              <span className="govuk-warning-text__icon" aria-hidden="true">
+                !
+              </span>
+              <div className="govuk-warning-text__text">
+                <span className="govuk-visually-hidden">Warning</span>
+                <p className="govuk-body govuk-!-font-weight-bold">
+                  By inviting this user, you agree to:
+                </p>
+                <ul className="govuk-list govuk-list--bullet govuk-!-font-weight-bold">
+                  <li>check they need access to the data for their role</li>
+                  <li>
+                    manage their access, and the access of anyone they invite
+                  </li>
+                  <li>
+                    remove their access as soon as they no longer need it, for
+                    example if they leave your organisation, change role or are
+                    on long-term leave
+                  </li>
+                </ul>
+                <p className="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-0">
+                  GASCD contains sensitive data. You may be asked to confirm who
+                  has access and why.
+                </p>
+              </div>
+            </div>
 
             {serviceError && (
               <p className="govuk-error-message" role="alert">

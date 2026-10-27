@@ -15,13 +15,30 @@ import {
 import UsersTable from './UsersTable';
 import UsersPagination from './UsersPagination';
 
+// Same address One Login sends people back to, so it's right in every environment
+const SIGN_IN_URL = `${process.env.BETTER_AUTH_URL ?? ''}${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/login`;
+
 const BANNERS: Record<
   string,
-  (user: ManagedUser) => { heading: string; body?: string }
+  (user: ManagedUser) => { heading: string; body?: React.ReactNode }
 > = {
   added: (user: ManagedUser) => ({
     heading: `${user.name} has been given access`,
-    body: `Tell them to sign in to Get adult social care data with GOV.UK One Login, using ${user.email}. We do not email them.`,
+    body: (
+      <>
+        <p className="govuk-body">
+          {user.name} can sign in at{' '}
+          <a className="govuk-notification-banner__link" href={SIGN_IN_URL}>
+            {SIGN_IN_URL.replace(/^https?:\/\//, '')}
+          </a>{' '}
+          using GOV.UK One Login with the email address {user.email}.
+        </p>
+        <p className="govuk-body">
+          This service does not send sign-in details to new users. These details
+          will need to be shared with them directly.
+        </p>
+      </>
+    ),
   }),
   updated: (user: ManagedUser) => ({
     heading: `${user.name}'s details have been updated`,
@@ -97,7 +114,7 @@ export default async function ManageUsersPage({ searchParams }: Props) {
             <h3 className="govuk-notification-banner__heading">
               {banner.heading}
             </h3>
-            {banner.body && <p className="govuk-body">{banner.body}</p>}
+            {banner.body}
           </div>
         </div>
       )}
