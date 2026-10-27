@@ -8,9 +8,15 @@ export const GRANT_SCOPE_PROVIDER = 'provider';
 export const GRANT_SCOPE_LOCATION = 'location';
 export const GRANT_STATUS_INVITED = 'invited';
 export const GRANT_STATUS_ACTIVE = 'active';
+export const GRANT_STATUS_SUSPENDED = 'suspended';
 export const GRANT_SOURCE_APPROVER = 'approver';
 export const AUDIT_ACTION_USER_ADDED = 'user_added';
 export const AUDIT_ACTION_FIRST_SIGN_IN = 'first_sign_in';
+export const AUDIT_ACTION_LOCATIONS_CHANGED = 'locations_changed';
+export const AUDIT_ACTION_ACCESS_SUSPENDED = 'access_suspended';
+export const AUDIT_ACTION_ACCESS_RESTORED = 'access_restored';
+// Not yet in gascd-apps AccessAuditActions
+export const AUDIT_ACTION_NAME_CHANGED = 'name_changed';
 export const AUDIT_ACTOR_USER = 'user';
 
 // user.source for people added by an approver
@@ -37,6 +43,7 @@ export type ApproverContext = {
 };
 
 export type GrantRow = {
+  id: number;
   userId: string;
   userName: string | null;
   userEmail: string;
@@ -61,6 +68,7 @@ export type ManagedUser = {
   grantedBy: string;
   grantedAt: Date;
   status: UserStatus;
+  canChange: boolean;
 };
 
 const isLive = (grant: GrantRow, now: Date) =>
@@ -90,6 +98,38 @@ const grantedByLabel = (grant: GrantRow, currentUserId: string) => {
 };
 
 // An approver who is not provider-wide only sees their own locations, and users with access to them
+export function visibleGrants<
+  T extends Pick<GrantRow, 'scopeType' | 'locationCode'>,
+>(
+  rows: T[],
+  context: Pick<ApproverContext, 'providerWide' | 'locations'>
+): T[] {
+  const codes = new Set(context.locations.map((location) => location.code));
+  return rows.filter(
+    (row) =>
+      context.providerWide ||
+      row.scopeType === GRANT_SCOPE_PROVIDER ||
+      (row.locationCode !== null && codes.has(row.locationCode))
+  );
+}
+
+// Only people given access by an approver, and never a provider-wide user by an approver who isn't
+export function canChangeUser(
+  grants: GrantRow[],
+  context: Pick<ApproverContext, 'providerWide' | 'locations'>,
+  currentUserId: string
+): boolean {
+  const visible = visibleGrants(grants, context);
+  return (
+    visible.length > 0 &&
+    visible.every(
+      (g) => g.basis === GRANT_BASIS_DELEGATED && g.userId !== currentUserId
+    ) &&
+    (context.providerWide ||
+      !visible.some((g) => g.scopeType === GRANT_SCOPE_PROVIDER))
+  );
+}
+
 export function groupManagedUsers(
   rows: GrantRow[],
   context: ApproverContext,
@@ -99,12 +139,7 @@ export function groupManagedUsers(
   const locationNames = new Map(
     context.locations.map((location) => [location.code, location.name])
   );
-  const visible = rows.filter(
-    (row) =>
-      context.providerWide ||
-      row.scopeType === GRANT_SCOPE_PROVIDER ||
-      (row.locationCode !== null && locationNames.has(row.locationCode))
-  );
+  const visible = visibleGrants(rows, context);
 
   const byUser = new Map<string, GrantRow[]>();
   for (const row of visible) {
@@ -133,6 +168,7 @@ export function groupManagedUsers(
       grantedBy: grantedByLabel(earliest, currentUserId),
       grantedAt: earliest.grantedAt,
       status: statusFor(grants, now),
+      canChange: canChangeUser(grants, context, currentUserId),
     };
   });
 
@@ -213,6 +249,102 @@ export function legacyLocationFields(
     locationType: 'Care provider location',
     locationId: locations.join(','),
   };
+}
+
+// The locations box values for a user's current access, as the edit form shows them
+export function currentLocationSelection(
+  grants: GrantRow[],
+  context: Pick<ApproverContext, 'providerWide' | 'locations'>
+): string[] {
+  const live = visibleGrants(grants, context).filter(
+    (g) => g.status !== GRANT_STATUS_SUSPENDED
+  );
+  if (live.some((g) => g.scopeType === GRANT_SCOPE_PROVIDER)) {
+    return [ALL_LOCATIONS];
+  }
+  return live.map((g) => g.locationCode as string);
+}
+
+export type LocationChangePlan = {
+  deleteIds: number[];
+  // Suspended rows for a location being given back, reused to keep the unique index happy
+  reuseIds: number[];
+  insert: { scopeType: string; locationCode: string | null }[];
+  added: string[];
+  removed: string[];
+};
+
+/**
+ * Turns the approver's chosen locations into grant changes. Grants outside the
+ * approver's own locations are left alone.
+ */
+export function planLocationChange(
+  grants: GrantRow[],
+  locations: string[],
+  context: Pick<ApproverContext, 'providerWide' | 'locations'>
+): LocationChangePlan {
+  const inScope = visibleGrants(grants, context);
+  const live = inScope.filter((g) => g.status !== GRANT_STATUS_SUSPENDED);
+  const key = (g: GrantRow) =>
+    g.scopeType === GRANT_SCOPE_PROVIDER
+      ? ALL_LOCATIONS
+      : (g.locationCode as string);
+
+  const current = new Set(live.map(key));
+  const wanted = new Set(locations);
+  const removedGrants = live.filter((g) => !wanted.has(key(g)));
+  const added = locations.filter((code) => !current.has(code));
+
+  const plan: LocationChangePlan = {
+    deleteIds: removedGrants.map((g) => g.id),
+    reuseIds: [],
+    insert: [],
+    added,
+    removed: removedGrants.map(key),
+  };
+  for (const code of added) {
+    const suspended = inScope.find(
+      (g) => g.status === GRANT_STATUS_SUSPENDED && key(g) === code
+    );
+    if (suspended) {
+      plan.reuseIds.push(suspended.id);
+    } else {
+      plan.insert.push(
+        code === ALL_LOCATIONS
+          ? { scopeType: GRANT_SCOPE_PROVIDER, locationCode: null }
+          : { scopeType: GRANT_SCOPE_LOCATION, locationCode: code }
+      );
+    }
+  }
+  return plan;
+}
+
+// Old user columns from the grants a user has left, or null when they have none
+export function legacyFieldsFromGrants(
+  grants: {
+    scope_type: string;
+    provider_code: string | null;
+    location_code: string | null;
+    status: string;
+  }[]
+): { locationType: string; locationId: string } | null {
+  const live = grants.filter((g) => g.status !== GRANT_STATUS_SUSPENDED);
+  const providers = live
+    .filter((g) => g.scope_type === GRANT_SCOPE_PROVIDER)
+    .map((g) => g.provider_code as string);
+  if (providers.length > 0) {
+    return { locationType: 'Care provider', locationId: providers.join(',') };
+  }
+  const locations = live
+    .filter((g) => g.scope_type === GRANT_SCOPE_LOCATION)
+    .map((g) => g.location_code as string);
+  if (locations.length > 0) {
+    return {
+      locationType: 'Care provider location',
+      locationId: locations.join(','),
+    };
+  }
+  return null;
 }
 
 export type PaginationItem = number | 'ellipsis';

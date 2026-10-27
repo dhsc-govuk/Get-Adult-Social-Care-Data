@@ -1,5 +1,9 @@
 import {
   ApproverContext,
+  canChangeUser,
+  currentLocationSelection,
+  legacyFieldsFromGrants,
+  planLocationChange,
   GrantRow,
   groupManagedUsers,
   legacyLocationFields,
@@ -30,7 +34,9 @@ const rmContext: ApproverContext = {
   locations: [LOCATIONS[0]],
 };
 
+let nextId = 1;
 const grant = (overrides: Partial<GrantRow>): GrantRow => ({
+  id: nextId++,
   userId: 'u1',
   userName: 'Priya Shah',
   userEmail: 'priya@example.org',
@@ -262,5 +268,157 @@ describe('paginationItems', () => {
     [10, 10, [1, 'ellipsis', 9, 10]],
   ])('page %i of %i', (current, total, expected) => {
     expect(paginationItems(current, total)).toEqual(expected);
+  });
+});
+
+describe('canChangeUser', () => {
+  it('allows users given access by an approver', () => {
+    expect(canChangeUser([grant({})], niContext, 'me')).toBe(true);
+  });
+
+  it('never allows NIs, RMs or yourself', () => {
+    expect(
+      canChangeUser([grant({ basis: 'registered_manager' })], niContext, 'me')
+    ).toBe(false);
+    expect(canChangeUser([grant({ userId: 'me' })], niContext, 'me')).toBe(
+      false
+    );
+  });
+
+  it('stops a Registered Manager changing all-locations users or users elsewhere', () => {
+    expect(
+      canChangeUser(
+        [grant({ scopeType: 'provider', locationCode: null })],
+        rmContext,
+        'me'
+      )
+    ).toBe(false);
+    expect(
+      canChangeUser([grant({ locationCode: 'L2' })], rmContext, 'me')
+    ).toBe(false);
+    expect(
+      canChangeUser(
+        [grant({ locationCode: 'L1' }), grant({ locationCode: 'L2' })],
+        rmContext,
+        'me'
+      )
+    ).toBe(true);
+  });
+});
+
+describe('currentLocationSelection', () => {
+  it('lists live locations the approver can see', () => {
+    expect(
+      currentLocationSelection(
+        [
+          grant({ locationCode: 'L1' }),
+          grant({ locationCode: 'L2' }),
+          grant({ locationCode: 'L3', status: 'suspended' }),
+        ],
+        niContext
+      )
+    ).toEqual(['L1', 'L2']);
+    expect(
+      currentLocationSelection(
+        [grant({ locationCode: 'L1' }), grant({ locationCode: 'L2' })],
+        rmContext
+      )
+    ).toEqual(['L1']);
+  });
+
+  it('gives all for a provider-wide grant', () => {
+    expect(
+      currentLocationSelection(
+        [grant({ scopeType: 'provider', locationCode: null })],
+        niContext
+      )
+    ).toEqual(['all']);
+  });
+});
+
+describe('planLocationChange', () => {
+  it('deletes dropped locations and inserts new ones', () => {
+    const l1 = grant({ locationCode: 'L1' });
+    const l2 = grant({ locationCode: 'L2' });
+
+    expect(planLocationChange([l1, l2], ['L2', 'L3'], niContext)).toEqual({
+      deleteIds: [l1.id],
+      reuseIds: [],
+      insert: [{ scopeType: 'location', locationCode: 'L3' }],
+      added: ['L3'],
+      removed: ['L1'],
+    });
+  });
+
+  it('reuses a suspended grant instead of inserting a duplicate', () => {
+    const suspended = grant({ locationCode: 'L2', status: 'suspended' });
+
+    const plan = planLocationChange(
+      [grant({ locationCode: 'L1' }), suspended],
+      ['L1', 'L2'],
+      niContext
+    );
+    expect(plan.reuseIds).toEqual([suspended.id]);
+    expect(plan.insert).toEqual([]);
+  });
+
+  it('swaps between all locations and specific ones', () => {
+    const l1 = grant({ locationCode: 'L1' });
+    expect(planLocationChange([l1], ['all'], niContext)).toMatchObject({
+      deleteIds: [l1.id],
+      insert: [{ scopeType: 'provider', locationCode: null }],
+    });
+
+    const all = grant({ scopeType: 'provider', locationCode: null });
+    expect(planLocationChange([all], ['L1'], niContext)).toMatchObject({
+      deleteIds: [all.id],
+      insert: [{ scopeType: 'location', locationCode: 'L1' }],
+    });
+  });
+
+  it('leaves locations outside a Registered Manager’s own alone', () => {
+    const elsewhere = grant({ locationCode: 'L2' });
+    const plan = planLocationChange(
+      [grant({ locationCode: 'L1' }), elsewhere],
+      [],
+      rmContext
+    );
+    expect(plan.removed).toEqual(['L1']);
+    expect(plan.deleteIds).not.toContain(elsewhere.id);
+  });
+});
+
+describe('legacyFieldsFromGrants', () => {
+  const row = (
+    scope_type: string,
+    location_code: string | null,
+    status = 'active'
+  ) => ({
+    scope_type,
+    provider_code: 'P1',
+    location_code,
+    status,
+  });
+
+  it('prefers a provider grant', () => {
+    expect(
+      legacyFieldsFromGrants([row('provider', null), row('location', 'L1')])
+    ).toEqual({ locationType: 'Care provider', locationId: 'P1' });
+  });
+
+  it('lists live locations and ignores suspended ones', () => {
+    expect(
+      legacyFieldsFromGrants([
+        row('location', 'L1'),
+        row('location', 'L2', 'invited'),
+        row('location', 'L3', 'suspended'),
+      ])
+    ).toEqual({ locationType: 'Care provider location', locationId: 'L1,L2' });
+  });
+
+  it('is null when nothing is left', () => {
+    expect(legacyFieldsFromGrants([row('location', 'L1', 'suspended')])).toBe(
+      null
+    );
   });
 });

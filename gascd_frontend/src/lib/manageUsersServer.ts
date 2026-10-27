@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { cache } from 'react';
+import { Kysely } from 'kysely';
 import { generateId } from 'better-auth';
 import { authDB, User } from '@/lib/auth';
 import { isUserRegistered } from '@/lib/permissions';
@@ -12,6 +13,13 @@ import {
   ALL_LOCATIONS,
   ApproverBasis,
   ApproverContext,
+  canChangeUser,
+  groupManagedUsers,
+  ManagedUser,
+  AUDIT_ACTION_ACCESS_RESTORED,
+  AUDIT_ACTION_ACCESS_SUSPENDED,
+  AUDIT_ACTION_LOCATIONS_CHANGED,
+  AUDIT_ACTION_NAME_CHANGED,
   AUDIT_ACTION_USER_ADDED,
   AUDIT_ACTOR_USER,
   DELEGATED_USER_SOURCE,
@@ -26,8 +34,12 @@ import {
   GRANT_SOURCE_APPROVER,
   GRANT_STATUS_ACTIVE,
   GRANT_STATUS_INVITED,
+  GRANT_STATUS_SUSPENDED,
   InviteFields,
+  legacyFieldsFromGrants,
   legacyLocationFields,
+  planLocationChange,
+  visibleGrants,
   ProviderLocation,
 } from '@/lib/manageUsers';
 
@@ -147,13 +159,16 @@ export const getApproverContext = async (
 };
 
 export const listProviderGrants = async (
-  providerCode: string
+  providerCode: string,
+  userId?: string,
+  db: Kysely<any> = authDB
 ): Promise<GrantRow[]> => {
-  const rows = await authDB
+  let query = db
     .selectFrom('access_grant as g')
     .innerJoin('user as u', 'u.id', 'g.user_id')
     .leftJoin('user as gb', 'gb.id', 'g.granted_by_user_id')
     .select([
+      'g.id as id',
       'g.user_id as userId',
       'u.registeredName as userRegisteredName',
       'u.name as userName',
@@ -169,11 +184,13 @@ export const listProviderGrants = async (
       'g.expires_at as expiresAt',
     ])
     .where('g.provider_code', '=', providerCode)
-    .where('g.scope_type', 'in', [GRANT_SCOPE_PROVIDER, GRANT_SCOPE_LOCATION])
-    .execute();
+    .where('g.scope_type', 'in', [GRANT_SCOPE_PROVIDER, GRANT_SCOPE_LOCATION]);
+  if (userId) query = query.where('g.user_id', '=', userId);
+  const rows = await query.execute();
 
   // One Login overwrites user.name with the email, so prefer the registered name
   return rows.map((row: any) => ({
+    id: row.id,
     userId: row.userId,
     userName: row.userRegisteredName ?? row.userName,
     userEmail: row.userEmail,
@@ -279,4 +296,244 @@ export const inviteReader = async (
   });
 
   return userId;
+};
+
+type Change = {
+  actor: User;
+  context: ApproverContext;
+  userId: string;
+};
+
+const auditRow = (
+  { actor, context }: Change,
+  target: GrantRow,
+  action: string,
+  now: Date,
+  extra: { location_codes?: string | null; details?: object } = {}
+) => ({
+  occurred_at: now,
+  action,
+  actor_type: AUDIT_ACTOR_USER,
+  actor_id: actor.id,
+  actor_name: actor.registeredName ?? actor.name,
+  actor_email: actor.email,
+  target_user_id: target.userId,
+  target_name: target.userName,
+  target_email: target.userEmail,
+  provider_code: context.providerCode,
+  location_codes: extra.location_codes ?? null,
+  details: extra.details ? JSON.stringify(extra.details) : null,
+});
+
+// Keeps user.locationType / locationId in step with the grants, and signs them out if they lost access
+const syncLegacyFields = async (trx: Kysely<any>, userId: string) => {
+  const grants = await trx
+    .selectFrom('access_grant')
+    .select(['scope_type', 'provider_code', 'location_code', 'status'])
+    .where('user_id', '=', userId)
+    .execute();
+  const legacy = legacyFieldsFromGrants(grants);
+  const user = await trx
+    .selectFrom('user')
+    .select(['locationType', 'locationId', 'selectedLocationId'])
+    .where('id', '=', userId)
+    .executeTakeFirstOrThrow();
+
+  const keepsSelection =
+    legacy?.locationType === 'Care provider' ||
+    (legacy?.locationId ?? '').split(',').includes(user.selectedLocationId);
+  await trx
+    .updateTable('user')
+    .set({
+      // Like a CQC ban: no type means no access, the old ids stay for reference
+      locationType: legacy?.locationType ?? null,
+      locationId: legacy?.locationId ?? user.locationId,
+      updatedAt: new Date(),
+      ...(keepsSelection
+        ? {}
+        : {
+            selectedLocationId: null,
+            selectedLocationDisplayName: null,
+            selectedLocationCategory: null,
+          }),
+    })
+    .where('id', '=', userId)
+    .execute();
+
+  if (!legacy || !keepsSelection) {
+    await trx.deleteFrom('session').where('userId', '=', userId).execute();
+  }
+};
+
+export const updateManagedUser = async (
+  change: Change,
+  fields: { name: string; locations: string[] }
+) => {
+  const { context, userId } = change;
+  const now = new Date();
+  await authDB.transaction().execute(async (trx) => {
+    const grants = await listProviderGrants(context.providerCode, userId, trx);
+    const target = grants[0];
+    const name = fields.name.trim();
+
+    if (name !== target.userName) {
+      await trx
+        .updateTable('user')
+        .set({ registeredName: name, name, updatedAt: now })
+        .where('id', '=', userId)
+        .execute();
+      await trx
+        .insertInto('access_audit')
+        .values(
+          auditRow(change, target, AUDIT_ACTION_NAME_CHANGED, now, {
+            details: { from: target.userName, to: name },
+          })
+        )
+        .execute();
+    }
+
+    const plan = planLocationChange(grants, fields.locations, context);
+    if (plan.added.length === 0 && plan.removed.length === 0) return;
+
+    // New locations follow whether they have signed in yet
+    const status = grants.some((g) => g.status === GRANT_STATUS_ACTIVE)
+      ? GRANT_STATUS_ACTIVE
+      : GRANT_STATUS_INVITED;
+    if (plan.deleteIds.length) {
+      await trx
+        .deleteFrom('access_grant')
+        .where('id', 'in', plan.deleteIds)
+        .execute();
+    }
+    if (plan.reuseIds.length) {
+      await trx
+        .updateTable('access_grant')
+        .set({
+          status,
+          status_changed_at: now,
+          status_changed_by_user_id: change.actor.id,
+        })
+        .where('id', 'in', plan.reuseIds)
+        .execute();
+    }
+    if (plan.insert.length) {
+      await trx
+        .insertInto('access_grant')
+        .values(
+          plan.insert.map((grant) => ({
+            user_id: userId,
+            scope_type: grant.scopeType,
+            provider_code: context.providerCode,
+            location_code: grant.locationCode,
+            role: GRANT_ROLE_READER,
+            basis: GRANT_BASIS_DELEGATED,
+            status,
+            source: GRANT_SOURCE_APPROVER,
+            granted_by_user_id: change.actor.id,
+            granted_at: now,
+          }))
+        )
+        .execute();
+    }
+    await trx
+      .insertInto('access_audit')
+      .values(
+        auditRow(change, target, AUDIT_ACTION_LOCATIONS_CHANGED, now, {
+          location_codes: fields.locations.includes(ALL_LOCATIONS)
+            ? null
+            : fields.locations.join(','),
+          details: { added: plan.added, removed: plan.removed },
+        })
+      )
+      .execute();
+    await syncLegacyFields(trx, userId);
+  });
+};
+
+const setStatus = async (
+  change: Change,
+  from: (status: string) => boolean,
+  to: (trx: Kysely<any>, userId: string) => Promise<string>,
+  action: string
+) => {
+  const { context, userId } = change;
+  const now = new Date();
+  await authDB.transaction().execute(async (trx) => {
+    const grants = await listProviderGrants(context.providerCode, userId, trx);
+    const affected = visibleGrants(grants, context).filter((g) =>
+      from(g.status)
+    );
+    if (affected.length === 0) return;
+
+    const status = await to(trx, userId);
+    await trx
+      .updateTable('access_grant')
+      .set({
+        status,
+        status_changed_at: now,
+        status_changed_by_user_id: change.actor.id,
+      })
+      .where(
+        'id',
+        'in',
+        affected.map((g) => g.id)
+      )
+      .execute();
+    await trx
+      .insertInto('access_audit')
+      .values(
+        auditRow(change, affected[0], action, now, {
+          location_codes: affected.some(
+            (g) => g.scopeType === GRANT_SCOPE_PROVIDER
+          )
+            ? null
+            : affected.map((g) => g.locationCode).join(','),
+        })
+      )
+      .execute();
+    await syncLegacyFields(trx, userId);
+  });
+};
+
+export const removeManagedUser = (change: Change) =>
+  setStatus(
+    change,
+    (status) => status !== GRANT_STATUS_SUSPENDED,
+    async () => GRANT_STATUS_SUSPENDED,
+    AUDIT_ACTION_ACCESS_SUSPENDED
+  );
+
+// A sign-in links an account row, so without one they go back to invited
+export const restoreManagedUser = (change: Change) =>
+  setStatus(
+    change,
+    (status) => status === GRANT_STATUS_SUSPENDED,
+    async (trx, userId) =>
+      (await trx
+        .selectFrom('account')
+        .select('id')
+        .where('userId', '=', userId)
+        .executeTakeFirst())
+        ? GRANT_STATUS_ACTIVE
+        : GRANT_STATUS_INVITED,
+    AUDIT_ACTION_ACCESS_RESTORED
+  );
+
+export type ChangeableUser = {
+  context: ApproverContext;
+  grants: GrantRow[];
+  user: ManagedUser;
+};
+
+// Null unless the signed-in approver may edit, remove or restore this user
+export const getChangeableUser = async (
+  actor: User,
+  userId: string
+): Promise<ChangeableUser | null> => {
+  const context = await getApproverContext(actor);
+  if (!context) return null;
+  const grants = await listProviderGrants(context.providerCode, userId);
+  if (!canChangeUser(grants, context, actor.id)) return null;
+  const [user] = groupManagedUsers(grants, context, actor.id);
+  return { context, grants, user };
 };

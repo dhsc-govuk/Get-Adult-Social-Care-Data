@@ -10,12 +10,32 @@ import {
   APPROVER_DESCRIPTIONS,
   groupManagedUsers,
   MANAGE_USERS_PAGE_SIZE,
+  ManagedUser,
 } from '@/lib/manageUsers';
 import UsersTable from './UsersTable';
 import UsersPagination from './UsersPagination';
 
+const BANNERS: Record<
+  string,
+  (user: ManagedUser) => { heading: string; body?: string }
+> = {
+  added: (user: ManagedUser) => ({
+    heading: `${user.name} has been given access`,
+    body: `Tell them to sign in to Get adult social care data with GOV.UK One Login, using ${user.email}. We do not email them.`,
+  }),
+  updated: (user: ManagedUser) => ({
+    heading: `${user.name}'s details have been updated`,
+  }),
+  removed: (user: ManagedUser) => ({
+    heading: `${user.name}'s access has been removed`,
+  }),
+  restored: (user: ManagedUser) => ({
+    heading: `${user.name}'s access has been restored`,
+  }),
+};
+
 type Props = {
-  searchParams: Promise<{ page?: string; added?: string }>;
+  searchParams: Promise<{ page?: string; done?: string; user?: string }>;
 };
 
 export default async function ManageUsersPage({ searchParams }: Props) {
@@ -25,7 +45,7 @@ export default async function ManageUsersPage({ searchParams }: Props) {
   const context = await getApproverContext(user);
   if (!context) notFound();
 
-  const { page, added } = await searchParams;
+  const { page, done, user: changedUserId } = await searchParams;
   const users = groupManagedUsers(
     await listProviderGrants(context.providerCode),
     context,
@@ -44,7 +64,13 @@ export default async function ManageUsersPage({ searchParams }: Props) {
     currentPage * MANAGE_USERS_PAGE_SIZE
   );
 
-  const addedUser = added && users.find((u) => u.userId === added);
+  const changedUser = changedUserId
+    ? users.find((u) => u.userId === changedUserId)
+    : undefined;
+  const banner =
+    changedUser && done && Object.hasOwn(BANNERS, done)
+      ? BANNERS[done](changedUser)
+      : null;
 
   return (
     <Layout
@@ -52,29 +78,26 @@ export default async function ManageUsersPage({ searchParams }: Props) {
       showLoginInformation={true}
       currentPage="manage-users"
     >
-      {addedUser && (
+      {banner && (
         <div
           className="govuk-notification-banner govuk-notification-banner--success"
           role="alert"
-          aria-labelledby="user-added-title"
+          aria-labelledby="user-change-title"
           data-module="govuk-notification-banner"
         >
           <div className="govuk-notification-banner__header">
             <h2
               className="govuk-notification-banner__title"
-              id="user-added-title"
+              id="user-change-title"
             >
               Success
             </h2>
           </div>
           <div className="govuk-notification-banner__content">
             <h3 className="govuk-notification-banner__heading">
-              {addedUser.name} has been given access
+              {banner.heading}
             </h3>
-            <p className="govuk-body">
-              Tell them to sign in to Get adult social care data with GOV.UK One
-              Login, using {addedUser.email}. We do not email them.
-            </p>
+            {banner.body && <p className="govuk-body">{banner.body}</p>}
           </div>
         </div>
       )}

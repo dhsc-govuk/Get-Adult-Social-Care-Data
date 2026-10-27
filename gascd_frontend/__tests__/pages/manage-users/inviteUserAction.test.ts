@@ -71,7 +71,9 @@ describe('inviteUser', () => {
     await inviteUser(fields);
 
     expect(inviteReader).toHaveBeenCalledWith(approver, context, fields);
-    expect(redirect).toHaveBeenCalledWith('/manage-users?added=new-user');
+    expect(redirect).toHaveBeenCalledWith(
+      '/manage-users?done=added&user=new-user'
+    );
   });
 
   it('reports a service error when the write fails', async () => {

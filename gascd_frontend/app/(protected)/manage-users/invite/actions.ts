@@ -64,5 +64,5 @@ export async function inviteUser(fields: InviteFields): Promise<InviteResult> {
     invitedUserId: userId,
     providerCode: context.providerCode,
   });
-  redirect(`/manage-users?added=${userId}`);
+  redirect(`/manage-users?done=added&user=${userId}`);
 }

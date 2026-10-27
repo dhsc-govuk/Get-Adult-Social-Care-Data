@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { ManagedUser, UserStatus } from '@/lib/manageUsers';
 
 const STATUS_TAG_CLASSES: Record<UserStatus, string> = {
@@ -34,6 +35,12 @@ export default function UsersTable({ users }: { users: ManagedUser[] }) {
           <th scope="col" className="govuk-table__header">
             Status
           </th>
+          <th
+            scope="col"
+            className="govuk-table__header govuk-table__header--numeric"
+          >
+            Action
+          </th>
         </tr>
       </thead>
       <tbody className="govuk-table__body">
@@ -65,9 +72,32 @@ export default function UsersTable({ users }: { users: ManagedUser[] }) {
                 {user.status}
               </strong>
             </td>
+            <td className="govuk-table__cell govuk-table__cell--numeric">
+              {user.canChange && <UserActions user={user} />}
+            </td>
           </tr>
         ))}
       </tbody>
     </table>
+  );
+}
+
+const actionLink = (href: string, label: string, name: string) => (
+  <Link href={href} className="govuk-link govuk-!-display-block">
+    {label}
+    <span className="govuk-visually-hidden"> {name}</span>
+  </Link>
+);
+
+function UserActions({ user }: { user: ManagedUser }) {
+  const base = `/manage-users/${encodeURIComponent(user.userId)}`;
+  if (user.status === 'Removed') {
+    return actionLink(`${base}/restore`, 'Restore access', `for ${user.name}`);
+  }
+  return (
+    <>
+      {actionLink(`${base}/edit`, 'Edit', user.name)}
+      {actionLink(`${base}/remove`, 'Remove', user.name)}
+    </>
   );
 }

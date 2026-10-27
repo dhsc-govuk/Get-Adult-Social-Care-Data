@@ -12,6 +12,8 @@ import {
   validateInviteName,
 } from '@/lib/manageUsers';
 import { inviteUser } from './actions';
+import LocationCheckboxes from '../LocationCheckboxes';
+import ErrorSummary from '../ErrorSummary';
 
 type Step = 'name' | 'email' | 'locations' | 'check';
 
@@ -94,18 +96,6 @@ const InviteUserForm: React.FC<Props> = ({ providerWide, locations }) => {
     }
   };
 
-  const toggleLocation = (code: string, checked: boolean) => {
-    setFields((current) => {
-      if (code === ALL_LOCATIONS) {
-        return { ...current, locations: checked ? [ALL_LOCATIONS] : [] };
-      }
-      const others = current.locations.filter(
-        (c) => c !== code && c !== ALL_LOCATIONS
-      );
-      return { ...current, locations: checked ? [...others, code] : others };
-    });
-  };
-
   const submit = () => {
     startTransition(async () => {
       const result = await inviteUser(fields);
@@ -130,25 +120,13 @@ const InviteUserForm: React.FC<Props> = ({ providerWide, locations }) => {
         .map((location) => location.name);
 
   const errorSummary = hasErrors && (
-    <div
-      className="govuk-error-summary"
-      data-module="govuk-error-summary"
+    <ErrorSummary
       ref={errorSummaryRef}
-      tabIndex={-1}
-    >
-      <div role="alert">
-        <h2 className="govuk-error-summary__title">There is a problem</h2>
-        <div className="govuk-error-summary__body">
-          <ul className="govuk-list govuk-error-summary__list">
-            {(Object.keys(errors) as (keyof InviteFields)[]).map((field) => (
-              <li key={field}>
-                <a href={`#${FIELD_INPUT_ID[field]}`}>{errors[field]}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
+      errors={(Object.keys(errors) as (keyof InviteFields)[]).map((field) => [
+        FIELD_INPUT_ID[field],
+        errors[field] as string,
+      ])}
+    />
   );
 
   const fieldError = (field: keyof InviteFields) =>
@@ -274,72 +252,15 @@ const InviteUserForm: React.FC<Props> = ({ providerWide, locations }) => {
                   Select all that apply.
                 </div>
                 {fieldError('locations')}
-                <div
-                  className="govuk-checkboxes"
-                  data-module="govuk-checkboxes"
-                >
-                  {providerWide && (
-                    <>
-                      <div className="govuk-checkboxes__item">
-                        <input
-                          className="govuk-checkboxes__input"
-                          id={FIELD_INPUT_ID.locations}
-                          name="locations"
-                          type="checkbox"
-                          value={ALL_LOCATIONS}
-                          checked={fields.locations.includes(ALL_LOCATIONS)}
-                          onChange={(event) =>
-                            toggleLocation(ALL_LOCATIONS, event.target.checked)
-                          }
-                          aria-describedby="invite-locations-all-hint"
-                        />
-                        <label
-                          className="govuk-label govuk-checkboxes__label"
-                          htmlFor={FIELD_INPUT_ID.locations}
-                        >
-                          All locations
-                        </label>
-                        <div
-                          id="invite-locations-all-hint"
-                          className="govuk-hint govuk-checkboxes__hint"
-                        >
-                          Includes any locations added in future
-                        </div>
-                      </div>
-                      <div className="govuk-checkboxes__divider">or</div>
-                    </>
-                  )}
-                  {locations.map((location, index) => {
-                    const id =
-                      !providerWide && index === 0
-                        ? FIELD_INPUT_ID.locations
-                        : `invite-location-${location.code}`;
-                    return (
-                      <div
-                        className="govuk-checkboxes__item"
-                        key={location.code}
-                      >
-                        <input
-                          className="govuk-checkboxes__input"
-                          id={id}
-                          name="locations"
-                          type="checkbox"
-                          value={location.code}
-                          checked={fields.locations.includes(location.code)}
-                          onChange={(event) =>
-                            toggleLocation(location.code, event.target.checked)
-                          }
-                        />
-                        <label
-                          className="govuk-label govuk-checkboxes__label"
-                          htmlFor={id}
-                        >
-                          {location.name}
-                        </label>
-                      </div>
-                    );
-                  })}
-                </div>
+                <LocationCheckboxes
+                  id={FIELD_INPUT_ID.locations}
+                  providerWide={providerWide}
+                  locations={locations}
+                  selected={fields.locations}
+                  onChange={(selected) =>
+                    setFields({ ...fields, locations: selected })
+                  }
+                />
               </fieldset>
             </div>
             {continueButton}
