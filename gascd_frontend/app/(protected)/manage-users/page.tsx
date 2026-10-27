@@ -96,25 +96,29 @@ export default async function ManageUsersPage({ searchParams }: Props) {
       currentPage="manage-users"
     >
       {banner && (
-        <div
-          className="govuk-notification-banner govuk-notification-banner--success"
-          role="alert"
-          aria-labelledby="user-change-title"
-          data-module="govuk-notification-banner"
-        >
-          <div className="govuk-notification-banner__header">
-            <h2
-              className="govuk-notification-banner__title"
-              id="user-change-title"
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <div
+              className="govuk-notification-banner govuk-notification-banner--success"
+              role="alert"
+              aria-labelledby="user-change-title"
+              data-module="govuk-notification-banner"
             >
-              Success
-            </h2>
-          </div>
-          <div className="govuk-notification-banner__content">
-            <h3 className="govuk-notification-banner__heading">
-              {banner.heading}
-            </h3>
-            {banner.body}
+              <div className="govuk-notification-banner__header">
+                <h2
+                  className="govuk-notification-banner__title"
+                  id="user-change-title"
+                >
+                  Success
+                </h2>
+              </div>
+              <div className="govuk-notification-banner__content">
+                <h3 className="govuk-notification-banner__heading">
+                  {banner.heading}
+                </h3>
+                {banner.body}
+              </div>
+            </div>
           </div>
         </div>
       )}
