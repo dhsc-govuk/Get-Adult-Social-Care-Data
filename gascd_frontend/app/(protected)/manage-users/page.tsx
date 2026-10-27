@@ -34,8 +34,9 @@ const BANNERS: Record<
           using GOV.UK One Login with the email address {user.email}.
         </p>
         <p className="govuk-body">
-          This service does not send sign-in details to new users. These details
-          will need to be shared with them directly.
+          Emails will be sent to newly registered users once a week. In the
+          meantime, you can share these details with them directly and they can
+          start using GASCD from today.
         </p>
       </>
     ),
