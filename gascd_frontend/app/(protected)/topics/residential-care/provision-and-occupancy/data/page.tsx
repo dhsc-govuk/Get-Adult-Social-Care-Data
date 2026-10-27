@@ -1347,6 +1347,75 @@ export default function ProvisionAndOccupancyPage() {
         />
       </DataBox>
       <DataBox
+        dataTitle="Care home bed types by group"
+        dataInfo={
+          <>
+            Find out how{' '}
+            <a
+              href={withBasePath(
+                METRICS.bedcount_per_hundred_thousand_adults_total.helpUrl
+              )}
+              className="govuk-link"
+            >
+              the number of adult social care beds per 100,000 adult population
+            </a>{' '}
+            are calculated.
+            {nhsPeerGroupDetails}
+          </>
+        }
+      >
+        <DataTabs
+          id="7"
+          sharingMetricIds={bedTypeMetricIds}
+          table={
+            <>
+              {renderComparatorControl(
+                'comparator-table-6',
+                renderPopulationSelect(
+                  'comparator-table-6',
+                  groupedTablePopulation,
+                  setGroupedTablePopulation
+                )
+              )}
+              <DataTable
+                tableref={tableref6}
+                caption={
+                  <>
+                    Table 3a: care home bed numbers per 100,000{' '}
+                    {POPULATION_DESCRIPTIONS[groupedTablePopulation]} (grouped
+                    by bed type) &ndash; {locationNamesCP.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {comparatorAverageLabel}, {locationNamesCP.RegionLabel}{' '}
+                    regional average and national average,{' '}
+                    {IndicatorService.getMostRecentDate(latestBedTypeData)}
+                  </>
+                }
+                metricColumnName="Care home bed type"
+                source={SOURCES.capacityTrackerWithOnsPopulationEstimates}
+                columnHeaders={{
+                  ...locationNamesWithAverageLabels,
+                  ComparatorLabel: comparatorAverageLabel,
+                }}
+                rowHeaders={groupedTableRowHeaders}
+                data={benchmarkedGroupedTypesData}
+                showCareProvider={false}
+                percentageRows={[]}
+              ></DataTable>
+            </>
+          }
+          download={
+            <>
+              <DownloadTableDataCSVLink
+                tableref={tableref6}
+                filename="care_home_bed_types_grouped_by_area.csv"
+                xLabel=""
+                downloadType="care home bed numbers per 100,000 adult population for each bed type group"
+              />
+            </>
+          }
+        />
+      </DataBox>
+      <DataBox
         dataTitle="Care home bed types (grouped by bed type)"
         dataInfo={
           <>
@@ -1422,7 +1491,7 @@ export default function ProvisionAndOccupancyPage() {
                 metric={groupedBedType.metric_id}
                 caption={
                   <>
-                    Table 3a: care home bed numbers per 100,000{' '}
+                    Table 3b: care home bed numbers per 100,000{' '}
                     {POPULATION_DESCRIPTIONS[groupedPopulation]} (
                     {bedTypesChartFilterName.toLowerCase()}) &ndash;{' '}
                     {locationNamesCP.LALabel}{' '}
@@ -1453,75 +1522,6 @@ export default function ProvisionAndOccupancyPage() {
                 filename="care_home_bed_types_grouped.csv"
                 xLabel=""
                 downloadType="care home bed numbers per 100,000 adult population grouped by bed type"
-              />
-            </>
-          }
-        />
-      </DataBox>
-      <DataBox
-        dataTitle="Care home bed types by group"
-        dataInfo={
-          <>
-            Find out how{' '}
-            <a
-              href={withBasePath(
-                METRICS.bedcount_per_hundred_thousand_adults_total.helpUrl
-              )}
-              className="govuk-link"
-            >
-              the number of adult social care beds per 100,000 adult population
-            </a>{' '}
-            are calculated.
-            {nhsPeerGroupDetails}
-          </>
-        }
-      >
-        <DataTabs
-          id="7"
-          sharingMetricIds={bedTypeMetricIds}
-          table={
-            <>
-              {renderComparatorControl(
-                'comparator-table-6',
-                renderPopulationSelect(
-                  'comparator-table-6',
-                  groupedTablePopulation,
-                  setGroupedTablePopulation
-                )
-              )}
-              <DataTable
-                tableref={tableref6}
-                caption={
-                  <>
-                    Table 3b: care home bed numbers per 100,000{' '}
-                    {POPULATION_DESCRIPTIONS[groupedTablePopulation]} (grouped
-                    by bed type) &ndash; {locationNamesCP.LALabel}{' '}
-                    <abbr title="local authority">LA</abbr>,{' '}
-                    {comparatorAverageLabel}, {locationNamesCP.RegionLabel}{' '}
-                    regional average and national average,{' '}
-                    {IndicatorService.getMostRecentDate(latestBedTypeData)}
-                  </>
-                }
-                metricColumnName="Care home bed type"
-                source={SOURCES.capacityTrackerWithOnsPopulationEstimates}
-                columnHeaders={{
-                  ...locationNamesWithAverageLabels,
-                  ComparatorLabel: comparatorAverageLabel,
-                }}
-                rowHeaders={groupedTableRowHeaders}
-                data={benchmarkedGroupedTypesData}
-                showCareProvider={false}
-                percentageRows={[]}
-              ></DataTable>
-            </>
-          }
-          download={
-            <>
-              <DownloadTableDataCSVLink
-                tableref={tableref6}
-                filename="care_home_bed_types_grouped_by_area.csv"
-                xLabel=""
-                downloadType="care home bed numbers per 100,000 adult population for each bed type group"
               />
             </>
           }
