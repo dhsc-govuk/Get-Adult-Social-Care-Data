@@ -1,3 +1,4 @@
+import { withTrustedAuthIp } from '@/lib/auth-rate-limit';
 import { toNextJsHandler } from 'better-auth/next-js';
 import { auth } from '@/lib/auth';
 
@@ -17,5 +18,5 @@ function withRestoredPrefix(
   };
 }
 
-export const POST = withRestoredPrefix(baseHandlers.POST);
-export const GET = withRestoredPrefix(baseHandlers.GET);
+export const POST = withTrustedAuthIp(withRestoredPrefix(baseHandlers.POST));
+export const GET = withTrustedAuthIp(withRestoredPrefix(baseHandlers.GET));

@@ -5,8 +5,12 @@ namespace api.Endpoints.Metrics.Data;
 
 public class GetMetricValidator : Validator<GetMetricRequest>
 {
-    public GetMetricValidator()
+    public GetMetricValidator(IConfiguration configuration)
     {
+        var maximum = configuration.GetValue<int?>("RateLimiting:MaxLocations") ?? 500;
+        RuleFor(r => r.Locations).NotNull()
+            .Must(locations => locations is null || locations.Count <= maximum)
+            .WithMessage($"At most {maximum} locations are allowed");
         RuleForEach(r => r.Locations)
             .SetValidator(new GetMetricLocationsValidator());
 

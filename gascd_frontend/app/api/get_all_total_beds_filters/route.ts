@@ -1,16 +1,17 @@
+import { withDataApiErrors } from '@/lib/data-api-errors';
 import { NextRequest, NextResponse } from 'next/server';
 import logger from '@/utils/logger';
 import { getAPIClient } from '@/data/dataAPI';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 
-export async function GET(req: NextRequest) {
+async function handleGET(req: NextRequest) {
   const user = await getCurrentUser();
   if (!user || !isUserRegistered(user)) {
     return NextResponse.json({ error: `No user` }, { status: 401 });
   }
 
   const metric_group_code = 'bedcount_per_hundred_thousand_adults';
-  const client = getAPIClient();
+  const client = getAPIClient(req.signal);
   const { data, error } = await client.GET(
     '/metric_filters/{metric_group_code}',
     {
@@ -36,3 +37,5 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
+export const GET = withDataApiErrors(handleGET);

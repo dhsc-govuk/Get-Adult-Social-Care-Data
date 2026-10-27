@@ -1,4 +1,5 @@
 'use client';
+import { serviceFetch } from '@/lib/service-fetch';
 import { useEffect, useState } from 'react';
 import { withBasePath } from '@/lib/basePath';
 import { ComparatorSelection, CustomComparatorGroup } from './types';
@@ -62,7 +63,7 @@ export function useComparatorGroups(): {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(withBasePath(GROUPS_URL))
+    serviceFetch(withBasePath(GROUPS_URL))
       .then((res) => {
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
         return res.json();
@@ -106,7 +107,7 @@ export function useComparatorGroups(): {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(withBasePath(REGION_URL))
+    serviceFetch(withBasePath(REGION_URL))
       .then((res) => {
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
         return res.json();
@@ -149,7 +150,7 @@ export function useComparatorGroups(): {
   }, []);
 
   const saveGroup = async (group: { name: string; laCodes: string[] }) => {
-    const res = await fetch(withBasePath(GROUPS_URL), {
+    const res = await serviceFetch(withBasePath(GROUPS_URL), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(group),
@@ -169,7 +170,7 @@ export function useComparatorGroups(): {
     id: string,
     group: { name: string; laCodes: string[] }
   ) => {
-    const res = await fetch(withBasePath(`${GROUPS_URL}/${id}`), {
+    const res = await serviceFetch(withBasePath(`${GROUPS_URL}/${id}`), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(group),
@@ -186,7 +187,7 @@ export function useComparatorGroups(): {
   };
 
   const deleteGroup = async (id: string) => {
-    const res = await fetch(withBasePath(`${GROUPS_URL}/${id}`), {
+    const res = await serviceFetch(withBasePath(`${GROUPS_URL}/${id}`), {
       method: 'DELETE',
     });
     if (!res.ok) await throwResponseError(res);

@@ -1,10 +1,11 @@
+import { withDataApiErrors } from '@/lib/data-api-errors';
 import { NextRequest, NextResponse } from 'next/server';
 import logger from '@/utils/logger';
 import { getAPIClient } from '@/data/dataAPI';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import { ALLOWED_CP_USER_TYPES, LA_USER_TYPE } from '@/constants';
 
-export async function GET(req: NextRequest) {
+async function handleGET(req: NextRequest) {
   const user = await getCurrentUser();
   if (!user || !isUserRegistered(user)) {
     return NextResponse.json({ error: `No user` }, { status: 401 });
@@ -16,7 +17,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json([]);
   }
 
-  const client = getAPIClient();
+  const client = getAPIClient(req.signal);
 
   if (ALLOWED_CP_USER_TYPES.includes(user.locationType || '')) {
     const { data } = await client.GET('/metric_locations/cp_locations/{code}', {
@@ -78,3 +79,5 @@ export async function GET(req: NextRequest) {
   });
   return NextResponse.json([]);
 }
+
+export const GET = withDataApiErrors(handleGET);

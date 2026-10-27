@@ -1,3 +1,7 @@
+import {
+  migrateRateLimits,
+  cleanupRateLimits,
+} from '../src/lib/rate-limit-schema';
 import 'dotenv/config';
 import { Kysely, MssqlDialect, sql } from 'kysely';
 import * as Tedious from 'tedious';
@@ -66,6 +70,38 @@ const db = new Kysely<any>({
 });
 
 const run = async () => {
+  if (process.argv.includes('--cleanup-rate-limits')) {
+    // Bounded work per scheduled invocation: up to RATE_LIMIT_CLEANUP_BATCHES
+    // batches of 1,000 rows (default 10), stopping early once a batch comes
+    // back short. The scheduler reads the summary line to see whether the
+    // expired backlog is keeping up.
+    const configured = Number(process.env.RATE_LIMIT_CLEANUP_BATCHES ?? 10);
+    const batches =
+      Number.isInteger(configured) && configured >= 1 && configured <= 1000
+        ? configured
+        : 10;
+    const batchSize = 1000;
+    let deleted = 0;
+    for (let batch = 0; batch < batches; batch++) {
+      const result = await cleanupRateLimits(db, batchSize);
+      const affected =
+        result.numAffectedRows === undefined
+          ? undefined
+          : Number(result.numAffectedRows);
+      deleted += affected ?? 0;
+      if (affected !== undefined && affected < batchSize) break;
+    }
+    const remaining = await sql<{ n: number }>`
+      SELECT COUNT_BIG(*) AS n FROM dbo.requestRateLimit
+      WHERE expiresAt < DATEADD(day, -1, SYSUTCDATETIME());
+    `.execute(db);
+    console.log(
+      `Rate-limit cleanup: deleted ${deleted} rows (max ${batches * batchSize}); ` +
+        `${remaining.rows[0]?.n ?? 0} expired rows remain`
+    );
+    return;
+  }
+  await migrateRateLimits(db);
   // Per-user uniqueness of comparator group names. The server default
   // case-insensitive collation makes this match the app's normalised
   // (lowercased) comparison.

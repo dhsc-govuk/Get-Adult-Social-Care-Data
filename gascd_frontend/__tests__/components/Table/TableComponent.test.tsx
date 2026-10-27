@@ -58,7 +58,7 @@ describe('Table component tests', () => {
       });
       // Every column should say 'loading' when data is empty
       expect(loading_els.length).toBe(
-        (Object.keys(mockTableColumnHeaders).length) *
+        Object.keys(mockTableColumnHeaders).length *
           Object.keys(mockTableRowHeaders).length
       );
     });

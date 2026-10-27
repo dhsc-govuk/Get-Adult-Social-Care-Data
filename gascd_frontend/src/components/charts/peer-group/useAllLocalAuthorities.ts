@@ -1,4 +1,5 @@
 'use client';
+import { serviceFetch } from '@/lib/service-fetch';
 import { useEffect, useState } from 'react';
 import { withBasePath } from '@/lib/basePath';
 import { LocalAuthoritySummary } from './types';
@@ -28,7 +29,7 @@ export function useAllLocalAuthorities(enabled: boolean): {
 
     let cancelled = false;
     setError(false);
-    fetch(withBasePath('/api/get_la_list'))
+    serviceFetch(withBasePath('/api/get_la_list'))
       .then((res) => {
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
         return res.json();

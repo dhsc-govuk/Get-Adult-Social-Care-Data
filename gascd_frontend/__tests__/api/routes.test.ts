@@ -160,7 +160,7 @@ describe('test get metrics', () => {
     const result = await GetMetricData(req);
     expect(result.status).toBe(400);
     const data = await result.json();
-    expect(data).toEqual({ error: 'No metric ids' });
+    expect(data).toEqual({ error: 'Invalid or oversized metric request' });
   });
 
   it('throws error if no metrics', async () => {
@@ -192,7 +192,7 @@ describe('test get metrics', () => {
     const result = await GetMetricData(req);
     expect(result.status).toBe(400);
     const data = await result.json();
-    expect(data).toEqual({ error: 'No metric ids' });
+    expect(data).toEqual({ error: 'Invalid or oversized metric request' });
   });
 
   it('passes on user query type and metrics', async () => {

@@ -1,10 +1,11 @@
+import { withDataApiErrors } from '@/lib/data-api-errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import { getAllowedLocationsForUser } from '@/data/locations';
 import { authDB } from '@/lib/auth';
 import logger from '@/utils/logger';
 
-export async function POST(req: NextRequest) {
+async function handlePOST(req: NextRequest) {
   const user = await getCurrentUser();
   if (!user || !isUserRegistered(user)) {
     return NextResponse.json({ error: `No user` }, { status: 401 });
@@ -41,3 +42,5 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ status: 'OK' });
 }
+
+export const POST = withDataApiErrors(handlePOST);

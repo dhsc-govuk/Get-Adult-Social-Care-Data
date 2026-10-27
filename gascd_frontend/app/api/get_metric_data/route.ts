@@ -1,3 +1,4 @@
+import { withDataApiErrors } from '@/lib/data-api-errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { addUserTelemetry } from '@/helpers/telemetry/usertelemetry';
 import { getAPIClient } from '@/data/dataAPI';
@@ -8,7 +9,8 @@ import {
   isUserRegistered,
 } from '@/lib/permissions';
 import { transformSeriesData, SeriesPoint } from '@/utils/timeseries';
-import { validateMetricIds } from '@/data/locations';
+import { parseMetricIds, readMetricRequest } from '@/lib/metric-request';
+import { positiveInteger } from '@/lib/rate-limit-config';
 import logger from '@/utils/logger';
 
 const REGIONAL_QUERYTYPE = 'RegionQuery';
@@ -17,19 +19,32 @@ const MULTI_LOCATION_TIMESERIES = 'MultiLocationTimeseriesQuery';
 const USER_QUERY = 'UserQuery';
 const TIME_SERIES_QUERIES = [LA_TIMESERIES, MULTI_LOCATION_TIMESERIES];
 
-export async function POST(req: NextRequest) {
+async function handlePOST(req: NextRequest) {
   const user = await getCurrentUser();
   if (!user || !isUserRegistered(user)) {
     return NextResponse.json({ error: `No user` }, { status: 401 });
   }
 
-  const queryParams = await req.json();
+  let queryParams;
+  let metric_ids: string[];
+  try {
+    queryParams = (await readMetricRequest(req)) as {
+      metric_ids?: unknown;
+      query_type?: string;
+    };
+    metric_ids = parseMetricIds(
+      queryParams?.metric_ids,
+      positiveInteger('DATA_API_MAX_METRICS', 100, 500)
+    );
+  } catch {
+    return NextResponse.json(
+      { error: 'Invalid or oversized metric request' },
+      { status: 400 }
+    );
+  }
   const query_type = queryParams.query_type;
 
   await addUserTelemetry();
-
-  const provided_metric_ids = queryParams.metric_ids || [];
-  const metric_ids = validateMetricIds(provided_metric_ids);
 
   if (!metric_ids.length) {
     logger.error('No valid metric IDs provided');
@@ -46,7 +61,9 @@ export async function POST(req: NextRequest) {
   }
 
   const user_location_data = await getDefaultLocations(user);
-  const client = getAPIClient();
+  const client = getAPIClient(
+    AbortSignal.any([req.signal, AbortSignal.timeout(30000)])
+  );
   let location_data;
 
   if (query_type === REGIONAL_QUERYTYPE) {
@@ -189,3 +206,5 @@ export async function POST(req: NextRequest) {
   }
   return NextResponse.json(all_metrics, { status: 200 });
 }
+
+export const POST = withDataApiErrors(handlePOST);

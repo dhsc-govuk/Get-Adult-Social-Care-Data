@@ -51,9 +51,7 @@ describe('Custom comparator groups on benchmarking charts', () => {
       .find('option:selected')
       .should('have.text', groupName);
     cy.get('#chart-1').contains(`${groupName} (average)`);
-    cy.get('#chart-1').contains(
-      'This chart compares'
-    );
+    cy.get('#chart-1').contains('This chart compares');
 
     // The selection is shared with the Table tab (column + caption update),
     // and the Custom option is available there too
@@ -123,10 +121,7 @@ describe('Custom comparator groups on benchmarking charts', () => {
     // Edit it: the button appears once a custom group is selected
     cy.contains('button', 'Edit this group').click();
     cy.contains('h3', 'Edit comparator group').should('be.visible');
-    cy.get('#comparator-chart-1-group-name').should(
-      'have.value',
-      editableName
-    );
+    cy.get('#comparator-chart-1-group-name').should('have.value', editableName);
     cy.contains('1 selected');
     cy.get('#comparator-chart-1-group-name').clear().type(renamedName);
     cy.get('#chart-1 input[type="checkbox"]').eq(1).check();
