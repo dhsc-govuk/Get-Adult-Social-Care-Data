@@ -22,7 +22,7 @@ const BedsPer100000AdultPopulation: React.FC = () => {
               <abbr title="Local Authority">LA</abbr>, regional or national
               population, published by the Office for National Statistics. Shown
               as bar charts and tables, including a table of the 11 individual
-              bed types (Table 2b) and one of the 5 bed groupings (Table 3b).
+              bed types (Table 2b) and one of the 5 bed groupings (Table 3a).
             </p>
           }
           source={
@@ -92,7 +92,7 @@ const BedsPer100000AdultPopulation: React.FC = () => {
                 over) and multiplied by 100,000.
               </p>
               <p className="govuk-!-margin-top-0">
-                Table 2b shows the 11 categories individually. Table 3b groups
+                Table 2b shows the 11 categories individually. Table 3a groups
                 them into 5 groupings: older people and dementia (general and
                 dementia, residential and nursing); learning disability
                 (residential and nursing); mental health (residential and
