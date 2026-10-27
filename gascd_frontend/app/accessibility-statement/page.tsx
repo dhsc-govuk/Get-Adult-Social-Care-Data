@@ -19,10 +19,10 @@ const AccessibilityStatementPage: React.FC = () => {
               This accessibility statement applies to the Get adult social care
               data (GASCD) service at{' '}
               <a
-                href="https://getadultsocialcaredata.com"
+                href="https://analytics.dhsc.gov.uk/gascd/"
                 className="govuk-link"
               >
-                https://getadultsocialcaredata.com
+                https://analytics.dhsc.gov.uk/gascd/
               </a>
               .
             </p>
@@ -69,7 +69,7 @@ const AccessibilityStatementPage: React.FC = () => {
             </p>
             <ul className="govuk-list govuk-list--bullet">
               <li>
-                There are several issues with the Provision and occupancy topic
+                There are several issues with the provision and occupancy topic
                 area which assisted technology users may wish to avoid for the
                 time being
               </li>
@@ -154,18 +154,6 @@ const AccessibilityStatementPage: React.FC = () => {
             </h3>
             <ol className="govuk-list govuk-list--number">
               <li>
-                On the location select page, there is currently incomplete error
-                messaging when users try to submit with mandatory fields left
-                empty. This fails WCAG 2.2 success criterion 3.3.1 (Error
-                Identification).
-              </li>
-              <li>
-                On the home page, skip links may not go to the start of page
-                content and will move to the middle of the page instead. This
-                affects some assistive technologies. This fails WCAG 2.2 success
-                criterion 2.4.1 (Bypass Blocks).
-              </li>
-              <li>
                 In the provision and occupancy topic the &apos;bed type&apos;
                 search feature presented has been programmed incorrectly. Some
                 search inputs have duplicate ids meaning that some voice
@@ -179,7 +167,7 @@ const AccessibilityStatementPage: React.FC = () => {
                 (Label in Name) and 2.4.3 (Focus Order).
               </li>
               <li>
-                In the Provision and occupancy topic, there is an html error
+                In the provision and occupancy topic, there is an html error
                 which may cause some screen readers to display incomplete
                 information. This fails WCAG 2.2 success criterion 4.1.2 (Name,
                 Role, Value).
@@ -239,14 +227,40 @@ const AccessibilityStatementPage: React.FC = () => {
               </li>
             </ol>
             <p className="govuk-body">
-              We plan to resolve this by the 1 July 2026.
+              We plan to resolve this by 31 December 2026.
+            </p>
+
+            <h3 className="govuk-heading-s">
+              Issues addressed since the last audit
+            </h3>
+            <p className="govuk-body">
+              The following issues identified in the February 2026 audit have
+              since been addressed:
+            </p>
+            <ul className="govuk-list govuk-list--bullet">
+              <li>
+                Skip links on the home page now move focus to the start of the
+                main page content. This addresses WCAG 2.2 success criterion
+                2.4.1 (Bypass Blocks).
+              </li>
+              <li>
+                On the location select page, a location is now selected by
+                default, so the form cannot be submitted without a selection.
+                This addresses WCAG 2.2 success criterion 3.3.1 (Error
+                Identification).
+              </li>
+            </ul>
+            <p className="govuk-body">
+              These changes are awaiting re-audit, alongside fixes for the
+              remaining issues.
             </p>
 
             <h2 className="govuk-heading-m">
               Preparation of this accessibility statement
             </h2>
             <p className="govuk-body">
-              This statement was prepared on 20 February 2026.
+              This statement was prepared on 20 February 2026. It was last
+              reviewed on 6 October 2026.
             </p>
             <p className="govuk-body">
               The service was last tested on 3 February 2026. The test was

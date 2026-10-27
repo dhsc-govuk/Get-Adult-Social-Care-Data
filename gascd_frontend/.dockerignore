@@ -1,3 +1,7 @@
 /node_modules
 Dockerfile
 .env
+# Test-only files: Playwright isn't installed in the image, so next build can't type-check them
+playwright.visual.config.ts
+visual_tests
+scripts/mock-data-api.ts

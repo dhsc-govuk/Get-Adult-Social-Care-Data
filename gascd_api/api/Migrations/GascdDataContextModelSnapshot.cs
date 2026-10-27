@@ -178,6 +178,118 @@ namespace api.Migrations
                     b.ToTable("bedcount");
                 });
 
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.BedcountPerHundredThousand1864", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<decimal?>("LatestValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("latest_value");
+
+                    b.Property<DateTime>("LoadedDateTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("loaded_datetime");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("location_code");
+
+                    b.Property<string>("LocationType")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("location_type");
+
+                    b.Property<int>("MetricFk")
+                        .HasColumnType("integer")
+                        .HasColumnName("metric_fk");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.PrimitiveCollection<decimal?[]>("TimeSeries")
+                        .IsRequired()
+                        .HasColumnType("numeric[]")
+                        .HasColumnName("time_series");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
+
+                    b.ToTable("bedcount_per_hundred_thousand_18_64");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.BedcountPerHundredThousand65Over", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<decimal?>("LatestValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("latest_value");
+
+                    b.Property<DateTime>("LoadedDateTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("loaded_datetime");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("location_code");
+
+                    b.Property<string>("LocationType")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("location_type");
+
+                    b.Property<int>("MetricFk")
+                        .HasColumnType("integer")
+                        .HasColumnName("metric_fk");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.PrimitiveCollection<decimal?[]>("TimeSeries")
+                        .IsRequired()
+                        .HasColumnType("numeric[]")
+                        .HasColumnName("time_series");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
+
+                    b.ToTable("bedcount_per_hundred_thousand_65over");
+                });
+
             modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.BedcountPerHundredThousandAdults", b =>
                 {
                     b.Property<int>("Id")
@@ -232,6 +344,62 @@ namespace api.Migrations
                     b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("bedcount_per_hundred_thousand_adults");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.CinPer10000Children", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<decimal?>("LatestValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("latest_value");
+
+                    b.Property<DateTime>("LoadedDateTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("loaded_datetime");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("location_code");
+
+                    b.Property<string>("LocationType")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("location_type");
+
+                    b.Property<int>("MetricFk")
+                        .HasColumnType("integer")
+                        .HasColumnName("metric_fk");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.PrimitiveCollection<decimal?[]>("TimeSeries")
+                        .IsRequired()
+                        .HasColumnType("numeric[]")
+                        .HasColumnName("time_series");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
+
+                    b.ToTable("cin_per_10000_children");
                 });
 
             modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.DementiaEstimatedDiagnosisRate65Over", b =>
@@ -514,6 +682,62 @@ namespace api.Migrations
                     b.ToTable("expenditure_duration_psr");
                 });
 
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.ExpenditureDurationPsrPer100kAdults", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<decimal?>("LatestValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("latest_value");
+
+                    b.Property<DateTime>("LoadedDateTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("loaded_datetime");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("location_code");
+
+                    b.Property<string>("LocationType")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("location_type");
+
+                    b.Property<int>("MetricFk")
+                        .HasColumnType("integer")
+                        .HasColumnName("metric_fk");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.PrimitiveCollection<decimal?[]>("TimeSeries")
+                        .IsRequired()
+                        .HasColumnType("numeric[]")
+                        .HasColumnName("time_series");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
+
+                    b.ToTable("expenditure_duration_psr_per100k_adults");
+                });
+
             modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.ExpenditureLongtermSupportSetting", b =>
                 {
                     b.Property<int>("Id")
@@ -568,6 +792,62 @@ namespace api.Migrations
                     b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("expenditure_longterm_support_setting");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.ExpenditureLongtermSupportSettingPer100kAdults", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<decimal?>("LatestValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("latest_value");
+
+                    b.Property<DateTime>("LoadedDateTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("loaded_datetime");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("location_code");
+
+                    b.Property<string>("LocationType")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("location_type");
+
+                    b.Property<int>("MetricFk")
+                        .HasColumnType("integer")
+                        .HasColumnName("metric_fk");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.PrimitiveCollection<decimal?[]>("TimeSeries")
+                        .IsRequired()
+                        .HasColumnType("numeric[]")
+                        .HasColumnName("time_series");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
+
+                    b.ToTable("expenditure_longterm_support_setting_per100k_adults");
                 });
 
             modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.LearningDisabilityPrevalence", b =>
@@ -738,6 +1018,118 @@ namespace api.Migrations
                     b.ToTable("median_occupancy");
                 });
 
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumChildrenInNeed", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<decimal?>("LatestValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("latest_value");
+
+                    b.Property<DateTime>("LoadedDateTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("loaded_datetime");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("location_code");
+
+                    b.Property<string>("LocationType")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("location_type");
+
+                    b.Property<int>("MetricFk")
+                        .HasColumnType("integer")
+                        .HasColumnName("metric_fk");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.PrimitiveCollection<decimal?[]>("TimeSeries")
+                        .IsRequired()
+                        .HasColumnType("numeric[]")
+                        .HasColumnName("time_series");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
+
+                    b.ToTable("num_children_in_need");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumCinTransferAsc", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<decimal?>("LatestValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("latest_value");
+
+                    b.Property<DateTime>("LoadedDateTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("loaded_datetime");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("location_code");
+
+                    b.Property<string>("LocationType")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("location_type");
+
+                    b.Property<int>("MetricFk")
+                        .HasColumnType("integer")
+                        .HasColumnName("metric_fk");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.PrimitiveCollection<decimal?[]>("TimeSeries")
+                        .IsRequired()
+                        .HasColumnType("numeric[]")
+                        .HasColumnName("time_series");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
+
+                    b.ToTable("num_cin_transfer_asc");
+                });
+
             modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumClientsCommCare", b =>
                 {
                     b.Property<int>("Id")
@@ -792,6 +1184,62 @@ namespace api.Migrations
                     b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("num_clients_comm_care");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumClientsCommCarePer100kAdults", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<decimal?>("LatestValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("latest_value");
+
+                    b.Property<DateTime>("LoadedDateTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("loaded_datetime");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("location_code");
+
+                    b.Property<string>("LocationType")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("location_type");
+
+                    b.Property<int>("MetricFk")
+                        .HasColumnType("integer")
+                        .HasColumnName("metric_fk");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.PrimitiveCollection<decimal?[]>("TimeSeries")
+                        .IsRequired()
+                        .HasColumnType("numeric[]")
+                        .HasColumnName("time_series");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
+
+                    b.ToTable("num_clients_comm_care_per100k_adults");
                 });
 
             modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumClientsLongTermSupport", b =>
@@ -850,6 +1298,118 @@ namespace api.Migrations
                     b.ToTable("num_clients_long_term_support");
                 });
 
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumClientsLongTermSupportPer100kAdults", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<decimal?>("LatestValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("latest_value");
+
+                    b.Property<DateTime>("LoadedDateTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("loaded_datetime");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("location_code");
+
+                    b.Property<string>("LocationType")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("location_type");
+
+                    b.Property<int>("MetricFk")
+                        .HasColumnType("integer")
+                        .HasColumnName("metric_fk");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.PrimitiveCollection<decimal?[]>("TimeSeries")
+                        .IsRequired()
+                        .HasColumnType("numeric[]")
+                        .HasColumnName("time_series");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
+
+                    b.ToTable("num_clients_long_term_support_per100k_adults");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumEhcp14Plus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<decimal?>("LatestValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("latest_value");
+
+                    b.Property<DateTime>("LoadedDateTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("loaded_datetime");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("location_code");
+
+                    b.Property<string>("LocationType")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("location_type");
+
+                    b.Property<int>("MetricFk")
+                        .HasColumnType("integer")
+                        .HasColumnName("metric_fk");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.PrimitiveCollection<decimal?[]>("TimeSeries")
+                        .IsRequired()
+                        .HasColumnType("numeric[]")
+                        .HasColumnName("time_series");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
+
+                    b.ToTable("num_ehcp_14plus");
+                });
+
             modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumProviderLocations", b =>
                 {
                     b.Property<int>("Id")
@@ -904,6 +1464,62 @@ namespace api.Migrations
                     b.HasIndex("LocationCode", "LocationType");
 
                     b.ToTable("num_provider_locations");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumSenSupport14Plus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<decimal?>("LatestValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("latest_value");
+
+                    b.Property<DateTime>("LoadedDateTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("loaded_datetime");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("location_code");
+
+                    b.Property<string>("LocationType")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("location_type");
+
+                    b.Property<int>("MetricFk")
+                        .HasColumnType("integer")
+                        .HasColumnName("metric_fk");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.PrimitiveCollection<decimal?[]>("TimeSeries")
+                        .IsRequired()
+                        .HasColumnType("numeric[]")
+                        .HasColumnName("time_series");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
+
+                    b.ToTable("num_sen_support_14plus");
                 });
 
             modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.OccupancyRate", b =>
@@ -1522,6 +2138,62 @@ namespace api.Migrations
                     b.ToTable("perc_population_disability");
                 });
 
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.PercSenSupport14Plus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<decimal?>("LatestValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("latest_value");
+
+                    b.Property<DateTime>("LoadedDateTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("loaded_datetime");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("location_code");
+
+                    b.Property<string>("LocationType")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("location_type");
+
+                    b.Property<int>("MetricFk")
+                        .HasColumnType("integer")
+                        .HasColumnName("metric_fk");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.PrimitiveCollection<decimal?[]>("TimeSeries")
+                        .IsRequired()
+                        .HasColumnType("numeric[]")
+                        .HasColumnName("time_series");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetricFk");
+
+                    b.HasIndex("LocationCode", "LocationType");
+
+                    b.ToTable("perc_sen_support_14plus");
+                });
+
             modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.PercUnpaidCareProvider", b =>
                 {
                     b.Property<int>("Id")
@@ -1984,7 +2656,40 @@ namespace api.Migrations
                     b.Navigation("Metric");
                 });
 
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.BedcountPerHundredThousand1864", b =>
+                {
+                    b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
+                        .WithMany()
+                        .HasForeignKey("MetricFk")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Metric");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.BedcountPerHundredThousand65Over", b =>
+                {
+                    b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
+                        .WithMany()
+                        .HasForeignKey("MetricFk")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Metric");
+                });
+
             modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.BedcountPerHundredThousandAdults", b =>
+                {
+                    b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
+                        .WithMany()
+                        .HasForeignKey("MetricFk")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Metric");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.CinPer10000Children", b =>
                 {
                     b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
                         .WithMany()
@@ -2050,7 +2755,29 @@ namespace api.Migrations
                     b.Navigation("Metric");
                 });
 
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.ExpenditureDurationPsrPer100kAdults", b =>
+                {
+                    b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
+                        .WithMany()
+                        .HasForeignKey("MetricFk")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Metric");
+                });
+
             modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.ExpenditureLongtermSupportSetting", b =>
+                {
+                    b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
+                        .WithMany()
+                        .HasForeignKey("MetricFk")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Metric");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.ExpenditureLongtermSupportSettingPer100kAdults", b =>
                 {
                     b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
                         .WithMany()
@@ -2094,7 +2821,40 @@ namespace api.Migrations
                     b.Navigation("Metric");
                 });
 
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumChildrenInNeed", b =>
+                {
+                    b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
+                        .WithMany()
+                        .HasForeignKey("MetricFk")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Metric");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumCinTransferAsc", b =>
+                {
+                    b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
+                        .WithMany()
+                        .HasForeignKey("MetricFk")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Metric");
+                });
+
             modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumClientsCommCare", b =>
+                {
+                    b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
+                        .WithMany()
+                        .HasForeignKey("MetricFk")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Metric");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumClientsCommCarePer100kAdults", b =>
                 {
                     b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
                         .WithMany()
@@ -2116,7 +2876,40 @@ namespace api.Migrations
                     b.Navigation("Metric");
                 });
 
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumClientsLongTermSupportPer100kAdults", b =>
+                {
+                    b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
+                        .WithMany()
+                        .HasForeignKey("MetricFk")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Metric");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumEhcp14Plus", b =>
+                {
+                    b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
+                        .WithMany()
+                        .HasForeignKey("MetricFk")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Metric");
+                });
+
             modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumProviderLocations", b =>
+                {
+                    b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
+                        .WithMany()
+                        .HasForeignKey("MetricFk")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Metric");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.NumSenSupport14Plus", b =>
                 {
                     b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
                         .WithMany()
@@ -2238,6 +3031,17 @@ namespace api.Migrations
                 });
 
             modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.PercPopulationDisability", b =>
+                {
+                    b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
+                        .WithMany()
+                        .HasForeignKey("MetricFk")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Metric");
+                });
+
+            modelBuilder.Entity("api.Data.Models.Metrics.TimeSeries.PercSenSupport14Plus", b =>
                 {
                     b.HasOne("api.Data.Models.Metrics.Metric", "Metric")
                         .WithMany()

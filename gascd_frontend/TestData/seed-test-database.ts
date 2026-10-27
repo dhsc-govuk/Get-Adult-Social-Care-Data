@@ -51,6 +51,8 @@ const seedDevelopmentUser = async () => {
       locationType: process.env.LOCAL_AUTH_LOCATION_TYPE,
       selectedLocationId: selectedLocationId,
       role: 'member',
+      // Required for Better Auth to link a One Login (simulator) account to this user
+      emailVerified: true,
       // These are reset deliberately to start the dev user afresh
       selectedLocationDisplayName: null,
       selectedLocationCategory: null,

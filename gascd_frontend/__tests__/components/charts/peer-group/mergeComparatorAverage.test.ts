@@ -1,4 +1,5 @@
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
+import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { PeerGroupData } from '@/components/charts/peer-group/types';
 
@@ -26,7 +27,7 @@ const peerData = (average: number | null): PeerGroupData => ({
 });
 
 describe('mergeComparatorAverage', () => {
-  it('overwrites an existing Regional row with the comparator average', () => {
+  it('preserves an existing Regional row and adds the comparator average as a separate row', () => {
     const result = mergeComparatorAverage(
       [row('m1', 'LA', 5), row('m1', 'Regional', 99), row('m1', 'National', 7)],
       ['m1'],
@@ -36,11 +37,18 @@ describe('mergeComparatorAverage', () => {
 
     const regional = result.filter((d) => d.location_type === 'Regional');
     expect(regional).toHaveLength(1);
-    expect(regional[0].data_point).toBe(12.5);
+    expect(regional[0].data_point).toBe(99);
     expect(regional[0].location_id).toBe('Regional-id');
+
+    const comparator = result.find(
+      (d) => d.location_type === COMPARATOR_AVERAGE_LOCATION_TYPE
+    );
+    expect(comparator).toBeDefined();
+    expect(comparator?.data_point).toBe(12.5);
+    expect(comparator?.location_id).toBe('E12000001');
   });
 
-  it('synthesises a Regional row when the metrics API returned none', () => {
+  it('synthesises the comparator average even when the metrics API returned no Regional row', () => {
     const result = mergeComparatorAverage(
       [row('m1', 'LA', 5), row('m1', 'National', 7)],
       ['m1'],
@@ -48,17 +56,22 @@ describe('mergeComparatorAverage', () => {
       'E12000001'
     );
 
-    const regional = result.find(
-      (d) => d.metric_id === 'm1' && d.location_type === 'Regional'
+    const comparator = result.find(
+      (d) =>
+        d.metric_id === 'm1' &&
+        d.location_type === COMPARATOR_AVERAGE_LOCATION_TYPE
     );
-    expect(regional).toBeDefined();
-    expect(regional?.data_point).toBe(12.5);
-    expect(regional?.location_id).toBe('E12000001');
-    expect(regional?.metric_date).toBe('2021-03-01');
-    // Other rows are untouched
+    expect(comparator).toBeDefined();
+    expect(comparator?.data_point).toBe(12.5);
+    expect(comparator?.location_id).toBe('E12000001');
+    expect(comparator?.metric_date).toBe('2021-03-01');
+    // Other rows are untouched and no Regional row is fabricated
     expect(result.filter((d) => d.location_type === 'LA')).toHaveLength(1);
     expect(result.filter((d) => d.location_type === 'National')).toHaveLength(
       1
+    );
+    expect(result.filter((d) => d.location_type === 'Regional')).toHaveLength(
+      0
     );
   });
 
@@ -71,7 +84,8 @@ describe('mergeComparatorAverage', () => {
     );
 
     expect(
-      result.find((d) => d.location_type === 'Regional')?.data_point
+      result.find((d) => d.location_type === COMPARATOR_AVERAGE_LOCATION_TYPE)
+        ?.data_point
     ).toBeNull();
   });
 
@@ -83,12 +97,15 @@ describe('mergeComparatorAverage', () => {
 
     expect(result.some((d) => d.metric_id === 'm2')).toBe(false);
     expect(
-      result.find((d) => d.metric_id === 'm1' && d.location_type === 'Regional')
-        ?.location_id
+      result.find(
+        (d) =>
+          d.metric_id === 'm1' &&
+          d.location_type === COMPARATOR_AVERAGE_LOCATION_TYPE
+      )?.location_id
     ).toBe('comparator-average');
   });
 
-  it('handles several metrics independently', () => {
+  it('handles several metrics independently, preserving each Regional row', () => {
     const result = mergeComparatorAverage(
       [
         row('m1', 'LA', 5),
@@ -100,12 +117,20 @@ describe('mergeComparatorAverage', () => {
       { m1: peerData(1.5), m2: peerData(2.5) }
     );
 
-    const regional = (id: string) =>
-      result.find((d) => d.metric_id === id && d.location_type === 'Regional');
-    expect(regional('m1')?.data_point).toBe(1.5);
-    expect(regional('m2')?.data_point).toBe(2.5);
-    expect(result.filter((d) => d.location_type === 'Regional')).toHaveLength(
-      2
-    );
+    const comparator = (id: string) =>
+      result.find(
+        (d) =>
+          d.metric_id === id &&
+          d.location_type === COMPARATOR_AVERAGE_LOCATION_TYPE
+      );
+    expect(comparator('m1')?.data_point).toBe(1.5);
+    expect(comparator('m2')?.data_point).toBe(2.5);
+    expect(
+      result.filter((d) => d.location_type === COMPARATOR_AVERAGE_LOCATION_TYPE)
+    ).toHaveLength(2);
+    expect(
+      result.find((d) => d.metric_id === 'm1' && d.location_type === 'Regional')
+        ?.data_point
+    ).toBe(50);
   });
 });

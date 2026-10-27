@@ -17,16 +17,15 @@ describe('LoginPage', () => {
     expect(subheadingElement).toBeInTheDocument();
 
     const bodyTextElement = screen.getByText(
-      /You can only use this service if you are the nominated individual/i
+      /You can only use this service if you are the Nominated Individual or Registered Manager/i
     );
     expect(bodyTextElement).toBeInTheDocument();
   });
 
-  it('should render a login link', () => {
+  it('should render a start link to the user-type question', () => {
     render(<LoginPage />);
 
-    const signin_button = screen.getByRole('button', {
-      name: /Start now/i,
-    });
+    const startLink = screen.getByRole('link', { name: /Start now/i });
+    expect(startLink).toHaveAttribute('href', '/whoami');
   });
 });

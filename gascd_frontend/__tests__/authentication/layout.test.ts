@@ -1,7 +1,7 @@
 import AuthLayout from '../../app/(protected)/layout';
 import NoAuthLayout from '../../app/(authentication)/layout';
 import OnboardingLayout from '../../app/(onboarding)/layout';
-import ProtectedLALayout from '../../app/(protected)/topics/(protected-la-metrics)/future-planning/layout';
+import ProtectedLALayout from '../../app/(protected)/topics/future-planning/(protected-la-metrics)/layout';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';

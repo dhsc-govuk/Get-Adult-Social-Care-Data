@@ -3,8 +3,16 @@ import { serviceFetch } from '@/lib/service-fetch';
 import { useEffect, useState } from 'react';
 import { withBasePath } from '@/lib/basePath';
 import { ComparatorSelection, CustomComparatorGroup } from './types';
+import { REGION_GROUP_ID } from './constants';
 
 const GROUPS_URL = '/api/comparator_groups';
+const REGION_URL = '/api/get_region_comparator';
+
+type RegionResponse = {
+  region_name?: string;
+  la_name?: string;
+  la_codes?: string[];
+};
 
 const parseGroup = (raw: unknown): CustomComparatorGroup | null => {
   const group = raw as Partial<CustomComparatorGroup> | null;
@@ -89,6 +97,58 @@ export function useComparatorGroups(): {
     };
   }, []);
 
+  const [regionGroup, setRegionGroup] = useState<CustomComparatorGroup>({
+    id: REGION_GROUP_ID,
+    name: 'Region (Loading…)',
+    laCodes: [],
+    builtIn: true,
+    loading: true,
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(withBasePath(REGION_URL))
+      .then((res) => {
+        if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+        return res.json();
+      })
+      .then((data: RegionResponse) => {
+        if (cancelled) return;
+        if (!data.region_name || !data.la_codes?.length) {
+          throw new Error('No LAs in region');
+        }
+        // The user's own LA isn't in the group, unlike the published
+        // regional average shown beside it
+        const excluding = data.la_name ?? 'your local authority';
+        setRegionGroup({
+          id: REGION_GROUP_ID,
+          name: `Region (${data.region_name})`,
+          averageLabel: `${data.region_name} (regional average excluding ${excluding})`,
+          comparisonLabel: `${data.region_name} excluding ${excluding}`,
+          laCodes: data.la_codes,
+          builtIn: true,
+        });
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        console.error('Error loading region comparator:', error);
+        setRegionGroup((current) => ({
+          ...current,
+          name: 'Region (unavailable)',
+          loading: false,
+          disabled: true,
+        }));
+        setSelection((current) =>
+          current.kind === 'custom' && current.groupId === REGION_GROUP_ID
+            ? { kind: 'nhs_peer_group' }
+            : current
+        );
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const saveGroup = async (group: { name: string; laCodes: string[] }) => {
     const res = await serviceFetch(withBasePath(GROUPS_URL), {
       method: 'POST',
@@ -141,7 +201,7 @@ export function useComparatorGroups(): {
   };
 
   return {
-    groups,
+    groups: [regionGroup, ...groups],
     selection,
     setSelection,
     saveGroup,

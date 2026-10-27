@@ -1,5 +1,5 @@
-using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 namespace api.Configuration;
 
@@ -30,7 +30,8 @@ public static class RateLimitingConfiguration
                 // Concurrency limits have no known reset time, so no Retry-After is invented.
                 await context.HttpContext.Response.WriteAsJsonAsync(new
                 {
-                    code = "RATE_LIMITED", error = "The data service is busy. Please try again shortly."
+                    code = "RATE_LIMITED",
+                    error = "The data service is busy. Please try again shortly."
                 }, token);
             };
         });

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { User, useSession } from '@/lib/auth-client';
 import { withBasePath } from '@/lib/basePath';
 import Layout from '@/components/common/layout/Layout';
@@ -12,25 +12,60 @@ import LocalMarketInformation from '@/components/data-components/LocalMarketInfo
 import BackToTop from '@/components/data-components/BackToTop';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import DataTable from '@/components/tables/table';
-import VerticalLocationTable from '@/components/tables/VerticalLocationTable';
+import PeerGroupTable from '@/components/tables/PeerGroupTable';
 import ConditionalText from '@/components/common/conditional-text/ConditionalText';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
-import BarChart from '@/components/charts/BarChart';
 import TimeSeriesChart, {
   DataPoint,
   Series,
 } from '@/components/charts/TimeSeriesChart';
 import FilterRadioGroup from '@/components/filters/FilterRadioGroup';
-import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
+import { useFilterSync } from '@/components/filters/useFilterSync';
+import SectionControls from '@/components/data-components/SectionControls';
 import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { LocationNames } from '@/data/interfaces/LocationNames';
 import { Indicator } from '@/data/interfaces/Indicator';
 import TableService from '@/services/Table/TableService';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
+import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
+import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
+import ComparatorGroupBuilder from '@/components/charts/peer-group/ComparatorGroupBuilder';
+import { useComparatorGroups } from '@/components/charts/peer-group/useComparatorGroups';
+import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
+import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLocalAuthorities';
+import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
+import { ComparatorSelection } from '@/components/charts/peer-group/types';
+import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
 import LocationService from '@/services/location/locationService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { ALLOWED_CP_USER_TYPES } from '@/constants';
+import { METRICS, MetricId, metricLabels, SOURCES } from '@/config/metrics';
+import { locationValues } from '@/helpers/locationComparison';
+
+const BED_TYPE_ROWS: MetricId[] = [
+  'bedcount_per_hundred_thousand_adults_total',
+  'bedcount_per_hundred_thousand_adults_community_care',
+  'bedcount_per_hundred_thousand_adults_dementia_nursing',
+  'bedcount_per_hundred_thousand_adults_dementia_residential',
+  'bedcount_per_hundred_thousand_adults_general_nursing',
+  'bedcount_per_hundred_thousand_adults_general_residential',
+  'bedcount_per_hundred_thousand_adults_learning_disability_nursing',
+  'bedcount_per_hundred_thousand_adults_learning_disability_residential',
+  'bedcount_per_hundred_thousand_adults_mental_health_nursing',
+  'bedcount_per_hundred_thousand_adults_mental_health_residential',
+  'bedcount_per_hundred_thousand_adults_transitional',
+  'bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled',
+];
+// The six grouped categories from the design
+const GROUPED_BED_TYPE_ROWS: MetricId[] = [
+  'bedcount_per_hundred_thousand_adults_total',
+  'bedcount_per_hundred_thousand_adults_grp_older_people_and_dementia',
+  'bedcount_per_hundred_thousand_adults_grp_learning_disability',
+  'bedcount_per_hundred_thousand_adults_grp_mental_health',
+  'bedcount_per_hundred_thousand_adults_grp_young_physically_disabled',
+  'bedcount_per_hundred_thousand_adults_grp_community_care_and_transitional',
+];
 
 const CARE_HOME_RESIDENTIAL_CATEGORY = 'residential';
 
@@ -50,9 +85,16 @@ export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
   const tableref2 = useRef<HTMLTableElement>(null);
   const tableref3 = useRef<HTMLTableElement>(null);
+  const tableref4 = useRef<HTMLTableElement>(null);
+  const tableref5 = useRef<HTMLTableElement>(null);
+  const tableref6 = useRef<HTMLTableElement>(null);
+  const tableref7 = useRef<HTMLTableElement>(null);
 
   const [visibleCareProviderMetricIds1, setVisibleCareProviderMetricIds1] =
     useState<string[]>([]);
+  const [numbersTableMetricId, setNumbersTableMetricId] = useState<string>(
+    'bedcount_per_hundred_thousand_adults_total'
+  );
   const [numbersTableFilterName, setNumbersTableFilterName] =
     useState<string>('');
   const [typesChartFilterName, setTypesChartFilterName] = useState<string>('');
@@ -82,12 +124,6 @@ export default function ProvisionAndOccupancyPage() {
     []
   );
   const [bedNumbersData, setBedNumbersData] = useState<Indicator[]>([]);
-
-  // Filtered data sets
-  const [filteredCareHomeBedNumbersData, setFilteredCareHomeBedNumbersData] =
-    useState<Indicator[]>([]);
-  const [filteredCareHomeBedTypesData, setFilteredCareHomeBedTypesData] =
-    useState<Indicator[]>([]);
 
   // data queries
   const [careProviderDataQuery1, setCareProviderData1Query] =
@@ -121,31 +157,72 @@ export default function ProvisionAndOccupancyPage() {
     location_ids: [],
   });
 
-  // headers for tables and charts
-  const bedTypeRowHeadersDefault = {
-    bedcount_per_hundred_thousand_adults_total: 'All bed types',
-    bedcount_per_hundred_thousand_adults_community_care: 'Community care bed',
-    bedcount_per_hundred_thousand_adults_dementia_nursing: 'Dementia nursing',
-    bedcount_per_hundred_thousand_adults_dementia_residential:
-      'Dementia residential',
-    bedcount_per_hundred_thousand_adults_general_nursing: 'General nursing',
-    bedcount_per_hundred_thousand_adults_general_residential:
-      'General residential',
-    bedcount_per_hundred_thousand_adults_learning_disability_nursing:
-      'Learning disability nursing',
-    bedcount_per_hundred_thousand_adults_learning_disability_residential:
-      'Learning disability residential',
-    bedcount_per_hundred_thousand_adults_mental_health_nursing:
-      'Mental health nursing',
-    bedcount_per_hundred_thousand_adults_mental_health_residential:
-      'Mental health residential',
-    bedcount_per_hundred_thousand_adults_transitional: 'Transitional',
-    bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled:
-      'Young physically disabled',
+  // Filters stay keyed by the 18+ code; each section swaps in its population
+  type Population = 'adults' | '18_64' | '65over';
+  const POPULATION_OPTIONS: Record<Population, string> = {
+    adults: 'Total adult population (18+)',
+    '18_64': 'Working Age Population (18\u201364)',
+    '65over': '65+ Adult Population',
   };
+  const POPULATION_DESCRIPTIONS: Record<Population, string> = {
+    adults: 'adult population (18+)',
+    '18_64': 'working age adult population (18\u201364)',
+    '65over': 'adult population aged 65+',
+  };
+  const POPULATIONS = Object.keys(POPULATION_OPTIONS) as Population[];
+  const withPopulation = (metricId: string, population: Population) =>
+    metricId.replace(
+      'bedcount_per_hundred_thousand_adults_',
+      `bedcount_per_hundred_thousand_${population}_`
+    );
+  const inEveryPopulation = (metricIds: string[]) =>
+    POPULATIONS.flatMap((population) =>
+      metricIds.map((metricId) => withPopulation(metricId, population))
+    );
+  const [numbersPopulation, setNumbersPopulation] =
+    useState<Population>('adults');
+  const [typesPopulation, setTypesPopulation] = useState<Population>('adults');
+  const [groupedPopulation, setGroupedPopulation] =
+    useState<Population>('adults');
+  const [groupedTablePopulation, setGroupedTablePopulation] =
+    useState<Population>('adults');
+  const numbersMetricId = withPopulation(
+    numbersTableMetricId,
+    numbersPopulation
+  );
 
-  const [bedTypeRowHeaders, setBedTypeRowHeaders] = useState<any>(
-    bedTypeRowHeadersDefault
+  // headers for tables and charts
+  const bedTypeRowHeadersDefault = metricLabels(BED_TYPE_ROWS);
+
+  const groupedBedTypeRowHeadersDefault = metricLabels(GROUPED_BED_TYPE_ROWS);
+
+  type BedTypeSelection = { metric_id: string; filter_bedtype: string };
+  const ALL_BED_TYPES: BedTypeSelection = {
+    metric_id: 'bedcount_per_hundred_thousand_adults_total',
+    filter_bedtype: 'All bed types',
+  };
+  // "Care home bed types (grouped by bed type)" is a separate metric from
+  // "Care home bed types" above it, so it keeps its own filter selection.
+  const [groupedBedType, setGroupedBedType] =
+    useState<BedTypeSelection>(ALL_BED_TYPES);
+
+  const bedTypeRowHeaders = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(bedTypeRowHeadersDefault)
+          .sort(([, a], [, b]) => a.localeCompare(b))
+          .map(([metricId, label]) => [
+            withPopulation(metricId, typesPopulation),
+            label,
+          ])
+      ),
+    [typesPopulation]
+  );
+
+  const bedTypesChartFilterName = groupedBedType.filter_bedtype;
+  const bedTypesChartDisplayId = withPopulation(
+    groupedBedType.metric_id,
+    groupedPopulation
   );
 
   const bedTypeChartHeaderDefault = {
@@ -153,9 +230,387 @@ export default function ProvisionAndOccupancyPage() {
     filter_bedtype: 'All bed types',
   };
 
+  const GROUPED_TYPE_FILTER_KEY = 'grouped-type-table-metrics';
+
   const [bedNumberRowHeaders, setBedNumberRowHeaders] = useState<Object[]>([]);
 
   // metric ids
+  // Beds per care home is benchmarked against the comparator group: the
+  // group's average is added alongside the true regional value.
+  const BEDS_PER_CARE_HOME_METRIC = 'median_bed_count_total';
+  const OCCUPANCY_METRIC = 'median_occupancy_total';
+  // This page resolves locations with careProvider: false, so the ids are
+  // ['Indicator', la, region, country] - the local authority is at index 1.
+  const laCode = locationIds[1];
+  const metricPage = 'provision-and-occupancy';
+
+  const {
+    groups,
+    selection,
+    setSelection,
+    saveGroup,
+    updateGroup,
+    deleteGroup,
+  } = useComparatorGroups();
+  const [builderState, setBuilderState] = useState<{
+    idPrefix: string;
+    editingGroupId?: string;
+  } | null>(null);
+  const [builderError, setBuilderError] = useState<string | null>(null);
+  const {
+    dataByMetric,
+    loading: chartLoading,
+    error: chartError,
+  } = usePeerGroupData(
+    laCode,
+    [BEDS_PER_CARE_HOME_METRIC, OCCUPANCY_METRIC, numbersMetricId],
+    selection,
+    groups
+  );
+  // Both bed types sections benchmark several metrics at once (one per bed
+  // type on show, plus whichever type the grouped chart is showing). They
+  // share one deduped fetch - the two tables draw from the same twelve bed
+  // type metrics - kept separate from the charts above so a change to a bed
+  // type filter does not blank them while the new comparator values load.
+  const groupedTableRowHeaders = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(groupedBedTypeRowHeadersDefault).map(
+          ([metricId, label]) => [
+            withPopulation(metricId, groupedTablePopulation),
+            label,
+          ]
+        )
+      ),
+    [groupedTablePopulation]
+  );
+
+  const bedTypesComparatorMetricIds = useMemo(
+    () =>
+      Array.from(
+        new Set([
+          bedTypesChartDisplayId,
+          ...Object.keys(bedTypeRowHeaders),
+          ...Object.keys(groupedTableRowHeaders),
+        ])
+      ),
+    [bedTypesChartDisplayId, bedTypeRowHeaders, groupedTableRowHeaders]
+  );
+
+  const {
+    dataByMetric: bedTypesDataByMetric,
+    loading: bedTypesChartLoading,
+    error: bedTypesChartError,
+  } = usePeerGroupData(laCode, bedTypesComparatorMetricIds, selection, groups);
+
+  const { authorities, error: authoritiesError } = useAllLocalAuthorities(
+    builderState !== null
+  );
+
+  const selectedGroup =
+    selection.kind === 'custom'
+      ? groups.find((group) => group.id === selection.groupId)
+      : undefined;
+  const comparatorLabel = selectedGroup
+    ? (selectedGroup.comparisonLabel ?? selectedGroup.name)
+    : undefined;
+  const comparatorAverageLabel = selectedGroup
+    ? (selectedGroup.averageLabel ?? `${selectedGroup.name} (average)`)
+    : NHS_PEER_GROUP_AVERAGE_LABEL;
+
+  const handleComparatorChange = (newSelection: ComparatorSelection) => {
+    setSelection(newSelection);
+    setBuilderState(null);
+    setBuilderError(null);
+    AnalyticsService.trackComparatorChange(newSelection.kind, metricPage);
+  };
+
+  const handleGroupSave = async (group: {
+    name: string;
+    laCodes: string[];
+  }) => {
+    setBuilderError(null);
+    try {
+      if (builderState?.editingGroupId) {
+        await updateGroup(builderState.editingGroupId, group);
+        AnalyticsService.trackComparatorGroupEdit(group.laCodes.length);
+      } else {
+        await saveGroup(group);
+        AnalyticsService.trackComparatorGroupSave(group.laCodes.length);
+        AnalyticsService.trackComparatorChange('custom', metricPage);
+      }
+      setBuilderState(null);
+    } catch (error) {
+      // Keep the builder open so nothing the user entered is lost
+      setBuilderError(
+        error instanceof Error
+          ? error.message
+          : 'Your comparator group could not be saved. Try again.'
+      );
+    }
+  };
+
+  const handleGroupDelete = async () => {
+    setBuilderError(null);
+    try {
+      if (builderState?.editingGroupId) {
+        await deleteGroup(builderState.editingGroupId);
+        AnalyticsService.trackComparatorGroupDelete();
+      }
+      setBuilderState(null);
+    } catch (error) {
+      setBuilderError(
+        error instanceof Error
+          ? error.message
+          : 'The comparator group could not be deleted. Try again.'
+      );
+    }
+  };
+
+  const handleEditToggle = (idPrefix: string) => {
+    if (selection.kind !== 'custom') return;
+    setBuilderError(null);
+    setBuilderState((current) =>
+      current?.idPrefix === idPrefix && current.editingGroupId
+        ? null
+        : { idPrefix, editingGroupId: selection.groupId }
+    );
+  };
+
+  // Shared explanatory note shown alongside the comparator, matching the other
+  // benchmarked pages
+  const nhsPeerGroupDetails = (
+    <details className="govuk-details govuk-!-margin-top-3">
+      <summary className="govuk-details__summary">
+        <span className="govuk-details__summary-text">
+          Interpreting the NHS Peer Group
+        </span>
+      </summary>
+      <div className="govuk-details__text">
+        GASCD currently uses a{' '}
+        <a
+          className="govuk-link"
+          href="https://github.com/NHSDigital/ASC_LA_Peer_Groups"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          statistical neighbours model
+        </a>{' '}
+        developed by NHS digital in 2022/23 to support benchmarking. This is one
+        of a number of approaches that aim to group authorities with similar
+        socio-economic and geographic factors (e.g. age, ethnicity, education).
+        It is important to note that there is limited evidence of which factors
+        are the most important drivers of variation in adult social care. As a
+        result, these statistical neighbours should be viewed as a helpful
+        starting point for benchmarking, rather than a definitive indication of
+        which authorities are most alike or measuring relative performance.
+      </div>
+    </details>
+  );
+
+  // Each filter is shown in its section's chart and table tabs
+  const numbersFilterSync = useFilterSync('numbers-table-metrics');
+  const groupedFilterSync = useFilterSync(GROUPED_TYPE_FILTER_KEY);
+  const trendsFilterSync = useFilterSync('single-type-chart-metric');
+
+  const renderNumbersFilter = (idPrefix: string) => (
+    <FilterRadioGroup
+      key={numbersFilterSync.key}
+      idPrefix={idPrefix}
+      filterType="numbers-table-metrics"
+      filterLabel="Bed type"
+      filters={bedTypeRowHeadersDefault}
+      updateMethod={() => {
+        updateNumbersTableMetrics();
+        numbersFilterSync.announce();
+      }}
+    />
+  );
+  const renderGroupedFilter = (idPrefix: string) => (
+    <FilterRadioGroup
+      key={groupedFilterSync.key}
+      idPrefix={idPrefix}
+      filterType={GROUPED_TYPE_FILTER_KEY}
+      filterLabel="Bed type"
+      filters={groupedBedTypeRowHeadersDefault}
+      updateMethod={() => {
+        updateGroupedTypesTableMetrics();
+        groupedFilterSync.announce();
+      }}
+    />
+  );
+
+  const renderComparatorControl = (
+    idPrefix: string,
+    // An optional control shown to the right of the comparison group, e.g.
+    // the bed type the chart is showing
+    extraControl?: React.ReactNode
+  ) => {
+    const builderOpenHere = builderState?.idPrefix === idPrefix;
+    const editingGroup = builderOpenHere
+      ? groups.find((group) => group.id === builderState?.editingGroupId)
+      : undefined;
+
+    return (
+      <>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            columnGap: '1.5rem',
+            alignItems: 'flex-start',
+          }}
+        >
+          <ComparatorGroupSelect
+            idPrefix={idPrefix}
+            selection={selection}
+            groups={groups}
+            onChange={handleComparatorChange}
+            onCreateNew={() => setBuilderState({ idPrefix })}
+            onEdit={() => handleEditToggle(idPrefix)}
+            builderMode={
+              builderOpenHere ? (editingGroup ? 'edit' : 'create') : null
+            }
+          />
+          {extraControl}
+        </div>
+        {builderOpenHere && (
+          <ComparatorGroupBuilder
+            key={editingGroup?.id ?? 'create'}
+            idPrefix={idPrefix}
+            allAuthorities={authorities}
+            authoritiesError={authoritiesError}
+            ownLaCode={laCode}
+            existingNames={groups
+              .filter((group) => group.id !== editingGroup?.id)
+              .map((group) => group.name)}
+            onSave={handleGroupSave}
+            onCancel={() => {
+              setBuilderState(null);
+              setBuilderError(null);
+            }}
+            mode={editingGroup ? 'edit' : 'create'}
+            initialName={editingGroup?.name}
+            initialCodes={editingGroup?.laCodes}
+            onDelete={editingGroup ? handleGroupDelete : undefined}
+            serverError={builderError ?? undefined}
+          />
+        )}
+      </>
+    );
+  };
+
+  // The bed numbers table keeps its regional LA rows and gains one row for
+  // whichever comparator is selected - the NHS peer group or a custom group.
+  const COMPARATOR_ROW_ID = 'comparator-average';
+
+  const filteredCareHomeBedNumbersData = useMemo(
+    () => bedNumbersData.filter((item) => item.metric_id === numbersMetricId),
+    [bedNumbersData, numbersMetricId]
+  );
+  const filteredCareHomeBedTypesData = useMemo(
+    () =>
+      latestBedTypeData.filter((item) => item.metric_id in bedTypeRowHeaders),
+    [latestBedTypeData, bedTypeRowHeaders]
+  );
+
+  const benchmarkedBedNumbersData = useMemo(
+    () =>
+      mergeComparatorAverage(
+        filteredCareHomeBedNumbersData,
+        [numbersMetricId],
+        dataByMetric,
+        COMPARATOR_ROW_ID
+      ),
+    [filteredCareHomeBedNumbersData, numbersMetricId, dataByMetric]
+  );
+
+  // The care home's own value, for the extra row
+  const valueFor = (
+    data: Indicator[],
+    metricId: string,
+    matches: (item: Indicator) => boolean
+  ) =>
+    data.find((item) => item.metric_id === metricId && matches(item))
+      ?.data_point ?? null;
+  // The bed numbers data covers every LA in the region, so match by code
+  const bedNumbersValues = locationValues(
+    benchmarkedBedNumbersData,
+    numbersMetricId,
+    (item) => item.location_id === laCode
+  );
+
+  // Care home bed types: the comparator group's average is added as an extra
+  // column beside the region and country, for every bed type on show.
+  const benchmarkedCareHomeBedTypesData = useMemo(
+    () =>
+      mergeComparatorAverage(
+        filteredCareHomeBedTypesData,
+        Object.keys(bedTypeRowHeaders),
+        bedTypesDataByMetric,
+        COMPARATOR_ROW_ID
+      ),
+    [filteredCareHomeBedTypesData, bedTypeRowHeaders, bedTypesDataByMetric]
+  );
+
+  const benchmarkedGroupedTypesData = useMemo(
+    () =>
+      mergeComparatorAverage(
+        latestBedTypeData.filter(
+          (item) => item.metric_id in groupedTableRowHeaders
+        ),
+        Object.keys(groupedTableRowHeaders),
+        bedTypesDataByMetric,
+        COMPARATOR_ROW_ID
+      ),
+    [latestBedTypeData, groupedTableRowHeaders, bedTypesDataByMetric]
+  );
+
+  const groupedBedTypesValues = locationValues(
+    latestBedTypeData,
+    bedTypesChartDisplayId
+  );
+
+  // Beside the comparison group, as it changes the rate rather than the rows
+  const renderPopulationSelect = (
+    idPrefix: string,
+    value: Population,
+    onChange: (population: Population) => void
+  ) => (
+    <div className="govuk-form-group">
+      <label
+        className="govuk-label govuk-!-font-weight-bold"
+        htmlFor={`${idPrefix}-population-select`}
+      >
+        Population
+      </label>
+      <select
+        id={`${idPrefix}-population-select`}
+        className="govuk-select"
+        value={value}
+        onChange={(event) => onChange(event.target.value as Population)}
+      >
+        {POPULATIONS.map((population) => (
+          <option key={population} value={population}>
+            {POPULATION_OPTIONS[population]}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+
+  const benchmarkedCpData = useMemo(
+    () =>
+      mergeComparatorAverage(
+        finalCpData,
+        [BEDS_PER_CARE_HOME_METRIC, OCCUPANCY_METRIC],
+        dataByMetric,
+        locationIds[2]
+      ),
+    [finalCpData, dataByMetric, locationIds]
+  );
+  const occupancyValues = locationValues(benchmarkedCpData, OCCUPANCY_METRIC);
+
   const careProviderMetricIds1 = ['bedcount_total', 'occupancy_rate_total'];
 
   useEffect(() => {
@@ -196,6 +651,15 @@ export default function ProvisionAndOccupancyPage() {
     'bedcount_per_hundred_thousand_adults_transitional',
     'bedcount_per_hundred_thousand_adults_ypd_young_physically_disabled',
   ];
+
+  const bedTypeLatestMetricIds = inEveryPopulation(
+    Array.from(
+      new Set([
+        ...bedTypeMetricIds,
+        ...Object.keys(groupedBedTypeRowHeadersDefault),
+      ])
+    )
+  );
 
   const bedNumberMetricIds = ['bedcount_per_hundred_thousand_adults_total'];
 
@@ -373,7 +837,7 @@ export default function ProvisionAndOccupancyPage() {
         location_ids: locationIds,
       }));
       setCareHomeBedTypesDataQuery(() => ({
-        metric_ids: bedTypeMetricIds,
+        metric_ids: bedTypeLatestMetricIds,
         location_ids: locationIds,
       }));
       setCareHomeBedTypesOverTimeDataQuery(() => ({
@@ -384,7 +848,7 @@ export default function ProvisionAndOccupancyPage() {
     }
     if (laIdsForRegion?.length) {
       setCareHomeBedNumbersDataQuery({
-        metric_ids: bedTypeMetricIds,
+        metric_ids: inEveryPopulation(bedTypeMetricIds),
         location_ids: [locationIds[3], locationIds[2], ...laIdsForRegion],
         query_type: 'RegionQuery',
       });
@@ -432,7 +896,6 @@ export default function ProvisionAndOccupancyPage() {
           );
           const filteredBedTypeData = TableService.filterDate(bedTypeData);
           setLatestBedTypeData(filteredBedTypeData);
-          setFilteredCareHomeBedTypesData(filteredBedTypeData);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -468,12 +931,6 @@ export default function ProvisionAndOccupancyPage() {
             await IndicatorFetchService.getData(careHomeBedNumbersDataQuery);
           const bedNumbersData = TableService.filterDate(bedNumberData);
           setBedNumbersData(bedNumbersData);
-          setFilteredCareHomeBedNumbersData(
-            bedNumbersData.filter(
-              (item) =>
-                'bedcount_per_hundred_thousand_adults_total' === item.metric_id
-            )
-          );
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -482,32 +939,38 @@ export default function ProvisionAndOccupancyPage() {
     careHomeBedNumbersData();
   }, [careHomeBedNumbersDataQuery]);
 
-  // update data based on filter changes
+  // FilterRadioGroup stores one { metric_id, filter_bedtype }; anything else
+  // (including a selection left over from when these were checkboxes) falls
+  // back to the default.
+  const readStoredBedTypeFilter = (
+    key: string,
+    options: Record<string, string>
+  ): BedTypeSelection => {
+    const fallback = ALL_BED_TYPES;
+    const storedData = localStorage.getItem(key);
+    if (!storedData) return fallback;
+    try {
+      const parsed = JSON.parse(storedData);
+      return parsed && !Array.isArray(parsed) && parsed.metric_id in options
+        ? (parsed as BedTypeSelection)
+        : fallback;
+    } catch (error) {
+      console.error(error);
+      return fallback;
+    }
+  };
+
   useEffect(() => {
-    updateTypesTableMetrics();
+    updateGroupedTypesTableMetrics();
   }, [latestBedTypeData]);
 
-  const updateTypesTableMetrics = () => {
-    const storedData = localStorage.getItem('type-table-metrics');
-    if (storedData) {
-      try {
-        const parsedData = JSON.parse(storedData);
-        if (Array.isArray(parsedData)) {
-          const ids = parsedData.map((item) => item.metric_id);
-          setFilteredCareHomeBedTypesData(
-            latestBedTypeData.filter((item) => ids.includes(item.metric_id))
-          );
-          const map: any = {};
-          parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
-          setBedTypeRowHeaders(map);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    } else {
-      setFilteredCareHomeBedTypesData(latestBedTypeData);
-      setBedTypeRowHeaders(bedTypeRowHeadersDefault);
-    }
+  const updateGroupedTypesTableMetrics = () => {
+    setGroupedBedType(
+      readStoredBedTypeFilter(
+        GROUPED_TYPE_FILTER_KEY,
+        groupedBedTypeRowHeadersDefault
+      )
+    );
   };
 
   useEffect(() => {
@@ -523,19 +986,12 @@ export default function ProvisionAndOccupancyPage() {
         const id = parsedData.metric_id;
         const name = parsedData.filter_bedtype;
         setNumbersTableFilterName(name);
-        setFilteredCareHomeBedNumbersData(
-          bedNumbersData.filter((item) => id === item.metric_id)
-        );
+        setNumbersTableMetricId(id);
         AnalyticsService.trackMetricView(id);
       }
     } else {
       setNumbersTableFilterName('All bed types');
-      setFilteredCareHomeBedNumbersData(
-        bedNumbersData.filter(
-          (item) =>
-            'bedcount_per_hundred_thousand_adults_total' === item.metric_id
-        )
-      );
+      setNumbersTableMetricId('bedcount_per_hundred_thousand_adults_total');
     }
   };
 
@@ -617,86 +1073,169 @@ export default function ProvisionAndOccupancyPage() {
         </div>
       </div>
       <DataBox
+        dataTitle="Beds per care home"
+        dataInfo={
+          <p className="govuk-body-m">
+            Find out how{' '}
+            <a
+              href={withBasePath(METRICS.median_bed_count_total.helpUrl)}
+              className="govuk-link"
+            >
+              number of adult social care beds in a care provider location
+            </a>{' '}
+            are calculated.
+          </p>
+        }
+      >
+        <DataTabs
+          id="3"
+          sharingMetricIds={[
+            ...careProviderMetricIds1,
+            ...careProviderMetricIds2,
+          ]}
+          table={
+            <>
+              {renderComparatorControl('comparator-table-3')}
+              <DataTable
+                metrics={['median_bed_count_total']}
+                tableref={tableref3}
+                caption={
+                  <>
+                    Table 1: care home bed numbers –{' '}
+                    {session && showCPLevelData(session.user)
+                      ? locationNamesCP.CPLabel + ','
+                      : ''}{' '}
+                    {locationNamesCP.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {comparatorAverageLabel}, {locationNamesCP.RegionLabel}{' '}
+                    regional average and national average,{' '}
+                    {IndicatorService.getMostRecentDate(finalCpData)}
+                  </>
+                }
+                columnHeaders={{
+                  ...locationNamesCP,
+                  ComparatorLabel: comparatorAverageLabel,
+                }}
+                data={benchmarkedCpData}
+                showCareProvider={showCPLevelData(session?.user)}
+                careProviderMedianMetrics={careProviderMedianMetrics}
+                showAverageLabel={true}
+              ></DataTable>
+            </>
+          }
+          download={
+            <>
+              <DownloadTableDataCSVLink
+                tableref={tableref3}
+                filename="care_home_bed_numbers_and_occupancy.csv"
+                xLabel=""
+                downloadType="care home bed numbers and occupancy levels"
+              />
+            </>
+          }
+        />
+      </DataBox>
+      <DataBox
         dataTitle="Care home bed numbers"
         dataInfo={
           <>
             Find out how{' '}
             <a
-              href={withBasePath('/help/beds-per-100000-adult-population')}
+              href={withBasePath(
+                METRICS.bedcount_per_hundred_thousand_adults_total.helpUrl
+              )}
               className="govuk-link"
             >
               the number of adult social care beds per 100,000 adult population
               is calculated.
             </a>
+            {nhsPeerGroupDetails}
           </>
         }
       >
-        <FilterRadioGroup
-          filterType="numbers-table-metrics"
-          filterLabel="Bed type"
-          filters={bedTypeRowHeadersDefault}
-          updateMethod={updateNumbersTableMetrics}
-        />
         <DataTabs
           id="1"
           sharingMetricIds={bedTypeMetricIds}
           chart={
             <>
-              <h3 className="govuk-heading-s">
-                Figure 1: care home bed numbers per 100,000 adult population (
-                {numbersTableFilterName.toLowerCase()}) –{' '}
-                <abbr title="local authority">LA</abbr>s in the{' '}
-                {locationNamesCP.RegionLabel},{' '}
-                {IndicatorService.getMostRecentDate(bedNumbersData)}
-              </h3>
-              {(chartData.categories.length > 0 &&
-                chartData.values.length > 0 && (
-                  <div style={{ height: '800px' }}>
-                    <BarChart
-                      categories={chartData.categories}
-                      values={chartData.values}
-                      highlightCategory={locationNamesCP.LALabel}
-                      darkBlueCount={2}
-                    />
-                  </div>
-                )) || <p>Loading chart...</p>}
+              <PeerGroupBarChart
+                laCode={laCode}
+                laName={locationNamesCP.LALabel}
+                metric={numbersTableMetricId}
+                currentLaValue={bedNumbersValues.la}
+                nationalAverageValue={bedNumbersValues.national}
+                regionalAverageValue={bedNumbersValues.regional}
+                regionalAverageLabel={`${locationNamesCP.RegionLabel} (regional average)`}
+                peerData={dataByMetric[numbersMetricId] ?? null}
+                loading={chartLoading}
+                error={chartError}
+                comparatorControl={
+                  <SectionControls
+                    comparator={renderComparatorControl('comparator-chart-1')}
+                    extraControls={renderPopulationSelect(
+                      'comparator-chart-1',
+                      numbersPopulation,
+                      setNumbersPopulation
+                    )}
+                    filters={renderNumbersFilter('chart-1')}
+                  />
+                }
+                comparatorLabel={comparatorLabel}
+                comparatorAverageLabel={comparatorAverageLabel}
+                metricDescription={`care home bed numbers per 100,000 ${POPULATION_DESCRIPTIONS[numbersPopulation]} (${numbersTableFilterName.toLowerCase()})`}
+                figureTitle={`Care home bed numbers per 100,000 ${POPULATION_DESCRIPTIONS[numbersPopulation]} (${numbersTableFilterName.toLowerCase()})`}
+                figureNumber={1}
+                // Names every series, as the table caption does
+                comparisonSummary={`${locationNamesCP.LALabel}, ${comparatorAverageLabel}, ${locationNamesCP.RegionLabel} regional average and national average`}
+                dateLabel={IndicatorService.getMostRecentDate(bedNumbersData)}
+              />
               <p className="govuk-body">
                 Note: small numbers have been suppressed and will appear as zero
-              </p>
-              <p className="govuk-body">
-                Source: Capacity Tracker from the Department of Health and
-                Social Care (DHSC), population estimates from the Office for
-                National Statistics (ONS)
               </p>
             </>
           }
           table={
-            <VerticalLocationTable
-              tableref={tableref1}
-              caption={
-                <>
-                  Table 1: care home beds per 100,000 adult population (
-                  {numbersTableFilterName.toLowerCase()}) for regional{' '}
-                  <abbr title="local authority">LA</abbr>s –{' '}
-                  {locationNamesCP.RegionLabel},{' '}
-                  {IndicatorService.getMostRecentDate(bedNumbersData)}
-                </>
-              }
-              source={
-                'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
-              }
-              columnHeaders={[
-                'Area',
-                'Care home beds per 100,000 adult population',
-              ]}
-              rowHeaders={bedNumberRowHeaders}
-              data={filteredCareHomeBedNumbersData}
-              userLa={locationNamesCP.LALabel}
-            ></VerticalLocationTable>
+            <>
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-1')}
+                extraControls={renderPopulationSelect(
+                  'comparator-table-1',
+                  numbersPopulation,
+                  setNumbersPopulation
+                )}
+                filters={renderNumbersFilter('table-1')}
+              />
+              <PeerGroupTable
+                tableref={tableref1}
+                metric={numbersTableMetricId}
+                caption={
+                  <>
+                    Table 2a: care home bed numbers per 100,000{' '}
+                    {POPULATION_DESCRIPTIONS[numbersPopulation]} (
+                    {numbersTableFilterName.toLowerCase()}) &ndash;{' '}
+                    {locationNamesCP.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr> and its comparison
+                    group, {comparatorAverageLabel},{' '}
+                    {locationNamesCP.RegionLabel} regional average and national
+                    average,{' '}
+                    {IndicatorService.getMostRecentDate(bedNumbersData)}
+                  </>
+                }
+                valueHeader={`Care home beds per 100,000 ${POPULATION_DESCRIPTIONS[numbersPopulation]}`}
+                laCode={laCode}
+                laName={locationNamesCP.LALabel}
+                currentLaValue={bedNumbersValues.la}
+                regionalAverageLabel={`${locationNamesCP.RegionLabel} (regional average)`}
+                regionalAverageValue={bedNumbersValues.regional}
+                nationalAverageValue={bedNumbersValues.national}
+                peerData={dataByMetric[numbersMetricId] ?? null}
+                loading={chartLoading}
+                comparatorAverageLabel={comparatorAverageLabel}
+              />
+            </>
           }
           download={
             <>
-              <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
                 filename="care_home_bed_numbers.csv"
@@ -713,47 +1252,56 @@ export default function ProvisionAndOccupancyPage() {
           <>
             Find out how{' '}
             <a
-              href={withBasePath('/help/beds-per-100000-adult-population')}
+              href={withBasePath(
+                METRICS.bedcount_per_hundred_thousand_adults_total.helpUrl
+              )}
               className="govuk-link"
             >
               the number of adult social care beds per 100,000 adult population
             </a>{' '}
             are calculated.
+            {nhsPeerGroupDetails}
           </>
         }
       >
-        <FilterCheckboxGroup
-          filterType="type-table-metrics"
-          filterLabel="Bed type"
-          filters={bedTypeRowHeadersDefault}
-          updateMethod={updateTypesTableMetrics}
-        />
         <DataTabs
           id="2"
           sharingMetricIds={bedTypeMetricIds}
           table={
-            <DataTable
-              tableref={tableref2}
-              caption={
-                <>
-                  Table 2: care home bed numbers per 100,000 adult population –{' '}
-                  {locationNamesCP.LALabel}{' '}
-                  <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNamesCP.RegionLabel} region and{' '}
-                  {locationNamesCP.CountryLabel},{' '}
-                  {IndicatorService.getMostRecentDate(latestBedTypeData)}
-                </>
-              }
-              metricColumnName="Care home bed type"
-              source={
-                'Capacity Tracker from the Department of Health and Social Care (DHSC), population estimates from the Office for National Statistics (ONS)'
-              }
-              columnHeaders={locationNamesWithAverageLabels}
-              rowHeaders={bedTypeRowHeaders}
-              data={filteredCareHomeBedTypesData}
-              showCareProvider={false}
-              percentageRows={[]}
-            ></DataTable>
+            <>
+              {renderComparatorControl(
+                'comparator-table-2',
+                renderPopulationSelect(
+                  'comparator-table-2',
+                  typesPopulation,
+                  setTypesPopulation
+                )
+              )}
+              <DataTable
+                tableref={tableref2}
+                caption={
+                  <>
+                    Table 2b: care home bed numbers per 100,000{' '}
+                    {POPULATION_DESCRIPTIONS[typesPopulation]} &ndash;{' '}
+                    {locationNamesCP.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {comparatorAverageLabel}, {locationNamesCP.RegionLabel}{' '}
+                    regional average and national average,{' '}
+                    {IndicatorService.getMostRecentDate(latestBedTypeData)}
+                  </>
+                }
+                metricColumnName="Care home bed type"
+                source={SOURCES.capacityTrackerWithOnsPopulationEstimates}
+                columnHeaders={{
+                  ...locationNamesWithAverageLabels,
+                  ComparatorLabel: comparatorAverageLabel,
+                }}
+                rowHeaders={bedTypeRowHeaders}
+                data={benchmarkedCareHomeBedTypesData}
+                showCareProvider={false}
+                percentageRows={[]}
+              ></DataTable>
+            </>
           }
           textSummary={
             <>
@@ -788,7 +1336,6 @@ export default function ProvisionAndOccupancyPage() {
           }
           download={
             <>
-              <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
                 tableref={tableref2}
                 filename="care_home_bed_types.csv"
@@ -800,140 +1347,186 @@ export default function ProvisionAndOccupancyPage() {
         />
       </DataBox>
       <DataBox
-        dataTitle="Beds per care home and occupancy levels"
+        dataTitle="Care home bed types (grouped by bed type)"
         dataInfo={
-          <p className="govuk-body-m">
+          <>
             Find out how{' '}
             <a
-              href={withBasePath('/help/percentage-beds-occupied')}
+              href={withBasePath(
+                METRICS.bedcount_per_hundred_thousand_adults_total.helpUrl
+              )}
               className="govuk-link"
             >
-              occupancy level percentages
-            </a>{' '}
-            and{' '}
-            <a
-              href={withBasePath('/help/beds-care-provider-location')}
-              className="govuk-link"
-            >
-              number of adult social care beds in a care provider location
+              the number of adult social care beds per 100,000 adult population
             </a>{' '}
             are calculated.
-          </p>
+            {nhsPeerGroupDetails}
+          </>
         }
       >
-        <details className="govuk-details">
-          <summary className="govuk-details__summary">
-            <span className="govuk-details__summary-text">
-              Definition of a &lsquo;median&rsquo; number
-            </span>
-          </summary>
-          <div className="govuk-details__text">
-            <p>
-              If you place a set of numbers in order, the middle one of the set
-              is the median number.
-            </p>
-            <p>
-              When there are two middle numbers, the median is the average of
-              those two numbers.
-            </p>
-          </div>
-        </details>
         <DataTabs
-          id="3"
-          sharingMetricIds={[
-            ...careProviderMetricIds1,
-            ...careProviderMetricIds2,
-          ]}
-          table={
-            <DataTable
-              tableref={tableref3}
-              caption={
-                <>
-                  Table 3: care home bed numbers and occupancy levels –{' '}
-                  {session && showCPLevelData(session.user)
-                    ? locationNamesCP.CPLabel + ','
-                    : ''}{' '}
-                  {locationNamesCP.LALabel}{' '}
-                  <abbr title="local authority">LA</abbr>,{' '}
-                  {locationNamesCP.RegionLabel} region and{' '}
-                  {locationNamesCP.CountryLabel},{' '}
-                  {IndicatorService.getMostRecentDate(finalCpData)}
-                </>
-              }
-              source={
-                'Capacity Tracker from the Department of Health and Social Care (DHSC)'
-              }
-              columnHeaders={locationNamesCP}
-              rowHeaders={{
-                median_bed_count_total: 'Beds per care home',
-                median_occupancy_total: 'Occupancy level',
-              }}
-              data={finalCpData}
-              showCareProvider={showCPLevelData(session?.user)}
-              careProviderMedianMetrics={careProviderMedianMetrics}
-              percentageRows={['median_occupancy_total']}
-              showAverageLabel={true}
-            ></DataTable>
-          }
-          textSummary={
+          id="5"
+          sharingMetricIds={bedTypeMetricIds}
+          chart={
             <>
-              <h4 className="govuk-heading-s">Text summary</h4>
-              {session?.user.selectedLocationCategory?.toLowerCase() ===
-                CARE_HOME_RESIDENTIAL_CATEGORY && (
-                <>
-                  <p className="govuk-body">
-                    {locationNamesCP.CPLabel} is a provider with{' '}
-                    <strong>
-                      {finalCpData.find(
-                        (metric) =>
-                          metric.metric_id === 'bedcount_total' &&
-                          metric.location_type === 'CareProviderLocation'
-                      )?.data_point ?? 'Loading...'}{' '}
-                    </strong>
-                    total beds, compared to the median (
-                    {finalCpData.find(
-                      (metric) =>
-                        metric.metric_id === 'median_bed_count_total' &&
-                        metric.location_type === 'Regional'
-                    )?.data_point ?? 'Loading...'}{' '}
-                    beds) in {locationNamesCP.LALabel}.
-                  </p>
-                  <ConditionalText
-                    data={finalCpData}
-                    ColumnHeaders={locationNamesCP}
-                    section="CapacityCareProvider"
-                    metric_Id="median_occupancy_total"
-                  ></ConditionalText>
-                </>
-              )}
-              <ConditionalText
-                data={finalCpData}
-                ColumnHeaders={locationNamesCP}
-                section="CapacityLA"
-                metric_Id="median_occupancy_total"
-              ></ConditionalText>
+              <PeerGroupBarChart
+                laCode={laCode}
+                laName={locationNamesCP.LALabel}
+                metric={groupedBedType.metric_id}
+                currentLaValue={groupedBedTypesValues.la}
+                nationalAverageValue={groupedBedTypesValues.national}
+                regionalAverageValue={groupedBedTypesValues.regional}
+                regionalAverageLabel={`${locationNamesCP.RegionLabel} (regional average)`}
+                peerData={bedTypesDataByMetric[bedTypesChartDisplayId] ?? null}
+                loading={bedTypesChartLoading}
+                error={bedTypesChartError}
+                comparatorControl={
+                  <SectionControls
+                    comparator={renderComparatorControl('comparator-chart-2')}
+                    extraControls={renderPopulationSelect(
+                      'comparator-chart-2',
+                      groupedPopulation,
+                      setGroupedPopulation
+                    )}
+                    filters={renderGroupedFilter('chart-5')}
+                  />
+                }
+                comparatorLabel={comparatorLabel}
+                comparatorAverageLabel={comparatorAverageLabel}
+                metricDescription={`care home bed numbers per 100,000 ${POPULATION_DESCRIPTIONS[groupedPopulation]} (${bedTypesChartFilterName.toLowerCase()})`}
+                figureTitle={`Care home bed numbers per 100,000 ${POPULATION_DESCRIPTIONS[groupedPopulation]} (${bedTypesChartFilterName.toLowerCase()})`}
+                figureNumber={2}
+                comparisonSummary={`${locationNamesCP.LALabel}, ${comparatorAverageLabel}, ${locationNamesCP.RegionLabel} regional average and national average`}
+                dateLabel={IndicatorService.getMostRecentDate(
+                  latestBedTypeData
+                )}
+              />
+              <p className="govuk-body">
+                Note: small numbers have been suppressed and will appear as zero
+              </p>
+            </>
+          }
+          table={
+            <>
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-4')}
+                extraControls={renderPopulationSelect(
+                  'comparator-table-4',
+                  groupedPopulation,
+                  setGroupedPopulation
+                )}
+                filters={renderGroupedFilter('table-5')}
+              />
+              <PeerGroupTable
+                tableref={tableref4}
+                metric={groupedBedType.metric_id}
+                caption={
+                  <>
+                    Table 3a: care home bed numbers per 100,000{' '}
+                    {POPULATION_DESCRIPTIONS[groupedPopulation]} (
+                    {bedTypesChartFilterName.toLowerCase()}) &ndash;{' '}
+                    {locationNamesCP.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr> and its comparison
+                    group, {comparatorAverageLabel},{' '}
+                    {locationNamesCP.RegionLabel} regional average and national
+                    average,{' '}
+                    {IndicatorService.getMostRecentDate(latestBedTypeData)}
+                  </>
+                }
+                valueHeader={`Care home beds per 100,000 ${POPULATION_DESCRIPTIONS[groupedPopulation]}`}
+                laCode={laCode}
+                laName={locationNamesCP.LALabel}
+                currentLaValue={groupedBedTypesValues.la}
+                regionalAverageLabel={`${locationNamesCP.RegionLabel} (regional average)`}
+                regionalAverageValue={groupedBedTypesValues.regional}
+                nationalAverageValue={groupedBedTypesValues.national}
+                peerData={bedTypesDataByMetric[bedTypesChartDisplayId] ?? null}
+                loading={bedTypesChartLoading}
+                comparatorAverageLabel={comparatorAverageLabel}
+              />
             </>
           }
           download={
             <>
-              <h4 className="govuk-heading-s">Download</h4>
               <DownloadTableDataCSVLink
-                tableref={tableref3}
-                filename="care_home_bed_numbers_and_occupancy.csv"
+                tableref={tableref4}
+                filename="care_home_bed_types_grouped.csv"
                 xLabel=""
-                downloadType="care home bed numbers and occupancy levels"
+                downloadType="care home bed numbers per 100,000 adult population grouped by bed type"
               />
             </>
           }
         />
       </DataBox>
-
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
-          <h2 className="govuk-heading-l govuk-!-margin-top-9">Trends</h2>
-        </div>
-      </div>
-
+      <DataBox
+        dataTitle="Care home bed types by group"
+        dataInfo={
+          <>
+            Find out how{' '}
+            <a
+              href={withBasePath(
+                METRICS.bedcount_per_hundred_thousand_adults_total.helpUrl
+              )}
+              className="govuk-link"
+            >
+              the number of adult social care beds per 100,000 adult population
+            </a>{' '}
+            are calculated.
+            {nhsPeerGroupDetails}
+          </>
+        }
+      >
+        <DataTabs
+          id="7"
+          sharingMetricIds={bedTypeMetricIds}
+          table={
+            <>
+              {renderComparatorControl(
+                'comparator-table-6',
+                renderPopulationSelect(
+                  'comparator-table-6',
+                  groupedTablePopulation,
+                  setGroupedTablePopulation
+                )
+              )}
+              <DataTable
+                tableref={tableref6}
+                caption={
+                  <>
+                    Table 3b: care home bed numbers per 100,000{' '}
+                    {POPULATION_DESCRIPTIONS[groupedTablePopulation]} (grouped
+                    by bed type) &ndash; {locationNamesCP.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {comparatorAverageLabel}, {locationNamesCP.RegionLabel}{' '}
+                    regional average and national average,{' '}
+                    {IndicatorService.getMostRecentDate(latestBedTypeData)}
+                  </>
+                }
+                metricColumnName="Care home bed type"
+                source={SOURCES.capacityTrackerWithOnsPopulationEstimates}
+                columnHeaders={{
+                  ...locationNamesWithAverageLabels,
+                  ComparatorLabel: comparatorAverageLabel,
+                }}
+                rowHeaders={groupedTableRowHeaders}
+                data={benchmarkedGroupedTypesData}
+                showCareProvider={false}
+                percentageRows={[]}
+              ></DataTable>
+            </>
+          }
+          download={
+            <>
+              <DownloadTableDataCSVLink
+                tableref={tableref6}
+                filename="care_home_bed_types_grouped_by_area.csv"
+                xLabel=""
+                downloadType="care home bed numbers per 100,000 adult population for each bed type group"
+              />
+            </>
+          }
+        />
+      </DataBox>
       <DataBox
         dataTitle="Care home bed numbers - trends over time"
         dataInfo={
@@ -952,19 +1545,28 @@ export default function ProvisionAndOccupancyPage() {
           </p>
         }
       >
-        <FilterRadioGroup
-          filterType="single-type-chart-metric"
-          filterLabel="Bed type"
-          filters={bedTypeRowHeadersDefault}
-          updateMethod={updateTypesChartMetrics}
-        />
         <DataTabs
           id="4"
           sharingMetricIds={bedTypeMetricIds}
           graph={
             <>
+              <SectionControls
+                filters={
+                  <FilterRadioGroup
+                    key={trendsFilterSync.key}
+                    idPrefix="graph-4"
+                    filterType="single-type-chart-metric"
+                    filterLabel="Bed type"
+                    filters={bedTypeRowHeadersDefault}
+                    updateMethod={() => {
+                      updateTypesChartMetrics();
+                      trendsFilterSync.announce();
+                    }}
+                  />
+                }
+              />
               <h3 className="govuk-heading-s">
-                Figure 2: care home bed numbers per 100,000 adult population (
+                Figure 3: care home bed numbers per 100,000 adult population (
                 {typesChartFilterName.toLowerCase()}) –{' '}
                 {locationNamesCP.LALabel}{' '}
                 <abbr title="local authority">LA</abbr>,{' '}
@@ -973,17 +1575,197 @@ export default function ProvisionAndOccupancyPage() {
               </h3>
               {(timeData.length > 0 && (
                 <div style={{ width: '100%', height: `500px` }}>
-                  <TimeSeriesChart series={timeData} />
+                  <TimeSeriesChart
+                    series={timeData}
+                    // Every bed type option shares this format
+                    metric={bedTypeChartHeaderDefault.metric_id}
+                  />
                 </div>
               )) || <p>Loading graph</p>}
               <p className="govuk-body">
                 Note: small numbers have been suppressed and will appear as zero
               </p>
               <p className="govuk-body">
-                Source: Capacity Tracker from the Department of Health and
-                Social Care (DHSC), population estimates from the Office for
-                National Statistics (ONS)
+                {`Source: ${SOURCES.capacityTrackerWithOnsPopulationEstimates}`}
               </p>
+            </>
+          }
+        />
+      </DataBox>
+
+      <DataBox
+        dataTitle="Occupancy level per care home"
+        dataInfo={
+          <p className="govuk-body-m">
+            Find out how{' '}
+            <a
+              href={withBasePath(METRICS.median_occupancy_total.helpUrl)}
+              className="govuk-link"
+            >
+              occupancy level percentages
+            </a>{' '}
+            are calculated.
+          </p>
+        }
+      >
+        <DataTabs
+          id="8"
+          sharingMetricIds={['occupancy_rate_total', OCCUPANCY_METRIC]}
+          table={
+            <>
+              {renderComparatorControl('comparator-table-8')}
+              <DataTable
+                metrics={['median_occupancy_total']}
+                tableref={tableref7}
+                caption={
+                  <>
+                    Table 4: care home occupancy level per care home –{' '}
+                    {session && showCPLevelData(session.user)
+                      ? locationNamesCP.CPLabel + ','
+                      : ''}{' '}
+                    {locationNamesCP.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr>,{' '}
+                    {comparatorAverageLabel}, {locationNamesCP.RegionLabel}{' '}
+                    regional average and national average,{' '}
+                    {IndicatorService.getMostRecentDate(finalCpData)}
+                  </>
+                }
+                columnHeaders={{
+                  ...locationNamesCP,
+                  ComparatorLabel: comparatorAverageLabel,
+                }}
+                data={benchmarkedCpData}
+                showCareProvider={showCPLevelData(session?.user)}
+                careProviderMedianMetrics={careProviderMedianMetrics}
+                showAverageLabel={true}
+              ></DataTable>
+            </>
+          }
+          download={
+            <>
+              <DownloadTableDataCSVLink
+                tableref={tableref7}
+                filename="care_home_occupancy_per_care_home.csv"
+                xLabel=""
+                downloadType="care home occupancy levels per care home"
+              />
+            </>
+          }
+        />
+      </DataBox>
+      <DataBox
+        dataTitle="Occupancy levels"
+        dataInfo={
+          <>
+            Find out how{' '}
+            <a
+              href={withBasePath(METRICS.median_occupancy_total.helpUrl)}
+              className="govuk-link"
+            >
+              occupancy level percentages
+            </a>{' '}
+            are calculated.
+            {nhsPeerGroupDetails}
+          </>
+        }
+      >
+        <DataTabs
+          id="6"
+          sharingMetricIds={['occupancy_rate_total', OCCUPANCY_METRIC]}
+          chart={
+            <PeerGroupBarChart
+              laCode={laCode}
+              laName={locationNamesCP.LALabel}
+              metric={OCCUPANCY_METRIC}
+              currentLaValue={occupancyValues.la}
+              nationalAverageValue={occupancyValues.national}
+              regionalAverageValue={occupancyValues.regional}
+              regionalAverageLabel={`${locationNamesCP.RegionLabel} (regional average)`}
+              peerData={dataByMetric[OCCUPANCY_METRIC] ?? null}
+              loading={chartLoading}
+              error={chartError}
+              comparatorControl={renderComparatorControl('comparator-chart-3')}
+              comparatorLabel={comparatorLabel}
+              comparatorAverageLabel={comparatorAverageLabel}
+              metricDescription="care home occupancy levels"
+              figureTitle="Care home occupancy levels"
+              figureNumber={4}
+              comparisonSummary={`${locationNamesCP.LALabel}, ${comparatorAverageLabel}, ${locationNamesCP.RegionLabel} regional average and national average`}
+              dateLabel={IndicatorService.getMostRecentDate(finalCpData)}
+            />
+          }
+          table={
+            <>
+              {renderComparatorControl('comparator-table-5')}
+              <PeerGroupTable
+                tableref={tableref5}
+                metric={OCCUPANCY_METRIC}
+                caption={
+                  <>
+                    Table 5: care home occupancy levels &ndash;{' '}
+                    {locationNamesCP.LALabel}{' '}
+                    <abbr title="local authority">LA</abbr> and its comparison
+                    group, {comparatorAverageLabel},{' '}
+                    {locationNamesCP.RegionLabel} regional average and national
+                    average, {IndicatorService.getMostRecentDate(finalCpData)}
+                  </>
+                }
+                valueHeader="Occupancy level"
+                // Care home users also see their own care home
+                extraRows={
+                  showCPLevelData(session?.user)
+                    ? [
+                        {
+                          label: locationNamesCP.CPLabel ?? 'Your care home',
+                          value: valueFor(
+                            finalCpData,
+                            'occupancy_rate_total',
+                            () => true
+                          ),
+                        },
+                      ]
+                    : []
+                }
+                laCode={laCode}
+                laName={locationNamesCP.LALabel}
+                currentLaValue={occupancyValues.la}
+                regionalAverageLabel={`${locationNamesCP.RegionLabel} (regional average)`}
+                regionalAverageValue={occupancyValues.regional}
+                nationalAverageValue={occupancyValues.national}
+                peerData={dataByMetric[OCCUPANCY_METRIC] ?? null}
+                loading={chartLoading}
+                comparatorAverageLabel={comparatorAverageLabel}
+              />
+            </>
+          }
+          textSummary={
+            <>
+              <h4 className="govuk-heading-s">Text summary</h4>
+              {session?.user.selectedLocationCategory?.toLowerCase() ===
+                CARE_HOME_RESIDENTIAL_CATEGORY && (
+                <ConditionalText
+                  data={finalCpData}
+                  ColumnHeaders={locationNamesCP}
+                  section="CapacityCareProvider"
+                  metric_Id={OCCUPANCY_METRIC}
+                ></ConditionalText>
+              )}
+              <ConditionalText
+                data={finalCpData}
+                ColumnHeaders={locationNamesCP}
+                section="CapacityLA"
+                metric_Id={OCCUPANCY_METRIC}
+              ></ConditionalText>
+            </>
+          }
+          download={
+            <>
+              <DownloadTableDataCSVLink
+                tableref={tableref5}
+                filename="care_home_occupancy_levels.csv"
+                xLabel=""
+                downloadType="care home occupancy levels"
+              />
             </>
           }
         />
@@ -995,7 +1777,7 @@ export default function ProvisionAndOccupancyPage() {
           sources="Capacity Tracker, Office for National Statistics"
           updateFrequency="Daily updates"
           limitations={true}
-          url="/help/beds-per-100000-adult-population"
+          url={METRICS.bedcount_per_hundred_thousand_adults_total.helpUrl}
         />
         <DataLinkCard
           label="Adult social care beds per 100,000 adult population - over time"
@@ -1009,7 +1791,7 @@ export default function ProvisionAndOccupancyPage() {
           sources="Capacity Tracker"
           updateFrequency="Daily updates"
           limitations={true}
-          url="/help/percentage-beds-occupied"
+          url={METRICS.median_occupancy_total.helpUrl}
         />
       </DataIndicatorDetailsList>
 

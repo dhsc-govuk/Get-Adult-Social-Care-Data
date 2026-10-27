@@ -32,7 +32,7 @@ describe('TimeSeriesChart Component', () => {
   ];
 
   it('renders one trace per series', async () => {
-    render(<TimeSeriesChart series={mockSeries} />);
+    render(<TimeSeriesChart series={mockSeries} metric="total_population" />);
 
     const chartdata = await screen.findByTestId('chart-data');
     const dataString = chartdata?.textContent;
@@ -44,7 +44,7 @@ describe('TimeSeriesChart Component', () => {
   });
 
   it('correctly maps date and value to x and y', () => {
-    render(<TimeSeriesChart series={mockSeries} />);
+    render(<TimeSeriesChart series={mockSeries} metric="total_population" />);
 
     const dataString = screen.getByTestId('chart-data').textContent;
     const data = JSON.parse(dataString || '[]');
@@ -57,7 +57,7 @@ describe('TimeSeriesChart Component', () => {
   });
 
   it('configures layout with vertical legend and correct grid settings', () => {
-    render(<TimeSeriesChart series={mockSeries} />);
+    render(<TimeSeriesChart series={mockSeries} metric="total_population" />);
 
     const layoutString = screen.getByTestId('chart-layout').textContent;
     const layout = JSON.parse(layoutString || '{}');
@@ -69,5 +69,41 @@ describe('TimeSeriesChart Component', () => {
     // Verify Grid (Only Y axis has grid lines)
     expect(layout.xaxis.showgrid).toBe(false);
     expect(layout.yaxis.showgrid).toBe(true);
+  });
+});
+
+describe('TimeSeriesChart comparator series', () => {
+  const series = [
+    { name: 'Test LA 1', data: [{ date: '2024-01-01', value: 10 }] },
+    {
+      name: 'Test Region 1 (regional average)',
+      data: [{ date: '2024-01-01', value: 8 }],
+      comparator: true,
+    },
+  ];
+
+  it('draws comparator series dashed and the LA solid', () => {
+    render(<TimeSeriesChart series={series} metric="total_population" />);
+
+    const data = JSON.parse(
+      screen.getByTestId('chart-data').textContent || '[]'
+    );
+
+    expect(data[0].line.dash).toBe('solid');
+    expect(data[1].line.dash).toBe('dash');
+  });
+
+  it.each([
+    ['total_population', '', ''],
+    ['perc_sen_support_14plus', '', '%'],
+    ['elss_all_types_of_adult_social_care_all_ages', '£', ''],
+  ])('formats the y axis for %s', (metric, prefix, suffix) => {
+    const series = [
+      { name: 'Test LA', data: [{ date: '2024-01-01', value: 10 }] },
+    ];
+    render(<TimeSeriesChart series={series} metric={metric} />);
+    const layout = JSON.parse(screen.getByTestId('chart-layout').textContent!);
+    expect(layout.yaxis.tickprefix).toBe(prefix);
+    expect(layout.yaxis.ticksuffix).toBe(suffix);
   });
 });

@@ -32,13 +32,17 @@ import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLoc
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
 import { ComparatorSelection } from '@/components/charts/peer-group/types';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
+import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
+import { METRICS, MetricId, metricLabels } from '@/config/metrics';
+import { chartLocationValues } from '@/helpers/locationComparison';
 
-const AGE_GROUP_LABELS: Record<string, string> = {
-  perc_18_64: 'Aged 18 to 64',
-  perc_65over: 'Aged 65 and over',
-  perc_75over: 'Aged 75 and over',
-  perc_85over: 'Aged 85 and over',
-};
+const AGE_GROUP_METRICS: MetricId[] = [
+  'perc_18_64',
+  'perc_65over',
+  'perc_75over',
+  'perc_85over',
+];
+const AGE_GROUP_LABELS = metricLabels(AGE_GROUP_METRICS);
 
 export default function ProvisionAndOccupancyPage() {
   const tableref1 = useRef<HTMLTableElement>(null);
@@ -126,16 +130,21 @@ export default function ProvisionAndOccupancyPage() {
     selection.kind === 'custom'
       ? groups.find((group) => group.id === selection.groupId)
       : undefined;
-  const comparatorLabel = selectedGroup ? selectedGroup.name : undefined;
+  const comparatorLabel = selectedGroup
+    ? (selectedGroup.comparisonLabel ?? selectedGroup.name)
+    : undefined;
   const comparatorAverageLabel = selectedGroup
-    ? `${selectedGroup.name} average`
+    ? (selectedGroup.averageLabel ?? `${selectedGroup.name} (average)`)
     : NHS_PEER_GROUP_AVERAGE_LABEL;
-  // Column headers for the benchmarked tables: their Regional column is
-  // repurposed to show the comparator group's average. The country column
-  // keeps the plain country name on this page.
+  // Column headers for the benchmarked tables: true regional average + comparator
+  // group's average. The country column keeps the plain country name on this
+  // page.
   const benchmarkedColumnHeaders = {
-    ...locationNames,
-    RegionLabel: comparatorAverageLabel,
+    CPLabel: locationNames.CPLabel,
+    LALabel: locationNames.LALabel,
+    RegionLabel: locationNames.RegionLabel,
+    ComparatorLabel: comparatorAverageLabel,
+    CountryLabel: locationNames.CountryLabel,
   };
   // The population size table shows the comparator group's combined
   // population instead of a mean, which is what reads naturally next to
@@ -144,8 +153,11 @@ export default function ProvisionAndOccupancyPage() {
     ? `${selectedGroup.name} total`
     : 'NHS peer group total';
   const populationSizeColumnHeaders = {
-    ...locationNames,
-    RegionLabel: comparatorTotalLabel,
+    CPLabel: locationNames.CPLabel,
+    LALabel: locationNames.LALabel,
+    RegionLabel: locationNames.RegionLabel,
+    ComparatorLabel: comparatorTotalLabel,
+    CountryLabel: locationNames.CountryLabel,
   };
 
   const handleComparatorChange = (newSelection: ComparatorSelection) => {
@@ -311,15 +323,14 @@ export default function ProvisionAndOccupancyPage() {
         >
           statistical neighbours model
         </a>{' '}
-        developed by NHS digital in 2022/23 to support benchmarking. This is
-        one of a number of approaches that aim to group authorities with
-        similar socio-economic and geographic factors (e.g. age, ethnicity,
-        education). It is important to note that there is limited evidence of
-        which factors are the most important drivers of variation in adult
-        social care. As a result, these statistical neighbours should be viewed
-        as a helpful starting point for benchmarking, rather than a definitive
-        indication of which authorities are most alike or measuring relative
-        performance.
+        developed by NHS digital in 2022/23 to support benchmarking. This is one
+        of a number of approaches that aim to group authorities with similar
+        socio-economic and geographic factors (e.g. age, ethnicity, education).
+        It is important to note that there is limited evidence of which factors
+        are the most important drivers of variation in adult social care. As a
+        result, these statistical neighbours should be viewed as a helpful
+        starting point for benchmarking, rather than a definitive indication of
+        which authorities are most alike or measuring relative performance.
       </div>
     </details>
   );
@@ -441,12 +452,12 @@ export default function ProvisionAndOccupancyPage() {
     };
   }, [demographicQuery, CPLocationId]);
 
-  // The Regional rows are repurposed to show the selected comparison group's
-  // average (synthesised if the metrics API returned no Regional row). Derived
+  // The true Regional rows are preserved and the selected comparison group's
+  // average is added as a separate ComparatorAverage column (synthesised if
+  // the metrics API returned no Regional row for the metric). Derived
   // synchronously so the tables can never show a stale or mislabelled value:
-  // while comparator data is unresolved (loading or failed), the row is null
-  // and renders as unavailable rather than falling back to the true regional
-  // value under a comparator-average heading.
+  // while comparator data is unresolved (loading or failed), the comparator
+  // column is null and renders as unavailable.
   const benchmarkedDemographicData = useMemo(() => {
     const merged = mergeComparatorAverage(
       baseDemographicData,
@@ -466,7 +477,8 @@ export default function ProvisionAndOccupancyPage() {
         ? peers.reduce((sum, peer) => sum + (peer.metricValue as number), 0)
         : null;
     return merged.map((d) =>
-      d.metric_id === 'total_population' && d.location_type === 'Regional'
+      d.metric_id === 'total_population' &&
+      d.location_type === COMPARATOR_AVERAGE_LOCATION_TYPE
         ? { ...d, data_point: peerPopulationTotal }
         : d
     );
@@ -505,8 +517,8 @@ export default function ProvisionAndOccupancyPage() {
             Population size and age group percentages
           </h1>
           <p className="govuk-body-l">
-            Population data at <abbr title="local authority">LA</abbr>, NHS
-            peer group and national levels for England.
+            Population data at <abbr title="local authority">LA</abbr>,
+            regional, NHS peer group and national levels for England.
           </p>
           <h2 className="govuk-heading-l govuk-!-margin-top-9">
             Data overview
@@ -520,7 +532,7 @@ export default function ProvisionAndOccupancyPage() {
             <p>
               Find out how{' '}
               <a
-                href={withBasePath('/help/population-size')}
+                href={withBasePath(METRICS.total_population.helpUrl)}
                 className="govuk-link"
               >
                 population size
@@ -538,12 +550,14 @@ export default function ProvisionAndOccupancyPage() {
             <>
               {renderComparatorControl('comparator-table-1')}
               <DataTable
+                metrics={['total_population']}
                 tableref={tableref1}
                 caption={
                   <>
                     Table 1: adult population size – {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
-                    {populationSizeColumnHeaders.RegionLabel} and{' '}
+                    {locationNames.RegionLabel} (regional average),{' '}
+                    {populationSizeColumnHeaders.ComparatorLabel} and{' '}
                     {populationSizeColumnHeaders.CountryLabel},{' '}
                     {IndicatorService.getMostRecentDate(
                       benchmarkedDemographicData,
@@ -551,13 +565,7 @@ export default function ProvisionAndOccupancyPage() {
                     )}
                   </>
                 }
-                source={
-                  'Population estimates from the Office for National Statistics (ONS)'
-                }
                 columnHeaders={populationSizeColumnHeaders}
-                rowHeaders={{
-                  total_population: 'Total adult population',
-                }}
                 data={benchmarkedDemographicData}
                 showCareProvider={false}
                 showAverageLabel={false}
@@ -577,8 +585,9 @@ export default function ProvisionAndOccupancyPage() {
           }
           download={
             <>
-              {renderComparatorControl('comparator-download-1')}
-              <h4 className="govuk-heading-s">Download</h4>
+              <div className="govuk-!-margin-bottom-4">
+                {renderComparatorControl('comparator-download-1')}
+              </div>
               <DownloadTableDataCSVLink
                 tableref={tableref1}
                 filename="adult_population_size.csv"
@@ -596,7 +605,7 @@ export default function ProvisionAndOccupancyPage() {
             <p>
               Find out how{' '}
               <a
-                href={withBasePath('/help/population-age')}
+                href={withBasePath(METRICS.perc_18_64.helpUrl)}
                 className="govuk-link"
               >
                 age group percentages
@@ -614,12 +623,14 @@ export default function ProvisionAndOccupancyPage() {
             <>
               {renderComparatorControl('comparator-table-2')}
               <DataTable
+                metrics={AGE_GROUP_METRICS}
                 tableref={tableref2}
                 caption={
                   <>
                     Table 2: age group percentages – {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
-                    {benchmarkedColumnHeaders.RegionLabel} and{' '}
+                    {locationNames.RegionLabel} (regional average),{' '}
+                    {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
                     {benchmarkedColumnHeaders.CountryLabel},{' '}
                     {IndicatorService.getMostRecentDate(
                       benchmarkedDemographicData,
@@ -627,22 +638,18 @@ export default function ProvisionAndOccupancyPage() {
                     )}
                   </>
                 }
-                source={
-                  'Population estimates from the Office for National Statistics (ONS)'
-                }
                 columnHeaders={benchmarkedColumnHeaders}
-                rowHeaders={AGE_GROUP_LABELS}
                 data={benchmarkedDemographicData}
                 showCareProvider={false}
-                percentageRows={ageGroupMetricIds}
                 showAverageLabel={false}
               ></DataTable>
             </>
           }
           download={
             <>
-              {renderComparatorControl('comparator-download-2')}
-              <h4 className="govuk-heading-s">Download</h4>
+              <div className="govuk-!-margin-bottom-4">
+                {renderComparatorControl('comparator-download-2')}
+              </div>
               <DownloadTableDataCSVLink
                 tableref={tableref2}
                 filename="age_group_percentages.csv"
@@ -655,20 +662,12 @@ export default function ProvisionAndOccupancyPage() {
             <PeerGroupBarChart
               laCode={locationIds[1]}
               laName={locationNames.LALabel}
-              currentLaValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === selectedAgeMetric &&
-                    d.location_type === 'LA'
-                )?.data_point ?? null
-              }
-              nationalAverageValue={
-                benchmarkedDemographicData.find(
-                  (d) =>
-                    d.metric_id === selectedAgeMetric &&
-                    d.location_type === 'National'
-                )?.data_point ?? null
-              }
+              metric={selectedAgeMetric}
+              {...chartLocationValues(
+                benchmarkedDemographicData,
+                selectedAgeMetric
+              )}
+              regionalAverageLabel={`${locationNames.RegionLabel} (regional average)`}
               peerData={dataByMetric[selectedAgeMetric] ?? null}
               loading={chartLoading}
               error={chartError}
@@ -682,7 +681,6 @@ export default function ProvisionAndOccupancyPage() {
               metricDescription={`the percentage of the population ${selectedAgeLabel.toLowerCase()}`}
               figureTitle={`Percentage of the population ${selectedAgeLabel.toLowerCase()}`}
               figureNumber={1}
-              sourceText="Source: Population estimates from the Office for National Statistics (ONS)"
             />
           }
         />
@@ -694,14 +692,14 @@ export default function ProvisionAndOccupancyPage() {
           sources="Office for National Statistics"
           updateFrequency="Yearly updates"
           limitations={true}
-          url="/help/population-age"
+          url={METRICS.perc_18_64.helpUrl}
         />
         <DataLinkCard
           label="Population size"
           sources="Office for National Statistics"
           updateFrequency="Yearly updates"
           limitations={true}
-          url="/help/population-size"
+          url={METRICS.total_population.helpUrl}
         />
       </DataIndicatorDetailsList>
 

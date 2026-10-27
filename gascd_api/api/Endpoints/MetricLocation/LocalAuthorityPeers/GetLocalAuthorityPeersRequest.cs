@@ -1,5 +1,5 @@
-using FastEndpoints;
 using api.Data.Shared;
+using FastEndpoints;
 
 namespace api.Endpoints.MetricLocation.LocalAuthorityPeers;
 

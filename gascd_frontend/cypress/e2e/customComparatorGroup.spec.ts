@@ -50,10 +50,8 @@ describe('Custom comparator groups on benchmarking charts', () => {
     cy.get('#comparator-chart-1-comparison-group')
       .find('option:selected')
       .should('have.text', groupName);
-    cy.get('#chart-1').contains(`${groupName} average`);
-    cy.get('#chart-1').contains(
-      'This chart compares'
-    );
+    cy.get('#chart-1').contains(`${groupName} (average)`);
+    cy.get('#chart-1').contains('This chart compares');
 
     // The selection is shared with the Table tab (column + caption update),
     // and the Custom option is available there too
@@ -65,7 +63,7 @@ describe('Custom comparator groups on benchmarking charts', () => {
     cy.get('#comparator-table-1-comparison-group')
       .find('option')
       .should('contain', 'Custom');
-    cy.get('#table-1').contains(`${groupName} average`);
+    cy.get('#table-1').contains(`${groupName} (average)`);
 
     // And with the Download tab, where the builder can also be opened
     cy.get('a[href*="download-1"]').click();
@@ -92,9 +90,9 @@ describe('Custom comparator groups on benchmarking charts', () => {
     cy.get('#comparator-chart-2-comparison-group').select(
       'Statistically similar peer group (NHS)'
     );
-    cy.get('#chart-2').contains('NHS peer group average');
+    cy.get('#chart-2').contains('NHS peer group (average)');
     cy.get('a[href*="table-2"]').click();
-    cy.get('#table-2').contains('NHS peer group average');
+    cy.get('#table-2').contains('NHS peer group (average)');
 
     // Clean up: reselect and delete the group so reruns start clean
     cy.get('a[href*="chart-1"]').click();
@@ -123,10 +121,7 @@ describe('Custom comparator groups on benchmarking charts', () => {
     // Edit it: the button appears once a custom group is selected
     cy.contains('button', 'Edit this group').click();
     cy.contains('h3', 'Edit comparator group').should('be.visible');
-    cy.get('#comparator-chart-1-group-name').should(
-      'have.value',
-      editableName
-    );
+    cy.get('#comparator-chart-1-group-name').should('have.value', editableName);
     cy.contains('1 selected');
     cy.get('#comparator-chart-1-group-name').clear().type(renamedName);
     cy.get('#chart-1 input[type="checkbox"]').eq(1).check();
@@ -135,7 +130,7 @@ describe('Custom comparator groups on benchmarking charts', () => {
     cy.get('#comparator-chart-1-comparison-group')
       .find('option:selected')
       .should('have.text', renamedName);
-    cy.get('#chart-1').contains(`${renamedName} average`);
+    cy.get('#chart-1').contains(`${renamedName} (average)`);
 
     // Delete it, backing out once first
     cy.contains('button', 'Edit this group').click();
@@ -152,7 +147,7 @@ describe('Custom comparator groups on benchmarking charts', () => {
     cy.get('#comparator-chart-1-comparison-group')
       .find('option')
       .should('not.contain', renamedName);
-    cy.get('#chart-1').contains('NHS peer group average');
+    cy.get('#chart-1').contains('NHS peer group (average)');
   });
 
   it('cancels the builder without changing the selection', () => {

@@ -43,6 +43,8 @@
 
 For more information on authentication and user types, see [USERS.md](./USERS.md)
 
+To add a new metric to the service, see [ADDING_A_METRIC.md](./ADDING_A_METRIC.md)
+
 ## Usage
 
 ### Running the application
@@ -79,6 +81,11 @@ As well as using the magic development login URL above, you can also use the GOV
   - http://localhost:3000/login
 - On the interactive login simulator form, change the "Email" field to match your `LOCAL_AUTH_EMAIL` value.
 - Click "Continue", and you should be logged in.
+- To sign in as a _different_ identity (for example to try the Local Authority self-service sign-up with a
+  council address), also change the "sub" field to a new unique value. The simulator reuses the same
+  subject identifier by default, and Better Auth treats the subject as the identity: reusing it with a
+  different email makes the app try to move the previously linked user to the new address, which fails
+  with a duplicate-email error.
 
 ### Development Metrics API
 

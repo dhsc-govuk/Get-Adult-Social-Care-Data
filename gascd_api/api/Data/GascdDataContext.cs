@@ -56,6 +56,22 @@ public partial class GascdDataContext : DbContext
     public virtual DbSet<PercUnpaidCareProvider> PercUnpaidCareProviderSet { get; set; } = null!;
     public virtual DbSet<TotalPopulation> TotalPopulationSet { get; set; } = null!;
 
+    // Department for Education future planning metrics
+    public virtual DbSet<CinPer10000Children> CinPer10000ChildrenSet { get; set; } = null!;
+    public virtual DbSet<NumChildrenInNeed> NumChildrenInNeedSet { get; set; } = null!;
+    public virtual DbSet<NumCinTransferAsc> NumCinTransferAscSet { get; set; } = null!;
+    public virtual DbSet<NumEhcp14Plus> NumEhcp14PlusSet { get; set; } = null!;
+    public virtual DbSet<NumSenSupport14Plus> NumSenSupport14PlusSet { get; set; } = null!;
+    public virtual DbSet<PercSenSupport14Plus> PercSenSupport14PlusSet { get; set; } = null!;
+
+    // Per-100,000-population standardised metrics
+    public virtual DbSet<BedcountPerHundredThousand1864> BedcountPerHundredThousand1864Set { get; set; } = null!;
+    public virtual DbSet<BedcountPerHundredThousand65Over> BedcountPerHundredThousand65OverSet { get; set; } = null!;
+    public virtual DbSet<NumClientsLongTermSupportPer100kAdults> NumClientsLongTermSupportPer100kAdultsSet { get; set; } = null!;
+    public virtual DbSet<ExpenditureDurationPsrPer100kAdults> ExpenditureDurationPsrPer100kAdultsSet { get; set; } = null!;
+    public virtual DbSet<ExpenditureLongtermSupportSettingPer100kAdults> ExpenditureLongtermSupportSettingPer100kAdultsSet { get; set; } = null!;
+    public virtual DbSet<NumClientsCommCarePer100kAdults> NumClientsCommCarePer100kAdultsSet { get; set; } = null!;
+
     public IQueryable<MetricTimeSeries> GetMetricTimeSeriesQueryable(MetricCodeEnum metricCode)
     {
         Type t = metricCode.MetricGroupType();

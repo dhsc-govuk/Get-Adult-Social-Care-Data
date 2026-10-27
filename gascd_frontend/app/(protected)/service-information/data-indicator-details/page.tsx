@@ -54,6 +54,13 @@ export default function DataIndicatorDetailsPage() {
               url="/help/number-people-receiving-care-from-community-social-care-provider"
             />
             <DataLinkCard
+              label="Number of adults receiving care from a community social care provider – standardised per 100,000 of the total adult (18+) population"
+              sources="Capacity Tracker, Office for National Statistics"
+              updateFrequency="Daily updates"
+              limitations={true}
+              url="/help/number-people-receiving-care-from-community-social-care-provider-per-100000-adults"
+            />
+            <DataLinkCard
               label="Occupancy level percentages for adult social care beds"
               sources="Capacity Tracker"
               updateFrequency="Daily updates"
@@ -87,6 +94,19 @@ export default function DataIndicatorDetailsPage() {
             <DataLinkCard
               label={
                 <>
+                  <abbr title="Local Authority">LA</abbr> funding for long-term
+                  adult social care – standardised per 100,000 of the total
+                  adult (18+) population
+                </>
+              }
+              sources="Department of Health and Social Care, Office for National Statistics"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/financial-spend-long-term-care-per-100000-adults"
+            />
+            <DataLinkCard
+              label={
+                <>
                   <abbr title="Local Authority">LA</abbr> funding for short-term
                   and long-term adult social care
                 </>
@@ -95,6 +115,19 @@ export default function DataIndicatorDetailsPage() {
               updateFrequency="Yearly updates"
               limitations={true}
               url="/help/percentages-financial-spend-long-term-and-short-term-care"
+            />
+            <DataLinkCard
+              label={
+                <>
+                  <abbr title="Local Authority">LA</abbr> funding for short-term
+                  and long-term adult social care – standardised per 100,000 of
+                  the total adult (18+) population
+                </>
+              }
+              sources="Department of Health and Social Care, Office for National Statistics"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/financial-spend-long-term-and-short-term-care-per-100000-adults"
             />
             <DataLinkCard
               label={
@@ -183,11 +216,53 @@ export default function DataIndicatorDetailsPage() {
               limitations={false}
               url="/help/primary-reason-for-accessing-long-term-adult-social-care"
             />
+            <DataLinkCard
+              label="Primary reason for people to access long-term adult social care – standardised per 100,000 of the total adult (18+) population"
+              sources="NHS England, Office for National Statistics"
+              updateFrequency="Yearly updates"
+              limitations={false}
+              url="/help/primary-reason-for-accessing-long-term-adult-social-care-per-100000-adults"
+            />
           </ul>
           <h2 className="govuk-heading-m govuk-!-margin-top-9">
             Future planning data indicators
           </h2>
           <ul className="gem-c-cards__list gem-c-cards__list--one-column">
+            <DataLinkCard
+              label="Children and young people with an EHCP, aged 14 and over"
+              sources="Department for Education"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/children-and-young-people-with-an-ehcp-aged-14-and-over"
+            />
+            <DataLinkCard
+              label="Children in need"
+              sources="Department for Education"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/children-in-need"
+            />
+            <DataLinkCard
+              label="Children in need episodes ending due to transfer to adult social care"
+              sources="Department for Education"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/children-in-need-episodes-ending-due-to-transfer-to-adult-social-care"
+            />
+            <DataLinkCard
+              label="Children in need per 10,000 children"
+              sources="Department for Education"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/children-in-need-per-10000-children"
+            />
+            <DataLinkCard
+              label="Percentage of pupils with SEN support, aged 14 and over"
+              sources="Department for Education"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/percentage-of-pupils-with-sen-support-aged-14-and-over"
+            />
             <DataLinkCard
               label="People aged 18-64 predicted to have autistic spectrum disorders, projected to 2045"
               sources="Institute of Public Care"
@@ -208,6 +283,13 @@ export default function DataIndicatorDetailsPage() {
               updateFrequency="Updated every 5 years"
               limitations={true}
               url="/help/estimated-population-early-onset-dementia"
+            />
+            <DataLinkCard
+              label="Pupils with SEN support, aged 14 and over"
+              sources="Department for Education"
+              updateFrequency="Yearly updates"
+              limitations={true}
+              url="/help/pupils-with-sen-support-aged-14-and-over"
             />
           </ul>
         </div>

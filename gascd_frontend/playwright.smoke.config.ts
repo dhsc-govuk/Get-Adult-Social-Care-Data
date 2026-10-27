@@ -27,7 +27,7 @@ export default defineConfig({
   expect: { timeout: 10_000 },
 
   use: {
-    baseURL: process.env.SMOKE_BASE_URL,
+    baseURL: process.env.SMOKE_BASE_URL?.replace(/\/?$/, '/'),
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

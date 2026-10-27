@@ -35,8 +35,12 @@ const peerData: PeerGroupData = {
 const defaultProps = {
   laCode: 'E08000014',
   laName: 'Liverpool',
+  metric: 'perc_households_deprivation_deprived',
+  metricDescription: 'the percentage of households deprived in 4 dimensions',
+  figureTitle: 'Percentage of households deprived in 4 dimensions',
   currentLaValue: 52.5,
   nationalAverageValue: 10.5,
+  regionalAverageValue: 48.5,
   peerData,
   loading: false,
   error: false,
@@ -82,10 +86,64 @@ describe('PeerGroupBarChart', () => {
       )
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/NHS peer group average \(53\.5%\)/i)
+      screen.getByText(/NHS peer group \(average\) \(53\.5%\)/i)
     ).toBeInTheDocument();
     expect(
       screen.getByText(/England \(national average\) \(10\.5%\)/i)
+    ).toBeInTheDocument();
+  });
+
+  it('drops the percentage sign for a metric that is a plain number', () => {
+    render(<PeerGroupBarChart {...defaultProps} metric="total_population" />);
+    expect(
+      screen.getByText(/England \(national average\) \(10\.5\)/i)
+    ).toBeInTheDocument();
+    const layout = JSON.parse(screen.getByTestId('chart-layout').textContent!);
+    expect(layout.xaxis.ticksuffix).toBeUndefined();
+  });
+
+  it('shows currency values as whole pounds with a £ prefix', () => {
+    render(
+      <PeerGroupBarChart
+        {...defaultProps}
+        metric="edpsr_stlt_total_all_ages"
+        currentLaValue={52000000}
+        nationalAverageValue={1234567.4}
+        regionalAverageValue={48000000}
+      />
+    );
+    expect(
+      screen.getByText(/England \(national average\) \(£1,234,567\)/i)
+    ).toBeInTheDocument();
+    const layout = JSON.parse(screen.getByTestId('chart-layout').textContent!);
+    expect(layout.xaxis.tickprefix).toBe('£');
+    expect(layout.xaxis.ticksuffix).toBeUndefined();
+    const [bars] = JSON.parse(screen.getByTestId('chart-data').textContent!);
+    expect(bars.hovertemplate).toContain('£%{x:,.0f}');
+  });
+
+  it('renders the regional average legend entry with the page-provided label', () => {
+    render(
+      <PeerGroupBarChart
+        {...defaultProps}
+        regionalAverageLabel="North East (regional average)"
+      />
+    );
+    expect(
+      screen.getByText(/North East \(regional average\) \(48\.5%\)/i)
+    ).toBeInTheDocument();
+  });
+
+  it('shows the regional average as unavailable when the region value is missing', () => {
+    render(
+      <PeerGroupBarChart
+        {...defaultProps}
+        regionalAverageValue={null}
+        regionalAverageLabel="North East (regional average)"
+      />
+    );
+    expect(
+      screen.getByText(/North East \(regional average\) \(N\/A\)/i)
     ).toBeInTheDocument();
   });
 
@@ -136,7 +194,9 @@ describe('PeerGroupBarChart', () => {
         },
       ],
     };
-    render(<PeerGroupBarChart {...defaultProps} peerData={dataWithRecodedPeer} />);
+    render(
+      <PeerGroupBarChart {...defaultProps} peerData={dataWithRecodedPeer} />
+    );
     const chartData = JSON.parse(
       screen.getByTestId('chart-data').textContent ?? '[]'
     );
@@ -210,5 +270,20 @@ describe('PeerGroupBarChart', () => {
     expect(
       screen.getByText('This chart is not available to your Local Authority.')
     ).toBeInTheDocument();
+  });
+
+  it("takes its source line from the metric's config", () => {
+    render(<PeerGroupBarChart {...defaultProps} />);
+    expect(
+      screen.getByText(
+        'Source: Census 2021 from the Office for National Statistics (ONS)'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('refuses a metric with no config, rather than guessing its format', () => {
+    expect(() =>
+      render(<PeerGroupBarChart {...defaultProps} metric="not_a_metric" />)
+    ).toThrow('No metric config for not_a_metric');
   });
 });

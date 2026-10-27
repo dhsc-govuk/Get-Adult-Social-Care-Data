@@ -2,6 +2,7 @@
 import React, { useMemo } from 'react';
 import { Layout, Data, Shape } from 'plotly.js';
 import dynamic from 'next/dynamic';
+import { usePlotlyResize } from './usePlotlyResize';
 
 // Skip any SSR compilation for plotly
 const Plotly = dynamic(() => import('react-plotly.js'), { ssr: false });
@@ -14,6 +15,7 @@ interface BarChartProps {
   additionalShapes?: Partial<Shape>[];
   xAxisRange?: [number, number];
   xAxisTickSuffix?: string;
+  xAxisTickPrefix?: string;
   showHighlightOutline?: boolean;
   // d3-format string for hover values; the default trims the decimal for
   // whole numbers (e.g. counts) while fractional values show 1 decimal place
@@ -28,9 +30,11 @@ const BarChart: React.FC<BarChartProps> = ({
   additionalShapes = [],
   xAxisRange,
   xAxisTickSuffix,
+  xAxisTickPrefix,
   showHighlightOutline = true,
   hoverValueFormat = ',.1~f',
 }) => {
+  const { containerRef, onGraphReady } = usePlotlyResize();
   // Top highlight colours
   const TOP_HIGHLIGHT_COL = '#959495';
   // Main highlight row
@@ -95,7 +99,7 @@ const BarChart: React.FC<BarChartProps> = ({
       marker: {
         color: barColors,
       },
-      hovertemplate: `<b>%{y}</b><br>Value: %{x:${hoverValueFormat}}${xAxisTickSuffix ?? ''}<extra></extra>`,
+      hovertemplate: `<b>%{y}</b><br>Value: ${xAxisTickPrefix ?? ''}%{x:${hoverValueFormat}}${xAxisTickSuffix ?? ''}<extra></extra>`,
     },
   ];
 
@@ -111,6 +115,7 @@ const BarChart: React.FC<BarChartProps> = ({
       fixedrange: true, // prevents zooming
       ...(xAxisRange ? { range: xAxisRange } : {}),
       ...(xAxisTickSuffix ? { ticksuffix: xAxisTickSuffix } : {}),
+      ...(xAxisTickPrefix ? { tickprefix: xAxisTickPrefix } : {}),
     },
     yaxis: {
       autorange: 'reversed',
@@ -135,13 +140,17 @@ const BarChart: React.FC<BarChartProps> = ({
   };
 
   return (
-    <Plotly
-      style={{ width: '100%', height: '100%' }}
-      data={chartData}
-      layout={layout}
-      useResizeHandler={true}
-      config={{ displayModeBar: false, responsive: true }}
-    />
+    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+      <Plotly
+        onInitialized={onGraphReady}
+        onUpdate={onGraphReady}
+        style={{ width: '100%', height: '100%' }}
+        data={chartData}
+        layout={layout}
+        useResizeHandler={true}
+        config={{ displayModeBar: false, responsive: true }}
+      />
+    </div>
   );
 };
 

@@ -70,8 +70,14 @@ const ComparatorGroupSelect: React.FC<ComparatorGroupSelectProps> = ({
     onChange({ kind: 'nhs_peer_group' });
   };
 
+  const selectedBuiltIn =
+    selection.kind === 'custom' &&
+    groups.some((group) => group.id === selection.groupId && group.builtIn);
   const showEditButton = Boolean(
-    onEdit && selection.kind === 'custom' && builderMode !== 'create'
+    onEdit &&
+    selection.kind === 'custom' &&
+    !selectedBuiltIn &&
+    builderMode !== 'create'
   );
 
   return (
@@ -95,6 +101,7 @@ const ComparatorGroupSelect: React.FC<ComparatorGroupSelectProps> = ({
           <option
             key={group.id}
             value={`${CUSTOM_GROUP_VALUE_PREFIX}${group.id}`}
+            disabled={group.disabled}
           >
             {group.name}
           </option>

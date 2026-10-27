@@ -42,6 +42,16 @@ export interface CustomComparatorGroup {
   id: string;
   name: string;
   laCodes: string[];
+  // Provided by the service (the user's region), so it can't be edited
+  builtIn?: boolean;
+  // Replace the default "<name> (average)" and "<name>" in tables, legends
+  // and captions
+  averageLabel?: string;
+  comparisonLabel?: string;
+  // Can be chosen, but its LAs haven't arrived yet
+  loading?: boolean;
+  // Shown but can't be chosen: the region failed to load
+  disabled?: boolean;
 }
 
 export type ComparatorSelection =
@@ -57,20 +67,33 @@ export interface LocalAuthoritySummary {
 export interface PeerGroupBarChartProps {
   laCode: string;
   laName: string;
+  // Sets the value format (%, plain number or £) and the default source line
+  metric: string;
   currentLaValue: number | null;
   nationalAverageValue: number | null;
+  // The user's region value from the same metric-data query the tables use,
+  // following the same "the chart can never disagree with the table" rule as
+  // the national average.
+  regionalAverageValue: number | null;
   peerData: PeerGroupData | null;
   loading: boolean;
   error: boolean;
-  metricDescription?: string;
-  figureTitle?: string;
+  metricDescription: string;
+  figureTitle: string;
   figureNumber?: number;
   comparatorControl?: ReactNode;
   comparatorLabel?: string;
+  // Period the figure covers
+  dateLabel?: string;
+  // Replaces the default comparison summary in the figure heading
+  comparisonSummary?: string;
   comparatorAverageLabel?: string;
+  // Legend label for the regional average line, e.g. "North East (regional
+  // average)".
+  regionalAverageLabel?: string;
   // Legend label for the national average line, e.g. "England" where the
   // page's tables also use the plain country name.
   nationalAverageLabel?: string;
-  valueSuffix?: string;
+  // Defaults to the metric's source
   sourceText?: string;
 }

@@ -8,6 +8,11 @@ import { trustedClientIp } from '@/lib/auth-rate-limit';
 export async function middleware(request: NextRequest) {
   // Next's nextUrl.pathname excludes the configured basePath.
   const path = request.nextUrl.pathname;
+  // The admin app has its own One Login session; it is neither gated by the
+  // frontend's Better Auth session nor counted against its rate limits.
+  if (path === '/admin' || path.startsWith('/admin/')) {
+    return rewriteToAdminApp(request);
+  }
   if (path === '/api/checks/live' || path === '/api/checks/health')
     return NextResponse.next();
   // Better Auth owns its endpoint policies; these two custom routes need explicit coverage.
@@ -53,4 +58,41 @@ export async function middleware(request: NextRequest) {
   }
 }
 
-export const config = { runtime: 'nodejs', matcher: ['/api/:path*'] };
+/**
+ * The GASCD admin app (gascd-apps/gascd-admin) is a separate Container App with no route of its
+ * own at the edge (Front Door / App Gateway are DHSC-central), so the frontend proxies
+ * <basePath>/admin/* to it over the Container Apps environment network. The full public path is
+ * forwarded unchanged: the admin app runs with PATH_BASE=<basePath>/admin and strips it itself,
+ * so this is a removable shim should a dedicated edge route ever be added. It has its own
+ * GOV.UK One Login sign-in and session cookie (scoped to <basePath>/admin); nothing here is
+ * shared with the frontend's Better Auth session.
+ *
+ * ADMIN_APP_ROOT is the admin app's FQDN, e.g.
+ * https://ca-gascd-admin-dev-uks.<cae default domain>, set in the container app values file.
+ */
+function rewriteToAdminApp(request: NextRequest) {
+  const adminRoot = process.env.ADMIN_APP_ROOT;
+  if (!adminRoot) {
+    return new NextResponse(
+      'The admin app is not configured for this environment.',
+      {
+        status: 503,
+      }
+    );
+  }
+  const { basePath, pathname, search } = request.nextUrl;
+  return NextResponse.rewrite(
+    new URL(`${basePath}${pathname}${search}`, adminRoot)
+  );
+}
+
+export const config = {
+  runtime: 'nodejs', // Required for auth.api calls
+  matcher: [
+    // every API route; exemptions are decided above, not here
+    '/api/:path*',
+    // proxied to the admin app, see rewriteToAdminApp
+    '/admin',
+    '/admin/:path*',
+  ],
+};

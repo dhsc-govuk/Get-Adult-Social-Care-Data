@@ -15,7 +15,6 @@ bld.Services
     .AddOpenTelemetryConfiguration(bld.Configuration)
     .RegisterSwaggerConfiguration()
     .RegisterAuth();
-
 var app = bld.Build();
 app.UseRouting();
 app.UseRateLimiter();

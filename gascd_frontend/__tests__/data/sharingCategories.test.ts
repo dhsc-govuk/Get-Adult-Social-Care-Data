@@ -61,6 +61,24 @@ describe('getSharingCategoryForMetric', () => {
     );
   });
 
+  it('matches the data indicator pages for the per 100,000 metrics', () => {
+    expect(
+      getSharingCategoryForMetric(
+        'learning_disability_support_18_and_over_per100k_adults'
+      ).id
+    ).toBe('published');
+    expect(
+      getSharingCategoryForMetric('edpsr_stlt_total_all_ages_per100k_adults').id
+    ).toBe('published');
+    expect(
+      getSharingCategoryForMetric('elss_nursing_all_ages_per100k_adults').id
+    ).toBe('published');
+    expect(
+      getSharingCategoryForMetric('nccc_num_clients_comm_care_per100k_adults')
+        .id
+    ).toBe('discretion');
+  });
+
   it('inherits the category of the base metric for derived series', () => {
     expect(
       getSharingCategoryForMetric('pansi_pred_pop_asd_aged_18_64_yearly').id

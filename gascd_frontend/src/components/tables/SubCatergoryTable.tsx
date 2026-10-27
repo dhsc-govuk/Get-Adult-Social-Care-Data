@@ -1,19 +1,17 @@
+import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
 import React, { Ref } from 'react';
 import { Indicator } from '@/data/interfaces/Indicator';
 import TableService from '@/services/Table/TableService';
+import { MetricRowProps, resolveMetricRows } from './metricRows';
 
-type DataTableProps = {
+type DataTableProps = MetricRowProps & {
   caption?: React.ReactNode;
   columnHeaders: Object;
   metricColumnName?: string;
-  rowHeaders: Object;
   data: Indicator[];
   showCareProvider: boolean;
   careProviderMedianMetrics?: Record<string, string>;
-  percentageRows?: string[];
-  currency?: boolean;
   totalsRows?: string[];
-  source?: string;
   last_updated?: string;
   children?: React.ReactNode;
   showAverageLabel?: boolean;
@@ -63,18 +61,33 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
   caption,
   columnHeaders,
   metricColumnName,
-  rowHeaders,
+  metrics,
+  rowHeaders: rowHeadersProp,
   data,
   showCareProvider,
   careProviderMedianMetrics,
-  percentageRows,
-  currency = false,
+  percentageRows: percentageRowsProp,
+  currency: currencyProp = false,
   totalsRows,
   children,
-  source,
+  source: sourceProp,
   showAverageLabel = false,
   tableref = undefined,
 }) => {
+  const { rowHeaders, percentageRows, currency, source } = resolveMetricRows({
+    metrics,
+    rowHeaders: rowHeadersProp,
+    percentageRows: percentageRowsProp,
+    currency: currencyProp,
+    source: sourceProp,
+  });
+  const comparatorLabel = (columnHeaders as { ComparatorLabel?: string | null })
+    .ComparatorLabel;
+  const showComparatorAverage =
+    comparatorLabel !== undefined &&
+    comparatorLabel !== null &&
+    comparatorLabel !== '';
+
   const columnClass = (columnIndex: number) => {
     if (columnIndex === 0) {
       return 'govuk-table__header govuk-!-width-one-third scrollable-table__header';
@@ -96,18 +109,39 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
               <th key="0" scope="col" className={columnClass(0)}>
                 {metricColumnName}
               </th>
-              {Object.entries(columnHeaders)
+              {[
+                ...(showCareProvider ? ['CPLabel'] : []),
+                'LALabel',
+                ...(showComparatorAverage ? ['ComparatorLabel'] : []),
+                'RegionLabel',
+                'CountryLabel',
+              ]
                 .filter(
-                  ([columnKey]) =>
-                    !(columnKey === 'CPLabel' && !showCareProvider)
+                  (key) =>
+                    (
+                      columnHeaders as Record<string, string | null | undefined>
+                    )[key] !== undefined &&
+                    (
+                      columnHeaders as Record<string, string | null | undefined>
+                    )[key] !== null &&
+                    (
+                      columnHeaders as Record<string, string | null | undefined>
+                    )[key] !== ''
                 )
-                .map(([columnKey, columnLabel], columnIndex) => (
+                .map((columnKey, columnIndex) => (
                   <th
                     key={columnKey + 1}
                     scope="col"
                     className={columnClass(columnIndex + 1)}
                   >
-                    {columnLabel}
+                    {
+                      (
+                        columnHeaders as Record<
+                          string,
+                          string | null | undefined
+                        >
+                      )[columnKey]
+                    }
                   </th>
                 ))}
             </tr>
@@ -165,6 +199,21 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
                     showAverageLabel
                   )}
                 </td>
+                {showComparatorAverage && (
+                  <td className="govuk-table__cell govuk-table__cell--numeric">
+                    {totalsRows?.includes(key) && totalsRows[0] !== key && (
+                      <br />
+                    )}
+                    {getFormattedDataPoint(
+                      data,
+                      key,
+                      COMPARATOR_AVERAGE_LOCATION_TYPE,
+                      percentageRows?.some((item) => item === key) ?? false,
+                      currency,
+                      showAverageLabel
+                    )}
+                  </td>
+                )}
                 <td className="govuk-table__cell govuk-table__cell--numeric">
                   {totalsRows?.includes(key) && totalsRows[0] !== key && <br />}
                   {getFormattedDataPoint(

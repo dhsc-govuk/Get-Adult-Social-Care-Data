@@ -124,6 +124,7 @@ __azurite_db*__.json
 next-env.d.ts
 
 .vscode
+.DS_Store
 
 #Test files
 junit.xml

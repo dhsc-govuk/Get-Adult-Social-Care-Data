@@ -47,7 +47,7 @@ const TotalFinancialSpendLongTermCommunityAdultSocialCare: React.FC = () => {
                 <li>Supported living</li>
                 <li>Community direct payments</li>
                 <li>Other long-term community care</li>
-                <li>Supported accomodation</li>
+                <li>Supported accommodation</li>
               </ul>
               <p className="govuk-!-margin-top-0">
                 Covers <abbr title="Local Authority">LA</abbr>-funded care only;

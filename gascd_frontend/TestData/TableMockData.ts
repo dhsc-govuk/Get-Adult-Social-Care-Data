@@ -289,20 +289,18 @@ export const mockTableRowHeaders = {
   dementia_register_65over_per100k: 'Registered dementia patients per 100,000',
 };
 
-export const mockTableColumnHeaders = [
-  'Filter',
-  'Northumberland',
-  'North East',
-  'England',
-];
+export const mockTableColumnHeaders = {
+  LALabel: 'Northumberland',
+  RegionLabel: 'North East',
+  CountryLabel: 'England',
+};
 
-export const mockTableColumnHeadersCareProvider = [
-  'Filter',
-  'Birkinshaw Manor',
-  'Northumberland',
-  'North East',
-  'England',
-];
+export const mockTableColumnHeadersCareProvider = {
+  CPLabel: 'Birkinshaw Manor',
+  LALabel: 'Northumberland',
+  RegionLabel: 'North East',
+  CountryLabel: 'England',
+};
 
 export const mockTableRowHeadersCareProvider = {
   median_bed_count_total: 'Beds in care provider location',

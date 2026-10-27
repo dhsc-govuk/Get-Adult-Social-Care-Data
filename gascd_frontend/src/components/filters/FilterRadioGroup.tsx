@@ -8,6 +8,14 @@ import AnalyticsService from '@/services/analytics/analyticsService';
 
 type Props = {
   filterType: string;
+  // Keeps element ids unique when the same filter is shown in several tabs
+  idPrefix?: string;
+  // An optional second radio group shown beside the first in the same panel,
+  // applied and cleared by the same buttons.
+  secondaryFilterType?: string;
+  secondaryFilterLabel?: string;
+  secondaryFilterHint?: string;
+  secondaryFilters?: Object;
   filterLabel: string;
   filters: Object;
   updateMethod: () => void;
@@ -15,16 +23,28 @@ type Props = {
 
 const FilterRadioGroup: React.FC<Props> = ({
   filterType,
+  idPrefix,
+  secondaryFilterType,
+  secondaryFilterLabel,
+  secondaryFilterHint,
+  secondaryFilters,
   filterLabel,
   filters,
   updateMethod,
 }) => {
+  const idBase = idPrefix ? `${idPrefix}-${filterType}` : filterType;
   const [showFilters, setShowFilters] = React.useState(false);
   const [showActiveFilters, setShowActiveFilters] = React.useState(false);
   const [componentFilters, setComponentFilters] = useState<Filters[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<Filters>();
   const [searchedFilters, setSearchedFilters] = useState<Filters[]>([]);
   const [displayFilter, setDisplayFilter] = useState<string | null>(null);
+  const hasSecondary = Boolean(secondaryFilterType && secondaryFilters);
+  const secondaryOptions = Object.entries(secondaryFilters ?? {}) as [
+    string,
+    string,
+  ][];
+  const [secondarySelected, setSecondarySelected] = useState<string>('');
 
   useEffect(() => {
     setLocalFilters();
@@ -51,6 +71,11 @@ const FilterRadioGroup: React.FC<Props> = ({
       setDefaultFilter();
     }
     setComponentFilters(localFilters);
+
+    if (hasSecondary) {
+      const stored = localStorage.getItem(secondaryFilterType as string);
+      setSecondarySelected(stored ?? secondaryOptions[0]?.[0] ?? '');
+    }
   };
 
   const handleShowHideToggle = (showFilters: boolean) => {
@@ -67,6 +92,9 @@ const FilterRadioGroup: React.FC<Props> = ({
   };
 
   const handleSubmit = () => {
+    if (hasSecondary) {
+      localStorage.setItem(secondaryFilterType as string, secondarySelected);
+    }
     localStorage.setItem(filterType, JSON.stringify(selectedFilter));
     setShowFilters(false);
     setShowActiveFilters(true);
@@ -87,6 +115,10 @@ const FilterRadioGroup: React.FC<Props> = ({
   };
 
   const clearFilters = () => {
+    if (hasSecondary) {
+      localStorage.removeItem(secondaryFilterType as string);
+      setSecondarySelected(secondaryOptions[0]?.[0] ?? '');
+    }
     localStorage.removeItem(filterType);
     setDefaultFilter();
     setShowFilters(false);
@@ -99,23 +131,22 @@ const FilterRadioGroup: React.FC<Props> = ({
     );
   };
 
+  // The first option is the default for every radio filter - "All bed types"
+  // on this page.
   const setDefaultFilter = () => {
-    if (
-      filterType === 'numbers-table-metrics' ||
-      filterType === 'single-type-chart-metric'
-    ) {
-      setSelectedFilter({
-        metric_id: 'bedcount_per_hundred_thousand_adults_total',
-        filter_bedtype: 'All bed types',
-      });
-    }
+    const [metricId, label] = Object.entries(filters)[0] ?? [];
+    if (!metricId) return;
+    setSelectedFilter({
+      metric_id: metricId,
+      filter_bedtype: label as string,
+    });
   };
 
   return (
     <div className="govuk-!-padding-bottom-4 govuk-!-padding-top-4">
       <div className="dhsc-filter--action">
         <button
-          id={`${filterType}-button`}
+          id={`${idBase}-button`}
           className={`govuk-button ${showFilters ? 'dhsc-filter--open' : 'dhsc-filter--closed'}`}
           type="button"
           aria-expanded={`${showFilters ? true : false}`}
@@ -137,7 +168,46 @@ const FilterRadioGroup: React.FC<Props> = ({
         </button>
       </div>
       {showFilters && (
-        <FilterBox>
+        <FilterBox
+          idPrefix={idBase}
+          aside={
+            hasSecondary ? (
+              <div className="govuk-form-group">
+                <fieldset className="govuk-fieldset">
+                  <legend className="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    {secondaryFilterLabel}
+                  </legend>
+                  {secondaryFilterHint && (
+                    <p className="govuk-hint govuk-!-font-size-16">
+                      {secondaryFilterHint}
+                    </p>
+                  )}
+                  <div className="govuk-radios govuk-radios--small">
+                    {secondaryOptions.map(([value, label]) => (
+                      <div className="govuk-radios__item" key={value}>
+                        <input
+                          className="govuk-radios__input"
+                          id={`${idBase}-${secondaryFilterType}-${value}`}
+                          name={`${secondaryFilterType}-group`}
+                          type="radio"
+                          value={value}
+                          checked={secondarySelected === value}
+                          onChange={() => setSecondarySelected(value)}
+                        />
+                        <label
+                          className="govuk-label govuk-radios__label"
+                          htmlFor={`${idBase}-${secondaryFilterType}-${value}`}
+                        >
+                          {label}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </fieldset>
+              </div>
+            ) : undefined
+          }
+        >
           {componentFilters.length === 0 && (
             <p className="govuk-body govuk-!-padding-left-3">
               Loading filters...
@@ -151,19 +221,19 @@ const FilterRadioGroup: React.FC<Props> = ({
                 </h4>
               </div>
               <div
-                id="radios-search"
+                id={`${idBase}-radios-search`}
                 className="app-c-option-select__filter"
                 hidden
                 style={{ display: 'block' }}
               >
                 <label
-                  htmlFor="input-bedtype-radios"
+                  htmlFor={`${idBase}-search-input`}
                   className="govuk-label govuk-visually-hidden"
                 >
                   {filterLabel} search
                 </label>
                 <input
-                  id="input-bedtype-radios"
+                  id={`${idBase}-search-input`}
                   className="app-c-option-select__filter-input govuk-input"
                   type="text"
                   onKeyUp={handleSearch}
@@ -185,7 +255,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                           <li className="govuk-radios__item" key={index}>
                             <input
                               className="govuk-radios__input"
-                              id={filterType + filter.metric_id}
+                              id={idBase + filter.metric_id}
                               name="Table filter"
                               type="radio"
                               value={filter.metric_id}
@@ -201,7 +271,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                             />
                             <label
                               className="govuk-label govuk-radios__label"
-                              htmlFor={filterType + filter.metric_id}
+                              htmlFor={idBase + filter.metric_id}
                             >
                               {filter.filter_bedtype}
                             </label>
@@ -221,7 +291,7 @@ const FilterRadioGroup: React.FC<Props> = ({
                 <div className="govuk-grid-column-full">
                   <div className="govuk-button-group">
                     <button
-                      id={`${filterType}-submit-button`}
+                      id={`${idBase}-submit-button`}
                       type="submit"
                       className="govuk-button"
                       onClick={() => handleSubmit()}

@@ -3,27 +3,34 @@ import React from 'react';
 import PeerGroupChartContent from './peer-group/PeerGroupChartContent';
 import PeerGroupChartHeader from './peer-group/PeerGroupChartHeader';
 import { PeerGroupBarChartProps } from './peer-group/types';
+import { METRICS, metricFormat, MetricId } from '@/config/metrics';
 
 // Presentational: peer/custom-group data is fetched once at page level (see
 // peer-group/usePeerGroupData.ts) and shared with the Table and Download tabs.
 const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
   laCode,
   laName,
+  metric,
   currentLaValue,
   nationalAverageValue,
+  regionalAverageValue,
   peerData,
   loading,
   error,
-  metricDescription = 'the percentage of households deprived in 4 dimensions',
-  figureTitle = 'Percentage of households deprived in 4 dimensions',
+  metricDescription,
+  figureTitle,
   figureNumber = 1,
   comparatorControl,
   comparatorLabel,
+  dateLabel,
+  comparisonSummary,
   comparatorAverageLabel,
+  regionalAverageLabel,
   nationalAverageLabel,
-  valueSuffix,
   sourceText,
 }) => {
+  const format = metricFormat(metric);
+
   if (!laCode || laCode === 'Loading...' || laCode === 'undefined') {
     return <p className="govuk-body">Loading...</p>;
   }
@@ -37,6 +44,8 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
         figureNumber={figureNumber}
         comparatorControl={comparatorControl}
         comparatorLabel={comparatorLabel}
+        dateLabel={dateLabel}
+        comparisonSummary={comparisonSummary}
       />
       {loading && <p className="govuk-body">Loading...</p>}
       {/* The chart benchmarks the user's own LA against the comparator group,
@@ -53,12 +62,17 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
           laName={laName}
           currentLaValue={currentLaValue}
           nationalAverageValue={nationalAverageValue}
+          regionalAverageValue={regionalAverageValue}
           peerData={peerData}
           ownLaCode={laCode}
           comparatorAverageLabel={comparatorAverageLabel}
+          regionalAverageLabel={regionalAverageLabel}
           nationalAverageLabel={nationalAverageLabel}
-          valueSuffix={valueSuffix}
-          sourceText={sourceText}
+          valueSuffix={format === 'percentage' ? '%' : ''}
+          currency={format === 'currency'}
+          sourceText={
+            sourceText ?? `Source: ${METRICS[metric as MetricId].source}`
+          }
         />
       )}
     </div>

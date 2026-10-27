@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { useComparatorGroups } from '@/components/charts/peer-group/useComparatorGroups';
+import { CustomComparatorGroup } from '@/components/charts/peer-group/types';
 
 const jsonResponse = (body: unknown, status = 200) =>
   ({
@@ -8,6 +9,9 @@ const jsonResponse = (body: unknown, status = 200) =>
     status,
     json: async () => body,
   }) as Response;
+
+const saved = (groups: CustomComparatorGroup[]) =>
+  groups.filter((group) => group.id !== 'region');
 
 describe('useComparatorGroups', () => {
   const mockFetch = vi.fn();
@@ -30,7 +34,7 @@ describe('useComparatorGroups', () => {
     expect(result.current.selection).toEqual({ kind: 'nhs_peer_group' });
 
     await waitFor(() =>
-      expect(result.current.groups).toEqual([
+      expect(saved(result.current.groups)).toEqual([
         { id: 'abc', name: 'Stored group', laCodes: ['E08000018'] },
       ])
     );
@@ -74,7 +78,7 @@ describe('useComparatorGroups', () => {
       );
     });
 
-    expect(result.current.groups).toEqual([
+    expect(saved(result.current.groups)).toEqual([
       { id: 'abc', name: 'Stored group', laCodes: ['E08000018'] },
       { id: 'new-id', name: 'Brand new', laCodes: ['E08000014'] },
     ]);
@@ -88,7 +92,7 @@ describe('useComparatorGroups', () => {
     mockFetch.mockResolvedValueOnce(jsonResponse({ error: 'boom' }, 500));
     const { result } = renderHook(() => useComparatorGroups());
     await waitFor(() => expect(mockFetch).toHaveBeenCalled());
-    expect(result.current.groups).toEqual([]);
+    expect(saved(result.current.groups)).toEqual([]);
   });
 
   it('saves a group via POST and selects it', async () => {
@@ -119,7 +123,7 @@ describe('useComparatorGroups', () => {
       '/api/comparator_groups',
       expect.objectContaining({ method: 'POST' })
     );
-    expect(result.current.groups).toEqual([
+    expect(saved(result.current.groups)).toEqual([
       {
         id: 'new-id',
         name: 'Custom group 1',
@@ -148,7 +152,7 @@ describe('useComparatorGroups', () => {
         await result.current.saveGroup({ name: 'Dup', laCodes: ['E08000014'] });
       })
     ).rejects.toThrow('A comparator group with this name already exists');
-    expect(result.current.groups).toEqual([]);
+    expect(saved(result.current.groups)).toEqual([]);
     expect(result.current.selection).toEqual({ kind: 'nhs_peer_group' });
   });
 
@@ -159,7 +163,7 @@ describe('useComparatorGroups', () => {
       })
     );
     const { result } = renderHook(() => useComparatorGroups());
-    await waitFor(() => expect(result.current.groups).toHaveLength(1));
+    await waitFor(() => expect(saved(result.current.groups)).toHaveLength(1));
 
     act(() => {
       result.current.setSelection({ kind: 'custom', groupId: 'abc' });
@@ -181,7 +185,7 @@ describe('useComparatorGroups', () => {
       '/api/comparator_groups/abc',
       expect.objectContaining({ method: 'PUT' })
     );
-    expect(result.current.groups).toEqual([
+    expect(saved(result.current.groups)).toEqual([
       { id: 'abc', name: 'Renamed', laCodes: ['E08000015'] },
     ]);
     expect(result.current.selection).toEqual({
@@ -197,7 +201,7 @@ describe('useComparatorGroups', () => {
       })
     );
     const { result } = renderHook(() => useComparatorGroups());
-    await waitFor(() => expect(result.current.groups).toHaveLength(1));
+    await waitFor(() => expect(saved(result.current.groups)).toHaveLength(1));
 
     act(() => {
       result.current.setSelection({ kind: 'custom', groupId: 'abc' });
@@ -212,7 +216,7 @@ describe('useComparatorGroups', () => {
       '/api/comparator_groups/abc',
       expect.objectContaining({ method: 'DELETE' })
     );
-    expect(result.current.groups).toEqual([]);
+    expect(saved(result.current.groups)).toEqual([]);
     expect(result.current.selection).toEqual({ kind: 'nhs_peer_group' });
   });
 
@@ -226,7 +230,7 @@ describe('useComparatorGroups', () => {
       })
     );
     const { result } = renderHook(() => useComparatorGroups());
-    await waitFor(() => expect(result.current.groups).toHaveLength(2));
+    await waitFor(() => expect(saved(result.current.groups)).toHaveLength(2));
 
     act(() => {
       result.current.setSelection({ kind: 'custom', groupId: 'second' });
@@ -237,10 +241,133 @@ describe('useComparatorGroups', () => {
       await result.current.deleteGroup('first');
     });
 
-    expect(result.current.groups).toHaveLength(1);
+    expect(saved(result.current.groups)).toHaveLength(1);
     expect(result.current.selection).toEqual({
       kind: 'custom',
       groupId: 'second',
     });
+  });
+
+  it("offers the other LAs in the user's region first, as a built-in group", async () => {
+    mockFetch.mockImplementation(async (url: string) =>
+      url === '/api/get_region_comparator'
+        ? jsonResponse({
+            region_name: 'West Midlands',
+            la_name: 'Coventry',
+            la_codes: ['E08000025', 'E08000026'],
+          })
+        : jsonResponse({
+            groups: [
+              { id: 'abc', name: 'Stored group', laCodes: ['E08000018'] },
+            ],
+          })
+    );
+
+    const { result } = renderHook(() => useComparatorGroups());
+
+    await waitFor(() =>
+      expect(result.current.groups.map((group) => group.id)).toEqual([
+        'region',
+        'abc',
+      ])
+    );
+    expect(result.current.groups[0]).toEqual({
+      id: 'region',
+      name: 'Region (West Midlands)',
+      averageLabel: 'West Midlands (regional average excluding Coventry)',
+      comparisonLabel: 'West Midlands excluding Coventry',
+      laCodes: ['E08000025', 'E08000026'],
+      builtIn: true,
+    });
+  });
+
+  it('shows the region as loading until it arrives', async () => {
+    let resolveRegion!: (value: Response) => void;
+    mockFetch.mockImplementation((url: string) =>
+      url === '/api/get_region_comparator'
+        ? new Promise<Response>((res) => {
+            resolveRegion = res;
+          })
+        : Promise.resolve(jsonResponse({ groups: [] }))
+    );
+
+    const { result } = renderHook(() => useComparatorGroups());
+
+    expect(result.current.groups[0]).toEqual({
+      id: 'region',
+      name: 'Region (Loading…)',
+      laCodes: [],
+      builtIn: true,
+      loading: true,
+    });
+
+    await act(async () => {
+      resolveRegion(
+        jsonResponse({ region_name: 'West Midlands', la_codes: ['E08000025'] })
+      );
+    });
+
+    await waitFor(() =>
+      expect(result.current.groups[0]).toEqual({
+        id: 'region',
+        name: 'Region (West Midlands)',
+        averageLabel:
+          'West Midlands (regional average excluding your local authority)',
+        comparisonLabel: 'West Midlands excluding your local authority',
+        laCodes: ['E08000025'],
+        builtIn: true,
+      })
+    );
+  });
+
+  it.each([
+    ['the request fails', jsonResponse({ error: 'No region for user' }, 500)],
+    [
+      'the region has no other LAs',
+      jsonResponse({ region_name: 'London', la_codes: [] }),
+    ],
+  ])('shows the region as unavailable when %s', async (_, response) => {
+    mockFetch.mockImplementation(async (url: string) =>
+      url === '/api/get_region_comparator'
+        ? response
+        : jsonResponse({ groups: [] })
+    );
+
+    const { result } = renderHook(() => useComparatorGroups());
+
+    await waitFor(() =>
+      expect(result.current.groups[0]).toMatchObject({
+        id: 'region',
+        name: 'Region (unavailable)',
+        disabled: true,
+      })
+    );
+  });
+
+  it('falls back to the NHS peer group if the region was chosen and then fails', async () => {
+    let failRegion!: (value: Response) => void;
+    mockFetch.mockImplementation((url: string) =>
+      url === '/api/get_region_comparator'
+        ? new Promise<Response>((res) => {
+            failRegion = res;
+          })
+        : Promise.resolve(jsonResponse({ groups: [] }))
+    );
+    const { result } = renderHook(() => useComparatorGroups());
+
+    act(() =>
+      result.current.setSelection({ kind: 'custom', groupId: 'region' })
+    );
+    expect(result.current.selection).toEqual({
+      kind: 'custom',
+      groupId: 'region',
+    });
+
+    await act(async () => {
+      failRegion(jsonResponse({ error: 'No region for user' }, 500));
+    });
+    await waitFor(() =>
+      expect(result.current.selection).toEqual({ kind: 'nhs_peer_group' })
+    );
   });
 });
