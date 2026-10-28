@@ -21,6 +21,8 @@ export const AUDIT_ACTOR_USER = 'user';
 
 // user.source for people added by an approver
 export const DELEGATED_USER_SOURCE = 'delegated';
+// user.source the gascd-apps CQC sync gives the NIs and RMs it adds
+export const CQC_SYNC_SOURCE_PREFIX = 'Admin file bulk upload';
 
 export const ALL_LOCATIONS = 'all';
 export const MANAGE_USERS_PAGE_SIZE = 20;
@@ -47,6 +49,7 @@ export type GrantRow = {
   userId: string;
   userName: string | null;
   userEmail: string;
+  userSource: string | null;
   scopeType: string;
   locationCode: string | null;
   basis: string;
@@ -69,6 +72,8 @@ export type ManagedUser = {
   grantedAt: Date;
   status: UserStatus;
   canChange: boolean;
+  // Why the approver can't change this user, shown instead of the actions
+  lockedReason: string | null;
 };
 
 const isLive = (grant: GrantRow, now: Date) =>
@@ -91,11 +96,17 @@ const grantedByLabel = (grant: GrantRow, currentUserId: string) => {
   if (grant.grantedByName) {
     return grant.grantedByName;
   }
-  if (grant.basis === GRANT_BASIS_NI || grant.basis === GRANT_BASIS_RM) {
+  if (isCqcRegistered(grant)) {
     return 'CQC registration';
+  }
+  if (grant.basis !== GRANT_BASIS_DELEGATED) {
+    return 'GASCD team';
   }
   return 'Unknown';
 };
+
+export const isCqcRegistered = (grant: Pick<GrantRow, 'userSource'>) =>
+  (grant.userSource ?? '').startsWith(CQC_SYNC_SOURCE_PREFIX);
 
 // An approver who is not provider-wide only sees their own locations, and users with access to them
 export function visibleGrants<
@@ -114,20 +125,35 @@ export function visibleGrants<
 }
 
 // Only people given access by an approver, and never a provider-wide user by an approver who isn't
+export function lockedReason(
+  grants: GrantRow[],
+  context: Pick<ApproverContext, 'providerWide' | 'locations'>,
+  currentUserId: string
+): string | null {
+  const visible = visibleGrants(grants, context);
+  if (visible.length === 0) return 'No access you can change';
+  if (visible.some((g) => g.userId === currentUserId)) return 'Your own access';
+  const notDelegated = visible.find((g) => g.basis !== GRANT_BASIS_DELEGATED);
+  if (notDelegated) {
+    return isCqcRegistered(notDelegated)
+      ? 'Managed by CQC registration'
+      : 'Managed by the GASCD team';
+  }
+  if (
+    !context.providerWide &&
+    visible.some((g) => g.scopeType === GRANT_SCOPE_PROVIDER)
+  ) {
+    return 'Only a Nominated Individual can change this user';
+  }
+  return null;
+}
+
 export function canChangeUser(
   grants: GrantRow[],
   context: Pick<ApproverContext, 'providerWide' | 'locations'>,
   currentUserId: string
 ): boolean {
-  const visible = visibleGrants(grants, context);
-  return (
-    visible.length > 0 &&
-    visible.every(
-      (g) => g.basis === GRANT_BASIS_DELEGATED && g.userId !== currentUserId
-    ) &&
-    (context.providerWide ||
-      !visible.some((g) => g.scopeType === GRANT_SCOPE_PROVIDER))
-  );
+  return lockedReason(grants, context, currentUserId) === null;
 }
 
 export function groupManagedUsers(
@@ -169,6 +195,7 @@ export function groupManagedUsers(
       grantedAt: earliest.grantedAt,
       status: statusFor(grants, now),
       canChange: canChangeUser(grants, context, currentUserId),
+      lockedReason: lockedReason(grants, context, currentUserId),
     };
   });
 

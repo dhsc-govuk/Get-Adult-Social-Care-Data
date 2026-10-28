@@ -372,7 +372,7 @@ describe('available locations from mixed grants', () => {
           laCodes: [],
         },
       },
-    });
+    } as any);
 
     const result = await GetAvailableLocations({
       url: `http://localhost/api/get_available_locations`,
