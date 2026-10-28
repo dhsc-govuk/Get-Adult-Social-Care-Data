@@ -63,6 +63,12 @@ const HomePage: React.FC = async () => {
             'Data on funding for both short-term and long-term care, also funding by individual care type.',
           url: '/topics/financial-spend-and-unpaid-care/financial-spend/data',
         },
+        {
+          title: 'Market position statements',
+          description:
+            'Links to the market position statements published by each local authority in England.',
+          url: '/market-position-statements',
+        },
       ],
     },
     {
