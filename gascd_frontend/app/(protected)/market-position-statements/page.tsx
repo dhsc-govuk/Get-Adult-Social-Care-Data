@@ -9,7 +9,10 @@ import { LocalAuthoritySummary } from '@/components/charts/peer-group/types';
 import { MSPLookup } from '@/helpers/msp/msp-lookup';
 import AnalyticsService from '@/services/analytics/analyticsService';
 
-const breadcrumbs = [{ text: 'Home', url: '/home' }];
+const breadcrumbs = [
+  { text: 'Home', url: '/home' },
+  { text: 'Market position statements', url: '/market-position-statements' },
+];
 
 export default function MarketPositionStatementsPage() {
   const { authorities, error } = useAllLocalAuthorities(true);
