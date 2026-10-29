@@ -1,7 +1,6 @@
 import {
   ApproverContext,
   canChangeUser,
-  lockedReason,
   currentLocationSelection,
   legacyFieldsFromGrants,
   planLocationChange,
@@ -41,7 +40,6 @@ const grant = (overrides: Partial<GrantRow>): GrantRow => ({
   userId: 'u1',
   userName: 'Priya Shah',
   userEmail: 'priya@example.org',
-  userSource: 'delegated',
   scopeType: 'location',
   locationCode: 'L1',
   basis: 'delegated',
@@ -84,39 +82,25 @@ describe('groupManagedUsers', () => {
     expect(user.locationNames).toEqual([]);
   });
 
-  it('says "You" when the viewer gave access, and tells CQC users from ones the GASCD team added', () => {
-    const backfilled = {
-      basis: 'nominated_individual',
-      scopeType: 'provider',
-      locationCode: null,
-      grantedByUserId: null,
-      grantedByName: null,
-    };
+  it('says "You" when the viewer gave access and names CQC for NIs and RMs', () => {
     const users = groupManagedUsers(
       [
-        grant({ userId: 'u1', userName: 'Amy', grantedByUserId: 'me' }),
+        grant({ userId: 'u1', grantedByUserId: 'me' }),
         grant({
-          ...backfilled,
           userId: 'u2',
-          userName: 'Bob CQC',
-          userSource: 'Admin file bulk upload - 12',
-        }),
-        grant({
-          ...backfilled,
-          userId: 'u3',
-          userName: 'Cat Manual',
-          userSource: 'manual',
+          userName: 'Zed NI',
+          basis: 'nominated_individual',
+          scopeType: 'provider',
+          locationCode: null,
+          grantedByUserId: null,
+          grantedByName: null,
         }),
       ],
       niContext,
       'me',
       NOW
     );
-    expect(users.map((u) => u.grantedBy)).toEqual([
-      'You',
-      'CQC registration',
-      'GASCD team',
-    ]);
+    expect(users.map((u) => u.grantedBy)).toEqual(['You', 'CQC registration']);
   });
 
   it('uses the earliest grant for who gave access and when', () => {
@@ -319,33 +303,6 @@ describe('canChangeUser', () => {
         'me'
       )
     ).toBe(true);
-  });
-});
-
-describe('lockedReason', () => {
-  it('explains why a user cannot be changed', () => {
-    const ni = { basis: 'nominated_individual' };
-    expect(lockedReason([grant({})], niContext, 'me')).toBeNull();
-    expect(lockedReason([grant({ userId: 'me' })], niContext, 'me')).toBe(
-      'Your own access'
-    );
-    expect(
-      lockedReason(
-        [grant({ ...ni, userSource: 'Admin file bulk upload - 3' })],
-        niContext,
-        'me'
-      )
-    ).toBe('Managed by CQC registration');
-    expect(
-      lockedReason([grant({ ...ni, userSource: 'Internal' })], niContext, 'me')
-    ).toBe('Managed by the GASCD team');
-    expect(
-      lockedReason(
-        [grant({ scopeType: 'provider', locationCode: null })],
-        rmContext,
-        'me'
-      )
-    ).toBe('Only a Nominated Individual can change this user');
   });
 });
 
