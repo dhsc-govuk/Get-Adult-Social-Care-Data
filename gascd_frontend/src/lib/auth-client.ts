@@ -1,6 +1,5 @@
 import { createAuthClient } from 'better-auth/react';
 import {
-  customSessionClient,
   genericOAuthClient,
   inferAdditionalFields,
   lastLoginMethodClient,
@@ -13,7 +12,6 @@ export const authClient = createAuthClient({
     lastLoginMethodClient(),
     genericOAuthClient(),
     inferAdditionalFields<typeof auth>(),
-    customSessionClient<typeof auth>(),
   ],
 });
 

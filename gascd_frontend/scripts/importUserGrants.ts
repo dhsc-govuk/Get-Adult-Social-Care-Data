@@ -1,21 +1,22 @@
-import {
-  AUDIT_ACTION_USER_ADDED,
-  AUDIT_ACTOR_ADMIN,
-  GRANT_BASIS_NI,
-  GRANT_BASIS_RM,
-  GRANT_ROLE_APPROVER,
-  GRANT_ROLE_READER,
-  GRANT_SCOPE_LOCATION,
-  GRANT_SCOPE_PROVIDER,
-  GRANT_SOURCE_ADMIN,
-  GRANT_STATUS_INVITED,
-} from '@/lib/manageUsers';
-import { GRANT_BASIS_LA_USER } from '@/lib/la-signup';
-import { GRANT_SCOPE_LA } from '@/lib/userAccess';
+// Values in access_grant / access_audit, as in gascd-apps AccessCodes.cs. Kept here so the
+// import works whether or not the site's delegation code (which has its own copies) is in.
+const GRANT_ROLE_READER = 'reader';
+const GRANT_ROLE_APPROVER = 'approver';
+const GRANT_BASIS_NI = 'nominated_individual';
+const GRANT_BASIS_RM = 'registered_manager';
+const GRANT_BASIS_LA_USER = 'la_user';
+const GRANT_SCOPE_PROVIDER = 'provider';
+const GRANT_SCOPE_LOCATION = 'location';
+const GRANT_SCOPE_LA = 'local_authority';
+const GRANT_STATUS_INVITED = 'invited';
+// Added by a GASCD admin: the admin app, or this import
+const GRANT_SOURCE_ADMIN = 'admin';
+const AUDIT_ACTION_USER_ADDED = 'user_added';
+const AUDIT_ACTOR_ADMIN = 'admin';
 
-// Imported users get their access as access_grant rows, as the site reads access from
-// there. Each code in location_id becomes one grant, the same way the gascd-apps backfill
-// turns user.locationId into grants.
+// Imported users get their access as access_grant rows as well as the user columns, so
+// they have it whichever the site reads. Each code in location_id becomes one grant, the
+// same way the gascd-apps backfill turns user.locationId into grants.
 
 export type ImportRow = {
   name: string;

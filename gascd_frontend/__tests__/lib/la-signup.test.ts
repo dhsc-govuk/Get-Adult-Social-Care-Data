@@ -9,7 +9,6 @@ import {
   isOneLoginCallback,
   laSignupBeforeCreateHook,
   oauthProviderId,
-  recordLaSelfServiceGrant,
 } from '@/lib/la-signup';
 
 // Better Auth passes the endpoint's route pattern and params, not the request URL.
@@ -166,74 +165,5 @@ describe('laSignupBeforeCreateHook', () => {
     // routes.mjs does result.error.split(' ').join('_'); a code with no spaces
     // arrives unchanged in the ?error= query param the after-hook matches on.
     expect(LA_DOMAIN_REJECTED_ERROR).not.toMatch(/\s/);
-  });
-});
-
-describe('recordLaSelfServiceGrant', () => {
-  const NOW = new Date('2026-10-27T12:00:00Z');
-  const fakeDb = () => {
-    const inserts: Record<string, any[]> = {};
-    const trx = {
-      insertInto: (table: string) => ({
-        values: (row: any) => ({
-          execute: async () => {
-            (inserts[table] ??= []).push(row);
-          },
-        }),
-      }),
-    };
-    const db: any = {
-      transaction: () => ({ execute: (fn: any) => fn(trx) }),
-    };
-    return { db, inserts };
-  };
-
-  it('writes an LA reader grant and a user_added audit row', async () => {
-    const { db, inserts } = fakeDb();
-
-    await recordLaSelfServiceGrant(
-      db,
-      {
-        id: 'u1',
-        email: 'tester@barnet.gov.uk',
-        source: LA_SELF_SERVICE_SOURCE,
-        locationId: 'E09000003',
-        registeredName: 'tester@barnet.gov.uk',
-      },
-      NOW
-    );
-
-    expect(inserts.access_grant).toEqual([
-      {
-        user_id: 'u1',
-        scope_type: 'local_authority',
-        la_code: 'E09000003',
-        role: 'reader',
-        basis: 'la_user',
-        status: 'active',
-        source: 'self_service',
-        granted_at: NOW,
-      },
-    ]);
-    expect(inserts.access_audit).toHaveLength(1);
-    expect(inserts.access_audit[0]).toMatchObject({
-      action: 'user_added',
-      actor_id: 'u1',
-      target_user_id: 'u1',
-      target_email: 'tester@barnet.gov.uk',
-    });
-  });
-
-  it('ignores users created any other way', async () => {
-    const { db, inserts } = fakeDb();
-
-    await recordLaSelfServiceGrant(db, {
-      id: 'u2',
-      email: 'test@gascd.local',
-      source: null,
-      locationId: null,
-    });
-
-    expect(inserts).toEqual({});
   });
 });

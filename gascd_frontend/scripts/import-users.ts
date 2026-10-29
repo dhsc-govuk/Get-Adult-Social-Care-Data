@@ -21,8 +21,8 @@ const USER_DATABASE_NAME = 'user';
 // DRY_RUN=true CSV_PATH=./testimport.csv npx tsx ./scripts/import-users.ts
 // CSV_PATH=./testimport.csv npx tsx ./scripts/import-users.ts
 //
-// Each user is saved with their access_grant rows and an access_audit row, as the site
-// reads access from access_grant. Codes are checked against gascd_data first, which needs:
+// Each user is saved with their access_grant rows and an access_audit row as well as the
+// user columns, ready for the site reading access from access_grant. Codes are checked against gascd_data first, which needs:
 //   GASCD_PG_SERVER        - FQDN
 //   GASCD_PG_DATABASE      - usually gascd_data
 //   GASCD_PG_USER          - the Postgres login (the deploy SP's name)
