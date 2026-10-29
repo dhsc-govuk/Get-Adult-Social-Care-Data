@@ -9,10 +9,9 @@ import { withBasePath } from '@/lib/basePath';
 
 type Props = {
   session?: Session | null;
-  showManageUsers?: boolean;
 };
 
-const ServiceName: React.FC<Props> = ({ session, showManageUsers = false }) => {
+const ServiceName: React.FC<Props> = ({ session }) => {
   const [selectedLocationName, setSelectedLocationName] = useState<string>('');
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [topicLinks, setTopicLinks] = useState<any[]>([]);
@@ -144,18 +143,6 @@ const ServiceName: React.FC<Props> = ({ session, showManageUsers = false }) => {
                     )}
                   </li>
                 )}
-                {session &&
-                  session.user.selectedLocationId &&
-                  showManageUsers && (
-                    <li className="govuk-service-navigation__item">
-                      <a
-                        className="govuk-service-navigation__link"
-                        href={withBasePath('/manage-users')}
-                      >
-                        Manage users
-                      </a>
-                    </li>
-                  )}
                 {session && session.user.selectedLocationId && (
                   <li className="govuk-service-navigation__item govuk-service-navigation__item-end">
                     <button

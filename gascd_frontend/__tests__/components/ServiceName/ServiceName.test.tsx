@@ -56,20 +56,4 @@ describe('Service Component', () => {
       '/topics/future-planning/subtopics'
     );
   });
-
-  it('Shows the manage users link only when allowed', () => {
-    const { rerender } = render(
-      <ServiceName session={mockSessionWithLocation} />
-    );
-    expect(
-      screen.queryByRole('link', { name: 'Manage users' })
-    ).not.toBeInTheDocument();
-
-    rerender(
-      <ServiceName session={mockSessionWithLocation} showManageUsers={true} />
-    );
-    expect(
-      screen.getByRole('link', { name: 'Manage users' }).getAttribute('href')
-    ).toBe('/manage-users');
-  });
 });
