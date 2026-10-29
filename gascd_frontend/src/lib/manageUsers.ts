@@ -66,6 +66,7 @@ export type ManagedUser = {
   userId: string;
   name: string;
   email: string;
+  role: string | null;
   allLocations: boolean;
   locationNames: string[];
   grantedBy: string;
@@ -75,6 +76,17 @@ export type ManagedUser = {
   // Why the approver can't change this user, shown instead of the actions
   lockedReason: string | null;
 };
+
+// Highest first, so a user with several grants shows their most senior role
+const ROLE_LABELS: [string, string][] = [
+  [GRANT_BASIS_NI, 'Nominated Individual'],
+  [GRANT_BASIS_RM, 'Registered Manager'],
+  [GRANT_BASIS_DELEGATED, 'Invited user'],
+];
+
+const roleFor = (grants: GrantRow[]) =>
+  ROLE_LABELS.find(([basis]) => grants.some((g) => g.basis === basis))?.[1] ??
+  null;
 
 const isLive = (grant: GrantRow, now: Date) =>
   !grant.expiresAt || grant.expiresAt > now;
@@ -189,6 +201,7 @@ export function groupManagedUsers(
       userId: earliest.userId,
       name: earliest.userName || earliest.userEmail,
       email: earliest.userEmail,
+      role: roleFor(grants),
       allLocations,
       locationNames: names,
       grantedBy: grantedByLabel(earliest, currentUserId),

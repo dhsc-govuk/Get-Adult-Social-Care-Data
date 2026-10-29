@@ -73,6 +73,28 @@ describe('groupManagedUsers', () => {
     });
   });
 
+  it("shows the most senior role across a user's grants", () => {
+    const roles = (grants: Partial<GrantRow>[]) =>
+      groupManagedUsers(grants.map(grant), niContext, 'x', NOW)[0].role;
+
+    expect(roles([{}])).toBe('Invited user');
+    expect(
+      roles([
+        { locationCode: 'L1', basis: 'registered_manager' },
+        { locationCode: 'L2' },
+      ])
+    ).toBe('Registered Manager');
+    expect(
+      roles([
+        {
+          scopeType: 'provider',
+          locationCode: null,
+          basis: 'nominated_individual',
+        },
+      ])
+    ).toBe('Nominated Individual');
+  });
+
   it('shows a provider-wide grant as all locations', () => {
     const [user] = groupManagedUsers(
       [grant({ scopeType: 'provider', locationCode: null })],
