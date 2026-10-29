@@ -74,7 +74,7 @@ const LocalMarketInformation: React.FC<Props> = ({
             pressures
           </li>
         </ul>
-        <MpsSearch excludeLaCode={localAuthorityId} />
+        <MpsSearch />
       </div>
     </div>
   );
