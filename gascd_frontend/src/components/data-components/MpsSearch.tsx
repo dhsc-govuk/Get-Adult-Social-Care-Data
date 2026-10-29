@@ -4,20 +4,13 @@ import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLoc
 import { withBasePath } from '@/lib/basePath';
 import MpsSearchForm from './MpsSearchForm';
 
-type Props = {
-  // The user's own LA, whose statement is already linked above
-  excludeLaCode?: string;
-};
-
-const MpsSearch: React.FC<Props> = ({ excludeLaCode }) => {
+const MpsSearch: React.FC = () => {
   const [open, setOpen] = useState(false);
   const { authorities, error } = useAllLocalAuthorities(open);
-  const otherAuthorities = useMemo(
+  const sortedAuthorities = useMemo(
     () =>
-      (authorities ?? [])
-        .filter((la) => la.laCode !== excludeLaCode)
-        .sort((a, b) => a.laName.localeCompare(b.laName)),
-    [authorities, excludeLaCode]
+      [...(authorities ?? [])].sort((a, b) => a.laName.localeCompare(b.laName)),
+    [authorities]
   );
 
   return (
@@ -32,7 +25,7 @@ const MpsSearch: React.FC<Props> = ({ excludeLaCode }) => {
       </summary>
       <div className="govuk-details__text">
         <MpsSearchForm
-          authorities={otherAuthorities}
+          authorities={sortedAuthorities}
           loadError={error}
           label="Local authority"
           extraAction={

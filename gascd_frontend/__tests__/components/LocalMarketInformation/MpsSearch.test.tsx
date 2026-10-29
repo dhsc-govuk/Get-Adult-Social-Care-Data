@@ -50,19 +50,19 @@ describe('MpsSearch', () => {
     await openDetails();
   });
 
-  it('suggests LAs starting with what is typed, in order, without the user’s own LA', async () => {
-    render(<MpsSearch excludeLaCode="E06000066" />);
+  it('suggests LAs starting with what is typed, in order', async () => {
+    render(<MpsSearch />);
     await openDetails();
 
     await waitFor(() => {
       fireEvent.change(input(), { target: { value: 's' } });
-      expect(screen.getAllByRole('option')).toHaveLength(2);
+      expect(screen.getAllByRole('option')).toHaveLength(3);
     });
     expect(
       screen.getAllByRole('option').map((option) => option.textContent)
-    ).toEqual(['Surrey', 'Swindon']);
+    ).toEqual(['Somerset', 'Surrey', 'Swindon']);
     expect(screen.getByRole('status')).toHaveTextContent(
-      '2 results are available'
+      '3 results are available'
     );
   });
 
