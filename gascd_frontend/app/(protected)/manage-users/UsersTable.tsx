@@ -73,7 +73,13 @@ export default function UsersTable({ users }: { users: ManagedUser[] }) {
               </strong>
             </td>
             <td className="govuk-table__cell govuk-table__cell--numeric">
-              {user.canChange && <UserActions user={user} />}
+              {user.canChange ? (
+                <UserActions user={user} />
+              ) : (
+                <span className="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-0">
+                  {user.lockedReason}
+                </span>
+              )}
             </td>
           </tr>
         ))}
