@@ -50,6 +50,12 @@ export default function UsersTable({ users }: { users: ManagedUser[] }) {
               <span className="govuk-!-font-weight-bold">{user.name}</span>
               <br />
               <span className="govuk-body-s">{user.email}</span>
+              {user.role && (
+                <>
+                  <br />
+                  <span className="govuk-body-s">{user.role}</span>
+                </>
+              )}
             </td>
             <td className="govuk-table__cell">
               {user.allLocations
