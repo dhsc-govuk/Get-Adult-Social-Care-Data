@@ -10,6 +10,8 @@ export const GRANT_STATUS_INVITED = 'invited';
 export const GRANT_STATUS_ACTIVE = 'active';
 export const GRANT_STATUS_SUSPENDED = 'suspended';
 export const GRANT_SOURCE_APPROVER = 'approver';
+// Added by a GASCD admin: the admin app, or the import users workflow
+export const GRANT_SOURCE_ADMIN = 'admin';
 export const AUDIT_ACTION_USER_ADDED = 'user_added';
 export const AUDIT_ACTION_FIRST_SIGN_IN = 'first_sign_in';
 export const AUDIT_ACTION_LOCATIONS_CHANGED = 'locations_changed';
@@ -18,6 +20,7 @@ export const AUDIT_ACTION_ACCESS_RESTORED = 'access_restored';
 // Not yet in gascd-apps AccessAuditActions
 export const AUDIT_ACTION_NAME_CHANGED = 'name_changed';
 export const AUDIT_ACTOR_USER = 'user';
+export const AUDIT_ACTOR_ADMIN = 'admin';
 
 // user.source for people added by an approver
 export const DELEGATED_USER_SOURCE = 'delegated';
