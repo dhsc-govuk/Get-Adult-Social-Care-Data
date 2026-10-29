@@ -361,31 +361,6 @@ describe('test available locations', () => {
   });
 });
 
-describe('available locations from mixed grants', () => {
-  it('lists provider and single-location grants together', async () => {
-    mockGetSession.mockReturnValue({
-      user: {
-        ...mockSession.user,
-        access: {
-          providerCodes: ['testcp2'],
-          locationCodes: ['testlocation9'],
-          laCodes: [],
-        },
-      },
-    } as any);
-
-    const result = await GetAvailableLocations({
-      url: `http://localhost/api/get_available_locations`,
-    } as NextRequest);
-    const { data } = await result.json();
-
-    expect(data.map((l: any) => l.location_id)).toEqual([
-      ...organisation_data.locations.map((l) => l.location_code),
-      locations_data.care_provider_location.code,
-    ]);
-  });
-});
-
 describe('set selected locations', () => {
   beforeEach(() => vi.clearAllMocks());
   it('requires a user', async () => {

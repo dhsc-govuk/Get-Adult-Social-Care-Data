@@ -7,7 +7,6 @@ import { headers } from 'next/headers';
 import type { Metadata } from 'next';
 import Header from '@/components/common/header/Header';
 import ServiceName from '@/components/common/service-name/ServiceName';
-import { canManageUsers } from '@/lib/manageUsersServer';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 config.autoAddCss = false;
@@ -44,7 +43,6 @@ export default async function RootLayout({
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  const showManageUsers = await canManageUsers(session?.user);
   return (
     <html lang="en" className="govuk-template govuk-template--rebranded">
       <Axe />
@@ -54,7 +52,7 @@ export default async function RootLayout({
           session={session}
         />
         <Header session={session} account_url={ONELOGIN_HOME_URL} />
-        <ServiceName session={session} showManageUsers={showManageUsers} />
+        <ServiceName session={session} />
         {children}
       </body>
     </html>
