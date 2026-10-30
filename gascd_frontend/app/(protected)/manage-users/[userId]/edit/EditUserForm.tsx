@@ -17,6 +17,8 @@ type Props = {
   email: string;
   initialName: string;
   initialLocations: string[];
+  // A CQC Registered Manager's own locations, which can't be changed here
+  fixedLocations: string[];
   providerWide: boolean;
   locations: ProviderLocation[];
 };
@@ -26,9 +28,11 @@ const EditUserForm: React.FC<Props> = ({
   email,
   initialName,
   initialLocations,
+  fixedLocations,
   providerWide,
   locations,
 }) => {
+  const cqcRegistered = fixedLocations.length > 0;
   const [fields, setFields] = useState<EditFields>({
     name: initialName,
     locations: initialLocations,
@@ -83,6 +87,11 @@ const EditUserForm: React.FC<Props> = ({
           <label className="govuk-label govuk-label--m" htmlFor={INPUT_ID.name}>
             Full name
           </label>
+          {cqcRegistered && (
+            <div id={`${INPUT_ID.name}-hint`} className="govuk-hint">
+              Their name comes from their CQC registration.
+            </div>
+          )}
           {errorFor('name')}
           <input
             className={`govuk-input ${errors.name ? 'govuk-input--error' : ''}`}
@@ -92,11 +101,17 @@ const EditUserForm: React.FC<Props> = ({
             autoComplete="off"
             spellCheck={false}
             value={fields.name}
+            disabled={cqcRegistered}
             onChange={(event) =>
               setFields({ ...fields, name: event.target.value })
             }
             aria-describedby={
-              errors.name ? `${INPUT_ID.name}-error` : undefined
+              [
+                cqcRegistered && `${INPUT_ID.name}-hint`,
+                errors.name && `${INPUT_ID.name}-error`,
+              ]
+                .filter(Boolean)
+                .join(' ') || undefined
             }
           />
         </div>
@@ -112,7 +127,9 @@ const EditUserForm: React.FC<Props> = ({
               Which locations should they be able to access?
             </legend>
             <div id="edit-locations-hint" className="govuk-hint">
-              Select all that apply.
+              {cqcRegistered
+                ? 'Their CQC registered locations are already ticked and cannot be changed here. Select any other locations they should be able to access.'
+                : 'Select all that apply.'}
             </div>
             {errorFor('locations')}
             <LocationCheckboxes
@@ -120,6 +137,7 @@ const EditUserForm: React.FC<Props> = ({
               providerWide={providerWide}
               locations={locations}
               selected={fields.locations}
+              fixed={fixedLocations}
               onChange={(selected) =>
                 setFields({ ...fields, locations: selected })
               }

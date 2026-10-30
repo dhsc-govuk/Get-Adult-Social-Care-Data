@@ -39,7 +39,9 @@ import {
   legacyFieldsFromGrants,
   legacyLocationFields,
   planLocationChange,
-  visibleGrants,
+  editableGrants,
+  fixedLocationSelection,
+  isFixedGrant,
   ProviderLocation,
 } from '@/lib/manageUsers';
 
@@ -183,6 +185,7 @@ export const listProviderGrants = async (
       'gb.name as grantedByName',
       'g.granted_at as grantedAt',
       'g.expires_at as expiresAt',
+      'g.status_changed_at as statusChangedAt',
     ])
     .where('g.provider_code', '=', providerCode)
     .where('g.scope_type', 'in', [GRANT_SCOPE_PROVIDER, GRANT_SCOPE_LOCATION]);
@@ -204,6 +207,7 @@ export const listProviderGrants = async (
     grantedByName: row.grantedByRegisteredName ?? row.grantedByName,
     grantedAt: new Date(row.grantedAt),
     expiresAt: row.expiresAt ? new Date(row.expiresAt) : null,
+    statusChangedAt: row.statusChangedAt ? new Date(row.statusChangedAt) : null,
   }));
 };
 
@@ -377,8 +381,11 @@ export const updateManagedUser = async (
     const grants = await listProviderGrants(context.providerCode, userId, trx);
     const target = grants[0];
     const name = fields.name.trim();
+    const fixed = fixedLocationSelection(grants, context);
+    const cqcRegistered = grants.some((g) => isFixedGrant(g, context));
 
-    if (name !== target.userName) {
+    // CQC owns a registered NI's or RM's name
+    if (!cqcRegistered && name !== target.userName) {
       await trx
         .updateTable('user')
         .set({ registeredName: name, name, updatedAt: now })
@@ -394,7 +401,11 @@ export const updateManagedUser = async (
         .execute();
     }
 
-    const plan = planLocationChange(grants, fields.locations, context);
+    const plan = planLocationChange(
+      grants,
+      fields.locations.filter((code) => !fixed.includes(code)),
+      context
+    );
     if (plan.added.length === 0 && plan.removed.length === 0) return;
 
     // New locations follow whether they have signed in yet
@@ -405,6 +416,17 @@ export const updateManagedUser = async (
       await trx
         .deleteFrom('access_grant')
         .where('id', 'in', plan.deleteIds)
+        .execute();
+    }
+    if (plan.suspendIds.length) {
+      await trx
+        .updateTable('access_grant')
+        .set({
+          status: GRANT_STATUS_SUSPENDED,
+          status_changed_at: now,
+          status_changed_by_user_id: change.actor.id,
+        })
+        .where('id', 'in', plan.suspendIds)
         .execute();
     }
     if (plan.reuseIds.length) {
@@ -462,7 +484,7 @@ const setStatus = async (
   const now = new Date();
   await authDB.transaction().execute(async (trx) => {
     const grants = await listProviderGrants(context.providerCode, userId, trx);
-    const affected = visibleGrants(grants, context).filter((g) =>
+    const affected = editableGrants(grants, context).filter((g) =>
       from(g.status)
     );
     if (affected.length === 0) return;
@@ -537,5 +559,5 @@ export const getChangeableUser = async (
   const grants = await listProviderGrants(context.providerCode, userId);
   if (!canChangeUser(grants, context, actor.id)) return null;
   const [user] = groupManagedUsers(grants, context, actor.id);
-  return { context, grants, user };
+  return user ? { context, grants, user } : null;
 };

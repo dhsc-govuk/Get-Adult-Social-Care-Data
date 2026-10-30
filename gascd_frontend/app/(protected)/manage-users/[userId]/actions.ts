@@ -8,7 +8,12 @@ import {
   restoreManagedUser,
   updateManagedUser,
 } from '@/lib/manageUsersServer';
-import { validateInviteLocations, validateInviteName } from '@/lib/manageUsers';
+import {
+  fixedLocationSelection,
+  ManagedUser,
+  validateInviteLocations,
+  validateInviteName,
+} from '@/lib/manageUsers';
 import logger from '@/utils/logger';
 
 export type EditFields = { name: string; locations: string[] };
@@ -43,10 +48,16 @@ export async function updateUser(
       ? fields.locations.map(String)
       : [],
   };
+  // A CQC Registered Manager keeps their own locations, so extra ones are optional
+  const hasFixed =
+    fixedLocationSelection(loaded.grants, loaded.context).length > 0;
   const errors = Object.fromEntries(
     Object.entries({
       name: validateInviteName(input.name),
-      locations: validateInviteLocations(input.locations, loaded.context),
+      locations:
+        hasFixed && input.locations.length === 0
+          ? undefined
+          : validateInviteLocations(input.locations, loaded.context),
     }).filter(([, message]) => message)
   );
   if (Object.keys(errors).length > 0) return { errors };
@@ -69,12 +80,12 @@ export async function updateUser(
 
 const changeStatus = async (
   userId: string,
-  allowed: (status: string) => boolean,
+  allowed: (user: ManagedUser) => boolean,
   change: typeof removeManagedUser,
   done: string
 ): Promise<{ error?: string }> => {
   const loaded = await load(userId);
-  if (!loaded || !allowed(loaded.user.status)) return { error: NO_PERMISSION };
+  if (!loaded || !allowed(loaded.user)) return { error: NO_PERMISSION };
   try {
     await change({ actor: loaded.actor, context: loaded.context, userId });
   } catch (error) {
@@ -91,7 +102,7 @@ const changeStatus = async (
 export async function removeUser(userId: string) {
   return changeStatus(
     userId,
-    (status) => status !== 'Removed',
+    (user) => user.canRemove && user.status !== 'Removed',
     removeManagedUser,
     'removed'
   );
@@ -100,7 +111,7 @@ export async function removeUser(userId: string) {
 export async function restoreUser(userId: string) {
   return changeStatus(
     userId,
-    (status) => status === 'Removed',
+    (user) => user.status === 'Removed',
     restoreManagedUser,
     'restored'
   );

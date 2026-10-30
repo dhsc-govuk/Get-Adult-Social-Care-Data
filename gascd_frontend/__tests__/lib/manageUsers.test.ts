@@ -3,6 +3,7 @@ import {
   canChangeUser,
   lockedReason,
   currentLocationSelection,
+  fixedLocationSelection,
   legacyFieldsFromGrants,
   planLocationChange,
   GrantRow,
@@ -35,6 +36,8 @@ const rmContext: ApproverContext = {
   locations: [LOCATIONS[0]],
 };
 
+const CQC = 'Admin file bulk upload - 3';
+
 let nextId = 1;
 const grant = (overrides: Partial<GrantRow>): GrantRow => ({
   id: nextId++,
@@ -50,6 +53,7 @@ const grant = (overrides: Partial<GrantRow>): GrantRow => ({
   grantedByName: 'Mark Allen',
   grantedAt: new Date('2026-08-14T09:00:00Z'),
   expiresAt: null,
+  statusChangedAt: null,
   ...overrides,
 });
 
@@ -179,6 +183,20 @@ describe('groupManagedUsers', () => {
       NOW
     );
     expect(user.status).toBe(expected);
+  });
+
+  it('hides users removed more than a year ago', () => {
+    const removed = (statusChangedAt: string) =>
+      grant({
+        status: 'suspended',
+        statusChangedAt: new Date(statusChangedAt),
+      });
+    expect(
+      groupManagedUsers([removed('2025-11-01T00:00:00Z')], niContext, 'x', NOW)
+    ).toHaveLength(1);
+    expect(
+      groupManagedUsers([removed('2025-10-01T00:00:00Z')], niContext, 'x', NOW)
+    ).toHaveLength(0);
   });
 
   it('treats an expired grant as removed', () => {
@@ -314,13 +332,40 @@ describe('canChangeUser', () => {
     expect(canChangeUser([grant({})], niContext, 'me')).toBe(true);
   });
 
-  it('never allows NIs, RMs or yourself', () => {
+  it('never allows a CQC registered NI or yourself', () => {
     expect(
-      canChangeUser([grant({ basis: 'registered_manager' })], niContext, 'me')
+      canChangeUser(
+        [
+          grant({
+            basis: 'nominated_individual',
+            scopeType: 'provider',
+            locationCode: null,
+            userSource: CQC,
+          }),
+        ],
+        niContext,
+        'me'
+      )
     ).toBe(false);
     expect(canChangeUser([grant({ userId: 'me' })], niContext, 'me')).toBe(
       false
     );
+  });
+
+  it('lets an NI, but not an RM, change users the GASCD team set up', () => {
+    const teamRm = grant({
+      basis: 'registered_manager',
+      userSource: 'Internal',
+    });
+    expect(canChangeUser([teamRm], niContext, 'me')).toBe(true);
+    expect(canChangeUser([teamRm], rmContext, 'me')).toBe(false);
+  });
+
+  it('lets an NI give a CQC registered RM more locations, but not remove them', () => {
+    const cqcRm = grant({ basis: 'registered_manager', userSource: CQC });
+    const [user] = groupManagedUsers([cqcRm], niContext, 'me', NOW);
+    expect(user).toMatchObject({ canChange: true, canRemove: false });
+    expect(canChangeUser([cqcRm], rmContext, 'me')).toBe(false);
   });
 
   it('stops a Registered Manager changing all-locations users or users elsewhere', () => {
@@ -353,13 +398,20 @@ describe('lockedReason', () => {
     );
     expect(
       lockedReason(
-        [grant({ ...ni, userSource: 'Admin file bulk upload - 3' })],
+        [
+          grant({
+            ...ni,
+            scopeType: 'provider',
+            locationCode: null,
+            userSource: CQC,
+          }),
+        ],
         niContext,
         'me'
       )
     ).toBe('Managed by CQC registration');
     expect(
-      lockedReason([grant({ ...ni, userSource: 'Internal' })], niContext, 'me')
+      lockedReason([grant({ ...ni, userSource: 'Internal' })], rmContext, 'me')
     ).toBe('Managed by the GASCD team');
     expect(
       lockedReason(
@@ -408,6 +460,7 @@ describe('planLocationChange', () => {
 
     expect(planLocationChange([l1, l2], ['L2', 'L3'], niContext)).toEqual({
       deleteIds: [l1.id],
+      suspendIds: [],
       reuseIds: [],
       insert: [{ scopeType: 'location', locationCode: 'L3' }],
       added: ['L3'],
@@ -441,6 +494,20 @@ describe('planLocationChange', () => {
     });
   });
 
+  it('leaves a CQC RM’s own locations alone and suspends the GASCD team’s', () => {
+    const cqc = grant({ basis: 'registered_manager', userSource: CQC });
+    const extra = grant({ locationCode: 'L2' });
+    const plan = planLocationChange([cqc, extra], ['L3'], niContext);
+    expect(plan.deleteIds).toEqual([extra.id]);
+    expect(plan.removed).toEqual(['L2']);
+
+    const team = grant({ basis: 'registered_manager', userSource: 'Internal' });
+    expect(planLocationChange([team], ['L2'], niContext)).toMatchObject({
+      deleteIds: [],
+      suspendIds: [team.id],
+    });
+  });
+
   it('leaves locations outside a Registered Manager’s own alone', () => {
     const elsewhere = grant({ locationCode: 'L2' });
     const plan = planLocationChange(
@@ -450,6 +517,17 @@ describe('planLocationChange', () => {
     );
     expect(plan.removed).toEqual(['L1']);
     expect(plan.deleteIds).not.toContain(elsewhere.id);
+  });
+});
+
+describe('fixedLocationSelection', () => {
+  it('lists a CQC RM’s own locations, which are kept out of the editable ones', () => {
+    const grants = [
+      grant({ basis: 'registered_manager', userSource: CQC }),
+      grant({ locationCode: 'L2' }),
+    ];
+    expect(fixedLocationSelection(grants, niContext)).toEqual(['L1']);
+    expect(currentLocationSelection(grants, niContext)).toEqual(['L2']);
   });
 });
 

@@ -13,7 +13,13 @@ export default async function RemoveUserPage({ params }: Props) {
 
   const { userId } = await params;
   const changeable = await getChangeableUser(actor, userId);
-  if (!changeable || changeable.user.status === 'Removed') notFound();
+  if (
+    !changeable ||
+    !changeable.user.canRemove ||
+    changeable.user.status === 'Removed'
+  ) {
+    notFound();
+  }
   const { context, user } = changeable;
 
   return (

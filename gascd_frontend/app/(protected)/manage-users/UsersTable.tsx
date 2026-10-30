@@ -109,7 +109,7 @@ function UserActions({ user }: { user: ManagedUser }) {
   return (
     <>
       {actionLink(`${base}/edit`, 'Edit', user.name)}
-      {actionLink(`${base}/remove`, 'Remove', user.name)}
+      {user.canRemove && actionLink(`${base}/remove`, 'Remove', user.name)}
     </>
   );
 }

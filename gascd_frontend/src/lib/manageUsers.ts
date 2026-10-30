@@ -58,6 +58,7 @@ export type GrantRow = {
   grantedByName: string | null;
   grantedAt: Date;
   expiresAt: Date | null;
+  statusChangedAt: Date | null;
 };
 
 export type UserStatus = 'Active' | 'Invited' | 'Removed';
@@ -73,6 +74,8 @@ export type ManagedUser = {
   grantedAt: Date;
   status: UserStatus;
   canChange: boolean;
+  // False when CQC set some of their access, which only an edit can add to
+  canRemove: boolean;
   // Why the approver can't change this user, shown instead of the actions
   lockedReason: string | null;
 };
@@ -91,7 +94,17 @@ const roleFor = (grants: GrantRow[]) =>
 const isLive = (grant: GrantRow, now: Date) =>
   !grant.expiresAt || grant.expiresAt > now;
 
-const statusFor = (grants: GrantRow[], now: Date): UserStatus => {
+// Removed users drop off the list a year after their access ended
+const removedOverAYearAgo = (grants: GrantRow[], now: Date) => {
+  if (statusFor(grants, now) !== 'Removed') return false;
+  const yearAgo = new Date(now);
+  yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+  return grants.every(
+    (g) => (g.statusChangedAt ?? g.expiresAt ?? g.grantedAt) <= yearAgo
+  );
+};
+
+function statusFor(grants: GrantRow[], now: Date): UserStatus {
   if (grants.some((g) => g.status === GRANT_STATUS_ACTIVE && isLive(g, now))) {
     return 'Active';
   }
@@ -99,7 +112,7 @@ const statusFor = (grants: GrantRow[], now: Date): UserStatus => {
     return 'Invited';
   }
   return 'Removed';
-};
+}
 
 const grantedByLabel = (grant: GrantRow, currentUserId: string) => {
   if (grant.grantedByUserId && grant.grantedByUserId === currentUserId) {
@@ -120,6 +133,19 @@ const grantedByLabel = (grant: GrantRow, currentUserId: string) => {
 export const isCqcRegistered = (grant: Pick<GrantRow, 'userSource'>) =>
   (grant.userSource ?? '').startsWith(CQC_SYNC_SOURCE_PREFIX);
 
+type ChangeContext = Pick<
+  ApproverContext,
+  'basis' | 'providerWide' | 'locations'
+>;
+
+// CQC decides an NI's or RM's own access, and only an NI can change what the GASCD team set up
+export const isFixedGrant = (
+  grant: Pick<GrantRow, 'basis' | 'userSource'>,
+  context: Pick<ApproverContext, 'basis'>
+) =>
+  grant.basis !== GRANT_BASIS_DELEGATED &&
+  (isCqcRegistered(grant) || context.basis !== GRANT_BASIS_NI);
+
 // An approver who is not provider-wide only sees their own locations, and users with access to them
 export function visibleGrants<
   T extends Pick<GrantRow, 'scopeType' | 'locationCode'>,
@@ -136,18 +162,29 @@ export function visibleGrants<
   );
 }
 
-// Only people given access by an approver, and never a provider-wide user by an approver who isn't
+export const editableGrants = (grants: GrantRow[], context: ChangeContext) =>
+  visibleGrants(grants, context).filter((g) => !isFixedGrant(g, context));
+
+const fixedGrants = (grants: GrantRow[], context: ChangeContext) =>
+  visibleGrants(grants, context).filter((g) => isFixedGrant(g, context));
+
+// An NI can give a CQC Registered Manager more locations, but nobody can change a CQC NI
 export function lockedReason(
   grants: GrantRow[],
-  context: Pick<ApproverContext, 'providerWide' | 'locations'>,
+  context: ChangeContext,
   currentUserId: string
 ): string | null {
   const visible = visibleGrants(grants, context);
   if (visible.length === 0) return 'No access you can change';
   if (visible.some((g) => g.userId === currentUserId)) return 'Your own access';
-  const notDelegated = visible.find((g) => g.basis !== GRANT_BASIS_DELEGATED);
-  if (notDelegated) {
-    return isCqcRegistered(notDelegated)
+  const fixed = fixedGrants(grants, context);
+  const niCanAddLocations =
+    context.basis === GRANT_BASIS_NI &&
+    fixed.every(
+      (g) => g.basis === GRANT_BASIS_RM && g.scopeType === GRANT_SCOPE_LOCATION
+    );
+  if (fixed.length > 0 && !niCanAddLocations) {
+    return isCqcRegistered(fixed[0])
       ? 'Managed by CQC registration'
       : 'Managed by the GASCD team';
   }
@@ -162,7 +199,7 @@ export function lockedReason(
 
 export function canChangeUser(
   grants: GrantRow[],
-  context: Pick<ApproverContext, 'providerWide' | 'locations'>,
+  context: ChangeContext,
   currentUserId: string
 ): boolean {
   return lockedReason(grants, context, currentUserId) === null;
@@ -184,33 +221,40 @@ export function groupManagedUsers(
     byUser.set(row.userId, [...(byUser.get(row.userId) ?? []), row]);
   }
 
-  const users = Array.from(byUser.values()).map((grants) => {
-    const earliest = grants.reduce((a, b) =>
-      b.grantedAt < a.grantedAt ? b : a
-    );
-    const allLocations = grants.some(
-      (g) => g.scopeType === GRANT_SCOPE_PROVIDER
-    );
-    const names = allLocations
-      ? []
-      : grants
-          .map((g) => locationNames.get(g.locationCode ?? '') ?? g.locationCode)
-          .filter((name): name is string => Boolean(name))
-          .sort((a, b) => a.localeCompare(b));
-    return {
-      userId: earliest.userId,
-      name: earliest.userName || earliest.userEmail,
-      email: earliest.userEmail,
-      role: roleFor(grants),
-      allLocations,
-      locationNames: names,
-      grantedBy: grantedByLabel(earliest, currentUserId),
-      grantedAt: earliest.grantedAt,
-      status: statusFor(grants, now),
-      canChange: canChangeUser(grants, context, currentUserId),
-      lockedReason: lockedReason(grants, context, currentUserId),
-    };
-  });
+  const users = Array.from(byUser.values())
+    .filter((grants) => !removedOverAYearAgo(grants, now))
+    .map((grants) => {
+      const earliest = grants.reduce((a, b) =>
+        b.grantedAt < a.grantedAt ? b : a
+      );
+      const allLocations = grants.some(
+        (g) => g.scopeType === GRANT_SCOPE_PROVIDER
+      );
+      const names = allLocations
+        ? []
+        : grants
+            .map(
+              (g) => locationNames.get(g.locationCode ?? '') ?? g.locationCode
+            )
+            .filter((name): name is string => Boolean(name))
+            .sort((a, b) => a.localeCompare(b));
+      return {
+        userId: earliest.userId,
+        name: earliest.userName || earliest.userEmail,
+        email: earliest.userEmail,
+        role: roleFor(grants),
+        allLocations,
+        locationNames: names,
+        grantedBy: grantedByLabel(earliest, currentUserId),
+        grantedAt: earliest.grantedAt,
+        status: statusFor(grants, now),
+        canChange: canChangeUser(grants, context, currentUserId),
+        canRemove:
+          canChangeUser(grants, context, currentUserId) &&
+          fixedGrants(grants, context).length === 0,
+        lockedReason: lockedReason(grants, context, currentUserId),
+      };
+    });
 
   return users.sort((a, b) =>
     a.name.localeCompare(b.name, 'en', { sensitivity: 'base' })
@@ -294,9 +338,9 @@ export function legacyLocationFields(
 // The locations box values for a user's current access, as the edit form shows them
 export function currentLocationSelection(
   grants: GrantRow[],
-  context: Pick<ApproverContext, 'providerWide' | 'locations'>
+  context: ChangeContext
 ): string[] {
-  const live = visibleGrants(grants, context).filter(
+  const live = editableGrants(grants, context).filter(
     (g) => g.status !== GRANT_STATUS_SUSPENDED
   );
   if (live.some((g) => g.scopeType === GRANT_SCOPE_PROVIDER)) {
@@ -305,8 +349,20 @@ export function currentLocationSelection(
   return live.map((g) => g.locationCode as string);
 }
 
+// Locations from CQC, shown ticked but locked on the edit form
+export function fixedLocationSelection(
+  grants: GrantRow[],
+  context: ChangeContext
+): string[] {
+  return fixedGrants(grants, context)
+    .filter((g) => g.status !== GRANT_STATUS_SUSPENDED && g.locationCode)
+    .map((g) => g.locationCode as string);
+}
+
 export type LocationChangePlan = {
   deleteIds: number[];
+  // Grants the GASCD team set up, suspended so the access backfill doesn't recreate them
+  suspendIds: number[];
   // Suspended rows for a location being given back, reused to keep the unique index happy
   reuseIds: number[];
   insert: { scopeType: string; locationCode: string | null }[];
@@ -321,9 +377,9 @@ export type LocationChangePlan = {
 export function planLocationChange(
   grants: GrantRow[],
   locations: string[],
-  context: Pick<ApproverContext, 'providerWide' | 'locations'>
+  context: ChangeContext
 ): LocationChangePlan {
-  const inScope = visibleGrants(grants, context);
+  const inScope = editableGrants(grants, context);
   const live = inScope.filter((g) => g.status !== GRANT_STATUS_SUSPENDED);
   const key = (g: GrantRow) =>
     g.scopeType === GRANT_SCOPE_PROVIDER
@@ -336,7 +392,12 @@ export function planLocationChange(
   const added = locations.filter((code) => !current.has(code));
 
   const plan: LocationChangePlan = {
-    deleteIds: removedGrants.map((g) => g.id),
+    deleteIds: removedGrants
+      .filter((g) => g.basis === GRANT_BASIS_DELEGATED)
+      .map((g) => g.id),
+    suspendIds: removedGrants
+      .filter((g) => g.basis !== GRANT_BASIS_DELEGATED)
+      .map((g) => g.id),
     reuseIds: [],
     insert: [],
     added,

@@ -2,7 +2,10 @@ import { notFound, redirect } from 'next/navigation';
 import Layout from '@/components/common/layout/Layout';
 import { getCurrentUser } from '@/lib/permissions';
 import { getChangeableUser } from '@/lib/manageUsersServer';
-import { currentLocationSelection } from '@/lib/manageUsers';
+import {
+  currentLocationSelection,
+  fixedLocationSelection,
+} from '@/lib/manageUsers';
 import EditUserForm from './EditUserForm';
 
 type Props = { params: Promise<{ userId: string }> };
@@ -29,6 +32,7 @@ export default async function EditUserPage({ params }: Props) {
             email={user.email}
             initialName={user.name}
             initialLocations={currentLocationSelection(grants, context)}
+            fixedLocations={fixedLocationSelection(grants, context)}
             providerWide={context.providerWide}
             locations={context.locations}
           />

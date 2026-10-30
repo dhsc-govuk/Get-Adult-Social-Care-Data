@@ -33,10 +33,10 @@ const context = {
   providerWide: false,
   locations: [{ code: 'L1', name: 'Ivy House' }],
 };
-const changeable = (status: string) => ({
+const changeable = (status: string, canRemove = true) => ({
   context,
   grants: [],
-  user: { userId: 'u1', name: 'Tina Singh', status },
+  user: { userId: 'u1', name: 'Tina Singh', status, canRemove },
 });
 
 beforeEach(() => {
@@ -102,6 +102,15 @@ describe('removeUser and restoreUser', () => {
     expect(redirect).toHaveBeenCalledWith(
       '/manage-users?done=restored&user=u1'
     );
+  });
+
+  it('will not remove a CQC registered user', async () => {
+    vi.mocked(getChangeableUser).mockResolvedValue(
+      changeable('Active', false) as any
+    );
+
+    expect((await removeUser('u1')).error).toMatch(/permission/);
+    expect(removeManagedUser).not.toHaveBeenCalled();
   });
 
   it('will not remove a user twice', async () => {

@@ -6,6 +6,8 @@ type Props = {
   providerWide: boolean;
   locations: ProviderLocation[];
   selected: string[];
+  // Shown ticked and disabled
+  fixed?: string[];
   onChange: (selected: string[]) => void;
 };
 
@@ -25,6 +27,7 @@ export default function LocationCheckboxes({
   providerWide,
   locations,
   selected,
+  fixed = [],
   onChange,
 }: Props) {
   const box = (code: string, boxId: string, label: string, hint?: string) => (
@@ -35,7 +38,8 @@ export default function LocationCheckboxes({
         name="locations"
         type="checkbox"
         value={code}
-        checked={selected.includes(code)}
+        checked={selected.includes(code) || fixed.includes(code)}
+        disabled={fixed.includes(code)}
         onChange={(event) =>
           onChange(toggleLocation(selected, code, event.target.checked))
         }
@@ -69,7 +73,8 @@ export default function LocationCheckboxes({
         box(
           location.code,
           !providerWide && index === 0 ? id : `${id}-${location.code}`,
-          location.name
+          location.name,
+          fixed.includes(location.code) ? 'CQC registered location' : undefined
         )
       )}
     </div>
