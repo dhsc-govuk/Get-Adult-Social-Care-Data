@@ -1157,6 +1157,8 @@
 .app-mps-search__option {
   padding: 10px;
   border-bottom: 1px solid #b1b4b6;
+  // Set here because the browse page has no GOV.UK wrapper for it to inherit from
+  font-family: 'GDS Transport', arial, sans-serif;
   font-size: 1.1875rem;
   line-height: 1.25;
   cursor: pointer;
