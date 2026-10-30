@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { locations_data } from '@/data/mockResponses/locations_data';
 import { GET as GetFilters } from '../../app/api/get_all_total_beds_filters/route';
 import { GET as GetCustomGroupValues } from '../../app/api/get_custom_group_values/route';
+import { GET as GetLocationData } from '../../app/api/get_location_data/route';
 import { GET as GetLaList } from '../../app/api/get_la_list/route';
 import { GET as GetAvailableLocations } from '../../app/api/get_available_locations/route';
 import { POST as SetSelectedLocation } from '../../app/api/set_selected_location/route';
@@ -592,7 +593,11 @@ describe('get custom group values', () => {
     // excluded from the average - the same semantics LA users get.
     mockGetSession.mockReturnValue({
       ...mockSession,
-      user: { ...mockSession.user, selectedLocationId: 'testcpl1' },
+      user: {
+        ...mockSession.user,
+        selectedLocationId: 'testcpl1',
+        access: { providerCodes: [], locationCodes: ['testcpl1'], laCodes: [] },
+      },
     } as any);
     const req = new NextRequest(
       `${base_url}?la_codes=E08000024&la_codes=testla1&la_codes=testla2&metric_code=perc_households_one_person`
@@ -605,6 +610,23 @@ describe('get custom group values', () => {
     expect(data.group_members).toHaveLength(3);
   });
 
+  it('ignores a selected location the grants no longer cover', async () => {
+    // mockSession's grants cover testlocation1 only, so testcpl1's parent LA
+    // must not be excluded
+    mockGetSession.mockReturnValue({
+      ...mockSession,
+      user: { ...mockSession.user, selectedLocationId: 'testcpl1' },
+    } as any);
+    const req = new NextRequest(
+      `${base_url}?la_codes=E08000024&la_codes=testla1&la_codes=testla2&metric_code=perc_households_one_person`
+    );
+    const result = await GetCustomGroupValues(req);
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    // Average of all three: E08000024 (40), testla1 (10), testla2 (20)
+    expect(data.custom_group_average).toBeCloseTo(70 / 3);
+  });
+
   it('omits requesting_la_code when a care provider user has no selected location', async () => {
     mockGetSession.mockReturnValue(mockSession);
     const req = new NextRequest(
@@ -615,5 +637,47 @@ describe('get custom group values', () => {
     const data = await result.json();
     // No exclusion applies - both values are in the average
     expect(data.custom_group_average).toBe(15);
+  });
+});
+
+describe('get location data', () => {
+  const req = new NextRequest('http://localhost/api/get_location_data');
+
+  beforeEach(() => vi.clearAllMocks());
+
+  it('returns the selected location when a provider grant covers it', async () => {
+    mockGetSession.mockReturnValue({
+      ...mockSessionCareProvider,
+      user: { ...mockSessionCareProvider.user, selectedLocationId: 'testcpl1' },
+    });
+    const result = await GetLocationData(req);
+    const data = await result.json();
+    expect(data.provider_location_id).toBe('testcpl1');
+    expect(data.la_code).toBe('E08000024');
+  });
+
+  it('returns nothing for a selected location outside the grants', async () => {
+    mockGetSession.mockReturnValue({
+      ...mockSession,
+      user: { ...mockSession.user, selectedLocationId: 'testcpl1' },
+    });
+    const result = await GetLocationData(req);
+    expect(await result.json()).toEqual([]);
+  });
+
+  it('returns nothing for an LA the grants do not cover', async () => {
+    mockGetSession.mockReturnValue({
+      ...mockSessionLAUser,
+      user: { ...mockSessionLAUser.user, selectedLocationId: 'testla2' },
+    });
+    const result = await GetLocationData(req);
+    expect(await result.json()).toEqual([]);
+  });
+
+  it('returns the LA for an LA user', async () => {
+    mockGetSession.mockReturnValue(mockSessionLAUser);
+    const result = await GetLocationData(req);
+    const data = await result.json();
+    expect(data.la_code).toBeDefined();
   });
 });
