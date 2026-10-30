@@ -49,6 +49,18 @@ export function accessFromGrants(
   };
 }
 
+// A care provider location is covered by a grant on it, or on its provider
+export const canSeeCareProviderLocation = (
+  access: UserAccess,
+  locationCode: string,
+  providerCode: string | null | undefined
+): boolean =>
+  access.locationCodes.includes(locationCode) ||
+  (!!providerCode && access.providerCodes.includes(providerCode));
+
+export const canSeeLa = (access: UserAccess, laCode: string): boolean =>
+  access.laCodes.includes(laCode);
+
 // The session's locationType / locationId, so existing checks read the grants
 export function locationFieldsFromAccess(access: UserAccess): {
   locationType: string | null;

@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   AccessGrantScope,
   accessFromGrants,
+  canSeeCareProviderLocation,
+  canSeeLa,
   locationFieldsFromAccess,
 } from '@/lib/userAccess';
 
@@ -105,5 +107,30 @@ describe('locationFieldsFromAccess', () => {
         laCodes: [],
       })
     ).toEqual({ locationType: null, locationId: null });
+  });
+});
+
+describe('canSeeCareProviderLocation', () => {
+  const access = { providerCodes: ['P1'], locationCodes: ['L9'], laCodes: [] };
+
+  it('allows a location granted directly', () => {
+    expect(canSeeCareProviderLocation(access, 'L9', 'P2')).toBe(true);
+  });
+
+  it('allows any location of a granted provider', () => {
+    expect(canSeeCareProviderLocation(access, 'L1', 'P1')).toBe(true);
+  });
+
+  it('refuses a location outside the grants', () => {
+    expect(canSeeCareProviderLocation(access, 'L1', 'P2')).toBe(false);
+    expect(canSeeCareProviderLocation(access, 'L1', null)).toBe(false);
+  });
+});
+
+describe('canSeeLa', () => {
+  it('allows only granted LAs', () => {
+    const access = { providerCodes: [], locationCodes: [], laCodes: ['LA1'] };
+    expect(canSeeLa(access, 'LA1')).toBe(true);
+    expect(canSeeLa(access, 'LA2')).toBe(false);
   });
 });

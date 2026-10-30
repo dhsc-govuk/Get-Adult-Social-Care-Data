@@ -1,7 +1,11 @@
 import 'server-only';
 import { getAPIClient } from './dataAPI';
 import { User } from '@/lib/auth';
-import { UserAccess } from '@/lib/userAccess';
+import {
+  canSeeCareProviderLocation,
+  canSeeLa,
+  UserAccess,
+} from '@/lib/userAccess';
 import logger from '@/utils/logger';
 import { ALLOWED_CP_USER_TYPES, LA_USER_TYPE } from '@/constants';
 
@@ -26,8 +30,7 @@ export const getDefaultLocationsCP = async (
   );
   if (
     cpdata &&
-    !access.locationCodes.includes(cp_location_id) &&
-    !access.providerCodes.includes(cpdata.provider_code ?? '')
+    !canSeeCareProviderLocation(access, cp_location_id, cpdata.provider_code)
   ) {
     logger.error('Selected location is not in the user access grants');
     return [];
@@ -101,7 +104,7 @@ export const getDefaultLocations = async (user: User) => {
   if (ALLOWED_CP_USER_TYPES.includes(location_type)) {
     return getDefaultLocationsCP(selected_location_id, user.access);
   } else if (location_type == LA_USER_TYPE) {
-    if (!user.access.laCodes.includes(selected_location_id)) {
+    if (!canSeeLa(user.access, selected_location_id)) {
       logger.error('Selected location is not in the user access grants');
       return [];
     }
