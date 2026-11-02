@@ -33,10 +33,21 @@ export const isUserRegistered = (user: User) => {
       user.registeredEmail
     );
     return false;
+  } else if (!hasAnyAccess(user)) {
+    // Removed users keep their row and sign-in, so the grants decide
+    logger.info('User has no live access', {
+      userid: user.id,
+    });
+    return false;
   } else {
     return true;
   }
 };
+
+const hasAnyAccess = ({ access }: User) =>
+  access.providerCodes.length > 0 ||
+  access.locationCodes.length > 0 ||
+  access.laCodes.length > 0;
 
 // Metric level protections
 // -- note - this covers blanket rules for metrics, ignoring the location level being requested

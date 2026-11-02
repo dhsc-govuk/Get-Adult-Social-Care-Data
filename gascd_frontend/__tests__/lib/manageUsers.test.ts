@@ -99,6 +99,34 @@ describe('groupManagedUsers', () => {
     ).toBe('Nominated Individual');
   });
 
+  it('leaves out locations taken away while others are still live', () => {
+    const [user] = groupManagedUsers(
+      [
+        grant({ id: 1, locationCode: 'L1', status: 'suspended' }),
+        grant({ id: 2, locationCode: 'L2' }),
+      ],
+      niContext,
+      'x',
+      NOW
+    );
+    expect(user.status).toBe('Active');
+    expect(user.locationNames).toEqual(['Oak Lodge']);
+  });
+
+  it('lists the locations a removed user would get back', () => {
+    const [user] = groupManagedUsers(
+      [
+        grant({ id: 1, locationCode: 'L1', status: 'suspended' }),
+        grant({ id: 2, locationCode: 'L2', status: 'suspended' }),
+      ],
+      niContext,
+      'x',
+      NOW
+    );
+    expect(user.status).toBe('Removed');
+    expect(user.locationNames).toEqual(['Ivy House', 'Oak Lodge']);
+  });
+
   it('shows a provider-wide grant as all locations', () => {
     const [user] = groupManagedUsers(
       [grant({ scopeType: 'provider', locationCode: null })],

@@ -227,12 +227,17 @@ export function groupManagedUsers(
       const earliest = grants.reduce((a, b) =>
         b.grantedAt < a.grantedAt ? b : a
       );
-      const allLocations = grants.some(
+      // A removed user still lists what Restore would give back
+      const live = grants.filter(
+        (g) => g.status !== GRANT_STATUS_SUSPENDED && isLive(g, now)
+      );
+      const shown = live.length > 0 ? live : grants;
+      const allLocations = shown.some(
         (g) => g.scopeType === GRANT_SCOPE_PROVIDER
       );
       const names = allLocations
         ? []
-        : grants
+        : shown
             .map(
               (g) => locationNames.get(g.locationCode ?? '') ?? g.locationCode
             )
