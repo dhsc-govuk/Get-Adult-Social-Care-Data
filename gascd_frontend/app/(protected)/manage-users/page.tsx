@@ -52,6 +52,11 @@ const BANNERS: Record<
   }),
 };
 
+const breadcrumbs = [
+  { text: 'Home', url: '/home' },
+  { text: 'Manage users', url: '/manage-users' },
+];
+
 type Props = {
   searchParams: Promise<{ page?: string; done?: string; user?: string }>;
 };
@@ -95,6 +100,7 @@ export default async function ManageUsersPage({ searchParams }: Props) {
       title="Manage users"
       showLoginInformation={true}
       currentPage="manage-users"
+      breadcrumbs={breadcrumbs}
     >
       {banner && (
         <div className="govuk-grid-row">
