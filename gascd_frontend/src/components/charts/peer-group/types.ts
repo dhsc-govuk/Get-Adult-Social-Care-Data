@@ -48,6 +48,8 @@ export interface CustomComparatorGroup {
   // and captions
   averageLabel?: string;
   comparisonLabel?: string;
+  // Replaces "<name> total" where the group's values are summed
+  totalLabel?: string;
   // Can be chosen, but its LAs haven't arrived yet
   loading?: boolean;
   // Shown but can't be chosen: the region failed to load

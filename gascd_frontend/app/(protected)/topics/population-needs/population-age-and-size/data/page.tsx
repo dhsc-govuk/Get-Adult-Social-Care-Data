@@ -142,7 +142,7 @@ export default function ProvisionAndOccupancyPage() {
   const benchmarkedColumnHeaders = {
     CPLabel: locationNames.CPLabel,
     LALabel: locationNames.LALabel,
-    RegionLabel: locationNames.RegionLabel,
+    RegionLabel: `${locationNames.RegionLabel} (regional average)`,
     ComparatorLabel: comparatorAverageLabel,
     CountryLabel: locationNames.CountryLabel,
   };
@@ -150,12 +150,12 @@ export default function ProvisionAndOccupancyPage() {
   // population instead of a mean, which is what reads naturally next to
   // England's total.
   const comparatorTotalLabel = selectedGroup
-    ? `${selectedGroup.name} total`
+    ? (selectedGroup.totalLabel ?? `${selectedGroup.name} total`)
     : 'NHS peer group total';
   const populationSizeColumnHeaders = {
     CPLabel: locationNames.CPLabel,
     LALabel: locationNames.LALabel,
-    RegionLabel: locationNames.RegionLabel,
+    RegionLabel: `${locationNames.RegionLabel} (regional total)`,
     ComparatorLabel: comparatorTotalLabel,
     CountryLabel: locationNames.CountryLabel,
   };
@@ -556,7 +556,7 @@ export default function ProvisionAndOccupancyPage() {
                   <>
                     Table 1: adult population size – {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
-                    {locationNames.RegionLabel} (regional average),{' '}
+                    {populationSizeColumnHeaders.RegionLabel},{' '}
                     {populationSizeColumnHeaders.ComparatorLabel} and{' '}
                     {populationSizeColumnHeaders.CountryLabel},{' '}
                     {IndicatorService.getMostRecentDate(

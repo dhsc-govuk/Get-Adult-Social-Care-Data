@@ -77,6 +77,16 @@ describe('HomePage', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('should link to market position statements under Funding', async () => {
+    mockGetSession.mockResolvedValue(mockSession);
+    const ResolvedPage = await HomePage({});
+    render(ResolvedPage);
+
+    expect(
+      screen.getByRole('link', { name: /Market position statements/i })
+    ).toHaveAttribute('href', '/market-position-statements');
+  });
+
   it('should render LA-only links to LA users', async () => {
     mockGetSession.mockResolvedValue(mockSessionLAUser);
     const ResolvedPage = await HomePage({});

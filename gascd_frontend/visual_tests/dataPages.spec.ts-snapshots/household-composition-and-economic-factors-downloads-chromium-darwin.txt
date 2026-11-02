@@ -2,19 +2,19 @@
 "Sharing label: Published data"
 "This data can be shared outside your organisation."
 
-"Indicator","Sunderland","North East","NHS peer group (average)","England (national average)"
+"Indicator","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
 "Percentage of households deprived in 4 dimensions: education, employment, health and housing","0.5%","0.3%","0.2%","0.3%"
 
 # property_owned_outright.csv
 "Sharing label: Published data"
 "This data can be shared outside your organisation."
 
-"Indicator","Sunderland","North East","NHS peer group (average)","England (national average)"
+"Indicator","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
 "Percentage of households where the property is owned outright","30.1%","21.2%","31.7%","30.2%"
 
 # one_person_households_over_65.csv
 "Sharing label: Published data"
 "This data can be shared outside your organisation."
 
-"Indicator","Sunderland","North East","NHS peer group (average)","England (national average)"
+"Indicator","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
 "Percentage of one-person households where the person is aged 65 or over","44.1%","39.0%","35.7%","39.7%"
