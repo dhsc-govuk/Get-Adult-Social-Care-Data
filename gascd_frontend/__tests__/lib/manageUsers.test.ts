@@ -380,13 +380,15 @@ describe('canChangeUser', () => {
     );
   });
 
-  it('lets an NI, but not an RM, change users the GASCD team set up', () => {
+  it('lets an NI or RM change and remove users the GASCD team set up', () => {
     const teamRm = grant({
       basis: 'registered_manager',
       userSource: 'Internal',
     });
-    expect(canChangeUser([teamRm], niContext, 'me')).toBe(true);
-    expect(canChangeUser([teamRm], rmContext, 'me')).toBe(false);
+    for (const context of [niContext, rmContext]) {
+      const [user] = groupManagedUsers([teamRm], context, 'me', NOW);
+      expect(user).toMatchObject({ canChange: true, canRemove: true });
+    }
   });
 
   it('lets an NI give a CQC registered RM more locations, but not remove them', () => {
@@ -438,9 +440,6 @@ describe('lockedReason', () => {
         'me'
       )
     ).toBe('Managed by CQC registration');
-    expect(
-      lockedReason([grant({ ...ni, userSource: 'Internal' })], rmContext, 'me')
-    ).toBe('Managed by the GASCD team');
     expect(
       lockedReason(
         [grant({ scopeType: 'provider', locationCode: null })],

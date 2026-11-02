@@ -382,7 +382,7 @@ export const updateManagedUser = async (
     const target = grants[0];
     const name = fields.name.trim();
     const fixed = fixedLocationSelection(grants, context);
-    const cqcRegistered = grants.some((g) => isFixedGrant(g, context));
+    const cqcRegistered = grants.some(isFixedGrant);
 
     // CQC owns a registered NI's or RM's name
     if (!cqcRegistered && name !== target.userName) {

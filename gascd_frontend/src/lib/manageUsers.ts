@@ -138,13 +138,9 @@ type ChangeContext = Pick<
   'basis' | 'providerWide' | 'locations'
 >;
 
-// CQC decides an NI's or RM's own access, and only an NI can change what the GASCD team set up
-export const isFixedGrant = (
-  grant: Pick<GrantRow, 'basis' | 'userSource'>,
-  context: Pick<ApproverContext, 'basis'>
-) =>
-  grant.basis !== GRANT_BASIS_DELEGATED &&
-  (isCqcRegistered(grant) || context.basis !== GRANT_BASIS_NI);
+// CQC decides an NI's or RM's own access; what the GASCD team set up any approver can change
+export const isFixedGrant = (grant: Pick<GrantRow, 'basis' | 'userSource'>) =>
+  grant.basis !== GRANT_BASIS_DELEGATED && isCqcRegistered(grant);
 
 // An approver who is not provider-wide only sees their own locations, and users with access to them
 export function visibleGrants<
@@ -163,10 +159,10 @@ export function visibleGrants<
 }
 
 export const editableGrants = (grants: GrantRow[], context: ChangeContext) =>
-  visibleGrants(grants, context).filter((g) => !isFixedGrant(g, context));
+  visibleGrants(grants, context).filter((g) => !isFixedGrant(g));
 
 const fixedGrants = (grants: GrantRow[], context: ChangeContext) =>
-  visibleGrants(grants, context).filter((g) => isFixedGrant(g, context));
+  visibleGrants(grants, context).filter((g) => isFixedGrant(g));
 
 // An NI can give a CQC Registered Manager more locations, but nobody can change a CQC NI
 export function lockedReason(
@@ -184,9 +180,7 @@ export function lockedReason(
       (g) => g.basis === GRANT_BASIS_RM && g.scopeType === GRANT_SCOPE_LOCATION
     );
   if (fixed.length > 0 && !niCanAddLocations) {
-    return isCqcRegistered(fixed[0])
-      ? 'Managed by CQC registration'
-      : 'Managed by the GASCD team';
+    return 'Managed by CQC registration';
   }
   if (
     !context.providerWide &&
