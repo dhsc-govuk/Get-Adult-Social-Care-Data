@@ -21,6 +21,7 @@ export default async function RemoveUserPage({ params }: Props) {
     notFound();
   }
   const { context, user } = changeable;
+  const severalLocations = user.allLocations || user.locationNames.length > 1;
 
   return (
     <Layout
@@ -37,13 +38,44 @@ export default async function RemoveUserPage({ params }: Props) {
           <h1 className="govuk-heading-l">
             Are you sure you want to remove {user.name}&apos;s access?
           </h1>
-          <p className="govuk-body">
-            They will no longer be able to see{' '}
-            {context.providerWide
-              ? `data for ${context.providerName}`
-              : 'data for the locations you manage'}
-            . You can restore their access later.
-          </p>
+          {context.providerWide || user.locationNames.length === 1 ? (
+            <p className="govuk-body">
+              They will no longer be able to see data for{' '}
+              {context.providerWide && severalLocations
+                ? context.providerName
+                : user.locationNames[0]}
+              .
+            </p>
+          ) : (
+            <>
+              <p className="govuk-body">
+                They will no longer be able to see data for:
+              </p>
+              <ul className="govuk-list govuk-list--bullet">
+                {user.locationNames.map((name) => (
+                  <li key={name}>{name}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          {!context.providerWide && (
+            <p className="govuk-body">
+              They may have access to other locations, which you do not manage.
+            </p>
+          )}
+          {severalLocations && (
+            <p className="govuk-body">
+              To remove access to some locations only,{' '}
+              <Link
+                href={`/manage-users/${encodeURIComponent(user.userId)}/edit`}
+                className="govuk-link"
+              >
+                change their locations
+              </Link>{' '}
+              instead.
+            </p>
+          )}
+          <p className="govuk-body">You can restore their access later.</p>
           <ConfirmChange userId={user.userId} kind="remove" />
         </div>
       </div>
