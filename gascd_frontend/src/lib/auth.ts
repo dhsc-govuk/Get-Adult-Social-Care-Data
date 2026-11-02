@@ -1,24 +1,27 @@
-import { betterAuth, boolean } from 'better-auth';
+import { BetterAuthOptions, betterAuth, boolean } from 'better-auth';
 import { createAuthMiddleware } from 'better-auth/api';
 import { logLogoutEvent } from './authHooks';
+import { activateInvitedGrants } from './accessGrantActivation';
 import { getOAuthConfig } from './authPlugins';
 import { comparatorGroupsPlugin } from './comparatorGroupsPlugin';
 import { nextCookies } from 'better-auth/next-js';
 import logger from '@/utils/logger';
 import { msdialect } from './authDatabase';
-import { admin, lastLoginMethod } from 'better-auth/plugins';
+import { admin, customSession, lastLoginMethod } from 'better-auth/plugins';
 import { Kysely } from 'kysely';
 import { withBasePath } from './basePath';
+import { loadUserAccess, locationFieldsFromAccess } from './userAccess';
 import {
   LA_DOMAIN_REJECTED_ERROR,
   laSignupBeforeCreateHook,
+  recordLaSelfServiceGrant,
 } from './la-signup';
 
 // Export a connection to the user db for usage elsewhere
 // (re-uses the same connection pool set up in the dialect)
 export const authDB = new Kysely<any>({ dialect: msdialect });
 
-export const auth = betterAuth({
+const options = {
   basePath: (process.env.NEXT_PUBLIC_BASE_PATH ?? '') + '/api/auth',
   rateLimit: {
     enabled: process.env.E2E_TESTING_MODE !== 'true',
@@ -134,6 +137,14 @@ export const auth = betterAuth({
         // Self-service LA sign-up: validate the One Login-verified email and
         // populate LA fields (see la-signup.ts)
         before: laSignupBeforeCreateHook,
+        after: async (user) => {
+          await recordLaSelfServiceGrant(authDB, user).catch((error) =>
+            logger.error('Could not record LA self-service access', {
+              userid: user.id,
+              error: error.message,
+            })
+          );
+        },
       },
     },
   },
@@ -144,8 +155,6 @@ export const auth = betterAuth({
     }),
     comparatorGroupsPlugin(),
     getOAuthConfig(),
-    // https://www.better-auth.com/docs/integrations/next#server-action-cookies
-    nextCookies(), // make sure this is the last plugin in the array
   ],
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
@@ -163,6 +172,16 @@ export const auth = betterAuth({
             primaryLocationType: ctx.context.newSession.user.locationType,
             activeLocationId: ctx.context.newSession.user.selectedLocationId,
           });
+          // Invited grants already count as access, so a failure here must not block sign-in
+          await activateInvitedGrants(
+            authDB,
+            ctx.context.newSession.user
+          ).catch((error) =>
+            logger.error('Could not activate invited access', {
+              userid: ctx.context.newSession?.user.id,
+              error: error.message,
+            })
+          );
         }
       }
       if (ctx.path == '/error') {
@@ -191,6 +210,23 @@ export const auth = betterAuth({
       }
     }),
   },
+} satisfies BetterAuthOptions;
+
+export const auth = betterAuth({
+  ...options,
+  plugins: [
+    ...options.plugins,
+    // Access comes from access_grant; locationType / locationId are filled from it
+    customSession(async ({ user, session }) => {
+      const access = await loadUserAccess(authDB, user.id);
+      return {
+        session,
+        user: { ...user, ...locationFieldsFromAccess(access), access },
+      };
+    }, options),
+    // https://www.better-auth.com/docs/integrations/next#server-action-cookies
+    nextCookies(), // make sure this is the last plugin in the array
+  ],
 });
 
 export type User = typeof auth.$Infer.Session.user;

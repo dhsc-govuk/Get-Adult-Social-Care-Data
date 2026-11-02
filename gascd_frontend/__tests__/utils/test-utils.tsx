@@ -8,6 +8,11 @@ export const mockSession: any = {
     name: 'Test User 1',
     locationType: 'Care provider location',
     locationId: 'testlocation1',
+    access: {
+      providerCodes: [],
+      locationCodes: ['testlocation1'],
+      laCodes: [],
+    },
     smartInsights: false,
     marketingConsent: true,
     termsAccepted: true,
@@ -32,6 +37,7 @@ export const mockSessionCareProvider: any = {
   user: {
     ...mockSession.user,
     locationType: 'Care provider',
+    access: { providerCodes: ['testcp2'], locationCodes: [], laCodes: [] },
   },
 };
 
@@ -41,6 +47,7 @@ export const mockSessionLAUser: any = {
     ...mockSession.user,
     locationType: 'LA',
     locationId: 'testla1',
+    access: { providerCodes: [], locationCodes: [], laCodes: ['testla1'] },
     selectedLocationId: 'testla1',
   },
 };
@@ -49,6 +56,7 @@ export const mockSessionInvalidLocationType: any = {
   user: {
     ...mockSession.user,
     locationType: 'Invalid',
+    access: { providerCodes: [], locationCodes: [], laCodes: [] },
   },
 };
 
@@ -92,6 +100,7 @@ export const mockSessionWithLocationCareProvider: any = {
   user: {
     ...mockSession.user,
     locationType: 'Care provider',
+    access: { providerCodes: ['testcp2'], locationCodes: [], laCodes: [] },
     selectedLocationId: 'testlocation1',
     selectedLocationDisplayName: 'My test location',
   },
@@ -102,5 +111,10 @@ export const mockSessionWithMultipleLocationIDs: any = {
     ...mockSession.user,
     locationId: 'testlocation1,testlocation2',
     locationType: 'Care provider',
+    access: {
+      providerCodes: ['testcp2', 'testcp3'],
+      locationCodes: [],
+      laCodes: [],
+    },
   },
 };

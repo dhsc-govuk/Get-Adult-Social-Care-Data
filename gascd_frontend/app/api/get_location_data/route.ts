@@ -3,6 +3,7 @@ import logger from '@/utils/logger';
 import { getAPIClient } from '@/data/dataAPI';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import { ALLOWED_CP_USER_TYPES, LA_USER_TYPE } from '@/constants';
+import { canSeeCareProviderLocation, canSeeLa } from '@/lib/userAccess';
 
 export async function GET(req: NextRequest) {
   const user = await getCurrentUser();
@@ -29,6 +30,17 @@ export async function GET(req: NextRequest) {
         },
       },
     });
+    if (
+      data &&
+      !canSeeCareProviderLocation(
+        user.access,
+        provider_location_id,
+        data.provider_code
+      )
+    ) {
+      logger.error('Selected location is not in the user access grants');
+      return NextResponse.json([]);
+    }
     if (data) {
       // Map api results to those expected by the client JS
       // XXX this could be ditched when we refactor the client JS
@@ -47,6 +59,10 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(cp_result, { status: 200 });
     }
   } else if (user.locationType == LA_USER_TYPE) {
+    if (!canSeeLa(user.access, provider_location_id)) {
+      logger.error('Selected location is not in the user access grants');
+      return NextResponse.json([]);
+    }
     const { data } = await client.GET(
       '/metric_locations/local_authorities/{code}',
       {

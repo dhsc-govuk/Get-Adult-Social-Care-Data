@@ -1,0 +1,474 @@
+// Values match the gascd-apps access_grant / access_audit constants (AccessCodes.cs)
+export const GRANT_ROLE_READER = 'reader';
+export const GRANT_ROLE_APPROVER = 'approver';
+export const GRANT_BASIS_NI = 'nominated_individual';
+export const GRANT_BASIS_RM = 'registered_manager';
+export const GRANT_BASIS_DELEGATED = 'delegated';
+export const GRANT_SCOPE_PROVIDER = 'provider';
+export const GRANT_SCOPE_LOCATION = 'location';
+export const GRANT_STATUS_INVITED = 'invited';
+export const GRANT_STATUS_ACTIVE = 'active';
+export const GRANT_STATUS_SUSPENDED = 'suspended';
+export const GRANT_SOURCE_APPROVER = 'approver';
+export const AUDIT_ACTION_USER_ADDED = 'user_added';
+export const AUDIT_ACTION_FIRST_SIGN_IN = 'first_sign_in';
+export const AUDIT_ACTION_LOCATIONS_CHANGED = 'locations_changed';
+export const AUDIT_ACTION_ACCESS_SUSPENDED = 'access_suspended';
+export const AUDIT_ACTION_ACCESS_RESTORED = 'access_restored';
+// Not yet in gascd-apps AccessAuditActions
+export const AUDIT_ACTION_NAME_CHANGED = 'name_changed';
+export const AUDIT_ACTOR_USER = 'user';
+
+// user.source for people added by an approver
+export const DELEGATED_USER_SOURCE = 'delegated';
+// user.source the gascd-apps CQC sync gives the NIs and RMs it adds
+export const CQC_SYNC_SOURCE_PREFIX = 'Admin file bulk upload';
+
+export const ALL_LOCATIONS = 'all';
+export const MANAGE_USERS_PAGE_SIZE = 20;
+export const MAX_FIELD_LENGTH = 255;
+
+export type ProviderLocation = {
+  code: string;
+  name: string;
+};
+
+export type ApproverBasis = typeof GRANT_BASIS_NI | typeof GRANT_BASIS_RM;
+
+export type ApproverContext = {
+  providerCode: string;
+  providerName: string;
+  basis: ApproverBasis;
+  providerWide: boolean;
+  // Locations the approver can see and give access to
+  locations: ProviderLocation[];
+};
+
+export type GrantRow = {
+  id: number;
+  userId: string;
+  userName: string | null;
+  userEmail: string;
+  userSource: string | null;
+  scopeType: string;
+  locationCode: string | null;
+  basis: string;
+  status: string;
+  grantedByUserId: string | null;
+  grantedByName: string | null;
+  grantedAt: Date;
+  expiresAt: Date | null;
+  statusChangedAt: Date | null;
+};
+
+export type UserStatus = 'Active' | 'Invited' | 'Removed';
+
+export type ManagedUser = {
+  userId: string;
+  name: string;
+  email: string;
+  role: string | null;
+  allLocations: boolean;
+  locationNames: string[];
+  grantedBy: string;
+  grantedAt: Date;
+  status: UserStatus;
+  canChange: boolean;
+  // False when CQC set some of their access, which only an edit can add to
+  canRemove: boolean;
+  // Why the approver can't change this user, shown instead of the actions
+  lockedReason: string | null;
+};
+
+// Highest first, so a user with several grants shows their most senior role
+const ROLE_LABELS: [string, string][] = [
+  [GRANT_BASIS_NI, 'Nominated Individual'],
+  [GRANT_BASIS_RM, 'Registered Manager'],
+  [GRANT_BASIS_DELEGATED, 'Invited user'],
+];
+
+const roleFor = (grants: GrantRow[]) =>
+  ROLE_LABELS.find(([basis]) => grants.some((g) => g.basis === basis))?.[1] ??
+  null;
+
+const isLive = (grant: GrantRow, now: Date) =>
+  !grant.expiresAt || grant.expiresAt > now;
+
+// Removed users drop off the list a year after their access ended
+const removedOverAYearAgo = (grants: GrantRow[], now: Date) => {
+  if (statusFor(grants, now) !== 'Removed') return false;
+  const yearAgo = new Date(now);
+  yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+  return grants.every(
+    (g) => (g.statusChangedAt ?? g.expiresAt ?? g.grantedAt) <= yearAgo
+  );
+};
+
+function statusFor(grants: GrantRow[], now: Date): UserStatus {
+  if (grants.some((g) => g.status === GRANT_STATUS_ACTIVE && isLive(g, now))) {
+    return 'Active';
+  }
+  if (grants.some((g) => g.status === GRANT_STATUS_INVITED && isLive(g, now))) {
+    return 'Invited';
+  }
+  return 'Removed';
+}
+
+const grantedByLabel = (grant: GrantRow, currentUserId: string) => {
+  if (grant.grantedByUserId && grant.grantedByUserId === currentUserId) {
+    return 'You';
+  }
+  if (grant.grantedByName) {
+    return grant.grantedByName;
+  }
+  if (isCqcRegistered(grant)) {
+    return 'CQC registration';
+  }
+  if (grant.basis !== GRANT_BASIS_DELEGATED) {
+    return 'GASCD team';
+  }
+  return 'Unknown';
+};
+
+export const isCqcRegistered = (grant: Pick<GrantRow, 'userSource'>) =>
+  (grant.userSource ?? '').startsWith(CQC_SYNC_SOURCE_PREFIX);
+
+type ChangeContext = Pick<
+  ApproverContext,
+  'basis' | 'providerWide' | 'locations'
+>;
+
+// CQC decides an NI's or RM's own access; what the GASCD team set up any approver can change
+export const isFixedGrant = (grant: Pick<GrantRow, 'basis' | 'userSource'>) =>
+  grant.basis !== GRANT_BASIS_DELEGATED && isCqcRegistered(grant);
+
+// An approver who is not provider-wide only sees their own locations, and users with access to them
+export function visibleGrants<
+  T extends Pick<GrantRow, 'scopeType' | 'locationCode'>,
+>(
+  rows: T[],
+  context: Pick<ApproverContext, 'providerWide' | 'locations'>
+): T[] {
+  const codes = new Set(context.locations.map((location) => location.code));
+  return rows.filter(
+    (row) =>
+      context.providerWide ||
+      row.scopeType === GRANT_SCOPE_PROVIDER ||
+      (row.locationCode !== null && codes.has(row.locationCode))
+  );
+}
+
+export const editableGrants = (grants: GrantRow[], context: ChangeContext) =>
+  visibleGrants(grants, context).filter((g) => !isFixedGrant(g));
+
+const fixedGrants = (grants: GrantRow[], context: ChangeContext) =>
+  visibleGrants(grants, context).filter((g) => isFixedGrant(g));
+
+// An NI can give a CQC Registered Manager more locations, but nobody can change a CQC NI
+export function lockedReason(
+  grants: GrantRow[],
+  context: ChangeContext,
+  currentUserId: string
+): string | null {
+  const visible = visibleGrants(grants, context);
+  if (visible.length === 0) return 'No access you can change';
+  if (visible.some((g) => g.userId === currentUserId)) return 'Your own access';
+  const fixed = fixedGrants(grants, context);
+  const niCanAddLocations =
+    context.basis === GRANT_BASIS_NI &&
+    fixed.every(
+      (g) => g.basis === GRANT_BASIS_RM && g.scopeType === GRANT_SCOPE_LOCATION
+    );
+  if (fixed.length > 0 && !niCanAddLocations) {
+    return 'Managed by CQC registration';
+  }
+  if (
+    !context.providerWide &&
+    visible.some((g) => g.scopeType === GRANT_SCOPE_PROVIDER)
+  ) {
+    return 'Only a Nominated Individual can change this user';
+  }
+  return null;
+}
+
+export function canChangeUser(
+  grants: GrantRow[],
+  context: ChangeContext,
+  currentUserId: string
+): boolean {
+  return lockedReason(grants, context, currentUserId) === null;
+}
+
+export function groupManagedUsers(
+  rows: GrantRow[],
+  context: ApproverContext,
+  currentUserId: string,
+  now: Date = new Date()
+): ManagedUser[] {
+  const locationNames = new Map(
+    context.locations.map((location) => [location.code, location.name])
+  );
+  const visible = visibleGrants(rows, context);
+
+  const byUser = new Map<string, GrantRow[]>();
+  for (const row of visible) {
+    byUser.set(row.userId, [...(byUser.get(row.userId) ?? []), row]);
+  }
+
+  const users = Array.from(byUser.values())
+    .filter((grants) => !removedOverAYearAgo(grants, now))
+    .map((grants) => {
+      const earliest = grants.reduce((a, b) =>
+        b.grantedAt < a.grantedAt ? b : a
+      );
+      // A removed user still lists what Restore would give back
+      const live = grants.filter(
+        (g) => g.status !== GRANT_STATUS_SUSPENDED && isLive(g, now)
+      );
+      const shown = live.length > 0 ? live : grants;
+      const allLocations = shown.some(
+        (g) => g.scopeType === GRANT_SCOPE_PROVIDER
+      );
+      const names = allLocations
+        ? []
+        : shown
+            .map(
+              (g) => locationNames.get(g.locationCode ?? '') ?? g.locationCode
+            )
+            .filter((name): name is string => Boolean(name))
+            .sort((a, b) => a.localeCompare(b));
+      return {
+        userId: earliest.userId,
+        name: earliest.userName || earliest.userEmail,
+        email: earliest.userEmail,
+        role: roleFor(grants),
+        allLocations,
+        locationNames: names,
+        grantedBy: grantedByLabel(earliest, currentUserId),
+        grantedAt: earliest.grantedAt,
+        status: statusFor(grants, now),
+        canChange: canChangeUser(grants, context, currentUserId),
+        canRemove:
+          canChangeUser(grants, context, currentUserId) &&
+          fixedGrants(grants, context).length === 0,
+        lockedReason: lockedReason(grants, context, currentUserId),
+      };
+    });
+
+  return users.sort((a, b) =>
+    a.name.localeCompare(b.name, 'en', { sensitivity: 'base' })
+  );
+}
+
+export type InviteFields = {
+  name: string;
+  email: string;
+  locations: string[];
+};
+
+export type InviteErrors = Partial<Record<keyof InviteFields, string>>;
+
+// Deliberately loose: One Login verifies the address when they sign in
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function validateInviteName(name: string): string | undefined {
+  const trimmed = name.trim();
+  if (!trimmed) return "Enter the user's full name";
+  if (trimmed.length > MAX_FIELD_LENGTH) {
+    return `Full name must be ${MAX_FIELD_LENGTH} characters or fewer`;
+  }
+}
+
+export function validateInviteEmail(email: string): string | undefined {
+  const trimmed = email.trim();
+  if (!trimmed) return 'Enter their email address';
+  if (trimmed.length > MAX_FIELD_LENGTH || !EMAIL_PATTERN.test(trimmed)) {
+    return 'Enter an email address in the correct format, like name@example.com';
+  }
+}
+
+export function validateInviteLocations(
+  locations: string[],
+  context: Pick<ApproverContext, 'providerWide' | 'locations'>
+): string | undefined {
+  if (locations.length === 0) {
+    return 'Select which locations they should be able to access';
+  }
+  const allowed = new Set(context.locations.map((location) => location.code));
+  const valid = locations.every((code) =>
+    code === ALL_LOCATIONS ? context.providerWide : allowed.has(code)
+  );
+  if (!valid || (locations.includes(ALL_LOCATIONS) && locations.length > 1)) {
+    return 'Select from the locations listed';
+  }
+}
+
+export function validateInvite(
+  fields: InviteFields,
+  context: Pick<ApproverContext, 'providerWide' | 'locations'>
+): InviteErrors {
+  const errors: InviteErrors = {
+    name: validateInviteName(fields.name),
+    email: validateInviteEmail(fields.email),
+    locations: validateInviteLocations(fields.locations, context),
+  };
+  return Object.fromEntries(
+    Object.entries(errors).filter(([, message]) => message)
+  ) as InviteErrors;
+}
+
+/**
+ * user.locationType / locationId still decide what a user can see until the
+ * app reads access_grant, so new users get both.
+ */
+export function legacyLocationFields(
+  providerCode: string,
+  locations: string[]
+): { locationType: string; locationId: string } {
+  if (locations.includes(ALL_LOCATIONS)) {
+    return { locationType: 'Care provider', locationId: providerCode };
+  }
+  return {
+    locationType: 'Care provider location',
+    locationId: locations.join(','),
+  };
+}
+
+// The locations box values for a user's current access, as the edit form shows them
+export function currentLocationSelection(
+  grants: GrantRow[],
+  context: ChangeContext
+): string[] {
+  const live = editableGrants(grants, context).filter(
+    (g) => g.status !== GRANT_STATUS_SUSPENDED
+  );
+  if (live.some((g) => g.scopeType === GRANT_SCOPE_PROVIDER)) {
+    return [ALL_LOCATIONS];
+  }
+  return live.map((g) => g.locationCode as string);
+}
+
+// Locations from CQC, shown ticked but locked on the edit form
+export function fixedLocationSelection(
+  grants: GrantRow[],
+  context: ChangeContext
+): string[] {
+  return fixedGrants(grants, context)
+    .filter((g) => g.status !== GRANT_STATUS_SUSPENDED && g.locationCode)
+    .map((g) => g.locationCode as string);
+}
+
+export type LocationChangePlan = {
+  deleteIds: number[];
+  // Grants the GASCD team set up, suspended so the access backfill doesn't recreate them
+  suspendIds: number[];
+  // Suspended rows for a location being given back, reused to keep the unique index happy
+  reuseIds: number[];
+  insert: { scopeType: string; locationCode: string | null }[];
+  added: string[];
+  removed: string[];
+};
+
+/**
+ * Turns the approver's chosen locations into grant changes. Grants outside the
+ * approver's own locations are left alone.
+ */
+export function planLocationChange(
+  grants: GrantRow[],
+  locations: string[],
+  context: ChangeContext
+): LocationChangePlan {
+  const inScope = editableGrants(grants, context);
+  const live = inScope.filter((g) => g.status !== GRANT_STATUS_SUSPENDED);
+  const key = (g: GrantRow) =>
+    g.scopeType === GRANT_SCOPE_PROVIDER
+      ? ALL_LOCATIONS
+      : (g.locationCode as string);
+
+  const current = new Set(live.map(key));
+  const wanted = new Set(locations);
+  const removedGrants = live.filter((g) => !wanted.has(key(g)));
+  const added = locations.filter((code) => !current.has(code));
+
+  const plan: LocationChangePlan = {
+    deleteIds: removedGrants
+      .filter((g) => g.basis === GRANT_BASIS_DELEGATED)
+      .map((g) => g.id),
+    suspendIds: removedGrants
+      .filter((g) => g.basis !== GRANT_BASIS_DELEGATED)
+      .map((g) => g.id),
+    reuseIds: [],
+    insert: [],
+    added,
+    removed: removedGrants.map(key),
+  };
+  for (const code of added) {
+    const suspended = inScope.find(
+      (g) => g.status === GRANT_STATUS_SUSPENDED && key(g) === code
+    );
+    if (suspended) {
+      plan.reuseIds.push(suspended.id);
+    } else {
+      plan.insert.push(
+        code === ALL_LOCATIONS
+          ? { scopeType: GRANT_SCOPE_PROVIDER, locationCode: null }
+          : { scopeType: GRANT_SCOPE_LOCATION, locationCode: code }
+      );
+    }
+  }
+  return plan;
+}
+
+// Old user columns from the grants a user has left, or null when they have none
+export function legacyFieldsFromGrants(
+  grants: {
+    scope_type: string;
+    provider_code: string | null;
+    location_code: string | null;
+    status: string;
+  }[]
+): { locationType: string; locationId: string } | null {
+  const live = grants.filter((g) => g.status !== GRANT_STATUS_SUSPENDED);
+  const providers = live
+    .filter((g) => g.scope_type === GRANT_SCOPE_PROVIDER)
+    .map((g) => g.provider_code as string);
+  if (providers.length > 0) {
+    return { locationType: 'Care provider', locationId: providers.join(',') };
+  }
+  const locations = live
+    .filter((g) => g.scope_type === GRANT_SCOPE_LOCATION)
+    .map((g) => g.location_code as string);
+  if (locations.length > 0) {
+    return {
+      locationType: 'Care provider location',
+      locationId: locations.join(','),
+    };
+  }
+  return null;
+}
+
+export type PaginationItem = number | 'ellipsis';
+
+// GOV.UK pattern: first, last, current and its neighbours, with gaps elided
+export function paginationItems(
+  current: number,
+  total: number
+): PaginationItem[] {
+  const pages = new Set(
+    [1, total, current - 1, current, current + 1].filter(
+      (page) => page >= 1 && page <= total
+    )
+  );
+  const sorted = Array.from(pages).sort((a, b) => a - b);
+  const items: PaginationItem[] = [];
+  sorted.forEach((page, index) => {
+    if (index > 0 && page - sorted[index - 1] > 1) items.push('ellipsis');
+    items.push(page);
+  });
+  return items;
+}
+
+export const APPROVER_DESCRIPTIONS: Record<ApproverBasis, string> = {
+  [GRANT_BASIS_NI]: 'a Nominated Individual',
+  [GRANT_BASIS_RM]: 'a Registered Manager',
+};
