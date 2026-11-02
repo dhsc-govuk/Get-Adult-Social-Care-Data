@@ -102,6 +102,9 @@ const run = async () => {
     return;
   }
   await migrateRateLimits(db);
+  console.log(
+    'User DB post-migrate: rate-limit counter table dbo.requestRateLimit is in place'
+  );
   // Per-user uniqueness of comparator group names. The server default
   // case-insensitive collation makes this match the app's normalised
   // (lowercased) comparison.
