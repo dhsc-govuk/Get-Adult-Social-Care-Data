@@ -9,11 +9,11 @@ These defaults are provisional engineering assumptions for local and staging val
 | Setting                          | Default | Meaning                                                                                      |
 | -------------------------------- | ------- | -------------------------------------------------------------------------------------------- |
 | `RATE_LIMIT_ENABLED`             | `true`  | Explicit frontend/auth switch; `false` bypasses these counters                               |
-| `RATE_LIMIT_USER_MAX`            | `120`   | Requests per authenticated user per frontend window, across covered API routes               |
+| `RATE_LIMIT_USER_MAX`            | `1000`  | Requests per authenticated user per frontend window, across covered API routes. An abuse ceiling: a data page load is tens of calls and comparator changes re-fetch, so 120 tripped after 3-4 refreshes in dev |
 | `RATE_LIMIT_USER_WINDOW_SECONDS` | `60`    | Frontend fixed-window duration                                                               |
 | `RATE_LIMIT_AUTH_MAX`            | `100`   | General auth requests per trusted IP and endpoint per auth window                            |
 | `RATE_LIMIT_AUTH_WINDOW_SECONDS` | `10`    | General auth window; Better Auth's sensitive endpoint rules override it                      |
-| `RATE_LIMIT_LOGIN_MAX`           | `3`     | Sign-in requests per IP and endpoint per 10 seconds                                          |
+| `RATE_LIMIT_LOGIN_MAX`           | `20`    | Better Auth sign-in requests per IP and endpoint per 10 seconds. In the deployed estate this is One Login initiation keyed by socket IP (shared by an office); the local password route has a fixed limit of 3 in middleware |
 | `RATE_LIMIT_TRUSTED_IP_HEADER`   | unset   | A single client-IP header that the platform has verified is overwritten by its trusted proxy |
 | `DATA_API_MAX_METRICS`           | `100`   | Maximum submitted metric IDs before deduplication                                            |
 | `DATA_API_TIMEOUT_MS`            | `15000` | Timeout per outgoing data API fetch                                                          |
@@ -81,7 +81,7 @@ Set in dev and tst values. Prd stays unset until the DHSC platform team confirm 
 - Counter exhaustion returns HTTP 429 with the actual remaining fixed-window delay in `Retry-After`. Adjacent windows intentionally permit a boundary burst. Better Auth's `X-Retry-After` is also exposed as the standard header.
 - Counter failures return controlled 503 responses. They do not silently become per-process counters. A separate two-connection pool per frontend process, a ten-second connection/acquisition budget, a two-second SQL command timeout, and a one-second SQL lock timeout isolate counters from session-pool capacity. SQL uses `XACT_ABORT`, explicit transactions, and key-range locking for concurrent inserts.
 - The API rejects saturated data routes with 429 and no invented retry window. Health endpoints outside `/api` remain exempt. API 429/503 responses and transport failures are propagated through frontend data routes, so they cannot become successful empty/partial responses.
-- Browser data services display a dismissible service-busy notice. They do not automatically retry mutations or reload the page. Existing route selections are retained; existing chart-specific error behaviour remains in place.
+- Browser data services display a dismissible notice that distinguishes throttling (429: "Too many requests", with the retry delay when known) from an unreachable or unavailable data service (503: "currently unavailable"), so an outage is not reported as the service being busy. They do not automatically retry mutations or reload the page. Existing route selections are retained; existing chart-specific error behaviour remains in place.
 - `E2E_TESTING_MODE` no longer disables auth protection. Tests needing a bypass must explicitly set `RATE_LIMIT_ENABLED=false` in their isolated environment.
 
 ## Migration, cleanup, and rollout

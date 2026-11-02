@@ -19,5 +19,8 @@ export function rateLimitsEnabled() {
 export const userPolicy = () => ({
   name: 'user-api',
   windowSeconds: positiveInteger('RATE_LIMIT_USER_WINDOW_SECONDS', 60, 3600),
-  max: positiveInteger('RATE_LIMIT_USER_MAX', 120),
+  // An abuse ceiling, not a usage shaper: a data page load is tens of API
+  // calls and comparator changes re-fetch, so a normal minute can reach the
+  // low hundreds (dev check 2026-11-02 tripped 120 after 3-4 refreshes).
+  max: positiveInteger('RATE_LIMIT_USER_MAX', 1000),
 });

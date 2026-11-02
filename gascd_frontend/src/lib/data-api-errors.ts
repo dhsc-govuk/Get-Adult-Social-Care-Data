@@ -18,10 +18,13 @@ export function withDataApiErrors<T extends unknown[]>(
       const headers = new Headers({ 'Cache-Control': 'no-store' });
       if (error.retryAfter && /^\d+$/.test(error.retryAfter))
         headers.set('Retry-After', error.retryAfter);
+      const throttled = error.status === 429;
       return Response.json(
         {
-          code: error.status === 429 ? 'RATE_LIMITED' : 'DATA_API_UNAVAILABLE',
-          error: 'The data service is busy. Please try again shortly.',
+          code: throttled ? 'RATE_LIMITED' : 'DATA_API_UNAVAILABLE',
+          error: throttled
+            ? 'The data service is busy. Please try again shortly.'
+            : 'The data service is currently unavailable. Please try again later.',
         },
         { status: error.status, headers }
       );

@@ -27,3 +27,15 @@ it('announces throttling without retrying or replacing existing page data', asyn
   fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 });
+it('reports an unreachable data service as unavailable, not busy', async () => {
+  render(<ServiceBusyNotice />);
+  vi.stubGlobal(
+    'fetch',
+    vi.fn().mockResolvedValue(new Response(null, { status: 503 }))
+  );
+  await act(async () => {
+    await serviceFetch('/api/get_metric_data');
+  });
+  expect(screen.getByRole('alert')).toHaveTextContent('currently unavailable');
+  expect(screen.getByRole('alert')).not.toHaveTextContent('busy');
+});

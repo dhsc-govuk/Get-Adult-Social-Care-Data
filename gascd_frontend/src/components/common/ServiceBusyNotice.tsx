@@ -8,10 +8,15 @@ export default function ServiceBusyNotice() {
       const { status, seconds } = (
         event as CustomEvent<{ status: number; seconds?: number }>
       ).detail;
+      // 429 is throttling (ours or the data API's); 503 means the data service
+      // could not be reached or is unavailable. Say which, so an outage is not
+      // reported as "busy".
       setMessage(
-        status === 429 && seconds
-          ? `Too many requests. Please wait ${seconds} seconds before trying again.`
-          : 'The service is busy. Please try again shortly.'
+        status === 429
+          ? seconds
+            ? `Too many requests. Please wait ${seconds} seconds before trying again.`
+            : 'Too many requests. Please wait a moment and try again.'
+          : 'The data service is currently unavailable. Please try again later.'
       );
     };
     window.addEventListener('gascd-service-busy', onBusy);

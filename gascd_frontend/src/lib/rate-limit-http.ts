@@ -21,7 +21,8 @@ export function rateLimitUnavailable() {
   return Response.json(
     {
       code: 'RATE_LIMIT_UNAVAILABLE',
-      error: 'The service is temporarily busy. Please try again shortly.',
+      error:
+        'The service is temporarily unavailable. Please try again shortly.',
     },
     { status: 503, headers: { 'Cache-Control': 'no-store' } }
   );

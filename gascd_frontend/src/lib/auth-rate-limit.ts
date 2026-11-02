@@ -52,9 +52,12 @@ export function authRateLimitOptions() {
     max: positiveInteger('RATE_LIMIT_AUTH_MAX', 100),
     customStorage: authRateLimitStorage,
     customRules: {
+      // In the deployed estate sign-in is One Login initiation (no credential
+      // to guess) keyed by socket IP, which an office shares. The local
+      // password route has its own fixed limit of 3 in middleware.
       '/sign-in/*': {
         window: 10,
-        max: positiveInteger('RATE_LIMIT_LOGIN_MAX', 3),
+        max: positiveInteger('RATE_LIMIT_LOGIN_MAX', 20),
       },
       '/sign-out': false as const,
     },
