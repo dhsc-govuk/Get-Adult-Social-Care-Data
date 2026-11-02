@@ -49,6 +49,18 @@ beforeAll(async () => {
   }
   await migrateRateLimits(db1);
   await migrateRateLimits(db1);
+  // Warm both pools and the plan cache: on a freshly started server the first
+  // statement can take long enough that the concurrency test below trips the
+  // one-second lock timeout in the store, which is not what it is measuring.
+  await Promise.all(
+    [db1, db2].map((db) =>
+      consumeSqlRateLimit(
+        db,
+        { name: 'warmup', max: 1, windowSeconds: 3600 },
+        randomUUID()
+      )
+    )
+  );
 });
 afterAll(async () => {
   await db1.destroy();
