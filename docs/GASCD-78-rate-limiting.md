@@ -61,6 +61,18 @@ Visit `/gascd/api/checks/live` through the normal public frontend hostname (omit
 
 Set `CLIENT_IP_DIAGNOSTICS=false` when the check is complete. To test frontend limiting afterwards, complete the migration, configure the verified trusted header, and set `RATE_LIMIT_ENABLED=true`.
 
+## Dev header check result (2026-11-02)
+
+Run from the `feature/GASCD-78-rate-limiting` ref against dev via the public hostname `dev.analytics.dhsc.gov.uk/gascd-frontend-dev`, with the diagnostic on and the limiter enabled.
+
+A plain request from a home connection logged the same public address in both `clientIp` (`x-azure-clientip`) and `socketIp` (`x-azure-socketip`). `forwardedFor` showed the chain `client, Front Door backend (147.243.0.0/16), App Gateway private address:port, Container Apps ingress address`.
+
+A second request that sent spoofed `x-azure-clientip`, `x-azure-socketip` and `x-forwarded-for` headers (all `203.0.113.9`) logged the real address in both Azure headers, while `forwardedFor` became `203.0.113.9, <real address>, <Front Door>, <App Gateway>, <ingress>`. Front Door therefore overwrites both Azure headers and only appends to `x-forwarded-for`.
+
+Decision: `RATE_LIMIT_TRUSTED_IP_HEADER=x-azure-socketip`. The socket IP is the TCP peer of the connection to Front Door and cannot be influenced by request content; `x-azure-clientip` may be derived from a forwarded-for header when a client sits behind a proxy. Users behind one corporate NAT share a socket IP, so the login limit (3 failures per 10 seconds) applies per office; acceptable for a lockout limiter.
+
+Set in dev and tst values. Prd stays unset until the DHSC platform team confirm the App Gateway admits only Front Door traffic (Front Door ID header check or service-tag restriction), because the header is only trustworthy if nothing can reach the origin without passing Front Door. The Container Apps environment is VNet-only, so the App Gateway is the only path to confirm.
+
 ## Request and failure behaviour
 
 - Middleware limits authenticated API traffic by session user ID. Users behind one office connection have independent authenticated quotas. Existing route authorization still applies.
