@@ -16,3 +16,4 @@ public class GetLocalAuthorityPeersResponse
     public required decimal? NationalAverage { get; init; }
 
 }
+
