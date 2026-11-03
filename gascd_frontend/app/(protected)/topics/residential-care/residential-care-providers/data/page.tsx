@@ -2,7 +2,7 @@
 
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
 import DataIndicatorDetailsList from '@/components/data-components/DataIndicatorDetailsList';
@@ -21,6 +21,9 @@ import RelatedDataList from '@/components/data-components/RelatedDataList';
 import SubCatergoryTable from '@/components/tables/SubCatergoryTable';
 import IndicatorService from '@/services/indicator/IndicatorService';
 import { METRICS, MetricId } from '@/config/metrics';
+import { useComparatorControls } from '@/components/charts/peer-group/useComparatorControls';
+import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
+import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
 
 // In the order the table shows them
 const PROVIDER_METRICS: MetricId[] = [
@@ -53,9 +56,9 @@ export default function ResidentialCareProvidersPage() {
     } as LocationNames);
   const [locationIds, setLocationIds] = useState<string[]>([]);
   const [CPLocationId, setCPLocationId] = useState<string>();
-  const [filteredDemographicData, setFilteredDemographicData] = useState<
-    Indicator[]
-  >([]);
+  const [baseDemographicData, setBaseDemographicData] = useState<Indicator[]>(
+    []
+  );
   const [demographicQuery, setDemographicQuery] = useState<IndicatorQuery>({
     metric_ids: [],
     location_ids: [],
@@ -83,6 +86,18 @@ export default function ResidentialCareProvidersPage() {
     'npl_other_community_care',
     'npl_supported_living',
   ];
+
+  const laCode = locationIds[1];
+  const comparator = useComparatorControls({
+    laCode,
+    metricPage: 'care-providers',
+  });
+  const { dataByMetric } = usePeerGroupData(
+    laCode,
+    PROVIDER_METRICS,
+    comparator.selection,
+    comparator.groups
+  );
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -139,15 +154,24 @@ export default function ResidentialCareProvidersPage() {
       try {
         const demographicData: Indicator[] =
           await IndicatorFetchService.getData(demographicQuery);
-        const filteredDemographicData =
-          TableService.filterDate(demographicData);
-        setFilteredDemographicData(filteredDemographicData);
+        setBaseDemographicData(TableService.filterDate(demographicData));
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchAllData();
   }, [demographicQuery]);
+
+  const filteredDemographicData = useMemo(
+    () =>
+      mergeComparatorAverage(
+        baseDemographicData,
+        PROVIDER_METRICS,
+        dataByMetric,
+        locationIds[2]
+      ),
+    [baseDemographicData, dataByMetric, locationIds]
+  );
 
   useEffect(() => {
     const fetchLocationIds = async () => {
@@ -206,34 +230,44 @@ export default function ResidentialCareProvidersPage() {
           id="2"
           sharingMetricIds={demographicMetricIds}
           table={
-            <SubCatergoryTable
-              metrics={PROVIDER_METRICS}
-              tableref={tableref2}
-              caption={
-                <>
-                  Table 1: number of adult social care providers –{' '}
-                  {locationNames.LALabel}{' '}
-                  <abbr title="Local Authority">LA</abbr>,{' '}
-                  {locationNames.RegionLabel} region and{' '}
-                  {locationNames.CountryLabel},{' '}
-                  {IndicatorService.getMostRecentMonthYear(
-                    filteredDemographicData
-                  )}
-                </>
-              }
-              columnHeaders={locationNamesWithAverageLabels}
-              metricColumnName="Service provider type"
-              data={filteredDemographicData}
-              showCareProvider={false}
-              totalsRows={[
-                'npl_adult_social_care',
-                'npl_care_home',
-                'npl_community_care',
-              ]}
-            ></SubCatergoryTable>
+            <>
+              {comparator.renderComparatorControl('comparator-table-2')}
+              <SubCatergoryTable
+                metrics={PROVIDER_METRICS}
+                tableref={tableref2}
+                caption={
+                  <>
+                    Table 1: number of adult social care providers –{' '}
+                    {locationNames.LALabel}{' '}
+                    <abbr title="Local Authority">LA</abbr>,{' '}
+                    {locationNames.RegionLabel} region,{' '}
+                    {comparator.comparatorAverageLabel} and{' '}
+                    {locationNames.CountryLabel},{' '}
+                    {IndicatorService.getMostRecentMonthYear(
+                      filteredDemographicData
+                    )}
+                  </>
+                }
+                columnHeaders={{
+                  ...locationNamesWithAverageLabels,
+                  ComparatorLabel: comparator.comparatorAverageLabel,
+                }}
+                metricColumnName="Service provider type"
+                data={filteredDemographicData}
+                showCareProvider={false}
+                totalsRows={[
+                  'npl_adult_social_care',
+                  'npl_care_home',
+                  'npl_community_care',
+                ]}
+              ></SubCatergoryTable>
+            </>
           }
           download={
             <>
+              <div className="govuk-!-margin-bottom-4">
+                {comparator.renderComparatorControl('comparator-download-2')}
+              </div>
               <DownloadTableDataCSVLink
                 tableref={tableref2}
                 filename="number_of_adult_social_care_providers.csv"
