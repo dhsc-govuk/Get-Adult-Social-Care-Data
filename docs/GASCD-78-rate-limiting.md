@@ -1,140 +1,55 @@
-# GASCD-78: implementation and rollout
+# GASCD-78: rate limiting, operational reference
 
-The frontend uses Azure SQL fixed-window counters shared across replicas. Authenticated API requests are keyed by user ID. Better Auth 1.6.22 uses the same atomic counter through its `customStorage.consume` contract, with separate auth keys and endpoint rules. The Data API uses .NET's per-process concurrency limiter. No counter data is written to PostgreSQL.
+Design, evidence, test record and release procedure live on Confluence: **GASCD-78: Rate limiting and overload handling** (link to be added when the page is created). This file keeps only what a developer needs next to the code.
 
-## Configuration
+## What is where
 
-These defaults are provisional engineering assumptions for local and staging validation, not measured production capacity.
+- `middleware.ts`: per-user quota on every `/api` route, exemptions for health, Better Auth endpoints and sign-out, anonymous quota for analytics opt-out.
+- `src/lib/rate-limit*.ts`: policy config, Azure SQL counter store (`dbo.requestRateLimit`), schema and cleanup SQL, HTTP responses.
+- `src/lib/auth-rate-limit.ts`: Better Auth rules and the trusted client-IP header handling.
+- `src/lib/data-api-errors.ts`, `src/data/dataAPI.ts`: data API 429/503 and transport failures propagate as controlled responses.
+- `src/lib/service-fetch.ts`, `src/components/common/ServiceBusyNotice.tsx`: browser notice. 429 reads "too many requests", 503 reads "currently unavailable".
+- `scripts/user-db-post-migrate.ts`: creates the counter table on `db:migrate:ci`; `--cleanup-rate-limits` deletes expired rows on demand.
+- `gascd_api/api/Configuration/RateLimitingConfiguration.cs`, `Program.cs`: the API's per-process concurrency cap.
+- `load_tests/authenticated-data.js`: k6 scenario for authenticated data traffic.
 
-| Setting                          | Default | Meaning                                                                                      |
-| -------------------------------- | ------- | -------------------------------------------------------------------------------------------- |
-| `RATE_LIMIT_ENABLED`             | `true`  | Explicit frontend/auth switch; `false` bypasses these counters                               |
-| `RATE_LIMIT_USER_MAX`            | `1000`  | Requests per authenticated user per frontend window, across covered API routes. An abuse ceiling: a data page load is tens of calls and comparator changes re-fetch, so 120 tripped after 3-4 refreshes in dev |
-| `RATE_LIMIT_USER_WINDOW_SECONDS` | `60`    | Frontend fixed-window duration                                                               |
-| `RATE_LIMIT_AUTH_MAX`            | `100`   | General auth requests per trusted IP and endpoint per auth window                            |
-| `RATE_LIMIT_AUTH_WINDOW_SECONDS` | `10`    | General auth window; Better Auth's sensitive endpoint rules override it                      |
-| `RATE_LIMIT_LOGIN_MAX`           | `20`    | Better Auth sign-in requests per IP and endpoint per 10 seconds. In the deployed estate this is One Login initiation keyed by socket IP (shared by an office); the local password route has a fixed limit of 3 in middleware |
-| `RATE_LIMIT_TRUSTED_IP_HEADER`   | unset   | A single client-IP header that the platform has verified is overwritten by its trusted proxy |
-| `DATA_API_MAX_METRICS`           | `100`   | Maximum submitted metric IDs before deduplication                                            |
-| `DATA_API_TIMEOUT_MS`            | `15000` | Timeout per outgoing data API fetch                                                          |
-| `RateLimiting__Enabled`          | `true`  | Independent .NET API limiter switch                                                          |
-| `RateLimiting__ConcurrencyLimit` | `20`    | Maximum covered handlers in flight in each API process, with no waiting queue                |
-| `RateLimiting__MaxLocations`     | `500`   | Maximum locations in an API metric-data request                                              |
+## Settings
 
-The largest literal metric list currently found in a frontend page contains 23 entries. The initial cap of 100 leaves headroom, but dynamic requests and real dashboard traffic still need staging verification. The metric route also limits incoming JSON to 32 KiB and uses a 30-second deadline for its metric API client, including sequential fan-out. Location helper lookups have their own bounded fetch timeouts. API metric queries now propagate cancellation to EF Core.
+All read from the environment; the code defaults to enabled, so deployments set every value explicitly in gascd-apps `deploy/<app>/containerapps/values-<env>.yaml`.
 
-At 20 concurrent requests and 8 API processes, the nominal aggregate cap is 160. Include all live revisions during a rollout, and database users outside this API, when comparing that number with PostgreSQL capacity. This is a concurrency cap, not a requests-per-second quota. The API key remains authentication, not an identity for separate user quotas.
+| Setting                          | Default            | Meaning                                                                 |
+| -------------------------------- | ------------------ | ----------------------------------------------------------------------- |
+| `RATE_LIMIT_ENABLED`             | `true`             | Frontend and sign-in counters; `false` bypasses them                    |
+| `RATE_LIMIT_USER_MAX`            | `1000`             | Requests per signed-in user per window across covered API routes        |
+| `RATE_LIMIT_USER_WINDOW_SECONDS` | `60`               | Fixed window                                                            |
+| `RATE_LIMIT_AUTH_MAX`            | `100`              | General auth requests per IP and endpoint per auth window               |
+| `RATE_LIMIT_AUTH_WINDOW_SECONDS` | `10`               | Auth window                                                             |
+| `RATE_LIMIT_LOGIN_MAX`           | `20`               | Better Auth sign-in requests per IP and endpoint per 10 s               |
+| `RATE_LIMIT_TRUSTED_IP_HEADER`   | unset              | The one header trusted for client IP; deployed value `x-azure-socketip` |
+| `DATA_API_MAX_METRICS`           | `100`              | Maximum metric IDs per request                                          |
+| `DATA_API_TIMEOUT_MS`            | `15000`            | Per outgoing data API fetch                                             |
+| `CLIENT_IP_DIAGNOSTICS`          | unset              | `true` logs a `Client IP diagnostic` line on `/api/checks/live`         |
+| `RATE_LIMIT_CLEANUP_BATCHES`     | `10`               | Batches of 1,000 rows per manual cleanup run                            |
+| `RateLimiting__Enabled`          | `true`             | API limiter switch                                                      |
+| `RateLimiting__ConcurrencyLimit` | `20`               | Data handlers in flight per API process, no queue                       |
+| `RateLimiting__MaxLocations`     | `500`              | Locations per metric data request                                       |
 
-## Unknown client-IP configuration
+The local password route (`/api/auth/local`, `LOCAL_AUTH=true` only) has a fixed limit of 3 attempts per 10 s in middleware. `E2E_TESTING_MODE` does not disable limits; tests that need a bypass set `RATE_LIMIT_ENABLED=false`.
 
-The deployed proxy header configuration is currently unknown. The code ignores arbitrary `X-Forwarded-For` and removes any client-supplied internal `x-gascd-trusted-client-ip` header before invoking Better Auth. It only copies a valid single IP from the explicitly configured trusted header. Better Auth normalizes IP identities, including IPv6 subnet handling.
+## Running the tests
 
-Until a trusted header is configured, unidentified login requests share Better Auth's bounded per-endpoint fallback quota. This deliberately does not disable protection, but it can throttle different users together: the default sign-in limit would be three requests per 10 seconds for that shared endpoint. Treat this as a temporary fallback, not production per-IP protection. Development/test Better Auth uses a localhost fallback; a production-mode subprocess test verifies the actual `no-trusted-ip` behaviour.
+- `npm run test:nocov -- __tests__/rate-limit`: middleware, the real pinned Better Auth handler, bounds, error propagation, the notice.
+- Real SQL suite: start SQL Server 2022 bound to `127.0.0.1:15478` with `ACCEPT_EULA=Y` and the disposable SA password recorded in `__tests__/rate-limit/sql.integration.ts`, then `RATE_LIMIT_SQL_TEST=true npm run test:rate-limit:sql`. Never point it at a real user database.
+- `dotnet test gascd_api/api.Tests`: includes concurrency saturation, cancellation release and configuration validation.
+- `k6 run -e BASE_URL=<host and base path> -e USERS_FILE=<json> -e VUS=20 -e DURATION=2m load_tests/authenticated-data.js` with an untracked file of `{cookie, metric_ids}` entries. Never commit session files.
 
-Ask the platform team to establish which hop overwrites a client-IP header and whether the origin can be reached through an untrusted path. Inspect the Front Door → Container Apps request chain. Configure only the verified header; a setting name alone does not establish trust. Comma-separated chains and invalid IPs fall back to the shared quota. Current implementation does not infer or walk an unknown proxy chain.
+## Manual cleanup
 
-## Temporary client-IP diagnostics
-
-Set `CLIENT_IP_DIAGNOSTICS=true` on the frontend Container App and visit its normal public `/api/checks/live` URL (including `/gascd` if configured). No query-string marker is needed. Each call to that route, including health probes, then emits a single `Client IP diagnostic` console-log line containing `socketIp`, `forwardedFor`, and `requestId`. Missing headers appear as `null`. Cookies and authorization headers are not logged. The response remains `200 OK`, with `Cache-Control: no-store`; overriding edge-cache rules still need separate verification.
-
-The line records `clientIp` (`x-azure-clientip`, set by Front Door), `socketIp` (`x-azure-socketip`), `forwardedFor` and `requestId`. Find it in Log Analytics (the central workspace may use the Azure Monitor `ContainerAppConsoleLogs` table rather than the custom `_CL` one; the frontend's winston logs also reach App Insights `traces`):
-
-```kusto
-ContainerAppConsoleLogs_CL
-| where TimeGenerated > ago(15m)
-| where Log_s contains "Client IP diagnostic"
-| project TimeGenerated, ContainerAppName_s, Log_s
-| order by TimeGenerated desc
-```
-
-Set `CLIENT_IP_DIAGNOSTICS=false` again after checking. This switch only enables observation; it does not change which IP header the rate limiter trusts.
-
-## First dev deployment: header check
-
-This branch includes the rate-limiting implementation as well as the temporary logger. Run the database migration described below before testing enabled frontend limits.
-
-Deployment is from the `gascd-apps` repository (`dhsc-govuk-infrastructure`): the frontend and API Container App env vars live in `deploy/<app>/containerapps/values-<env>.yaml`, and **Deploy to Environment** builds and deploys a chosen source ref. The Azure DevOps pipelines in this repository targeted the previous Edge-hosted estate, confirmed retired on 2026-11-03; a merge to `main` deploys nothing.
-
-For a header-only check, set `CLIENT_IP_DIAGNOSTICS=true` and `RATE_LIMIT_ENABLED=false` in the frontend values file and deploy. The diagnostic works independently of rate limiting. Leave `RATE_LIMIT_TRUSTED_IP_HEADER` unset until the proxy behaviour is verified. The API limiter has its own `RateLimiting__Enabled` switch.
-
-Visit `/gascd/api/checks/live` through the normal public frontend hostname (omit `/gascd` if no base path is configured), then use the query above. Browser calls and internal health probes can produce different IP values; compare the entries with your request time. Confirming that an address arrives is separate from proving that the proxy overwrites a spoofed header and that untrusted clients cannot reach the origin directly.
-
-Set `CLIENT_IP_DIAGNOSTICS=false` when the check is complete. To test frontend limiting afterwards, complete the migration, configure the verified trusted header, and set `RATE_LIMIT_ENABLED=true`.
-
-## Dev header check result (2026-11-02)
-
-Run from the `feature/GASCD-78-rate-limiting` ref against dev via the public hostname `dev.analytics.dhsc.gov.uk/gascd-frontend-dev`, with the diagnostic on and the limiter enabled.
-
-A plain request from a home connection logged the same public address in both `clientIp` (`x-azure-clientip`) and `socketIp` (`x-azure-socketip`). `forwardedFor` showed the chain `client, Front Door backend (147.243.0.0/16), App Gateway private address:port, Container Apps ingress address`.
-
-A second request that sent spoofed `x-azure-clientip`, `x-azure-socketip` and `x-forwarded-for` headers (all `203.0.113.9`) logged the real address in both Azure headers, while `forwardedFor` became `203.0.113.9, <real address>, <Front Door>, <App Gateway>, <ingress>`. Front Door therefore overwrites both Azure headers and only appends to `x-forwarded-for`.
-
-Decision: `RATE_LIMIT_TRUSTED_IP_HEADER=x-azure-socketip`. The socket IP is the TCP peer of the connection to Front Door and cannot be influenced by request content; `x-azure-clientip` may be derived from a forwarded-for header when a client sits behind a proxy. Users behind one corporate NAT share a socket IP, so the login limit (3 failures per 10 seconds) applies per office; acceptable for a lockout limiter.
-
-Set in dev, tst and prd values. The header is only trustworthy if nothing can reach the origin without passing Front Door; the Container Apps environment is VNet-only, and on 2026-11-03 the DHSC platform team confirmed the App Gateway admits only Front Door traffic. Prd ships with `RATE_LIMIT_ENABLED=false` for the first release and is switched on by a values-only redeploy once the tst soak has shown the user database DTU cost of the counter writes is acceptable.
-
-## Request and failure behaviour
-
-- Middleware limits authenticated API traffic by session user ID. Users behind one office connection have independent authenticated quotas. Existing route authorization still applies.
-- Exact liveness and health routes bypass frontend counters. Auth's catch-all HTTP handler applies its own policies. Custom local login is explicitly limited, and local auth requires `LOCAL_AUTH=true`. The custom logout URL route receives the authenticated quota. Better Auth sign-out is exempt so users can leave an overloaded service.
-- Anonymous analytics opt-out remains available, with a separate 30/minute quota keyed by trusted IP or a shared fallback. Other paths do not inherit broad `auth`, `checks`, or `analytics` prefix exemptions.
-- Counter exhaustion returns HTTP 429 with the actual remaining fixed-window delay in `Retry-After`. Adjacent windows intentionally permit a boundary burst. Better Auth's `X-Retry-After` is also exposed as the standard header.
-- Counter failures return controlled 503 responses. They do not silently become per-process counters. A separate two-connection pool per frontend process, a ten-second connection/acquisition budget, a two-second SQL command timeout, and a one-second SQL lock timeout isolate counters from session-pool capacity. SQL uses `XACT_ABORT`, explicit transactions, and key-range locking for concurrent inserts.
-- The API rejects saturated data routes with 429 and no invented retry window. Health endpoints outside `/api` remain exempt. API 429/503 responses and transport failures are propagated through frontend data routes, so they cannot become successful empty/partial responses.
-- Browser data services display a dismissible notice that distinguishes throttling (429: "Too many requests", with the retry delay when known) from an unreachable or unavailable data service (503: "currently unavailable"), so an outage is not reported as the service being busy. They do not automatically retry mutations or reload the page. Existing route selections are retained; existing chart-specific error behaviour remains in place.
-- `E2E_TESTING_MODE` no longer disables auth protection. Tests needing a bypass must explicitly set `RATE_LIMIT_ENABLED=false` in their isolated environment.
-
-## Migration, cleanup, and rollout
-
-1. Run the `gascd-apps` **DB Bootstrap** workflow with task `userdb` and the source ref being released, per environment and before deploying it. Its better-auth migrate step runs `npm run db:migrate:ci`, whose post-migration script creates `dbo.requestRateLimit` and its primary/expiry indexes idempotently. The application never creates the table at startup. The table is additive and can be created ahead of the deploy.
-2. The frontend's managed identity is a member of `db_datareader` and `db_datawriter` (granted by the same workflow), which covers select, insert, update and delete. The migration runs as the deploy service principal, which has DDL.
-3. Cleanup of expired counters is **deferred** (decision 2026-11-03). Nothing deletes rows from `dbo.requestRateLimit` yet. Every limiter lookup is a point read on the primary key, so table size does not affect latency; growth is roughly one row per active user per minute of activity (low tens of thousands of rows a day for the expected user base, a gigabyte or two a year against the S1 ceiling). When cleanup is needed, run `npm run db:cleanup:rate-limits` manually against the environment's user database with a deploy SP token (same setup as the DB Bootstrap workflow's `userdb` task); it deletes up to `RATE_LIMIT_CLEANUP_BATCHES` (default 10) batches of 1,000 rows more than a day past expiry and prints how many expired rows remain. The preferred permanent home is a daily timer inside the frontend process rather than a scheduled workflow.
-4. Establish the trusted IP header (step above), record the configured replica maxima (prd: 4 to 8 for both apps) and revision overlap, then run authenticated tst traffic. Tune provisional values using the measurements below.
-5. Deploy with **Deploy to Environment** from `main`, after the same `main` has soaked in tst, at a quiet time. `values-prd.yaml` ships `RATE_LIMIT_ENABLED=false` until the header is verified; enabling it is a values-only redeploy. The API's `RateLimiting__Enabled` is independent. Do not disable both without another agreed protection layer. Rollback is a redeploy of the previous image SHA; the table can stay.
-
-The separate admin app, Front Door rules, private endpoints, and actual ingress restrictions remain external dependencies. This branch does not claim those diagram controls are deployed or verified.
-
-## Measurements to obtain from App Insights and tst
-
-Capture peak request counts over both 10-second and 60-second windows, not just hourly averages. Separate auth endpoints, frontend data routes, and API data routes. Include active users, per-user bursts if existing telemetry supports them, p50/p95/p99 successful latency, API in-flight requests, SQL pool waits/lock timeouts, PostgreSQL CPU/connections, and API calls per frontend request.
-
-Frontend OpenTelemetry instruments are `gascd.rate_limit.decisions` (policy and outcome labels) and `gascd.rate_limit.duration` (milliseconds, policy label). The frontend's Azure Monitor distro exports them to the node App Insights component as `customMetrics`; confirm they appear after the first dev deploy with limits enabled. No user IDs or IPs are metric labels. Store-failure logging is sampled to once per 30 seconds per process. Use the .NET built-in rate-limiting instruments alongside request telemetry for API rejection and lease counts.
-
-The authenticated k6 scenario is `gascd_frontend/load_tests/authenticated-data.js`. Supply an untracked JSON file with staging session cookies and valid metric IDs, one entry per distinct user:
-
-```json
-[
-  {
-    "cookie": "<staging session cookie header>",
-    "metric_ids": ["total_population"]
-  }
-]
-```
+Nothing deletes expired counters on a schedule (deferred). When needed, with the deploy service principal's SQL token as the DB Bootstrap workflow obtains it:
 
 ```sh
-k6 run -e BASE_URL=https://your-staging-host/gascd -e USERS_FILE=/absolute/path/users.json -e VUS=20 -e DURATION=2m load_tests/authenticated-data.js
+USER_DB_SERVER=sql-gascd-userdb-<env>-uks.database.windows.net USER_DB_PORT=1433 USER_DATABASE=User_DB \
+USER_DB_ACCESS_TOKEN=... RATE_LIMIT_CLEANUP_BATCHES=100 npm run db:cleanup:rate-limits
 ```
 
-The `gascd-apps` **Load Test** workflow runs this as the `authenticated-data` scenario, reading the users JSON from the `K6_AUTH_USERS_JSON` secret on the target GitHub environment and deleting the temporary file afterwards. Do not commit session files. Run a normal-usage profile with enough users and realistic pauses, then an overload profile. Record successful latency and 429/503 counts separately; a fast rejection is not successful throughput. This script exercises authenticated data and controlled overload, not a complete browser dashboard or OAuth journey. Run actual representative dashboards too. No staging/production load test has been run as part of this implementation.
-
-## Local validation
-
-- `npm run test:nocov -- __tests__/rate-limit` exercises middleware, the real pinned Better Auth HTTP handler, production fallback handling, input bounds, upstream errors, and the UI notice.
-- `RATE_LIMIT_SQL_TEST=true npm run test:rate-limit:sql` exercises the production SQL against a dedicated local SQL Server at `127.0.0.1:15478`, database `GASCD78RateLimitTests`. The test file deliberately does not read production user-database settings. It requires the disposable local SA password recorded in that test file.
-- Start an isolated SQL Server container bound only to localhost on port 15478, with `ACCEPT_EULA=Y` and `MSSQL_SA_PASSWORD=Gascd78-Local-Test-Only!`, using an appropriate local SQL Server 2022 image. Do not point this suite at the active development database.
-- The SQL suite verifies exactly seven admissions from 64 concurrent attempts through independent pools, quota persistence after a pool restart, separate user quotas, database-time reset, cleanup, and bounded lock failure/recovery. Independent pools establish shared database semantics; deployed multi-replica routing remains a staging check.
-- `dotnet test gascd_api/api.Tests` includes HTTP concurrency saturation, exception/cancellation release, health availability, configuration validation, and location bounds, alongside existing API/auth tests. Its existing fixtures create disposable PostgreSQL containers.
-
-Validation of the final implementation:
-
-| Check                                 | Result                                                                          |
-| ------------------------------------- | ------------------------------------------------------------------------------- |
-| Frontend production build             | Passed, including Next.js type/lint checks; existing stylesheet warnings remain |
-| Tests covering changed frontend areas | 253 passed                                                                      |
-| Dedicated real SQL suite              | 4 passed                                                                        |
-| Full API suite                        | 421 passed                                                                      |
-| Full frontend suite                   | 449 passed; 5 existing failures reproduced on clean main                        |
-| Standalone TypeScript check           | Same 20 existing test-file diagnostics as clean main; no new diagnostics        |
-| ESLint on changed frontend files      | Passed                                                                          |
-
-The five baseline frontend failures concern home-page link expectations and sharing rules (`HomePage`, `helpPageSharing`, `sharingCategories`, and `SharingRules`). They are outside this change. Existing package security warnings from .NET restore were not changed by this branch.
+It deletes rows more than a day past their window in batches and prints how many expired rows remain.
