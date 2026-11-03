@@ -35,16 +35,14 @@ describe('MarketPositionStatementsPage', () => {
       'Barnet (opens in new tab)',
       'BarnsleyNo market position statement found',
     ]);
-    expect(within(b).getByRole('link', { name: /^Barnet/ })).toHaveAttribute(
-      'href',
-      'https://www.barnet.gov.uk/mps'
-    );
+    expect(
+      within(b).getByRole('link', { name: /^Barnet/ })
+    ).toHaveAttribute('href', 'https://www.barnet.gov.uk/mps');
 
     const s = screen.getByRole('region', { name: 'S' });
-    expect(within(s).getByRole('link', { name: /^Surrey/ })).toHaveAttribute(
-      'href',
-      'https://www.surreycc.gov.uk/mps'
-    );
+    expect(
+      within(s).getByRole('link', { name: /^Surrey/ })
+    ).toHaveAttribute('href', 'https://www.surreycc.gov.uk/mps');
   });
 
   it('links only to the letters that have LAs', async () => {
