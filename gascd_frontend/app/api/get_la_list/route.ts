@@ -1,9 +1,10 @@
+import { withDataApiErrors } from '@/lib/data-api-errors';
 import { NextResponse } from 'next/server';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import logger from '@/utils/logger';
 import { getAPIClient } from '@/data/dataAPI';
 
-export async function GET() {
+async function handleGET() {
   const user = await getCurrentUser();
   if (!user || !isUserRegistered(user)) {
     return NextResponse.json({ error: 'No user' }, { status: 401 });
@@ -25,3 +26,5 @@ export async function GET() {
 
   return NextResponse.json(data);
 }
+
+export const GET = withDataApiErrors(handleGET);

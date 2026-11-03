@@ -1,16 +1,17 @@
+import { withDataApiErrors } from '@/lib/data-api-errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { getAPIClient } from '@/data/dataAPI';
 import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import { getDefaultLocations } from '@/data/locations';
 import logger from '@/utils/logger';
 
-export async function GET(req: NextRequest) {
+async function handleGET(req: NextRequest) {
   const user = await getCurrentUser();
   if (!user || !isUserRegistered(user)) {
     return NextResponse.json({ error: `No user` }, { status: 401 });
   }
 
-  const client = getAPIClient();
+  const client = getAPIClient(req.signal);
   const default_locations = await getDefaultLocations(user);
   const region = default_locations?.find(
     (item) => item.location_type == 'Regional'
@@ -40,3 +41,5 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
+export const GET = withDataApiErrors(handleGET);

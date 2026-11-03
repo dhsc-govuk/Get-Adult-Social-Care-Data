@@ -6,6 +6,7 @@ import {
   getApproverContext,
   listProviderGrants,
 } from '@/lib/manageUsersServer';
+import { DataApiUnavailableError } from '@/lib/data-api-errors';
 import {
   APPROVER_DESCRIPTIONS,
   groupManagedUsers,
@@ -65,7 +66,48 @@ export default async function ManageUsersPage({ searchParams }: Props) {
   const user = await getCurrentUser();
   if (!user) redirect('/login');
 
-  const context = await getApproverContext(user);
+  // The approver check needs the data API. If it is throttled or unreachable,
+  // say so instead of sending the approver to the generic error page.
+  let context;
+  try {
+    context = await getApproverContext(user);
+  } catch (error) {
+    if (!(error instanceof DataApiUnavailableError)) throw error;
+    return (
+      <Layout
+        title="Manage users"
+        showLoginInformation={true}
+        currentPage="manage-users"
+        breadcrumbs={breadcrumbs}
+      >
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <div
+              className="govuk-notification-banner"
+              role="alert"
+              aria-labelledby="manage-users-unavailable"
+            >
+              <div className="govuk-notification-banner__header">
+                <h2
+                  className="govuk-notification-banner__title"
+                  id="manage-users-unavailable"
+                >
+                  Important
+                </h2>
+              </div>
+              <div className="govuk-notification-banner__content">
+                <p className="govuk-notification-banner__heading">
+                  {error.status === 429
+                    ? 'The data service is busy. Please try again shortly.'
+                    : 'The data service is currently unavailable. Please try again later.'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
   if (!context) notFound();
 
   const { page, done, user: changedUserId } = await searchParams;

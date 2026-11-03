@@ -5,7 +5,7 @@ import { auth } from '@/lib/auth';
 
 // Utility route to support signing in as the local testing user
 export async function GET(req: NextRequest) {
-  if (!process.env.LOCAL_AUTH) {
+  if (process.env.LOCAL_AUTH !== 'true') {
     return new NextResponse('Not found', { status: 404 });
   }
 

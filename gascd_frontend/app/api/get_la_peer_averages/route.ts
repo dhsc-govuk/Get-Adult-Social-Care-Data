@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAPIClient } from '@/data/dataAPI';
-import { getDefaultLocations, validateMetricIds } from '@/data/locations';
+import { getDefaultLocations } from '@/data/locations';
+import { withDataApiErrors } from '@/lib/data-api-errors';
+import { parseMetricIds, readMetricRequest } from '@/lib/metric-request';
+import { positiveInteger } from '@/lib/rate-limit-config';
 import {
   canAccessMetric,
   getCurrentUser,
@@ -16,16 +19,25 @@ import { PEER_GROUP_LOCATION_TYPE } from '@/constants';
  * it can sit alongside the LA, regional and national rows from the metric data
  * route in the same charts.
  */
-export async function POST(req: NextRequest) {
+async function handlePOST(req: NextRequest) {
   const user = await getCurrentUser();
   if (!user || !isUserRegistered(user)) {
     return NextResponse.json({ error: `No user` }, { status: 401 });
   }
 
-  const body = await req.json();
-  const metric_ids = validateMetricIds(body.metric_ids || []);
-  if (!metric_ids.length) {
-    return NextResponse.json({ error: `No metric ids` }, { status: 400 });
+  // Same body size and metric count bounds as the metric data route.
+  let metric_ids: string[];
+  try {
+    const body = (await readMetricRequest(req)) as { metric_ids?: unknown };
+    metric_ids = parseMetricIds(
+      body?.metric_ids,
+      positiveInteger('DATA_API_MAX_METRICS', 100, 500)
+    );
+  } catch {
+    return NextResponse.json(
+      { error: 'Invalid or oversized metric request' },
+      { status: 400 }
+    );
   }
   for (const metric_id of metric_ids) {
     if (!canAccessMetric(user, metric_id)) {
@@ -47,7 +59,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const client = getAPIClient();
+  const client = getAPIClient(
+    AbortSignal.any([req.signal, AbortSignal.timeout(30000)])
+  );
   const { data, error, response } = await client.POST(
     '/metric_locations/local_authority_peers/{code}/series',
     {
@@ -96,3 +110,5 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json(indicators, { status: 200 });
 }
+
+export const POST = withDataApiErrors(handlePOST);
