@@ -275,7 +275,7 @@ describe('useComparatorGroups', () => {
       id: 'region',
       name: 'Region (West Midlands)',
       averageLabel: 'West Midlands (regional average excluding Coventry)',
-      comparisonLabel: 'West Midlands excluding Coventry',
+      comparisonLabel: 'West Midlands LAs',
       totalLabel: 'West Midlands total excluding Coventry',
       laCodes: ['E08000025', 'E08000026'],
       builtIn: true,
@@ -314,7 +314,7 @@ describe('useComparatorGroups', () => {
         name: 'Region (West Midlands)',
         averageLabel:
           'West Midlands (regional average excluding your local authority)',
-        comparisonLabel: 'West Midlands excluding your local authority',
+        comparisonLabel: 'West Midlands LAs',
         totalLabel: 'West Midlands total excluding your local authority',
         laCodes: ['E08000025'],
         builtIn: true,
