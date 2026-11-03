@@ -30,7 +30,7 @@ describe('DataIndicatorDetails sharing rules row', () => {
     expect(row.textContent).toContain('Sharing rules');
     expect(row.textContent).toContain('Not for sharing externally');
     expect(row.textContent).toContain(
-      'The data in the chart is not to be shared outside your organisation.'
+      'This data is not to be shared outside your organisation.'
     );
     expect(row.textContent).toContain('protected by a data sharing agreement');
     expect(row.textContent).toContain('AI tools that are outwards facing');

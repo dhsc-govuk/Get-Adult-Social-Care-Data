@@ -73,8 +73,7 @@ export const SHARING_CATEGORIES: Record<SharingCategoryId, SharingCategory> = {
   'not-for-external-sharing': {
     id: 'not-for-external-sharing',
     label: 'Not for sharing externally',
-    statement:
-      'The data in the chart is not to be shared outside your organisation.',
+    statement: 'This data is not to be shared outside your organisation.',
     spreadsheetLabel: 'Not for External Sharing',
     tagModifier: 'govuk-tag--orange',
     showWarningIcon: true,

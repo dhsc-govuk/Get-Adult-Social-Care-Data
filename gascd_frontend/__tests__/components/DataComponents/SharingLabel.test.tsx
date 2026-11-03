@@ -28,7 +28,7 @@ describe('SharingLabel', () => {
 
     expect(
       screen.getByText(
-        'The data in the chart is not to be shared outside your organisation.'
+        'This data is not to be shared outside your organisation.'
       )
     ).toBeInTheDocument();
 

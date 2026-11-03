@@ -38,11 +38,11 @@ describe('convertToCSV', () => {
     ];
     const csv = convertToCSV(mocktable, '', [
       'Sharing label: Not for sharing externally',
-      'The data in the chart is not to be shared outside your organisation.',
+      'This data is not to be shared outside your organisation.',
     ]);
     expect(csv).toBe(
       '"Sharing label: Not for sharing externally"\r\n' +
-        '"The data in the chart is not to be shared outside your organisation."\r\n' +
+        '"This data is not to be shared outside your organisation."\r\n' +
         '\r\n' +
         '"Fruit","Cost"\r\n"Apple","1.50"\r\n'
     );
