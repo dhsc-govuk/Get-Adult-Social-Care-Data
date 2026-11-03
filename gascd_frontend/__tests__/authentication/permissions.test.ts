@@ -64,6 +64,14 @@ describe('isUserRegistered', () => {
     expect(registered).toBe(false);
   });
 
+  it('should be false if the user has no live access', async () => {
+    const registered = isUserRegistered({
+      ...mockSession.user,
+      access: { providerCodes: [], locationCodes: [], laCodes: [] },
+    });
+    expect(registered).toBe(false);
+  });
+
   it('should be true for normal session', async () => {
     const registered = isUserRegistered(mockSession.user);
     expect(registered).toBe(true);

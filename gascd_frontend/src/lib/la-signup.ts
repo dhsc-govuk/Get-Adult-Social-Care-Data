@@ -1,7 +1,15 @@
 import { APIError } from 'better-auth/api';
+import { Kysely } from 'kysely';
 import { isAcceptableEmail } from './domain-check';
 import { generateAnalyticsId } from '@/helpers/telemetry/analyticsId';
 import { LA_USER_TYPE } from '@/constants';
+import {
+  AUDIT_ACTION_USER_ADDED,
+  AUDIT_ACTOR_USER,
+  GRANT_ROLE_READER,
+  GRANT_STATUS_ACTIVE,
+} from '@/lib/manageUsers';
+import { GRANT_SCOPE_LA } from '@/lib/userAccess';
 
 /** Error code surfaced on the OAuth error redirect when the domain is not allowed. */
 export const LA_DOMAIN_REJECTED_ERROR = 'la_domain_not_allowed';
@@ -104,4 +112,64 @@ export async function laSignupBeforeCreateHook(
     throw new APIError('FORBIDDEN', { message: LA_DOMAIN_REJECTED_ERROR });
   }
   return { data: fields };
+}
+
+export const GRANT_BASIS_LA_USER = 'la_user';
+export const GRANT_SOURCE_SELF_SERVICE = 'self_service';
+
+type CreatedUser = {
+  id: string;
+  email: string;
+  source?: string | null;
+  locationId?: string | null;
+  registeredName?: string | null;
+};
+
+/**
+ * Better Auth `databaseHooks.user.create.after`: access comes from access_grant,
+ * so a self-service LA user needs their grant and its audit row. Takes the db
+ * so auth.ts can call it without a circular import.
+ */
+export async function recordLaSelfServiceGrant(
+  db: Kysely<any>,
+  user: CreatedUser,
+  now: Date = new Date()
+) {
+  if (user.source !== LA_SELF_SERVICE_SOURCE || !user.locationId) return;
+  const name = user.registeredName ?? user.email;
+  await db.transaction().execute(async (trx) => {
+    await trx
+      .insertInto('access_grant')
+      .values({
+        user_id: user.id,
+        scope_type: GRANT_SCOPE_LA,
+        la_code: user.locationId,
+        role: GRANT_ROLE_READER,
+        basis: GRANT_BASIS_LA_USER,
+        status: GRANT_STATUS_ACTIVE,
+        source: GRANT_SOURCE_SELF_SERVICE,
+        granted_at: now,
+      })
+      .execute();
+    await trx
+      .insertInto('access_audit')
+      .values({
+        occurred_at: now,
+        action: AUDIT_ACTION_USER_ADDED,
+        actor_type: AUDIT_ACTOR_USER,
+        actor_id: user.id,
+        actor_name: name,
+        actor_email: user.email,
+        target_user_id: user.id,
+        target_name: name,
+        target_email: user.email,
+        details: JSON.stringify({
+          role: GRANT_ROLE_READER,
+          basis: GRANT_BASIS_LA_USER,
+          scope_type: GRANT_SCOPE_LA,
+          la_code: user.locationId,
+        }),
+      })
+      .execute();
+  });
 }

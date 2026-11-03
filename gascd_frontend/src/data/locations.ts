@@ -1,10 +1,18 @@
 import 'server-only';
 import { getAPIClient } from './dataAPI';
 import { User } from '@/lib/auth';
+import {
+  canSeeCareProviderLocation,
+  canSeeLa,
+  UserAccess,
+} from '@/lib/userAccess';
 import logger from '@/utils/logger';
 import { ALLOWED_CP_USER_TYPES, LA_USER_TYPE } from '@/constants';
 
-export const getDefaultLocationsCP = async (cp_location_id: string) => {
+export const getDefaultLocationsCP = async (
+  cp_location_id: string,
+  access: UserAccess
+) => {
   const client = getAPIClient();
   // Look up details for the selected location, including all parent locations
   const { data: cpdata, error } = await client.GET(
@@ -20,6 +28,13 @@ export const getDefaultLocationsCP = async (cp_location_id: string) => {
       },
     }
   );
+  if (
+    cpdata &&
+    !canSeeCareProviderLocation(access, cp_location_id, cpdata.provider_code)
+  ) {
+    logger.error('Selected location is not in the user access grants');
+    return [];
+  }
   if (cpdata) {
     const default_locations = [
       {
@@ -87,8 +102,12 @@ export const getDefaultLocations = async (user: User) => {
     return [];
   }
   if (ALLOWED_CP_USER_TYPES.includes(location_type)) {
-    return getDefaultLocationsCP(selected_location_id);
+    return getDefaultLocationsCP(selected_location_id, user.access);
   } else if (location_type == LA_USER_TYPE) {
+    if (!canSeeLa(user.access, selected_location_id)) {
+      logger.error('Selected location is not in the user access grants');
+      return [];
+    }
     return getDefaultLocationsLA(selected_location_id);
   } else {
     logger.error(`Unknown user type: ` + location_type);
@@ -97,20 +116,22 @@ export const getDefaultLocations = async (user: User) => {
 };
 
 export const getAllowedLocationsForUser = async (user: User) => {
-  const location_id = user.locationId;
-  const location_type = user.locationType;
-  if (!(location_id && location_type)) {
+  const { providerCodes, locationCodes } = user.access;
+  if (providerCodes.length === 0 && locationCodes.length === 0) {
     logger.error(`No location details for user`);
     return [];
   }
 
   let allowed_locations = [];
-  // Support for multiple comma-separated location ids
-  const location_ids = location_id.split(',');
-
-  for (let location_id of location_ids) {
-    const newLocations = await getAllowedLocations(location_id, location_type);
-    allowed_locations.push(...newLocations);
+  for (const provider_code of providerCodes) {
+    allowed_locations.push(
+      ...(await getAllowedLocations(provider_code, 'Care provider'))
+    );
+  }
+  for (const location_code of locationCodes) {
+    allowed_locations.push(
+      ...(await getAllowedLocations(location_code, 'Care provider location'))
+    );
   }
   const unique_allowed_locations = Array.from(
     new Map(allowed_locations.map((item) => [item.location_id, item])).values()

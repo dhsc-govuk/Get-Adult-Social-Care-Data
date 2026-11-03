@@ -4,6 +4,7 @@ import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import logger from '@/utils/logger';
 import { getAPIClient } from '@/data/dataAPI';
 import { ALLOWED_CP_USER_TYPES, LA_USER_TYPE } from '@/constants';
+import { canSeeCareProviderLocation, canSeeLa } from '@/lib/userAccess';
 
 const MAX_LA_CODES = 500;
 
@@ -34,9 +35,14 @@ async function handleGET(req: NextRequest) {
   // LA users benchmark their own authority; care-provider users benchmark
   // their location's parent LA (the same one the pages resolve for their
   // charts), so it is resolved server-side here to keep the exclusion
-  // semantics identical for both user types.
+  // semantics identical for both user types. A selected location the user's
+  // grants no longer cover is ignored.
   let requesting_la_code: string | undefined;
-  if (user.locationType === LA_USER_TYPE && user.selectedLocationId) {
+  if (
+    user.locationType === LA_USER_TYPE &&
+    user.selectedLocationId &&
+    canSeeLa(user.access, user.selectedLocationId)
+  ) {
     requesting_la_code = user.selectedLocationId;
   } else if (
     ALLOWED_CP_USER_TYPES.includes(user.locationType || '') &&
@@ -51,7 +57,16 @@ async function handleGET(req: NextRequest) {
         },
       }
     );
-    requesting_la_code = cpLocation?.local_authority_code ?? undefined;
+    if (
+      cpLocation &&
+      canSeeCareProviderLocation(
+        user.access,
+        user.selectedLocationId,
+        cpLocation.provider_code
+      )
+    ) {
+      requesting_la_code = cpLocation.local_authority_code ?? undefined;
+    }
     if (!requesting_la_code) {
       // Proceed without the exclusion rather than failing the whole request:
       // the average is then computed over the full group.
