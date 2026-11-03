@@ -53,7 +53,7 @@ Set `CLIENT_IP_DIAGNOSTICS=false` again after checking. This switch only enables
 
 This branch includes the rate-limiting implementation as well as the temporary logger. Run the database migration described below before testing enabled frontend limits.
 
-Deployment is from the `gascd-apps` repository (`dhsc-govuk-infrastructure`): the frontend and API Container App env vars live in `deploy/<app>/containerapps/values-<env>.yaml`, and **Deploy to Environment** builds and deploys a chosen source ref. The Azure DevOps pipelines in this repository target the previous Edge-hosted estate.
+Deployment is from the `gascd-apps` repository (`dhsc-govuk-infrastructure`): the frontend and API Container App env vars live in `deploy/<app>/containerapps/values-<env>.yaml`, and **Deploy to Environment** builds and deploys a chosen source ref. The Azure DevOps pipelines in this repository targeted the previous Edge-hosted estate, confirmed retired on 2026-11-03; a merge to `main` deploys nothing.
 
 For a header-only check, set `CLIENT_IP_DIAGNOSTICS=true` and `RATE_LIMIT_ENABLED=false` in the frontend values file and deploy. The diagnostic works independently of rate limiting. Leave `RATE_LIMIT_TRUSTED_IP_HEADER` unset until the proxy behaviour is verified. The API limiter has its own `RateLimiting__Enabled` switch.
 
@@ -71,7 +71,7 @@ A second request that sent spoofed `x-azure-clientip`, `x-azure-socketip` and `x
 
 Decision: `RATE_LIMIT_TRUSTED_IP_HEADER=x-azure-socketip`. The socket IP is the TCP peer of the connection to Front Door and cannot be influenced by request content; `x-azure-clientip` may be derived from a forwarded-for header when a client sits behind a proxy. Users behind one corporate NAT share a socket IP, so the login limit (3 failures per 10 seconds) applies per office; acceptable for a lockout limiter.
 
-Set in dev and tst values. Prd stays unset until the DHSC platform team confirm the App Gateway admits only Front Door traffic (Front Door ID header check or service-tag restriction), because the header is only trustworthy if nothing can reach the origin without passing Front Door. The Container Apps environment is VNet-only, so the App Gateway is the only path to confirm.
+Set in dev, tst and prd values. The header is only trustworthy if nothing can reach the origin without passing Front Door; the Container Apps environment is VNet-only, and on 2026-11-03 the DHSC platform team confirmed the App Gateway admits only Front Door traffic. Prd ships with `RATE_LIMIT_ENABLED=false` for the first release and is switched on by a values-only redeploy once the tst soak has shown the user database DTU cost of the counter writes is acceptable.
 
 ## Request and failure behaviour
 
