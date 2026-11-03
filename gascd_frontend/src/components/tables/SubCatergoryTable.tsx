@@ -112,8 +112,9 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
               {[
                 ...(showCareProvider ? ['CPLabel'] : []),
                 'LALabel',
-                ...(showComparatorAverage ? ['ComparatorLabel'] : []),
-                'RegionLabel',
+                ...(showComparatorAverage
+                  ? ['ComparatorLabel']
+                  : ['RegionLabel']),
                 'CountryLabel',
               ]
                 .filter(
@@ -214,17 +215,21 @@ const SubCatergoryTable: React.FC<DataTableProps> = ({
                     )}
                   </td>
                 )}
-                <td className="govuk-table__cell govuk-table__cell--numeric">
-                  {totalsRows?.includes(key) && totalsRows[0] !== key && <br />}
-                  {getFormattedDataPoint(
-                    data,
-                    key,
-                    'Regional',
-                    percentageRows?.some((item) => item === key) ?? false,
-                    currency,
-                    showAverageLabel
-                  )}
-                </td>
+                {!showComparatorAverage && (
+                  <td className="govuk-table__cell govuk-table__cell--numeric">
+                    {totalsRows?.includes(key) && totalsRows[0] !== key && (
+                      <br />
+                    )}
+                    {getFormattedDataPoint(
+                      data,
+                      key,
+                      'Regional',
+                      percentageRows?.some((item) => item === key) ?? false,
+                      currency,
+                      showAverageLabel
+                    )}
+                  </td>
+                )}
                 <td className="govuk-table__cell govuk-table__cell--numeric">
                   {totalsRows?.includes(key) && totalsRows[0] !== key && <br />}
                   {getFormattedDataPoint(

@@ -179,9 +179,15 @@ export default function ProvisionAndOccupancyPage() {
         baseDemographicData,
         demographicMetricIds,
         dataByMetric,
-        locationIds[2]
+        locationIds[2],
+        comparator.comparatorIsRegion
       ),
-    [baseDemographicData, dataByMetric, locationIds]
+    [
+      baseDemographicData,
+      dataByMetric,
+      locationIds,
+      comparator.comparatorIsRegion,
+    ]
   );
 
   useEffect(() => {
@@ -308,7 +314,7 @@ export default function ProvisionAndOccupancyPage() {
               <DataTable
                 metrics={['perc_households_deprivation_deprived']}
                 tableref={tableref1}
-                caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
+                caption={`Table 1: percentage of households classified as 'deprived in 4 dimensions' – ${locationNames.LALabel} LA, ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
                 columnHeaders={tableColumnHeaders}
                 data={filteredDemographicData}
                 showCareProvider={false}
@@ -349,6 +355,7 @@ export default function ProvisionAndOccupancyPage() {
               )}
               comparatorLabel={comparator.comparatorLabel}
               comparatorAverageLabel={comparator.comparatorAverageLabel}
+              comparatorIsRegion={comparator.comparatorIsRegion}
               metricDescription="the percentage of households deprived in 4 dimensions"
               figureTitle="Percentage of households deprived in 4 dimensions"
             />
@@ -378,7 +385,7 @@ export default function ProvisionAndOccupancyPage() {
         }
         figureNumber={2}
         metricDescription="the percentage of households where the property is owned outright"
-        tableCaption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
+        tableCaption={`Table 2: percentage of households where the property is owned outright – ${locationNames.LALabel} LA, ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
         columnHeaders={tableColumnHeaders}
         download={{
           filename: 'property_owned_outright.csv',
@@ -416,7 +423,7 @@ export default function ProvisionAndOccupancyPage() {
         }
         figureNumber={3}
         metricDescription="the percentage of one-person households where the person is aged 65 or over"
-        tableCaption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} (regional average), ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
+        tableCaption={`Table 3: percentage of one-person households where the person is aged 65 or over – ${locationNames.LALabel} LA, ${tableColumnHeaders.ComparatorLabel} and ${locationNames.CountryLabel}, Census 2021`}
         columnHeaders={tableColumnHeaders}
         download={{
           filename: 'one_person_households_over_65.csv',

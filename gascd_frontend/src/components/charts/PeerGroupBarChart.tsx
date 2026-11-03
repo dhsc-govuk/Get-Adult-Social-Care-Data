@@ -25,6 +25,7 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
   dateLabel,
   comparisonSummary,
   comparatorAverageLabel,
+  comparatorIsRegion,
   regionalAverageLabel,
   nationalAverageLabel,
   sourceText,
@@ -66,6 +67,7 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
           peerData={peerData}
           ownLaCode={laCode}
           comparatorAverageLabel={comparatorAverageLabel}
+          comparatorIsRegion={comparatorIsRegion}
           regionalAverageLabel={regionalAverageLabel}
           nationalAverageLabel={nationalAverageLabel}
           valueSuffix={format === 'percentage' ? '%' : ''}

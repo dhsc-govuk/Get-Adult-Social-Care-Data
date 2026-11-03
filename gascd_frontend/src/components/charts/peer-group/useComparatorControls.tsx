@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import ComparatorGroupSelect from './ComparatorGroupSelect';
 import ComparatorGroupBuilder from './ComparatorGroupBuilder';
-import { useComparatorGroups } from './useComparatorGroups';
+import { isRegionSelection, useComparatorGroups } from './useComparatorGroups';
 import { useAllLocalAuthorities } from './useAllLocalAuthorities';
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from './constants';
 import { ComparatorSelection } from './types';
@@ -183,6 +183,7 @@ export function useComparatorControls({
   return {
     groups,
     selection,
+    comparatorIsRegion: isRegionSelection(selection),
     comparatorLabel,
     comparatorAverageLabel,
     renderComparatorControl,

@@ -4,7 +4,7 @@ import { getCurrentUser, isUserRegistered } from '@/lib/permissions';
 import { getDefaultLocations } from '@/data/locations';
 import logger from '@/utils/logger';
 
-// The other LAs in the user's region, offered as a ready-made comparator group
+// Every LA in the user's region, their own included, offered as a ready-made comparator group
 export async function GET() {
   const user = await getCurrentUser();
   if (!user || !isUserRegistered(user)) {
@@ -15,7 +15,6 @@ export async function GET() {
   const region = default_locations?.find(
     (item) => item.location_type == 'Regional'
   );
-  const la = default_locations?.find((item) => item.location_type == 'LA');
   if (!region?.location_code) {
     return NextResponse.json({ error: 'No region for user' }, { status: 500 });
   }
@@ -36,11 +35,8 @@ export async function GET() {
 
   return NextResponse.json({
     region_name: data.display_name,
-    la_name: data.local_authorities.find(
-      (row) => row.la_code === la?.location_code
-    )?.la_name,
     la_codes: data.local_authorities
       .map((row) => row.la_code)
-      .filter((code) => code && code !== la?.location_code),
+      .filter((code) => code),
   });
 }

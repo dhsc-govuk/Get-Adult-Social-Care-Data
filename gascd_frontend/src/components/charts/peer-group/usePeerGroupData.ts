@@ -12,6 +12,7 @@ import {
   PeerGroupApiResponse,
   PeerGroupData,
 } from './types';
+import { REGION_GROUP_ID } from './constants';
 
 const isValidLaCode = (laCode: string | undefined): laCode is string =>
   Boolean(laCode) && laCode !== 'Loading...' && laCode !== 'undefined';
@@ -114,10 +115,25 @@ export function usePeerGroupData(
     // the data for the other metrics on the page.
     Promise.allSettled(
       metricCodes.map(async (metricCode) => {
-        const data = selectedGroup
-          ? await fetchCustomGroup(selectedGroup.laCodes, metricCode)
-          : await fetchNhsPeerGroup(laCode, metricCode);
-        return [metricCode, data] as const;
+        if (!selectedGroup) {
+          return [
+            metricCode,
+            await fetchNhsPeerGroup(laCode, metricCode),
+          ] as const;
+        }
+        if (selectedGroup.id !== REGION_GROUP_ID) {
+          return [
+            metricCode,
+            await fetchCustomGroup(selectedGroup.laCodes, metricCode),
+          ] as const;
+        }
+        const [data, nhsPeerGroupAverage] = await Promise.all([
+          fetchCustomGroup(selectedGroup.laCodes, metricCode),
+          fetchNhsPeerGroup(laCode, metricCode)
+            .then((peers) => peers.averagePeerGroup)
+            .catch(() => null),
+        ]);
+        return [metricCode, { ...data, nhsPeerGroupAverage }] as const;
       })
     ).then((results) => {
       if (cancelled) return;

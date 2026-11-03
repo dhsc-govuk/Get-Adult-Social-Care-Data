@@ -36,6 +36,8 @@ export interface PeerGroupData {
   localAuthorityPeers: LocalAuthorityPeer[];
   averagePeerGroup: number | null;
   nationalAverage: number | null;
+  // Only set for the region group, whose charts keep the NHS peer group line
+  nhsPeerGroupAverage?: number | null;
 }
 
 export interface CustomComparatorGroup {
@@ -90,6 +92,8 @@ export interface PeerGroupBarChartProps {
   // Replaces the default comparison summary in the figure heading
   comparisonSummary?: string;
   comparatorAverageLabel?: string;
+  // The region's LAs are the bars; the lines stay NHS peer, regional and national
+  comparatorIsRegion?: boolean;
   // Legend label for the regional average line, e.g. "North East (regional
   // average)".
   regionalAverageLabel?: string;

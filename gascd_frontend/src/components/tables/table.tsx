@@ -120,8 +120,9 @@ const DataTable: React.FC<DataTableProps> = ({
               {[
                 ...(showCareProvider ? ['CPLabel'] : []),
                 'LALabel',
-                'RegionLabel',
-                ...(showComparatorAverage ? ['ComparatorLabel'] : []),
+                ...(showComparatorAverage
+                  ? ['ComparatorLabel']
+                  : ['RegionLabel']),
                 'CountryLabel',
               ]
                 .filter(
@@ -184,16 +185,18 @@ const DataTable: React.FC<DataTableProps> = ({
                     showAverageLabel
                   )}
                 </td>
-                <td className="govuk-table__cell govuk-table__cell--numeric">
-                  {getFormattedDataPoint(
-                    data,
-                    key,
-                    'Regional',
-                    percentageRows?.some((item) => item === key) ?? false,
-                    currency,
-                    showAverageLabel
-                  )}
-                </td>
+                {!showComparatorAverage && (
+                  <td className="govuk-table__cell govuk-table__cell--numeric">
+                    {getFormattedDataPoint(
+                      data,
+                      key,
+                      'Regional',
+                      percentageRows?.some((item) => item === key) ?? false,
+                      currency,
+                      showAverageLabel
+                    )}
+                  </td>
+                )}
                 {showComparatorAverage && (
                   <td className="govuk-table__cell govuk-table__cell--numeric">
                     {getFormattedDataPoint(
