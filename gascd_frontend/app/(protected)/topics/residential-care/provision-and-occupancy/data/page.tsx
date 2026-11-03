@@ -1113,8 +1113,7 @@ export default function ProvisionAndOccupancyPage() {
                   </>
                 }
                 columnHeaders={{
-                  ...locationNamesCP,
-                  RegionLabel: `${locationNamesCP.RegionLabel} (regional average)`,
+                  ...locationNamesWithAverageLabels,
                   ComparatorLabel: comparatorAverageLabel,
                 }}
                 data={benchmarkedCpData}
@@ -1632,8 +1631,7 @@ export default function ProvisionAndOccupancyPage() {
                   </>
                 }
                 columnHeaders={{
-                  ...locationNamesCP,
-                  RegionLabel: `${locationNamesCP.RegionLabel} (regional average)`,
+                  ...locationNamesWithAverageLabels,
                   ComparatorLabel: comparatorAverageLabel,
                 }}
                 data={benchmarkedCpData}

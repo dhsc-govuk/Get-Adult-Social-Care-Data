@@ -1,14 +1,14 @@
 # care_home_bed_numbers_and_occupancy.csv
 "Sharing label: Not for sharing externally"
-"The data in the chart is not to be shared outside your organisation."
+"This data is not to be shared outside your organisation."
 "This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
 
-"Indicator","Sunderland","North East (regional average)","NHS peer group (average)","England"
+"Indicator","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
 "Beds per care home","19.1 (median)","25.4 (median)","31.1 (median)","34.1 (median)"
 
 # care_home_bed_numbers.csv
 "Sharing label: Not for sharing externally"
-"The data in the chart is not to be shared outside your organisation."
+"This data is not to be shared outside your organisation."
 "This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
 
 "Area","Care home beds per 100,000 adult population (18+)"
@@ -34,7 +34,7 @@
 
 # care_home_bed_types.csv
 "Sharing label: Not for sharing externally"
-"The data in the chart is not to be shared outside your organisation."
+"This data is not to be shared outside your organisation."
 "This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
 
 "Care home bed type","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
@@ -53,7 +53,7 @@
 
 # care_home_bed_types_grouped.csv
 "Sharing label: Not for sharing externally"
-"The data in the chart is not to be shared outside your organisation."
+"This data is not to be shared outside your organisation."
 "This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
 
 "Area","Care home beds per 100,000 adult population (18+)"
@@ -79,7 +79,7 @@
 
 # care_home_bed_types_grouped_by_area.csv
 "Sharing label: Not for sharing externally"
-"The data in the chart is not to be shared outside your organisation."
+"This data is not to be shared outside your organisation."
 "This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
 
 "Care home bed type","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
@@ -92,15 +92,15 @@
 
 # care_home_occupancy_per_care_home.csv
 "Sharing label: Not for sharing externally"
-"The data in the chart is not to be shared outside your organisation."
+"This data is not to be shared outside your organisation."
 "This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
 
-"Indicator","Sunderland","North East (regional average)","NHS peer group (average)","England"
+"Indicator","Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
 "Occupancy level per care home","76.3% (average)","64.8% (average)","48.9% (average)","75.2% (average)"
 
 # care_home_occupancy_levels.csv
 "Sharing label: Not for sharing externally"
-"The data in the chart is not to be shared outside your organisation."
+"This data is not to be shared outside your organisation."
 "This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
 
 "Area","Occupancy level"
