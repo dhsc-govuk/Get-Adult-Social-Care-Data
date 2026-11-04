@@ -179,4 +179,47 @@ describe('usePeerGroupData', () => {
     );
     expect(result.current.dataByMetric.metric_a?.averagePeerGroup).toBe(33);
   });
+  it('also fetches the NHS peer group average for the region group', async () => {
+    mockFetch.mockImplementation(async (url: string) =>
+      url.includes('get_la_peers')
+        ? jsonResponse({ local_authority_peers: [], average_peer_group: 30 })
+        : jsonResponse({ group_members: [], custom_group_average: 11 })
+    );
+    const region = { id: 'region', name: 'North East', laCodes: ['E08000014'] };
+    const { result } = renderHook(() =>
+      usePeerGroupData(
+        'E08000014',
+        ['metric_a'],
+        { kind: 'custom', groupId: 'region' },
+        [region]
+      )
+    );
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.dataByMetric.metric_a).toMatchObject({
+      averagePeerGroup: 11,
+      nhsPeerGroupAverage: 30,
+    });
+  });
+
+  it('keeps the region data when the NHS peer request fails', async () => {
+    mockFetch.mockImplementation(async (url: string) =>
+      url.includes('get_la_peers')
+        ? jsonResponse({}, 500)
+        : jsonResponse({ group_members: [], custom_group_average: 11 })
+    );
+    const region = { id: 'region', name: 'North East', laCodes: ['E08000014'] };
+    const { result } = renderHook(() =>
+      usePeerGroupData(
+        'E08000014',
+        ['metric_a'],
+        { kind: 'custom', groupId: 'region' },
+        [region]
+      )
+    );
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.dataByMetric.metric_a).toMatchObject({
+      averagePeerGroup: 11,
+      nhsPeerGroupAverage: null,
+    });
+  });
 });

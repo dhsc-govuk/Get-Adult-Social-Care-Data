@@ -2,8 +2,8 @@
 "Sharing label: Share at your own discretion"
 "You can only share data externally where it was provided by your organisation."
 
-"Indicator","Total for Sunderland","North East (regional average)","NHS peer group (average)","England (national average)"
-"People receiving community social care in January 2026","8,413","5,544","5,945.6","4,984"
+"Indicator","Total for Sunderland","NHS peer group (average)","England (national average)"
+"People receiving community social care in January 2026","8,413","5,945.6","4,984"
 
 # number_of_people_receiving_community_social_care_standardised.csv
 "Sharing label: Share at your own discretion"

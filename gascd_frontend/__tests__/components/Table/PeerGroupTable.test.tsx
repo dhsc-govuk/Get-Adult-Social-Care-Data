@@ -173,4 +173,21 @@ describe('PeerGroupTable', () => {
       )
     ).toBeInTheDocument();
   });
+
+  it('shows one whole-region row when the region is the comparator', () => {
+    render(
+      <PeerGroupTable
+        {...props}
+        comparatorIsRegion
+        comparatorAverageLabel="North West (regional average)"
+      />
+    );
+    expect(bodyRows()).toEqual([
+      ['Sheffield', '55.5'],
+      ['Liverpool', '52.5'],
+      ['Manchester', '51.5'],
+      ['North West (regional average)', '48.5'],
+      ['England (national average)', '10.5'],
+    ]);
+  });
 });

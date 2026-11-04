@@ -74,6 +74,18 @@ const PAGES: { name: string; url: string; user: TestUser }[] = [
 
 const SCREENSHOT_TAB_TYPES = ['map', 'chart', 'graph', 'table'];
 
+// Pages with a comparison group, rechecked with the region chosen
+const REGION_COMPARATOR_PAGES = [
+  'financial-spend',
+  'dementia-prevalence',
+  'disability-prevalence',
+  'household-composition-and-economic-factors',
+  'population-age-and-size',
+  'number-of-people-receiving-care',
+  'provision-and-occupancy',
+  'unpaid-care',
+];
+
 const downloadCsvs = async (page: Page, panelId: string) => {
   const links = page.locator(`#${panelId}`).getByText(/^Export .* \(CSV\)$/);
   const csvs: string[] = [];
@@ -146,6 +158,52 @@ for (const { name, url, user } of PAGES) {
         );
       expect.soft(links.join('\n')).toMatchSnapshot(`${name}-links.txt`);
       expect(csvs.join('\n')).toMatchSnapshot(`${name}-downloads.txt`);
+    });
+  });
+}
+
+for (const { name, url, user } of PAGES.filter((p) =>
+  REGION_COMPARATOR_PAGES.includes(p.name)
+)) {
+  test.describe(() => {
+    test.use({ storageState: AUTH_FILES[user].path });
+
+    test(`${name} with the region as comparison group`, async ({ page }) => {
+      await page.goto(url);
+      await page.waitForLoadState('networkidle');
+
+      // One choice serves the whole page
+      const select = page.locator('select[id$="-comparison-group"]:visible');
+      await expect(
+        select.first().locator('option[value="custom:region"]')
+      ).not.toContainText('Loading');
+      await select.first().selectOption('custom:region');
+
+      const sections = page.locator('.data-box');
+      for (let i = 0; i < (await sections.count()); i++) {
+        const section = sections.nth(i);
+        const tabs = section.locator('a.govuk-tabs__tab');
+
+        for (let t = 0; t < (await tabs.count()); t++) {
+          const panelId = (await tabs.nth(t).getAttribute('href'))!.slice(1);
+          const tabType = panelId.split('-')[0];
+          if (tabType !== 'chart' && tabType !== 'table') continue;
+          if (
+            !(await page
+              .locator(`#${panelId} select[id$="-comparison-group"]`)
+              .count())
+          ) {
+            continue;
+          }
+
+          await tabs.nth(t).click();
+          await waitForSectionToSettle(page, panelId);
+          await tabs.nth(t).focus();
+          await expect(section).toHaveScreenshot(
+            `${name}-${panelId}-region.png`
+          );
+        }
+      }
     });
   });
 }

@@ -8,11 +8,14 @@ import { COMPARATOR_AVERAGE_LOCATION_TYPE } from './constants';
 // Regional row for a metric (for example Census metrics only have LA and
 // National values), so the Regional column renders as unavailable there while
 // the comparator average is still shown when the peer-group data resolved.
+// When the region is the comparator, its average is the published Regional
+// value: the group API leaves the user's own LA out of its average.
 export const mergeComparatorAverage = (
   data: Indicator[],
   metricIds: string[],
   dataByMetric: Record<string, PeerGroupData | null>,
-  regionLocationId: string = 'comparator-average'
+  regionLocationId: string = 'comparator-average',
+  comparatorIsRegion: boolean = false
 ): Indicator[] => {
   const merged = data.map((d) => ({ ...d }));
 
@@ -35,7 +38,11 @@ export const mergeComparatorAverage = (
       location_id: regionLocationId,
       numerator: NaN,
       denominator: NaN,
-      data_point: dataByMetric[metricId]?.averagePeerGroup ?? null,
+      data_point: comparatorIsRegion
+        ? (merged.find(
+            (d) => d.metric_id === metricId && d.location_type === 'Regional'
+          )?.data_point ?? null)
+        : (dataByMetric[metricId]?.averagePeerGroup ?? null),
     });
   });
 

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { http, HttpResponse } from 'msw';
 import { API_SUFFIX } from '@/data/dataAPI';
+import { locations_data } from '@/data/mockResponses/locations_data';
 
 // Metric data that differs by metric, location and date but is the same on
 // every run, for the screenshot tests (served by scripts/mock-data-api.ts).
@@ -108,6 +109,7 @@ const buildSeries = (metricCode: string, key: string) => {
   };
 };
 
+const REGION_LA_COUNT = 6;
 const PEER_COUNT = 15;
 
 export const variedHandlers = [
@@ -188,6 +190,49 @@ export const variedHandlers = [
           };
         })
       );
+    }
+  ),
+
+  // The user's region, with enough LAs for the region comparison group
+  http.get(api_root + '/metric_locations/regions/:region_code', () =>
+    HttpResponse.json({
+      ...locations_data.region,
+      local_authorities: [
+        ...locations_data.region.local_authorities,
+        ...Array.from({ length: REGION_LA_COUNT }, (_, i) => ({
+          la_code: `region${i + 1}`,
+          la_name: `Region LA ${i + 1}`,
+        })),
+      ],
+    })
+  ),
+
+  http.get(
+    api_root + '/metric_locations/custom_local_authority_group',
+    ({ request }) => {
+      const url = new URL(request.url);
+      const metric_code = url.searchParams.get('metric_code') ?? '';
+      const requesting_la_code = url.searchParams.get('requesting_la_code');
+      const latest = (key: string) => {
+        const { values } = buildSeries(metric_code, key);
+        return values[values.length - 1];
+      };
+      const group_members = url.searchParams.getAll('la_codes').map((code) => ({
+        code,
+        display_name: code === 'E08000024' ? 'Sunderland' : `Group LA ${code}`,
+        metric_value: latest(code),
+      }));
+      const averaged = group_members.filter(
+        (member) => member.code !== requesting_la_code
+      );
+      return HttpResponse.json({
+        group_members,
+        custom_group_average: averaged.length
+          ? averaged.reduce((sum, member) => sum + member.metric_value, 0) /
+            averaged.length
+          : null,
+        national_average: latest('National'),
+      });
     }
   ),
 ];

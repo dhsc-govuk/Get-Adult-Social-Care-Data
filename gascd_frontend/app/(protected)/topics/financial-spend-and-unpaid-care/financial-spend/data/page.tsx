@@ -16,7 +16,10 @@ import DownloadTableDataCSVLink from '@/components/metric-components/download-ta
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
 import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
 import ComparatorGroupBuilder from '@/components/charts/peer-group/ComparatorGroupBuilder';
-import { useComparatorGroups } from '@/components/charts/peer-group/useComparatorGroups';
+import {
+  isRegionSelection,
+  useComparatorGroups,
+} from '@/components/charts/peer-group/useComparatorGroups';
 import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
 import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLocalAuthorities';
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
@@ -121,6 +124,7 @@ export default function LAFundingPage() {
     selection.kind === 'custom'
       ? groups.find((group) => group.id === selection.groupId)
       : undefined;
+  const comparatorIsRegion = isRegionSelection(selection);
   const comparatorLabel = selectedGroup
     ? (selectedGroup.comparisonLabel ?? selectedGroup.name)
     : undefined;
@@ -453,9 +457,10 @@ export default function LAFundingPage() {
         filteredDemographicData,
         benchmarkedMetricIds,
         dataByMetric,
-        locationIds[2]
+        locationIds[2],
+        comparatorIsRegion
       ),
-    [filteredDemographicData, dataByMetric, locationIds]
+    [filteredDemographicData, dataByMetric, locationIds, comparatorIsRegion]
   );
 
   // Read once, so each chart and the table beside it show the same values
@@ -815,8 +820,7 @@ export default function LAFundingPage() {
                     primary support reasons and all age groups –{' '}
                     {locationNames.LALabel}{' '}
                     <abbr title="Local Authority">LA</abbr>,{' '}
-                    {locationNames.RegionLabel} region and{' '}
-                    {locationNames.CountryLabel},{' '}
+                    {comparatorAverageLabel} and {locationNames.CountryLabel},{' '}
                     {IndicatorService.getFinancialYear(
                       filteredDemographicData,
                       1
@@ -900,6 +904,7 @@ export default function LAFundingPage() {
               }
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
+              comparatorIsRegion={comparatorIsRegion}
               metricDescription={`total spending on ${(
                 DURATION_OF_CARE_OPTIONS as Record<string, string>
               )[chartDuration].toLowerCase()} adult social care for ${(
@@ -936,9 +941,11 @@ export default function LAFundingPage() {
                     spending on adult social care, standardised per 100,000
                     adult population (18+) &ndash; {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr> and its comparison
-                    group, {comparatorAverageLabel}, {locationNames.RegionLabel}{' '}
-                    (regional average) and {locationNames.CountryLabel}{' '}
-                    (national average),{' '}
+                    group, {comparatorAverageLabel}
+                    {comparatorIsRegion
+                      ? ' '
+                      : `, ${locationNames.RegionLabel} (regional average) `}
+                    and {locationNames.CountryLabel} (national average),{' '}
                     {IndicatorService.getFinancialYear(
                       benchmarkedDemographicData,
                       1
@@ -963,6 +970,7 @@ export default function LAFundingPage() {
                 peerData={dataByMetric[standardisedFundingMetricId] ?? null}
                 loading={chartLoading}
                 comparatorAverageLabel={comparatorAverageLabel}
+                comparatorIsRegion={comparatorIsRegion}
               />
             </>
           }
@@ -1017,8 +1025,7 @@ export default function LAFundingPage() {
                     funding for long-term adult social care by support setting
                     for all age groups – {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
-                    {locationNames.RegionLabel} region and{' '}
-                    {locationNames.CountryLabel},{' '}
+                    {comparatorAverageLabel} and {locationNames.CountryLabel},{' '}
                     {IndicatorService.getFinancialYear(
                       filteredDemographicData,
                       1
@@ -1104,6 +1111,7 @@ export default function LAFundingPage() {
               }
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
+              comparatorIsRegion={comparatorIsRegion}
               metricDescription={`long-term adult social care funding for ${(
                 CARE_TYPE_OPTIONS as Record<string, string>
               )[
@@ -1137,9 +1145,11 @@ export default function LAFundingPage() {
                     standardised per 100,000 adult population (18+) &ndash;{' '}
                     {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr> and its comparison
-                    group, {comparatorAverageLabel}, {locationNames.RegionLabel}{' '}
-                    (regional average) and {locationNames.CountryLabel}{' '}
-                    (national average),{' '}
+                    group, {comparatorAverageLabel}
+                    {comparatorIsRegion
+                      ? ' '
+                      : `, ${locationNames.RegionLabel} (regional average) `}
+                    and {locationNames.CountryLabel} (national average),{' '}
                     {IndicatorService.getFinancialYear(
                       benchmarkedDemographicData,
                       1
@@ -1158,6 +1168,7 @@ export default function LAFundingPage() {
                 peerData={dataByMetric[standardisedCareTypeId] ?? null}
                 loading={chartLoading}
                 comparatorAverageLabel={comparatorAverageLabel}
+                comparatorIsRegion={comparatorIsRegion}
               />
             </>
           }

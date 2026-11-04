@@ -133,4 +133,19 @@ describe('mergeComparatorAverage', () => {
         ?.data_point
     ).toBe(50);
   });
+
+  it("uses the whole region's published value when the region is the comparator", () => {
+    const result = mergeComparatorAverage(
+      [row('m1', 'LA', 5), row('m1', 'Regional', 99), row('m1', 'National', 7)],
+      ['m1'],
+      { m1: peerData(12.5) },
+      'E12000001',
+      true
+    );
+
+    expect(
+      result.find((d) => d.location_type === COMPARATOR_AVERAGE_LOCATION_TYPE)
+        ?.data_point
+    ).toBe(99);
+  });
 });

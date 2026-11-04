@@ -23,7 +23,10 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
 import ComparatorGroupBuilder from '@/components/charts/peer-group/ComparatorGroupBuilder';
-import { useComparatorGroups } from '@/components/charts/peer-group/useComparatorGroups';
+import {
+  isRegionSelection,
+  useComparatorGroups,
+} from '@/components/charts/peer-group/useComparatorGroups';
 import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
 import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLocalAuthorities';
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
@@ -117,6 +120,7 @@ export default function NumberPeopleReceivingCarePage() {
     selection.kind === 'custom'
       ? groups.find((group) => group.id === selection.groupId)
       : undefined;
+  const comparatorIsRegion = isRegionSelection(selection);
   const comparatorLabel = selectedGroup
     ? (selectedGroup.comparisonLabel ?? selectedGroup.name)
     : undefined;
@@ -134,9 +138,10 @@ export default function NumberPeopleReceivingCarePage() {
         filteredDemographicData,
         demographicMetricIds,
         dataByMetric,
-        regionCode
+        regionCode,
+        comparatorIsRegion
       ),
-    [filteredDemographicData, dataByMetric, regionCode]
+    [filteredDemographicData, dataByMetric, regionCode, comparatorIsRegion]
   );
 
   // Read once, so the figure and the table show the same values
@@ -424,7 +429,7 @@ export default function NumberPeopleReceivingCarePage() {
               {renderComparatorControl('comparator-table-1')}
               <DataTable
                 tableref={tableref1}
-                caption={`Table 1: number of people receiving community social care in the last month – ${locationNames.LALabel} LA, ${locationNames.RegionLabel} region, ${comparatorAverageLabel} and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`}
+                caption={`Table 1: number of people receiving community social care in the last month – ${locationNames.LALabel} LA, ${comparatorAverageLabel} and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`}
                 source={SOURCES.capacityTracker}
                 columnHeaders={{
                   ...locationNamesWithAverageLabels,
@@ -491,6 +496,7 @@ export default function NumberPeopleReceivingCarePage() {
               comparatorControl={renderComparatorControl('comparator-chart-1')}
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
+              comparatorIsRegion={comparatorIsRegion}
               metricDescription="the number of people receiving community social care, standardised per 100,000 of the total adult population (18+)"
               figureTitle="Number of people receiving community social care in the last month, standardised per 100,000 of the total population (18+)"
               dateLabel={IndicatorService.getMostRecentMonthYear(
@@ -505,7 +511,7 @@ export default function NumberPeopleReceivingCarePage() {
               <PeerGroupTable
                 tableref={tableref2}
                 metric={STANDARDISED_METRIC_ID}
-                caption={`Table 2: number of people receiving community social care in the last month, standardised per 100,000 of the total population (18+) – ${locationNames.LALabel} LA and its comparison group, ${comparatorAverageLabel}, ${locationNames.RegionLabel} (regional average) and ${locationNames.CountryLabel} (national average), ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`}
+                caption={`Table 2: number of people receiving community social care in the last month, standardised per 100,000 of the total population (18+) – ${locationNames.LALabel} LA and its comparison group, ${comparatorAverageLabel}${comparatorIsRegion ? '' : `, ${locationNames.RegionLabel} (regional average)`} and ${locationNames.CountryLabel} (national average), ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`}
                 valueHeader={`${METRICS[COUNT_METRIC_ID].label} in ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}, per 100,000 adults`}
                 laCode={laCode}
                 laName={locationNames.LALabel}
@@ -516,6 +522,7 @@ export default function NumberPeopleReceivingCarePage() {
                 peerData={dataByMetric[STANDARDISED_METRIC_ID] ?? null}
                 loading={chartLoading}
                 comparatorAverageLabel={comparatorAverageLabel}
+                comparatorIsRegion={comparatorIsRegion}
               />
             </>
           }

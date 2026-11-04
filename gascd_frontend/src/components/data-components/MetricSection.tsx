@@ -126,6 +126,7 @@ const MetricSection: React.FC<Props> = ({
             )}
             comparatorLabel={comparator.comparatorLabel}
             comparatorAverageLabel={comparator.comparatorAverageLabel}
+            comparatorIsRegion={comparator.comparatorIsRegion}
             metricDescription={metricDescription}
             figureTitle={figureTitle ?? METRICS[metric].label}
             dateLabel={dateLabel}
