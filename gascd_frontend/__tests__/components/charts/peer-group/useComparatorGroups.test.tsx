@@ -248,12 +248,11 @@ describe('useComparatorGroups', () => {
     });
   });
 
-  it("offers the other LAs in the user's region first, as a built-in group", async () => {
+  it("offers every LA in the user's region first, as a built-in group", async () => {
     mockFetch.mockImplementation(async (url: string) =>
       url === '/api/get_region_comparator'
         ? jsonResponse({
             region_name: 'West Midlands',
-            la_name: 'Coventry',
             la_codes: ['E08000025', 'E08000026'],
           })
         : jsonResponse({
@@ -274,9 +273,9 @@ describe('useComparatorGroups', () => {
     expect(result.current.groups[0]).toEqual({
       id: 'region',
       name: 'Region (West Midlands)',
-      averageLabel: 'West Midlands (regional average excluding Coventry)',
+      averageLabel: 'West Midlands (regional average)',
       comparisonLabel: 'West Midlands LAs',
-      totalLabel: 'West Midlands total excluding Coventry',
+      totalLabel: 'West Midlands total',
       laCodes: ['E08000025', 'E08000026'],
       builtIn: true,
     });
@@ -312,10 +311,9 @@ describe('useComparatorGroups', () => {
       expect(result.current.groups[0]).toEqual({
         id: 'region',
         name: 'Region (West Midlands)',
-        averageLabel:
-          'West Midlands (regional average excluding your local authority)',
+        averageLabel: 'West Midlands (regional average)',
         comparisonLabel: 'West Midlands LAs',
-        totalLabel: 'West Midlands total excluding your local authority',
+        totalLabel: 'West Midlands total',
         laCodes: ['E08000025'],
         builtIn: true,
       })
@@ -325,7 +323,7 @@ describe('useComparatorGroups', () => {
   it.each([
     ['the request fails', jsonResponse({ error: 'No region for user' }, 500)],
     [
-      'the region has no other LAs',
+      'the region has no LAs',
       jsonResponse({ region_name: 'London', la_codes: [] }),
     ],
   ])('shows the region as unavailable when %s', async (_, response) => {

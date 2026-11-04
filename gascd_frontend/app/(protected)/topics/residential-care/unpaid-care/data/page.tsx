@@ -170,9 +170,15 @@ export default function UnpaidCarePage() {
         baseDemographicData,
         demographicMetricIds,
         dataByMetric,
-        locationIds[2]
+        locationIds[2],
+        comparator.comparatorIsRegion
       ),
-    [baseDemographicData, dataByMetric, locationIds]
+    [
+      baseDemographicData,
+      dataByMetric,
+      locationIds,
+      comparator.comparatorIsRegion,
+    ]
   );
 
   useEffect(() => {
@@ -234,8 +240,8 @@ export default function UnpaidCarePage() {
           <>
             Table 1: percentage of people aged 5 and over who provide unpaid
             care – {locationNames.LALabel}{' '}
-            <abbr title="local authority">LA</abbr>, {locationNames.RegionLabel}{' '}
-            (regional average), {tableColumnHeaders.ComparatorLabel} and{' '}
+            <abbr title="local authority">LA</abbr>,{' '}
+            {tableColumnHeaders.ComparatorLabel} and{' '}
             {locationNames.CountryLabel},{' '}
             {IndicatorService.getCensusYear(filteredDemographicData)}
           </>

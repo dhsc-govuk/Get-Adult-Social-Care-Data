@@ -58,7 +58,7 @@ describe('Table component tests', () => {
       });
       // Every column should say 'loading' when data is empty
       expect(loading_els.length).toBe(
-        (Object.keys(mockTableColumnHeaders).length) *
+        Object.keys(mockTableColumnHeaders).length *
           Object.keys(mockTableRowHeaders).length
       );
     });
@@ -150,6 +150,15 @@ describe('Table component tests', () => {
       expect(screen.getByText('NHS peer group (average)')).toBeInTheDocument();
       expect(screen.getByText('55.5%')).toBeInTheDocument();
     });
+    expect(
+      screen.getAllByRole('columnheader').map((header) => header.textContent)
+    ).toEqual([
+      'Indicator',
+      'Northumberland',
+      'NHS peer group (average)',
+      'England',
+    ]);
+    expect(screen.getAllByRole('cell')).toHaveLength(3);
   });
 
   test('fetches data and displays correctly in the DataTable component when there are percentage rows added', async () => {

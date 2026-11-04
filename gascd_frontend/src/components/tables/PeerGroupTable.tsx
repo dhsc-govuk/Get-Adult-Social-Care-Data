@@ -20,6 +20,8 @@ type PeerGroupTableProps = {
   peerData: PeerGroupData | null;
   loading: boolean;
   comparatorAverageLabel?: string;
+  // The region is the comparator: one whole-region row instead of two
+  comparatorIsRegion?: boolean;
   regionalAverageLabel?: string;
   regionalAverageValue: number | null;
   nationalAverageLabel?: string;
@@ -47,6 +49,7 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
   peerData,
   loading,
   comparatorAverageLabel = NHS_PEER_GROUP_AVERAGE_LABEL,
+  comparatorIsRegion = false,
   regionalAverageLabel = 'England (regional average)',
   regionalAverageValue,
   nationalAverageLabel = 'England (national average)',
@@ -86,10 +89,20 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
     ...chartRows,
     {
       label: comparatorAverageLabel,
-      value: peerData?.averagePeerGroup ?? null,
+      value: comparatorIsRegion
+        ? regionalAverageValue
+        : (peerData?.averagePeerGroup ?? null),
       bold: true,
     },
-    { label: regionalAverageLabel, value: regionalAverageValue, bold: true },
+    ...(comparatorIsRegion
+      ? []
+      : [
+          {
+            label: regionalAverageLabel,
+            value: regionalAverageValue,
+            bold: true,
+          },
+        ]),
     { label: nationalAverageLabel, value: nationalAverageValue, bold: true },
   ];
 

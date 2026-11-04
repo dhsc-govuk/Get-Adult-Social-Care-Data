@@ -5,6 +5,7 @@ import PeerGroupChartLegend from './PeerGroupChartLegend';
 import {
   NATIONAL_AVG_COLOUR,
   PEER_AVG_COLOUR,
+  NHS_PEER_GROUP_AVERAGE_LABEL,
   REGIONAL_AVG_COLOUR,
 } from './constants';
 import { PeerGroupData } from './types';
@@ -26,6 +27,8 @@ interface PeerGroupChartContentProps {
   // containing the user's LA cannot render it twice.
   ownLaCode?: string;
   comparatorAverageLabel?: string;
+  // The region's LAs are the bars, so the comparator line is the NHS peer group
+  comparatorIsRegion?: boolean;
   regionalAverageLabel?: string;
   nationalAverageLabel?: string;
   valueSuffix: string;
@@ -44,6 +47,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
   peerData,
   ownLaCode,
   comparatorAverageLabel,
+  comparatorIsRegion = false,
   regionalAverageLabel,
   nationalAverageLabel,
   valueSuffix,
@@ -61,11 +65,16 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
     };
   }, [currentLaValue, hasPeers, laName, ownLaCode, peerData]);
 
+  const comparatorAverage = comparatorIsRegion
+    ? (peerData.nhsPeerGroupAverage ?? null)
+    : peerData.averagePeerGroup;
+  const comparatorLineLabel = comparatorIsRegion
+    ? NHS_PEER_GROUP_AVERAGE_LABEL
+    : comparatorAverageLabel;
+
   const referenceShapes = useMemo((): Partial<Shape>[] => {
     const shapes: Partial<Shape>[] = [];
-    const resolvedPeerGroupAverage = roundToOneDecimal(
-      peerData.averagePeerGroup
-    );
+    const resolvedPeerGroupAverage = roundToOneDecimal(comparatorAverage);
     const resolvedNationalAverage = roundToOneDecimal(nationalAverageValue);
     const resolvedRegionalAverage = roundToOneDecimal(regionalAverageValue);
 
@@ -109,7 +118,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
     }
 
     return shapes;
-  }, [nationalAverageValue, peerData.averagePeerGroup, regionalAverageValue]);
+  }, [comparatorAverage, nationalAverageValue, regionalAverageValue]);
 
   if (!hasPeers) {
     return (
@@ -125,10 +134,10 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
     <div>
       <PeerGroupChartLegend
         laName={laName}
-        peerGroupAverage={roundToOneDecimal(peerData.averagePeerGroup)}
+        peerGroupAverage={roundToOneDecimal(comparatorAverage)}
         nationalAverage={resolvedNationalAverage}
         regionalAverage={roundToOneDecimal(regionalAverageValue)}
-        comparatorAverageLabel={comparatorAverageLabel}
+        comparatorAverageLabel={comparatorLineLabel}
         regionalAverageLabel={regionalAverageLabel}
         nationalAverageLabel={nationalAverageLabel}
         valueSuffix={valueSuffix}

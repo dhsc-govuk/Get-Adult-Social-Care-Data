@@ -134,6 +134,28 @@ describe('PeerGroupBarChart', () => {
     ).toBeInTheDocument();
   });
 
+  it('keeps the NHS peer, regional and national lines when the region is selected', () => {
+    render(
+      <PeerGroupBarChart
+        {...defaultProps}
+        peerData={{ ...peerData, nhsPeerGroupAverage: 40.5 }}
+        comparatorIsRegion
+        comparatorAverageLabel="North East (regional average)"
+        regionalAverageLabel="North East (regional average)"
+      />
+    );
+    expect(
+      screen.getByText(/NHS peer group \(average\) \(40\.5%\)/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/North East \(regional average\)/i)
+    ).toHaveLength(1);
+    expect(
+      screen.getByText(/North East \(regional average\) \(48\.5%\)/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText(/national average/i)).toBeInTheDocument();
+  });
+
   it('shows the regional average as unavailable when the region value is missing', () => {
     render(
       <PeerGroupBarChart

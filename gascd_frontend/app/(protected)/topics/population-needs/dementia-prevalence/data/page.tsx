@@ -176,9 +176,15 @@ export default function DementaPrevalencePage() {
         baseDemographicData,
         benchmarkedMetricIds,
         dataByMetric,
-        locationIds[2]
+        locationIds[2],
+        comparator.comparatorIsRegion
       ),
-    [baseDemographicData, dataByMetric, locationIds]
+    [
+      baseDemographicData,
+      dataByMetric,
+      locationIds,
+      comparator.comparatorIsRegion,
+    ]
   );
 
   useEffect(() => {
@@ -239,8 +245,8 @@ export default function DementaPrevalencePage() {
         tableCaption={
           <>
             Table 1: dementia prevalence – {locationNames.LALabel}{' '}
-            <abbr title="local authority">LA</abbr>, {locationNames.RegionLabel}{' '}
-            (regional average), {tableColumnHeaders.ComparatorLabel} and{' '}
+            <abbr title="local authority">LA</abbr>,{' '}
+            {tableColumnHeaders.ComparatorLabel} and{' '}
             {locationNames.CountryLabel},{' '}
             {IndicatorService.getMostRecentDate(filteredDemographicData)}
           </>

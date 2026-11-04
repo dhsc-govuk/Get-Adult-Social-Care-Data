@@ -288,9 +288,15 @@ export default function DisabilityPrevalence() {
         filteredDisabilityData,
         benchmarkedMetricIds,
         dataByMetric,
-        locationIds[2]
+        locationIds[2],
+        comparator.comparatorIsRegion
       ),
-    [filteredDisabilityData, dataByMetric, locationIds]
+    [
+      filteredDisabilityData,
+      dataByMetric,
+      locationIds,
+      comparator.comparatorIsRegion,
+    ]
   );
 
   useEffect(() => {
@@ -348,9 +354,15 @@ export default function DisabilityPrevalence() {
         filteredPrimaryReasonData,
         supportReasonMetricIds,
         dataByMetric,
-        locationIds[2]
+        locationIds[2],
+        comparator.comparatorIsRegion
       ),
-    [filteredPrimaryReasonData, dataByMetric, locationIds]
+    [
+      filteredPrimaryReasonData,
+      dataByMetric,
+      locationIds,
+      comparator.comparatorIsRegion,
+    ]
   );
 
   // One reason at a time, for the figure and the table, keyed by its count code
@@ -465,7 +477,6 @@ export default function DisabilityPrevalence() {
           <>
             Table 1: people who reported bad or very bad health –{' '}
             {locationNames.LALabel} <abbr title="local authority">LA</abbr>,{' '}
-            {locationNames.RegionLabel} (regional average),{' '}
             {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
             {benchmarkedColumnHeaders.CountryLabel},{' '}
             {IndicatorService.getCensusYear(benchmarkedDisabilityData, [
@@ -522,8 +533,8 @@ export default function DisabilityPrevalence() {
             Table 2: percentage of the population who reported a long-term
             physical or mental health condition, or illness that limits
             day-to-day activities – {locationNames.LALabel}{' '}
-            <abbr title="local authority">LA</abbr>, {locationNames.RegionLabel}{' '}
-            (regional average), {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
+            <abbr title="local authority">LA</abbr>,{' '}
+            {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
             {benchmarkedColumnHeaders.CountryLabel},{' '}
             {IndicatorService.getCensusYear(benchmarkedDisabilityData, [
               'perc_population_disability',
@@ -576,8 +587,8 @@ export default function DisabilityPrevalence() {
         tableCaption={
           <>
             Table 3: learning disability prevalence – {locationNames.LALabel}{' '}
-            <abbr title="local authority">LA</abbr>, {locationNames.RegionLabel}{' '}
-            (regional average), {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
+            <abbr title="local authority">LA</abbr>,{' '}
+            {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
             {benchmarkedColumnHeaders.CountryLabel},{' '}
             {IndicatorService.getFinancialYear(benchmarkedDisabilityData, 1, [
               'learning_disability_prevalence',
@@ -647,8 +658,7 @@ export default function DisabilityPrevalence() {
                     Table 4: primary reason for all age groups to access
                     long-term adult social care – {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
-                    {comparator.comparatorAverageLabel},{' '}
-                    {locationNames.RegionLabel} region and{' '}
+                    {comparator.comparatorAverageLabel} and{' '}
                     {locationNames.CountryLabel},{' '}
                     {IndicatorService.getFinancialYear(
                       primarySupportReasonData,
@@ -731,6 +741,7 @@ export default function DisabilityPrevalence() {
                 }
                 comparatorLabel={comparator.comparatorLabel}
                 comparatorAverageLabel={comparator.comparatorAverageLabel}
+                comparatorIsRegion={comparator.comparatorIsRegion}
                 metricDescription={`the rate of people accessing long-term adult social care for ${standardisedRowHeadersDefault[
                   chartSupportReason
                 ]?.toLowerCase()}, per 100,000 of the total adult population (18+)`}
@@ -769,9 +780,11 @@ export default function DisabilityPrevalence() {
                     , standardised per 100,000 of the total adult population
                     (18+) – {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr> and its comparison
-                    group, {comparator.comparatorAverageLabel},{' '}
-                    {locationNames.RegionLabel} (regional average) and{' '}
-                    {locationNames.CountryLabel} (national average),{' '}
+                    group, {comparator.comparatorAverageLabel}
+                    {comparator.comparatorIsRegion
+                      ? ' '
+                      : `, ${locationNames.RegionLabel} (regional average) `}
+                    and {locationNames.CountryLabel} (national average),{' '}
                     {IndicatorService.getFinancialYear(
                       standardisedReasonData,
                       1
@@ -788,6 +801,7 @@ export default function DisabilityPrevalence() {
                 peerData={dataByMetric[chartSupportReason] ?? null}
                 loading={chartLoading}
                 comparatorAverageLabel={comparator.comparatorAverageLabel}
+                comparatorIsRegion={comparator.comparatorIsRegion}
               >
                 <p className="govuk-body-s">
                   Local authorities with an underlying count of between 1 and 5

@@ -26,7 +26,10 @@ import RelatedDataList from '@/components/data-components/RelatedDataList';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
 import ComparatorGroupSelect from '@/components/charts/peer-group/ComparatorGroupSelect';
 import ComparatorGroupBuilder from '@/components/charts/peer-group/ComparatorGroupBuilder';
-import { useComparatorGroups } from '@/components/charts/peer-group/useComparatorGroups';
+import {
+  isRegionSelection,
+  useComparatorGroups,
+} from '@/components/charts/peer-group/useComparatorGroups';
 import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
 import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLocalAuthorities';
 import { NHS_PEER_GROUP_AVERAGE_LABEL } from '@/components/charts/peer-group/constants';
@@ -130,15 +133,15 @@ export default function ProvisionAndOccupancyPage() {
     selection.kind === 'custom'
       ? groups.find((group) => group.id === selection.groupId)
       : undefined;
+  const comparatorIsRegion = isRegionSelection(selection);
   const comparatorLabel = selectedGroup
     ? (selectedGroup.comparisonLabel ?? selectedGroup.name)
     : undefined;
   const comparatorAverageLabel = selectedGroup
     ? (selectedGroup.averageLabel ?? `${selectedGroup.name} (average)`)
     : NHS_PEER_GROUP_AVERAGE_LABEL;
-  // Column headers for the benchmarked tables: true regional average + comparator
-  // group's average. The country column keeps the plain country name on this
-  // page.
+  // Column headers for the benchmarked tables. The country column keeps the
+  // plain country name on this page.
   const benchmarkedColumnHeaders = {
     CPLabel: locationNames.CPLabel,
     LALabel: locationNames.LALabel,
@@ -463,8 +466,11 @@ export default function ProvisionAndOccupancyPage() {
       baseDemographicData,
       demographicMetricIds,
       dataByMetric,
-      locationIds[2]
+      locationIds[2],
+      comparatorIsRegion
     );
+    // The region's total is its Regional row
+    if (comparatorIsRegion) return merged;
     // Total population is benchmarked against the comparator group's summed
     // population rather than its average. The user's own LA is excluded from
     // the sum, as it is everywhere else the peer rows are used.
@@ -482,7 +488,7 @@ export default function ProvisionAndOccupancyPage() {
         ? { ...d, data_point: peerPopulationTotal }
         : d
     );
-  }, [baseDemographicData, dataByMetric, locationIds]);
+  }, [baseDemographicData, dataByMetric, locationIds, comparatorIsRegion]);
 
   useEffect(() => {
     const fetchLocationIds = async () => {
@@ -556,7 +562,6 @@ export default function ProvisionAndOccupancyPage() {
                   <>
                     Table 1: adult population size – {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
-                    {populationSizeColumnHeaders.RegionLabel},{' '}
                     {populationSizeColumnHeaders.ComparatorLabel} and{' '}
                     {populationSizeColumnHeaders.CountryLabel},{' '}
                     {IndicatorService.getMostRecentDate(
@@ -629,7 +634,6 @@ export default function ProvisionAndOccupancyPage() {
                   <>
                     Table 2: age group percentages – {locationNames.LALabel}{' '}
                     <abbr title="local authority">LA</abbr>,{' '}
-                    {locationNames.RegionLabel} (regional average),{' '}
                     {benchmarkedColumnHeaders.ComparatorLabel} and{' '}
                     {benchmarkedColumnHeaders.CountryLabel},{' '}
                     {IndicatorService.getMostRecentDate(
@@ -677,6 +681,7 @@ export default function ProvisionAndOccupancyPage() {
               )}
               comparatorLabel={comparatorLabel}
               comparatorAverageLabel={comparatorAverageLabel}
+              comparatorIsRegion={comparatorIsRegion}
               nationalAverageLabel="England"
               metricDescription={`the percentage of the population ${selectedAgeLabel.toLowerCase()}`}
               figureTitle={`Percentage of the population ${selectedAgeLabel.toLowerCase()}`}
