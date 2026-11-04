@@ -18,7 +18,7 @@ describe('sharing categories', () => {
       'Not for sharing externally'
     );
     expect(SHARING_CATEGORIES['not-for-external-sharing'].statement).toBe(
-      'The data in the chart is not to be shared outside your organisation.'
+      'This data is not to be shared outside your organisation.'
     );
 
     expect(SHARING_CATEGORIES.discretion.label).toBe(
@@ -144,7 +144,7 @@ describe('getSharingCsvNotice', () => {
     );
     expect(notice[0]).toBe('Sharing label: Not for sharing externally');
     expect(notice[1]).toBe(
-      'The data in the chart is not to be shared outside your organisation.'
+      'This data is not to be shared outside your organisation.'
     );
     expect(notice[2]).toContain('AI tools that are outwards facing');
   });

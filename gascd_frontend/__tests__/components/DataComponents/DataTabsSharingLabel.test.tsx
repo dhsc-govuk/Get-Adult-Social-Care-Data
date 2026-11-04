@@ -20,7 +20,7 @@ describe('DataTabs sharing label', () => {
     expect(labels).toHaveLength(3);
     labels.forEach((label) => {
       expect(label.textContent).toContain(
-        'The data in the chart is not to be shared outside your organisation.'
+        'This data is not to be shared outside your organisation.'
       );
       expect(label.textContent).toContain('Not for sharing externally');
     });
@@ -77,7 +77,7 @@ describe('DataTabs sharing label', () => {
     const notice = downloadCSV.mock.calls[0][3];
     expect(notice).toEqual([
       'Sharing label: Not for sharing externally',
-      'The data in the chart is not to be shared outside your organisation.',
+      'This data is not to be shared outside your organisation.',
       expect.stringContaining('AI tools that are outwards facing'),
     ]);
 

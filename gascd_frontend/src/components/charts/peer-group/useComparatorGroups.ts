@@ -119,7 +119,7 @@ export function useComparatorGroups(): {
           id: REGION_GROUP_ID,
           name: `Region (${data.region_name})`,
           averageLabel: `${data.region_name} (regional average)`,
-          comparisonLabel: data.region_name,
+          comparisonLabel: `${data.region_name} LAs`,
           totalLabel: `${data.region_name} total`,
           laCodes: data.la_codes,
           builtIn: true,

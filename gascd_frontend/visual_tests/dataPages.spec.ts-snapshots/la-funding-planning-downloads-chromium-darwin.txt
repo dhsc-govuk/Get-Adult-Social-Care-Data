@@ -1,6 +1,6 @@
 # estimated_population_with_selected_health_conditions.csv
 "Sharing label: Not for sharing externally"
-"The data in the chart is not to be shared outside your organisation."
+"This data is not to be shared outside your organisation."
 "This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
 
 "Indicator","2011","2016","2021","2022","2023","2024","2025"
@@ -10,7 +10,7 @@
 
 # estimated_percentage_change_in_population_with_selected_health_conditions.csv
 "Sharing label: Not for sharing externally"
-"The data in the chart is not to be shared outside your organisation."
+"This data is not to be shared outside your organisation."
 "This data is not for sharing with AI tools that are outwards facing (i.e. where content may be used for training of AI models)"
 
 "Indicator","2011","2016","2021","2022","2023","2024","2025"
