@@ -45,6 +45,8 @@ import {
   isExpiredInvite,
   inviteExpiresAt,
   ProviderLocation,
+  delegatedReaderFields,
+  CQC_BAN_REASON_PREFIX,
 } from '@/lib/manageUsers';
 
 type ApproverScope = {
@@ -335,6 +337,30 @@ const auditRow = (
   details: extra.details ? JSON.stringify(extra.details) : null,
 });
 
+// Reused rows that were an NI's or RM's come back as delegated reader access
+const convertToReader = async (
+  trx: Kysely<any>,
+  reused: GrantRow[],
+  actorId: string,
+  now: Date
+) => {
+  const former = reused.filter((g) => g.basis !== GRANT_BASIS_DELEGATED);
+  if (former.length === 0) return [];
+  await trx
+    .updateTable('access_grant')
+    .set(delegatedReaderFields(actorId, now))
+    .where(
+      'id',
+      'in',
+      former.map((g) => g.id)
+    )
+    .execute();
+  return former.map((g) => ({
+    code: g.locationCode ?? ALL_LOCATIONS,
+    from_basis: g.basis,
+  }));
+};
+
 // Keeps user.locationType / locationId in step with the grants, and signs them out if they lost access
 const syncLegacyFields = async (trx: Kysely<any>, userId: string) => {
   const grants = await trx
@@ -345,9 +371,20 @@ const syncLegacyFields = async (trx: Kysely<any>, userId: string) => {
   const legacy = legacyFieldsFromGrants(grants);
   const user = await trx
     .selectFrom('user')
-    .select(['locationType', 'locationId', 'selectedLocationId'])
+    .select([
+      'locationType',
+      'locationId',
+      'selectedLocationId',
+      'banned',
+      'banReason',
+    ])
     .where('id', '=', userId)
     .executeTakeFirstOrThrow();
+  // Lifts only the sync's own ban, as the sync does; a GASCD team ban stays
+  const liftsCqcBan =
+    Boolean(legacy) &&
+    Boolean(user.banned) &&
+    (user.banReason ?? '').startsWith(CQC_BAN_REASON_PREFIX);
 
   const keepsSelection =
     legacy?.locationType === 'Care provider' ||
@@ -359,6 +396,7 @@ const syncLegacyFields = async (trx: Kysely<any>, userId: string) => {
       locationType: legacy?.locationType ?? null,
       locationId: legacy?.locationId ?? user.locationId,
       updatedAt: new Date(),
+      ...(liftsCqcBan ? { banned: 0, banReason: null, banExpires: null } : {}),
       ...(keepsSelection
         ? {}
         : {
@@ -411,6 +449,7 @@ export const updateManagedUser = async (
       context
     );
     if (plan.added.length === 0 && plan.removed.length === 0) return;
+    let readded: { code: string; from_basis: string }[] = [];
 
     // New locations follow whether they have signed in yet
     const status = grants.some((g) => g.status === GRANT_STATUS_ACTIVE)
@@ -452,6 +491,12 @@ export const updateManagedUser = async (
         })
         .where('id', 'in', plan.reuseIds)
         .execute();
+      readded = await convertToReader(
+        trx,
+        grants.filter((g) => plan.reuseIds.includes(g.id)),
+        change.actor.id,
+        now
+      );
     }
     if (plan.insert.length) {
       await trx
@@ -480,7 +525,11 @@ export const updateManagedUser = async (
           location_codes: fields.locations.includes(ALL_LOCATIONS)
             ? null
             : fields.locations.join(','),
-          details: { added: plan.added, removed: plan.removed },
+          details: {
+            added: plan.added,
+            removed: plan.removed,
+            ...(readded.length ? { readded_as_reader: readded } : {}),
+          },
         })
       )
       .execute();
@@ -521,6 +570,10 @@ const setStatus = async (
         affected.map((g) => g.id)
       )
       .execute();
+    const readded =
+      status === GRANT_STATUS_SUSPENDED
+        ? []
+        : await convertToReader(trx, affected, change.actor.id, now);
     await trx
       .insertInto('access_audit')
       .values(
@@ -530,6 +583,9 @@ const setStatus = async (
           )
             ? null
             : affected.map((g) => g.locationCode).join(','),
+          ...(readded.length
+            ? { details: { readded_as_reader: readded } }
+            : {}),
         })
       )
       .execute();

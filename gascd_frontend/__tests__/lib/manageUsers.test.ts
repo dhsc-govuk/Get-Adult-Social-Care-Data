@@ -1,5 +1,7 @@
 import {
   ApproverContext,
+  delegatedReaderFields,
+  isFixedGrant,
   canChangeUser,
   lockedReason,
   currentLocationSelection,
@@ -398,6 +400,26 @@ describe('canChangeUser', () => {
     expect(canChangeUser([cqcRm], rmContext, 'me')).toBe(false);
   });
 
+  it('lets any approver add back a former CQC RM or NI the register dropped', () => {
+    const formerRm = grant({
+      basis: 'registered_manager',
+      userSource: CQC,
+      status: 'suspended',
+    });
+    expect(canChangeUser([formerRm], rmContext, 'me')).toBe(true);
+
+    const formerNi = grant({
+      basis: 'nominated_individual',
+      scopeType: 'provider',
+      locationCode: null,
+      userSource: CQC,
+      status: 'suspended',
+    });
+    expect(canChangeUser([formerNi], niContext, 'me')).toBe(true);
+    // Their access covered every location, so only an NI can give it back
+    expect(canChangeUser([formerNi], rmContext, 'me')).toBe(false);
+  });
+
   it('stops a Registered Manager changing all-locations users or users elsewhere', () => {
     expect(
       canChangeUser(
@@ -535,6 +557,19 @@ describe('planLocationChange', () => {
     });
   });
 
+  it('reuses a former CQC RM’s suspended grant to add them back', () => {
+    const formerRm = grant({
+      basis: 'registered_manager',
+      userSource: CQC,
+      status: 'suspended',
+    });
+    expect(planLocationChange([formerRm], ['L1'], niContext)).toMatchObject({
+      reuseIds: [formerRm.id],
+      insert: [],
+      added: ['L1'],
+    });
+  });
+
   it('leaves locations outside a Registered Manager’s own alone', () => {
     const elsewhere = grant({ locationCode: 'L2' });
     const plan = planLocationChange(
@@ -590,5 +625,29 @@ describe('legacyFieldsFromGrants', () => {
     expect(legacyFieldsFromGrants([row('location', 'L1', 'suspended')])).toBe(
       null
     );
+  });
+});
+
+describe('isFixedGrant', () => {
+  it('only holds a CQC NI’s or RM’s access while the register still lists them', () => {
+    const cqcRm = { basis: 'registered_manager', userSource: CQC };
+    expect(isFixedGrant({ ...cqcRm, status: 'active' })).toBe(true);
+    expect(isFixedGrant({ ...cqcRm, status: 'invited' })).toBe(true);
+    expect(isFixedGrant({ ...cqcRm, status: 'suspended' })).toBe(false);
+    expect(
+      isFixedGrant({ basis: 'delegated', userSource: CQC, status: 'active' })
+    ).toBe(false);
+  });
+});
+
+describe('delegatedReaderFields', () => {
+  it('re-adds as a delegated reader granted by the approver, never an approver', () => {
+    expect(delegatedReaderFields('approver-2', NOW)).toEqual({
+      basis: 'delegated',
+      role: 'reader',
+      source: 'approver',
+      granted_by_user_id: 'approver-2',
+      granted_at: NOW,
+    });
   });
 });
