@@ -14,15 +14,23 @@ import {
 } from '@/lib/manageUsers';
 import UsersTable from './UsersTable';
 import UsersPagination from './UsersPagination';
+import { SIGN_IN_URL } from '@/lib/signInUrl';
 
-// Same address One Login sends people back to, so it's right in every environment
-const SIGN_IN_URL = `${process.env.BETTER_AUTH_URL ?? ''}${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/login`;
+const EMAIL_MESSAGES: Record<string, (user: ManagedUser) => string> = {
+  sent: (user) =>
+    `We've sent an email to ${user.email} telling them how to sign in.`,
+  failed: () =>
+    'We could not send them an email. Share these details with them directly. They can start using GASCD from today.',
+};
 
 const BANNERS: Record<
   string,
-  (user: ManagedUser) => { heading: string; body?: React.ReactNode }
+  (
+    user: ManagedUser,
+    emailStatus?: string
+  ) => { heading: string; body?: React.ReactNode }
 > = {
-  added: (user: ManagedUser) => ({
+  added: (user: ManagedUser, emailStatus?: string) => ({
     heading: `${user.name} has been given access`,
     body: (
       <>
@@ -33,10 +41,8 @@ const BANNERS: Record<
           </a>{' '}
           using GOV.UK One Login with the email address {user.email}.
         </p>
-        <p className="govuk-body">
-          Emails will be sent to newly registered users once a week. In the
-          meantime, you can share these details with them directly and they can
-          start using GASCD from today.
+        <p className="govuk-body" data-testid="invite-email-status">
+          {(EMAIL_MESSAGES[emailStatus ?? ''] ?? EMAIL_MESSAGES.failed)(user)}
         </p>
       </>
     ),
@@ -47,13 +53,24 @@ const BANNERS: Record<
   removed: (user: ManagedUser) => ({
     heading: `${user.name}'s access has been removed`,
   }),
-  restored: (user: ManagedUser) => ({
+  restored: (user: ManagedUser, emailStatus?: string) => ({
     heading: `${user.name}'s access has been restored`,
+    body:
+      emailStatus && EMAIL_MESSAGES[emailStatus] ? (
+        <p className="govuk-body" data-testid="invite-email-status">
+          {EMAIL_MESSAGES[emailStatus](user)}
+        </p>
+      ) : undefined,
   }),
 };
 
 type Props = {
-  searchParams: Promise<{ page?: string; done?: string; user?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    done?: string;
+    user?: string;
+    email?: string;
+  }>;
 };
 
 export default async function ManageUsersPage({ searchParams }: Props) {
@@ -63,7 +80,12 @@ export default async function ManageUsersPage({ searchParams }: Props) {
   const context = await getApproverContext(user);
   if (!context) notFound();
 
-  const { page, done, user: changedUserId } = await searchParams;
+  const {
+    page,
+    done,
+    user: changedUserId,
+    email: emailStatus,
+  } = await searchParams;
   const users = groupManagedUsers(
     await listProviderGrants(context.providerCode),
     context,
@@ -87,7 +109,7 @@ export default async function ManageUsersPage({ searchParams }: Props) {
     : undefined;
   const banner =
     changedUser && done && Object.hasOwn(BANNERS, done)
-      ? BANNERS[done](changedUser)
+      ? BANNERS[done](changedUser, emailStatus)
       : null;
 
   return (

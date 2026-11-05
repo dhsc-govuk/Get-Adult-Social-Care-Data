@@ -10,10 +10,13 @@ import {
 } from '@/lib/manageUsersServer';
 import {
   fixedLocationSelection,
+  GRANT_STATUS_INVITED,
   ManagedUser,
   validateInviteLocations,
   validateInviteName,
 } from '@/lib/manageUsers';
+import { sendInviteEmail } from '@/lib/notify';
+import { SIGN_IN_URL } from '@/lib/signInUrl';
 import logger from '@/utils/logger';
 
 export type EditFields = { name: string; locations: string[] };
@@ -86,8 +89,13 @@ const changeStatus = async (
 ): Promise<{ error?: string }> => {
   const loaded = await load(userId);
   if (!loaded || !allowed(loaded.user)) return { error: NO_PERMISSION };
+  let next: Awaited<ReturnType<typeof change>>;
   try {
-    await change({ actor: loaded.actor, context: loaded.context, userId });
+    next = await change({
+      actor: loaded.actor,
+      context: loaded.context,
+      userId,
+    });
   } catch (error) {
     logger.error(`Could not ${done} user`, {
       userid: loaded.actor.id,
@@ -96,7 +104,22 @@ const changeStatus = async (
     });
     return { error: SERVICE_ERROR };
   }
-  redirect(`/manage-users?done=${done}&user=${userId}`);
+
+  // Back to invited means they never signed in, so they need a new invite
+  let emailParam = '';
+  if (next?.status === GRANT_STATUS_INVITED && next.expiresAt) {
+    const sent = await sendInviteEmail({
+      email: loaded.user.email,
+      name: loaded.user.name,
+      providerName: loaded.context.providerName,
+      invitedByName: loaded.actor.registeredName ?? loaded.actor.name,
+      signInUrl: SIGN_IN_URL,
+      expiresAt: next.expiresAt,
+      reference: userId,
+    });
+    emailParam = `&email=${sent ? 'sent' : 'failed'}`;
+  }
+  redirect(`/manage-users?done=${done}&user=${userId}${emailParam}`);
 };
 
 export async function removeUser(userId: string) {

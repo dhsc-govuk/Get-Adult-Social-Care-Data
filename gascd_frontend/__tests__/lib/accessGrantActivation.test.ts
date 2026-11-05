@@ -6,10 +6,20 @@ const fakeDb = (
 ) => {
   const updates: any[] = [];
   const audits: any[] = [];
+  const wheres: any[] = [];
+  const eb: any = (column: string, op: string, value: unknown) => [
+    column,
+    op,
+    value,
+  ];
+  eb.or = (parts: unknown[]) => ({ or: parts });
   const chain = (result: () => any) => {
     const builder: any = {
       select: () => builder,
-      where: () => builder,
+      where: (...args: any[]) => {
+        wheres.push(typeof args[0] === 'function' ? args[0](eb) : args);
+        return builder;
+      },
       set: (values: any) => {
         updates.push(values);
         return builder;
@@ -30,7 +40,7 @@ const fakeDb = (
   const db: any = {
     transaction: () => ({ execute: (fn: any) => fn(trx) }),
   };
-  return { db, updates, audits };
+  return { db, updates, audits, wheres };
 };
 
 const user = {
@@ -63,6 +73,7 @@ describe('activateInvitedGrants', () => {
     expect(updates).toEqual([
       {
         status: 'active',
+        expires_at: null,
         status_changed_at: NOW,
         status_changed_by_user_id: 'u1',
       },
@@ -79,5 +90,24 @@ describe('activateInvitedGrants', () => {
       }),
       expect.objectContaining({ provider_code: 'P2', location_codes: null }),
     ]);
+  });
+
+  it('leaves expired invites alone', async () => {
+    const { db, wheres } = fakeDb([
+      { provider_code: 'P1', location_code: 'L1' },
+    ]);
+
+    await activateInvitedGrants(db, user, NOW);
+
+    const unexpired = {
+      or: [
+        ['expires_at', 'is', null],
+        ['expires_at', '>', NOW],
+      ],
+    };
+    // Once on the select, once on the update
+    expect(
+      wheres.filter((w) => JSON.stringify(w) === JSON.stringify(unexpired))
+    ).toHaveLength(2);
   });
 });

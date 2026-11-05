@@ -11,6 +11,7 @@ import {
   updateManagedUser,
 } from '@/lib/manageUsersServer';
 import { redirect } from 'next/navigation';
+import { sendInviteEmail } from '@/lib/notify';
 
 vi.mock('server-only', () => ({ default: vi.fn() }));
 vi.mock('next/navigation', () => ({ redirect: vi.fn() }));
@@ -21,11 +22,19 @@ vi.mock('@/lib/manageUsersServer', () => ({
   restoreManagedUser: vi.fn(),
   updateManagedUser: vi.fn(),
 }));
+vi.mock('@/lib/notify', () => ({ sendInviteEmail: vi.fn() }));
+vi.mock('@/lib/signInUrl', () => ({
+  SIGN_IN_URL: 'https://gascd.example/login',
+}));
 vi.mock('@/utils/logger', () => ({
   default: { info: vi.fn(), error: vi.fn() },
 }));
 
-const actor = { id: 'approver-1' };
+const actor = {
+  id: 'approver-1',
+  name: 'ni@example.org',
+  registeredName: 'Nia Ito',
+};
 const context = {
   providerCode: 'P1',
   providerName: 'Test Provider',
@@ -36,7 +45,13 @@ const context = {
 const changeable = (status: string, canRemove = true) => ({
   context,
   grants: [],
-  user: { userId: 'u1', name: 'Tina Singh', status, canRemove },
+  user: {
+    userId: 'u1',
+    name: 'Tina Singh',
+    email: 'tina@example.com',
+    status,
+    canRemove,
+  },
 });
 
 beforeEach(() => {
@@ -101,6 +116,34 @@ describe('removeUser and restoreUser', () => {
     expect(restoreManagedUser).toHaveBeenCalled();
     expect(redirect).toHaveBeenCalledWith(
       '/manage-users?done=restored&user=u1'
+    );
+    expect(sendInviteEmail).not.toHaveBeenCalled();
+  });
+
+  it('sends a new invite when the restored user has never signed in', async () => {
+    const expiresAt = new Date('2026-12-04T10:00:00Z');
+    vi.mocked(getChangeableUser).mockResolvedValue(
+      changeable('Removed') as any
+    );
+    vi.mocked(restoreManagedUser).mockResolvedValue({
+      status: 'invited',
+      expiresAt,
+    });
+    vi.mocked(sendInviteEmail).mockResolvedValue(true);
+
+    await restoreUser('u1');
+
+    expect(sendInviteEmail).toHaveBeenCalledWith({
+      email: 'tina@example.com',
+      name: 'Tina Singh',
+      providerName: 'Test Provider',
+      invitedByName: 'Nia Ito',
+      signInUrl: 'https://gascd.example/login',
+      expiresAt,
+      reference: 'u1',
+    });
+    expect(redirect).toHaveBeenCalledWith(
+      '/manage-users?done=restored&user=u1&email=sent'
     );
   });
 

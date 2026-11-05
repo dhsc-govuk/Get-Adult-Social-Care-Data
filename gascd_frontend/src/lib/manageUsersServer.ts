@@ -42,6 +42,8 @@ import {
   editableGrants,
   fixedLocationSelection,
   isFixedGrant,
+  isExpiredInvite,
+  inviteExpiresAt,
   ProviderLocation,
 } from '@/lib/manageUsers';
 
@@ -231,8 +233,9 @@ export const inviteReader = async (
   actor: User,
   context: ApproverContext,
   fields: InviteFields
-): Promise<string> => {
+): Promise<{ userId: string; expiresAt: Date }> => {
   const now = new Date();
+  const expiresAt = inviteExpiresAt(now);
   const userId = generateId();
   const name = fields.name.trim();
   const email = fields.email.trim().toLowerCase();
@@ -247,6 +250,7 @@ export const inviteReader = async (
     source: GRANT_SOURCE_APPROVER,
     granted_by_user_id: actor.id,
     granted_at: now,
+    expires_at: expiresAt,
   };
   const grants = allLocations
     ? [{ ...grantBase, scope_type: GRANT_SCOPE_PROVIDER, location_code: null }]
@@ -301,7 +305,7 @@ export const inviteReader = async (
       .execute();
   });
 
-  return userId;
+  return { userId, expiresAt };
 };
 
 type Change = {
@@ -412,6 +416,14 @@ export const updateManagedUser = async (
     const status = grants.some((g) => g.status === GRANT_STATUS_ACTIVE)
       ? GRANT_STATUS_ACTIVE
       : GRANT_STATUS_INVITED;
+    // New locations end with the invite they join, not 30 days from now
+    const expiresAt =
+      status === GRANT_STATUS_INVITED
+        ? (grants
+            .filter((g) => g.status === GRANT_STATUS_INVITED && g.expiresAt)
+            .map((g) => g.expiresAt as Date)
+            .sort((a, b) => b.getTime() - a.getTime())[0] ?? null)
+        : null;
     if (plan.deleteIds.length) {
       await trx
         .deleteFrom('access_grant')
@@ -434,6 +446,7 @@ export const updateManagedUser = async (
         .updateTable('access_grant')
         .set({
           status,
+          expires_at: expiresAt,
           status_changed_at: now,
           status_changed_by_user_id: change.actor.id,
         })
@@ -455,6 +468,7 @@ export const updateManagedUser = async (
             source: GRANT_SOURCE_APPROVER,
             granted_by_user_id: change.actor.id,
             granted_at: now,
+            expires_at: expiresAt,
           }))
         )
         .execute();
@@ -474,26 +488,30 @@ export const updateManagedUser = async (
   });
 };
 
+type NewStatus = { status: string; expiresAt?: Date | null };
+
+// Returns the status the grants moved to, or null when nothing changed
 const setStatus = async (
   change: Change,
-  from: (status: string) => boolean,
-  to: (trx: Kysely<any>, userId: string) => Promise<string>,
+  from: (grant: GrantRow, now: Date) => boolean,
+  to: (trx: Kysely<any>, userId: string, now: Date) => Promise<NewStatus>,
   action: string
-) => {
+): Promise<NewStatus | null> => {
   const { context, userId } = change;
   const now = new Date();
-  await authDB.transaction().execute(async (trx) => {
+  return authDB.transaction().execute(async (trx) => {
     const grants = await listProviderGrants(context.providerCode, userId, trx);
     const affected = editableGrants(grants, context).filter((g) =>
-      from(g.status)
+      from(g, now)
     );
-    if (affected.length === 0) return;
+    if (affected.length === 0) return null;
 
-    const status = await to(trx, userId);
+    const next = await to(trx, userId, now);
     await trx
       .updateTable('access_grant')
       .set({
-        status,
+        status: next.status,
+        ...(next.expiresAt !== undefined ? { expires_at: next.expiresAt } : {}),
         status_changed_at: now,
         status_changed_by_user_id: change.actor.id,
       })
@@ -516,30 +534,32 @@ const setStatus = async (
       )
       .execute();
     await syncLegacyFields(trx, userId);
+    return next;
   });
 };
 
 export const removeManagedUser = (change: Change) =>
   setStatus(
     change,
-    (status) => status !== GRANT_STATUS_SUSPENDED,
-    async () => GRANT_STATUS_SUSPENDED,
+    (grant) => grant.status !== GRANT_STATUS_SUSPENDED,
+    async () => ({ status: GRANT_STATUS_SUSPENDED }),
     AUDIT_ACTION_ACCESS_SUSPENDED
   );
 
-// A sign-in links an account row, so without one they go back to invited
+// A sign-in links an account row, so without one they go back to invited, with a new invite
 export const restoreManagedUser = (change: Change) =>
   setStatus(
     change,
-    (status) => status === GRANT_STATUS_SUSPENDED,
-    async (trx, userId) =>
+    (grant, now) =>
+      grant.status === GRANT_STATUS_SUSPENDED || isExpiredInvite(grant, now),
+    async (trx, userId, now) =>
       (await trx
         .selectFrom('account')
         .select('id')
         .where('userId', '=', userId)
         .executeTakeFirst())
-        ? GRANT_STATUS_ACTIVE
-        : GRANT_STATUS_INVITED,
+        ? { status: GRANT_STATUS_ACTIVE, expiresAt: null }
+        : { status: GRANT_STATUS_INVITED, expiresAt: inviteExpiresAt(now) },
     AUDIT_ACTION_ACCESS_RESTORED
   );
 

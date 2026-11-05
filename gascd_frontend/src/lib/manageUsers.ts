@@ -24,6 +24,15 @@ export const DELEGATED_USER_SOURCE = 'delegated';
 // user.source the gascd-apps CQC sync gives the NIs and RMs it adds
 export const CQC_SYNC_SOURCE_PREFIX = 'Admin file bulk upload';
 
+// The invite email promises this, so changing it means changing the Notify template
+export const INVITE_EXPIRY_DAYS = 30;
+
+export const inviteExpiresAt = (now: Date) => {
+  const expiresAt = new Date(now);
+  expiresAt.setDate(expiresAt.getDate() + INVITE_EXPIRY_DAYS);
+  return expiresAt;
+};
+
 export const ALL_LOCATIONS = 'all';
 export const MANAGE_USERS_PAGE_SIZE = 20;
 export const MAX_FIELD_LENGTH = 255;
@@ -93,6 +102,9 @@ const roleFor = (grants: GrantRow[]) =>
 
 const isLive = (grant: GrantRow, now: Date) =>
   !grant.expiresAt || grant.expiresAt > now;
+
+export const isExpiredInvite = (grant: GrantRow, now: Date) =>
+  grant.status === GRANT_STATUS_INVITED && !isLive(grant, now);
 
 // Removed users drop off the list a year after their access ended
 const removedOverAYearAgo = (grants: GrantRow[], now: Date) => {

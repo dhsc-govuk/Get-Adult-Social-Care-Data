@@ -8,6 +8,8 @@ import {
   inviteReader,
 } from '@/lib/manageUsersServer';
 import { InviteErrors, InviteFields, validateInvite } from '@/lib/manageUsers';
+import { sendInviteEmail } from '@/lib/notify';
+import { SIGN_IN_URL } from '@/lib/signInUrl';
 import logger from '@/utils/logger';
 
 export type InviteResult = { errors: InviteErrors; error?: string };
@@ -41,8 +43,9 @@ export async function inviteUser(fields: InviteFields): Promise<InviteResult> {
   }
 
   let userId: string;
+  let expiresAt: Date;
   try {
-    userId = await inviteReader(user, context, input);
+    ({ userId, expiresAt } = await inviteReader(user, context, input));
   } catch (error) {
     // A concurrent invite for the same email may have got there first
     if (await emailHasAccount(input.email)) {
@@ -64,5 +67,16 @@ export async function inviteUser(fields: InviteFields): Promise<InviteResult> {
     invitedUserId: userId,
     providerCode: context.providerCode,
   });
-  redirect(`/manage-users?done=added&user=${userId}`);
+  const emailSent = await sendInviteEmail({
+    email: input.email.trim().toLowerCase(),
+    name: input.name.trim(),
+    providerName: context.providerName,
+    invitedByName: user.registeredName ?? user.name,
+    signInUrl: SIGN_IN_URL,
+    expiresAt,
+    reference: userId,
+  });
+  redirect(
+    `/manage-users?done=added&user=${userId}&email=${emailSent ? 'sent' : 'failed'}`
+  );
 }
