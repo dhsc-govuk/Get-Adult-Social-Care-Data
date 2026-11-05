@@ -13,6 +13,8 @@ import {
   legacyLocationFields,
   paginationItems,
   validateInvite,
+  groupDelegatedApprovers,
+  validateAppoint,
 } from '@/lib/manageUsers';
 
 const NOW = new Date('2026-10-27T12:00:00Z');
@@ -50,6 +52,7 @@ const grant = (overrides: Partial<GrantRow>): GrantRow => ({
   scopeType: 'location',
   locationCode: 'L1',
   basis: 'delegated',
+  role: 'reader',
   status: 'active',
   grantedByUserId: 'approver',
   grantedByName: 'Mark Allen',
@@ -677,6 +680,130 @@ describe('delegatedReaderFields', () => {
       source: 'approver',
       granted_by_user_id: 'approver-2',
       granted_at: NOW,
+    });
+  });
+});
+
+describe('delegated approvers', () => {
+  const daContext: ApproverContext = {
+    ...niContext,
+    basis: 'delegated_approver',
+  };
+  const approverGrant = (overrides: Partial<GrantRow> = {}) =>
+    grant({
+      userId: 'da',
+      userName: 'Dee Approver',
+      userEmail: 'dee@example.org',
+      scopeType: 'provider',
+      locationCode: null,
+      role: 'approver',
+      ...overrides,
+    });
+
+  it('labels them as a delegated approver in the user list', () => {
+    const [user] = groupManagedUsers([approverGrant()], niContext, 'ni', NOW);
+    expect(user.role).toBe('Delegated approver');
+  });
+
+  it('only lets an NI change them, from the delegated approvers section', () => {
+    const grants = [approverGrant()];
+    expect(lockedReason(grants, niContext, 'ni')).toBe(
+      'Change under delegated approvers'
+    );
+    expect(lockedReason(grants, daContext, 'other-da')).toBe(
+      'Only a Nominated Individual can change this user'
+    );
+    expect(lockedReason(grants, rmContext, 'rm')).toBe(
+      'Only a Nominated Individual can change this user'
+    );
+  });
+
+  it('never lets a delegated approver change an NI, even one the GASCD team set up', () => {
+    const ni = [
+      grant({
+        basis: 'nominated_individual',
+        role: 'approver',
+        scopeType: 'provider',
+        locationCode: null,
+      }),
+    ];
+    expect(lockedReason(ni, daContext, 'da')).toBe(
+      'Only a Nominated Individual can change this user'
+    );
+  });
+
+  it('can be changed in the user list once removed as an approver', () => {
+    const grants = [approverGrant({ role: 'reader' })];
+    expect(canChangeUser(grants, niContext, 'ni')).toBe(true);
+  });
+
+  it('lets a delegated approver add locations to a CQC Registered Manager, like an NI', () => {
+    const rm = [
+      grant({ basis: 'registered_manager', role: 'approver', userSource: CQC }),
+    ];
+    expect(canChangeUser(rm, daContext, 'da')).toBe(true);
+  });
+
+  it('lists appointed and invited approvers with their status, and hides cancelled and removed ones', () => {
+    const approvers = groupDelegatedApprovers(
+      [
+        approverGrant({ userId: 'a', userName: 'Active Ann' }),
+        approverGrant({
+          userId: 'b',
+          userName: 'Invited Bo',
+          status: 'invited',
+          expiresAt: new Date('2026-11-20T00:00:00Z'),
+        }),
+        approverGrant({
+          userId: 'c',
+          userName: 'Expired Cy',
+          status: 'invited',
+          expiresAt: new Date('2026-10-01T00:00:00Z'),
+        }),
+        approverGrant({ userId: 'd', status: 'suspended' }),
+        approverGrant({ userId: 'e', role: 'reader' }),
+        grant({ userId: 'f' }),
+      ],
+      'approver',
+      NOW
+    );
+    expect(approvers.map((a) => [a.name, a.status])).toEqual([
+      ['Active Ann', 'Active'],
+      ['Expired Cy', 'Invite expired'],
+      ['Invited Bo', 'Invited'],
+    ]);
+    expect(approvers[0].appointedBy).toBe('You');
+    expect(approvers[2].inviteExpiresAt).toEqual(
+      new Date('2026-11-20T00:00:00Z')
+    );
+  });
+
+  describe('validateAppoint', () => {
+    const own = ['ni@example.org'];
+
+    it('asks for a name', () => {
+      expect(validateAppoint({ name: ' ', email: 'a@b.com' }, own).name).toBe(
+        'Enter their full name'
+      );
+    });
+
+    it.each(['', 'not-an-email'])(
+      'asks for an email in the right format when it is "%s"',
+      (email) => {
+        expect(validateAppoint({ name: 'A', email }, own).email).toBe(
+          'Enter an email address in the correct format, like name@example.com'
+        );
+      }
+    );
+
+    it('stops an NI appointing themselves', () => {
+      expect(
+        validateAppoint({ name: 'A', email: ' NI@Example.org ' }, own).email
+      ).toBe('You cannot appoint yourself as a delegated approver');
+    });
+
+    it('accepts a name and someone else’s email', () => {
+      expect(validateAppoint({ name: 'A', email: 'a@b.com' }, own)).toEqual({});
     });
   });
 });

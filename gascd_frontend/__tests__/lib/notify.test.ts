@@ -1,5 +1,10 @@
 import { NotifyClient } from 'notifications-node-client';
-import { sendInviteEmail } from '@/lib/notify';
+import {
+  sendApproverAppointedEmail,
+  sendApproverInviteEmail,
+  sendApproverRemovedEmail,
+  sendInviteEmail,
+} from '@/lib/notify';
 import logger from '@/utils/logger';
 
 vi.mock('server-only', () => ({ default: vi.fn() }));
@@ -80,6 +85,74 @@ describe('sendInviteEmail', () => {
         status: 400,
         error: "Can't send to this recipient using a team-only API key",
       })
+    );
+  });
+});
+
+describe('delegated approver emails', () => {
+  beforeEach(() => sendEmail.mockResolvedValue({}));
+
+  it('invites a new delegated approver with the approver invite template', async () => {
+    expect(await sendApproverInviteEmail(invite)).toBe(true);
+    expect(sendEmail).toHaveBeenCalledWith(
+      '2d1e687c-5ee1-4541-bec6-565c6f307c6f',
+      'tina@example.com',
+      {
+        personalisation: {
+          invitee_name: 'Tina Singh',
+          inviter_name: 'Nia Ito',
+          organisation_name: 'Test Provider',
+          service_url: 'https://gascd.example/login',
+          email_address: 'tina@example.com',
+          expiry_date: '4 December 2026',
+        },
+        reference: 'new-user',
+      }
+    );
+  });
+
+  it('tells an existing user they have been appointed', async () => {
+    const { expiresAt: _, ...appointed } = invite;
+    expect(await sendApproverAppointedEmail(appointed)).toBe(true);
+    expect(sendEmail).toHaveBeenCalledWith(
+      'ad23060c-964c-411c-8b5c-026fe48d4bc3',
+      'tina@example.com',
+      {
+        personalisation: {
+          invitee_name: 'Tina Singh',
+          inviter_name: 'Nia Ito',
+          organisation_name: 'Test Provider',
+          service_url: 'https://gascd.example/login',
+          email_address: 'tina@example.com',
+        },
+        reference: 'new-user',
+      }
+    );
+  });
+
+  it('tells them their role was removed, and who to contact', async () => {
+    expect(
+      await sendApproverRemovedEmail({
+        email: 'tina@example.com',
+        name: 'Tina Singh',
+        providerName: 'Test Provider',
+        contactName: 'Nia Ito',
+        contactEmail: 'ni@example.org',
+        reference: 'da-1',
+      })
+    ).toBe(true);
+    expect(sendEmail).toHaveBeenCalledWith(
+      '9b2057e3-4b6d-4804-aaf9-34569a0ded74',
+      'tina@example.com',
+      {
+        personalisation: {
+          invitee_name: 'Tina Singh',
+          organisation_name: 'Test Provider',
+          contact_name: 'Nia Ito',
+          contact_email: 'ni@example.org',
+        },
+        reference: 'da-1',
+      }
     );
   });
 });
