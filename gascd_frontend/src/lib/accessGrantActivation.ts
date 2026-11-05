@@ -13,6 +13,9 @@ type SignedInUser = {
   registeredName?: string | null;
 };
 
+const notExpired = (now: Date) => (eb: any) =>
+  eb.or([eb('expires_at', 'is', null), eb('expires_at', '>', now)]);
+
 // Takes the db so auth.ts can call it without a circular import
 export const activateInvitedGrants = async (
   db: Kysely<any>,
@@ -26,6 +29,7 @@ export const activateInvitedGrants = async (
         .select(['provider_code', 'location_code'])
         .where('user_id', '=', user.id)
         .where('status', '=', GRANT_STATUS_INVITED)
+        .where(notExpired(now))
         .execute();
     if (invited.length === 0) return;
 
@@ -33,11 +37,13 @@ export const activateInvitedGrants = async (
       .updateTable('access_grant')
       .set({
         status: GRANT_STATUS_ACTIVE,
+        expires_at: null,
         status_changed_at: now,
         status_changed_by_user_id: user.id,
       })
       .where('user_id', '=', user.id)
       .where('status', '=', GRANT_STATUS_INVITED)
+      .where(notExpired(now))
       .execute();
 
     const name = user.registeredName ?? user.name ?? null;
