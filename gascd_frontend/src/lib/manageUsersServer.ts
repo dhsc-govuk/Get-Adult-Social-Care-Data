@@ -571,7 +571,7 @@ const setStatus = async (
       )
       .execute();
     const readded =
-      status === GRANT_STATUS_SUSPENDED
+      next.status === GRANT_STATUS_SUSPENDED
         ? []
         : await convertToReader(trx, affected, change.actor.id, now);
     await trx
