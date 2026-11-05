@@ -19,6 +19,8 @@ export const AUDIT_ACTION_ACCESS_RESTORED = 'access_restored';
 export const AUDIT_ACTION_NAME_CHANGED = 'name_changed';
 export const AUDIT_ACTION_INVITE_RESENT = 'invite_resent';
 export const AUDIT_ACTION_INVITE_CANCELLED = 'invite_cancelled';
+export const AUDIT_ACTION_APPROVER_APPOINTED = 'approver_appointed';
+export const AUDIT_ACTION_APPROVER_REMOVED = 'approver_removed';
 export const AUDIT_ACTOR_USER = 'user';
 
 // user.source for people added by an approver
@@ -44,7 +46,13 @@ export type ProviderLocation = {
   name: string;
 };
 
-export type ApproverBasis = typeof GRANT_BASIS_NI | typeof GRANT_BASIS_RM;
+// How the signed-in approver got their rights; not an access_grant.basis value
+export const DELEGATED_APPROVER = 'delegated_approver';
+
+export type ApproverBasis =
+  | typeof GRANT_BASIS_NI
+  | typeof GRANT_BASIS_RM
+  | typeof DELEGATED_APPROVER;
 
 export type ApproverContext = {
   providerCode: string;
@@ -64,6 +72,7 @@ export type GrantRow = {
   scopeType: string;
   locationCode: string | null;
   basis: string;
+  role: string;
   status: string;
   grantedByUserId: string | null;
   grantedByName: string | null;
@@ -94,16 +103,39 @@ export type ManagedUser = {
   lockedReason: string | null;
 };
 
+// An NI's appointee: approver rights over the whole provider
+export const isDelegatedApproverGrant = (
+  grant: Pick<GrantRow, 'basis' | 'role' | 'scopeType'>
+) =>
+  grant.basis === GRANT_BASIS_DELEGATED &&
+  grant.role === GRANT_ROLE_APPROVER &&
+  grant.scopeType === GRANT_SCOPE_PROVIDER;
+
+// Appointed or invited to be one; a cancelled appointment is suspended
+const holdsDelegatedApprover = (grants: GrantRow[]) =>
+  grants.some(
+    (g) => isDelegatedApproverGrant(g) && g.status !== GRANT_STATUS_SUSPENDED
+  );
+
 // Highest first, so a user with several grants shows their most senior role
-const ROLE_LABELS: [string, string][] = [
-  [GRANT_BASIS_NI, 'Nominated Individual'],
-  [GRANT_BASIS_RM, 'Registered Manager'],
-  [GRANT_BASIS_DELEGATED, 'Invited user'],
+const ROLE_LABELS: [(grants: GrantRow[]) => boolean, string][] = [
+  [
+    (grants) => grants.some((g) => g.basis === GRANT_BASIS_NI),
+    'Nominated Individual',
+  ],
+  [holdsDelegatedApprover, 'Delegated approver'],
+  [
+    (grants) => grants.some((g) => g.basis === GRANT_BASIS_RM),
+    'Registered Manager',
+  ],
+  [
+    (grants) => grants.some((g) => g.basis === GRANT_BASIS_DELEGATED),
+    'Invited user',
+  ],
 ];
 
 const roleFor = (grants: GrantRow[]) =>
-  ROLE_LABELS.find(([basis]) => grants.some((g) => g.basis === basis))?.[1] ??
-  null;
+  ROLE_LABELS.find(([holds]) => holds(grants))?.[1] ?? null;
 
 const isLive = (grant: GrantRow, now: Date) =>
   !grant.expiresAt || grant.expiresAt > now;
@@ -177,7 +209,7 @@ export const isFixedGrant = (
   grant.status !== GRANT_STATUS_SUSPENDED &&
   isCqcRegistered(grant);
 
-// Re-adding only ever gives reader access: approver rights come from the CQC register alone
+// Re-adding only ever gives reader access: approver rights come from the CQC register or an NI's appointment
 export const delegatedReaderFields = (actorId: string, now: Date) => ({
   basis: GRANT_BASIS_DELEGATED,
   role: GRANT_ROLE_READER,
@@ -221,9 +253,24 @@ export function lockedReason(
   const visible = visibleGrants(grants, context);
   if (visible.length === 0) return 'No access you can change';
   if (visible.some((g) => g.userId === currentUserId)) return 'Your own access';
+  // Delegated approvers act for an NI, so they never change one
+  if (
+    context.basis === DELEGATED_APPROVER &&
+    grants.some(
+      (g) => g.basis === GRANT_BASIS_NI && g.status !== GRANT_STATUS_SUSPENDED
+    )
+  ) {
+    return 'Only a Nominated Individual can change this user';
+  }
+  if (holdsDelegatedApprover(grants)) {
+    return context.basis === GRANT_BASIS_NI
+      ? 'Change under delegated approvers'
+      : 'Only a Nominated Individual can change this user';
+  }
   const fixed = fixedGrants(grants, context);
   const niCanAddLocations =
-    context.basis === GRANT_BASIS_NI &&
+    (context.basis === GRANT_BASIS_NI ||
+      context.basis === DELEGATED_APPROVER) &&
     fixed.every(
       (g) => g.basis === GRANT_BASIS_RM && g.scopeType === GRANT_SCOPE_LOCATION
     );
@@ -525,4 +572,71 @@ export function paginationItems(
 export const APPROVER_DESCRIPTIONS: Record<ApproverBasis, string> = {
   [GRANT_BASIS_NI]: 'a Nominated Individual',
   [GRANT_BASIS_RM]: 'a Registered Manager',
+  [DELEGATED_APPROVER]: 'a delegated approver',
 };
+
+export type ApproverStatus = 'Active' | 'Invited' | 'Invite expired';
+
+export type DelegatedApprover = {
+  userId: string;
+  name: string;
+  email: string;
+  status: ApproverStatus;
+  appointedAt: Date;
+  appointedBy: string;
+  inviteExpiresAt: Date | null;
+};
+
+// Cancelled invites (suspended) and removed approvers (now readers) drop off
+export function groupDelegatedApprovers(
+  rows: GrantRow[],
+  currentUserId: string,
+  now: Date = new Date()
+): DelegatedApprover[] {
+  return rows
+    .filter(
+      (g) => isDelegatedApproverGrant(g) && g.status !== GRANT_STATUS_SUSPENDED
+    )
+    .map((g) => ({
+      userId: g.userId,
+      name: g.userName || g.userEmail,
+      email: g.userEmail,
+      status:
+        g.status === GRANT_STATUS_ACTIVE
+          ? ('Active' as const)
+          : isLive(g, now)
+            ? ('Invited' as const)
+            : ('Invite expired' as const),
+      appointedAt: g.grantedAt,
+      appointedBy: grantedByLabel(g, currentUserId),
+      inviteExpiresAt: g.status === GRANT_STATUS_INVITED ? g.expiresAt : null,
+    }))
+    .sort((a, b) =>
+      a.name.localeCompare(b.name, 'en', { sensitivity: 'base' })
+    );
+}
+
+export type AppointFields = { name: string; email: string };
+export type AppointErrors = Partial<Record<keyof AppointFields, string>>;
+
+export const EMAIL_FORMAT_ERROR =
+  'Enter an email address in the correct format, like name@example.com';
+
+export function validateAppoint(
+  fields: AppointFields,
+  actorEmails: string[]
+): AppointErrors {
+  const name = fields.name.trim();
+  const email = fields.email.trim().toLowerCase();
+  const errors: AppointErrors = {};
+  if (!name) errors.name = 'Enter their full name';
+  else if (name.length > MAX_FIELD_LENGTH) {
+    errors.name = `Full name must be ${MAX_FIELD_LENGTH} characters or fewer`;
+  }
+  if (email.length > MAX_FIELD_LENGTH || !EMAIL_PATTERN.test(email)) {
+    errors.email = EMAIL_FORMAT_ERROR;
+  } else if (actorEmails.some((own) => own.toLowerCase() === email)) {
+    errors.email = 'You cannot appoint yourself as a delegated approver';
+  }
+  return errors;
+}

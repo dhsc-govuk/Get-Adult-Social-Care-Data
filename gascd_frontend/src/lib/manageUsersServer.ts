@@ -49,6 +49,13 @@ import {
   CQC_BAN_REASON_PREFIX,
   AUDIT_ACTION_INVITE_RESENT,
   AUDIT_ACTION_INVITE_CANCELLED,
+  AUDIT_ACTION_APPROVER_APPOINTED,
+  AUDIT_ACTION_APPROVER_REMOVED,
+  AppointFields,
+  DELEGATED_APPROVER,
+  DelegatedApprover,
+  groupDelegatedApprovers,
+  isDelegatedApproverGrant,
 } from '@/lib/manageUsers';
 
 type ApproverScope = {
@@ -71,8 +78,8 @@ const getProviderCodeForLocation = async (locationCode: string) => {
   return data?.provider_code ?? null;
 };
 
-// Approver rights at the provider of the user's selected location. Delegated
-// users never count, whatever role their grant carries.
+// Approver rights at the provider of the user's selected location: an NI's or
+// RM's from CQC, or a delegated approver's from an NI's appointment.
 export const getApproverScope = cache(
   async (user: User): Promise<ApproverScope | null> => {
     if (
@@ -98,7 +105,15 @@ export const getApproverScope = cache(
       .where('provider_code', '=', providerCode)
       .where('role', '=', GRANT_ROLE_APPROVER)
       .where('status', '=', GRANT_STATUS_ACTIVE)
-      .where('basis', 'in', [GRANT_BASIS_NI, GRANT_BASIS_RM])
+      .where((eb: any) =>
+        eb.or([
+          eb('basis', 'in', [GRANT_BASIS_NI, GRANT_BASIS_RM]),
+          eb.and([
+            eb('basis', '=', GRANT_BASIS_DELEGATED),
+            eb('scope_type', '=', GRANT_SCOPE_PROVIDER),
+          ]),
+        ])
+      )
       .where((eb: any) =>
         eb.or([eb('expires_at', 'is', null), eb('expires_at', '>', new Date())])
       )
@@ -112,7 +127,9 @@ export const getApproverScope = cache(
       providerCode,
       basis: grants.some((g) => g.basis === GRANT_BASIS_NI)
         ? GRANT_BASIS_NI
-        : GRANT_BASIS_RM,
+        : grants.some((g) => g.basis === GRANT_BASIS_DELEGATED)
+          ? DELEGATED_APPROVER
+          : GRANT_BASIS_RM,
       providerWide,
       locationCodes: grants
         .map((g) => g.location_code)
@@ -185,6 +202,7 @@ export const listProviderGrants = async (
       'g.scope_type as scopeType',
       'g.location_code as locationCode',
       'g.basis as basis',
+      'g.role as role',
       'g.status as status',
       'g.granted_by_user_id as grantedByUserId',
       'gb.registeredName as grantedByRegisteredName',
@@ -211,6 +229,7 @@ export const listProviderGrants = async (
     scopeType: row.scopeType,
     locationCode: row.locationCode,
     basis: row.basis,
+    role: row.role,
     status: row.status,
     grantedByUserId: row.grantedByUserId,
     grantedByName: row.grantedByRegisteredName ?? row.grantedByName,
@@ -438,14 +457,16 @@ const auditRow = (
   details: extra.details ? JSON.stringify(extra.details) : null,
 });
 
-// Reused rows that were an NI's or RM's come back as delegated reader access
+// Reused rows that were an NI's, RM's or delegated approver's come back as delegated reader access
 const convertToReader = async (
   trx: Kysely<any>,
   reused: GrantRow[],
   actorId: string,
   now: Date
 ) => {
-  const former = reused.filter((g) => g.basis !== GRANT_BASIS_DELEGATED);
+  const former = reused.filter(
+    (g) => g.basis !== GRANT_BASIS_DELEGATED || g.role !== GRANT_ROLE_READER
+  );
   if (former.length === 0) return [];
   await trx
     .updateTable('access_grant')
@@ -459,6 +480,7 @@ const convertToReader = async (
   return former.map((g) => ({
     code: g.locationCode ?? ALL_LOCATIONS,
     from_basis: g.basis,
+    from_role: g.role,
   }));
 };
 
@@ -759,3 +781,323 @@ export const getChangeableUser = async (
   const [user] = groupManagedUsers(grants, context, actor.id);
   return user ? { context, grants, user } : null;
 };
+
+const findUserByEmail = (db: Kysely<any>, email: string) =>
+  db
+    .selectFrom('user')
+    .select(['id', 'name', 'registeredName'])
+    .where((eb: any) =>
+      eb.or([eb('email', '=', email), eb('registeredEmail', '=', email)])
+    )
+    .executeTakeFirst();
+
+export type AppointResult =
+  | { error: AppointBlocker }
+  | {
+      userId: string;
+      name: string;
+      // Someone who has signed in before is appointed straight away; anyone else is invited
+      invited: boolean;
+      expiresAt: Date | null;
+    };
+
+const isLiveAt = (grant: GrantRow, now: Date) =>
+  grant.status === GRANT_STATUS_ACTIVE ||
+  (grant.status === GRANT_STATUS_INVITED &&
+    (!grant.expiresAt || grant.expiresAt > now));
+
+type AppointBlocker =
+  | 'already_approver'
+  | 'nominated_individual'
+  | 'other_organisation';
+
+// Who the email belongs to, and why they can't be appointed, if they can't
+type Appointee = {
+  existing:
+    | { id: string; name: string | null; registeredName: string | null }
+    | undefined;
+  grants: GrantRow[];
+  hasAccount: boolean;
+  error?: AppointBlocker;
+};
+
+const appointee = async (
+  db: Kysely<any>,
+  context: ApproverContext,
+  email: string,
+  now: Date
+): Promise<Appointee> => {
+  const existing = await findUserByEmail(db, email);
+  if (!existing) {
+    return { existing, grants: [] as GrantRow[], hasAccount: false };
+  }
+  const [grants, account] = await Promise.all([
+    listProviderGrants(context.providerCode, existing.id, db),
+    db
+      .selectFrom('account')
+      .select('id')
+      .where('userId', '=', existing.id)
+      .executeTakeFirst(),
+  ]);
+  const result = { existing, grants, hasAccount: Boolean(account) };
+  const blocked = (error: AppointBlocker) => ({ ...result, error });
+
+  if (
+    grants.some(
+      (g) => isDelegatedApproverGrant(g) && g.status !== GRANT_STATUS_SUSPENDED
+    )
+  ) {
+    return blocked('already_approver');
+  }
+  if (grants.some((g) => g.basis === GRANT_BASIS_NI && isLiveAt(g, now))) {
+    return blocked('nominated_individual');
+  }
+  if (grants.length === 0) {
+    // Someone with live access elsewhere belongs to another organisation
+    const elsewhere = await db
+      .selectFrom('access_grant')
+      .select('id')
+      .where('user_id', '=', existing.id)
+      .where((eb: any) =>
+        eb.or([
+          eb('status', '=', GRANT_STATUS_ACTIVE),
+          eb.and([
+            eb('status', '=', GRANT_STATUS_INVITED),
+            eb.or([eb('expires_at', 'is', null), eb('expires_at', '>', now)]),
+          ]),
+        ])
+      )
+      .executeTakeFirst();
+    if (elsewhere) return blocked('other_organisation');
+  }
+  return result;
+};
+
+export const appointBlocker = async (
+  context: ApproverContext,
+  email: string
+): Promise<AppointBlocker | null> =>
+  (await appointee(authDB, context, email.trim().toLowerCase(), new Date()))
+    .error ?? null;
+
+/**
+ * Makes someone a delegated approver at the NI's provider: one provider-wide
+ * delegated grant with the approver role. granted_at is the appointment date
+ * the annual review needs. Their other grants are left as they are.
+ */
+export const appointDelegatedApprover = async (
+  actor: User,
+  context: ApproverContext,
+  fields: AppointFields
+): Promise<AppointResult> => {
+  const now = new Date();
+  const name = fields.name.trim();
+  const email = fields.email.trim().toLowerCase();
+
+  return authDB.transaction().execute(async (trx) => {
+    const { existing, grants, hasAccount, error } = await appointee(
+      trx,
+      context,
+      email,
+      now
+    );
+    if (error) return { error };
+    const userId = existing?.id ?? generateId();
+
+    const invited = !hasAccount;
+    const expiresAt = invited ? inviteExpiresAt(now) : null;
+    const approverGrant = {
+      role: GRANT_ROLE_APPROVER,
+      basis: GRANT_BASIS_DELEGATED,
+      status: invited ? GRANT_STATUS_INVITED : GRANT_STATUS_ACTIVE,
+      source: GRANT_SOURCE_APPROVER,
+      granted_by_user_id: actor.id,
+      granted_at: now,
+      expires_at: expiresAt,
+    };
+
+    if (!existing) {
+      await trx
+        .insertInto('user')
+        .values({
+          id: userId,
+          analyticsId: generateAnalyticsId(),
+          name,
+          registeredName: name,
+          email,
+          registeredEmail: email,
+          emailVerified: 1,
+          role: 'member',
+          source: DELEGATED_USER_SOURCE,
+          ...legacyLocationFields(context.providerCode, [ALL_LOCATIONS]),
+          createdAt: now,
+          updatedAt: now,
+        })
+        .execute();
+    } else if (!hasAccount) {
+      // Not signed in yet, so the name the NI gave is the best we have
+      await trx
+        .updateTable('user')
+        .set({ name, registeredName: name, updatedAt: now })
+        .where('id', '=', userId)
+        .execute();
+    }
+
+    // One provider-wide row per user is allowed, so an earlier one is taken over
+    const providerRow = grants.find(
+      (g) => g.scopeType === GRANT_SCOPE_PROVIDER
+    );
+    if (providerRow) {
+      await trx
+        .updateTable('access_grant')
+        .set({
+          ...approverGrant,
+          status_changed_at: now,
+          status_changed_by_user_id: actor.id,
+        })
+        .where('id', '=', providerRow.id)
+        .execute();
+    } else {
+      await trx
+        .insertInto('access_grant')
+        .values({
+          ...approverGrant,
+          user_id: userId,
+          scope_type: GRANT_SCOPE_PROVIDER,
+          provider_code: context.providerCode,
+          location_code: null,
+        })
+        .execute();
+    }
+
+    await trx
+      .insertInto('access_audit')
+      .values({
+        occurred_at: now,
+        action: AUDIT_ACTION_APPROVER_APPOINTED,
+        actor_type: AUDIT_ACTOR_USER,
+        actor_id: actor.id,
+        actor_name: actor.registeredName ?? actor.name,
+        actor_email: actor.email,
+        target_user_id: userId,
+        target_name:
+          existing && hasAccount
+            ? (existing.registeredName ?? existing.name)
+            : name,
+        target_email: email,
+        provider_code: context.providerCode,
+        location_codes: null,
+        details: JSON.stringify({
+          invited,
+          ...(providerRow
+            ? { replaced: { basis: providerRow.basis, role: providerRow.role } }
+            : {}),
+        }),
+      })
+      .execute();
+    await syncLegacyFields(trx, userId);
+
+    return {
+      userId,
+      name:
+        existing && hasAccount
+          ? (existing.registeredName ?? existing.name ?? name)
+          : name,
+      invited,
+      expiresAt,
+    };
+  });
+};
+
+export const listDelegatedApprovers = async (
+  context: ApproverContext,
+  currentUserId: string
+) =>
+  groupDelegatedApprovers(
+    await listProviderGrants(context.providerCode),
+    currentUserId
+  );
+
+// Only an NI appoints, removes or changes delegated approvers
+export const getChangeableApprover = async (
+  actor: User,
+  userId: string
+): Promise<{
+  context: ApproverContext;
+  approver: DelegatedApprover;
+} | null> => {
+  const context = await getApproverContext(actor);
+  if (!context || context.basis !== GRANT_BASIS_NI) return null;
+  const [approver] = groupDelegatedApprovers(
+    await listProviderGrants(context.providerCode, userId),
+    actor.id
+  );
+  return approver ? { context, approver } : null;
+};
+
+// Changes the user's delegated approver grant; null when it isn't in the expected state
+const changeApproverGrant = async (
+  change: Change,
+  from: (grant: GrantRow, now: Date) => boolean,
+  set: (now: Date) => Record<string, unknown>,
+  action: string,
+  details: object = { role: GRANT_ROLE_APPROVER }
+): Promise<GrantRow | null> => {
+  const { context, userId } = change;
+  const now = new Date();
+  return authDB.transaction().execute(async (trx) => {
+    const grants = await listProviderGrants(context.providerCode, userId, trx);
+    const grant = grants.find(
+      (g) => isDelegatedApproverGrant(g) && from(g, now)
+    );
+    if (!grant) return null;
+    const values = set(now);
+    await trx
+      .updateTable('access_grant')
+      .set({
+        ...values,
+        status_changed_at: now,
+        status_changed_by_user_id: change.actor.id,
+      })
+      .where('id', '=', grant.id)
+      .execute();
+    await trx
+      .insertInto('access_audit')
+      .values(auditRow(change, grant, action, now, { details }))
+      .execute();
+    await syncLegacyFields(trx, userId);
+    return { ...grant, ...values } as GrantRow;
+  });
+};
+
+// They keep seeing every location as a reader; people they invited keep their access
+export const removeDelegatedApprover = (change: Change) =>
+  changeApproverGrant(
+    change,
+    (grant) => grant.status === GRANT_STATUS_ACTIVE,
+    () => ({ role: GRANT_ROLE_READER }),
+    AUDIT_ACTION_APPROVER_REMOVED,
+    { from_role: GRANT_ROLE_APPROVER, to_role: GRANT_ROLE_READER }
+  );
+
+export const resendApproverInvite = async (change: Change) => {
+  let expiresAt: Date | null = null;
+  const grant = await changeApproverGrant(
+    change,
+    (g) => g.status === GRANT_STATUS_INVITED,
+    (now) => {
+      expiresAt = inviteExpiresAt(now);
+      return { expires_at: expiresAt };
+    },
+    AUDIT_ACTION_INVITE_RESENT
+  );
+  return grant ? (expiresAt as Date | null) : null;
+};
+
+export const cancelApproverInvite = (change: Change) =>
+  changeApproverGrant(
+    change,
+    (grant) => grant.status === GRANT_STATUS_INVITED,
+    () => ({ status: GRANT_STATUS_SUSPENDED }),
+    AUDIT_ACTION_INVITE_CANCELLED
+  );
