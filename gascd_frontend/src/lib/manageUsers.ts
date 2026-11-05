@@ -138,9 +138,26 @@ type ChangeContext = Pick<
   'basis' | 'providerWide' | 'locations'
 >;
 
-// CQC decides an NI's or RM's own access; what the GASCD team set up any approver can change
-export const isFixedGrant = (grant: Pick<GrantRow, 'basis' | 'userSource'>) =>
-  grant.basis !== GRANT_BASIS_DELEGATED && isCqcRegistered(grant);
+// CQC decides a current NI's or RM's own access; once the register drops them, an approver can add them back as a reader
+export const isFixedGrant = (
+  grant: Pick<GrantRow, 'basis' | 'userSource' | 'status'>
+) =>
+  grant.basis !== GRANT_BASIS_DELEGATED &&
+  grant.status !== GRANT_STATUS_SUSPENDED &&
+  isCqcRegistered(grant);
+
+// Re-adding only ever gives reader access: approver rights come from the CQC register alone
+export const delegatedReaderFields = (actorId: string, now: Date) => ({
+  basis: GRANT_BASIS_DELEGATED,
+  role: GRANT_ROLE_READER,
+  source: GRANT_SOURCE_APPROVER,
+  granted_by_user_id: actorId,
+  granted_at: now,
+});
+
+// Prefix of the bans the gascd-apps CQC sync makes (UserUploadedFileProcessor.CqcBanReasonPrefix)
+export const CQC_BAN_REASON_PREFIX =
+  'User does not have an active location assignment';
 
 // An approver who is not provider-wide only sees their own locations, and users with access to them
 export function visibleGrants<
