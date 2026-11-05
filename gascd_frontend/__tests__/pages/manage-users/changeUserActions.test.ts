@@ -1,5 +1,7 @@
 import {
+  cancelInvite,
   removeUser,
+  resendInvite,
   restoreUser,
   updateUser,
 } from '../../../app/(protected)/manage-users/[userId]/actions';
@@ -8,6 +10,8 @@ import {
   getChangeableUser,
   removeManagedUser,
   restoreManagedUser,
+  resendManagedInvite,
+  cancelManagedInvite,
   updateManagedUser,
 } from '@/lib/manageUsersServer';
 import { redirect } from 'next/navigation';
@@ -20,6 +24,8 @@ vi.mock('@/lib/manageUsersServer', () => ({
   getChangeableUser: vi.fn(),
   removeManagedUser: vi.fn(),
   restoreManagedUser: vi.fn(),
+  resendManagedInvite: vi.fn(),
+  cancelManagedInvite: vi.fn(),
   updateManagedUser: vi.fn(),
 }));
 vi.mock('@/lib/notify', () => ({ sendInviteEmail: vi.fn() }));
@@ -162,5 +168,51 @@ describe('removeUser and restoreUser', () => {
     );
 
     expect((await removeUser('u1')).error).toMatch(/permission/);
+  });
+});
+
+describe('resendInvite and cancelInvite', () => {
+  it('resends an expired invite with a new email', async () => {
+    const expiresAt = new Date('2026-12-05T10:00:00Z');
+    vi.mocked(getChangeableUser).mockResolvedValue(
+      changeable('Invite expired') as any
+    );
+    vi.mocked(resendManagedInvite).mockResolvedValue({
+      status: 'invited',
+      expiresAt,
+    });
+    vi.mocked(sendInviteEmail).mockResolvedValue(true);
+
+    await resendInvite('u1');
+
+    expect(sendInviteEmail).toHaveBeenCalledWith(
+      expect.objectContaining({ email: 'tina@example.com', expiresAt })
+    );
+    expect(redirect).toHaveBeenCalledWith(
+      '/manage-users?done=resent&user=u1&email=sent'
+    );
+  });
+
+  it('cancels a pending invite without emailing', async () => {
+    vi.mocked(getChangeableUser).mockResolvedValue(
+      changeable('Invited') as any
+    );
+    vi.mocked(cancelManagedInvite).mockResolvedValue({ status: 'suspended' });
+
+    await cancelInvite('u1');
+
+    expect(sendInviteEmail).not.toHaveBeenCalled();
+    expect(redirect).toHaveBeenCalledWith(
+      '/manage-users?done=cancelled&user=u1'
+    );
+  });
+
+  it('only resends or cancels invites, not active users', async () => {
+    vi.mocked(getChangeableUser).mockResolvedValue(changeable('Active') as any);
+
+    expect((await resendInvite('u1')).error).toMatch(/permission/);
+    expect((await cancelInvite('u1')).error).toMatch(/permission/);
+    expect(resendManagedInvite).not.toHaveBeenCalled();
+    expect(cancelManagedInvite).not.toHaveBeenCalled();
   });
 });

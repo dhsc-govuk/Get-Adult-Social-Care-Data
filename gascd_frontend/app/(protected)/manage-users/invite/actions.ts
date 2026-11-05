@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/permissions';
 import {
   emailHasAccount,
+  findReinvitableUser,
   getApproverContext,
   inviteReader,
 } from '@/lib/manageUsersServer';
@@ -38,17 +39,23 @@ export async function inviteUser(fields: InviteFields): Promise<InviteResult> {
   if (Object.keys(errors).length > 0) {
     return { errors };
   }
-  if (await emailHasAccount(input.email)) {
+  const reinvitableId = await findReinvitableUser(input.email);
+  if (!reinvitableId && (await emailHasAccount(input.email))) {
     return { errors: { email: EMAIL_IN_USE } };
   }
 
   let userId: string;
   let expiresAt: Date;
   try {
-    ({ userId, expiresAt } = await inviteReader(user, context, input));
+    ({ userId, expiresAt } = await inviteReader(
+      user,
+      context,
+      input,
+      reinvitableId
+    ));
   } catch (error) {
     // A concurrent invite for the same email may have got there first
-    if (await emailHasAccount(input.email)) {
+    if (!reinvitableId && (await emailHasAccount(input.email))) {
       return { errors: { email: EMAIL_IN_USE } };
     }
     logger.error('Could not invite user', {

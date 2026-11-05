@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { cache } from 'react';
-import { Kysely } from 'kysely';
+import { Kysely, sql } from 'kysely';
 import { generateId } from 'better-auth';
 import { authDB, User } from '@/lib/auth';
 import { isUserRegistered } from '@/lib/permissions';
@@ -47,6 +47,8 @@ import {
   ProviderLocation,
   delegatedReaderFields,
   CQC_BAN_REASON_PREFIX,
+  AUDIT_ACTION_INVITE_RESENT,
+  AUDIT_ACTION_INVITE_CANCELLED,
 } from '@/lib/manageUsers';
 
 type ApproverScope = {
@@ -190,6 +192,9 @@ export const listProviderGrants = async (
       'g.granted_at as grantedAt',
       'g.expires_at as expiresAt',
       'g.status_changed_at as statusChangedAt',
+      sql<number>`case when exists (select 1 from account a where a.userId = u.id) then 1 else 0 end`.as(
+        'userHasSignedIn'
+      ),
     ])
     .where('g.provider_code', '=', providerCode)
     .where('g.scope_type', 'in', [GRANT_SCOPE_PROVIDER, GRANT_SCOPE_LOCATION]);
@@ -212,6 +217,7 @@ export const listProviderGrants = async (
     grantedAt: new Date(row.grantedAt),
     expiresAt: row.expiresAt ? new Date(row.expiresAt) : null,
     statusChangedAt: row.statusChangedAt ? new Date(row.statusChangedAt) : null,
+    userHasSignedIn: Boolean(row.userHasSignedIn),
   }));
 };
 
@@ -231,14 +237,56 @@ export const emailHasAccount = async (email: string) => {
  * Adds a reader at the approver's provider: the user row, one invited grant per
  * location (or one provider-wide grant) and a user_added audit row, together.
  */
+/**
+ * Someone whose invites were all cancelled or ran out before they ever signed in. They
+ * aren't in the list, so adding them again reuses their row rather than refusing the email.
+ */
+export const findReinvitableUser = async (
+  email: string
+): Promise<string | null> => {
+  const lower = email.trim().toLowerCase();
+  const now = new Date();
+  const user = await authDB
+    .selectFrom('user')
+    .select('id')
+    .where((eb: any) =>
+      eb.or([eb('email', '=', lower), eb('registeredEmail', '=', lower)])
+    )
+    .executeTakeFirst();
+  if (!user) return null;
+  const [account, liveGrant] = await Promise.all([
+    authDB
+      .selectFrom('account')
+      .select('id')
+      .where('userId', '=', user.id)
+      .executeTakeFirst(),
+    authDB
+      .selectFrom('access_grant')
+      .select('id')
+      .where('user_id', '=', user.id)
+      .where((eb: any) =>
+        eb.or([
+          eb('status', '=', GRANT_STATUS_ACTIVE),
+          eb.and([
+            eb('status', '=', GRANT_STATUS_INVITED),
+            eb.or([eb('expires_at', 'is', null), eb('expires_at', '>', now)]),
+          ]),
+        ])
+      )
+      .executeTakeFirst(),
+  ]);
+  return account || liveGrant ? null : user.id;
+};
+
 export const inviteReader = async (
   actor: User,
   context: ApproverContext,
-  fields: InviteFields
+  fields: InviteFields,
+  existingUserId: string | null = null
 ): Promise<{ userId: string; expiresAt: Date }> => {
   const now = new Date();
   const expiresAt = inviteExpiresAt(now);
-  const userId = generateId();
+  const userId = existingUserId ?? generateId();
   const name = fields.name.trim();
   const email = fields.email.trim().toLowerCase();
   const allLocations = fields.locations.includes(ALL_LOCATIONS);
@@ -263,6 +311,18 @@ export const inviteReader = async (
       }));
 
   await authDB.transaction().execute(async (trx) => {
+    if (existingUserId) {
+      await reinviteGrants(trx, existingUserId, name, grants, now);
+    } else {
+      await insertInvitedUser(trx);
+    }
+    await writeUserAdded(trx);
+    if (existingUserId) await syncLegacyFields(trx, userId);
+  });
+
+  return { userId, expiresAt };
+
+  async function insertInvitedUser(trx: Kysely<any>) {
     await trx
       .insertInto('user')
       .values({
@@ -281,6 +341,9 @@ export const inviteReader = async (
       })
       .execute();
     await trx.insertInto('access_grant').values(grants).execute();
+  }
+
+  async function writeUserAdded(trx: Kysely<any>) {
     await trx
       .insertInto('access_audit')
       .values({
@@ -302,12 +365,50 @@ export const inviteReader = async (
             ? GRANT_SCOPE_PROVIDER
             : GRANT_SCOPE_LOCATION,
           grants: grants.length,
+          ...(existingUserId ? { reinvited: true } : {}),
         }),
       })
       .execute();
-  });
+  }
+};
 
-  return { userId, expiresAt };
+// Their earlier rows for these locations are reused: the unique indexes allow one per location
+const reinviteGrants = async (
+  trx: Kysely<any>,
+  userId: string,
+  name: string,
+  grants: { scope_type: string; location_code: string | null }[],
+  now: Date
+) => {
+  await trx
+    .updateTable('user')
+    .set({ name, registeredName: name, updatedAt: now })
+    .where('id', '=', userId)
+    .execute();
+  for (const grant of grants) {
+    const { user_id: _, ...values } = grant as any;
+    const existing = await trx
+      .selectFrom('access_grant')
+      .select('id')
+      .where('user_id', '=', userId)
+      .where('provider_code', '=', values.provider_code)
+      .where('scope_type', '=', grant.scope_type)
+      .where((eb: any) =>
+        grant.location_code
+          ? eb('location_code', '=', grant.location_code)
+          : eb('location_code', 'is', null)
+      )
+      .executeTakeFirst();
+    if (existing) {
+      await trx
+        .updateTable('access_grant')
+        .set({ ...values, status_changed_at: now })
+        .where('id', '=', existing.id)
+        .execute();
+    } else {
+      await trx.insertInto('access_grant').values(grant).execute();
+    }
+  }
 };
 
 type Change = {
@@ -544,7 +645,8 @@ const setStatus = async (
   change: Change,
   from: (grant: GrantRow, now: Date) => boolean,
   to: (trx: Kysely<any>, userId: string, now: Date) => Promise<NewStatus>,
-  action: string
+  action: string,
+  readdAsReader = false
 ): Promise<NewStatus | null> => {
   const { context, userId } = change;
   const now = new Date();
@@ -570,10 +672,9 @@ const setStatus = async (
         affected.map((g) => g.id)
       )
       .execute();
-    const readded =
-      next.status === GRANT_STATUS_SUSPENDED
-        ? []
-        : await convertToReader(trx, affected, change.actor.id, now);
+    const readded = readdAsReader
+      ? await convertToReader(trx, affected, change.actor.id, now)
+      : [];
     await trx
       .insertInto('access_audit')
       .values(
@@ -616,7 +717,28 @@ export const restoreManagedUser = (change: Change) =>
         .executeTakeFirst())
         ? { status: GRANT_STATUS_ACTIVE, expiresAt: null }
         : { status: GRANT_STATUS_INVITED, expiresAt: inviteExpiresAt(now) },
-    AUDIT_ACTION_ACCESS_RESTORED
+    AUDIT_ACTION_ACCESS_RESTORED,
+    true
+  );
+
+// Expired invites can be resent too; either way the 30 days start again
+export const resendManagedInvite = (change: Change) =>
+  setStatus(
+    change,
+    (grant) => grant.status === GRANT_STATUS_INVITED,
+    async (_trx, _userId, now) => ({
+      status: GRANT_STATUS_INVITED,
+      expiresAt: inviteExpiresAt(now),
+    }),
+    AUDIT_ACTION_INVITE_RESENT
+  );
+
+export const cancelManagedInvite = (change: Change) =>
+  setStatus(
+    change,
+    (grant) => grant.status === GRANT_STATUS_INVITED,
+    async () => ({ status: GRANT_STATUS_SUSPENDED }),
+    AUDIT_ACTION_INVITE_CANCELLED
   );
 
 export type ChangeableUser = {

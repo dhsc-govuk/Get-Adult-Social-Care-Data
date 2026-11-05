@@ -2,6 +2,7 @@ import { inviteUser } from '../../../app/(protected)/manage-users/invite/actions
 import { getCurrentUser } from '@/lib/permissions';
 import {
   emailHasAccount,
+  findReinvitableUser,
   getApproverContext,
   inviteReader,
 } from '@/lib/manageUsersServer';
@@ -13,6 +14,7 @@ vi.mock('next/navigation', () => ({ redirect: vi.fn() }));
 vi.mock('@/lib/permissions', () => ({ getCurrentUser: vi.fn() }));
 vi.mock('@/lib/manageUsersServer', () => ({
   emailHasAccount: vi.fn(),
+  findReinvitableUser: vi.fn(),
   getApproverContext: vi.fn(),
   inviteReader: vi.fn(),
 }));
@@ -49,6 +51,7 @@ beforeEach(() => {
   vi.mocked(getCurrentUser).mockResolvedValue(approver as any);
   vi.mocked(getApproverContext).mockResolvedValue(context as any);
   vi.mocked(emailHasAccount).mockResolvedValue(false);
+  vi.mocked(findReinvitableUser).mockResolvedValue(null);
   vi.mocked(inviteReader).mockResolvedValue({
     userId: 'new-user',
     expiresAt: EXPIRES_AT,
@@ -86,7 +89,7 @@ describe('inviteUser', () => {
 
     await inviteUser(fields);
 
-    expect(inviteReader).toHaveBeenCalledWith(approver, context, fields);
+    expect(inviteReader).toHaveBeenCalledWith(approver, context, fields, null);
     expect(redirect).toHaveBeenCalledWith(
       '/manage-users?done=added&user=new-user&email=sent'
     );
@@ -113,6 +116,21 @@ describe('inviteUser', () => {
 
     expect(redirect).toHaveBeenCalledWith(
       '/manage-users?done=added&user=new-user&email=failed'
+    );
+  });
+
+  it('invites someone again whose earlier invites were cancelled or ran out', async () => {
+    vi.mocked(findReinvitableUser).mockResolvedValue('old-user');
+    vi.mocked(emailHasAccount).mockResolvedValue(true);
+
+    const result = await inviteUser(fields);
+
+    expect(result?.errors.email).toBeUndefined();
+    expect(inviteReader).toHaveBeenCalledWith(
+      approver,
+      context,
+      fields,
+      'old-user'
     );
   });
 

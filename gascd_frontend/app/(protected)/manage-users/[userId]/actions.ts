@@ -6,6 +6,8 @@ import {
   getChangeableUser,
   removeManagedUser,
   restoreManagedUser,
+  resendManagedInvite,
+  cancelManagedInvite,
   updateManagedUser,
 } from '@/lib/manageUsersServer';
 import {
@@ -42,7 +44,11 @@ export async function updateUser(
   fields: EditFields
 ): Promise<EditResult> {
   const loaded = await load(userId);
-  if (!loaded || loaded.user.status === 'Removed') {
+  if (
+    !loaded ||
+    loaded.user.status === 'Removed' ||
+    loaded.user.status === 'Invite expired'
+  ) {
     return { errors: {}, error: NO_PERMISSION };
   }
   const input = {
@@ -128,6 +134,23 @@ export async function removeUser(userId: string) {
     (user) => user.canRemove && user.status !== 'Removed',
     removeManagedUser,
     'removed'
+  );
+}
+
+const isPendingInvite = (user: ManagedUser) =>
+  user.canRemove &&
+  (user.status === 'Invited' || user.status === 'Invite expired');
+
+export async function resendInvite(userId: string) {
+  return changeStatus(userId, isPendingInvite, resendManagedInvite, 'resent');
+}
+
+export async function cancelInvite(userId: string) {
+  return changeStatus(
+    userId,
+    isPendingInvite,
+    cancelManagedInvite,
+    'cancelled'
   );
 }
 

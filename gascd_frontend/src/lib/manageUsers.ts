@@ -17,6 +17,8 @@ export const AUDIT_ACTION_ACCESS_SUSPENDED = 'access_suspended';
 export const AUDIT_ACTION_ACCESS_RESTORED = 'access_restored';
 // Not yet in gascd-apps AccessAuditActions
 export const AUDIT_ACTION_NAME_CHANGED = 'name_changed';
+export const AUDIT_ACTION_INVITE_RESENT = 'invite_resent';
+export const AUDIT_ACTION_INVITE_CANCELLED = 'invite_cancelled';
 export const AUDIT_ACTOR_USER = 'user';
 
 // user.source for people added by an approver
@@ -68,9 +70,10 @@ export type GrantRow = {
   grantedAt: Date;
   expiresAt: Date | null;
   statusChangedAt: Date | null;
+  userHasSignedIn: boolean;
 };
 
-export type UserStatus = 'Active' | 'Invited' | 'Removed';
+export type UserStatus = 'Active' | 'Invited' | 'Invite expired' | 'Removed';
 
 export type ManagedUser = {
   userId: string;
@@ -82,6 +85,8 @@ export type ManagedUser = {
   grantedBy: string;
   grantedAt: Date;
   status: UserStatus;
+  // When a pending invite runs out, or ran out
+  inviteExpiresAt: Date | null;
   canChange: boolean;
   // False when CQC set some of their access, which only an edit can add to
   canRemove: boolean;
@@ -123,8 +128,22 @@ function statusFor(grants: GrantRow[], now: Date): UserStatus {
   if (grants.some((g) => g.status === GRANT_STATUS_INVITED && isLive(g, now))) {
     return 'Invited';
   }
+  if (grants.some((g) => isExpiredInvite(g, now))) {
+    return 'Invite expired';
+  }
   return 'Removed';
 }
+
+// A cancelled invite: removed before they ever signed in, so there is nothing to restore
+const isCancelledInvite = (grants: GrantRow[], now: Date) =>
+  statusFor(grants, now) === 'Removed' &&
+  !grants.some((g) => g.userHasSignedIn);
+
+const inviteExpiryFor = (grants: GrantRow[]) =>
+  grants
+    .filter((g) => g.status === GRANT_STATUS_INVITED && g.expiresAt)
+    .map((g) => g.expiresAt as Date)
+    .sort((a, b) => b.getTime() - a.getTime())[0] ?? null;
 
 const grantedByLabel = (grant: GrantRow, currentUserId: string) => {
   if (grant.grantedByUserId && grant.grantedByUserId === currentUserId) {
@@ -232,7 +251,9 @@ export function groupManagedUsers(
   rows: GrantRow[],
   context: ApproverContext,
   currentUserId: string,
-  now: Date = new Date()
+  now: Date = new Date(),
+  // The banner after cancelling still needs the user the list now hides
+  includeCancelled = false
 ): ManagedUser[] {
   const locationNames = new Map(
     context.locations.map((location) => [location.code, location.name])
@@ -246,13 +267,16 @@ export function groupManagedUsers(
 
   const users = Array.from(byUser.values())
     .filter((grants) => !removedOverAYearAgo(grants, now))
+    .filter((grants) => includeCancelled || !isCancelledInvite(grants, now))
     .map((grants) => {
       const earliest = grants.reduce((a, b) =>
         b.grantedAt < a.grantedAt ? b : a
       );
       // A removed user still lists what Restore would give back
       const live = grants.filter(
-        (g) => g.status !== GRANT_STATUS_SUSPENDED && isLive(g, now)
+        (g) =>
+          g.status !== GRANT_STATUS_SUSPENDED &&
+          (isLive(g, now) || isExpiredInvite(g, now))
       );
       const shown = live.length > 0 ? live : grants;
       const allLocations = shown.some(
@@ -276,6 +300,7 @@ export function groupManagedUsers(
         grantedBy: grantedByLabel(earliest, currentUserId),
         grantedAt: earliest.grantedAt,
         status: statusFor(grants, now),
+        inviteExpiresAt: inviteExpiryFor(grants),
         canChange: canChangeUser(grants, context, currentUserId),
         canRemove:
           canChangeUser(grants, context, currentUserId) &&

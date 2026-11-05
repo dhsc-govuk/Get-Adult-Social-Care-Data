@@ -56,6 +56,7 @@ const grant = (overrides: Partial<GrantRow>): GrantRow => ({
   grantedAt: new Date('2026-08-14T09:00:00Z'),
   expiresAt: null,
   statusChangedAt: null,
+  userHasSignedIn: true,
   ...overrides,
 });
 
@@ -237,6 +238,34 @@ describe('groupManagedUsers', () => {
       NOW
     );
     expect(user.status).toBe('Removed');
+  });
+
+  it('shows an invite that ran out as expired, with its expiry date', () => {
+    const expiresAt = new Date('2026-10-01T00:00:00Z');
+    const [user] = groupManagedUsers(
+      [grant({ status: 'invited', expiresAt, userHasSignedIn: false })],
+      niContext,
+      'x',
+      NOW
+    );
+    expect(user).toMatchObject({
+      status: 'Invite expired',
+      inviteExpiresAt: expiresAt,
+      locationNames: ['Ivy House'],
+    });
+  });
+
+  it('hides cancelled invites, but can still find them for the banner', () => {
+    const cancelled = grant({ status: 'suspended', userHasSignedIn: false });
+    expect(groupManagedUsers([cancelled], niContext, 'x', NOW)).toEqual([]);
+    expect(
+      groupManagedUsers([cancelled], niContext, 'x', NOW, true)
+    ).toHaveLength(1);
+
+    const removedAfterSigningIn = grant({ status: 'suspended' });
+    expect(
+      groupManagedUsers([removedAfterSigningIn], niContext, 'x', NOW)[0].status
+    ).toBe('Removed');
   });
 
   it('limits a Registered Manager to users and locations they manage', () => {

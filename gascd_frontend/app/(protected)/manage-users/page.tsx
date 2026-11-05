@@ -16,6 +16,14 @@ import UsersTable from './UsersTable';
 import UsersPagination from './UsersPagination';
 import { SIGN_IN_URL } from '@/lib/signInUrl';
 
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'Europe/London',
+  });
+
 const EMAIL_MESSAGES: Record<string, (user: ManagedUser) => string> = {
   sent: (user) =>
     `We've sent an email to ${user.email} telling them how to sign in.`,
@@ -52,6 +60,24 @@ const BANNERS: Record<
   }),
   removed: (user: ManagedUser) => ({
     heading: `${user.name}'s access has been removed`,
+  }),
+  resent: (user: ManagedUser, emailStatus?: string) => ({
+    heading: `${user.name}'s invite has been resent`,
+    body: (
+      <p className="govuk-body" data-testid="invite-email-status">
+        {emailStatus === 'sent'
+          ? `We've sent a new email to ${user.email}.${user.inviteExpiresAt ? ` The invite now expires on ${formatDate(user.inviteExpiresAt)}.` : ''}`
+          : EMAIL_MESSAGES.failed(user)}
+      </p>
+    ),
+  }),
+  cancelled: (user: ManagedUser) => ({
+    heading: `The invite to ${user.name} has been cancelled`,
+    body: (
+      <p className="govuk-body">
+        {user.email} will no longer be able to access the service.
+      </p>
+    ),
   }),
   restored: (user: ManagedUser, emailStatus?: string) => ({
     heading: `${user.name}'s access has been restored`,
@@ -104,9 +130,16 @@ export default async function ManageUsersPage({ searchParams }: Props) {
     currentPage * MANAGE_USERS_PAGE_SIZE
   );
 
-  const changedUser = changedUserId
-    ? users.find((u) => u.userId === changedUserId)
-    : undefined;
+  const changedUser = !changedUserId
+    ? undefined
+    : (users.find((u) => u.userId === changedUserId) ??
+      groupManagedUsers(
+        await listProviderGrants(context.providerCode, changedUserId),
+        context,
+        user.id,
+        new Date(),
+        true
+      )[0]);
   const banner =
     changedUser && done && Object.hasOwn(BANNERS, done)
       ? BANNERS[done](changedUser, emailStatus)

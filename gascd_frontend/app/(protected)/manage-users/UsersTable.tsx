@@ -4,6 +4,7 @@ import { ManagedUser, UserStatus } from '@/lib/manageUsers';
 const STATUS_TAG_CLASSES: Record<UserStatus, string> = {
   Active: 'govuk-tag--green',
   Invited: 'govuk-tag--light-blue',
+  'Invite expired': 'govuk-tag--grey',
   Removed: 'govuk-tag--red',
 };
 
@@ -77,6 +78,11 @@ export default function UsersTable({ users }: { users: ManagedUser[] }) {
               >
                 {user.status}
               </strong>
+              {user.inviteExpiresAt && user.status === 'Invited' && (
+                <span className="govuk-body-s govuk-!-display-block">
+                  Expires {formatDate(user.inviteExpiresAt)}
+                </span>
+              )}
             </td>
             <td className="govuk-table__cell govuk-table__cell--numeric">
               {user.canChange ? (
@@ -106,10 +112,20 @@ function UserActions({ user }: { user: ManagedUser }) {
   if (user.status === 'Removed') {
     return actionLink(`${base}/restore`, 'Restore access', `for ${user.name}`);
   }
+  const pending = user.status === 'Invited' || user.status === 'Invite expired';
   return (
     <>
-      {actionLink(`${base}/edit`, 'Edit', user.name)}
-      {user.canRemove && actionLink(`${base}/remove`, 'Remove', user.name)}
+      {user.status !== 'Invite expired' &&
+        actionLink(`${base}/edit`, 'Edit', user.name)}
+      {pending &&
+        user.canRemove &&
+        actionLink(`${base}/resend`, 'Resend invite', `to ${user.name}`)}
+      {pending &&
+        user.canRemove &&
+        actionLink(`${base}/cancel`, 'Cancel invite', `to ${user.name}`)}
+      {!pending &&
+        user.canRemove &&
+        actionLink(`${base}/remove`, 'Remove', user.name)}
     </>
   );
 }
