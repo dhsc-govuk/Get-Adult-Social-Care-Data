@@ -16,7 +16,13 @@ export default async function EditUserPage({ params }: Props) {
 
   const { userId } = await params;
   const changeable = await getChangeableUser(actor, userId);
-  if (!changeable || changeable.user.status === 'Removed') notFound();
+  if (
+    !changeable ||
+    changeable.user.status === 'Removed' ||
+    changeable.user.status === 'Invite expired'
+  ) {
+    notFound();
+  }
   const { context, grants, user } = changeable;
 
   return (
