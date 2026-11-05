@@ -77,6 +77,28 @@ describe('HomePage', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('should render the Quality of care section after Future planning', async () => {
+    mockGetSession.mockResolvedValue(mockSession);
+    const ResolvedPage = await HomePage({});
+    render(ResolvedPage);
+
+    const sectionHeadings = screen
+      .getAllByRole('heading', { level: 2 })
+      .map((heading) => heading.textContent);
+    const futurePlanningIndex = sectionHeadings.indexOf('Future planning');
+    expect(futurePlanningIndex).toBeGreaterThan(-1);
+    expect(sectionHeadings[futurePlanningIndex + 1]).toBe('Quality of care');
+
+    expect(
+      screen.getByRole('link', { name: /^Quality of care$/i })
+    ).toHaveAttribute('href', '/topics/quality-of-care/subtopics');
+    expect(
+      screen.getByRole('link', {
+        name: /CQC ratings of adult social care locations/i,
+      })
+    ).toHaveAttribute('href', '/topics/quality-of-care/cqc-ratings/data');
+  });
+
   it('should link to market position statements under Funding', async () => {
     mockGetSession.mockResolvedValue(mockSession);
     const ResolvedPage = await HomePage({});
