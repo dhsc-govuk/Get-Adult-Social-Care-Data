@@ -478,6 +478,8 @@ public class GetMetricEndpointTests(App app) : TestBase<App>
             yield return [edpsr_lt_learning_disability_support_all_ages_per100k_adults, 8.4m];
             yield return [elss_supported_accommodation_all_ages_per100k_adults, 8.5m];
             yield return [nccc_num_clients_comm_care_per100k_adults, 8.6m];
+            yield return [cqcr_pct_inspected_good_adult_social_care, 8.7m];
+            yield return [cqci_pct_uninspected_adult_social_care, 8.8m];
         }
     }
 }

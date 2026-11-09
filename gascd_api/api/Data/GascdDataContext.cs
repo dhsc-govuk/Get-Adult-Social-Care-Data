@@ -72,6 +72,10 @@ public partial class GascdDataContext : DbContext
     public virtual DbSet<ExpenditureLongtermSupportSettingPer100kAdults> ExpenditureLongtermSupportSettingPer100kAdultsSet { get; set; } = null!;
     public virtual DbSet<NumClientsCommCarePer100kAdults> NumClientsCommCarePer100kAdultsSet { get; set; } = null!;
 
+    // CQC ratings and inspection status of adult social care locations
+    public virtual DbSet<CqcRatings> CqcRatingsSet { get; set; } = null!;
+    public virtual DbSet<CqcInspectionStatus> CqcInspectionStatusSet { get; set; } = null!;
+
     public IQueryable<MetricTimeSeries> GetMetricTimeSeriesQueryable(MetricCodeEnum metricCode)
     {
         Type t = metricCode.MetricGroupType();
