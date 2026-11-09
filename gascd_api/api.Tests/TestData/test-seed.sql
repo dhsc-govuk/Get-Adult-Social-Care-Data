@@ -1085,8 +1085,8 @@ BEGIN
            (expenditure_duration_psr_per100k_adults_metric_id, 'edpsr_lt_learning_disability_support_all_ages_per100k_adults', expenditure_duration_psr_per100k_adults_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (expenditure_longterm_support_setting_per100k_adults_metric_id, 'elss_supported_accommodation_all_ages_per100k_adults', expenditure_longterm_support_setting_per100k_adults_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (num_clients_comm_care_per100k_adults_metric_id, 'nccc_num_clients_comm_care_per100k_adults', num_clients_comm_care_per100k_adults_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
-           (cqc_ratings_metric_id, 'cqcr_pct_inspected_good_adult_social_care', cqc_ratings_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'CQC', 'numbers', 'Monthly', CURRENT_TIMESTAMP),
-           (cqc_inspection_status_metric_id, 'cqci_pct_uninspected_adult_social_care', cqc_inspection_status_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'CQC', 'numbers', 'Monthly', CURRENT_TIMESTAMP);
+           (cqc_ratings_metric_id, 'cqcr_pct_inspected_good_adult_social_care', cqc_ratings_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'CQC', 'numbers', 'Daily', CURRENT_TIMESTAMP),
+           (cqc_inspection_status_metric_id, 'cqci_pct_uninspected_adult_social_care', cqc_inspection_status_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'CQC', 'numbers', 'Daily', CURRENT_TIMESTAMP);
 
     INSERT INTO bedcount (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, bedcount_total_metric_id, '1-123456789', 'National', '2000-01-01 00:00:00', '2025-01-01 00:00:00', ARRAY [1.1,2.2,3.3,4.4,5.5], 5.5, CURRENT_TIMESTAMP),
