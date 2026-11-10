@@ -22,6 +22,7 @@ import {
   PERC_SEN_SUPPORT_14PLUS,
   PERC_SEN_SUPPORT_BY_AGE,
 } from '@/data/dfeMetrics';
+import { CQC_RATING_METRIC_IDS } from '@/data/cqcMetrics';
 
 export type SharingCategoryId =
   | 'published'
@@ -302,6 +303,15 @@ export const METRIC_SHARING_CATEGORIES: Record<string, SharingCategoryId> = {
       ...CHILDREN_IN_NEED_METRIC_IDS,
     ].map((metricId) => [metricId, 'published' as SharingCategoryId])
   ),
+
+  // CQC ratings of adult social care locations. The CQC publishes its
+  // ratings, so the counts and percentages are in the public domain.
+  ...Object.fromEntries(
+    CQC_RATING_METRIC_IDS.map((metricId) => [
+      metricId,
+      'published' as SharingCategoryId,
+    ])
+  ),
 };
 
 /**
@@ -386,6 +396,7 @@ export const HELP_PAGE_SHARING = {
   'children-in-need-episodes-ending-due-to-transfer-to-adult-social-care':
     'publicDomain',
   'children-in-need-per-10000-children': 'publicDomain',
+  'cqc-ratings-of-adult-social-care-locations': 'publicDomain',
   'dementia-prevalence': 'publicDomain',
   'disability-prevalence': 'publicDomain',
   'estimated-dementia-diagnosis-rate-aged-65-and-over': 'publicDomain',

@@ -40,6 +40,35 @@ describe('DataTabs', () => {
     expect(downloadElement).toHaveAttribute('href', '#download-1');
   });
 
+  it('shows the tabs in the order given, selecting the first', () => {
+    render(
+      <DataTabs
+        id="2"
+        order={['table', 'chart', 'download']}
+        chart={<p>Test chart</p>}
+        table={<p>Test table</p>}
+        download={<p>Test download</p>}
+      />
+    );
+
+    const tabs = screen
+      .getAllByRole('link', { name: /^(Table|Chart|Download)$/ })
+      .map((tab) => tab.textContent);
+    expect(tabs).toEqual(['Table', 'Chart', 'Download']);
+    expect(screen.getByText('Table').closest('li')).toHaveClass(
+      'govuk-tabs__list-item--selected'
+    );
+    expect(screen.getByText('Chart').closest('li')).not.toHaveClass(
+      'govuk-tabs__list-item--selected'
+    );
+    expect(
+      screen.getByText('Test table').closest('.govuk-tabs__panel')
+    ).not.toHaveClass('govuk-tabs__panel--hidden');
+    expect(
+      screen.getByText('Test chart').closest('.govuk-tabs__panel')
+    ).toHaveClass('govuk-tabs__panel--hidden');
+  });
+
   it('does not render tabs it is not given', () => {
     render(<DataTabs id="1" map={<p>Test map</p>} chart={<p>Test chart</p>} />);
 

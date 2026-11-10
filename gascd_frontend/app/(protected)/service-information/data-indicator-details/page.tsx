@@ -292,6 +292,18 @@ export default function DataIndicatorDetailsPage() {
               url="/help/pupils-with-sen-support-aged-14-and-over"
             />
           </ul>
+          <h2 className="govuk-heading-m govuk-!-margin-top-9">
+            Quality of care data indicators
+          </h2>
+          <ul className="gem-c-cards__list gem-c-cards__list--one-column">
+            <DataLinkCard
+              label="CQC ratings of adult social care locations"
+              sources="Care Quality Commission"
+              updateFrequency="Monthly updates"
+              limitations={true}
+              url="/help/cqc-ratings-of-adult-social-care-locations"
+            />
+          </ul>
         </div>
       </div>
     </Layout>

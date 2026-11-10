@@ -5,6 +5,14 @@ import SharingSourceNote from '@/components/data-components/SharingSourceNote';
 import { SharingCategoryProvider } from '@/components/data-components/SharingCategoryContext';
 import { resolveSharingCategory } from '@/data/sharingCategories';
 
+export type DataTabName =
+  | 'map'
+  | 'chart'
+  | 'graph'
+  | 'table'
+  | 'textSummary'
+  | 'download';
+
 type Props = {
   id: string;
   chart?: React.ReactNode;
@@ -14,11 +22,45 @@ type Props = {
   map?: React.ReactNode;
   download?: React.ReactNode;
   /**
+   * The tabs in the order shown. Defaults to map, chart, graph, table, text
+   * summary, download; a section whose figures are read from the table first
+   * can put it before the chart. The first tab present is selected.
+   */
+  order?: DataTabName[];
+  /**
    * Every metric the tabs can show, including any only reachable through a
    * filter. The sharing label is resolved from these once, so it stays the same
    * across tabs and as filters are applied and cleared.
    */
   sharingMetricIds?: string[];
+};
+
+const DEFAULT_ORDER: DataTabName[] = [
+  'map',
+  'chart',
+  'graph',
+  'table',
+  'textSummary',
+  'download',
+];
+
+const TAB_LABELS: Record<DataTabName, string> = {
+  map: 'Map',
+  chart: 'Chart',
+  graph: 'Graph',
+  table: 'Table',
+  textSummary: 'Text Summary',
+  download: 'Download',
+};
+
+// The names the tab changes are tracked under
+const TAB_ANALYTICS_NAMES: Record<DataTabName, string> = {
+  map: 'map',
+  chart: 'chart',
+  graph: 'graph',
+  table: 'table',
+  textSummary: 'text-summary',
+  download: 'download',
 };
 
 const tabClicked = (tabname: string) => {
@@ -33,6 +75,7 @@ const DataTabs: React.FC<Props> = ({
   map,
   download,
   textSummary,
+  order = DEFAULT_ORDER,
   sharingMetricIds,
 }) => {
   useEffect(() => {
@@ -47,12 +90,22 @@ const DataTabs: React.FC<Props> = ({
 
   const sharingCategory = resolveSharingCategory(sharingMetricIds);
 
+  const contents: Record<DataTabName, React.ReactNode> = {
+    map,
+    chart,
+    graph,
+    table,
+    textSummary,
+    download,
+  };
+  const tabs = order.filter((name) => contents[name]);
+
   // Wraps the contents of every tab panel so the label, and the additional
   // source note where one applies, appear on all of them
-  const panelContent = (contents: React.ReactNode) => (
+  const panelContent = (panel: React.ReactNode) => (
     <>
       <SharingLabel category={sharingCategory} />
-      {contents}
+      {panel}
       <SharingSourceNote category={sharingCategory} />
     </>
   );
@@ -61,151 +114,33 @@ const DataTabs: React.FC<Props> = ({
     <SharingCategoryProvider value={sharingCategory}>
       <h3 className="govuk-tabs__title">Contents</h3>
       <ul className="govuk-tabs__list">
-        {map && (
+        {tabs.map((name, index) => (
           <li
-            className={`govuk-tabs__list-item${map ? ' govuk-tabs__list-item--selected' : ''}`}
+            key={name}
+            className={`govuk-tabs__list-item${index === 0 ? ' govuk-tabs__list-item--selected' : ''}`}
           >
             <a
               className="govuk-tabs__tab"
-              href={`#map-${id}`}
+              href={`#${name}-${id}`}
               onClick={() => {
-                tabClicked('map');
+                tabClicked(TAB_ANALYTICS_NAMES[name]);
               }}
             >
-              Map
+              {TAB_LABELS[name]}
             </a>
           </li>
-        )}
-        {chart && (
-          <li
-            className={`govuk-tabs__list-item${!map && chart ? ' govuk-tabs__list-item--selected' : ''}`}
-          >
-            <a
-              className="govuk-tabs__tab"
-              href={`#chart-${id}`}
-              onClick={() => {
-                tabClicked('chart');
-              }}
-            >
-              Chart
-            </a>
-          </li>
-        )}
-        {graph && (
-          <li
-            className={`govuk-tabs__list-item${!map && !chart && graph ? ' govuk-tabs__list-item--selected' : ''}`}
-          >
-            <a
-              className="govuk-tabs__tab"
-              href={`#graph-${id}`}
-              onClick={() => {
-                tabClicked('graph');
-              }}
-            >
-              Graph
-            </a>
-          </li>
-        )}
-        {table && (
-          <li
-            className={`govuk-tabs__list-item${!map && !chart && !graph && table ? ' govuk-tabs__list-item--selected' : ''}`}
-          >
-            <a
-              className="govuk-tabs__tab"
-              href={`#table-${id}`}
-              onClick={() => {
-                tabClicked('table');
-              }}
-            >
-              Table
-            </a>
-          </li>
-        )}
-        {textSummary && (
-          <li
-            className={`govuk-tabs__list-item${!map && !chart && !table && textSummary ? ' govuk-tabs__list-item--selected' : ''}`}
-          >
-            <a
-              className="govuk-tabs__tab"
-              href={`#textSummary-${id}`}
-              onClick={() => {
-                tabClicked('text-summary');
-              }}
-            >
-              Text Summary
-            </a>
-          </li>
-        )}
-        {download && (
-          <li
-            className={`govuk-tabs__list-item${!map && !chart && !table && !textSummary && download ? ' govuk-tabs__list-item--selected' : ''}`}
-          >
-            <a
-              className="govuk-tabs__tab"
-              href={`#download-${id}`}
-              onClick={() => {
-                tabClicked('download');
-              }}
-            >
-              Download
-            </a>
-          </li>
-        )}
+        ))}
       </ul>
-      {map && (
+      {tabs.map((name, index) => (
         <div
-          className="govuk-tabs__panel"
-          id={`map-${id}`}
+          key={name}
+          className={`govuk-tabs__panel${index === 0 ? '' : ' govuk-tabs__panel--hidden'}`}
+          id={`${name}-${id}`}
           style={{ backgroundColor: 'white' }}
         >
-          {panelContent(map)}
+          {panelContent(contents[name])}
         </div>
-      )}
-      {chart && (
-        <div
-          className="govuk-tabs__panel"
-          id={`chart-${id}`}
-          style={{ backgroundColor: 'white' }}
-        >
-          {panelContent(chart)}
-        </div>
-      )}
-      {graph && (
-        <div
-          className="govuk-tabs__panel"
-          id={`graph-${id}`}
-          style={{ backgroundColor: 'white' }}
-        >
-          {panelContent(graph)}
-        </div>
-      )}{' '}
-      {table && (
-        <div
-          className="govuk-tabs__panel govuk-tabs__panel--hidden"
-          id={`table-${id}`}
-          style={{ backgroundColor: 'white' }}
-        >
-          {panelContent(table)}
-        </div>
-      )}
-      {textSummary && (
-        <div
-          className="govuk-tabs__panel govuk-tabs__panel--hidden"
-          id={`textSummary-${id}`}
-          style={{ backgroundColor: 'white' }}
-        >
-          {panelContent(textSummary)}
-        </div>
-      )}
-      {download && (
-        <div
-          className="govuk-tabs__panel govuk-tabs__panel--hidden"
-          id={`download-${id}`}
-          style={{ backgroundColor: 'white' }}
-        >
-          {panelContent(download)}
-        </div>
-      )}
+      ))}
     </SharingCategoryProvider>
   );
 };

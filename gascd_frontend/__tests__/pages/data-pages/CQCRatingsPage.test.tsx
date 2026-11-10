@@ -6,6 +6,8 @@ import { mockSession } from '@/test-utils/test-utils';
 // Mock out things we are not testing at the moment to prevent them making api requests
 vi.mock('@/components/common/buttons/logoutButton');
 vi.mock('@/services/logger/logService');
+vi.mock('@/services/indicator/IndicatorFetchService');
+vi.mock('react-plotly.js', () => ({ default: () => <div /> }));
 
 vi.mock('@/lib/auth-client', () => ({
   authClient: {
@@ -37,6 +39,8 @@ describe('CQCRatingsPage', () => {
 
     const subHeadings = [
       'Data overview',
+      'Data indicator details',
+      'Related data',
       'Information on the local care market',
     ];
     for (const subHeadingText of subHeadings) {
@@ -44,6 +48,57 @@ describe('CQCRatingsPage', () => {
         screen.getByRole('heading', { name: subHeadingText, level: 2 })
       ).toBeInTheDocument();
     }
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'CQC ratings of inspected adult social care locations',
+        level: 3,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('table', {
+        name: /Table 1: number and percentage of adult social care locations by CQC rating/i,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', {
+        name: /how the percentage of inspected adult social care locations by CQC rating is calculated/i,
+      })
+    ).toHaveAttribute(
+      'href',
+      '/help/cqc-ratings-of-adult-social-care-locations'
+    );
+  });
+
+  it('names the CQC as the source of the table and chart', () => {
+    render(<CQCRatingsPage />);
+    expect(
+      screen.getAllByText('Source: Care Quality Commission (CQC)')
+    ).toHaveLength(2);
+  });
+
+  it('shows the table first, then the chart, then the download', () => {
+    render(<CQCRatingsPage />);
+
+    const tabs = screen
+      .getAllByRole('link', { name: /^(Table|Chart|Download)$/ })
+      .map((tab) => tab.textContent);
+    expect(tabs).toEqual(['Table', 'Chart', 'Download']);
+  });
+
+  it('lists every CQC rating as a table row, with the total last', () => {
+    render(<CQCRatingsPage />);
+
+    expect(
+      screen.getAllByRole('rowheader').map((row) => row.textContent)
+    ).toEqual([
+      'Outstanding',
+      'Good',
+      'Requires improvement',
+      'Inadequate',
+      'Insufficient evidence to rate',
+      'All locations',
+    ]);
   });
 
   it('should link back to the Quality of care topic', () => {
