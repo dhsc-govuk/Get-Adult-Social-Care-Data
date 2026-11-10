@@ -297,7 +297,7 @@ export default function DataIndicatorDetailsPage() {
           </h2>
           <ul className="gem-c-cards__list gem-c-cards__list--one-column">
             <DataLinkCard
-              label="CQC ratings of adult social care locations"
+              label="Number and percentage of inspected adult social care locations by CQC rating"
               sources="Care Quality Commission"
               updateFrequency="Monthly updates"
               limitations={true}

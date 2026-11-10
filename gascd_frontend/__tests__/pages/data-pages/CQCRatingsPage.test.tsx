@@ -62,7 +62,7 @@ describe('CQCRatingsPage', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole('link', {
-        name: /how the percentage of inspected adult social care locations by CQC rating is calculated/i,
+        name: /how the number and percentage of inspected adult social care locations by CQC rating are calculated/i,
       })
     ).toHaveAttribute(
       'href',

@@ -6,13 +6,13 @@ const CQCRatingsOfAdultSocialCareLocations: React.FC = () => {
   return (
     <>
       <Layout
-        title="CQC ratings of adult social care locations"
+        title="Number and percentage of inspected adult social care locations by CQC rating"
         showLoginInformation={false}
         backURL="/topics/quality-of-care/cqc-ratings/data"
         currentPage={'cqc ratings of adult social care locations'}
       >
         <DataIndicatorDetails
-          title="CQC ratings of adult social care locations"
+          title="Number and percentage of inspected adult social care locations by CQC rating"
           whatThisMeasures={
             <p className="govuk-!-margin-top-0">
               The number of active adult social care locations registered with
@@ -62,12 +62,6 @@ const CQCRatingsOfAdultSocialCareLocations: React.FC = () => {
                   region. This may not reflect the actual location where adult
                   social care is delivered, as not all providers operate in the
                   same area as their registered office.
-                </li>
-                <li>
-                  Currency of registration data: Information held by CQC may not
-                  reflect the current services provided by a care provider, as
-                  it is collected at registration and may not be regularly
-                  updated.
                 </li>
                 <li>
                   Aggregated quality ratings reflect a mix of legacy CQC

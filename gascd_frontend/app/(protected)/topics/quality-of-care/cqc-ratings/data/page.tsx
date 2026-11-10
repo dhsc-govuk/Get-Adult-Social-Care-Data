@@ -257,8 +257,8 @@ export default function CQCRatingsPage() {
               href={withBasePath(METRICS[NUM_CQC_INSPECTED_LOCATIONS].helpUrl)}
               className="govuk-link"
             >
-              how the percentage of inspected adult social care locations by CQC
-              rating is calculated
+              how the number and percentage of inspected adult social care
+              locations by CQC rating are calculated
             </a>
             .
           </p>
@@ -293,7 +293,7 @@ export default function CQCRatingsPage() {
       />
       <DataIndicatorDetailsList>
         <DataLinkCard
-          label="CQC ratings of adult social care locations"
+          label="Number and percentage of inspected adult social care locations by CQC rating"
           sources="Care Quality Commission"
           updateFrequency="Monthly updates"
           limitations={true}
