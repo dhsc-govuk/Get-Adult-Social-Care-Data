@@ -7,7 +7,6 @@ import CategoryBreakdownTable from '@/components/tables/CategoryBreakdownTable';
 import StackedBarChart from '@/components/charts/StackedBarChart';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { ComparatorControls } from '@/components/charts/peer-group/useComparatorControls';
-import { NHS_PEER_GROUP_COMPARATOR_LABEL } from '@/components/charts/peer-group/constants';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { METRICS, MetricId } from '@/config/metrics';
 import {
@@ -37,7 +36,7 @@ type Props = {
   laName: string;
   figureNumber: number;
   // What the figure shows, e.g. "number and percentage of adult social care
-  // locations by CQC rating"; also the "This chart compares ..." sentence
+  // locations by CQC rating"
   figureTitle: string;
   // Follows the figure title, naming the locations and period as the table
   // caption does
@@ -118,12 +117,7 @@ const CategoryBreakdownSection: React.FC<Props> = ({
         chart={
           <>
             {comparator.renderComparatorControl(`comparator-chart-${id}`)}
-            <p className="govuk-body govuk-!-margin-top-4">
-              This chart compares {laName} with{' '}
-              {comparator.comparatorLabel ?? NHS_PEER_GROUP_COMPARATOR_LABEL}{' '}
-              and England for the {figureTitle}.
-            </p>
-            <p className="govuk-body govuk-!-font-weight-bold">
+            <p className="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-4">
               Figure {figureNumber}: {figureTitle} &ndash; {comparisonSummary}
             </p>
             <p className="govuk-body">

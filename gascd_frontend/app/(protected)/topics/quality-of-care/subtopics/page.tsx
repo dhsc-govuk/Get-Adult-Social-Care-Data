@@ -37,9 +37,8 @@ export default function QualityOfCarePage() {
         <div className="govuk-grid-column-two-thirds">
           <h1 className="govuk-heading-xl">Quality of care</h1>
           <p className="govuk-body-l">
-            Find data on the quality of adult social care, including{' '}
-            <abbr title="Care Quality Commission">CQC</abbr> ratings of
-            locations.
+            Find data on the quality of adult social care, including CQC ratings
+            of locations.
           </p>
           <ul className="gem-c-cards__list gem-c-cards__list--one-column">
             {subtopics.map((topic: Subtopic, index) => (

@@ -124,11 +124,6 @@ describe('CategoryBreakdownSection', () => {
       )
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        /This chart compares Mid Suffolk with its NHS Peer Group and England/
-      )
-    ).toBeInTheDocument();
-    expect(
       screen.getByRole('link', {
         name: 'Export CQC ratings of adult social care locations table data (CSV)',
       })

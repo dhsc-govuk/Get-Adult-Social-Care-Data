@@ -10,7 +10,7 @@ export const REGION_GROUP_ID = 'region';
 
 export const NHS_PEER_GROUP_LABEL = 'Statistically similar peer group (NHS)';
 export const NHS_PEER_GROUP_AVERAGE_LABEL = 'NHS peer group (average)';
-export const NHS_PEER_GROUP_TOTAL_LABEL = 'NHS peer group (total)';
+export const NHS_PEER_GROUP_TOTAL_LABEL = 'NHS peer group';
 export const NHS_PEER_GROUP_COMPARATOR_LABEL = 'its NHS Peer Group';
 
 export const COMPARISON_GROUPS: ComparisonGroup[] = [

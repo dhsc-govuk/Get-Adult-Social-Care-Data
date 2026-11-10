@@ -65,9 +65,8 @@ const ServiceName: React.FC<Props> = ({ session, showManageUsers = false }) => {
         name: 'Quality of care',
         description: (
           <>
-            Find data on the quality of adult social care, including{' '}
-            <abbr title="Care Quality Commission">CQC</abbr> ratings of
-            locations.
+            Find data on the quality of adult social care, including CQC ratings
+            of locations.
           </>
         ),
         url: '/topics/quality-of-care/subtopics',
