@@ -2619,6 +2619,9 @@ namespace api.Migrations
 
                     b.HasIndex("LocalAuthorityFk");
 
+                    b.HasIndex("LocationCode")
+                        .IsUnique();
+
                     b.ToTable("cqc_location_ratings");
                 });
 

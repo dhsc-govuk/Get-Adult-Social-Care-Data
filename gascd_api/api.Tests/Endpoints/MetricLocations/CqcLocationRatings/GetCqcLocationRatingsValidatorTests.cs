@@ -1,5 +1,6 @@
 using api.Endpoints.MetricLocation.CqcLocationRatings;
 using FluentValidation.TestHelper;
+using Shouldly;
 
 namespace api.Tests.Endpoints.MetricLocations.CqcLocationRatings;
 
@@ -18,6 +19,16 @@ public class GetCqcLocationRatingsValidatorTests
 
         var result = _validator.TestValidate(request);
         result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public void ServiceTypes_AreTheNineCqcMetricServiceTypes()
+    {
+        GetCqcLocationRatingsValidator.ServiceTypes.ShouldBe(
+        [
+            "adult_social_care", "care_home", "care_home_nursing", "care_home_residential", "community_care",
+            "domiciliary_care", "supported_living", "extra_care_housing", "other_community_care",
+        ], ignoreOrder: true);
     }
 
     [Theory]

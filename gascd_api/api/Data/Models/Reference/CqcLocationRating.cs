@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,7 +8,7 @@ namespace api.Data.Models.Reference;
 /// The latest overall CQC rating of an active adult social care location, one row per location.
 /// Loaded by the data platform from the CQC HSCA Active Locations file, replaced in full each month.
 /// </summary>
-[Table("cqc_location_ratings")]
+[Table("cqc_location_ratings"), Index(nameof(LocationCode), IsUnique = true)]
 public class CqcLocationRating : EntityBase
 {
     [Column("location_code"), StringLength(15)]

@@ -1,3 +1,4 @@
+using api.Data.Shared;
 using FastEndpoints;
 using FluentValidation;
 
@@ -5,19 +6,13 @@ namespace api.Endpoints.MetricLocation.CqcLocationRatings;
 
 public class GetCqcLocationRatingsValidator : Validator<GetCqcLocationRatingsRequest>
 {
-    // The service type suffixes of the cqc_ratings / cqc_inspection_status metric codes.
-    public static readonly string[] ServiceTypes =
-    [
-        "adult_social_care",
-        "care_home",
-        "care_home_nursing",
-        "care_home_residential",
-        "community_care",
-        "domiciliary_care",
-        "supported_living",
-        "extra_care_housing",
-        "other_community_care",
-    ];
+    private const string ServiceTypeCodePrefix = "cqci_num_total_";
+
+    // The service types are the suffixes of the CQC metric codes, so the list filters the same way as the charts.
+    public static readonly string[] ServiceTypes = Enum.GetNames<MetricCodeEnum>()
+        .Where(name => name.StartsWith(ServiceTypeCodePrefix))
+        .Select(name => name[ServiceTypeCodePrefix.Length..])
+        .ToArray();
 
     public GetCqcLocationRatingsValidator()
     {

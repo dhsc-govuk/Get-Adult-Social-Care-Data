@@ -46,10 +46,11 @@ public class GetCqcLocationRatingsEndpointTests(App app) : TestBase<App>
 
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Locations.Select(x => x.Code).ShouldBe(expectedCodes);
+        response.DataMonth.ShouldBe(new DateOnly(2026, 11, 1));
     }
 
     [Fact]
-    public async Task GetCqcLocationRatings_ForLAWithNoLocations_ReturnsEmptyList()
+    public async Task GetCqcLocationRatings_ForLAWithNoLocations_ReturnsEmptyListWithDataMonth()
     {
         var (httpCode, response) =
             await app.Client.GETAsync<GetCqcLocationRatingsEndpoint, GetCqcLocationRatingsRequest, GetCqcLocationRatingsResponse>(
@@ -57,7 +58,7 @@ public class GetCqcLocationRatingsEndpointTests(App app) : TestBase<App>
 
         httpCode.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.Locations.ShouldBeEmpty();
-        response.DataMonth.ShouldBeNull();
+        response.DataMonth.ShouldBe(new DateOnly(2026, 11, 1));
     }
 
     [Fact]

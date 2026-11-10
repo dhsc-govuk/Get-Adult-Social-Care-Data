@@ -39,26 +39,31 @@ public class GetCqcLocationRatingsEndpoint(GascdDataContext context, ILogger<Get
             query = query.Where(x => x.ServiceTypes.Contains(req.ServiceType));
         }
 
-        var rows = await query
+        var locations = await query
             .OrderBy(x => x.LocationName)
             .ThenBy(x => x.LocationCode)
+            .Select(x => new GetCqcLocationRatingsResponse.CqcLocation
+            {
+                Code = x.LocationCode,
+                Name = x.LocationName,
+                ProviderCode = x.ProviderCode,
+                ProviderName = x.ProviderName,
+                ServiceTypes = x.ServiceTypes,
+                OverallRating = x.OverallRating,
+                RatingPublished = x.RatingPublished,
+            })
             .ToListAsync(ct);
+
+        // The table is replaced in full each month, so its month applies to every LA, including one with no
+        // locations of the requested type. No month means the table has not been loaded.
+        var dataMonth = await context.CqcLocationRatings
+            .AsNoTracking()
+            .MaxAsync(x => (DateOnly?)x.DataMonth, ct);
 
         var response = new GetCqcLocationRatingsResponse
         {
-            DataMonth = rows.Count > 0 ? rows.Max(x => x.DataMonth) : null,
-            Locations = rows
-                .Select(x => new GetCqcLocationRatingsResponse.CqcLocation
-                {
-                    Code = x.LocationCode,
-                    Name = x.LocationName,
-                    ProviderCode = x.ProviderCode,
-                    ProviderName = x.ProviderName,
-                    ServiceTypes = x.ServiceTypes,
-                    OverallRating = x.OverallRating,
-                    RatingPublished = x.RatingPublished,
-                })
-                .ToList(),
+            DataMonth = dataMonth,
+            Locations = locations,
         };
 
         logger.LogInformation("Finished processing CQC location ratings for LA code: {code}", req.LocalAuthorityCode);

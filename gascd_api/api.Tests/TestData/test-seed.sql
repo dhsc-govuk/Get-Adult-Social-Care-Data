@@ -822,6 +822,8 @@ CREATE INDEX "IX_local_authority_peers_peer_local_authority_fk" ON local_authori
 
 CREATE INDEX "IX_cqc_location_ratings_local_authority_fk" ON cqc_location_ratings (local_authority_fk);
 
+CREATE UNIQUE INDEX "IX_cqc_location_ratings_location_code" ON cqc_location_ratings (location_code);
+
 
 -- insert test data
 
