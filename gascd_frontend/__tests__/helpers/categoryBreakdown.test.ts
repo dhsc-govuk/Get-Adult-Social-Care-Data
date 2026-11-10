@@ -9,11 +9,11 @@ import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group
 import { PeerGroupData } from '@/components/charts/peer-group/types';
 import { Indicator } from '@/data/interfaces/Indicator';
 
-const GOOD = 'num_cqc_rating_good';
-const PERC_GOOD = 'perc_cqc_rating_good';
-const INADEQUATE = 'num_cqc_rating_inadequate';
-const PERC_INADEQUATE = 'perc_cqc_rating_inadequate';
-const TOTAL = 'num_cqc_rated_locations';
+const GOOD = 'cqcr_num_good_adult_social_care';
+const PERC_GOOD = 'cqcr_pct_inspected_good_adult_social_care';
+const INADEQUATE = 'cqcr_num_inadequate_adult_social_care';
+const PERC_INADEQUATE = 'cqcr_pct_inspected_inadequate_adult_social_care';
+const TOTAL = 'cqci_num_inspected_adult_social_care';
 
 const categories: BreakdownCategory[] = [
   {

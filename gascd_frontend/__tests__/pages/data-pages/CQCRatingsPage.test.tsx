@@ -97,7 +97,7 @@ describe('CQCRatingsPage', () => {
       'Requires improvement',
       'Inadequate',
       'Insufficient evidence to rate',
-      'All locations',
+      'All inspected locations',
     ]);
   });
 

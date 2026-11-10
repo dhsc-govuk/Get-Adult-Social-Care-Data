@@ -229,7 +229,7 @@ const bedTypeMetrics = Object.fromEntries(
 ) as Record<keyof typeof BED_TYPES, MetricConfig & { helpUrl: string }>;
 
 // CQC ratings of adult social care locations, in the order the ratings are
-// shown. Each has a count and a percentage of rated locations twin.
+// shown. Each has a count and a percentage of inspected locations twin.
 export const CQC_RATINGS = {
   outstanding: 'Outstanding',
   good: 'Good',
@@ -245,7 +245,7 @@ const CQC_RATINGS_HELP_URL = '/help/cqc-ratings-of-adult-social-care-locations';
 const cqcRatingMetrics = Object.fromEntries(
   Object.entries(CQC_RATINGS).flatMap(([id, label]) => [
     [
-      `num_cqc_rating_${id}`,
+      `cqcr_num_${id}_adult_social_care`,
       {
         label,
         format: 'number',
@@ -254,7 +254,7 @@ const cqcRatingMetrics = Object.fromEntries(
       },
     ],
     [
-      `perc_cqc_rating_${id}`,
+      `cqcr_pct_inspected_${id}_adult_social_care`,
       {
         label,
         format: 'percentage',
@@ -264,7 +264,8 @@ const cqcRatingMetrics = Object.fromEntries(
     ],
   ])
 ) as Record<
-  `num_cqc_rating_${CqcRatingId}` | `perc_cqc_rating_${CqcRatingId}`,
+  | `cqcr_num_${CqcRatingId}_adult_social_care`
+  | `cqcr_pct_inspected_${CqcRatingId}_adult_social_care`,
   MetricConfig & { helpUrl: string }
 >;
 
@@ -273,8 +274,8 @@ export const METRICS = {
   ...bedTypeMetrics,
   ...spendingMetrics,
   ...cqcRatingMetrics,
-  num_cqc_rated_locations: {
-    label: 'All locations',
+  cqci_num_inspected_adult_social_care: {
+    label: 'All inspected locations',
     format: 'number',
     source: SOURCES.cqcRatings,
     helpUrl: CQC_RATINGS_HELP_URL,

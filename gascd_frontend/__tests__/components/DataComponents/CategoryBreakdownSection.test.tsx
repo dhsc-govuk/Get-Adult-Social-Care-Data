@@ -24,10 +24,10 @@ const indicator = (
   }) as Indicator;
 
 const data = [
-  indicator('num_cqc_rating_good', 'LA', 461),
-  indicator('perc_cqc_rating_good', 'LA', 64.8),
-  indicator('num_cqc_rated_locations', 'LA', 711),
-  indicator('num_cqc_rated_locations', 'National', 29514),
+  indicator('cqcr_num_good_adult_social_care', 'LA', 461),
+  indicator('cqcr_pct_inspected_good_adult_social_care', 'LA', 64.8),
+  indicator('cqci_num_inspected_adult_social_care', 'LA', 711),
+  indicator('cqci_num_inspected_adult_social_care', 'National', 29514),
 ];
 
 const comparator = {
@@ -47,7 +47,10 @@ const renderSection = (props: { loading?: boolean; error?: boolean } = {}) =>
       intro={<p>Find out how</p>}
       categoryColumnName="CQC rating"
       categories={CQC_RATING_CATEGORIES}
-      total={{ label: 'All locations', metric: 'num_cqc_rated_locations' }}
+      total={{
+        label: 'All inspected locations',
+        metric: 'cqci_num_inspected_adult_social_care',
+      }}
       data={data}
       columnHeaders={{
         LALabel: 'Mid Suffolk',

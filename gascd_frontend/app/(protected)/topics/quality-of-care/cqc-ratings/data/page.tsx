@@ -25,7 +25,7 @@ import {
   CQC_RATING_CATEGORIES,
   CQC_RATING_COUNT_METRIC_IDS,
   CQC_RATING_METRIC_IDS,
-  NUM_CQC_RATED_LOCATIONS,
+  NUM_CQC_INSPECTED_LOCATIONS,
 } from '@/data/cqcMetrics';
 import { METRICS } from '@/config/metrics';
 
@@ -185,7 +185,7 @@ export default function CQCRatingsPage() {
       mergeComparatorTotals(
         baseDemographicData,
         CQC_RATING_CATEGORIES,
-        NUM_CQC_RATED_LOCATIONS,
+        NUM_CQC_INSPECTED_LOCATIONS,
         dataByMetric,
         locationIds[2],
         comparator.comparatorIsRegion,
@@ -254,7 +254,7 @@ export default function CQCRatingsPage() {
           <p className="govuk-body-m">
             Find out{' '}
             <a
-              href={withBasePath(METRICS[NUM_CQC_RATED_LOCATIONS].helpUrl)}
+              href={withBasePath(METRICS[NUM_CQC_INSPECTED_LOCATIONS].helpUrl)}
               className="govuk-link"
             >
               how the percentage of inspected adult social care locations by CQC
@@ -266,7 +266,10 @@ export default function CQCRatingsPage() {
         sharingMetricIds={CQC_RATING_METRIC_IDS}
         categoryColumnName="CQC rating"
         categories={CQC_RATING_CATEGORIES}
-        total={{ label: 'All locations', metric: NUM_CQC_RATED_LOCATIONS }}
+        total={{
+          label: 'All inspected locations',
+          metric: NUM_CQC_INSPECTED_LOCATIONS,
+        }}
         data={filteredDemographicData}
         columnHeaders={tableColumnHeaders}
         bars={bars}
@@ -294,7 +297,7 @@ export default function CQCRatingsPage() {
           sources="Care Quality Commission"
           updateFrequency="Monthly updates"
           limitations={true}
-          url={METRICS[NUM_CQC_RATED_LOCATIONS].helpUrl}
+          url={METRICS[NUM_CQC_INSPECTED_LOCATIONS].helpUrl}
         />
       </DataIndicatorDetailsList>
 

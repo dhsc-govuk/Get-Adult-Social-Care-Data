@@ -9,20 +9,20 @@ const categories: BreakdownCategory[] = [
   {
     label: 'Good',
     colour: '#1d70b8',
-    countMetric: 'num_cqc_rating_good',
-    percentageMetric: 'perc_cqc_rating_good',
+    countMetric: 'cqcr_num_good_adult_social_care',
+    percentageMetric: 'cqcr_pct_inspected_good_adult_social_care',
   },
   {
     label: 'Inadequate',
     colour: '#d53880',
-    countMetric: 'num_cqc_rating_inadequate',
-    percentageMetric: 'perc_cqc_rating_inadequate',
+    countMetric: 'cqcr_num_inadequate_adult_social_care',
+    percentageMetric: 'cqcr_pct_inspected_inadequate_adult_social_care',
   },
 ];
 
 const total = {
-  label: 'All locations',
-  metric: 'num_cqc_rated_locations' as const,
+  label: 'All inspected locations',
+  metric: 'cqci_num_inspected_adult_social_care' as const,
 };
 
 const indicator = (
@@ -39,19 +39,23 @@ const indicator = (
   }) as Indicator;
 
 const data: Indicator[] = [
-  indicator('num_cqc_rating_good', 'LA', 461),
-  indicator('perc_cqc_rating_good', 'LA', 64.8),
-  indicator('num_cqc_rating_good', 'ComparatorAverage', 4618),
-  indicator('perc_cqc_rating_good', 'ComparatorAverage', 62.2),
-  indicator('num_cqc_rating_good', 'Regional', 1200),
-  indicator('perc_cqc_rating_good', 'Regional', 63.1),
-  indicator('num_cqc_rating_good', 'National', 18195),
-  indicator('perc_cqc_rating_good', 'National', 61.6),
-  indicator('num_cqc_rating_inadequate', 'LA', 3),
-  indicator('perc_cqc_rating_inadequate', 'LA', 0.4),
-  indicator('num_cqc_rated_locations', 'LA', 711),
-  indicator('num_cqc_rated_locations', 'ComparatorAverage', 7420),
-  indicator('num_cqc_rated_locations', 'National', 29514),
+  indicator('cqcr_num_good_adult_social_care', 'LA', 461),
+  indicator('cqcr_pct_inspected_good_adult_social_care', 'LA', 64.8),
+  indicator('cqcr_num_good_adult_social_care', 'ComparatorAverage', 4618),
+  indicator(
+    'cqcr_pct_inspected_good_adult_social_care',
+    'ComparatorAverage',
+    62.2
+  ),
+  indicator('cqcr_num_good_adult_social_care', 'Regional', 1200),
+  indicator('cqcr_pct_inspected_good_adult_social_care', 'Regional', 63.1),
+  indicator('cqcr_num_good_adult_social_care', 'National', 18195),
+  indicator('cqcr_pct_inspected_good_adult_social_care', 'National', 61.6),
+  indicator('cqcr_num_inadequate_adult_social_care', 'LA', 3),
+  indicator('cqcr_pct_inspected_inadequate_adult_social_care', 'LA', 0.4),
+  indicator('cqci_num_inspected_adult_social_care', 'LA', 711),
+  indicator('cqci_num_inspected_adult_social_care', 'ComparatorAverage', 7420),
+  indicator('cqci_num_inspected_adult_social_care', 'National', 29514),
 ];
 
 const columnHeaders = {
@@ -93,7 +97,7 @@ describe('CategoryBreakdownTable', () => {
         .map((cell) => cell.textContent)
     ).toEqual(['461 (64.8%)', '4,618 (62.2%)', '18,195 (61.6%)']);
 
-    const all = screen.getByRole('row', { name: /All locations/ });
+    const all = screen.getByRole('row', { name: /All inspected locations/ });
     expect(
       within(all)
         .getAllByRole('cell')

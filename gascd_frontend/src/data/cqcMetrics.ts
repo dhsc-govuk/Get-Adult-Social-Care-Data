@@ -3,9 +3,11 @@
  * locations.
  *
  * Held in one place because the same ids are needed by the data page, the
- * sharing categorisation and the tests. The ids follow the
- * `num_cqc_rating_<rating>` / `perc_cqc_rating_<rating>` convention, with the
- * count of rated locations as `num_cqc_rated_locations`.
+ * sharing categorisation and the tests. The ids are the API's, from its
+ * `cqc_ratings` and `cqc_inspection_status` groups, for all service types:
+ * `cqcr_num_<rating>_adult_social_care` and
+ * `cqcr_pct_inspected_<rating>_adult_social_care`, with the count of
+ * inspected locations as `cqci_num_inspected_adult_social_care`.
  */
 
 import { CQC_RATINGS, CqcRatingId, SOURCES } from '@/config/metrics';
@@ -15,14 +17,15 @@ export const CQC_RATINGS_SOURCE = SOURCES.cqcRatings;
 
 /** The number of locations with each rating */
 export const numCqcRatingMetricId = (rating: CqcRatingId) =>
-  `num_cqc_rating_${rating}` as const;
+  `cqcr_num_${rating}_adult_social_care` as const;
 
-/** The percentage of rated locations with each rating */
+/** The percentage of inspected locations with each rating */
 export const percCqcRatingMetricId = (rating: CqcRatingId) =>
-  `perc_cqc_rating_${rating}` as const;
+  `cqcr_pct_inspected_${rating}_adult_social_care` as const;
 
-/** All locations with a rating: the total the percentages are of */
-export const NUM_CQC_RATED_LOCATIONS = 'num_cqc_rated_locations';
+/** All inspected locations: the total the percentages are of */
+export const NUM_CQC_INSPECTED_LOCATIONS =
+  'cqci_num_inspected_adult_social_care';
 
 /**
  * The colour each rating is drawn in, used wherever a rating is shown. The
@@ -50,7 +53,7 @@ export const CQC_RATING_CATEGORIES: BreakdownCategory[] = (
 /** The counts, which a comparison group's totals are summed from */
 export const CQC_RATING_COUNT_METRIC_IDS: string[] = [
   ...CQC_RATING_CATEGORIES.map((category) => category.countMetric),
-  NUM_CQC_RATED_LOCATIONS,
+  NUM_CQC_INSPECTED_LOCATIONS,
 ];
 
 /** Every metric shown on the CQC ratings page */
