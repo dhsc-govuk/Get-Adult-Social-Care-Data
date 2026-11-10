@@ -16,8 +16,7 @@ const CQCRatingsOfAdultSocialCareLocations: React.FC = () => {
           whatThisMeasures={
             <p className="govuk-!-margin-top-0">
               The number of adult social care locations registered with the Care
-              Quality Commission (
-              <abbr title="Care Quality Commission">CQC</abbr>) within the
+              Quality Commission (CQC) within the
               selected administrative area that hold each overall rating
               (Outstanding, Good, Requires improvement, Inadequate, or
               Insufficient evidence to rate), and the percentage of rated
@@ -31,7 +30,7 @@ const CQCRatingsOfAdultSocialCareLocations: React.FC = () => {
                 className="govuk-link"
                 target="_blank"
               >
-                Care directory with ratings from the Care Quality Commission
+                Care directory with filters from the Care Quality Commission
                 (opens in new tab)
               </Link>
             </>
@@ -40,7 +39,7 @@ const CQCRatingsOfAdultSocialCareLocations: React.FC = () => {
           methodology={
             <p className="govuk-!-margin-top-0">
               Each location&apos;s latest overall rating is taken from the CQC
-              care directory with ratings. Locations are counted against the
+              care directory with filters. Locations are counted against the
               local authority they are registered in, and the counts are summed
               for the region and for England. The percentage for a rating is the
               number of locations with that rating divided by the number of
