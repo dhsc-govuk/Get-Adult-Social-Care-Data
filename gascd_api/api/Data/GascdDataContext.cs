@@ -24,6 +24,7 @@ public partial class GascdDataContext : DbContext
     public virtual DbSet<Country> Countries { get; set; } = null!;
     public virtual DbSet<LocalAuthority> LocalAuthorities { get; set; } = null!;
     public virtual DbSet<LocalAuthorityPeer> LocalAuthorityPeers { get; set; } = null!;
+    public virtual DbSet<CqcLocationRating> CqcLocationRatings { get; set; } = null!;
 
     public virtual DbSet<MetricGroup> MetricGroups { get; set; } = null!;
     public virtual DbSet<Metric> Metrics { get; set; } = null!;
