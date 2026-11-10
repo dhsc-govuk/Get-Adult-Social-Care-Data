@@ -15,11 +15,12 @@ const CQCRatingsOfAdultSocialCareLocations: React.FC = () => {
           title="CQC ratings of adult social care locations"
           whatThisMeasures={
             <p className="govuk-!-margin-top-0">
-              The number of adult social care locations registered with the Care
-              Quality Commission (CQC) within the selected administrative area
-              that hold each overall rating (Outstanding, Good, Requires
-              improvement, Inadequate, or Insufficient evidence to rate), and
-              the percentage of inspected locations that each rating makes up.
+              The number of active adult social care locations registered with
+              the Care Quality Commission (CQC) within the selected
+              administrative area that hold each overall rating (Outstanding,
+              Good, Requires improvement, Inadequate, or Insufficient evidence
+              to rate), and the percentage of inspected locations that each
+              rating makes up.
             </p>
           }
           source={
@@ -47,11 +48,47 @@ const CQCRatingsOfAdultSocialCareLocations: React.FC = () => {
             </p>
           }
           limitations={
-            <p className="govuk-!-margin-top-0">
-              A rating reflects the location&apos;s most recent inspection,
-              which may be some time ago. Newly registered locations have no
-              rating until they are inspected. See data source for details.
-            </p>
+            <>
+              <p className="govuk-!-margin-top-0">
+                A rating reflects the location&apos;s most recent inspection,
+                which may be some time ago. Newly registered locations have no
+                rating until they are inspected. See data source for details.
+              </p>
+              <ul className="govuk-list govuk-list--bullet">
+                <li>
+                  Registered office location: A provider&apos;s registered
+                  location with CQC is the location of their registered office,
+                  and this is how providers are allocated to a given LA and/or
+                  region. This may not reflect the actual location where adult
+                  social care is delivered, as not all providers operate in the
+                  same area as their registered office.
+                </li>
+                <li>
+                  Currency of registration data: Information held by CQC may not
+                  reflect the current services provided by a care provider, as
+                  it is collected at registration and may not be regularly
+                  updated.
+                </li>
+                <li>
+                  Aggregated quality ratings reflect a mix of legacy CQC
+                  inspections and newer Single Assessment Framework (SAF)
+                  assessments. Because SAF assessments have been conducted at a
+                  time of fewer inspections within a risk-based system, and
+                  their methodology is different, tend to produce lower ratings
+                  on average, older and newer ratings are not directly
+                  comparable, leading to potential variance between these
+                  figures and{' '}
+                  <Link
+                    href="https://www.cqc.org.uk/publications/major-report/state-care"
+                    className="govuk-link"
+                    target="_blank"
+                  >
+                    CQC&apos;s State of Care reporting (opens in new tab)
+                  </Link>
+                  .
+                </li>
+              </ul>
+            </>
           }
         />
       </Layout>
