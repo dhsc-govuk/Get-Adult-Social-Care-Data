@@ -98,7 +98,10 @@ const CategoryBreakdownTable: React.FC<CategoryBreakdownTableProps> = ({
 
   return (
     <div>
-      <div className="moj-scrollable-pane" role="region">
+      <div
+        className="moj-scrollable-pane dhsc-scrollable-pane--auto"
+        role="region"
+      >
         <table className="govuk-table" ref={tableref}>
           {caption && (
             <caption className="govuk-table__caption govuk-table__caption--s">
@@ -126,7 +129,7 @@ const CategoryBreakdownTable: React.FC<CategoryBreakdownTableProps> = ({
               <tr key={category.countMetric} className="govuk-table__row">
                 <th
                   scope="row"
-                  className="govuk-table__cell govuk-!-font-weight-regular"
+                  className="govuk-table__cell govuk-!-font-weight-regular scrollable-table__header"
                 >
                   <span
                     className="dhsc-category-key"
@@ -145,10 +148,10 @@ const CategoryBreakdownTable: React.FC<CategoryBreakdownTableProps> = ({
                 ))}
               </tr>
             ))}
-            <tr className="govuk-table__row">
+            <tr className="govuk-table__row dhsc-table__row--total">
               <th
                 scope="row"
-                className="govuk-table__cell govuk-!-font-weight-bold"
+                className="govuk-table__cell govuk-!-font-weight-bold scrollable-table__header"
               >
                 {total.label}
               </th>

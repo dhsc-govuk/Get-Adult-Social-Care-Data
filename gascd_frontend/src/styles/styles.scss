@@ -790,6 +790,16 @@
   vertical-align: text-bottom;
 }
 
+/* A scrollbar only when the table is wider than its container, rather than always */
+.moj-scrollable-pane.dhsc-scrollable-pane--auto {
+  overflow-x: auto;
+}
+
+/* The total row of a table, set apart from the rows it sums by a heavier line */
+.dhsc-table__row--total .govuk-table__cell {
+  border-top: 2px solid #0b0c0c;
+}
+
 /* Filter component inspired by Apply for plant export certificates and inspections (https://www.gov.uk/guidance/apply-for-plant-export-certificates-and-inspections) and GOV.UK search (https://www.gov.uk) */
 
 .dhsc-filter--action .govuk-button {
