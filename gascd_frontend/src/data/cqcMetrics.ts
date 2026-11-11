@@ -3,29 +3,27 @@
  * locations.
  *
  * Held in one place because the same ids are needed by the data page, the
- * sharing categorisation and the tests. The ids are the API's, from its
- * `cqc_ratings` and `cqc_inspection_status` groups, for all service types:
- * `cqcr_num_<rating>_adult_social_care` and
- * `cqcr_pct_inspected_<rating>_adult_social_care`, with the count of
- * inspected locations as `cqci_num_inspected_adult_social_care`.
+ * sharing categorisation and the tests. The ids themselves are declared once,
+ * with their labels and formats, in `@/config/metrics`.
  */
 
-import { CQC_RATINGS, CqcRatingId, SOURCES } from '@/config/metrics';
+import {
+  CQC_RATINGS,
+  CqcRatingId,
+  NUM_CQC_INSPECTED_LOCATIONS,
+  SOURCES,
+  numCqcRatingMetricId,
+  percCqcRatingMetricId,
+} from '@/config/metrics';
 import { BreakdownCategory } from '@/helpers/categoryBreakdown';
 
+export {
+  NUM_CQC_INSPECTED_LOCATIONS,
+  numCqcRatingMetricId,
+  percCqcRatingMetricId,
+};
+
 export const CQC_RATINGS_SOURCE = SOURCES.cqcRatings;
-
-/** The number of locations with each rating */
-export const numCqcRatingMetricId = (rating: CqcRatingId) =>
-  `cqcr_num_${rating}_adult_social_care` as const;
-
-/** The percentage of inspected locations with each rating */
-export const percCqcRatingMetricId = (rating: CqcRatingId) =>
-  `cqcr_pct_inspected_${rating}_adult_social_care` as const;
-
-/** All inspected locations: the total the percentages are of */
-export const NUM_CQC_INSPECTED_LOCATIONS =
-  'cqci_num_inspected_adult_social_care';
 
 /**
  * The colour each rating is drawn in, used wherever a rating is shown. The

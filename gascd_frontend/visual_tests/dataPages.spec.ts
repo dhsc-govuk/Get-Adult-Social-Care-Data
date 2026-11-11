@@ -45,6 +45,11 @@ const PAGES: { name: string; url: string; user: TestUser }[] = [
     user: 'careProviderLocation',
   },
   {
+    name: 'cqc-ratings',
+    url: '/topics/quality-of-care/cqc-ratings/data',
+    user: 'careProviderLocation',
+  },
+  {
     name: 'number-of-people-receiving-care',
     url: '/topics/residential-care/number-of-people-receiving-care/data',
     user: 'careProviderLocation',
@@ -81,6 +86,7 @@ const REGION_COMPARATOR_PAGES = [
   'disability-prevalence',
   'household-composition-and-economic-factors',
   'population-age-and-size',
+  'cqc-ratings',
   'number-of-people-receiving-care',
   'provision-and-occupancy',
   'unpaid-care',

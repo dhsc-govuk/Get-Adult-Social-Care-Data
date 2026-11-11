@@ -240,23 +240,39 @@ export const CQC_RATINGS = {
 
 export type CqcRatingId = keyof typeof CQC_RATINGS;
 
+// The API's ids, from its `cqc_ratings` and `cqc_inspection_status` groups,
+// for all service types. Declared here only: `@/data/cqcMetrics` re-exports
+// them for the page, the sharing categorisation and the tests.
+
+/** The number of locations with each rating */
+export const numCqcRatingMetricId = (rating: CqcRatingId) =>
+  `cqcr_num_${rating}_adult_social_care` as const;
+
+/** The percentage of inspected locations with each rating */
+export const percCqcRatingMetricId = (rating: CqcRatingId) =>
+  `cqcr_pct_inspected_${rating}_adult_social_care` as const;
+
+/** All inspected locations: the total the percentages are of */
+export const NUM_CQC_INSPECTED_LOCATIONS =
+  'cqci_num_inspected_adult_social_care';
+
 const CQC_RATINGS_HELP_URL = '/help/cqc-ratings-of-adult-social-care-locations';
 
 const cqcRatingMetrics = Object.fromEntries(
-  Object.entries(CQC_RATINGS).flatMap(([id, label]) => [
+  (Object.keys(CQC_RATINGS) as CqcRatingId[]).flatMap((id) => [
     [
-      `cqcr_num_${id}_adult_social_care`,
+      numCqcRatingMetricId(id),
       {
-        label,
+        label: CQC_RATINGS[id],
         format: 'number',
         source: SOURCES.cqcRatings,
         helpUrl: CQC_RATINGS_HELP_URL,
       },
     ],
     [
-      `cqcr_pct_inspected_${id}_adult_social_care`,
+      percCqcRatingMetricId(id),
       {
-        label,
+        label: CQC_RATINGS[id],
         format: 'percentage',
         source: SOURCES.cqcRatings,
         helpUrl: CQC_RATINGS_HELP_URL,
@@ -264,8 +280,8 @@ const cqcRatingMetrics = Object.fromEntries(
     ],
   ])
 ) as Record<
-  | `cqcr_num_${CqcRatingId}_adult_social_care`
-  | `cqcr_pct_inspected_${CqcRatingId}_adult_social_care`,
+  | ReturnType<typeof numCqcRatingMetricId>
+  | ReturnType<typeof percCqcRatingMetricId>,
   MetricConfig & { helpUrl: string }
 >;
 
@@ -274,7 +290,7 @@ export const METRICS = {
   ...bedTypeMetrics,
   ...spendingMetrics,
   ...cqcRatingMetrics,
-  cqci_num_inspected_adult_social_care: {
+  [NUM_CQC_INSPECTED_LOCATIONS]: {
     label: 'All inspected locations',
     format: 'number',
     source: SOURCES.cqcRatings,
