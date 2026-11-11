@@ -27,7 +27,6 @@ const invite = {
 beforeEach(() => {
   vi.resetAllMocks();
   vi.stubEnv('NOTIFY_API_KEY', 'key-123');
-  vi.stubEnv('NOTIFY_INVITE_TEMPLATE_ID', 'template-1');
   vi.mocked(NotifyClient).mockImplementation(function () {
     return { sendEmail };
   } as any);
@@ -43,17 +42,21 @@ describe('sendInviteEmail', () => {
 
     expect(await sendInviteEmail(invite)).toBe(true);
     expect(NotifyClient).toHaveBeenCalledWith('key-123');
-    expect(sendEmail).toHaveBeenCalledWith('template-1', 'tina@example.com', {
-      personalisation: {
-        invitee_name: 'Tina Singh',
-        inviter_name: 'Nia Ito',
-        organisation_name: 'Test Provider',
-        service_url: 'https://gascd.example/login',
-        'email address': 'tina@example.com',
-        expiry_date: '4 December 2026',
-      },
-      reference: 'new-user',
-    });
+    expect(sendEmail).toHaveBeenCalledWith(
+      '3e1ead0e-dfd5-48f4-ade9-47f96796ff45',
+      'tina@example.com',
+      {
+        personalisation: {
+          invitee_name: 'Tina Singh',
+          inviter_name: 'Nia Ito',
+          organisation_name: 'Test Provider',
+          service_url: 'https://gascd.example/login',
+          email_address: 'tina@example.com',
+          expiry_date: '4 December 2026',
+        },
+        reference: 'new-user',
+      }
+    );
   });
 
   it('skips sending when Notify is not configured', async () => {
