@@ -149,6 +149,14 @@ Sections that don't fit (several metrics in one table, a ranked list of LAs, fil
 | `TimeSeriesChart` (`metric`)    | A trend over time; the y axis `£` or `%` comes from the metric                                                                                                                |
 | `TimeSeriesTable` (`metrics`)   | The same as a table                                                                                                                                                           |
 | `SectionControls`               | Comparison group, other selects and filters above a divider (GASCD-300)                                                                                                       |
+| `StackedBarChart` (`segments`)  | A whole split into categories, as a 100% stacked bar per compared location; counts show on hover                                                                              |
+| `CategoryBreakdownTable`        | The same as a table: one row per category showing "count (percentage)", with the total as the last row                                                                        |
+
+`DataTabs` shows the tabs as chart, table, download by default; pass `order` to change it, as the CQC ratings page does to put the table first.
+
+### A count split into categories: `CategoryBreakdownSection`
+
+Where a count is broken down into categories that each have a count and a percentage metric (the CQC ratings of locations), use `CategoryBreakdownSection`. It is `MetricSection`'s equivalent for the stacked bar chart and breakdown table, and the comparison group's column is its members' counts summed (`mergeComparatorTotals` in `src/helpers/categoryBreakdown.ts`) rather than a mean. See `app/(protected)/topics/quality-of-care/cqc-ratings/data/page.tsx`.
 
 A filter shown in more than one tab needs `useFilterSync` (`src/components/filters/useFilterSync.ts`) so the copies stay in step, and an `idPrefix` per tab so element ids stay unique. See the care home bed numbers section on the provision and occupancy page.
 

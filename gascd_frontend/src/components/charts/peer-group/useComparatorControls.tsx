@@ -5,7 +5,10 @@ import ComparatorGroupSelect from './ComparatorGroupSelect';
 import ComparatorGroupBuilder from './ComparatorGroupBuilder';
 import { isRegionSelection, useComparatorGroups } from './useComparatorGroups';
 import { useAllLocalAuthorities } from './useAllLocalAuthorities';
-import { NHS_PEER_GROUP_AVERAGE_LABEL } from './constants';
+import {
+  NHS_PEER_GROUP_AVERAGE_LABEL,
+  NHS_PEER_GROUP_TOTAL_LABEL,
+} from './constants';
 import { ComparatorSelection } from './types';
 
 /**
@@ -52,6 +55,10 @@ export function useComparatorControls({
   const comparatorAverageLabel = selectedGroup
     ? (selectedGroup.averageLabel ?? `${selectedGroup.name} (average)`)
     : NHS_PEER_GROUP_AVERAGE_LABEL;
+  // For tables that show the group's summed values rather than a mean
+  const comparatorTotalLabel = selectedGroup
+    ? (selectedGroup.totalLabel ?? `${selectedGroup.name} total`)
+    : NHS_PEER_GROUP_TOTAL_LABEL;
 
   const handleComparatorChange = (newSelection: ComparatorSelection) => {
     setSelection(newSelection);
@@ -186,6 +193,7 @@ export function useComparatorControls({
     comparatorIsRegion: isRegionSelection(selection),
     comparatorLabel,
     comparatorAverageLabel,
+    comparatorTotalLabel,
     renderComparatorControl,
   };
 }

@@ -3,6 +3,7 @@ import path from 'path';
 import { http, HttpResponse } from 'msw';
 import { API_SUFFIX } from '@/data/dataAPI';
 import { locations_data } from '@/data/mockResponses/locations_data';
+import { CQC_RATINGS } from '@/config/metrics';
 
 // Metric data that differs by metric, location and date but is the same on
 // every run, for the screenshot tests (served by scripts/mock-data-api.ts).
@@ -81,7 +82,7 @@ const seriesDates = (frequency: string, length: number) => {
   return { start: String(end - step * (length - 1)), end: String(end) };
 };
 
-const seriesValues = (
+const randomSeriesValues = (
   metricCode: string,
   key: string,
   length: number
@@ -95,6 +96,65 @@ const seriesValues = (
     const value = Math.min(max, Math.max(min, base * drift * jitter));
     return range >= 100 ? Math.round(value) : Math.round(value * 10) / 10;
   });
+};
+
+// The CQC ratings split a whole, so their figures have to agree: the inspected
+// total is the sum of the rating counts and each percentage is its count's
+// share of that total. Independent values would leave the stacked bars short
+// of, or beyond, 100%.
+const CQC_RATING_IDS = Object.keys(CQC_RATINGS);
+const CQC_RATING_PATTERN = CQC_RATING_IDS.join('|');
+const CQC_COUNT = new RegExp(`^cqcr_num_(${CQC_RATING_PATTERN})_(.+)$`);
+const CQC_PERCENTAGE = new RegExp(
+  `^cqcr_pct_inspected_(${CQC_RATING_PATTERN})_(.+)$`
+);
+const CQC_INSPECTED_TOTAL = /^cqci_num_inspected_(.+)$/;
+
+const cqcRatingCounts = (
+  rating: string,
+  serviceType: string,
+  key: string,
+  length: number
+): number[] =>
+  randomSeriesValues(`cqcr_num_${rating}_${serviceType}`, key, length).map(
+    Math.round
+  );
+
+const cqcInspectedTotals = (
+  serviceType: string,
+  key: string,
+  length: number
+): number[] => {
+  const counts = CQC_RATING_IDS.map((rating) =>
+    cqcRatingCounts(rating, serviceType, key, length)
+  );
+  return Array.from({ length }, (_, i) =>
+    counts.reduce((sum, ratingCounts) => sum + ratingCounts[i], 0)
+  );
+};
+
+const seriesValues = (
+  metricCode: string,
+  key: string,
+  length: number
+): number[] => {
+  const count = metricCode.match(CQC_COUNT);
+  if (count) return cqcRatingCounts(count[1], count[2], key, length);
+
+  const total = metricCode.match(CQC_INSPECTED_TOTAL);
+  if (total) return cqcInspectedTotals(total[1], key, length);
+
+  const percentage = metricCode.match(CQC_PERCENTAGE);
+  if (percentage) {
+    const [, rating, serviceType] = percentage;
+    const totals = cqcInspectedTotals(serviceType, key, length);
+    return cqcRatingCounts(rating, serviceType, key, length).map(
+      (ratingCount, i) =>
+        totals[i] ? Math.round((ratingCount / totals[i]) * 1000) / 10 : 0
+    );
+  }
+
+  return randomSeriesValues(metricCode, key, length);
 };
 
 const buildSeries = (metricCode: string, key: string) => {

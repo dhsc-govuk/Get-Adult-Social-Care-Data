@@ -61,6 +61,16 @@ const ServiceName: React.FC<Props> = ({ session, showManageUsers = false }) => {
           'Find estimated and experimental data on future population needs.',
         url: '/topics/future-planning/subtopics',
       },
+      {
+        name: 'Quality of care',
+        description: (
+          <>
+            Find data on the quality of adult social care, including CQC ratings
+            of locations.
+          </>
+        ),
+        url: '/topics/quality-of-care/subtopics',
+      },
     ];
     setTopicLinks(links);
   }, [session]);

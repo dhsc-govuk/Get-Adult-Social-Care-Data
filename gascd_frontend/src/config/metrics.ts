@@ -34,6 +34,7 @@ export const SOURCES = {
     'Population estimates from the Office for National Statistics (ONS)',
   capacityTrackerWithOnsPopulation:
     'Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS',
+  cqcRatings: 'Care Quality Commission (CQC)',
 } as const;
 
 export type MetricFormat = 'number' | 'percentage' | 'currency';
@@ -227,10 +228,74 @@ const bedTypeMetrics = Object.fromEntries(
   ])
 ) as Record<keyof typeof BED_TYPES, MetricConfig & { helpUrl: string }>;
 
+// CQC ratings of adult social care locations, in the order the ratings are
+// shown. Each has a count and a percentage of inspected locations twin.
+export const CQC_RATINGS = {
+  outstanding: 'Outstanding',
+  good: 'Good',
+  requires_improvement: 'Requires improvement',
+  inadequate: 'Inadequate',
+  insufficient_evidence: 'Insufficient evidence to rate',
+} as const;
+
+export type CqcRatingId = keyof typeof CQC_RATINGS;
+
+// The API's ids, from its `cqc_ratings` and `cqc_inspection_status` groups,
+// for all service types. Declared here only: `@/data/cqcMetrics` re-exports
+// them for the page, the sharing categorisation and the tests.
+
+/** The number of locations with each rating */
+export const numCqcRatingMetricId = (rating: CqcRatingId) =>
+  `cqcr_num_${rating}_adult_social_care` as const;
+
+/** The percentage of inspected locations with each rating */
+export const percCqcRatingMetricId = (rating: CqcRatingId) =>
+  `cqcr_pct_inspected_${rating}_adult_social_care` as const;
+
+/** All inspected locations: the total the percentages are of */
+export const NUM_CQC_INSPECTED_LOCATIONS =
+  'cqci_num_inspected_adult_social_care';
+
+const CQC_RATINGS_HELP_URL = '/help/cqc-ratings-of-adult-social-care-locations';
+
+const cqcRatingMetrics = Object.fromEntries(
+  (Object.keys(CQC_RATINGS) as CqcRatingId[]).flatMap((id) => [
+    [
+      numCqcRatingMetricId(id),
+      {
+        label: CQC_RATINGS[id],
+        format: 'number',
+        source: SOURCES.cqcRatings,
+        helpUrl: CQC_RATINGS_HELP_URL,
+      },
+    ],
+    [
+      percCqcRatingMetricId(id),
+      {
+        label: CQC_RATINGS[id],
+        format: 'percentage',
+        source: SOURCES.cqcRatings,
+        helpUrl: CQC_RATINGS_HELP_URL,
+      },
+    ],
+  ])
+) as Record<
+  | ReturnType<typeof numCqcRatingMetricId>
+  | ReturnType<typeof percCqcRatingMetricId>,
+  MetricConfig & { helpUrl: string }
+>;
+
 export const METRICS = {
   ...supportReasonMetrics,
   ...bedTypeMetrics,
   ...spendingMetrics,
+  ...cqcRatingMetrics,
+  [NUM_CQC_INSPECTED_LOCATIONS]: {
+    label: 'All inspected locations',
+    format: 'number',
+    source: SOURCES.cqcRatings,
+    helpUrl: CQC_RATINGS_HELP_URL,
+  },
 
   pansi_pred_pop_early_dem_aged_30_64: {
     label: EARLY_ONSET_DEMENTIA,

@@ -57,6 +57,12 @@ describe('Service Component', () => {
     );
   });
 
+  it('Shows the Quality of care topic', () => {
+    render(<ServiceName session={mockSessionLAUser} />);
+    const link = screen.getByText('Quality of care');
+    expect(link.getAttribute('href')).toBe('/topics/quality-of-care/subtopics');
+  });
+
   it('Shows the manage users link only when allowed', () => {
     const { rerender } = render(
       <ServiceName session={mockSessionWithLocation} />

@@ -134,6 +134,19 @@ const HomePage: React.FC = async () => {
 
   topics.push(futurePlanning);
 
+  topics.push({
+    title: 'Quality of care',
+    url: '/topics/quality-of-care/subtopics',
+    subtopics: [
+      {
+        title: 'CQC ratings of adult social care locations',
+        description:
+          'Data on CQC ratings of adult social care locations, including number and percentage of locations by CQC rating, number and percentage not yet inspected, and date of latest inspection.',
+        url: '/topics/quality-of-care/cqc-ratings/data',
+      },
+    ],
+  });
+
   return (
     <>
       <Layout

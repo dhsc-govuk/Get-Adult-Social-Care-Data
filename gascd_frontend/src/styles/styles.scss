@@ -781,6 +781,28 @@
   padding-left: 20px;
 }
 
+/* Colour key beside a table row, matching the row's segment in a stacked chart */
+.dhsc-category-key {
+  display: inline-block;
+  width: 4px;
+  height: 1.1em;
+  margin-right: 8px;
+  vertical-align: text-bottom;
+}
+
+/* A scrollbar only when the table is wider than its container, rather than always */
+.moj-scrollable-pane.dhsc-scrollable-pane--auto {
+  overflow-x: auto;
+}
+
+/* The total row of a table, set apart from the rows it sums by a heavier line.
+   Drawn as the bottom border of the row above, replacing its grey one: as a top
+   border on the total row the two compete, and the grey one wins when the
+   browser is zoomed out */
+.govuk-table__row:has(+ .dhsc-table__row--total) .govuk-table__cell {
+  border-bottom: 2px solid #0b0c0c;
+}
+
 /* Filter component inspired by Apply for plant export certificates and inspections (https://www.gov.uk/guidance/apply-for-plant-export-certificates-and-inspections) and GOV.UK search (https://www.gov.uk) */
 
 .dhsc-filter--action .govuk-button {
