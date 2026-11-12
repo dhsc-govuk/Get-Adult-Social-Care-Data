@@ -64,6 +64,12 @@ const CQCRatingsOfAdultSocialCareLocations: React.FC = () => {
                   same area as their registered office.
                 </li>
                 <li>
+                  Currency of registration data: Information held by CQC may not
+                  reflect the current services provided by a care provider, as
+                  it is collected at registration and may not be regularly
+                  updated.
+                </li>
+                <li>
                   Aggregated quality ratings reflect a mix of legacy CQC
                   inspections and newer Single Assessment Framework (SAF)
                   assessments. Because SAF assessments have been conducted at a

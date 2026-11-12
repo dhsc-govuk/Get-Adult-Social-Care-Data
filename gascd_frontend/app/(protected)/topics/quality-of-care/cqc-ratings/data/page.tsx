@@ -9,6 +9,7 @@ import LocalMarketInformation from '@/components/data-components/LocalMarketInfo
 import BackToTop from '@/components/data-components/BackToTop';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
 import CategoryBreakdownSection from '@/components/data-components/CategoryBreakdownSection';
+import CqcRatingsByLaSection from '@/components/data-components/CqcRatingsByLaSection';
 import LocationService from '@/services/location/locationService';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import IndicatorService from '@/services/indicator/IndicatorService';
@@ -290,6 +291,14 @@ export default function CQCRatingsPage() {
         comparator={comparator}
         loading={chartLoading}
         error={chartError}
+      />
+      <CqcRatingsByLaSection
+        id="2"
+        figureNumber={2}
+        laCode={laCode}
+        laName={locationNames.LALabel}
+        regionLabel={locationNames.RegionLabel}
+        comparator={comparator}
       />
       <DataIndicatorDetailsList>
         <DataLinkCard
