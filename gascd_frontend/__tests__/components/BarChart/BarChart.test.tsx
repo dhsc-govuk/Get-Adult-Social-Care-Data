@@ -122,4 +122,24 @@ describe('BarChart Component', () => {
     // Shapes array should be empty
     expect(layout.shapes).toHaveLength(0);
   });
+
+  it('shows a detail for each bar in brackets on hover when given one', async () => {
+    render(
+      <BarChart
+        categories={mockCategories}
+        values={mockValues}
+        highlightCategory="Suffolk"
+        xAxisTickSuffix="%"
+        hoverValueFormat=".1f"
+        hoverDetails={['10', '8', '6', '4']}
+      />
+    );
+
+    const chart = await screen.findByTestId('chart-data');
+    const [trace] = JSON.parse(chart.textContent || '[]');
+    expect(trace.customdata).toEqual(['10', '8', '6', '4']);
+    expect(trace.hovertemplate).toBe(
+      '<b>%{y}</b><br>%{x:.1f}%<br>(%{customdata})<extra></extra>'
+    );
+  });
 });

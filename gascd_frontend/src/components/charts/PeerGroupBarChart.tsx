@@ -28,7 +28,10 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
   comparatorIsRegion,
   regionalAverageLabel,
   nationalAverageLabel,
+  nhsPeerGroupAverageLabel,
   sourceText,
+  barDetails,
+  xAxisRange,
 }) => {
   const format = metricFormat(metric);
 
@@ -70,11 +73,14 @@ const PeerGroupBarChart: React.FC<PeerGroupBarChartProps> = ({
           comparatorIsRegion={comparatorIsRegion}
           regionalAverageLabel={regionalAverageLabel}
           nationalAverageLabel={nationalAverageLabel}
+          nhsPeerGroupAverageLabel={nhsPeerGroupAverageLabel}
           valueSuffix={format === 'percentage' ? '%' : ''}
           currency={format === 'currency'}
           sourceText={
             sourceText ?? `Source: ${METRICS[metric as MetricId].source}`
           }
+          barDetails={barDetails}
+          xAxisRange={xAxisRange}
         />
       )}
     </div>

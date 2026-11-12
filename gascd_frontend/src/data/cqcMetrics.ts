@@ -8,20 +8,30 @@
  */
 
 import {
+  ALL_CQC_SERVICE_TYPES,
   CQC_RATINGS,
+  CQC_SERVICE_TYPES,
   CqcRatingId,
+  CqcServiceTypeId,
   NUM_CQC_INSPECTED_LOCATIONS,
   SOURCES,
+  cqcInspectedCountMetricId,
+  cqcRatingCountMetricId,
   numCqcRatingMetricId,
   percCqcRatingMetricId,
 } from '@/config/metrics';
 import { BreakdownCategory } from '@/helpers/categoryBreakdown';
 
 export {
+  ALL_CQC_SERVICE_TYPES,
+  CQC_SERVICE_TYPES,
   NUM_CQC_INSPECTED_LOCATIONS,
+  cqcInspectedCountMetricId,
+  cqcRatingCountMetricId,
   numCqcRatingMetricId,
   percCqcRatingMetricId,
 };
+export type { CqcRatingId, CqcServiceTypeId };
 
 export const CQC_RATINGS_SOURCE = SOURCES.cqcRatings;
 
@@ -59,3 +69,27 @@ export const CQC_RATING_METRIC_IDS: string[] = [
   ...CQC_RATING_COUNT_METRIC_IDS,
   ...CQC_RATING_CATEGORIES.map((category) => category.percentageMetric),
 ];
+
+/**
+ * The ratings local authorities can be compared on, in the order offered.
+ * "Insufficient evidence to rate" is left out: it is not a rating a location
+ * can be benchmarked on.
+ */
+export const CQC_BENCHMARK_RATINGS: CqcRatingId[] = [
+  'outstanding',
+  'good',
+  'requires_improvement',
+  'inadequate',
+];
+
+export const DEFAULT_CQC_BENCHMARK_RATING: CqcRatingId = 'good';
+
+/** The individual service types, without the "All service types" option */
+export const CQC_SERVICE_TYPE_OPTIONS = (
+  Object.keys(CQC_SERVICE_TYPES) as CqcServiceTypeId[]
+)
+  .filter((serviceType) => serviceType !== ALL_CQC_SERVICE_TYPES)
+  .map((serviceType) => ({
+    value: serviceType,
+    label: CQC_SERVICE_TYPES[serviceType],
+  }));

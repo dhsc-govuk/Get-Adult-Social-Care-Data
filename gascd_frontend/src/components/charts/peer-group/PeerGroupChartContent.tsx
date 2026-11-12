@@ -31,9 +31,13 @@ interface PeerGroupChartContentProps {
   comparatorIsRegion?: boolean;
   regionalAverageLabel?: string;
   nationalAverageLabel?: string;
+  nhsPeerGroupAverageLabel?: string;
   valueSuffix: string;
   currency: boolean;
   sourceText: string;
+  // The figure behind each bar, by LA name, shown in brackets on hover
+  barDetails?: Record<string, string>;
+  xAxisRange?: [number, number];
 }
 
 const roundToOneDecimal = (value: number | null): number | null =>
@@ -50,9 +54,12 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
   comparatorIsRegion = false,
   regionalAverageLabel,
   nationalAverageLabel,
+  nhsPeerGroupAverageLabel = NHS_PEER_GROUP_AVERAGE_LABEL,
   valueSuffix,
   currency,
   sourceText,
+  barDetails,
+  xAxisRange,
 }) => {
   const hasPeers = peerData.localAuthorityPeers.length > 0;
 
@@ -69,7 +76,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
     ? (peerData.nhsPeerGroupAverage ?? null)
     : peerData.averagePeerGroup;
   const comparatorLineLabel = comparatorIsRegion
-    ? NHS_PEER_GROUP_AVERAGE_LABEL
+    ? nhsPeerGroupAverageLabel
     : comparatorAverageLabel;
 
   const referenceShapes = useMemo((): Partial<Shape>[] => {
@@ -154,6 +161,11 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
             xAxisTickPrefix={currency ? '£' : undefined}
             xAxisTickSuffix={currency ? undefined : valueSuffix}
             hoverValueFormat={currency ? ',.0f' : '.1f'}
+            hoverDetails={
+              barDetails &&
+              categories.map((category) => barDetails[category] ?? '')
+            }
+            xAxisRange={xAxisRange}
           />
         </div>
       )}

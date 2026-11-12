@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import CQCRatingsPage from '../../../app/(protected)/topics/quality-of-care/cqc-ratings/data/page';
 import { authClient } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
@@ -60,37 +60,81 @@ describe('CQCRatingsPage', () => {
         name: /Table 1: number and percentage of adult social care locations by CQC rating/i,
       })
     ).toBeInTheDocument();
+    // The same help page is linked from both sections
     expect(
-      screen.getByRole('link', {
+      screen.getAllByRole('link', {
         name: /how the number and percentage of inspected adult social care locations by CQC rating are calculated/i,
-      })
+      })[0]
     ).toHaveAttribute(
       'href',
       '/help/cqc-ratings-of-adult-social-care-locations'
     );
   });
 
-  it('names the CQC as the source of the table and chart', () => {
+  it('shows the ratings by local authority below the ratings of the area', () => {
     render(<CQCRatingsPage />);
+
     expect(
-      screen.getAllByText('Source: Care Quality Commission (CQC)')
-    ).toHaveLength(2);
+      screen
+        .getAllByRole('heading', { level: 3 })
+        .map((heading) => heading.textContent)
+        // Each set of tabs has a "Contents" heading of its own
+        .filter((heading) => heading !== 'Contents')
+    ).toEqual([
+      'CQC ratings of inspected adult social care locations',
+      'CQC ratings of inspected adult social care locations by local authority',
+    ]);
+    expect(
+      screen.getByRole('table', {
+        name: /Table 2: percentage of inspected adult social care locations rated Good/i,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByRole('link', {
+        name: /how the number and percentage of inspected adult social care locations by CQC rating are calculated/i,
+      })[1]
+    ).toHaveAttribute(
+      'href',
+      '/help/cqc-ratings-of-adult-social-care-locations'
+    );
   });
 
-  it('shows the table first, then the chart, then the download', () => {
+  it('names the CQC as the source of each table and chart', () => {
+    render(<CQCRatingsPage />);
+    // Both of the first section's, and the second's table: its chart has no
+    // source line until its data has loaded
+    expect(
+      screen.getAllByText('Source: Care Quality Commission (CQC)')
+    ).toHaveLength(3);
+  });
+
+  it('shows the table first in the first section and the chart first in the second', () => {
     render(<CQCRatingsPage />);
 
     const tabs = screen
       .getAllByRole('link', { name: /^(Table|Chart|Download)$/ })
       .map((tab) => tab.textContent);
-    expect(tabs).toEqual(['Table', 'Chart', 'Download']);
+    expect(tabs).toEqual([
+      'Table',
+      'Chart',
+      'Download',
+      'Chart',
+      'Table',
+      'Download',
+    ]);
   });
 
   it('lists every CQC rating as a table row, with the total last', () => {
     render(<CQCRatingsPage />);
 
     expect(
-      screen.getAllByRole('rowheader').map((row) => row.textContent)
+      within(
+        screen.getByRole('table', {
+          name: /Table 1: number and percentage of adult social care locations by CQC rating/i,
+        })
+      )
+        .getAllByRole('rowheader')
+        .map((row) => row.textContent)
     ).toEqual([
       'Outstanding',
       'Good',

@@ -240,21 +240,45 @@ export const CQC_RATINGS = {
 
 export type CqcRatingId = keyof typeof CQC_RATINGS;
 
-// The API's ids, from its `cqc_ratings` and `cqc_inspection_status` groups,
-// for all service types. Declared here only: `@/data/cqcMetrics` re-exports
-// them for the page, the sharing categorisation and the tests.
+// The service types the CQC ratings can be filtered by, keyed by the API's
+// name for each. The first is every service type together.
+export const CQC_SERVICE_TYPES = {
+  adult_social_care: 'All service types',
+  domiciliary_care: 'Domiciliary care service',
+  care_home_residential: 'Care home service without nursing',
+  supported_living: 'Supported living service',
+  care_home_nursing: 'Care home service with nursing',
+} as const;
 
-/** The number of locations with each rating */
+export type CqcServiceTypeId = keyof typeof CQC_SERVICE_TYPES;
+
+export const ALL_CQC_SERVICE_TYPES = 'adult_social_care';
+
+// The API's ids, from its `cqc_ratings` and `cqc_inspection_status` groups.
+
+/** The number of locations of a service type with each rating */
+export const cqcRatingCountMetricId = <S extends CqcServiceTypeId>(
+  rating: CqcRatingId,
+  serviceType: S
+) => `cqcr_num_${rating}_${serviceType}` as const;
+
+/** The inspected locations of a service type: the total the percentages are of */
+export const cqcInspectedCountMetricId = <S extends CqcServiceTypeId>(
+  serviceType: S
+) => `cqci_num_inspected_${serviceType}` as const;
+
+/** The number of locations with each rating, for all service types */
 export const numCqcRatingMetricId = (rating: CqcRatingId) =>
-  `cqcr_num_${rating}_adult_social_care` as const;
+  cqcRatingCountMetricId(rating, ALL_CQC_SERVICE_TYPES);
 
-/** The percentage of inspected locations with each rating */
+/** The percentage of inspected locations with each rating, for all service types */
 export const percCqcRatingMetricId = (rating: CqcRatingId) =>
   `cqcr_pct_inspected_${rating}_adult_social_care` as const;
 
 /** All inspected locations: the total the percentages are of */
-export const NUM_CQC_INSPECTED_LOCATIONS =
-  'cqci_num_inspected_adult_social_care';
+export const NUM_CQC_INSPECTED_LOCATIONS = cqcInspectedCountMetricId(
+  ALL_CQC_SERVICE_TYPES
+);
 
 const CQC_RATINGS_HELP_URL = '/help/cqc-ratings-of-adult-social-care-locations';
 

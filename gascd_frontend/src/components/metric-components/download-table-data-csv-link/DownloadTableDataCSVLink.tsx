@@ -16,6 +16,9 @@ type Props = {
   filename?: string;
   xLabel: string;
   downloadType: string;
+  // Lines placed above the data, after any sharing guidance: what the table
+  // was filtered to, its date and its source, say
+  notes?: string[];
 };
 
 const DownloadTableDataCSVLink: React.FC<Props> = ({
@@ -24,6 +27,7 @@ const DownloadTableDataCSVLink: React.FC<Props> = ({
   filename = 'data.csv',
   xLabel,
   downloadType,
+  notes = [],
 }) => {
   // Taken from the surrounding tabs, so the guidance in the CSV always matches
   // the label shown above the figure
@@ -33,7 +37,7 @@ const DownloadTableDataCSVLink: React.FC<Props> = ({
     e.preventDefault();
     AnalyticsService.trackDownloadCSV(filename);
 
-    const notice = getSharingCsvNotice(sharingCategory);
+    const notice = [...getSharingCsvNotice(sharingCategory), ...notes];
 
     if (tableref?.current) {
       const csv_data = extractTableCellText(tableref.current);
