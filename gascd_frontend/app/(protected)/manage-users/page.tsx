@@ -8,12 +8,15 @@ import {
 } from '@/lib/manageUsersServer';
 import {
   APPROVER_DESCRIPTIONS,
+  GRANT_BASIS_NI,
+  groupDelegatedApprovers,
   groupManagedUsers,
   MANAGE_USERS_PAGE_SIZE,
   ManagedUser,
 } from '@/lib/manageUsers';
 import UsersTable from './UsersTable';
 import UsersPagination from './UsersPagination';
+import DelegatedApproversTable from './delegated-approvers/DelegatedApproversTable';
 import { SIGN_IN_URL } from '@/lib/signInUrl';
 
 const formatDate = (date: Date) =>
@@ -79,6 +82,18 @@ const BANNERS: Record<
       </p>
     ),
   }),
+  'approver-removed': (user: ManagedUser, emailStatus?: string) => ({
+    heading: `${user.name} is no longer a delegated approver`,
+    body: (
+      <p className="govuk-body" data-testid="approver-email-status">
+        They can still view your organisation&apos;s data, and anyone they gave
+        access to keeps it.{' '}
+        {emailStatus === 'sent'
+          ? `We've sent an email to ${user.email} to let them know.`
+          : 'We could not send them an email, so let them know yourself.'}
+      </p>
+    ),
+  }),
   restored: (user: ManagedUser, emailStatus?: string) => ({
     heading: `${user.name}'s access has been restored`,
     body:
@@ -112,11 +127,10 @@ export default async function ManageUsersPage({ searchParams }: Props) {
     user: changedUserId,
     email: emailStatus,
   } = await searchParams;
-  const users = groupManagedUsers(
-    await listProviderGrants(context.providerCode),
-    context,
-    user.id
-  );
+  const grants = await listProviderGrants(context.providerCode);
+  const users = groupManagedUsers(grants, context, user.id);
+  const canAppoint = context.basis === GRANT_BASIS_NI;
+  const approvers = canAppoint ? groupDelegatedApprovers(grants, user.id) : [];
   const totalPages = Math.max(
     1,
     Math.ceil(users.length / MANAGE_USERS_PAGE_SIZE)
@@ -202,6 +216,30 @@ export default async function ManageUsersPage({ searchParams }: Props) {
       <UsersTable users={pageUsers} />
       {totalPages > 1 && (
         <UsersPagination currentPage={currentPage} totalPages={totalPages} />
+      )}
+
+      {canAppoint && (
+        <section aria-labelledby="delegated-approvers-heading">
+          <h2 className="govuk-heading-m" id="delegated-approvers-heading">
+            Delegated approvers
+          </h2>
+          <div className="govuk-grid-row">
+            <div className="govuk-grid-column-two-thirds">
+              <p className="govuk-body">
+                A delegated approver can give and remove access to any location
+                in your organisation, like you. Only a Nominated Individual can
+                appoint or remove them.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/manage-users/delegated-approvers/appoint"
+            className="govuk-button govuk-button--secondary"
+          >
+            Appoint a delegated approver
+          </Link>
+          <DelegatedApproversTable approvers={approvers} />
+        </section>
       )}
     </Layout>
   );
