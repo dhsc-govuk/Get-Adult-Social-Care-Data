@@ -6,7 +6,7 @@
 version: 2
 updates:
   - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/gascd_app" # Location of package manifests
+    directory: "/gascd_frontend" # Location of package manifests
     schedule:
       interval: "weekly"
     # Temporarily disabled because I don't trust npm enough to run automated package updates on anything
