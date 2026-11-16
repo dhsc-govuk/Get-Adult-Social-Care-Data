@@ -17,12 +17,25 @@ export const AUDIT_ACTION_ACCESS_SUSPENDED = 'access_suspended';
 export const AUDIT_ACTION_ACCESS_RESTORED = 'access_restored';
 // Not yet in gascd-apps AccessAuditActions
 export const AUDIT_ACTION_NAME_CHANGED = 'name_changed';
+export const AUDIT_ACTION_INVITE_RESENT = 'invite_resent';
+export const AUDIT_ACTION_INVITE_CANCELLED = 'invite_cancelled';
+export const AUDIT_ACTION_APPROVER_APPOINTED = 'approver_appointed';
+export const AUDIT_ACTION_APPROVER_REMOVED = 'approver_removed';
 export const AUDIT_ACTOR_USER = 'user';
 
 // user.source for people added by an approver
 export const DELEGATED_USER_SOURCE = 'delegated';
 // user.source the gascd-apps CQC sync gives the NIs and RMs it adds
 export const CQC_SYNC_SOURCE_PREFIX = 'Admin file bulk upload';
+
+// The invite email promises this, so changing it means changing the Notify template
+export const INVITE_EXPIRY_DAYS = 30;
+
+export const inviteExpiresAt = (now: Date) => {
+  const expiresAt = new Date(now);
+  expiresAt.setDate(expiresAt.getDate() + INVITE_EXPIRY_DAYS);
+  return expiresAt;
+};
 
 export const ALL_LOCATIONS = 'all';
 export const MANAGE_USERS_PAGE_SIZE = 20;
@@ -33,7 +46,13 @@ export type ProviderLocation = {
   name: string;
 };
 
-export type ApproverBasis = typeof GRANT_BASIS_NI | typeof GRANT_BASIS_RM;
+// How the signed-in approver got their rights; not an access_grant.basis value
+export const DELEGATED_APPROVER = 'delegated_approver';
+
+export type ApproverBasis =
+  | typeof GRANT_BASIS_NI
+  | typeof GRANT_BASIS_RM
+  | typeof DELEGATED_APPROVER;
 
 export type ApproverContext = {
   providerCode: string;
@@ -53,15 +72,17 @@ export type GrantRow = {
   scopeType: string;
   locationCode: string | null;
   basis: string;
+  role: string;
   status: string;
   grantedByUserId: string | null;
   grantedByName: string | null;
   grantedAt: Date;
   expiresAt: Date | null;
   statusChangedAt: Date | null;
+  userHasSignedIn: boolean;
 };
 
-export type UserStatus = 'Active' | 'Invited' | 'Removed';
+export type UserStatus = 'Active' | 'Invited' | 'Invite expired' | 'Removed';
 
 export type ManagedUser = {
   userId: string;
@@ -73,6 +94,8 @@ export type ManagedUser = {
   grantedBy: string;
   grantedAt: Date;
   status: UserStatus;
+  // When a pending invite runs out, or ran out
+  inviteExpiresAt: Date | null;
   canChange: boolean;
   // False when CQC set some of their access, which only an edit can add to
   canRemove: boolean;
@@ -80,19 +103,45 @@ export type ManagedUser = {
   lockedReason: string | null;
 };
 
+// An NI's appointee: approver rights over the whole provider
+export const isDelegatedApproverGrant = (
+  grant: Pick<GrantRow, 'basis' | 'role' | 'scopeType'>
+) =>
+  grant.basis === GRANT_BASIS_DELEGATED &&
+  grant.role === GRANT_ROLE_APPROVER &&
+  grant.scopeType === GRANT_SCOPE_PROVIDER;
+
+// Appointed or invited to be one; a cancelled appointment is suspended
+const holdsDelegatedApprover = (grants: GrantRow[]) =>
+  grants.some(
+    (g) => isDelegatedApproverGrant(g) && g.status !== GRANT_STATUS_SUSPENDED
+  );
+
 // Highest first, so a user with several grants shows their most senior role
-const ROLE_LABELS: [string, string][] = [
-  [GRANT_BASIS_NI, 'Nominated Individual'],
-  [GRANT_BASIS_RM, 'Registered Manager'],
-  [GRANT_BASIS_DELEGATED, 'Invited user'],
+const ROLE_LABELS: [(grants: GrantRow[]) => boolean, string][] = [
+  [
+    (grants) => grants.some((g) => g.basis === GRANT_BASIS_NI),
+    'Nominated Individual',
+  ],
+  [holdsDelegatedApprover, 'Delegated approver'],
+  [
+    (grants) => grants.some((g) => g.basis === GRANT_BASIS_RM),
+    'Registered Manager',
+  ],
+  [
+    (grants) => grants.some((g) => g.basis === GRANT_BASIS_DELEGATED),
+    'Invited user',
+  ],
 ];
 
 const roleFor = (grants: GrantRow[]) =>
-  ROLE_LABELS.find(([basis]) => grants.some((g) => g.basis === basis))?.[1] ??
-  null;
+  ROLE_LABELS.find(([holds]) => holds(grants))?.[1] ?? null;
 
 const isLive = (grant: GrantRow, now: Date) =>
   !grant.expiresAt || grant.expiresAt > now;
+
+export const isExpiredInvite = (grant: GrantRow, now: Date) =>
+  grant.status === GRANT_STATUS_INVITED && !isLive(grant, now);
 
 // Removed users drop off the list a year after their access ended
 const removedOverAYearAgo = (grants: GrantRow[], now: Date) => {
@@ -111,8 +160,22 @@ function statusFor(grants: GrantRow[], now: Date): UserStatus {
   if (grants.some((g) => g.status === GRANT_STATUS_INVITED && isLive(g, now))) {
     return 'Invited';
   }
+  if (grants.some((g) => isExpiredInvite(g, now))) {
+    return 'Invite expired';
+  }
   return 'Removed';
 }
+
+// A cancelled invite: removed before they ever signed in, so there is nothing to restore
+const isCancelledInvite = (grants: GrantRow[], now: Date) =>
+  statusFor(grants, now) === 'Removed' &&
+  !grants.some((g) => g.userHasSignedIn);
+
+const inviteExpiryFor = (grants: GrantRow[]) =>
+  grants
+    .filter((g) => g.status === GRANT_STATUS_INVITED && g.expiresAt)
+    .map((g) => g.expiresAt as Date)
+    .sort((a, b) => b.getTime() - a.getTime())[0] ?? null;
 
 const grantedByLabel = (grant: GrantRow, currentUserId: string) => {
   if (grant.grantedByUserId && grant.grantedByUserId === currentUserId) {
@@ -138,9 +201,26 @@ type ChangeContext = Pick<
   'basis' | 'providerWide' | 'locations'
 >;
 
-// CQC decides an NI's or RM's own access; what the GASCD team set up any approver can change
-export const isFixedGrant = (grant: Pick<GrantRow, 'basis' | 'userSource'>) =>
-  grant.basis !== GRANT_BASIS_DELEGATED && isCqcRegistered(grant);
+// CQC decides a current NI's or RM's own access; once the register drops them, an approver can add them back as a reader
+export const isFixedGrant = (
+  grant: Pick<GrantRow, 'basis' | 'userSource' | 'status'>
+) =>
+  grant.basis !== GRANT_BASIS_DELEGATED &&
+  grant.status !== GRANT_STATUS_SUSPENDED &&
+  isCqcRegistered(grant);
+
+// Re-adding only ever gives reader access: approver rights come from the CQC register or an NI's appointment
+export const delegatedReaderFields = (actorId: string, now: Date) => ({
+  basis: GRANT_BASIS_DELEGATED,
+  role: GRANT_ROLE_READER,
+  source: GRANT_SOURCE_APPROVER,
+  granted_by_user_id: actorId,
+  granted_at: now,
+});
+
+// Prefix of the bans the gascd-apps CQC sync makes (UserUploadedFileProcessor.CqcBanReasonPrefix)
+export const CQC_BAN_REASON_PREFIX =
+  'User does not have an active location assignment';
 
 // An approver who is not provider-wide only sees their own locations, and users with access to them
 export function visibleGrants<
@@ -173,9 +253,24 @@ export function lockedReason(
   const visible = visibleGrants(grants, context);
   if (visible.length === 0) return 'No access you can change';
   if (visible.some((g) => g.userId === currentUserId)) return 'Your own access';
+  // Delegated approvers act for an NI, so they never change one
+  if (
+    context.basis === DELEGATED_APPROVER &&
+    grants.some(
+      (g) => g.basis === GRANT_BASIS_NI && g.status !== GRANT_STATUS_SUSPENDED
+    )
+  ) {
+    return 'Only a Nominated Individual can change this user';
+  }
+  if (holdsDelegatedApprover(grants)) {
+    return context.basis === GRANT_BASIS_NI
+      ? 'Change under delegated approvers'
+      : 'Only a Nominated Individual can change this user';
+  }
   const fixed = fixedGrants(grants, context);
   const niCanAddLocations =
-    context.basis === GRANT_BASIS_NI &&
+    (context.basis === GRANT_BASIS_NI ||
+      context.basis === DELEGATED_APPROVER) &&
     fixed.every(
       (g) => g.basis === GRANT_BASIS_RM && g.scopeType === GRANT_SCOPE_LOCATION
     );
@@ -203,7 +298,9 @@ export function groupManagedUsers(
   rows: GrantRow[],
   context: ApproverContext,
   currentUserId: string,
-  now: Date = new Date()
+  now: Date = new Date(),
+  // The banner after cancelling still needs the user the list now hides
+  includeCancelled = false
 ): ManagedUser[] {
   const locationNames = new Map(
     context.locations.map((location) => [location.code, location.name])
@@ -217,13 +314,16 @@ export function groupManagedUsers(
 
   const users = Array.from(byUser.values())
     .filter((grants) => !removedOverAYearAgo(grants, now))
+    .filter((grants) => includeCancelled || !isCancelledInvite(grants, now))
     .map((grants) => {
       const earliest = grants.reduce((a, b) =>
         b.grantedAt < a.grantedAt ? b : a
       );
       // A removed user still lists what Restore would give back
       const live = grants.filter(
-        (g) => g.status !== GRANT_STATUS_SUSPENDED && isLive(g, now)
+        (g) =>
+          g.status !== GRANT_STATUS_SUSPENDED &&
+          (isLive(g, now) || isExpiredInvite(g, now))
       );
       const shown = live.length > 0 ? live : grants;
       const allLocations = shown.some(
@@ -247,6 +347,7 @@ export function groupManagedUsers(
         grantedBy: grantedByLabel(earliest, currentUserId),
         grantedAt: earliest.grantedAt,
         status: statusFor(grants, now),
+        inviteExpiresAt: inviteExpiryFor(grants),
         canChange: canChangeUser(grants, context, currentUserId),
         canRemove:
           canChangeUser(grants, context, currentUserId) &&
@@ -471,4 +572,71 @@ export function paginationItems(
 export const APPROVER_DESCRIPTIONS: Record<ApproverBasis, string> = {
   [GRANT_BASIS_NI]: 'a Nominated Individual',
   [GRANT_BASIS_RM]: 'a Registered Manager',
+  [DELEGATED_APPROVER]: 'a delegated approver',
 };
+
+export type ApproverStatus = 'Active' | 'Invited' | 'Invite expired';
+
+export type DelegatedApprover = {
+  userId: string;
+  name: string;
+  email: string;
+  status: ApproverStatus;
+  appointedAt: Date;
+  appointedBy: string;
+  inviteExpiresAt: Date | null;
+};
+
+// Cancelled invites (suspended) and removed approvers (now readers) drop off
+export function groupDelegatedApprovers(
+  rows: GrantRow[],
+  currentUserId: string,
+  now: Date = new Date()
+): DelegatedApprover[] {
+  return rows
+    .filter(
+      (g) => isDelegatedApproverGrant(g) && g.status !== GRANT_STATUS_SUSPENDED
+    )
+    .map((g) => ({
+      userId: g.userId,
+      name: g.userName || g.userEmail,
+      email: g.userEmail,
+      status:
+        g.status === GRANT_STATUS_ACTIVE
+          ? ('Active' as const)
+          : isLive(g, now)
+            ? ('Invited' as const)
+            : ('Invite expired' as const),
+      appointedAt: g.grantedAt,
+      appointedBy: grantedByLabel(g, currentUserId),
+      inviteExpiresAt: g.status === GRANT_STATUS_INVITED ? g.expiresAt : null,
+    }))
+    .sort((a, b) =>
+      a.name.localeCompare(b.name, 'en', { sensitivity: 'base' })
+    );
+}
+
+export type AppointFields = { name: string; email: string };
+export type AppointErrors = Partial<Record<keyof AppointFields, string>>;
+
+export const EMAIL_FORMAT_ERROR =
+  'Enter an email address in the correct format, like name@example.com';
+
+export function validateAppoint(
+  fields: AppointFields,
+  actorEmails: string[]
+): AppointErrors {
+  const name = fields.name.trim();
+  const email = fields.email.trim().toLowerCase();
+  const errors: AppointErrors = {};
+  if (!name) errors.name = 'Enter their full name';
+  else if (name.length > MAX_FIELD_LENGTH) {
+    errors.name = `Full name must be ${MAX_FIELD_LENGTH} characters or fewer`;
+  }
+  if (email.length > MAX_FIELD_LENGTH || !EMAIL_PATTERN.test(email)) {
+    errors.email = EMAIL_FORMAT_ERROR;
+  } else if (actorEmails.some((own) => own.toLowerCase() === email)) {
+    errors.email = 'You cannot appoint yourself as a delegated approver';
+  }
+  return errors;
+}

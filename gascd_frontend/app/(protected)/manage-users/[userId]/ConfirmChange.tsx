@@ -2,11 +2,18 @@
 
 import React, { useState, useTransition } from 'react';
 import Link from 'next/link';
-import { removeUser, restoreUser } from './actions';
+import { cancelInvite, removeUser, resendInvite, restoreUser } from './actions';
+
+const KINDS = {
+  remove: { action: removeUser, label: 'Remove access', warning: true },
+  restore: { action: restoreUser, label: 'Restore access', warning: false },
+  resend: { action: resendInvite, label: 'Resend invite', warning: false },
+  cancel: { action: cancelInvite, label: 'Cancel invite', warning: true },
+};
 
 type Props = {
   userId: string;
-  kind: 'remove' | 'restore';
+  kind: keyof typeof KINDS;
 };
 
 const ConfirmChange: React.FC<Props> = ({ userId, kind }) => {
@@ -16,9 +23,7 @@ const ConfirmChange: React.FC<Props> = ({ userId, kind }) => {
   const confirm = () =>
     startTransition(async () => {
       // Success redirects, so only errors come back
-      const result = await (kind === 'remove' ? removeUser : restoreUser)(
-        userId
-      );
+      const result = await KINDS[kind].action(userId);
       setError(result.error);
     });
 
@@ -32,15 +37,15 @@ const ConfirmChange: React.FC<Props> = ({ userId, kind }) => {
       <div className="govuk-button-group">
         <button
           type="button"
-          className={`govuk-button ${kind === 'remove' ? 'govuk-button--warning' : ''}`}
+          className={`govuk-button ${KINDS[kind].warning ? 'govuk-button--warning' : ''}`}
           data-module="govuk-button"
           disabled={isPending}
           onClick={confirm}
         >
-          {kind === 'remove' ? 'Remove access' : 'Restore access'}
+          {KINDS[kind].label}
         </button>
         <Link href="/manage-users" className="govuk-link">
-          Cancel
+          {kind === 'cancel' ? 'Keep invite' : 'Cancel'}
         </Link>
       </div>
     </>

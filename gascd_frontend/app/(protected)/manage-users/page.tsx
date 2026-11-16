@@ -8,21 +8,40 @@ import {
 } from '@/lib/manageUsersServer';
 import {
   APPROVER_DESCRIPTIONS,
+  GRANT_BASIS_NI,
+  groupDelegatedApprovers,
   groupManagedUsers,
   MANAGE_USERS_PAGE_SIZE,
   ManagedUser,
 } from '@/lib/manageUsers';
 import UsersTable from './UsersTable';
 import UsersPagination from './UsersPagination';
+import DelegatedApproversTable from './delegated-approvers/DelegatedApproversTable';
+import { SIGN_IN_URL } from '@/lib/signInUrl';
 
-// Same address One Login sends people back to, so it's right in every environment
-const SIGN_IN_URL = `${process.env.BETTER_AUTH_URL ?? ''}${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/login`;
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'Europe/London',
+  });
+
+const EMAIL_MESSAGES: Record<string, (user: ManagedUser) => string> = {
+  sent: (user) =>
+    `We've sent an email to ${user.email} telling them how to sign in.`,
+  failed: () =>
+    'We could not send them an email. Share these details with them directly. They can start using GASCD from today.',
+};
 
 const BANNERS: Record<
   string,
-  (user: ManagedUser) => { heading: string; body?: React.ReactNode }
+  (
+    user: ManagedUser,
+    emailStatus?: string
+  ) => { heading: string; body?: React.ReactNode }
 > = {
-  added: (user: ManagedUser) => ({
+  added: (user: ManagedUser, emailStatus?: string) => ({
     heading: `${user.name} has been given access`,
     body: (
       <>
@@ -33,10 +52,8 @@ const BANNERS: Record<
           </a>{' '}
           using GOV.UK One Login with the email address {user.email}.
         </p>
-        <p className="govuk-body">
-          Emails will be sent to newly registered users once a week. In the
-          meantime, you can share these details with them directly and they can
-          start using GASCD from today.
+        <p className="govuk-body" data-testid="invite-email-status">
+          {(EMAIL_MESSAGES[emailStatus ?? ''] ?? EMAIL_MESSAGES.failed)(user)}
         </p>
       </>
     ),
@@ -47,8 +64,44 @@ const BANNERS: Record<
   removed: (user: ManagedUser) => ({
     heading: `${user.name}'s access has been removed`,
   }),
-  restored: (user: ManagedUser) => ({
+  resent: (user: ManagedUser, emailStatus?: string) => ({
+    heading: `${user.name}'s invite has been resent`,
+    body: (
+      <p className="govuk-body" data-testid="invite-email-status">
+        {emailStatus === 'sent'
+          ? `We've sent a new email to ${user.email}.${user.inviteExpiresAt ? ` The invite now expires on ${formatDate(user.inviteExpiresAt)}.` : ''}`
+          : EMAIL_MESSAGES.failed(user)}
+      </p>
+    ),
+  }),
+  cancelled: (user: ManagedUser) => ({
+    heading: `The invite to ${user.name} has been cancelled`,
+    body: (
+      <p className="govuk-body">
+        {user.email} will no longer be able to access the service.
+      </p>
+    ),
+  }),
+  'approver-removed': (user: ManagedUser, emailStatus?: string) => ({
+    heading: `${user.name} is no longer a delegated approver`,
+    body: (
+      <p className="govuk-body" data-testid="approver-email-status">
+        They can still view your organisation&apos;s data, and anyone they gave
+        access to keeps it.{' '}
+        {emailStatus === 'sent'
+          ? `We've sent an email to ${user.email} to let them know.`
+          : 'We could not send them an email, so let them know yourself.'}
+      </p>
+    ),
+  }),
+  restored: (user: ManagedUser, emailStatus?: string) => ({
     heading: `${user.name}'s access has been restored`,
+    body:
+      emailStatus && EMAIL_MESSAGES[emailStatus] ? (
+        <p className="govuk-body" data-testid="invite-email-status">
+          {EMAIL_MESSAGES[emailStatus](user)}
+        </p>
+      ) : undefined,
   }),
 };
 
@@ -58,7 +111,12 @@ const breadcrumbs = [
 ];
 
 type Props = {
-  searchParams: Promise<{ page?: string; done?: string; user?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    done?: string;
+    user?: string;
+    email?: string;
+  }>;
 };
 
 export default async function ManageUsersPage({ searchParams }: Props) {
@@ -68,12 +126,16 @@ export default async function ManageUsersPage({ searchParams }: Props) {
   const context = await getApproverContext(user);
   if (!context) notFound();
 
-  const { page, done, user: changedUserId } = await searchParams;
-  const users = groupManagedUsers(
-    await listProviderGrants(context.providerCode),
-    context,
-    user.id
-  );
+  const {
+    page,
+    done,
+    user: changedUserId,
+    email: emailStatus,
+  } = await searchParams;
+  const grants = await listProviderGrants(context.providerCode);
+  const users = groupManagedUsers(grants, context, user.id);
+  const canAppoint = context.basis === GRANT_BASIS_NI;
+  const approvers = canAppoint ? groupDelegatedApprovers(grants, user.id) : [];
   const totalPages = Math.max(
     1,
     Math.ceil(users.length / MANAGE_USERS_PAGE_SIZE)
@@ -87,12 +149,19 @@ export default async function ManageUsersPage({ searchParams }: Props) {
     currentPage * MANAGE_USERS_PAGE_SIZE
   );
 
-  const changedUser = changedUserId
-    ? users.find((u) => u.userId === changedUserId)
-    : undefined;
+  const changedUser = !changedUserId
+    ? undefined
+    : (users.find((u) => u.userId === changedUserId) ??
+      groupManagedUsers(
+        await listProviderGrants(context.providerCode, changedUserId),
+        context,
+        user.id,
+        new Date(),
+        true
+      )[0]);
   const banner =
     changedUser && done && Object.hasOwn(BANNERS, done)
-      ? BANNERS[done](changedUser)
+      ? BANNERS[done](changedUser, emailStatus)
       : null;
 
   return (
@@ -153,6 +222,30 @@ export default async function ManageUsersPage({ searchParams }: Props) {
       <UsersTable users={pageUsers} />
       {totalPages > 1 && (
         <UsersPagination currentPage={currentPage} totalPages={totalPages} />
+      )}
+
+      {canAppoint && (
+        <section aria-labelledby="delegated-approvers-heading">
+          <h2 className="govuk-heading-m" id="delegated-approvers-heading">
+            Delegated approvers
+          </h2>
+          <div className="govuk-grid-row">
+            <div className="govuk-grid-column-two-thirds">
+              <p className="govuk-body">
+                A delegated approver can give and remove access to any location
+                in your organisation, like you. Only a Nominated Individual can
+                appoint or remove them.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/manage-users/delegated-approvers/appoint"
+            className="govuk-button govuk-button--secondary"
+          >
+            Appoint a delegated approver
+          </Link>
+          <DelegatedApproversTable approvers={approvers} />
+        </section>
       )}
     </Layout>
   );
