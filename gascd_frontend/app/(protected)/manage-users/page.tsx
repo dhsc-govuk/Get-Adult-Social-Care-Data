@@ -9,6 +9,7 @@ import {
 import {
   APPROVER_DESCRIPTIONS,
   GRANT_BASIS_NI,
+  GRANT_BASIS_RM,
   groupDelegatedApprovers,
   groupManagedUsers,
   MANAGE_USERS_PAGE_SIZE,
@@ -18,6 +19,12 @@ import UsersTable from './UsersTable';
 import Pagination from '@/components/common/pagination/Pagination';
 import DelegatedApproversTable from './delegated-approvers/DelegatedApproversTable';
 import { SIGN_IN_URL } from '@/lib/signInUrl';
+import { getReview } from '@/lib/accessReviewServer';
+import {
+  REVIEW_TYPE_APPROVERS,
+  REVIEW_TYPE_USERS,
+  reviewStatus,
+} from '@/lib/accessReview';
 
 const formatDate = (date: Date) =>
   date.toLocaleDateString('en-GB', {
@@ -105,6 +112,33 @@ const BANNERS: Record<
   }),
 };
 
+// Banners for a completed review, which isn't about one user
+const REVIEW_BANNERS: Record<
+  string,
+  (removed: number) => { heading: string; body?: React.ReactNode }
+> = {
+  'users-reviewed': () => ({
+    heading: 'You have confirmed this list is up to date',
+    body: (
+      <p className="govuk-body">
+        Thank you. We will ask again in a year. Nobody else who manages access
+        for your organisation needs to check it before then.
+      </p>
+    ),
+  }),
+  'approvers-reviewed': (removed) => ({
+    heading: 'You have reviewed your delegated approvers',
+    body: (
+      <p className="govuk-body">
+        {removed > 0
+          ? `${removed === 1 ? '1 person is' : `${removed} people are`} no longer a delegated approver. `
+          : ''}
+        We will ask you to review them again in a year.
+      </p>
+    ),
+  }),
+};
+
 const breadcrumbs = [
   { text: 'Home', url: '/home' },
   { text: 'Manage users', url: '/manage-users' },
@@ -116,6 +150,7 @@ type Props = {
     done?: string;
     user?: string;
     email?: string;
+    removed?: string;
   }>;
 };
 
@@ -131,6 +166,7 @@ export default async function ManageUsersPage({ searchParams }: Props) {
     done,
     user: changedUserId,
     email: emailStatus,
+    removed,
   } = await searchParams;
   const grants = await listProviderGrants(context.providerCode);
   const users = groupManagedUsers(grants, context, user.id);
@@ -162,7 +198,48 @@ export default async function ManageUsersPage({ searchParams }: Props) {
   const banner =
     changedUser && done && Object.hasOwn(BANNERS, done)
       ? BANNERS[done](changedUser, emailStatus)
+      : done && Object.hasOwn(REVIEW_BANNERS, done)
+        ? REVIEW_BANNERS[done](Number.parseInt(removed ?? '0', 10) || 0)
+        : null;
+
+  // The user review is for the whole organisation, so RMs don't get it
+  const usersReview =
+    context.basis === GRANT_BASIS_RM
+      ? null
+      : reviewStatus(
+          REVIEW_TYPE_USERS,
+          await getReview(context.providerCode, REVIEW_TYPE_USERS)
+        );
+  const approversReview =
+    canAppoint && approvers.length > 0
+      ? reviewStatus(
+          REVIEW_TYPE_APPROVERS,
+          await getReview(context.providerCode, REVIEW_TYPE_APPROVERS)
+        )
       : null;
+  const reviewsDue = [
+    approversReview?.due &&
+      approversReview.deadline && {
+        id: 'approvers',
+        heading: `Review your delegated approvers by ${formatDate(approversReview.deadline)}`,
+        body: 'If nobody who is a Nominated Individual for your organisation reviews them by then, they will no longer be able to give or remove access.',
+        href: '/manage-users/delegated-approvers/review',
+        link: 'Review your delegated approvers',
+      },
+    usersReview?.due && {
+      id: 'users',
+      heading: 'It’s time for your yearly check of who has access',
+      body: 'Make sure everyone on your list still needs access, then confirm it is up to date.',
+      href: '/manage-users/review',
+      link: 'Review who has access',
+    },
+  ].filter(Boolean) as {
+    id: string;
+    heading: string;
+    body: string;
+    href: string;
+    link: string;
+  }[];
 
   return (
     <Layout
@@ -198,6 +275,42 @@ export default async function ManageUsersPage({ searchParams }: Props) {
           </div>
         </div>
       )}
+
+      {!banner &&
+        reviewsDue.map((review) => (
+          <div className="govuk-grid-row" key={review.id}>
+            <div className="govuk-grid-column-two-thirds">
+              <div
+                className="govuk-notification-banner"
+                role="region"
+                aria-labelledby={`review-${review.id}-title`}
+                data-module="govuk-notification-banner"
+                data-testid={`review-due-${review.id}`}
+              >
+                <div className="govuk-notification-banner__header">
+                  <h2
+                    className="govuk-notification-banner__title"
+                    id={`review-${review.id}-title`}
+                  >
+                    Important
+                  </h2>
+                </div>
+                <div className="govuk-notification-banner__content">
+                  <p className="govuk-notification-banner__heading">
+                    {review.heading}
+                  </p>
+                  <p className="govuk-body">{review.body}</p>
+                  <Link
+                    className="govuk-notification-banner__link"
+                    href={review.href}
+                  >
+                    {review.link}
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
 
       <span className="govuk-caption-l">{context.providerName}</span>
       <h1 className="govuk-heading-l">Manage users</h1>
