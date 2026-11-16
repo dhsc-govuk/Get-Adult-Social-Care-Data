@@ -18,6 +18,10 @@ const TEMPLATES = {
   approverInvited: '2d1e687c-5ee1-4541-bec6-565c6f307c6f',
   approverAppointed: 'ad23060c-964c-411c-8b5c-026fe48d4bc3',
   approverRemoved: '9b2057e3-4b6d-4804-aaf9-34569a0ded74',
+  userReviewReminder: '8a677d0d-051f-48e9-9619-619af31eb1ff',
+  approverReview60Days: 'e7320308-6d72-4b71-9044-922a5257343c',
+  approverReview30Days: '14b819ce-8abf-4198-80e2-829c0c4014e0',
+  approverReview7Days: 'f0282518-ca4e-48f9-940f-d8c08e402551',
 };
 
 const expiryDate = (date: Date) =>
