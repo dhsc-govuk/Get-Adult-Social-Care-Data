@@ -143,7 +143,9 @@ describe('CategoryBreakdownSection', () => {
     ).toBeInTheDocument();
     // Once under the table and once under the chart
     expect(
-      screen.getAllByText('Source: Care Quality Commission (CQC)')
+      screen.getAllByText(
+        'Source: Care Directory from the Care Quality Commission (CQC)'
+      )
     ).toHaveLength(2);
   });
 

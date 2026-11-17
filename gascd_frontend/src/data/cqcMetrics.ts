@@ -19,7 +19,6 @@ import {
   NUM_CQC_UNINSPECTED_LOCATIONS,
   PERC_CQC_INSPECTED_LOCATIONS,
   PERC_CQC_UNINSPECTED_LOCATIONS,
-  SOURCES,
   cqcInspectedCountMetricId,
   cqcRatingCountMetricId,
   numCqcRatingMetricId,
@@ -42,8 +41,6 @@ export {
   percCqcRatingMetricId,
 };
 export type { CqcRatingId, CqcServiceTypeId };
-
-export const CQC_RATINGS_SOURCE = SOURCES.cqcRatings;
 
 /**
  * The colour each rating is drawn in, used wherever a rating is shown. The

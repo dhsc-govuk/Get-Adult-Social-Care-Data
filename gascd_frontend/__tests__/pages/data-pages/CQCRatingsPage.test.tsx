@@ -110,7 +110,9 @@ describe('CQCRatingsPage', () => {
     // Both of the first section's, the second's table (its chart has no
     // source line until its data has loaded) and the third's table
     expect(
-      screen.getAllByText('Source: Care Quality Commission (CQC)')
+      screen.getAllByText(
+        'Source: Care Directory from the Care Quality Commission (CQC)'
+      )
     ).toHaveLength(4);
   });
 

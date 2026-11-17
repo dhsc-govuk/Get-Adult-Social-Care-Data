@@ -34,7 +34,6 @@ export const SOURCES = {
     'Population estimates from the Office for National Statistics (ONS)',
   capacityTrackerWithOnsPopulation:
     'Capacity Tracker from the Department of Health and Social Care (DHSC) & population estimates from ONS',
-  cqcRatings: 'Care Quality Commission (CQC)',
 } as const;
 
 export type MetricFormat = 'number' | 'percentage' | 'currency';
@@ -305,7 +304,7 @@ const cqcRatingMetrics = Object.fromEntries(
       {
         label: CQC_RATINGS[id],
         format: 'number',
-        source: SOURCES.cqcRatings,
+        source: SOURCES.cqcCareDirectory,
         helpUrl: CQC_RATINGS_HELP_URL,
       },
     ],
@@ -314,7 +313,7 @@ const cqcRatingMetrics = Object.fromEntries(
       {
         label: CQC_RATINGS[id],
         format: 'percentage',
-        source: SOURCES.cqcRatings,
+        source: SOURCES.cqcCareDirectory,
         helpUrl: CQC_RATINGS_HELP_URL,
       },
     ],
@@ -333,31 +332,31 @@ export const METRICS = {
   [NUM_CQC_INSPECTED_LOCATIONS]: {
     label: 'All inspected locations',
     format: 'number',
-    source: SOURCES.cqcRatings,
+    source: SOURCES.cqcCareDirectory,
     helpUrl: CQC_RATINGS_HELP_URL,
   },
   [PERC_CQC_INSPECTED_LOCATIONS]: {
     label: 'Inspected',
     format: 'percentage',
-    source: SOURCES.cqcRatings,
+    source: SOURCES.cqcCareDirectory,
     helpUrl: CQC_INSPECTION_STATUS_HELP_URL,
   },
   [NUM_CQC_UNINSPECTED_LOCATIONS]: {
     label: 'Not yet inspected',
     format: 'number',
-    source: SOURCES.cqcRatings,
+    source: SOURCES.cqcCareDirectory,
     helpUrl: CQC_INSPECTION_STATUS_HELP_URL,
   },
   [PERC_CQC_UNINSPECTED_LOCATIONS]: {
     label: 'Not yet inspected',
     format: 'percentage',
-    source: SOURCES.cqcRatings,
+    source: SOURCES.cqcCareDirectory,
     helpUrl: CQC_INSPECTION_STATUS_HELP_URL,
   },
   [NUM_CQC_LOCATIONS]: {
     label: 'All locations',
     format: 'number',
-    source: SOURCES.cqcRatings,
+    source: SOURCES.cqcCareDirectory,
     helpUrl: CQC_INSPECTION_STATUS_HELP_URL,
   },
 

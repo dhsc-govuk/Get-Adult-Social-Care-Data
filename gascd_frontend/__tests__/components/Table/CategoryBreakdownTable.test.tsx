@@ -181,7 +181,9 @@ describe('CategoryBreakdownTable', () => {
       'rgb(29, 112, 184)'
     );
     expect(
-      screen.getByText('Source: Care Quality Commission (CQC)')
+      screen.getByText(
+        'Source: Care Directory from the Care Quality Commission (CQC)'
+      )
     ).toBeInTheDocument();
   });
 
