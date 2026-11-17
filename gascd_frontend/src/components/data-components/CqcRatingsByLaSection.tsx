@@ -9,7 +9,6 @@ import SearchableCheckboxFilter from '@/components/filters/SearchableCheckboxFil
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { ComparatorControls } from '@/components/charts/peer-group/useComparatorControls';
 import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
-import { ComparatorSelection } from '@/components/charts/peer-group/types';
 import { NHS_PEER_GROUP_TOTAL_LABEL } from '@/components/charts/peer-group/constants';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import IndicatorService from '@/services/indicator/IndicatorService';
@@ -31,9 +30,10 @@ import {
   cqcRatingCountMetricId,
   percCqcRatingMetricId,
 } from '@/data/cqcMetrics';
+import { shareOfTotal } from '@/helpers/categoryBreakdown';
 import {
+  benchmarkFailed,
   shareBenchmark,
-  shareOfTotal,
   sumForLocationType,
 } from '@/helpers/ratingBenchmark';
 
@@ -51,9 +51,6 @@ type Props = {
 };
 
 const NATIONAL_LABEL = 'England (national)';
-const NHS_PEER_GROUP_SELECTION: ComparatorSelection = {
-  kind: 'nhs_peer_group',
-};
 
 // "a", "a and b" or "a, b and c"
 const listed = (items: string[]): string =>
@@ -116,15 +113,6 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
     comparator.groups
   );
 
-  // The region's chart keeps the NHS peer group's line, as the other peer
-  // group charts do, so its counts are fetched when the region is selected
-  const nhsPeer = usePeerGroupData(
-    comparator.comparatorIsRegion ? laCode : undefined,
-    metricIds,
-    NHS_PEER_GROUP_SELECTION,
-    comparator.groups
-  );
-
   useEffect(() => {
     if (!laCode) return;
     let cancelled = false;
@@ -173,29 +161,6 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
       ),
     [peer.dataByMetric, countMetricIds, inspectedMetricIds, laCode]
   );
-  const peerData = useMemo(
-    () =>
-      benchmark.peerData && comparator.comparatorIsRegion
-        ? {
-            ...benchmark.peerData,
-            nhsPeerGroupAverage:
-              shareBenchmark(
-                nhsPeer.dataByMetric,
-                countMetricIds,
-                inspectedMetricIds,
-                laCode
-              ).peerData?.averagePeerGroup ?? null,
-          }
-        : benchmark.peerData,
-    [
-      benchmark.peerData,
-      comparator.comparatorIsRegion,
-      nhsPeer.dataByMetric,
-      countMetricIds,
-      inspectedMetricIds,
-      laCode,
-    ]
-  );
   const barDetails = Object.fromEntries(
     Object.entries({
       ...benchmark.countsByName,
@@ -203,8 +168,13 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
     }).map(([name, count]) => [name, TableService.formatDataPoint(count)])
   );
 
-  const loading = peer.loading || nhsPeer.loading || baseStatus === 'loading';
-  const error = peer.error || baseStatus === 'error';
+  const loading = peer.loading || baseStatus === 'loading';
+  // usePeerGroupData only reports an error when every metric fails, but the
+  // percentages need every count, so one failed request is an error here
+  const error =
+    peer.error ||
+    baseStatus === 'error' ||
+    benchmarkFailed(peer.dataByMetric, metricIds);
 
   const ratingLabel = CQC_RATINGS[rating];
   const serviceTypesText = serviceTypes.length
@@ -306,6 +276,9 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
         table={
           <>
             {controls('table')}
+            {!loading && error && (
+              <p className="govuk-body">Data not available</p>
+            )}
             <PeerGroupTable
               tableref={tableref}
               caption={
@@ -320,7 +293,7 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
               laCode={laCode ?? ''}
               laName={laName}
               currentLaValue={laValue}
-              peerData={peerData}
+              peerData={benchmark.peerData}
               loading={loading}
               comparatorAverageLabel={groupLabel}
               comparatorIsRegion={comparator.comparatorIsRegion}
@@ -343,7 +316,7 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
               currentLaValue={laValue}
               nationalAverageValue={nationalValue}
               regionalAverageValue={regionalValue}
-              peerData={peerData}
+              peerData={benchmark.peerData}
               loading={loading}
               error={error}
               comparatorControl={controls('chart')}

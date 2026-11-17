@@ -4,6 +4,7 @@ import {
   breakdownBars,
   breakdownValue,
   mergeComparatorTotals,
+  shareOfTotal,
 } from '@/helpers/categoryBreakdown';
 import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
 import { PeerGroupData } from '@/components/charts/peer-group/types';
@@ -216,5 +217,21 @@ describe('breakdownBars', () => {
 
     expect(chart.segments[0].values).toEqual([60, null]);
     expect(chart.segments[0].counts).toEqual([60, null]);
+  });
+});
+
+describe('shareOfTotal', () => {
+  it('gives the count as a percentage of the total', () => {
+    expect(shareOfTotal(25, 200)).toBe(12.5);
+  });
+
+  it('has no percentage where there is nothing to be a share of', () => {
+    expect(shareOfTotal(0, 0)).toBeNull();
+    expect(shareOfTotal(5, null)).toBeNull();
+    expect(shareOfTotal(null, 10)).toBeNull();
+  });
+
+  it('is 0% where the total has none of the count', () => {
+    expect(shareOfTotal(0, 10)).toBe(0);
   });
 });

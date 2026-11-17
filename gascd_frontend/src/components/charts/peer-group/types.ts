@@ -38,6 +38,10 @@ export interface PeerGroupData {
   nationalAverage: number | null;
   // Only set for the region group, whose charts keep the NHS peer group line
   nhsPeerGroupAverage?: number | null;
+  // The NHS peer group's LAs, also only for the region group, for a figure
+  // worked out from their values rather than averaged; null if they failed
+  // to load
+  nhsPeerGroupPeers?: LocalAuthorityPeer[] | null;
 }
 
 export interface CustomComparatorGroup {

@@ -1,5 +1,9 @@
 import { Indicator } from '@/data/interfaces/Indicator';
-import { PeerGroupData } from '@/components/charts/peer-group/types';
+import {
+  LocalAuthorityPeer,
+  PeerGroupData,
+} from '@/components/charts/peer-group/types';
+import { peerGroupTotal, shareOfTotal } from '@/helpers/categoryBreakdown';
 
 /**
  * Derivations for benchmarking local authorities on the share of a whole that
@@ -11,12 +15,6 @@ import { PeerGroupData } from '@/components/charts/peer-group/types';
  * API's percentage metrics, as a percentage across several service types is
  * not the mean of each type's percentage.
  */
-
-/** A count as a percentage of a total, or null where there is nothing to be a share of */
-export const shareOfTotal = (
-  count: number | null,
-  total: number | null
-): number | null => (count === null || !total ? null : (count / total) * 100);
 
 /**
  * The sum of several metrics for one location type, or null where none of
@@ -53,10 +51,34 @@ export type ShareBenchmark = {
 };
 
 /**
+ * True where a metric's request has failed. The benchmark cannot be worked
+ * out without every one of them.
+ */
+export const benchmarkFailed = (
+  dataByMetric: Record<string, PeerGroupData | null>,
+  metricIds: string[]
+): boolean => metricIds.some((metricId) => dataByMetric[metricId] === null);
+
+/**
+ * True where the NHS peer group's LAs, fetched beside the region's, failed to
+ * load for a metric. The rest of the benchmark stands, without the NHS peer
+ * group's percentage, as on the other peer group charts.
+ */
+const nhsPeerGroupFailed = (
+  dataByMetric: Record<string, PeerGroupData | null>,
+  metricIds: string[]
+): boolean =>
+  metricIds.some(
+    (metricId) => dataByMetric[metricId]?.nhsPeerGroupPeers === null
+  );
+
+/**
  * The comparison group's LAs with their share of the total, from the counts
  * fetched for each metric. An LA whose total is zero has no percentage (not
  * 0%). The group's percentage is its LAs' counts summed over their totals
  * summed, as a region's and England's are, leaving out the user's own LA.
+ * Where the region is the comparison group, the NHS peer group's percentage
+ * is worked out the same way from its own LAs.
  */
 export const shareBenchmark = (
   dataByMetric: Record<string, PeerGroupData | null>,
@@ -92,19 +114,36 @@ export const shareBenchmark = (
     return { ...peer, metricValue };
   });
 
-  const groupSum = (ids: string[]): number =>
-    first.localAuthorityPeers
-      .filter((peer) => peer.code !== ownLaCode)
-      .reduce((sum, peer) => sum + sumFor(peer.code, ids), 0);
+  // Each metric's total is summed as the ratings breakdown sums it
+  // (`peerGroupTotal`), so the two figures cannot disagree
+  const groupShare = (
+    peersOf: (data: PeerGroupData) => LocalAuthorityPeer[] | null | undefined
+  ): number | null => {
+    const groupTotal = (ids: string[]): number | null => {
+      const totals = ids
+        .map((metricId) =>
+          peerGroupTotal(peersOf(dataByMetric[metricId]!), ownLaCode)
+        )
+        .filter((total): total is number => total !== null);
+      return totals.length > 0
+        ? totals.reduce((sum, total) => sum + total, 0)
+        : null;
+    };
+    return shareOfTotal(groupTotal(countMetricIds), groupTotal(totalMetricIds));
+  };
 
   return {
     peerData: {
       localAuthorityPeers,
-      averagePeerGroup: shareOfTotal(
-        groupSum(countMetricIds),
-        groupSum(totalMetricIds)
-      ),
+      averagePeerGroup: groupShare((data) => data.localAuthorityPeers),
       nationalAverage: null,
+      // A percentage from only some of the metrics would be wrong, so there
+      // is none where any of them is missing its NHS peer group
+      ...(first.nhsPeerGroupPeers !== undefined && {
+        nhsPeerGroupAverage: nhsPeerGroupFailed(dataByMetric, metricIds)
+          ? null
+          : groupShare((data) => data.nhsPeerGroupPeers),
+      }),
     },
     countsByName,
     unavailableNames,

@@ -127,13 +127,18 @@ export function usePeerGroupData(
             await fetchCustomGroup(selectedGroup.laCodes, metricCode),
           ] as const;
         }
-        const [data, nhsPeerGroupAverage] = await Promise.all([
+        const [data, nhsPeerGroup] = await Promise.all([
           fetchCustomGroup(selectedGroup.laCodes, metricCode),
-          fetchNhsPeerGroup(laCode, metricCode)
-            .then((peers) => peers.averagePeerGroup)
-            .catch(() => null),
+          fetchNhsPeerGroup(laCode, metricCode).catch(() => null),
         ]);
-        return [metricCode, { ...data, nhsPeerGroupAverage }] as const;
+        return [
+          metricCode,
+          {
+            ...data,
+            nhsPeerGroupAverage: nhsPeerGroup?.averagePeerGroup ?? null,
+            nhsPeerGroupPeers: nhsPeerGroup?.localAuthorityPeers ?? null,
+          },
+        ] as const;
       })
     ).then((results) => {
       if (cancelled) return;

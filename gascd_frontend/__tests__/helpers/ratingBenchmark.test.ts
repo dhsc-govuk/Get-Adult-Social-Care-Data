@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
+  benchmarkFailed,
   shareBenchmark,
-  shareOfTotal,
   sumForLocationType,
 } from '@/helpers/ratingBenchmark';
 import { PeerGroupData } from '@/components/charts/peer-group/types';
@@ -22,22 +22,6 @@ const peers = (values: Record<string, number | null>): PeerGroupData => ({
   })),
   averagePeerGroup: null,
   nationalAverage: null,
-});
-
-describe('shareOfTotal', () => {
-  it('gives the count as a percentage of the total', () => {
-    expect(shareOfTotal(25, 200)).toBe(12.5);
-  });
-
-  it('has no percentage where there is nothing to be a share of', () => {
-    expect(shareOfTotal(0, 0)).toBeNull();
-    expect(shareOfTotal(5, null)).toBeNull();
-    expect(shareOfTotal(null, 10)).toBeNull();
-  });
-
-  it('is 0% where the total has none of the count', () => {
-    expect(shareOfTotal(0, 10)).toBe(0);
-  });
 });
 
 describe('sumForLocationType', () => {
@@ -101,6 +85,58 @@ describe('shareBenchmark', () => {
     expect(result.countsByName).toEqual({ 'LA A': 10, 'LA B': 3 });
   });
 
+  it('gives the group no percentage where none of its LAs has a count, as the ratings breakdown does', () => {
+    expect(
+      shareBenchmark(
+        {
+          good_homes: peers({ A: null, B: null }),
+          inspected_homes: peers({ A: 10, B: 4 }),
+        },
+        ['good_homes'],
+        ['inspected_homes']
+      ).peerData?.averagePeerGroup
+    ).toBeNull();
+  });
+
+  it("works the NHS peer group's percentage out from its own LAs where the region is the comparison group", () => {
+    const withNhsPeers = (
+      values: Record<string, number | null>,
+      nhsValues: Record<string, number | null>
+    ) => ({
+      ...peers(values),
+      nhsPeerGroupPeers: peers(nhsValues).localAuthorityPeers,
+    });
+    const region = shareBenchmark(
+      {
+        good_homes: withNhsPeers({ A: 9 }, { X: 1, Y: 2, OWN: 9 }),
+        inspected_homes: withNhsPeers({ A: 10 }, { X: 4, Y: 8, OWN: 10 }),
+      },
+      ['good_homes'],
+      ['inspected_homes'],
+      'OWN'
+    );
+    expect(region.peerData?.averagePeerGroup).toBe(90);
+    expect(region.peerData?.nhsPeerGroupAverage).toBe(25);
+    // Not set for any other comparison group
+    expect(result.peerData).not.toHaveProperty('nhsPeerGroupAverage');
+  });
+
+  it("keeps the region's percentages, without the NHS peer group's, where its LAs failed to load for a metric", () => {
+    const region = shareBenchmark(
+      {
+        good_homes: {
+          ...peers({ A: 9 }),
+          nhsPeerGroupPeers: peers({ X: 1 }).localAuthorityPeers,
+        },
+        inspected_homes: { ...peers({ A: 10 }), nhsPeerGroupPeers: null },
+      },
+      ['good_homes'],
+      ['inspected_homes']
+    );
+    expect(region.peerData?.averagePeerGroup).toBe(90);
+    expect(region.peerData?.nhsPeerGroupAverage).toBeNull();
+  });
+
   it('has no data until every metric has arrived', () => {
     expect(
       shareBenchmark(
@@ -112,5 +148,36 @@ describe('shareBenchmark', () => {
     expect(
       shareBenchmark({}, ['good_homes'], ['inspected_homes']).peerData
     ).toBeNull();
+  });
+});
+
+describe('benchmarkFailed', () => {
+  const loaded = peers({ A: 1 });
+
+  it('is false while the metrics are loading or once they have all arrived', () => {
+    expect(benchmarkFailed({}, ['count', 'inspected'])).toBe(false);
+    expect(
+      benchmarkFailed({ count: loaded, inspected: loaded }, [
+        'count',
+        'inspected',
+      ])
+    ).toBe(false);
+  });
+
+  it('is true where one metric failed', () => {
+    expect(
+      benchmarkFailed({ count: loaded, inspected: null }, [
+        'count',
+        'inspected',
+      ])
+    ).toBe(true);
+  });
+
+  it("is false where only the NHS peer group's LAs failed beside the region's", () => {
+    expect(
+      benchmarkFailed({ count: { ...loaded, nhsPeerGroupPeers: null } }, [
+        'count',
+      ])
+    ).toBe(false);
   });
 });

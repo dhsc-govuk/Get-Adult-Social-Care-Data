@@ -83,6 +83,12 @@ const comparator = {
   renderComparatorControl: (idPrefix: string) => <p>comparator {idPrefix}</p>,
 } as unknown as ComparatorControls;
 
+const regionComparator = {
+  ...comparator,
+  comparatorIsRegion: true,
+  comparatorAverageLabel: 'East of England (regional average)',
+} as unknown as ComparatorControls;
+
 const renderSection = (
   props: Partial<React.ComponentProps<typeof CqcRatingsByLaSection>> = {}
 ) =>
@@ -264,13 +270,21 @@ describe('CqcRatingsByLaSection', () => {
   });
 
   it('shows the NHS peer group beside the region, in the table and on the chart, when the region is selected', async () => {
-    renderSection({
-      comparator: {
-        ...comparator,
-        comparatorIsRegion: true,
-        comparatorAverageLabel: 'East of England (regional average)',
-      } as unknown as ComparatorControls,
-    });
+    // The region's LAs are the bars and the NHS peer group's come with them
+    mockUsePeerGroupData.mockImplementation((_laCode, metricCodes) => ({
+      dataByMetric: Object.fromEntries(
+        metricCodes.map((metricCode) => [
+          metricCode,
+          {
+            ...peerDataFor(metricCode),
+            nhsPeerGroupPeers: peerDataFor(metricCode).localAuthorityPeers,
+          },
+        ])
+      ),
+      loading: false,
+      error: false,
+    }));
+    renderSection({ comparator: regionComparator });
     await loaded();
 
     expect(bodyRows().slice(0, 4)).toEqual([
@@ -279,11 +293,10 @@ describe('CqcRatingsByLaSection', () => {
       ['NHS peer group', '61.1%'],
       ['Mid Suffolk', '75.0%'],
     ]);
-    // The NHS peer group's counts are asked for alongside the region's
+    // One request serves both groups
     expect(
-      mockUsePeerGroupData.mock.calls.some(
-        ([laCode, , selection]) =>
-          laCode === 'E99' && selection.kind === 'nhs_peer_group'
+      mockUsePeerGroupData.mock.calls.every(
+        ([, , selection]) => selection === regionComparator.selection
       )
     ).toBe(true);
     const layout = JSON.parse(
@@ -396,13 +409,67 @@ describe('CqcRatingsByLaSection', () => {
     expect(mockGetData).not.toHaveBeenCalled();
   });
 
-  it('shows the chart as unavailable when the data cannot be fetched', async () => {
+  it('shows the chart and the table as unavailable when the data cannot be fetched', async () => {
     mockGetData.mockRejectedValue(new Error('Failed'));
     vi.spyOn(console, 'error').mockImplementation(() => {});
     renderSection();
 
     await waitFor(() =>
-      expect(screen.getByText('Data not available')).toBeInTheDocument()
+      expect(screen.getAllByText('Data not available')).toHaveLength(2)
     );
+  });
+
+  it('shows the chart and the table as unavailable when one of the metrics cannot be fetched', async () => {
+    mockUsePeerGroupData.mockImplementation((_laCode, metricCodes) => ({
+      dataByMetric: Object.fromEntries(
+        metricCodes.map((metricCode) => [
+          metricCode,
+          isInspectedMetric(metricCode) ? null : peerDataFor(metricCode),
+        ])
+      ),
+      loading: false,
+      // As the hook reports it: only an error when every metric fails
+      error: false,
+    }));
+    renderSection();
+
+    await waitFor(() =>
+      expect(screen.getAllByText('Data not available')).toHaveLength(2)
+    );
+  });
+
+  it("keeps the chart and the table, without the NHS peer group's percentage, when it cannot be fetched beside the region's, as the other peer group charts do", async () => {
+    mockUsePeerGroupData.mockImplementation((_laCode, metricCodes) => ({
+      dataByMetric: Object.fromEntries(
+        metricCodes.map((metricCode) => [
+          metricCode,
+          { ...peerDataFor(metricCode), nhsPeerGroupPeers: null },
+        ])
+      ),
+      loading: false,
+      error: false,
+    }));
+    renderSection({ comparator: regionComparator });
+    await loaded();
+
+    expect(screen.queryByText('Data not available')).not.toBeInTheDocument();
+    expect(screen.getByText('NHS peer group (N/A)')).toBeInTheDocument();
+    expect(bodyRows().slice(0, 5)).toEqual([
+      ['England (national)', '60.0%'],
+      ['East of England (regional)', '60.0%'],
+      ['NHS peer group', 'N/A'],
+      ['Mid Suffolk', '75.0%'],
+      ['Kent', '90.0%'],
+    ]);
+    // The bars and the other two lines are still drawn
+    const [trace] = JSON.parse(
+      screen.getByTestId('chart-data').textContent ?? '[]'
+    );
+    expect(trace.x).toEqual([90, 75, 25]);
+    const layout = JSON.parse(
+      screen.getByTestId('chart-layout').textContent ?? '{}'
+    );
+    const lines = layout.shapes.filter((shape: any) => shape.type === 'line');
+    expect(lines.map((line: any) => line.x0)).toEqual([60, 60]);
   });
 });
