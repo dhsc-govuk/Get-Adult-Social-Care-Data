@@ -407,8 +407,8 @@ export const HELP_PAGE_SHARING = {
   'estimated-population-early-onset-dementia': 'poppiPansiRestricted',
   'estimated-population-learning-disability': 'poppiPansiRestricted',
   'household-deprivation': 'publicDomain',
-  'inspection-status-of-adult-social-care-locations': 'publicDomain',
   'households-where-property-is-owned-outright': 'publicDomain',
+  'inspection-status-of-adult-social-care-locations': 'publicDomain',
   'learning-disability-prevalence': 'publicDomain',
   'number-people-receiving-care-from-community-social-care-provider':
     'capacityTrackerOwnOrganisation',

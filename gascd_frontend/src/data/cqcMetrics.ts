@@ -85,7 +85,7 @@ export const CQC_INSPECTION_STATUS_CATEGORIES: BreakdownCategory[] = [
     percentageMetric: PERC_CQC_INSPECTED_LOCATIONS,
   },
   {
-    label: METRICS[NUM_CQC_UNINSPECTED_LOCATIONS].label,
+    label: METRICS[PERC_CQC_UNINSPECTED_LOCATIONS].label,
     countMetric: NUM_CQC_UNINSPECTED_LOCATIONS,
     percentageMetric: PERC_CQC_UNINSPECTED_LOCATIONS,
   },
@@ -105,9 +105,11 @@ export const CQC_INSPECTION_STATUS_METRIC_IDS: string[] = [
  * inspected count is in both tables, so it is listed once.
  */
 export const CQC_PAGE_COUNT_METRIC_IDS: string[] = [
-  ...CQC_RATING_COUNT_METRIC_IDS,
-  NUM_CQC_UNINSPECTED_LOCATIONS,
-  NUM_CQC_LOCATIONS,
+  ...new Set([
+    ...CQC_RATING_COUNT_METRIC_IDS,
+    ...CQC_INSPECTION_STATUS_CATEGORIES.map((category) => category.countMetric),
+    NUM_CQC_LOCATIONS,
+  ]),
 ];
 
 /** Every metric shown on the CQC ratings page */
