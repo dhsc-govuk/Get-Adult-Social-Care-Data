@@ -12,11 +12,12 @@ import { METRICS, MetricId } from '@/config/metrics';
 import {
   BreakdownBar,
   BreakdownCategory,
+  ChartBreakdownCategory,
   breakdownBars,
   breakdownValue,
 } from '@/helpers/categoryBreakdown';
 
-type Props = {
+type CommonProps = {
   // Tab ids within the page, e.g. "1" for table-1, chart-1 and download-1
   id: string;
   title: string;
@@ -26,11 +27,18 @@ type Props = {
   sharingMetricIds?: string[];
   // The heading of the table's first column, e.g. "CQC rating"
   categoryColumnName: string;
-  categories: BreakdownCategory[];
   total: { label: string; metric: MetricId };
   // The page's metric data, with the comparison group's totals merged in
   data: Indicator[];
   columnHeaders: Object;
+  tableCaption: React.ReactNode;
+  // `notes` are lines placed above the data, e.g. its date and source
+  download: { filename: string; description: string; notes?: string[] };
+  comparator: ComparatorControls;
+};
+
+type ChartProps = {
+  categories: ChartBreakdownCategory[];
   // The bars of the chart, e.g. the user's LA, the comparison group and England
   bars: BreakdownBar[];
   laName: string;
@@ -41,18 +49,23 @@ type Props = {
   // Follows the figure title, naming the locations and period as the table
   // caption does
   comparisonSummary: React.ReactNode;
-  tableCaption: React.ReactNode;
-  download: { filename: string; description: string };
-  comparator: ComparatorControls;
   loading: boolean;
   error: boolean;
 };
+
+// A section with no chart leaves out all of the chart's props
+type TableOnlyProps = { categories: BreakdownCategory[] } & {
+  [Key in Exclude<keyof ChartProps, 'categories'>]?: undefined;
+};
+
+type Props = CommonProps & (ChartProps | TableOnlyProps);
 
 /**
  * A whole split into categories (a count and a percentage per category) for
  * the user's LA, their comparison group and England: a table, a stacked bar
  * chart and a CSV download. The table comes first, as the figures are read
- * from it and the chart shows the shares at a glance.
+ * from it and the chart shows the shares at a glance. Without `bars` there is
+ * no chart tab.
  */
 const CategoryBreakdownSection: React.FC<Props> = ({
   id,
@@ -84,7 +97,7 @@ const CategoryBreakdownSection: React.FC<Props> = ({
   // The chart benchmarks the user's own LA, so it is only complete once the
   // LA's own total has resolved
   const hasLaData = breakdownValue(data, total.metric, 'LA') !== null;
-  const chart = breakdownBars(data, categories, bars);
+  const chart = bars && breakdownBars(data, categories, bars);
 
   return (
     <DataBox
@@ -115,29 +128,33 @@ const CategoryBreakdownSection: React.FC<Props> = ({
           </>
         }
         chart={
-          <>
-            {comparator.renderComparatorControl(`comparator-chart-${id}`)}
-            <p className="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-4">
-              Figure {figureNumber}: {figureTitle} &ndash; {comparisonSummary}
-            </p>
-            <p className="govuk-body">
-              Hover over or select each bar to see the exact number and
-              percentage.
-            </p>
-            {loading && <p className="govuk-body">Loading...</p>}
-            {!loading && (error || !hasLaData) && (
-              <p className="govuk-body">Data not available</p>
-            )}
-            {!loading && !error && hasLaData && (
-              <StackedBarChart
-                categories={chart.categories}
-                segments={chart.segments}
-                highlightCategory={laName}
-                height={Math.max(250, bars.length * 70 + 80)}
-              />
-            )}
-            <p className="govuk-body">Source: {METRICS[total.metric].source}</p>
-          </>
+          chart && (
+            <>
+              {comparator.renderComparatorControl(`comparator-chart-${id}`)}
+              <p className="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-4">
+                Figure {figureNumber}: {figureTitle} &ndash; {comparisonSummary}
+              </p>
+              <p className="govuk-body">
+                Hover over or select each bar to see the exact number and
+                percentage.
+              </p>
+              {loading && <p className="govuk-body">Loading...</p>}
+              {!loading && (error || !hasLaData) && (
+                <p className="govuk-body">Data not available</p>
+              )}
+              {!loading && !error && hasLaData && (
+                <StackedBarChart
+                  categories={chart.categories}
+                  segments={chart.segments}
+                  highlightCategory={laName}
+                  height={Math.max(250, chart.categories.length * 70 + 80)}
+                />
+              )}
+              <p className="govuk-body">
+                Source: {METRICS[total.metric].source}
+              </p>
+            </>
+          )
         }
         download={
           <>
@@ -149,6 +166,7 @@ const CategoryBreakdownSection: React.FC<Props> = ({
               filename={download.filename}
               xLabel=""
               downloadType={download.description}
+              notes={download.notes}
             />
           </>
         }

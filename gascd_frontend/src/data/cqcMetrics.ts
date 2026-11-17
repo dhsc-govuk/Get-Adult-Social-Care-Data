@@ -13,20 +13,29 @@ import {
   CQC_SERVICE_TYPES,
   CqcRatingId,
   CqcServiceTypeId,
+  METRICS,
   NUM_CQC_INSPECTED_LOCATIONS,
+  NUM_CQC_LOCATIONS,
+  NUM_CQC_UNINSPECTED_LOCATIONS,
+  PERC_CQC_INSPECTED_LOCATIONS,
+  PERC_CQC_UNINSPECTED_LOCATIONS,
   SOURCES,
   cqcInspectedCountMetricId,
   cqcRatingCountMetricId,
   numCqcRatingMetricId,
   percCqcRatingMetricId,
 } from '@/config/metrics';
-import { BreakdownCategory } from '@/helpers/categoryBreakdown';
+import {
+  BreakdownCategory,
+  ChartBreakdownCategory,
+} from '@/helpers/categoryBreakdown';
 import { FilterGroup } from '@/components/filters/FilterPanel';
 
 export {
   ALL_CQC_SERVICE_TYPES,
   CQC_SERVICE_TYPES,
   NUM_CQC_INSPECTED_LOCATIONS,
+  NUM_CQC_LOCATIONS,
   cqcInspectedCountMetricId,
   cqcRatingCountMetricId,
   numCqcRatingMetricId,
@@ -50,7 +59,7 @@ export const CQC_RATING_COLOURS: Record<CqcRatingId, string> = {
 };
 
 /** The ratings as the rows of the table and the segments of the chart */
-export const CQC_RATING_CATEGORIES: BreakdownCategory[] = (
+export const CQC_RATING_CATEGORIES: ChartBreakdownCategory[] = (
   Object.keys(CQC_RATINGS) as CqcRatingId[]
 ).map((rating) => ({
   label: CQC_RATINGS[rating],
@@ -65,10 +74,48 @@ export const CQC_RATING_COUNT_METRIC_IDS: string[] = [
   NUM_CQC_INSPECTED_LOCATIONS,
 ];
 
-/** Every metric shown on the CQC ratings page */
+/** Every metric the ratings are shown from */
 export const CQC_RATING_METRIC_IDS: string[] = [
   ...CQC_RATING_COUNT_METRIC_IDS,
   ...CQC_RATING_CATEGORIES.map((category) => category.percentageMetric),
+];
+
+/** Inspected and not yet inspected, as the rows of the inspection status table */
+export const CQC_INSPECTION_STATUS_CATEGORIES: BreakdownCategory[] = [
+  {
+    label: METRICS[PERC_CQC_INSPECTED_LOCATIONS].label,
+    countMetric: NUM_CQC_INSPECTED_LOCATIONS,
+    percentageMetric: PERC_CQC_INSPECTED_LOCATIONS,
+  },
+  {
+    label: METRICS[NUM_CQC_UNINSPECTED_LOCATIONS].label,
+    countMetric: NUM_CQC_UNINSPECTED_LOCATIONS,
+    percentageMetric: PERC_CQC_UNINSPECTED_LOCATIONS,
+  },
+];
+
+/** Every metric the inspection status is shown from */
+export const CQC_INSPECTION_STATUS_METRIC_IDS: string[] = [
+  ...CQC_INSPECTION_STATUS_CATEGORIES.flatMap((category) => [
+    category.countMetric,
+    category.percentageMetric,
+  ]),
+  NUM_CQC_LOCATIONS,
+];
+
+/**
+ * The counts fetched for a comparison group on the CQC ratings page. The
+ * inspected count is in both tables, so it is listed once.
+ */
+export const CQC_PAGE_COUNT_METRIC_IDS: string[] = [
+  ...CQC_RATING_COUNT_METRIC_IDS,
+  NUM_CQC_UNINSPECTED_LOCATIONS,
+  NUM_CQC_LOCATIONS,
+];
+
+/** Every metric shown on the CQC ratings page */
+export const CQC_PAGE_METRIC_IDS: string[] = [
+  ...new Set([...CQC_RATING_METRIC_IDS, ...CQC_INSPECTION_STATUS_METRIC_IDS]),
 ];
 
 /**

@@ -2,10 +2,14 @@ import { describe, it, expect } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import React from 'react';
 import CategoryBreakdownTable from '@/components/tables/CategoryBreakdownTable';
-import { BreakdownCategory } from '@/helpers/categoryBreakdown';
+import { ChartBreakdownCategory } from '@/helpers/categoryBreakdown';
 import { Indicator } from '@/data/interfaces/Indicator';
+import {
+  CQC_INSPECTION_STATUS_CATEGORIES,
+  NUM_CQC_LOCATIONS,
+} from '@/data/cqcMetrics';
 
-const categories: BreakdownCategory[] = [
+const categories: ChartBreakdownCategory[] = [
   {
     label: 'Good',
     colour: '#1d70b8',
@@ -179,5 +183,40 @@ describe('CategoryBreakdownTable', () => {
     expect(
       screen.getByText('Source: Care Quality Commission (CQC)')
     ).toBeInTheDocument();
+  });
+
+  it('shows no colour key for categories without a colour, and 0 as 0 (0.0%)', () => {
+    const { container } = render(
+      <CategoryBreakdownTable
+        columnHeaders={columnHeaders}
+        categoryColumnName="Inspection status"
+        categories={CQC_INSPECTION_STATUS_CATEGORIES}
+        total={{ label: 'All locations', metric: NUM_CQC_LOCATIONS }}
+        data={[
+          indicator('cqci_num_inspected_adult_social_care', 'LA', 711),
+          indicator('cqci_pct_inspected_adult_social_care', 'LA', 100),
+          indicator('cqci_num_uninspected_adult_social_care', 'LA', 0),
+          indicator('cqci_pct_uninspected_adult_social_care', 'LA', 0),
+          indicator(NUM_CQC_LOCATIONS, 'LA', 711),
+        ]}
+      />
+    );
+
+    expect(container.querySelectorAll('.dhsc-category-key')).toHaveLength(0);
+    expect(
+      within(screen.getByRole('row', { name: /^Inspected/ })).getAllByRole(
+        'cell'
+      )[0]
+    ).toHaveTextContent('711 (100.0%)');
+    expect(
+      within(
+        screen.getByRole('row', { name: /Not yet inspected/ })
+      ).getAllByRole('cell')[0]
+    ).toHaveTextContent('0 (0.0%)');
+    expect(
+      within(screen.getByRole('row', { name: /All locations/ })).getAllByRole(
+        'cell'
+      )[0]
+    ).toHaveTextContent('711');
   });
 });

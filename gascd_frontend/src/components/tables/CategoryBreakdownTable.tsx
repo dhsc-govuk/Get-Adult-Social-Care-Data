@@ -3,7 +3,11 @@ import { Indicator } from '@/data/interfaces/Indicator';
 import TableService from '@/services/Table/TableService';
 import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
 import { METRICS, MetricId } from '@/config/metrics';
-import { BreakdownCategory, breakdownValue } from '@/helpers/categoryBreakdown';
+import {
+  BreakdownCategory,
+  ChartBreakdownCategory,
+  breakdownValue,
+} from '@/helpers/categoryBreakdown';
 
 type ColumnHeaders = Record<string, string | null | undefined>;
 
@@ -14,7 +18,7 @@ type CategoryBreakdownTableProps = {
   // The heading of the first column, e.g. "CQC rating"
   categoryColumnName: string;
   // One row per category, each showing "count (percentage)"
-  categories: BreakdownCategory[];
+  categories: (BreakdownCategory | ChartBreakdownCategory)[];
   // The final row, showing the count the percentages are of
   total: { label: string; metric: MetricId };
   data: Indicator[];
@@ -29,8 +33,8 @@ type CategoryBreakdownTableProps = {
  * percentage it is of the total, with the total as the last row. Built to the
  * same shape as `DataTable`: the compared locations are the columns, and the
  * comparator column takes the place of the region when a comparison group is
- * chosen. Each row carries the colour its segment has in the matching
- * `StackedBarChart`.
+ * chosen. Where there is a matching `StackedBarChart`, each row carries the
+ * colour its segment has in it.
  */
 const CategoryBreakdownTable: React.FC<CategoryBreakdownTableProps> = ({
   caption,
@@ -131,11 +135,13 @@ const CategoryBreakdownTable: React.FC<CategoryBreakdownTableProps> = ({
                   scope="row"
                   className="govuk-table__cell govuk-!-font-weight-regular scrollable-table__header"
                 >
-                  <span
-                    className="dhsc-category-key"
-                    style={{ backgroundColor: category.colour }}
-                    aria-hidden="true"
-                  />
+                  {'colour' in category && (
+                    <span
+                      className="dhsc-category-key"
+                      style={{ backgroundColor: category.colour }}
+                      aria-hidden="true"
+                    />
+                  )}
                   {category.label}
                 </th>
                 {columns.map((column) => (

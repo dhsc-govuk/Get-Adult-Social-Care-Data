@@ -280,7 +280,23 @@ export const NUM_CQC_INSPECTED_LOCATIONS = cqcInspectedCountMetricId(
   ALL_CQC_SERVICE_TYPES
 );
 
+/** The locations not yet inspected, for all service types */
+export const NUM_CQC_UNINSPECTED_LOCATIONS =
+  `cqci_num_uninspected_${ALL_CQC_SERVICE_TYPES}` as const;
+
+/** All locations, inspected or not: the total the inspection status percentages are of */
+export const NUM_CQC_LOCATIONS =
+  `cqci_num_total_${ALL_CQC_SERVICE_TYPES}` as const;
+
+export const PERC_CQC_INSPECTED_LOCATIONS =
+  `cqci_pct_inspected_${ALL_CQC_SERVICE_TYPES}` as const;
+
+export const PERC_CQC_UNINSPECTED_LOCATIONS =
+  `cqci_pct_uninspected_${ALL_CQC_SERVICE_TYPES}` as const;
+
 const CQC_RATINGS_HELP_URL = '/help/cqc-ratings-of-adult-social-care-locations';
+const CQC_INSPECTION_STATUS_HELP_URL =
+  '/help/inspection-status-of-adult-social-care-locations';
 
 const cqcRatingMetrics = Object.fromEntries(
   (Object.keys(CQC_RATINGS) as CqcRatingId[]).flatMap((id) => [
@@ -319,6 +335,30 @@ export const METRICS = {
     format: 'number',
     source: SOURCES.cqcRatings,
     helpUrl: CQC_RATINGS_HELP_URL,
+  },
+  [PERC_CQC_INSPECTED_LOCATIONS]: {
+    label: 'Inspected',
+    format: 'percentage',
+    source: SOURCES.cqcRatings,
+    helpUrl: CQC_INSPECTION_STATUS_HELP_URL,
+  },
+  [NUM_CQC_UNINSPECTED_LOCATIONS]: {
+    label: 'Not yet inspected',
+    format: 'number',
+    source: SOURCES.cqcRatings,
+    helpUrl: CQC_INSPECTION_STATUS_HELP_URL,
+  },
+  [PERC_CQC_UNINSPECTED_LOCATIONS]: {
+    label: 'Not yet inspected',
+    format: 'percentage',
+    source: SOURCES.cqcRatings,
+    helpUrl: CQC_INSPECTION_STATUS_HELP_URL,
+  },
+  [NUM_CQC_LOCATIONS]: {
+    label: 'All locations',
+    format: 'number',
+    source: SOURCES.cqcRatings,
+    helpUrl: CQC_INSPECTION_STATUS_HELP_URL,
   },
 
   pansi_pred_pop_early_dem_aged_30_64: {

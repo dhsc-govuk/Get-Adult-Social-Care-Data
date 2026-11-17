@@ -2,6 +2,11 @@ import { render, screen, within } from '@testing-library/react';
 import CQCRatingsPage from '../../../app/(protected)/topics/quality-of-care/cqc-ratings/data/page';
 import { authClient } from '@/lib/auth-client';
 import { mockSession } from '@/test-utils/test-utils';
+import { METRICS } from '@/config/metrics';
+import {
+  CQC_INSPECTION_STATUS_CATEGORIES,
+  NUM_CQC_LOCATIONS,
+} from '@/data/cqcMetrics';
 
 // Mock out things we are not testing at the moment to prevent them making api requests
 vi.mock('@/components/common/buttons/logoutButton');
@@ -83,6 +88,7 @@ describe('CQCRatingsPage', () => {
     ).toEqual([
       'CQC ratings of inspected adult social care locations',
       'CQC ratings of inspected adult social care locations by local authority',
+      'Inspection status of adult social care locations',
     ]);
     expect(
       screen.getByRole('table', {
@@ -101,14 +107,14 @@ describe('CQCRatingsPage', () => {
 
   it('names the CQC as the source of each table and chart', () => {
     render(<CQCRatingsPage />);
-    // Both of the first section's, and the second's table: its chart has no
-    // source line until its data has loaded
+    // Both of the first section's, the second's table (its chart has no
+    // source line until its data has loaded) and the third's table
     expect(
       screen.getAllByText('Source: Care Quality Commission (CQC)')
-    ).toHaveLength(3);
+    ).toHaveLength(4);
   });
 
-  it('shows the table first in the first section and the chart first in the second', () => {
+  it('shows the table first in the first section, the chart first in the second and no chart in the third', () => {
     render(<CQCRatingsPage />);
 
     const tabs = screen
@@ -121,7 +127,36 @@ describe('CQCRatingsPage', () => {
       'Chart',
       'Table',
       'Download',
+      'Table',
+      'Download',
     ]);
+  });
+
+  it('shows the inspection status of locations below the ratings by local authority', () => {
+    render(<CQCRatingsPage />);
+
+    expect(
+      within(
+        screen.getByRole('table', {
+          name: /Table 3: number and percentage of adult social care locations not yet inspected/i,
+        })
+      )
+        .getAllByRole('rowheader')
+        .map((row) => row.textContent)
+    ).toEqual([
+      ...CQC_INSPECTION_STATUS_CATEGORIES.map((category) => category.label),
+      METRICS[NUM_CQC_LOCATIONS].label,
+    ]);
+    expect(
+      screen.getByRole('link', {
+        name: /how the inspection status of adult social care locations is calculated/i,
+      })
+    ).toHaveAttribute('href', METRICS[NUM_CQC_LOCATIONS].helpUrl);
+    expect(
+      screen.getByRole('link', {
+        name: 'Export inspection status of adult social care locations table data (CSV)',
+      })
+    ).toBeInTheDocument();
   });
 
   it('lists every CQC rating as a table row, with the total last', () => {

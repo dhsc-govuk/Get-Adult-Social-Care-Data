@@ -15,13 +15,17 @@ import { StackedBarSegment } from '@/components/charts/StackedBarChart';
  * same figures in a different shape, so the reshaping lives here.
  */
 
-/** A row of the table and a segment of the chart */
+/** A row of the table */
 export type BreakdownCategory = {
   label: string;
-  /** The segment colour, also shown as a key beside the table row */
-  colour: string;
   countMetric: MetricId;
   percentageMetric: MetricId;
+};
+
+/** A row of the table that is also a segment of the chart */
+export type ChartBreakdownCategory = BreakdownCategory & {
+  /** The segment colour, also shown as a key beside the table row */
+  colour: string;
 };
 
 /** A bar of the chart: a location type and how it is labelled */
@@ -130,7 +134,7 @@ export const mergeComparatorTotals = (
  */
 export const breakdownBars = (
   data: Indicator[],
-  categories: BreakdownCategory[],
+  categories: ChartBreakdownCategory[],
   bars: BreakdownBar[]
 ): { categories: string[]; segments: StackedBarSegment[] } => ({
   categories: bars.map((bar) => bar.label),

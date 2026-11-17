@@ -109,6 +109,11 @@ const CQC_PERCENTAGE = new RegExp(
   `^cqcr_pct_inspected_(${CQC_RATING_PATTERN})_(.+)$`
 );
 const CQC_INSPECTED_TOTAL = /^cqci_num_inspected_(.+)$/;
+// Likewise the inspection status: all locations are the inspected and the not
+// yet inspected together, and each percentage is its share of them
+const CQC_UNINSPECTED_TOTAL = /^cqci_num_uninspected_(.+)$/;
+const CQC_LOCATIONS_TOTAL = /^cqci_num_total_(.+)$/;
+const CQC_STATUS_PERCENTAGE = /^cqci_pct_(inspected|uninspected)_(.+)$/;
 
 const cqcRatingCounts = (
   rating: string,
@@ -133,6 +138,26 @@ const cqcInspectedTotals = (
   );
 };
 
+const cqcUninspectedTotals = (
+  serviceType: string,
+  key: string,
+  length: number
+): number[] =>
+  randomSeriesValues(`cqci_num_uninspected_${serviceType}`, key, length).map(
+    Math.round
+  );
+
+const cqcLocationTotals = (
+  serviceType: string,
+  key: string,
+  length: number
+): number[] => {
+  const uninspected = cqcUninspectedTotals(serviceType, key, length);
+  return cqcInspectedTotals(serviceType, key, length).map(
+    (inspected, i) => inspected + uninspected[i]
+  );
+};
+
 const seriesValues = (
   metricCode: string,
   key: string,
@@ -151,6 +176,25 @@ const seriesValues = (
     return cqcRatingCounts(rating, serviceType, key, length).map(
       (ratingCount, i) =>
         totals[i] ? Math.round((ratingCount / totals[i]) * 1000) / 10 : 0
+    );
+  }
+
+  const uninspected = metricCode.match(CQC_UNINSPECTED_TOTAL);
+  if (uninspected) return cqcUninspectedTotals(uninspected[1], key, length);
+
+  const locations = metricCode.match(CQC_LOCATIONS_TOTAL);
+  if (locations) return cqcLocationTotals(locations[1], key, length);
+
+  const statusPercentage = metricCode.match(CQC_STATUS_PERCENTAGE);
+  if (statusPercentage) {
+    const [, status, serviceType] = statusPercentage;
+    const totals = cqcLocationTotals(serviceType, key, length);
+    const counts =
+      status === 'inspected'
+        ? cqcInspectedTotals(serviceType, key, length)
+        : cqcUninspectedTotals(serviceType, key, length);
+    return counts.map((statusCount, i) =>
+      totals[i] ? Math.round((statusCount / totals[i]) * 1000) / 10 : 0
     );
   }
 

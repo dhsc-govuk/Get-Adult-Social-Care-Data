@@ -3,7 +3,11 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 import CategoryBreakdownSection from '@/components/data-components/CategoryBreakdownSection';
 import { ComparatorControls } from '@/components/charts/peer-group/useComparatorControls';
-import { CQC_RATING_CATEGORIES } from '@/data/cqcMetrics';
+import {
+  CQC_INSPECTION_STATUS_CATEGORIES,
+  CQC_RATING_CATEGORIES,
+  NUM_CQC_LOCATIONS,
+} from '@/data/cqcMetrics';
 import { Indicator } from '@/data/interfaces/Indicator';
 
 vi.mock('react-plotly.js', () => ({
@@ -162,6 +166,45 @@ describe('CategoryBreakdownSection', () => {
 
   it('labels the data as published', () => {
     renderSection();
+    screen.getAllByTestId('sharing-label').forEach((label) => {
+      expect(label.textContent).toContain('Published data');
+    });
+  });
+
+  it('has a table and a download only when it is given no bars', () => {
+    render(
+      <CategoryBreakdownSection
+        id="3"
+        title="Inspection status of adult social care locations"
+        intro={<p>Find out how</p>}
+        categoryColumnName="Inspection status"
+        categories={CQC_INSPECTION_STATUS_CATEGORIES}
+        total={{ label: 'All locations', metric: NUM_CQC_LOCATIONS }}
+        data={data}
+        columnHeaders={{
+          LALabel: 'Mid Suffolk',
+          ComparatorLabel: 'NHS peer group total',
+          CountryLabel: 'England (national)',
+        }}
+        tableCaption="Table 3: inspection status"
+        download={{
+          filename: 'inspection_status.csv',
+          description: 'inspection status',
+        }}
+        comparator={comparator}
+      />
+    );
+
+    const tabs = screen
+      .getAllByRole('link', { name: /^(Table|Chart|Download)$/ })
+      .map((tab) => tab.textContent);
+    expect(tabs).toEqual(['Table', 'Download']);
+    expect(
+      screen.getByRole('table', { name: 'Table 3: inspection status' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('comparator comparator-chart-3')
+    ).not.toBeInTheDocument();
     screen.getAllByTestId('sharing-label').forEach((label) => {
       expect(label.textContent).toContain('Published data');
     });
