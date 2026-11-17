@@ -15,5 +15,8 @@ public class GetCqcLocationRatingsResponse
 
     public DateOnly? DataMonth { get; init; }
 
+    /// <summary>The number of locations matching the filters, across all pages.</summary>
+    public required int Total { get; init; }
+
     public required List<CqcLocation> Locations { get; init; }
 }

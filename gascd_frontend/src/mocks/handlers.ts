@@ -3,6 +3,10 @@ import { metric_metadata } from '@/data/mockResponses/metric_metadata';
 import { locations_data } from '@/data/mockResponses/locations_data';
 import { organisation_data } from '@/data/mockResponses/organisation_data';
 import { metric_filters_data } from '@/data/mockResponses/metric_filters_data';
+import {
+  cqcLocationRatingsResponse,
+  cqc_location_providers,
+} from '@/data/mockResponses/cqc_location_ratings';
 import { API_SUFFIX } from '@/data/dataAPI';
 
 const api_root = process.env.DATA_API_ROOT + API_SUFFIX;
@@ -150,6 +154,16 @@ export const handlers = [
         national_average: 15.5,
       });
     }
+  ),
+
+  http.get(api_root + '/metric_locations/cqc_location_ratings', ({ request }) =>
+    HttpResponse.json(
+      cqcLocationRatingsResponse(new URL(request.url).searchParams)
+    )
+  ),
+
+  http.get(api_root + '/metric_locations/cqc_location_ratings/providers', () =>
+    HttpResponse.json(cqc_location_providers)
   ),
 
   http.get(api_root + '/metric_locations/regions/:region_code', () => {

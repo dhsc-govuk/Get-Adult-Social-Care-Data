@@ -8,14 +8,26 @@ public class GetCqcLocationRatingsValidatorTests
 {
     private GetCqcLocationRatingsValidator _validator = new();
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("adult_social_care")]
-    [InlineData("care_home_nursing")]
-    [InlineData("other_community_care")]
-    public void ValidServiceType_ShouldBeValid(string? serviceType)
+    [Fact]
+    public void NoFilters_ShouldBeValid()
     {
-        var request = new GetCqcLocationRatingsRequest { LocalAuthorityCode = "E08000014", ServiceType = serviceType };
+        var result = _validator.TestValidate(new GetCqcLocationRatingsRequest());
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public void ValidFilters_ShouldBeValid()
+    {
+        var request = new GetCqcLocationRatingsRequest
+        {
+            LaCodes = ["E08000014", "E08000015"],
+            ProviderCodes = ["1-200000001"],
+            ServiceTypes = ["adult_social_care", "care_home_nursing", "other_community_care"],
+            Ratings = ["outstanding", "insufficient_evidence"],
+            Search = "Riverside",
+            Page = 1,
+            PageSize = GetCqcLocationRatingsValidator.MaxPageSize,
+        };
 
         var result = _validator.TestValidate(request);
         result.ShouldNotHaveAnyValidationErrors();
@@ -31,16 +43,37 @@ public class GetCqcLocationRatingsValidatorTests
         ], ignoreOrder: true);
     }
 
+    [Fact]
+    public void Ratings_AreTheFiveCqcMetricRatings()
+    {
+        GetCqcLocationRatingsValidator.Ratings.ShouldBe(
+        [
+            "outstanding", "good", "requires_improvement", "inadequate", "insufficient_evidence",
+        ], ignoreOrder: true);
+    }
+
     [Theory]
     [InlineData("")]
     [InlineData("hospital")]
     [InlineData("Care_Home")]
     public void InvalidServiceType_ShouldBeInvalid(string serviceType)
     {
-        var request = new GetCqcLocationRatingsRequest { LocalAuthorityCode = "E08000014", ServiceType = serviceType };
+        var request = new GetCqcLocationRatingsRequest { ServiceTypes = ["care_home", serviceType] };
 
         var result = _validator.TestValidate(request);
-        result.ShouldHaveValidationErrorFor(r => r.ServiceType);
+        result.IsValid.ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("excellent")]
+    [InlineData("Good")]
+    public void InvalidRating_ShouldBeInvalid(string rating)
+    {
+        var request = new GetCqcLocationRatingsRequest { Ratings = [rating] };
+
+        var result = _validator.TestValidate(request);
+        result.IsValid.ShouldBeFalse();
     }
 
     [Theory]
@@ -49,10 +82,21 @@ public class GetCqcLocationRatingsValidatorTests
     [InlineData("E112345678910111", "Local Authority code has a maximum length of 15")]
     public void InvalidLACode_ShouldBeInvalid(string laCode, string expectedErrorMessage)
     {
-        var request = new GetCqcLocationRatingsRequest { LocalAuthorityCode = laCode };
+        var request = new GetCqcLocationRatingsRequest { LaCodes = [laCode] };
 
         var result = _validator.TestValidate(request);
-        result.ShouldHaveValidationErrorFor(r => r.LocalAuthorityCode)
-            .WithErrorMessage(expectedErrorMessage);
+        result.Errors.Select(e => e.ErrorMessage).ShouldContain(expectedErrorMessage);
+    }
+
+    [Theory]
+    [InlineData(0, 10)]
+    [InlineData(1, 0)]
+    [InlineData(1, GetCqcLocationRatingsValidator.MaxPageSize + 1)]
+    public void InvalidPaging_ShouldBeInvalid(int page, int pageSize)
+    {
+        var request = new GetCqcLocationRatingsRequest { Page = page, PageSize = pageSize };
+
+        var result = _validator.TestValidate(request);
+        result.IsValid.ShouldBeFalse();
     }
 }

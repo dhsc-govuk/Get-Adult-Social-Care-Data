@@ -20,7 +20,7 @@ import DownloadTableDataCSVLink from '@/components/metric-components/download-ta
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
-import SearchableCheckboxFilter from '@/components/filters/SearchableCheckboxFilter';
+import FilterPanel from '@/components/filters/FilterPanel';
 import SectionControls from '@/components/data-components/SectionControls';
 import FilterSelectGroup from '@/components/filters/FilterSelectGroup';
 import { useFilterSync } from '@/components/filters/useFilterSync';
@@ -48,6 +48,9 @@ const SUPPORT_REASON_ROWS: MetricId[] = [
   'support_for_social_isolation_other_social_support_18_and_over',
   'support_with_memory_and_cognition_18_and_over',
 ];
+
+// The id of Table 4's filter, which it is also tracked under
+const SUPPORT_REASON_FILTER = 'primary-reason-metrics';
 
 export default function DisabilityPrevalence() {
   const tableref4 = useRef<HTMLTableElement>(null);
@@ -621,20 +624,26 @@ export default function DisabilityPrevalence() {
                   'comparator-table-4'
                 )}
                 filters={
-                  <SearchableCheckboxFilter
+                  <FilterPanel
                     idPrefix="table-4-primary-reason-metrics"
-                    label="Primary support reason"
-                    allLabel="All primary support reasons"
-                    options={SUPPORT_REASON_ROWS.map((value) => ({
-                      value,
-                      label: supportReasonRowHeadersDefault[value],
-                    }))}
-                    applied={supportReasons}
-                    onApply={(values) =>
-                      setSupportReasons(values as MetricId[])
+                    filterType={SUPPORT_REASON_FILTER}
+                    groups={[
+                      {
+                        id: SUPPORT_REASON_FILTER,
+                        label: 'Primary support reason',
+                        allLabel: 'All primary support reasons',
+                        options: SUPPORT_REASON_ROWS.map((value) => ({
+                          value,
+                          label: supportReasonRowHeadersDefault[value],
+                        })),
+                      },
+                    ]}
+                    applied={{ [SUPPORT_REASON_FILTER]: supportReasons }}
+                    onApply={(selection) =>
+                      setSupportReasons(
+                        selection[SUPPORT_REASON_FILTER] as MetricId[]
+                      )
                     }
-                    noMatchesText="No primary support reasons match your search"
-                    analyticsId="primary-reason-metrics"
                   />
                 }
               />

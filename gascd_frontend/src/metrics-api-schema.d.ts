@@ -530,6 +530,106 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/metric_locations/cqc_location_ratings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List CQC ratings of adult social care locations
+         * @description Retrieves adult social care locations with their latest overall CQC rating, most recently rated first. Each list parameter narrows the locations to those matching any of its values.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Only locations in these local authorities. */
+                    la_codes?: string[];
+                    /** @description Only locations run by these providers. */
+                    provider_codes?: string[];
+                    /** @description Only locations offering any of these service types. */
+                    service_types?: string[];
+                    /** @description Only locations with one of these overall ratings. */
+                    ratings?: string[];
+                    /** @description Part of a location name, matched without regard to case. */
+                    search?: string;
+                    /** @description The page to return, from 1. */
+                    page?: number;
+                    /** @description Locations per page, up to 100. Every matching location is returned when omitted. */
+                    page_size?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The matching locations and how many there are across all pages. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CqcLocationRatingsResponse"];
+                    };
+                };
+                /** @description Unknown service type or rating, or invalid paging. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/metric_locations/cqc_location_ratings/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List the providers of CQC locations
+         * @description Retrieves every provider with a location in the CQC location ratings, ordered by name.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description All providers ordered by name. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CqcLocationProvidersResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/metric_locations/regions/{code}": {
         parameters: {
             query?: never;
@@ -919,6 +1019,48 @@ export interface components {
         /** @description All local authorities ordered by name. */
         LocalAuthorityListResponse: {
             local_authorities?: components["schemas"]["LocalAuthoritySummary"][];
+        };
+        /** @description An adult social care location with its latest overall CQC rating. */
+        CqcLocation: {
+            /** @description CQC location id. */
+            code?: string;
+            /** @description Name of the location. */
+            name?: string;
+            /** @description CQC provider id. */
+            provider_code?: string;
+            /** @description Name of the provider. */
+            provider_name?: string;
+            /** @description Service type keys, the same as the suffixes of the CQC ratings metric codes. */
+            service_types?: string[];
+            /** @description Rating key (outstanding, good, requires_improvement, inadequate, insufficient_evidence); null when not yet inspected. */
+            overall_rating?: string | null;
+            /**
+             * Format: date
+             * @description Publication date of the latest overall rating; null when not yet inspected.
+             */
+            rating_published?: string | null;
+        };
+        /** @description CQC rated locations matching the request, most recently rated first. */
+        CqcLocationRatingsResponse: {
+            /**
+             * Format: date
+             * @description Month of the CQC file the locations come from.
+             */
+            data_month?: string | null;
+            /** @description Number of locations matching the request, across all pages. */
+            total?: number;
+            locations?: components["schemas"]["CqcLocation"][];
+        };
+        /** @description A provider with a location in the CQC location ratings. */
+        CqcLocationProvider: {
+            /** @description CQC provider id. */
+            code?: string;
+            /** @description Name of the provider. */
+            name?: string;
+        };
+        /** @description All providers ordered by name. */
+        CqcLocationProvidersResponse: {
+            providers?: components["schemas"]["CqcLocationProvider"][];
         };
         /** @description Represents a region */
         Region: {

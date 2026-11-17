@@ -15,7 +15,7 @@ import {
   ManagedUser,
 } from '@/lib/manageUsers';
 import UsersTable from './UsersTable';
-import UsersPagination from './UsersPagination';
+import Pagination from '@/components/common/pagination/Pagination';
 import DelegatedApproversTable from './delegated-approvers/DelegatedApproversTable';
 import { SIGN_IN_URL } from '@/lib/signInUrl';
 
@@ -221,7 +221,11 @@ export default async function ManageUsersPage({ searchParams }: Props) {
 
       <UsersTable users={pageUsers} />
       {totalPages > 1 && (
-        <UsersPagination currentPage={currentPage} totalPages={totalPages} />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageHref={(page) => `/manage-users?page=${page}`}
+        />
       )}
 
       {canAppoint && (

@@ -4,11 +4,25 @@ import { paginationItems } from '@/lib/manageUsers';
 type Props = {
   currentPage: number;
   totalPages: number;
+  pageHref: (page: number) => string;
+  // For results paged without leaving the page: called in place of following
+  // the link
+  onPageChange?: (page: number) => void;
 };
 
-const pageHref = (page: number) => `/manage-users?page=${page}`;
+export default function Pagination({
+  currentPage,
+  totalPages,
+  pageHref,
+  onPageChange,
+}: Props) {
+  const onClick = (page: number) =>
+    onPageChange &&
+    ((event: React.MouseEvent) => {
+      event.preventDefault();
+      onPageChange(page);
+    });
 
-export default function UsersPagination({ currentPage, totalPages }: Props) {
   return (
     <nav className="govuk-pagination" aria-label="Pagination">
       {currentPage > 1 && (
@@ -16,6 +30,7 @@ export default function UsersPagination({ currentPage, totalPages }: Props) {
           <Link
             className="govuk-link govuk-pagination__link"
             href={pageHref(currentPage - 1)}
+            onClick={onClick(currentPage - 1)}
             rel="prev"
           >
             <svg
@@ -42,7 +57,7 @@ export default function UsersPagination({ currentPage, totalPages }: Props) {
               key={`ellipsis-${index}`}
               className="govuk-pagination__item govuk-pagination__item--ellipses"
             >
-              &ctdot;
+              {'⋯'}
             </li>
           ) : (
             <li
@@ -52,6 +67,7 @@ export default function UsersPagination({ currentPage, totalPages }: Props) {
               <Link
                 className="govuk-link govuk-pagination__link"
                 href={pageHref(item)}
+                onClick={onClick(item)}
                 aria-label={`Page ${item}`}
                 aria-current={item === currentPage ? 'page' : undefined}
               >
@@ -66,6 +82,7 @@ export default function UsersPagination({ currentPage, totalPages }: Props) {
           <Link
             className="govuk-link govuk-pagination__link"
             href={pageHref(currentPage + 1)}
+            onClick={onClick(currentPage + 1)}
             rel="next"
           >
             <span className="govuk-pagination__link-title">

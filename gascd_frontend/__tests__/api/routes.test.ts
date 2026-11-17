@@ -4,6 +4,8 @@ import { GET as GetFilters } from '../../app/api/get_all_total_beds_filters/rout
 import { GET as GetCustomGroupValues } from '../../app/api/get_custom_group_values/route';
 import { GET as GetLocationData } from '../../app/api/get_location_data/route';
 import { GET as GetLaList } from '../../app/api/get_la_list/route';
+import { GET as GetCqcLocationRatings } from '../../app/api/get_cqc_location_ratings/route';
+import { GET as GetCqcLocationProviders } from '../../app/api/get_cqc_location_providers/route';
 import { GET as GetAvailableLocations } from '../../app/api/get_available_locations/route';
 import { POST as SetSelectedLocation } from '../../app/api/set_selected_location/route';
 import { POST as GetMetricData } from '../../app/api/get_metric_data/route';
@@ -510,6 +512,67 @@ describe('get la list', () => {
       display_name: 'Test LA One',
       region_code: 'E12000001',
       region_name: 'North East',
+    });
+  });
+});
+
+describe('get cqc location ratings', () => {
+  const base_url = 'http://localhost/api/get_cqc_location_ratings';
+
+  beforeEach(() => vi.clearAllMocks());
+
+  it('requires a user', async () => {
+    mockGetSession.mockReturnValue(null as any);
+    const result = await GetCqcLocationRatings(new NextRequest(base_url));
+    expect(result.status).toBe(401);
+  });
+
+  it('returns every location when there are no filters or page', async () => {
+    mockGetSession.mockReturnValue(mockSession);
+    const result = await GetCqcLocationRatings(new NextRequest(base_url));
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    expect(data.data_month).toBe('2026-10-01');
+    expect(data.total).toBe(23);
+    expect(data.locations).toHaveLength(23);
+  });
+
+  it('passes the filters, search and page on to the data API', async () => {
+    mockGetSession.mockReturnValue(mockSession);
+    const result = await GetCqcLocationRatings(
+      new NextRequest(
+        `${base_url}?provider_codes=testcp2&ratings=outstanding&ratings=good&search=road&page=1&page_size=2`
+      )
+    );
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    expect(data.total).toBeGreaterThan(2);
+    expect(data.locations).toHaveLength(2);
+    for (const location of data.locations) {
+      expect(location.provider_code).toBe('testcp2');
+      expect(['outstanding', 'good']).toContain(location.overall_rating);
+      expect(location.name).toMatch(/road/i);
+    }
+  });
+});
+
+describe('get cqc location providers', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('requires a user', async () => {
+    mockGetSession.mockReturnValue(null as any);
+    const result = await GetCqcLocationProviders();
+    expect(result.status).toBe(401);
+  });
+
+  it('returns the providers', async () => {
+    mockGetSession.mockReturnValue(mockSession);
+    const result = await GetCqcLocationProviders();
+    expect(result.status).toBe(200);
+    const data = await result.json();
+    expect(data.providers[0]).toEqual({
+      code: 'testcp2',
+      name: 'Mock Care Provider',
     });
   });
 });
