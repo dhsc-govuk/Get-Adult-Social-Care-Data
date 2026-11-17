@@ -190,4 +190,56 @@ describe('PeerGroupTable', () => {
       ['England (national average)', '10.5'],
     ]);
   });
+
+  describe('with the reference rows first', () => {
+    const referenceProps = {
+      ...props,
+      nationalAverageLabel: 'England (national)',
+      referenceRowsFirst: true,
+    };
+
+    it("leads with England, the region and the comparison group, then the user's LA", () => {
+      render(<PeerGroupTable {...referenceProps} />);
+      expect(bodyRows()).toEqual([
+        ['England (national)', '10.5'],
+        ['North West (regional average)', '48.5'],
+        ['NHS peer group (average)', '53.5'],
+        ['Liverpool', '52.5'],
+        ['Sheffield', '55.5'],
+        ['Manchester', '51.5'],
+        // Kept, unlike on the chart, so the user can see it has no value
+        ['Leeds', 'N/A'],
+      ]);
+    });
+
+    it('sorts only the comparison LAs', () => {
+      render(<PeerGroupTable {...referenceProps} />);
+      fireEvent.click(screen.getByRole('button', { name: /Area/ }));
+      expect(bodyRows().map(([area]) => area)).toEqual([
+        'England (national)',
+        'North West (regional average)',
+        'NHS peer group (average)',
+        'Liverpool',
+        'Leeds',
+        'Manchester',
+        'Sheffield',
+      ]);
+    });
+
+    it('shows the NHS peer group beside the region when the region is the comparison group', () => {
+      render(
+        <PeerGroupTable
+          {...referenceProps}
+          comparatorIsRegion
+          peerData={{ ...peerData, nhsPeerGroupAverage: 50.5 }}
+        />
+      );
+      expect(bodyRows().slice(0, 4)).toEqual([
+        ['England (national)', '10.5'],
+        ['North West (regional average)', '48.5'],
+        ['NHS peer group (average)', '50.5'],
+        ['Liverpool', '52.5'],
+      ]);
+    });
+  });
 });

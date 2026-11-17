@@ -1,6 +1,9 @@
 import { Indicator } from '@/data/interfaces/Indicator';
 import { MetricId } from '@/config/metrics';
-import { PeerGroupData } from '@/components/charts/peer-group/types';
+import {
+  LocalAuthorityPeer,
+  PeerGroupData,
+} from '@/components/charts/peer-group/types';
 import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
 import { StackedBarSegment } from '@/components/charts/StackedBarChart';
@@ -41,18 +44,24 @@ export const breakdownValue = (
  * The comparison group's count: its members' values summed. The user's own LA
  * is excluded, as it is everywhere else the peer rows are used.
  */
-const peerGroupTotal = (
-  peerData: PeerGroupData | null | undefined,
+export const peerGroupTotal = (
+  groupPeers: LocalAuthorityPeer[] | null | undefined,
   ownLaCode?: string
 ): number | null => {
   const peers =
-    peerData?.localAuthorityPeers.filter(
+    groupPeers?.filter(
       (peer) => peer.code !== ownLaCode && peer.metricValue !== null
     ) ?? [];
   return peers.length > 0
     ? peers.reduce((sum, peer) => sum + (peer.metricValue as number), 0)
     : null;
 };
+
+/** A count as a percentage of a total, or null where there is nothing to be a share of */
+export const shareOfTotal = (
+  count: number | null,
+  total: number | null
+): number | null => (count === null || !total ? null : (count / total) * 100);
 
 /**
  * Adds the comparison group's rows to the metric data, as
@@ -94,7 +103,7 @@ export const mergeComparatorTotals = (
   const totals = Object.fromEntries(
     countMetrics.map((metricId) => [
       metricId,
-      peerGroupTotal(dataByMetric[metricId], ownLaCode),
+      peerGroupTotal(dataByMetric[metricId]?.localAuthorityPeers, ownLaCode),
     ])
   );
   const groupTotal = totals[totalMetric];
@@ -108,11 +117,9 @@ export const mergeComparatorTotals = (
       (candidate) => candidate.percentageMetric === item.metric_id
     );
     if (!category) return item;
-    const count = totals[category.countMetric];
     return {
       ...item,
-      data_point:
-        count !== null && groupTotal ? (count / groupTotal) * 100 : null,
+      data_point: shareOfTotal(totals[category.countMetric], groupTotal),
     };
   });
 };

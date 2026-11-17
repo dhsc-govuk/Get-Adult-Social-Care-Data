@@ -20,6 +20,9 @@ interface BarChartProps {
   // d3-format string for hover values; the default trims the decimal for
   // whole numbers (e.g. counts) while fractional values show 1 decimal place
   hoverValueFormat?: string;
+  // One per bar, shown in brackets beneath the value on hover: the count
+  // behind a percentage, say
+  hoverDetails?: string[];
 }
 
 const BarChart: React.FC<BarChartProps> = ({
@@ -33,6 +36,7 @@ const BarChart: React.FC<BarChartProps> = ({
   xAxisTickPrefix,
   showHighlightOutline = true,
   hoverValueFormat = ',.1~f',
+  hoverDetails,
 }) => {
   const { containerRef, onGraphReady } = usePlotlyResize();
   // Top highlight colours
@@ -99,7 +103,10 @@ const BarChart: React.FC<BarChartProps> = ({
       marker: {
         color: barColors,
       },
-      hovertemplate: `<b>%{y}</b><br>Value: ${xAxisTickPrefix ?? ''}%{x:${hoverValueFormat}}${xAxisTickSuffix ?? ''}<extra></extra>`,
+      ...(hoverDetails && { customdata: hoverDetails }),
+      hovertemplate: hoverDetails
+        ? `<b>%{y}</b><br>${xAxisTickPrefix ?? ''}%{x:${hoverValueFormat}}${xAxisTickSuffix ?? ''}<br>(%{customdata})<extra></extra>`
+        : `<b>%{y}</b><br>Value: ${xAxisTickPrefix ?? ''}%{x:${hoverValueFormat}}${xAxisTickSuffix ?? ''}<extra></extra>`,
     },
   ];
 

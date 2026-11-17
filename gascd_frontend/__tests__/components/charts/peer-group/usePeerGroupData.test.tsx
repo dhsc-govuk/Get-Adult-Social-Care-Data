@@ -179,10 +179,13 @@ describe('usePeerGroupData', () => {
     );
     expect(result.current.dataByMetric.metric_a?.averagePeerGroup).toBe(33);
   });
-  it('also fetches the NHS peer group average for the region group', async () => {
+  it('also fetches the NHS peer group average and LAs for the region group', async () => {
     mockFetch.mockImplementation(async (url: string) =>
       url.includes('get_la_peers')
-        ? jsonResponse({ local_authority_peers: [], average_peer_group: 30 })
+        ? jsonResponse({
+            local_authority_peers: [{ code: 'E06000001', metric_value: 7 }],
+            average_peer_group: 30,
+          })
         : jsonResponse({ group_members: [], custom_group_average: 11 })
     );
     const region = { id: 'region', name: 'North East', laCodes: ['E08000014'] };
@@ -198,6 +201,7 @@ describe('usePeerGroupData', () => {
     expect(result.current.dataByMetric.metric_a).toMatchObject({
       averagePeerGroup: 11,
       nhsPeerGroupAverage: 30,
+      nhsPeerGroupPeers: [{ code: 'E06000001', metricValue: 7 }],
     });
   });
 
@@ -220,6 +224,7 @@ describe('usePeerGroupData', () => {
     expect(result.current.dataByMetric.metric_a).toMatchObject({
       averagePeerGroup: 11,
       nhsPeerGroupAverage: null,
+      nhsPeerGroupPeers: null,
     });
   });
 });

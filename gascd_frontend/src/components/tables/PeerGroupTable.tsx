@@ -27,6 +27,12 @@ type PeerGroupTableProps = {
   nationalAverageLabel?: string;
   nationalAverageValue: number | null;
   extraRows?: { label: string; value: number | null }[];
+  // The chart's reference lines lead the table (England, the region and the
+  // comparison group, which is the NHS peer group where the region is
+  // selected), followed by the user's LA, and only the comparison LAs below
+  // them are sorted. A comparison LA without a value is kept, shown as not
+  // available.
+  referenceRowsFirst?: boolean;
   tableref?: Ref<HTMLTableElement>;
   children?: React.ReactNode;
 };
@@ -55,6 +61,7 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
   nationalAverageLabel = 'England (national average)',
   nationalAverageValue,
   extraRows = [],
+  referenceRowsFirst = false,
   tableref,
   children,
 }) => {
@@ -84,16 +91,23 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
         )
       : [{ label: laName, value: currentLaValue, bold: true }];
 
+  const comparatorRow = {
+    label: comparatorAverageLabel,
+    value: comparatorIsRegion
+      ? regionalAverageValue
+      : (peerData?.averagePeerGroup ?? null),
+    bold: true,
+  };
+  const nationalRow = {
+    label: nationalAverageLabel,
+    value: nationalAverageValue,
+    bold: true,
+  };
+
   const rows = [
     ...extraRows.map((row) => ({ ...row, bold: true })),
     ...chartRows,
-    {
-      label: comparatorAverageLabel,
-      value: comparatorIsRegion
-        ? regionalAverageValue
-        : (peerData?.averagePeerGroup ?? null),
-      bold: true,
-    },
+    comparatorRow,
     ...(comparatorIsRegion
       ? []
       : [
@@ -103,16 +117,42 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
             bold: true,
           },
         ]),
-    { label: nationalAverageLabel, value: nationalAverageValue, bold: true },
+    nationalRow,
   ];
 
   const sign = sort.direction === 'ascending' ? 1 : -1;
-  const sortedRows = [...rows].sort((a, b) => {
-    if (sort.column === 'area') return sign * a.label.localeCompare(b.label);
-    if (a.value === null) return b.value === null ? 0 : 1;
-    if (b.value === null) return -1;
-    return sign * (a.value - b.value);
-  });
+  const sorted = (unsorted: typeof rows) =>
+    [...unsorted].sort((a, b) => {
+      if (sort.column === 'area') return sign * a.label.localeCompare(b.label);
+      if (a.value === null) return b.value === null ? 0 : 1;
+      if (b.value === null) return -1;
+      return sign * (a.value - b.value);
+    });
+
+  const sortedRows = referenceRowsFirst
+    ? [
+        ...extraRows.map((row) => ({ ...row, bold: true })),
+        nationalRow,
+        {
+          label: regionalAverageLabel,
+          value: regionalAverageValue,
+          bold: true,
+        },
+        comparatorIsRegion
+          ? { ...comparatorRow, value: peerData?.nhsPeerGroupAverage ?? null }
+          : comparatorRow,
+        { label: laName, value: currentLaValue, bold: true },
+        ...sorted(
+          (peerData?.localAuthorityPeers ?? [])
+            .filter((peer) => peer.code !== laCode)
+            .map((peer) => ({
+              label: peer.displayName,
+              value: peer.metricValue,
+              bold: false,
+            }))
+        ),
+      ]
+    : sorted(rows);
 
   const sortBy = (column: SortColumn) =>
     setSort((current) =>
@@ -150,7 +190,10 @@ const PeerGroupTable: React.FC<PeerGroupTableProps> = ({
 
   return (
     <div>
-      <div className="moj-scrollable-pane" role="region">
+      <div
+        className="moj-scrollable-pane dhsc-scrollable-pane--auto"
+        role="region"
+      >
         <table className="govuk-table" ref={tableref}>
           {caption && (
             <caption className="govuk-table__caption govuk-table__caption--s">

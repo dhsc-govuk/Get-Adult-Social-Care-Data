@@ -38,6 +38,10 @@ export interface PeerGroupData {
   nationalAverage: number | null;
   // Only set for the region group, whose charts keep the NHS peer group line
   nhsPeerGroupAverage?: number | null;
+  // The NHS peer group's LAs, also only for the region group, for a figure
+  // worked out from their values rather than averaged; null if they failed
+  // to load
+  nhsPeerGroupPeers?: LocalAuthorityPeer[] | null;
 }
 
 export interface CustomComparatorGroup {
@@ -100,6 +104,12 @@ export interface PeerGroupBarChartProps {
   // Legend label for the national average line, e.g. "England" where the
   // page's tables also use the plain country name.
   nationalAverageLabel?: string;
+  // Legend label for the NHS peer group line drawn when the region is the
+  // comparison group
+  nhsPeerGroupAverageLabel?: string;
   // Defaults to the metric's source
   sourceText?: string;
+  // The figure behind each bar, by LA name, shown in brackets on hover
+  barDetails?: Record<string, string>;
+  xAxisRange?: [number, number];
 }

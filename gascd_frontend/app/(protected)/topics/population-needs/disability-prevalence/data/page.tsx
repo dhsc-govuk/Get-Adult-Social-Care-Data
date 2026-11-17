@@ -20,7 +20,7 @@ import DownloadTableDataCSVLink from '@/components/metric-components/download-ta
 import IndicatorService from '@/services/indicator/IndicatorService';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import RelatedDataList from '@/components/data-components/RelatedDataList';
-import FilterCheckboxGroup from '@/components/filters/FilterCheckboxGroup';
+import SearchableCheckboxFilter from '@/components/filters/SearchableCheckboxFilter';
 import SectionControls from '@/components/data-components/SectionControls';
 import FilterSelectGroup from '@/components/filters/FilterSelectGroup';
 import { useFilterSync } from '@/components/filters/useFilterSync';
@@ -73,9 +73,8 @@ export default function DisabilityPrevalence() {
   const [primarySupportReasonData, setPrimarySupportReasonData] = useState<
     Indicator[]
   >([]);
-  const [filteredPrimaryReasonData, setFilteredPrimaryReasonData] = useState<
-    Indicator[]
-  >([]);
+  // The applied primary support reasons; none means all of them
+  const [supportReasons, setSupportReasons] = useState<MetricId[]>([]);
   const [standardisedReasonData, setStandardisedReasonData] = useState<
     Indicator[]
   >([]);
@@ -188,9 +187,9 @@ export default function DisabilityPrevalence() {
       ])
     );
 
-  const [supportReasonRowHeaders, setSupportReasonRowHeaders] = useState<any>(
-    supportReasonRowHeadersDefault
-  );
+  const supportReasonRowHeaders = supportReasons.length
+    ? metricLabels(supportReasons)
+    : supportReasonRowHeadersDefault;
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -342,23 +341,24 @@ export default function DisabilityPrevalence() {
     fetchLocationIds();
   }, [CPLocationId]);
 
-  useEffect(() => {
-    updatePrimaryReasonMetrics();
-  }, [primarySupportReasonData]);
-
   // Primary support reason counts, with the comparator group's average added
   // alongside the true regional value
   const benchmarkedPrimaryReasonData = useMemo(
     () =>
       mergeComparatorAverage(
-        filteredPrimaryReasonData,
+        supportReasons.length
+          ? primarySupportReasonData.filter((item) =>
+              supportReasons.includes(item.metric_id as MetricId)
+            )
+          : primarySupportReasonData,
         supportReasonMetricIds,
         dataByMetric,
         locationIds[2],
         comparator.comparatorIsRegion
       ),
     [
-      filteredPrimaryReasonData,
+      primarySupportReasonData,
+      supportReasons,
       dataByMetric,
       locationIds,
       comparator.comparatorIsRegion,
@@ -408,27 +408,6 @@ export default function DisabilityPrevalence() {
     standardisedReasonData,
     chartSupportReason
   );
-
-  const updatePrimaryReasonMetrics = () => {
-    const storedData = localStorage.getItem('primary-reason-metrics');
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      if (Array.isArray(parsedData)) {
-        const ids = parsedData.map((item) => item.metric_id);
-        setFilteredPrimaryReasonData(
-          primarySupportReasonData.filter((item) =>
-            ids.includes(item.metric_id)
-          )
-        );
-        const map: any = {};
-        parsedData.map((item) => (map[item.metric_id] = item.filter_bedtype));
-        setSupportReasonRowHeaders(map);
-      }
-    } else {
-      setFilteredPrimaryReasonData(primarySupportReasonData);
-      setSupportReasonRowHeaders(supportReasonRowHeadersDefault);
-    }
-  };
 
   return (
     <Layout
@@ -642,12 +621,20 @@ export default function DisabilityPrevalence() {
                   'comparator-table-4'
                 )}
                 filters={
-                  <FilterCheckboxGroup
-                    idPrefix="table-4"
-                    filterType="primary-reason-metrics"
-                    filterLabel="Primary support reason"
-                    filters={supportReasonRowHeadersDefault}
-                    updateMethod={updatePrimaryReasonMetrics}
+                  <SearchableCheckboxFilter
+                    idPrefix="table-4-primary-reason-metrics"
+                    label="Primary support reason"
+                    allLabel="All primary support reasons"
+                    options={SUPPORT_REASON_ROWS.map((value) => ({
+                      value,
+                      label: supportReasonRowHeadersDefault[value],
+                    }))}
+                    applied={supportReasons}
+                    onApply={(values) =>
+                      setSupportReasons(values as MetricId[])
+                    }
+                    noMatchesText="No primary support reasons match your search"
+                    analyticsId="primary-reason-metrics"
                   />
                 }
               />
