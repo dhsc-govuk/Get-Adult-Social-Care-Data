@@ -29,11 +29,8 @@ const ALL_VALUE = 'all';
 /**
  * A "Show filters" button opening a panel of searchable checkboxes, with an
  * "all" option that stands for no filter. Selections only take effect on
- * "Apply": closing the panel discards them.
- *
- * `FilterCheckboxGroup` is the bed type filter this follows the look of; it
- * keeps its selections in local storage and has no "all" option, so it is not
- * reused here, where the applied selection is shared between tabs by the page.
+ * "Apply": closing the panel discards them. The applied selection is held by
+ * the page, so it can be shared between tabs.
  */
 const SearchableCheckboxFilter: React.FC<Props> = ({
   idPrefix,
@@ -67,10 +64,12 @@ const SearchableCheckboxFilter: React.FC<Props> = ({
   };
 
   const toggleOption = (value: string, checked: boolean) => {
-    setSelected((current) =>
-      checked ? [...current, value] : current.filter((item) => item !== value)
-    );
-    if (checked) setAllSelected(false);
+    const next = checked
+      ? [...selected, value]
+      : selected.filter((item) => item !== value);
+    setSelected(next);
+    // With nothing left ticked "all" applies, so it is shown as ticked
+    setAllSelected(next.length === 0);
   };
 
   const apply = () => {
@@ -143,11 +142,14 @@ const SearchableCheckboxFilter: React.FC<Props> = ({
               <legend className="govuk-fieldset__legend govuk-visually-hidden">
                 {label}
               </legend>
-              {matches.length === 0 && (
-                <p className="govuk-body govuk-!-margin-top-2" role="status">
-                  {noMatchesText}
-                </p>
-              )}
+              {/* Always on the page, so screen readers announce its text */}
+              <div role="status">
+                {matches.length === 0 && (
+                  <p className="govuk-body govuk-!-margin-top-2">
+                    {noMatchesText}
+                  </p>
+                )}
+              </div>
               <ul className="govuk-checkboxes gem-c-checkboxes__list">
                 {matches.map((option) => {
                   const isAll = option.value === ALL_VALUE;

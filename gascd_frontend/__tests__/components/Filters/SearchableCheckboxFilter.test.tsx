@@ -87,11 +87,11 @@ describe('SearchableCheckboxFilter', () => {
     expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
   });
 
-  it('applies no filter when every option is deselected', () => {
+  it('selects "all" again when every option is deselected, and applies no filter', () => {
     const onApply = renderFilter(['domiciliary_care']);
     open();
     fireEvent.click(checkbox('Domiciliary care service'));
-    expect(checkedLabels()).toEqual([]);
+    expect(checkedLabels()).toEqual(['all']);
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
 
     expect(onApply).toHaveBeenCalledWith([]);
@@ -130,16 +130,17 @@ describe('SearchableCheckboxFilter', () => {
     ).toEqual(['care_home_nursing']);
   });
 
-  it('says so when the search matches nothing', () => {
+  it('says so when the search matches nothing, in a status that is always on the page', () => {
     renderFilter();
     open();
+    expect(screen.getByRole('status')).toBeEmptyDOMElement();
     fireEvent.change(screen.getByLabelText('Service type search'), {
       target: { value: 'hospital' },
     });
 
     expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
-    expect(
-      screen.getByText('No service types match your search')
-    ).toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'No service types match your search'
+    );
   });
 });
