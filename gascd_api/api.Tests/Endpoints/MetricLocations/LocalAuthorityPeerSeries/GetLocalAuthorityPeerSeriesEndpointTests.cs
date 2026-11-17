@@ -85,4 +85,34 @@ public class GetLocalAuthorityPeerSeriesEndpointTests(App app) : TestBase<App>
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
+
+    [Fact]
+    public async Task GetPeerSeries_CqcMetrics_SumsCountsAndPoolsPercentages()
+    {
+        var (httpCode, response) =
+            await app.Client.POSTAsync<GetLocalAuthorityPeerSeriesEndpoint, GetLocalAuthorityPeerSeriesRequest, List<GetLocalAuthorityPeerSeriesResponse>>(
+                new GetLocalAuthorityPeerSeriesRequest
+                {
+                    LocalAuthorityCode = "E08000014",
+                    MetricCodes =
+                    [
+                        MetricCodeEnum.cqcr_num_good_adult_social_care,
+                        MetricCodeEnum.cqcr_pct_inspected_good_adult_social_care
+                    ]
+                });
+
+        httpCode.EnsureSuccessStatusCode();
+        response.Count.ShouldBe(2);
+
+        // Oct and Nov 2026: 354 and 375 good-rated locations across the peers
+        response[0].MetricCode.ShouldBe(nameof(MetricCodeEnum.cqcr_num_good_adult_social_care));
+        response[0].PeerCount.ShouldBe(4);
+        response[0].SeriesStartDate.ShouldBe(new DateOnly(2026, 10, 1));
+        response[0].SeriesEndDate.ShouldBe(new DateOnly(2026, 11, 1));
+        response[0].Values.ShouldBe([354m, 375m]);
+
+        // Of 480 and 500 inspected: 73.75 rounds to 73.8, and 75.0 where the peers' average is 80.0
+        response[1].MetricCode.ShouldBe(nameof(MetricCodeEnum.cqcr_pct_inspected_good_adult_social_care));
+        response[1].Values.ShouldBe([73.8m, 75.0m]);
+    }
 }

@@ -191,4 +191,29 @@ public class GetCustomLocalAuthorityGroupEndpointTests(App app) : TestBase<App>
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
+
+    [Fact]
+    public async Task GetCustomGroup_CqcCount_ReturnsTheGroupTotalWithoutTheRequestingLa()
+    {
+        var response = await GetResponse(BuildUrl(
+            ["E08000015", "E08000016", "E08000017"],
+            MetricCodeEnum.cqcr_num_good_adult_social_care,
+            requestingLaCode: "E08000017"));
+
+        response.ShouldNotBeNull();
+        // 80 + 210, E08000017 being the requesting LA
+        response.CustomGroupAverage.ShouldBe(290m);
+    }
+
+    [Fact]
+    public async Task GetCustomGroup_CqcPercentage_IsPooledFromTheGroupTotals()
+    {
+        var response = await GetResponse(BuildUrl(
+            ["E08000015", "E08000016"],
+            MetricCodeEnum.cqcr_pct_inspected_good_adult_social_care));
+
+        response.ShouldNotBeNull();
+        // 290 good of 400 inspected, where the average of 80.0 and 70.0 is 75.0
+        response.CustomGroupAverage.ShouldBe(72.5m);
+    }
 }

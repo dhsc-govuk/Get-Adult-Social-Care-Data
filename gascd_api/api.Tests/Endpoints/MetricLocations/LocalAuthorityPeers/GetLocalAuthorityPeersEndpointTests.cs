@@ -153,4 +153,40 @@ public class GetLocalAuthorityPeersEndpointTests(App app) : TestBase<App>
             peer.MetricValue.ShouldNotBeNull();
         }
     }
+
+    [Fact]
+    public async Task GetLocalAuthorityPeers_CqcCount_ReturnsThePeersTotal()
+    {
+        var (httpCode, response) =
+            await app.Client.GETAsync<GetLocalAuthorityPeersEndpoint, GetLocalAuthorityPeersRequest, GetLocalAuthorityPeersResponse>(
+                new GetLocalAuthorityPeersRequest
+                {
+                    LocalAuthorityCode = "E08000014",
+                    MetricCode = MetricCodeEnum.cqcr_num_good_adult_social_care
+                });
+
+        httpCode.EnsureSuccessStatusCode();
+        // Peers E08000015-18 have 80, 210, 45 and 40 good-rated locations
+        response.AveragePeerGroup.ShouldBe(375m);
+        // The National row is served as the England total
+        response.NationalAverage.ShouldBe(18060m);
+    }
+
+    [Fact]
+    public async Task GetLocalAuthorityPeers_CqcPercentage_IsPooledNotAveraged()
+    {
+        var (httpCode, response) =
+            await app.Client.GETAsync<GetLocalAuthorityPeersEndpoint, GetLocalAuthorityPeersRequest, GetLocalAuthorityPeersResponse>(
+                new GetLocalAuthorityPeersRequest
+                {
+                    LocalAuthorityCode = "E08000014",
+                    MetricCode = MetricCodeEnum.cqcr_pct_inspected_good_adult_social_care
+                });
+
+        httpCode.EnsureSuccessStatusCode();
+        response.LocalAuthorityPeers.Select(x => x.MetricValue).ShouldBe([90.0m, 80.0m, 80.0m, 70.0m]);
+        // 375 good of 500 inspected across the peers, where the average of their percentages is 80.0
+        response.AveragePeerGroup.ShouldBe(75.0m);
+        response.NationalAverage.ShouldBe(79.3m);
+    }
 }

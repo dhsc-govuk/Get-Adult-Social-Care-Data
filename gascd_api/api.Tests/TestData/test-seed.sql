@@ -928,6 +928,8 @@ DECLARE
     num_clients_comm_care_per100k_adults_metric_id integer = 136;
     cqc_ratings_metric_id integer = 137;
     cqc_inspection_status_metric_id integer = 138;
+    cqcr_num_good_metric_id integer = 139;
+    cqci_num_inspected_metric_id integer = 140;
 
     metric_id integer = 5;
     metric_id_2 integer = 6;
@@ -1118,7 +1120,9 @@ BEGIN
            (expenditure_longterm_support_setting_per100k_adults_metric_id, 'elss_supported_accommodation_all_ages_per100k_adults', expenditure_longterm_support_setting_per100k_adults_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (num_clients_comm_care_per100k_adults_metric_id, 'nccc_num_clients_comm_care_per100k_adults', num_clients_comm_care_per100k_adults_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'ONS', 'numbers', 'Daily', CURRENT_TIMESTAMP),
            (cqc_ratings_metric_id, 'cqcr_pct_inspected_good_adult_social_care', cqc_ratings_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'CQC', 'numbers', 'Daily', CURRENT_TIMESTAMP),
-           (cqc_inspection_status_metric_id, 'cqci_pct_uninspected_adult_social_care', cqc_inspection_status_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'CQC', 'numbers', 'Daily', CURRENT_TIMESTAMP);
+           (cqc_inspection_status_metric_id, 'cqci_pct_uninspected_adult_social_care', cqc_inspection_status_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'CQC', 'numbers', 'Daily', CURRENT_TIMESTAMP),
+           (cqcr_num_good_metric_id, 'cqcr_num_good_adult_social_care', cqc_ratings_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'CQC', 'Number', 'Monthly', CURRENT_TIMESTAMP),
+           (cqci_num_inspected_metric_id, 'cqci_num_inspected_adult_social_care', cqc_inspection_status_metric_group_id, 'Metric filter info', 'This is a numerator', 'This is a denominator', 'CQC', 'Number', 'Monthly', CURRENT_TIMESTAMP);
 
     INSERT INTO bedcount (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, bedcount_total_metric_id, '1-123456789', 'National', '2000-01-01 00:00:00', '2025-01-01 00:00:00', ARRAY [1.1,2.2,3.3,4.4,5.5], 5.5, CURRENT_TIMESTAMP),
@@ -1257,11 +1261,27 @@ BEGIN
     INSERT INTO num_clients_comm_care_per100k_adults (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
     VALUES (1, num_clients_comm_care_per100k_adults_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 8.6], 8.6, CURRENT_TIMESTAMP);
 
+    -- Liverpool's peers (E08000015-18), Oct and Nov 2026: good-rated and inspected location counts and the
+    -- % of inspected rated good, so peer group values can be checked as summed counts and pooled %s.
     INSERT INTO cqc_ratings (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
-    VALUES (1, cqc_ratings_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 8.7], 8.7, CURRENT_TIMESTAMP);
+    VALUES (1, cqc_ratings_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 8.7], 8.7, CURRENT_TIMESTAMP),
+           (2, cqcr_num_good_metric_id, 'E08000015', 'LA', '2026-10-01 00:00:00', '2026-11-01 00:00:00', ARRAY [66,80], 80, CURRENT_TIMESTAMP),
+           (3, cqcr_num_good_metric_id, 'E08000016', 'LA', '2026-10-01 00:00:00', '2026-11-01 00:00:00', ARRAY [210,210], 210, CURRENT_TIMESTAMP),
+           (4, cqcr_num_good_metric_id, 'E08000017', 'LA', '2026-10-01 00:00:00', '2026-11-01 00:00:00', ARRAY [45,45], 45, CURRENT_TIMESTAMP),
+           (5, cqcr_num_good_metric_id, 'E08000018', 'LA', '2026-10-01 00:00:00', '2026-11-01 00:00:00', ARRAY [33,40], 40, CURRENT_TIMESTAMP),
+           (6, cqc_ratings_metric_id, 'E08000015', 'LA', '2026-10-01 00:00:00', '2026-11-01 00:00:00', ARRAY [73.3,80.0], 80.0, CURRENT_TIMESTAMP),
+           (7, cqc_ratings_metric_id, 'E08000016', 'LA', '2026-10-01 00:00:00', '2026-11-01 00:00:00', ARRAY [70.0,70.0], 70.0, CURRENT_TIMESTAMP),
+           (8, cqc_ratings_metric_id, 'E08000017', 'LA', '2026-10-01 00:00:00', '2026-11-01 00:00:00', ARRAY [90.0,90.0], 90.0, CURRENT_TIMESTAMP),
+           (9, cqc_ratings_metric_id, 'E08000018', 'LA', '2026-10-01 00:00:00', '2026-11-01 00:00:00', ARRAY [82.5,80.0], 80.0, CURRENT_TIMESTAMP),
+           (10, cqcr_num_good_metric_id, 'E92000001', 'National', '2026-10-01 00:00:00', '2026-11-01 00:00:00', ARRAY [17950,18060], 18060, CURRENT_TIMESTAMP),
+           (11, cqc_ratings_metric_id, 'E92000001', 'National', '2026-10-01 00:00:00', '2026-11-01 00:00:00', ARRAY [79.1,79.3], 79.3, CURRENT_TIMESTAMP);
 
     INSERT INTO cqc_inspection_status (id, metric_fk, location_code, location_type, start_date, end_date, time_series, latest_value, loaded_datetime)
-    VALUES (1, cqc_inspection_status_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 8.8], 8.8, CURRENT_TIMESTAMP);
+    VALUES (1, cqc_inspection_status_metric_id, 'E92000001', 'Regional', '2001-01-01 00:00:00', '2026-01-01 00:00:00', ARRAY [2.2,3.3,4.4,5.5, 8.8], 8.8, CURRENT_TIMESTAMP),
+           (2, cqci_num_inspected_metric_id, 'E08000015', 'LA', '2026-10-01 00:00:00', '2026-11-01 00:00:00', ARRAY [90,100], 100, CURRENT_TIMESTAMP),
+           (3, cqci_num_inspected_metric_id, 'E08000016', 'LA', '2026-10-01 00:00:00', '2026-11-01 00:00:00', ARRAY [300,300], 300, CURRENT_TIMESTAMP),
+           (4, cqci_num_inspected_metric_id, 'E08000017', 'LA', '2026-10-01 00:00:00', '2026-11-01 00:00:00', ARRAY [50,50], 50, CURRENT_TIMESTAMP),
+           (5, cqci_num_inspected_metric_id, 'E08000018', 'LA', '2026-10-01 00:00:00', '2026-11-01 00:00:00', ARRAY [40,50], 50, CURRENT_TIMESTAMP);
 
 END $$;
     

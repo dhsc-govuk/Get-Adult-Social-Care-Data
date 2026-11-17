@@ -53,17 +53,17 @@ public class GetCustomLocalAuthorityGroupEndpoint(
             .ThenByDescending(x => x.MetricValue)
             .ToList();
 
-        // The requesting LA is excluded so the group average keeps the same semantics
-        // as the NHS peer group average, where the source LA is never a peer of itself.
-        var averageValues = groupMembers
-            .Where(x => x.Code != req.RequestingLaCode && x.MetricValue.HasValue)
-            .Select(x => x.MetricValue!.Value)
-            .ToList();
+        // The requesting LA is excluded so the group value keeps the same semantics
+        // as the NHS peer group value, where the source LA is never a peer of itself.
+        var groupValue = await metricValuesService.GetGroupValueAsync(
+            req.MetricCode,
+            groupMembers.Where(x => x.Code != req.RequestingLaCode).ToDictionary(x => x.Code, x => x.MetricValue),
+            ct);
 
         var response = new GetCustomLocalAuthorityGroupResponse
         {
             GroupMembers = groupMembers,
-            CustomGroupAverage = averageValues.Count > 0 ? averageValues.Average() : null,
+            CustomGroupAverage = groupValue,
             NationalAverage = metricValues.NationalAverage,
         };
 

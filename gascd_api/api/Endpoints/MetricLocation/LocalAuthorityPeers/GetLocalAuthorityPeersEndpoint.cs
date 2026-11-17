@@ -62,15 +62,13 @@ public class GetLocalAuthorityPeersEndpoint(
             .ThenByDescending(x => x.MetricValue)
             .ToList();
 
-        var peerValues = localAuthorityPeers
-            .Where(x => x.MetricValue.HasValue)
-            .Select(x => x.MetricValue!.Value)
-            .ToList();
+        var peerGroupValue = await metricValuesService.GetGroupValueAsync(
+            req.MetricCode, localAuthorityPeers.ToDictionary(x => x.Code, x => x.MetricValue), ct);
 
         var response = new GetLocalAuthorityPeersResponse
         {
             LocalAuthorityPeers = localAuthorityPeers,
-            AveragePeerGroup = peerValues.Count > 0 ? peerValues.Average() : null,
+            AveragePeerGroup = peerGroupValue,
             NationalAverage = metricValues.NationalAverage
         };
 

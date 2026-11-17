@@ -1,4 +1,5 @@
 using api.Data;
+using api.Data.Models.Metrics;
 using api.Data.Shared;
 using api.Services;
 using FastEndpoints;
@@ -10,6 +11,8 @@ namespace api.Endpoints.MetricLocation.LocalAuthorityPeerSeries;
 /// Averages each requested metric's time series across a local authority's statistical
 /// peers, so the front end can draw a peer group average alongside the authority's own
 /// series. The peers endpoint covers the latest value only; this covers the whole series.
+/// CQC metrics combine as <see cref="CqcGroupAggregation"/> describes instead: counts are
+/// summed and percentages pooled from the summed counts.
 /// </summary>
 public class GetLocalAuthorityPeerSeriesEndpoint(
     GascdDataContext context,
@@ -52,14 +55,14 @@ public class GetLocalAuthorityPeerSeriesEndpoint(
         {
             var metricCodeString = metricCode.ToString();
 
-            var peerSeries = await context.GetMetricTimeSeriesQueryable(metricCode)
-                .AsNoTracking()
-                .Include(x => x.Metric)
-                .Where(x => x.Metric.Code == metricCodeString)
-                .Where(x => x.LocationType == laLocationType && peerCodes.Contains(x.LocationCode))
-                .ToListAsync(ct);
-
-            var averaged = PeerSeriesAverager.Average(peerSeries);
+            var averaged = CqcGroupAggregation.For(metricCode) switch
+            {
+                CqcGroupAggregation.Sum => PeerSeriesAverager.Sum(await PeerSeriesAsync(metricCode)),
+                CqcGroupAggregation.Pooled pooled => Pool(
+                    PeerSeriesAverager.Sum(await PeerSeriesAsync(pooled.Numerator)),
+                    PeerSeriesAverager.Sum(await PeerSeriesAsync(pooled.Denominator))),
+                _ => PeerSeriesAverager.Average(await PeerSeriesAsync(metricCode)),
+            };
             if (averaged is not null)
             {
                 response.Add(new GetLocalAuthorityPeerSeriesResponse
@@ -76,5 +79,38 @@ public class GetLocalAuthorityPeerSeriesEndpoint(
 
         logger.LogInformation("Finished processing peer average series for LA code: {code}", req.LocalAuthorityCode);
         await Send.OkAsync(response, ct);
+
+        Task<List<MetricTimeSeries>> PeerSeriesAsync(MetricCodeEnum metricCode)
+        {
+            var metricCodeString = metricCode.ToString();
+            return context.GetMetricTimeSeriesQueryable(metricCode)
+                .AsNoTracking()
+                .Include(x => x.Metric)
+                .Where(x => x.Metric.Code == metricCodeString)
+                .Where(x => x.LocationType == laLocationType && peerCodes.Contains(x.LocationCode))
+                .ToListAsync(ct);
+        }
+    }
+
+    /// <summary>
+    /// A pooled percentage series from the peers' summed numerator and denominator series, or
+    /// null if either is missing or the two do not cover the same dates.
+    /// </summary>
+    private static PeerSeriesAverager.PeerAverageSeries? Pool(
+        PeerSeriesAverager.PeerAverageSeries? numerators,
+        PeerSeriesAverager.PeerAverageSeries? denominators)
+    {
+        if (numerators is null || denominators is null
+            || numerators.StartDate != denominators.StartDate
+            || numerators.Values.Length != denominators.Values.Length)
+            return null;
+
+        var values = numerators.Values
+            .Select((numerator, i) => numerator.HasValue && denominators.Values[i].HasValue
+                ? CqcGroupAggregation.Pool(numerator.Value, denominators.Values[i]!.Value)
+                : null)
+            .ToArray();
+
+        return numerators with { Values = values };
     }
 }

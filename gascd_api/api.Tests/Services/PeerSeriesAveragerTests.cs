@@ -173,4 +173,27 @@ public class PeerSeriesAveragerTests
     {
         PeerSeriesAverager.Average([]).ShouldBeNull();
     }
+
+    [Fact]
+    public void Sum_PeerStartingLater_AddsUpTheValuesAtEachPoint()
+    {
+        var metric = MetricWithFrequency("Yearly");
+        var result = PeerSeriesAverager.Sum(
+        [
+            Series("A", metric, Jan2020, Jan2021, 10m, 20m),
+            Series("B", metric, Jan2021, Jan2021, 40m),
+        ]);
+
+        result.ShouldNotBeNull();
+        result.PeerCount.ShouldBe(2);
+        result.StartDate.ShouldBe(Jan2020);
+        result.EndDate.ShouldBe(Jan2021);
+        result.Values.ShouldBe([10m, 60m]);
+    }
+
+    [Fact]
+    public void Sum_NoPeers_ReturnsNull()
+    {
+        PeerSeriesAverager.Sum([]).ShouldBeNull();
+    }
 }

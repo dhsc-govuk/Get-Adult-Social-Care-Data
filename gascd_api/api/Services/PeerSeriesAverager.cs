@@ -7,7 +7,8 @@ namespace api.Services;
 /// aligned by date rather than by array position. Peers whose series start later or end
 /// earlier than the others, such as authorities created part way through the period, still
 /// contribute to the dates they do cover, and the result spans the earliest start to the
-/// latest end with a null wherever no peer has a value.
+/// latest end with a null wherever no peer has a value. <see cref="Sum"/> combines the same way
+/// but adds the peers' values up, for metrics whose group value is a total.
 /// </summary>
 public static class PeerSeriesAverager
 {
@@ -18,7 +19,17 @@ public static class PeerSeriesAverager
         string Frequency,
         decimal?[] Values);
 
-    public static PeerAverageSeries? Average(IReadOnlyList<MetricTimeSeries> peerSeries)
+    public static PeerAverageSeries? Average(IReadOnlyList<MetricTimeSeries> peerSeries) =>
+        Combine(peerSeries, (sum, count) => sum / count);
+
+    /// <summary>
+    /// Adds the peers' series up point by point. A point is the sum of the peers that have a value
+    /// there, so it understates the total wherever a peer is missing a value.
+    /// </summary>
+    public static PeerAverageSeries? Sum(IReadOnlyList<MetricTimeSeries> peerSeries) =>
+        Combine(peerSeries, (sum, _) => sum);
+
+    private static PeerAverageSeries? Combine(IReadOnlyList<MetricTimeSeries> peerSeries, Func<decimal, int, decimal> reduce)
     {
         var contributing = peerSeries.Where(x => x.TimeSeries.Any(v => v.HasValue)).ToList();
         if (contributing.Count == 0)
@@ -27,7 +38,7 @@ public static class PeerSeriesAverager
         var frequency = contributing[0].Metric.Frequency;
         var step = StepFor(frequency);
         if (step is null || !contributing.All(x => FitsGrid(x, step)))
-            return AverageLargestAlignedGroup(contributing, frequency);
+            return CombineLargestAlignedGroup(contributing, frequency, reduce);
 
         var gridStart = contributing.Min(x => x.StartDate);
         var gridEnd = contributing.Max(x => x.EndDate);
@@ -51,7 +62,7 @@ public static class PeerSeriesAverager
 
         var values = new decimal?[length];
         for (var i = 0; i < length; i++)
-            values[i] = counts[i] > 0 ? sums[i] / counts[i] : null;
+            values[i] = counts[i] > 0 ? reduce(sums[i], counts[i]) : null;
 
         return new PeerAverageSeries(contributing.Count, gridStart, step.Advance(gridStart, length - 1), frequency, values);
     }
@@ -66,10 +77,11 @@ public static class PeerSeriesAverager
     /// <summary>
     /// Fallback for when the peers cannot be aligned by date, because the frequency's spacing
     /// is not known or a series does not fit its own date range: only the largest group of
-    /// peers sharing exactly the same period can be averaged position by position, preferring
+    /// peers sharing exactly the same period can be combined position by position, preferring
     /// the most recent period on a tie.
     /// </summary>
-    private static PeerAverageSeries AverageLargestAlignedGroup(List<MetricTimeSeries> peerSeries, string frequency)
+    private static PeerAverageSeries CombineLargestAlignedGroup(
+        List<MetricTimeSeries> peerSeries, string frequency, Func<decimal, int, decimal> reduce)
     {
         var aligned = peerSeries
             .GroupBy(x => (x.StartDate, x.EndDate))
@@ -86,7 +98,7 @@ public static class PeerSeriesAverager
                 .Where(x => i < x.TimeSeries.Length && x.TimeSeries[i].HasValue)
                 .Select(x => x.TimeSeries[i]!.Value)
                 .ToList();
-            values[i] = pointValues.Count > 0 ? pointValues.Average() : null;
+            values[i] = pointValues.Count > 0 ? reduce(pointValues.Sum(), pointValues.Count) : null;
         }
 
         var first = aligned[0];
