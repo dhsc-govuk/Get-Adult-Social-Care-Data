@@ -24,7 +24,8 @@ public static class PeerSeriesAverager
 
     /// <summary>
     /// Adds the peers' series up point by point. A point is the sum of the peers that have a value
-    /// there, so it understates the total wherever a peer is missing a value.
+    /// there, so it understates the total wherever a peer is missing a value, or when the peers
+    /// cannot be aligned by date and only the largest aligned group is combined.
     /// </summary>
     public static PeerAverageSeries? Sum(IReadOnlyList<MetricTimeSeries> peerSeries) =>
         Combine(peerSeries, (sum, _) => sum);

@@ -63,7 +63,7 @@ public class GetLocalAuthorityPeersEndpoint(
             .ToList();
 
         var peerGroupValue = await metricValuesService.GetGroupValueAsync(
-            req.MetricCode, localAuthorityPeers.ToDictionary(x => x.Code, x => x.MetricValue), ct);
+            req.MetricCode, localAuthorityPeers.DistinctBy(x => x.Code).ToDictionary(x => x.Code, x => x.MetricValue), ct);
 
         var response = new GetLocalAuthorityPeersResponse
         {

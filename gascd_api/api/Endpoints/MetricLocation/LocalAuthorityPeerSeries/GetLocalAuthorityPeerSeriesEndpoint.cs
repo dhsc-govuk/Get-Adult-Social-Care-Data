@@ -50,6 +50,8 @@ public class GetLocalAuthorityPeerSeriesEndpoint(
 
         var laLocationType = LocationTypeEnum.LA.ToString();
         var response = new List<GetLocalAuthorityPeerSeriesResponse>();
+        // Pooled CQC percentages share denominators, so each metric's peer series is read once
+        var seriesByMetric = new Dictionary<MetricCodeEnum, List<MetricTimeSeries>>();
 
         foreach (var metricCode in req.MetricCodes.Distinct())
         {
@@ -60,7 +62,8 @@ public class GetLocalAuthorityPeerSeriesEndpoint(
                 CqcGroupAggregation.Sum => PeerSeriesAverager.Sum(await PeerSeriesAsync(metricCode)),
                 CqcGroupAggregation.Pooled pooled => Pool(
                     PeerSeriesAverager.Sum(await PeerSeriesAsync(pooled.Numerator)),
-                    PeerSeriesAverager.Sum(await PeerSeriesAsync(pooled.Denominator))),
+                    PeerSeriesAverager.Sum(await PeerSeriesAsync(pooled.Denominator)))
+                    ?? PeerSeriesAverager.Average(await PeerSeriesAsync(metricCode)),
                 _ => PeerSeriesAverager.Average(await PeerSeriesAsync(metricCode)),
             };
             if (averaged is not null)
@@ -80,21 +83,27 @@ public class GetLocalAuthorityPeerSeriesEndpoint(
         logger.LogInformation("Finished processing peer average series for LA code: {code}", req.LocalAuthorityCode);
         await Send.OkAsync(response, ct);
 
-        Task<List<MetricTimeSeries>> PeerSeriesAsync(MetricCodeEnum metricCode)
+        async Task<List<MetricTimeSeries>> PeerSeriesAsync(MetricCodeEnum metricCode)
         {
+            if (seriesByMetric.TryGetValue(metricCode, out var cached))
+                return cached;
+
             var metricCodeString = metricCode.ToString();
-            return context.GetMetricTimeSeriesQueryable(metricCode)
+            var series = await context.GetMetricTimeSeriesQueryable(metricCode)
                 .AsNoTracking()
                 .Include(x => x.Metric)
                 .Where(x => x.Metric.Code == metricCodeString)
                 .Where(x => x.LocationType == laLocationType && peerCodes.Contains(x.LocationCode))
                 .ToListAsync(ct);
+            seriesByMetric[metricCode] = series;
+            return series;
         }
     }
 
     /// <summary>
     /// A pooled percentage series from the peers' summed numerator and denominator series, or
-    /// null if either is missing or the two do not cover the same dates.
+    /// null if either is missing, the two do not cover the same dates (the caller then averages
+    /// the percentages instead), or no point has a denominator.
     /// </summary>
     private static PeerSeriesAverager.PeerAverageSeries? Pool(
         PeerSeriesAverager.PeerAverageSeries? numerators,
@@ -111,6 +120,6 @@ public class GetLocalAuthorityPeerSeriesEndpoint(
                 : null)
             .ToArray();
 
-        return numerators with { Values = values };
+        return values.Any(x => x.HasValue) ? numerators with { Values = values } : null;
     }
 }
