@@ -19,13 +19,17 @@ export const getReview = async (
 ): Promise<ReviewRow | null> => {
   const row = await authDB
     .selectFrom('access_review')
-    .select(['due_at', 'last_reviewed_at'])
+    .select(['due_at', 'deadline_at', 'last_reviewed_at'])
     .where('review_type', '=', type)
     .where('scope_type', '=', GRANT_SCOPE_PROVIDER)
     .where('provider_code', '=', providerCode)
     .executeTakeFirst();
   return row
-    ? { dueAt: row.due_at, lastReviewedAt: row.last_reviewed_at }
+    ? {
+        dueAt: row.due_at,
+        deadlineAt: row.deadline_at,
+        lastReviewedAt: row.last_reviewed_at,
+      }
     : null;
 };
 
@@ -45,6 +49,7 @@ export const completeReview = async (
     last_reviewed_at: now,
     last_reviewed_by_user_id: actor.id,
     last_reminder_days_left: null,
+    deadline_at: null,
   };
   await authDB.transaction().execute(async (trx) => {
     const updated = await trx
@@ -71,7 +76,7 @@ export const completeReview = async (
       .insertInto('access_audit')
       .values({
         occurred_at: now,
-        action: AUDIT_ACTION_REVIEW_COMPLETED,
+        action: AUDIT_ACTION_REVIEW_COMPLETED[type],
         actor_type: AUDIT_ACTOR_USER,
         actor_id: actor.id,
         actor_name: actor.registeredName ?? actor.name,
@@ -81,7 +86,7 @@ export const completeReview = async (
         target_email: null,
         provider_code: context.providerCode,
         location_codes: null,
-        details: JSON.stringify({ review_type: type, ...details }),
+        details: JSON.stringify(details),
       })
       .execute();
   });

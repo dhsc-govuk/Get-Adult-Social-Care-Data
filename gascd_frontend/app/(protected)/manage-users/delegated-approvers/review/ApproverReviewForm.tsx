@@ -37,7 +37,6 @@ const ApproverReviewForm: React.FC<{ approvers: ReviewApprover[] }> = ({
       ])
     : [];
 
-
   const next = (event: React.FormEvent) => {
     event.preventDefault();
     if (missing.length > 0) {

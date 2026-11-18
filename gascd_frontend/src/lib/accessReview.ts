@@ -3,7 +3,12 @@ export const REVIEW_TYPE_USERS = 'users';
 export const REVIEW_TYPE_APPROVERS = 'approvers';
 export const REVIEW_EVERY_MONTHS = 12;
 export const REVIEW_WINDOW_DAYS = 60;
-export const AUDIT_ACTION_REVIEW_COMPLETED = 'access_review_completed';
+
+// gascd-apps AccessAuditActions
+export const AUDIT_ACTION_REVIEW_COMPLETED = {
+  users: 'user_review_completed',
+  approvers: 'approver_review_completed',
+} as const;
 
 export type ReviewType =
   | typeof REVIEW_TYPE_USERS
@@ -11,6 +16,8 @@ export type ReviewType =
 
 export type ReviewRow = {
   dueAt: Date;
+  // Set by the daily job when a reminder gives a later deadline than the usual window
+  deadlineAt: Date | null;
   lastReviewedAt: Date | null;
 };
 
@@ -32,7 +39,9 @@ export const nextDueAt = (now: Date) => {
   return due;
 };
 
-export const approverDeadline = (dueAt: Date) => {
+// The last day to complete it; approvers lose the role the day after (AccessReviewPlanner.DeadlineFor)
+export const approverDeadline = ({ dueAt, deadlineAt }: ReviewRow) => {
+  if (deadlineAt) return startOfDayUtc(deadlineAt);
   const deadline = startOfDayUtc(dueAt);
   deadline.setUTCDate(deadline.getUTCDate() + REVIEW_WINDOW_DAYS);
   return deadline;
@@ -47,6 +56,5 @@ export const reviewStatus = (
   row && {
     due: startOfDayUtc(now) >= startOfDayUtc(row.dueAt),
     dueAt: row.dueAt,
-    deadline:
-      type === REVIEW_TYPE_APPROVERS ? approverDeadline(row.dueAt) : null,
+    deadline: type === REVIEW_TYPE_APPROVERS ? approverDeadline(row) : null,
   };

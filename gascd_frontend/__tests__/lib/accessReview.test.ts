@@ -14,7 +14,7 @@ describe('reviewStatus', () => {
   });
 
   it('is due from the start of the due date', () => {
-    const row = { dueAt: DUE, lastReviewedAt: null };
+    const row = { dueAt: DUE, deadlineAt: null, lastReviewedAt: null };
 
     expect(
       reviewStatus(REVIEW_TYPE_USERS, row, new Date('2027-03-09T23:59:00Z'))
@@ -27,7 +27,7 @@ describe('reviewStatus', () => {
   });
 
   it('gives approver reviews a deadline 60 days after they open', () => {
-    const row = { dueAt: DUE, lastReviewedAt: null };
+    const row = { dueAt: DUE, deadlineAt: null, lastReviewedAt: null };
 
     expect(reviewStatus(REVIEW_TYPE_APPROVERS, row, DUE)?.deadline).toEqual(
       new Date('2027-05-09T00:00:00Z')
@@ -46,8 +46,22 @@ describe('nextDueAt', () => {
 
 describe('approverDeadline', () => {
   it('is 60 days after the review opens', () => {
-    expect(approverDeadline(new Date('2026-12-01T00:00:00Z'))).toEqual(
-      new Date('2027-01-30T00:00:00Z')
-    );
+    expect(
+      approverDeadline({
+        dueAt: new Date('2026-12-01T00:00:00Z'),
+        deadlineAt: null,
+        lastReviewedAt: null,
+      })
+    ).toEqual(new Date('2027-01-30T00:00:00Z'));
+  });
+
+  it('is the later deadline a final reminder gave', () => {
+    expect(
+      approverDeadline({
+        dueAt: new Date('2026-12-01T00:00:00Z'),
+        deadlineAt: new Date('2027-02-14T00:00:00Z'),
+        lastReviewedAt: null,
+      })
+    ).toEqual(new Date('2027-02-14T00:00:00Z'));
   });
 });
