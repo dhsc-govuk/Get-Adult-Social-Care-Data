@@ -5,7 +5,7 @@ import DataTabs from '@/components/data-components/DataTabs';
 import NhsPeerGroupDetails from '@/components/data-components/NhsPeerGroupDetails';
 import PeerGroupTable from '@/components/tables/PeerGroupTable';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
-import SearchableCheckboxFilter from '@/components/filters/SearchableCheckboxFilter';
+import FilterPanel from '@/components/filters/FilterPanel';
 import DownloadTableDataCSVLink from '@/components/metric-components/download-table-data-csv-link/DownloadTableDataCSVLink';
 import { ComparatorControls } from '@/components/charts/peer-group/useComparatorControls';
 import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
@@ -21,7 +21,7 @@ import {
   CQC_BENCHMARK_RATINGS,
   CQC_RATING_METRIC_IDS,
   CQC_SERVICE_TYPES,
-  CQC_SERVICE_TYPE_OPTIONS,
+  CQC_SERVICE_TYPE_FILTER_GROUP,
   CqcRatingId,
   CqcServiceTypeId,
   DEFAULT_CQC_BENCHMARK_RATING,
@@ -237,15 +237,16 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
           ))}
         </select>
       </div>
-      <SearchableCheckboxFilter
+      <FilterPanel
         idPrefix={`service-type-${tab}-${id}`}
-        label="Service type"
-        allLabel={CQC_SERVICE_TYPES[ALL_CQC_SERVICE_TYPES]}
-        options={CQC_SERVICE_TYPE_OPTIONS}
-        applied={serviceTypes}
-        onApply={(values) => setServiceTypes(values as CqcServiceTypeId[])}
-        noMatchesText="No service types match your search"
-        analyticsId="cqc-ratings-service-type"
+        filterType="cqc-ratings-service-type"
+        groups={[CQC_SERVICE_TYPE_FILTER_GROUP]}
+        applied={{ [CQC_SERVICE_TYPE_FILTER_GROUP.id]: serviceTypes }}
+        onApply={(selection) =>
+          setServiceTypes(
+            selection[CQC_SERVICE_TYPE_FILTER_GROUP.id] as CqcServiceTypeId[]
+          )
+        }
       />
     </>
   );

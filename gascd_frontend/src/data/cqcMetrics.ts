@@ -21,6 +21,7 @@ import {
   percCqcRatingMetricId,
 } from '@/config/metrics';
 import { BreakdownCategory } from '@/helpers/categoryBreakdown';
+import { FilterGroup } from '@/components/filters/FilterPanel';
 
 export {
   ALL_CQC_SERVICE_TYPES,
@@ -93,3 +94,14 @@ export const CQC_SERVICE_TYPE_OPTIONS = (
     value: serviceType,
     label: CQC_SERVICE_TYPES[serviceType],
   }));
+
+/**
+ * The service type filter, wherever locations are filtered by it. Its id is
+ * also the name of the locations list's query parameter.
+ */
+export const CQC_SERVICE_TYPE_FILTER_GROUP: FilterGroup = {
+  id: 'service_types',
+  label: 'Service type',
+  allLabel: CQC_SERVICE_TYPES[ALL_CQC_SERVICE_TYPES],
+  options: CQC_SERVICE_TYPE_OPTIONS,
+};

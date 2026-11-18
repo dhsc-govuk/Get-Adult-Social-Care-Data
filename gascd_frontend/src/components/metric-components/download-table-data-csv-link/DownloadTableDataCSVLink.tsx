@@ -1,6 +1,6 @@
 'use client';
 
-import React, { RefObject } from 'react';
+import React, { RefObject, useState } from 'react';
 import {
   downloadCSV,
   extractTableCellText,
@@ -13,6 +13,8 @@ import { getSharingCsvNotice } from '@/data/sharingCategories';
 type Props = {
   tableref?: RefObject<HTMLTableElement | null>;
   rawdata?: any[];
+  // Rows fetched when the link is selected, for data not all held on the page
+  fetchRawData?: () => Promise<any[]>;
   filename?: string;
   xLabel: string;
   downloadType: string;
@@ -24,6 +26,7 @@ type Props = {
 const DownloadTableDataCSVLink: React.FC<Props> = ({
   tableref,
   rawdata,
+  fetchRawData,
   filename = 'data.csv',
   xLabel,
   downloadType,
@@ -32,14 +35,23 @@ const DownloadTableDataCSVLink: React.FC<Props> = ({
   // Taken from the surrounding tabs, so the guidance in the CSV always matches
   // the label shown above the figure
   const sharingCategory = useSharingCategory();
+  const [fetchFailed, setFetchFailed] = useState(false);
 
-  const handleDownloadClick = (e: React.MouseEvent) => {
+  const handleDownloadClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     AnalyticsService.trackDownloadCSV(filename);
 
     const notice = [...getSharingCsvNotice(sharingCategory), ...notes];
 
-    if (tableref?.current) {
+    if (fetchRawData) {
+      setFetchFailed(false);
+      try {
+        downloadCSV(await fetchRawData(), filename, xLabel, notice);
+      } catch (error) {
+        console.error('Error fetching data to export:', error);
+        setFetchFailed(true);
+      }
+    } else if (tableref?.current) {
       const csv_data = extractTableCellText(tableref.current);
       downloadCSV(csv_data, filename, xLabel, notice);
     } else if (rawdata?.length) {
@@ -58,6 +70,17 @@ const DownloadTableDataCSVLink: React.FC<Props> = ({
       >
         Export {downloadType} table data (CSV)
       </Link>
+      {/* Only a fetched download can fail; on the page before it does, so the
+          message is announced */}
+      {fetchRawData && (
+        <div role="status">
+          {fetchFailed && (
+            <p className="govuk-body govuk-!-margin-top-2">
+              The data could not be downloaded. Try again later.
+            </p>
+          )}
+        </div>
+      )}
     </>
   );
 };

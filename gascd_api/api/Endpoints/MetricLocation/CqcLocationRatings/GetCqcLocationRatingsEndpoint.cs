@@ -9,38 +9,50 @@ public class GetCqcLocationRatingsEndpoint(GascdDataContext context, ILogger<Get
 {
     public override void Configure()
     {
-        Get("/api/metric_locations/cqc_location_ratings/{LocalAuthorityCode}");
+        Get("/api/metric_locations/cqc_location_ratings");
     }
 
     public override async Task HandleAsync(GetCqcLocationRatingsRequest req, CancellationToken ct)
     {
-        logger.LogDebug("Received request for CQC location ratings for LA code: {code}, service type: {serviceType}", req.LocalAuthorityCode, req.ServiceType);
+        logger.LogDebug("Received request for CQC location ratings");
 
-        var localAuthorityId = await context.LocalAuthorities
-            .AsNoTracking()
-            .Where(x => x.Code == req.LocalAuthorityCode)
-            .Select(x => (int?)x.Id)
-            .SingleOrDefaultAsync(ct);
+        var query = context.CqcLocationRatings.AsNoTracking();
 
-        if (localAuthorityId is null)
+        if (req.LaCodes is { Count: > 0 })
         {
-            logger.LogInformation("Local Authority code not found: {code}", req.LocalAuthorityCode);
-            await Send.NotFoundAsync(ct);
-            return;
+            query = query.Where(x => req.LaCodes.Contains(x.LocalAuthority.Code));
         }
 
-        var query = context.CqcLocationRatings
-            .AsNoTracking()
-            .Where(x => x.LocalAuthorityFk == localAuthorityId);
-
-        // adult_social_care is every location, so it needs no filter.
-        if (req.ServiceType is not null && req.ServiceType != "adult_social_care")
+        if (req.ProviderCodes is { Count: > 0 })
         {
-            query = query.Where(x => x.ServiceTypes.Contains(req.ServiceType));
+            query = query.Where(x => req.ProviderCodes.Contains(x.ProviderCode));
         }
 
-        var locations = await query
-            .OrderBy(x => x.LocationName)
+        // Every location has adult_social_care among its service types, so that type matches them all.
+        if (req.ServiceTypes is { Count: > 0 })
+        {
+            query = query.Where(x => x.ServiceTypes.Any(serviceType => req.ServiceTypes.Contains(serviceType)));
+        }
+
+        if (req.Ratings is { Count: > 0 })
+        {
+            query = query.Where(x => x.OverallRating != null && req.Ratings.Contains(x.OverallRating));
+        }
+
+        if (!string.IsNullOrWhiteSpace(req.Search))
+        {
+            // The search is plain text, so the pattern characters are matched as themselves.
+            var pattern = req.Search.Trim().Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+            query = query.Where(x => EF.Functions.ILike(x.LocationName, $"%{pattern}%", "\\"));
+        }
+
+        var total = await query.CountAsync(ct);
+
+        // Most recently rated first, with locations not yet inspected last.
+        var ordered = query
+            .OrderBy(x => x.RatingPublished == null)
+            .ThenByDescending(x => x.RatingPublished)
+            .ThenBy(x => x.LocationName)
             .ThenBy(x => x.LocationCode)
             .Select(x => new GetCqcLocationRatingsResponse.CqcLocation
             {
@@ -51,11 +63,17 @@ public class GetCqcLocationRatingsEndpoint(GascdDataContext context, ILogger<Get
                 ServiceTypes = x.ServiceTypes,
                 OverallRating = x.OverallRating,
                 RatingPublished = x.RatingPublished,
-            })
-            .ToListAsync(ct);
+            });
 
-        // The table is replaced in full each month, so its month applies to every LA, including one with no
-        // locations of the requested type. No month means the table has not been loaded.
+        if (req.PageSize is { } pageSize)
+        {
+            ordered = ordered.Skip(((req.Page ?? 1) - 1) * pageSize).Take(pageSize);
+        }
+
+        var locations = await ordered.ToListAsync(ct);
+
+        // The table is replaced in full each month, so its month applies whatever the filters, including when
+        // no location matches them. No month means the table has not been loaded.
         var dataMonth = await context.CqcLocationRatings
             .AsNoTracking()
             .MaxAsync(x => (DateOnly?)x.DataMonth, ct);
@@ -63,10 +81,11 @@ public class GetCqcLocationRatingsEndpoint(GascdDataContext context, ILogger<Get
         var response = new GetCqcLocationRatingsResponse
         {
             DataMonth = dataMonth,
+            Total = total,
             Locations = locations,
         };
 
-        logger.LogInformation("Finished processing CQC location ratings for LA code: {code}", req.LocalAuthorityCode);
+        logger.LogInformation("Finished processing CQC location ratings: {count} of {total} locations", locations.Count, total);
         await Send.OkAsync(response, ct);
     }
 }

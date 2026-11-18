@@ -24,6 +24,8 @@ import { METRICS, MetricId } from '@/config/metrics';
 import { useComparatorControls } from '@/components/charts/peer-group/useComparatorControls';
 import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
 import { mergeComparatorAverage } from '@/components/charts/peer-group/mergeComparatorAverage';
+import CqcLocationsSection from '@/components/data-components/CqcLocationsSection';
+import { CQC_LOCATIONS_HELP_URL } from '@/data/cqcLocations';
 
 // In the order the table shows them
 const PROVIDER_METRICS: MetricId[] = [
@@ -278,6 +280,35 @@ export default function ResidentialCareProvidersPage() {
           }
         />
       </DataBox>
+      <CqcLocationsSection
+        id="3"
+        title={
+          <>
+            Inspected adult social care locations with a given rating across
+            local authorities (<abbr title="local authorities">LAs</abbr>)
+          </>
+        }
+        intro={
+          <p className="govuk-body-m">
+            Find out{' '}
+            <a
+              href={withBasePath(CQC_LOCATIONS_HELP_URL)}
+              className="govuk-link"
+            >
+              how CQC ratings and dates of latest inspection of adult social
+              care locations are sourced
+            </a>
+            .
+          </p>
+        }
+        tableNumber={2}
+        download={{
+          filename:
+            'inspected_adult_social_care_locations_with_a_given_rating.csv',
+          description:
+            'inspected adult social care locations with a given rating across local authorities (LAs)',
+        }}
+      />
       <DataIndicatorDetailsList>
         <DataLinkCard
           label="Number of adult social care providers"
@@ -285,6 +316,13 @@ export default function ResidentialCareProvidersPage() {
           updateFrequency="Monthly updates"
           limitations={true}
           url={METRICS.npl_adult_social_care.helpUrl}
+        />
+        <DataLinkCard
+          label="CQC ratings and dates of latest inspection of adult social care locations"
+          sources="Care Quality Commission"
+          updateFrequency="Monthly updates"
+          limitations={true}
+          url={CQC_LOCATIONS_HELP_URL}
         />
       </DataIndicatorDetailsList>
 

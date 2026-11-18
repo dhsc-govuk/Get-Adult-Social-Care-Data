@@ -47,6 +47,13 @@ export default function DataIndicatorDetailsPage() {
               url="/help/total-number-community-social-care-providers"
             />
             <DataLinkCard
+              label="CQC ratings and dates of latest inspection of adult social care locations"
+              sources="Care Quality Commission"
+              updateFrequency="Monthly updates"
+              limitations={true}
+              url="/help/cqc-ratings-and-dates-of-latest-inspection-of-adult-social-care-locations"
+            />
+            <DataLinkCard
               label="Number of people receiving care from a community social care provider"
               sources="Capacity Tracker"
               updateFrequency="Daily updates"

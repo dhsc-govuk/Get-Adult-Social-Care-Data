@@ -40,7 +40,10 @@ describe('CareProviderLocationsPage', () => {
       ).toBeInTheDocument();
     }
 
-    const dataBoxHeadings = ['Number of adult social care providers'];
+    const dataBoxHeadings = [
+      'Number of adult social care providers',
+      'Inspected adult social care locations with a given rating across local authorities (LAs)',
+    ];
     for (let dataBoxHeadingText of dataBoxHeadings) {
       expect(
         screen.getByRole('heading', { name: dataBoxHeadingText, level: 3 })
@@ -59,6 +62,15 @@ describe('CareProviderLocationsPage', () => {
     expect(helpLink[0]).toHaveAttribute(
       'href',
       '/help/total-number-community-social-care-providers'
+    );
+
+    expect(
+      screen.getByRole('link', {
+        name: 'how CQC ratings and dates of latest inspection of adult social care locations are sourced',
+      })
+    ).toHaveAttribute(
+      'href',
+      '/help/cqc-ratings-and-dates-of-latest-inspection-of-adult-social-care-locations'
     );
 
     const tableElement = screen.getByRole('table');

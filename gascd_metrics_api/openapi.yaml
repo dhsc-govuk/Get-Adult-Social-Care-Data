@@ -312,6 +312,88 @@ paths:
                 $ref: "#/components/schemas/CustomLocalAuthorityGroupResponse"
         "400":
           description: "Invalid metric code, unknown local authority codes, or too many codes supplied."
+  /metric_locations/cqc_location_ratings:
+    get:
+      summary: "List CQC ratings of adult social care locations"
+      description: "Retrieves adult social care locations with their latest overall CQC rating, most recently rated first. Each list parameter narrows the locations to those matching any of its values."
+      parameters:
+        - name: la_codes
+          in: query
+          required: false
+          description: "Only locations in these local authorities."
+          schema:
+            type: array
+            items:
+              type: string
+            example: ["E08000014", "E08000015"]
+        - name: provider_codes
+          in: query
+          required: false
+          description: "Only locations run by these providers."
+          schema:
+            type: array
+            items:
+              type: string
+            example: ["1-200000001"]
+        - name: service_types
+          in: query
+          required: false
+          description: "Only locations offering any of these service types."
+          schema:
+            type: array
+            items:
+              type: string
+            example: ["care_home_nursing", "domiciliary_care"]
+        - name: ratings
+          in: query
+          required: false
+          description: "Only locations with one of these overall ratings."
+          schema:
+            type: array
+            items:
+              type: string
+            example: ["outstanding", "good"]
+        - name: search
+          in: query
+          required: false
+          description: "Part of a location name, matched without regard to case."
+          schema:
+            type: string
+            example: "Beech Hill"
+        - name: page
+          in: query
+          required: false
+          description: "The page to return, from 1."
+          schema:
+            type: integer
+            default: 1
+        - name: page_size
+          in: query
+          required: false
+          description: "Locations per page, up to 100. Every matching location is returned when omitted."
+          schema:
+            type: integer
+            example: 10
+      responses:
+        "200":
+          description: "The matching locations and how many there are across all pages."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CqcLocationRatingsResponse"
+        "400":
+          description: "Unknown service type or rating, or invalid paging."
+  /metric_locations/cqc_location_ratings/providers:
+    get:
+      summary: "List the providers of CQC locations"
+      description: "Retrieves every provider with a location in the CQC location ratings, ordered by name."
+      responses:
+        "200":
+          description: "All providers ordered by name."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CqcLocationProvidersResponse"
   /metric_locations/regions/{code}:
     get:
       summary: "Get a region"
@@ -687,6 +769,74 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/LocalAuthoritySummary"
+
+    CqcLocation:
+      type: object
+      description: "An adult social care location with its latest overall CQC rating."
+      properties:
+        code:
+          type: string
+          description: "CQC location id."
+        name:
+          type: string
+          description: "Name of the location."
+        provider_code:
+          type: string
+          description: "CQC provider id."
+        provider_name:
+          type: string
+          description: "Name of the provider."
+        service_types:
+          type: array
+          description: "Service type keys, the same as the suffixes of the CQC ratings metric codes."
+          items:
+            type: string
+        overall_rating:
+          type: string
+          nullable: true
+          description: "Rating key (outstanding, good, requires_improvement, inadequate, insufficient_evidence); null when not yet inspected."
+        rating_published:
+          type: string
+          format: date
+          nullable: true
+          description: "Publication date of the latest overall rating; null when not yet inspected."
+
+    CqcLocationRatingsResponse:
+      type: object
+      description: "CQC rated locations matching the request, most recently rated first."
+      properties:
+        data_month:
+          type: string
+          format: date
+          nullable: true
+          description: "Month of the CQC file the locations come from."
+        total:
+          type: integer
+          description: "Number of locations matching the request, across all pages."
+        locations:
+          type: array
+          items:
+            $ref: "#/components/schemas/CqcLocation"
+
+    CqcLocationProvider:
+      type: object
+      description: "A provider with a location in the CQC location ratings."
+      properties:
+        code:
+          type: string
+          description: "CQC provider id."
+        name:
+          type: string
+          description: "Name of the provider."
+
+    CqcLocationProvidersResponse:
+      type: object
+      description: "All providers ordered by name."
+      properties:
+        providers:
+          type: array
+          items:
+            $ref: "#/components/schemas/CqcLocationProvider"
 
     Region:
       type: object

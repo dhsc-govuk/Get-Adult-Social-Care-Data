@@ -396,6 +396,8 @@ export const HELP_PAGE_SHARING = {
   'children-in-need-episodes-ending-due-to-transfer-to-adult-social-care':
     'publicDomain',
   'children-in-need-per-10000-children': 'publicDomain',
+  'cqc-ratings-and-dates-of-latest-inspection-of-adult-social-care-locations':
+    'publicDomain',
   'cqc-ratings-of-adult-social-care-locations': 'publicDomain',
   'dementia-prevalence': 'publicDomain',
   'disability-prevalence': 'publicDomain',

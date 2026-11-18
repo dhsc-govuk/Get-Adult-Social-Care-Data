@@ -1,5 +1,7 @@
 /help/total-number-community-social-care-providers
+/help/cqc-ratings-and-dates-of-latest-inspection-of-adult-social-care-locations
 /help/total-number-community-social-care-providers
+/help/cqc-ratings-and-dates-of-latest-inspection-of-adult-social-care-locations
 /topics/residential-care/provision-and-occupancy/data
 /topics/residential-care/number-of-people-receiving-care/data
 /topics/residential-care/unpaid-care/data
