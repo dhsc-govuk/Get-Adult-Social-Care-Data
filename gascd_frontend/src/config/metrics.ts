@@ -279,13 +279,28 @@ export const NUM_CQC_INSPECTED_LOCATIONS = cqcInspectedCountMetricId(
   ALL_CQC_SERVICE_TYPES
 );
 
-/** The locations not yet inspected, for all service types */
-export const NUM_CQC_UNINSPECTED_LOCATIONS =
-  `cqci_num_uninspected_${ALL_CQC_SERVICE_TYPES}` as const;
+/** The locations of a service type not yet inspected */
+export const cqcUninspectedCountMetricId = <S extends CqcServiceTypeId>(
+  serviceType: S
+) => `cqci_num_uninspected_${serviceType}` as const;
 
-/** All locations, inspected or not: the total the inspection status percentages are of */
-export const NUM_CQC_LOCATIONS =
-  `cqci_num_total_${ALL_CQC_SERVICE_TYPES}` as const;
+/**
+ * All locations of a service type, inspected or not: the total the inspection
+ * status percentages are of
+ */
+export const cqcLocationCountMetricId = <S extends CqcServiceTypeId>(
+  serviceType: S
+) => `cqci_num_total_${serviceType}` as const;
+
+/** The locations not yet inspected, for all service types */
+export const NUM_CQC_UNINSPECTED_LOCATIONS = cqcUninspectedCountMetricId(
+  ALL_CQC_SERVICE_TYPES
+);
+
+/** All locations, for all service types */
+export const NUM_CQC_LOCATIONS = cqcLocationCountMetricId(
+  ALL_CQC_SERVICE_TYPES
+);
 
 export const PERC_CQC_INSPECTED_LOCATIONS =
   `cqci_pct_inspected_${ALL_CQC_SERVICE_TYPES}` as const;

@@ -14,13 +14,16 @@ import {
   CqcRatingId,
   CqcServiceTypeId,
   METRICS,
+  MetricId,
   NUM_CQC_INSPECTED_LOCATIONS,
   NUM_CQC_LOCATIONS,
   NUM_CQC_UNINSPECTED_LOCATIONS,
   PERC_CQC_INSPECTED_LOCATIONS,
   PERC_CQC_UNINSPECTED_LOCATIONS,
   cqcInspectedCountMetricId,
+  cqcLocationCountMetricId,
   cqcRatingCountMetricId,
+  cqcUninspectedCountMetricId,
   numCqcRatingMetricId,
   percCqcRatingMetricId,
 } from '@/config/metrics';
@@ -130,6 +133,97 @@ export const CQC_BENCHMARK_RATINGS: CqcRatingId[] = [
 ];
 
 export const DEFAULT_CQC_BENCHMARK_RATING: CqcRatingId = 'good';
+
+/**
+ * What local authorities are benchmarked on in a "by local authority" section
+ * of the CQC ratings page: the percentage of a total (the inspected locations,
+ * say) that falls in the option chosen (a rating).
+ */
+export type CqcBenchmark = {
+  sectionTitle: string;
+  helpUrl: string;
+  // Follows "Find out", e.g. "how ... are calculated"
+  helpLinkText: string;
+  // The label of the select the options are chosen from
+  selectLabel: string;
+  options: {
+    value: string;
+    label: string;
+    countMetricId: (serviceType: CqcServiceTypeId) => string;
+    // For all service types: sets the format, the source and the sharing label
+    percentageMetric: MetricId;
+    // What the table and the figure show, e.g. "percentage of ... rated Good"
+    title: string;
+    // The heading of the table's value column
+    valueHeader: string;
+  }[];
+  defaultValue: string;
+  totalMetricId: (serviceType: CqcServiceTypeId) => string;
+  // What the percentages are of, e.g. "inspected locations". An LA with none
+  // has no percentage
+  totalDescription: string;
+  // The name the service type filter is tracked under
+  analyticsId: string;
+};
+
+export const CQC_RATING_BENCHMARK: CqcBenchmark = {
+  sectionTitle:
+    'CQC ratings of inspected adult social care locations by local authority',
+  helpUrl: METRICS[NUM_CQC_INSPECTED_LOCATIONS].helpUrl,
+  helpLinkText:
+    'how the number and percentage of inspected adult social care locations by CQC rating are calculated',
+  selectLabel: 'CQC rating',
+  options: CQC_BENCHMARK_RATINGS.map((rating) => ({
+    value: rating,
+    label: CQC_RATINGS[rating],
+    countMetricId: (serviceType) => cqcRatingCountMetricId(rating, serviceType),
+    percentageMetric: percCqcRatingMetricId(rating),
+    title: `percentage of inspected adult social care locations rated ${CQC_RATINGS[rating]}`,
+    valueHeader: `Percentage rated ${CQC_RATINGS[rating].toLowerCase()}`,
+  })),
+  defaultValue: DEFAULT_CQC_BENCHMARK_RATING,
+  totalMetricId: cqcInspectedCountMetricId,
+  totalDescription: 'inspected locations',
+  analyticsId: 'cqc-ratings-service-type',
+};
+
+const inspectionStatusOption = (
+  percentageMetric: MetricId,
+  countMetricId: (serviceType: CqcServiceTypeId) => string
+): CqcBenchmark['options'][number] => {
+  const { label } = METRICS[percentageMetric];
+  return {
+    value: percentageMetric,
+    label,
+    countMetricId,
+    percentageMetric,
+    title: `percentage of adult social care locations ${label.toLowerCase()}`,
+    valueHeader: `Percentage ${label.toLowerCase()}`,
+  };
+};
+
+export const CQC_INSPECTION_STATUS_BENCHMARK: CqcBenchmark = {
+  sectionTitle:
+    'Inspection status of adult social care locations by local authority',
+  helpUrl: METRICS[NUM_CQC_LOCATIONS].helpUrl,
+  helpLinkText:
+    'how the inspection status of adult social care locations is calculated',
+  selectLabel: 'Inspection status',
+  options: [
+    inspectionStatusOption(
+      PERC_CQC_INSPECTED_LOCATIONS,
+      cqcInspectedCountMetricId
+    ),
+    inspectionStatusOption(
+      PERC_CQC_UNINSPECTED_LOCATIONS,
+      cqcUninspectedCountMetricId
+    ),
+  ],
+  defaultValue: PERC_CQC_UNINSPECTED_LOCATIONS,
+  totalMetricId: cqcLocationCountMetricId,
+  totalDescription: 'locations',
+  analyticsId: 'cqc-inspection-status-service-type',
+};
 
 /** The individual service types, without the "All service types" option */
 export const CQC_SERVICE_TYPE_OPTIONS = (

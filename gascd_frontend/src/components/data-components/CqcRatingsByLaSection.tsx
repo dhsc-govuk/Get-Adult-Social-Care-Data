@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
 import NhsPeerGroupDetails from '@/components/data-components/NhsPeerGroupDetails';
+import SectionControls from '@/components/data-components/SectionControls';
 import PeerGroupTable from '@/components/tables/PeerGroupTable';
 import PeerGroupBarChart from '@/components/charts/PeerGroupBarChart';
 import FilterPanel from '@/components/filters/FilterPanel';
@@ -15,20 +16,14 @@ import IndicatorService from '@/services/indicator/IndicatorService';
 import TableService from '@/services/Table/TableService';
 import { Indicator } from '@/data/interfaces/Indicator';
 import { withBasePath } from '@/lib/basePath';
-import { CQC_RATINGS, METRICS } from '@/config/metrics';
+import { METRICS } from '@/config/metrics';
 import {
   ALL_CQC_SERVICE_TYPES,
-  CQC_BENCHMARK_RATINGS,
-  CQC_RATING_METRIC_IDS,
+  CQC_RATING_BENCHMARK,
   CQC_SERVICE_TYPES,
   CQC_SERVICE_TYPE_FILTER_GROUP,
-  CqcRatingId,
+  CqcBenchmark,
   CqcServiceTypeId,
-  DEFAULT_CQC_BENCHMARK_RATING,
-  NUM_CQC_INSPECTED_LOCATIONS,
-  cqcInspectedCountMetricId,
-  cqcRatingCountMetricId,
-  percCqcRatingMetricId,
 } from '@/data/cqcMetrics';
 import { shareOfTotal } from '@/helpers/categoryBreakdown';
 import {
@@ -48,6 +43,8 @@ type Props = {
   regionLabel: string;
   // The page's comparison group, shared with its other sections
   comparator: ComparatorControls;
+  // What the LAs are compared on. Defaults to the CQC ratings
+  benchmark?: CqcBenchmark;
 };
 
 const NATIONAL_LABEL = 'England (national)';
@@ -60,11 +57,12 @@ const listed = (items: string[]): string =>
 
 /**
  * The percentage of inspected adult social care locations with a chosen CQC
- * rating, for the user's LA beside each LA in their comparison group, the
- * group, their region and England (GASCD-391): a table, the peer group bar chart
- * and a CSV download, filtered by rating and by service type.
+ * rating (GASCD-391), or of all locations with a chosen inspection status
+ * (GASCD-394), for the user's LA beside each LA in their comparison group, the
+ * group, their region and England: a table, the peer group bar chart and a CSV
+ * download, filtered by the option chosen and by service type.
  *
- * The rating and service types are chosen once for the section and the
+ * The option and service types are chosen once for the section and the
  * controls are repeated in each tab, as the comparison group's is.
  */
 const CqcRatingsByLaSection: React.FC<Props> = ({
@@ -74,11 +72,13 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
   laName,
   regionLabel,
   comparator,
+  benchmark = CQC_RATING_BENCHMARK,
 }) => {
   const tableref = useRef<HTMLTableElement>(null);
-  const [rating, setRating] = useState<CqcRatingId>(
-    DEFAULT_CQC_BENCHMARK_RATING
-  );
+  const [optionValue, setOptionValue] = useState(benchmark.defaultValue);
+  const option =
+    benchmark.options.find(({ value }) => value === optionValue) ??
+    benchmark.options[0];
   // The applied service types; none means all service types
   const [serviceTypes, setServiceTypes] = useState<CqcServiceTypeId[]>([]);
   // The user's LA, region and England values for the metrics selected
@@ -88,23 +88,19 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
   );
 
   // A percentage across several service types is their counts summed over
-  // their inspected locations summed, so the counts are what is fetched
-  const { countMetricIds, inspectedMetricIds, metricIds } = useMemo(() => {
+  // their totals summed, so the counts are what is fetched
+  const { countMetricIds, totalMetricIds, metricIds } = useMemo(() => {
     const types: CqcServiceTypeId[] = serviceTypes.length
       ? serviceTypes
       : [ALL_CQC_SERVICE_TYPES];
-    const counts: string[] = types.map((serviceType) =>
-      cqcRatingCountMetricId(rating, serviceType)
-    );
-    const inspected: string[] = types.map((serviceType) =>
-      cqcInspectedCountMetricId(serviceType)
-    );
+    const counts = types.map(option.countMetricId);
+    const totals = types.map(benchmark.totalMetricId);
     return {
       countMetricIds: counts,
-      inspectedMetricIds: inspected,
-      metricIds: [...counts, ...inspected],
+      totalMetricIds: totals,
+      metricIds: [...counts, ...totals],
     };
-  }, [rating, serviceTypes]);
+  }, [option, benchmark, serviceTypes]);
 
   const peer = usePeerGroupData(
     laCode,
@@ -128,7 +124,7 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
         setBaseStatus('ready');
       } catch (error) {
         if (cancelled) return;
-        console.error('Error fetching CQC ratings by LA:', error);
+        console.error(`Error fetching ${benchmark.sectionTitle}:`, error);
         setBaseData([]);
         setBaseStatus('error');
       }
@@ -137,33 +133,28 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
     return () => {
       cancelled = true;
     };
-  }, [laCode, metricIds]);
+  }, [laCode, metricIds, benchmark.sectionTitle]);
 
   // While a new selection is loading the previous one's rows are still held,
   // so only rows for the metrics now selected are read
   const share = (locationType: string) =>
     shareOfTotal(
       sumForLocationType(baseData, countMetricIds, locationType),
-      sumForLocationType(baseData, inspectedMetricIds, locationType)
+      sumForLocationType(baseData, totalMetricIds, locationType)
     );
   const laValue = share('LA');
   const laCount = sumForLocationType(baseData, countMetricIds, 'LA');
   const regionalValue = share('Regional');
   const nationalValue = share('National');
 
-  const benchmark = useMemo(
+  const shares = useMemo(
     () =>
-      shareBenchmark(
-        peer.dataByMetric,
-        countMetricIds,
-        inspectedMetricIds,
-        laCode
-      ),
-    [peer.dataByMetric, countMetricIds, inspectedMetricIds, laCode]
+      shareBenchmark(peer.dataByMetric, countMetricIds, totalMetricIds, laCode),
+    [peer.dataByMetric, countMetricIds, totalMetricIds, laCode]
   );
   const barDetails = Object.fromEntries(
     Object.entries({
-      ...benchmark.countsByName,
+      ...shares.countsByName,
       ...(laCount !== null ? { [laName]: laCount } : {}),
     }).map(([name, count]) => [name, TableService.formatDataPoint(count)])
   );
@@ -176,7 +167,6 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
     baseStatus === 'error' ||
     benchmarkFailed(peer.dataByMetric, metricIds);
 
-  const ratingLabel = CQC_RATINGS[rating];
   const serviceTypesText = serviceTypes.length
     ? listed(
         serviceTypes.map((serviceType) =>
@@ -185,7 +175,7 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
       )
     : CQC_SERVICE_TYPES[ALL_CQC_SERVICE_TYPES].toLowerCase();
   const date = IndicatorService.getMostRecentDate(baseData, metricIds);
-  const title = `percentage of inspected adult social care locations rated ${ratingLabel}`;
+  const { title } = option;
   // Each area's figure is a percentage, so none is labelled as an average
   const regionalLabel = `${regionLabel} (regional)`;
   const selectedGroup =
@@ -204,66 +194,66 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
       : NHS_PEER_GROUP_TOTAL_LABEL;
   const comparedAreas = `${groupLabel}, ${regionalLabel} and ${NATIONAL_LABEL}, ${serviceTypesText}`;
   // The metric that sets the percentage format, the source and the sharing label
-  const metric = percCqcRatingMetricId(rating);
+  const metric = option.percentageMetric;
 
-  const unavailableNote = benchmark.unavailableNames.length > 0 && (
+  const unavailableNote = shares.unavailableNames.length > 0 && (
     <p className="govuk-body">
-      N/A means a local authority has no inspected locations for the selected
-      service types. It is not included in the percentage for the comparison
-      group.
+      N/A means a local authority has no {benchmark.totalDescription} for the
+      selected service types. It is not included in the percentage for the
+      comparison group.
     </p>
   );
 
   const controls = (tab: string) => (
-    <>
-      {comparator.renderComparatorControl(`comparator-${tab}-${id}`)}
-      <div className="govuk-form-group">
-        <label
-          className="govuk-label govuk-!-font-weight-bold"
-          htmlFor={`cqc-rating-${tab}-${id}`}
-        >
-          CQC rating
-        </label>
-        <select
-          className="govuk-select"
-          id={`cqc-rating-${tab}-${id}`}
-          value={rating}
-          onChange={(e) => setRating(e.target.value as CqcRatingId)}
-        >
-          {CQC_BENCHMARK_RATINGS.map((option) => (
-            <option key={option} value={option}>
-              {CQC_RATINGS[option]}
-            </option>
-          ))}
-        </select>
-      </div>
-      <FilterPanel
-        idPrefix={`service-type-${tab}-${id}`}
-        filterType="cqc-ratings-service-type"
-        groups={[CQC_SERVICE_TYPE_FILTER_GROUP]}
-        applied={{ [CQC_SERVICE_TYPE_FILTER_GROUP.id]: serviceTypes }}
-        onApply={(selection) =>
-          setServiceTypes(
-            selection[CQC_SERVICE_TYPE_FILTER_GROUP.id] as CqcServiceTypeId[]
-          )
-        }
-      />
-    </>
+    <SectionControls
+      comparator={comparator.renderComparatorControl(`comparator-${tab}-${id}`)}
+      extraControls={
+        <div className="govuk-form-group">
+          <label
+            className="govuk-label govuk-!-font-weight-bold"
+            htmlFor={`cqc-benchmark-${tab}-${id}`}
+          >
+            {benchmark.selectLabel}
+          </label>
+          <select
+            className="govuk-select"
+            id={`cqc-benchmark-${tab}-${id}`}
+            value={option.value}
+            onChange={(e) => setOptionValue(e.target.value)}
+          >
+            {benchmark.options.map(({ value, label }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
+      }
+      filters={
+        <FilterPanel
+          idPrefix={`service-type-${tab}-${id}`}
+          filterType={benchmark.analyticsId}
+          groups={[CQC_SERVICE_TYPE_FILTER_GROUP]}
+          applied={{ [CQC_SERVICE_TYPE_FILTER_GROUP.id]: serviceTypes }}
+          onApply={(selection) =>
+            setServiceTypes(
+              selection[CQC_SERVICE_TYPE_FILTER_GROUP.id] as CqcServiceTypeId[]
+            )
+          }
+        />
+      }
+    />
   );
 
   return (
     <DataBox
-      dataTitle="CQC ratings of inspected adult social care locations by local authority"
+      dataTitle={benchmark.sectionTitle}
       dataInfo={
         <>
           <p className="govuk-body-m">
             Find out{' '}
-            <a
-              href={withBasePath(METRICS[NUM_CQC_INSPECTED_LOCATIONS].helpUrl)}
-              className="govuk-link"
-            >
-              how the number and percentage of inspected adult social care
-              locations by CQC rating are calculated
+            <a href={withBasePath(benchmark.helpUrl)} className="govuk-link">
+              {benchmark.helpLinkText}
             </a>
             .
           </p>
@@ -273,7 +263,9 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
     >
       <DataTabs
         id={id}
-        sharingMetricIds={CQC_RATING_METRIC_IDS}
+        sharingMetricIds={benchmark.options.map(
+          ({ percentageMetric }) => percentageMetric
+        )}
         table={
           <>
             {controls('table')}
@@ -290,11 +282,11 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
                 </>
               }
               metric={metric}
-              valueHeader={`Percentage rated ${ratingLabel.toLowerCase()}`}
+              valueHeader={option.valueHeader}
               laCode={laCode ?? ''}
               laName={laName}
               currentLaValue={laValue}
-              peerData={benchmark.peerData}
+              peerData={shares.peerData}
               loading={loading}
               comparatorAverageLabel={groupLabel}
               comparatorIsRegion={comparator.comparatorIsRegion}
@@ -317,7 +309,7 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
               currentLaValue={laValue}
               nationalAverageValue={nationalValue}
               regionalAverageValue={regionalValue}
-              peerData={benchmark.peerData}
+              peerData={shares.peerData}
               loading={loading}
               error={error}
               comparatorControl={controls('chart')}
@@ -335,10 +327,10 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
               barDetails={barDetails}
               xAxisRange={[0, 100]}
             />
-            {benchmark.unavailableNames.length > 0 && (
+            {shares.unavailableNames.length > 0 && (
               <p className="govuk-body">
-                Not shown: {listed(benchmark.unavailableNames)}. A local
-                authority is not shown where it has no inspected locations for
+                Not shown: {listed(shares.unavailableNames)}. A local authority
+                is not shown where it has no {benchmark.totalDescription} for
                 the selected service types, and it is not included in the
                 percentage for the comparison group.
               </p>
@@ -350,11 +342,11 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
             {controls('download')}
             <DownloadTableDataCSVLink
               tableref={tableref}
-              filename="cqc_ratings_of_inspected_adult_social_care_locations_by_local_authority.csv"
+              filename={`${benchmark.sectionTitle.toLowerCase().replaceAll(' ', '_')}.csv`}
               xLabel=""
-              downloadType="CQC ratings of inspected adult social care locations by local authority"
+              downloadType={benchmark.sectionTitle}
               notes={[
-                `Percentage of inspected adult social care locations rated ${ratingLabel}`,
+                title.charAt(0).toUpperCase() + title.slice(1),
                 `Service types: ${serviceTypesText}`,
                 ...(date ? [`Data date: ${date}`] : []),
                 `Source: ${METRICS[metric].source}`,
