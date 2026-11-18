@@ -89,6 +89,7 @@ describe('CQCRatingsPage', () => {
       'CQC ratings of inspected adult social care locations',
       'CQC ratings of inspected adult social care locations by local authority',
       'Inspection status of adult social care locations',
+      'Inspection status of adult social care locations by local authority',
     ]);
     expect(
       screen.getByRole('table', {
@@ -107,16 +108,17 @@ describe('CQCRatingsPage', () => {
 
   it('names the CQC as the source of each table and chart', () => {
     render(<CQCRatingsPage />);
-    // Both of the first section's, the second's table (its chart has no
-    // source line until its data has loaded) and the third's table
+    // Both of the first section's, the third's table, and the tables of the
+    // second and fourth: their charts have no source line until their data
+    // has loaded
     expect(
       screen.getAllByText(
         'Source: Care Directory from the Care Quality Commission (CQC)'
       )
-    ).toHaveLength(4);
+    ).toHaveLength(5);
   });
 
-  it('shows the table first in the first section, the chart first in the second and no chart in the third', () => {
+  it('shows the table first in the first section, the chart first in the second and fourth and no chart in the third', () => {
     render(<CQCRatingsPage />);
 
     const tabs = screen
@@ -129,6 +131,9 @@ describe('CQCRatingsPage', () => {
       'Chart',
       'Table',
       'Download',
+      'Table',
+      'Download',
+      'Chart',
       'Table',
       'Download',
     ]);
@@ -149,16 +154,32 @@ describe('CQCRatingsPage', () => {
       ...CQC_INSPECTION_STATUS_CATEGORIES.map((category) => category.label),
       METRICS[NUM_CQC_LOCATIONS].label,
     ]);
-    expect(
-      screen.getByRole('link', {
-        name: /how the inspection status of adult social care locations is calculated/i,
-      })
-    ).toHaveAttribute('href', METRICS[NUM_CQC_LOCATIONS].helpUrl);
+    // The same help page is linked from the section below
+    for (const link of screen.getAllByRole('link', {
+      name: /how the inspection status of adult social care locations is calculated/i,
+    })) {
+      expect(link).toHaveAttribute('href', METRICS[NUM_CQC_LOCATIONS].helpUrl);
+    }
     expect(
       screen.getByRole('link', {
         name: 'Export inspection status of adult social care locations table data (CSV)',
       })
     ).toBeInTheDocument();
+  });
+
+  it('shows the inspection status by local authority last', () => {
+    render(<CQCRatingsPage />);
+
+    expect(
+      screen.getByRole('table', {
+        name: /Table 4: percentage of adult social care locations not yet inspected/i,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByRole('link', {
+        name: /how the inspection status of adult social care locations is calculated/i,
+      })
+    ).toHaveLength(2);
   });
 
   it('lists every CQC rating as a table row, with the total last', () => {

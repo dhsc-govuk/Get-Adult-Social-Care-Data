@@ -13,6 +13,18 @@ import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupDat
 import { PeerGroupData } from '@/components/charts/peer-group/types';
 import IndicatorFetchService from '@/services/indicator/IndicatorFetchService';
 import { Indicator } from '@/data/interfaces/Indicator';
+import {
+  METRICS,
+  PERC_CQC_INSPECTED_LOCATIONS,
+  cqcInspectedCountMetricId,
+  cqcLocationCountMetricId,
+  cqcUninspectedCountMetricId,
+} from '@/config/metrics';
+import {
+  ALL_CQC_SERVICE_TYPES,
+  CQC_INSPECTION_STATUS_BENCHMARK,
+  NUM_CQC_LOCATIONS,
+} from '@/data/cqcMetrics';
 
 vi.mock('@/services/analytics/analyticsService');
 vi.mock('@/services/indicator/IndicatorFetchService');
@@ -43,8 +55,9 @@ const indicator = (
     data_point,
   }) as Indicator;
 
-// Every count is the same whichever rating or service type is asked for, so
-// each location's percentage is fixed: the count metric over the inspected one
+// Every count is the same whichever rating, inspection status or service type
+// is asked for, so each location's percentage is fixed: the count metric over
+// the total one (the inspected locations, or all locations)
 const COUNTS: Record<string, [number, number]> = {
   LA: [30, 40],
   Regional: [300, 500],
@@ -57,8 +70,9 @@ const PEER_COUNTS: Record<string, [number, number]> = {
   Slough: [0, 0],
 };
 
-const isInspectedMetric = (metricId: string) =>
-  metricId.startsWith('cqci_num_inspected_');
+const isTotalMetric = (metricId: string) =>
+  metricId.startsWith('cqci_num_inspected_') ||
+  metricId.startsWith('cqci_num_total_');
 
 const peerDataFor = (metricId: string): PeerGroupData => ({
   localAuthorityPeers: Object.entries(PEER_COUNTS).map(
@@ -66,7 +80,7 @@ const peerDataFor = (metricId: string): PeerGroupData => ({
       code: `E0${i}`,
       displayName,
       peerRanking: i + 1,
-      metricValue: isInspectedMetric(metricId) ? inspected : count,
+      metricValue: isTotalMetric(metricId) ? inspected : count,
     })
   ),
   averagePeerGroup: null,
@@ -130,7 +144,7 @@ beforeEach(() => {
         indicator(
           metricId,
           locationType,
-          isInspectedMetric(metricId) ? inspected : count
+          isTotalMetric(metricId) ? inspected : count
         )
       )
     )
@@ -424,7 +438,7 @@ describe('CqcRatingsByLaSection', () => {
       dataByMetric: Object.fromEntries(
         metricCodes.map((metricCode) => [
           metricCode,
-          isInspectedMetric(metricCode) ? null : peerDataFor(metricCode),
+          isTotalMetric(metricCode) ? null : peerDataFor(metricCode),
         ])
       ),
       loading: false,
@@ -471,5 +485,136 @@ describe('CqcRatingsByLaSection', () => {
     );
     const lines = layout.shapes.filter((shape: any) => shape.type === 'line');
     expect(lines.map((line: any) => line.x0)).toEqual([60, 60]);
+  });
+});
+
+describe('CqcRatingsByLaSection for the inspection status', () => {
+  const renderInspectionStatus = () =>
+    renderSection({
+      id: '4',
+      figureNumber: 4,
+      benchmark: CQC_INSPECTION_STATUS_BENCHMARK,
+    });
+  const statusSelects = () => screen.getAllByLabelText('Inspection status');
+
+  it('shows the title, the methodology link and the tabs with the chart first', async () => {
+    renderInspectionStatus();
+    await loaded();
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'Inspection status of adult social care locations by local authority',
+        level: 3,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', {
+        name: 'how the inspection status of adult social care locations is calculated',
+      })
+    ).toHaveAttribute('href', METRICS[NUM_CQC_LOCATIONS].helpUrl);
+    expect(
+      screen
+        .getAllByRole('link', { name: /^(Table|Chart|Download)$/ })
+        .map((tab) => tab.textContent)
+    ).toEqual(['Chart', 'Table', 'Download']);
+  });
+
+  it('starts on Not yet inspected, as a share of all locations, for all service types', async () => {
+    renderInspectionStatus();
+    await loaded();
+
+    expect(
+      within(statusSelects()[0])
+        .getAllByRole('option')
+        .map((option) => option.textContent)
+    ).toEqual(['Inspected', 'Not yet inspected']);
+    expect(
+      within(statusSelects()[0]).getByRole('option', {
+        name: 'Not yet inspected',
+      })
+    ).toHaveProperty('selected', true);
+    expect(requestedBaseMetrics()).toEqual([
+      cqcUninspectedCountMetricId(ALL_CQC_SERVICE_TYPES),
+      cqcLocationCountMetricId(ALL_CQC_SERVICE_TYPES),
+    ]);
+    expect(requestedPeerMetrics()).toEqual(requestedBaseMetrics());
+  });
+
+  it('names the status, the areas, the service types and the date in the titles', async () => {
+    renderInspectionStatus();
+    await loaded();
+
+    expect(table()).toHaveAccessibleName(
+      /^Table 4: percentage of adult social care locations not yet inspected – Mid Suffolk LA, NHS peer group, East of England \(regional\) and England \(national\), all service types, 1 April 2024/
+    );
+    expect(
+      screen.getByText(
+        'Figure 4: percentage of adult social care locations not yet inspected – Mid Suffolk LA, NHS peer group, East of England (regional) and England (national), all service types, 1 April 2024'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Percentage not yet inspected/ })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', {
+        name: 'Export Inspection status of adult social care locations by local authority table data (CSV)',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('explains an LA shown as not available as having no locations', async () => {
+    renderInspectionStatus();
+    await loaded();
+
+    expect(
+      screen.getByText(/N\/A means a local authority has no locations for/)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/not shown where it has no locations for/)
+    ).toBeInTheDocument();
+  });
+
+  it('asks for the chosen status and names it in the titles', async () => {
+    renderInspectionStatus();
+    await loaded();
+
+    fireEvent.change(statusSelects()[0], {
+      target: { value: PERC_CQC_INSPECTED_LOCATIONS },
+    });
+
+    await waitFor(() =>
+      expect(requestedBaseMetrics()).toEqual([
+        cqcInspectedCountMetricId(ALL_CQC_SERVICE_TYPES),
+        cqcLocationCountMetricId(ALL_CQC_SERVICE_TYPES),
+      ])
+    );
+    expect(requestedPeerMetrics()).toEqual(requestedBaseMetrics());
+    await waitFor(() =>
+      expect(table()).toHaveAccessibleName(
+        /percentage of adult social care locations inspected –/
+      )
+    );
+    for (const select of statusSelects()) {
+      expect(select).toHaveValue(PERC_CQC_INSPECTED_LOCATIONS);
+    }
+  });
+
+  it('asks for the service types applied', async () => {
+    renderInspectionStatus();
+    await loaded();
+
+    fireEvent.click(screen.getAllByRole('button', { name: /Show filters/ })[0]);
+    fireEvent.click(
+      screen.getByRole('checkbox', { name: 'Supported living service' })
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
+
+    await waitFor(() =>
+      expect(requestedBaseMetrics()).toEqual([
+        cqcUninspectedCountMetricId('supported_living'),
+        cqcLocationCountMetricId('supported_living'),
+      ])
+    );
+    expect(requestedPeerMetrics()).toEqual(requestedBaseMetrics());
   });
 });

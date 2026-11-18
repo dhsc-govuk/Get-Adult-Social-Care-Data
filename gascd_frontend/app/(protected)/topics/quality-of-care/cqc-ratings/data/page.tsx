@@ -23,6 +23,7 @@ import { useComparatorControls } from '@/components/charts/peer-group/useCompara
 import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
 import { mergeComparatorTotals } from '@/helpers/categoryBreakdown';
 import {
+  CQC_INSPECTION_STATUS_BENCHMARK,
   CQC_INSPECTION_STATUS_CATEGORIES,
   CQC_INSPECTION_STATUS_METRIC_IDS,
   CQC_PAGE_COUNT_METRIC_IDS,
@@ -365,6 +366,15 @@ export default function CQCRatingsPage() {
           ],
         }}
         comparator={comparator}
+      />
+      <CqcRatingsByLaSection
+        id="4"
+        figureNumber={4}
+        laCode={laCode}
+        laName={locationNames.LALabel}
+        regionLabel={locationNames.RegionLabel}
+        comparator={comparator}
+        benchmark={CQC_INSPECTION_STATUS_BENCHMARK}
       />
       <DataIndicatorDetailsList>
         <DataLinkCard
