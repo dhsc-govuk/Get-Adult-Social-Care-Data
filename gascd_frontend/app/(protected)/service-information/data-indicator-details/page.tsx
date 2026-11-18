@@ -310,6 +310,13 @@ export default function DataIndicatorDetailsPage() {
               limitations={true}
               url="/help/cqc-ratings-of-adult-social-care-locations"
             />
+            <DataLinkCard
+              label="Inspection status of adult social care locations"
+              sources="Care Quality Commission"
+              updateFrequency="Monthly updates"
+              limitations={true}
+              url="/help/inspection-status-of-adult-social-care-locations"
+            />
           </ul>
         </div>
       </div>

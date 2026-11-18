@@ -23,10 +23,14 @@ import { useComparatorControls } from '@/components/charts/peer-group/useCompara
 import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
 import { mergeComparatorTotals } from '@/helpers/categoryBreakdown';
 import {
+  CQC_INSPECTION_STATUS_CATEGORIES,
+  CQC_INSPECTION_STATUS_METRIC_IDS,
+  CQC_PAGE_COUNT_METRIC_IDS,
+  CQC_PAGE_METRIC_IDS,
   CQC_RATING_CATEGORIES,
-  CQC_RATING_COUNT_METRIC_IDS,
   CQC_RATING_METRIC_IDS,
   NUM_CQC_INSPECTED_LOCATIONS,
+  NUM_CQC_LOCATIONS,
 } from '@/data/cqcMetrics';
 import { METRICS } from '@/config/metrics';
 
@@ -78,7 +82,7 @@ export default function CQCRatingsPage() {
     error: peerError,
   } = usePeerGroupData(
     laCode,
-    CQC_RATING_COUNT_METRIC_IDS,
+    CQC_PAGE_COUNT_METRIC_IDS,
     comparator.selection,
     comparator.groups
   );
@@ -117,7 +121,7 @@ export default function CQCRatingsPage() {
     fetchSelectedLocation();
 
     // Track all metrics on this page
-    CQC_RATING_METRIC_IDS.forEach((metric_id) => {
+    CQC_PAGE_METRIC_IDS.forEach((metric_id) => {
       AnalyticsService.trackMetricView(metric_id);
     });
   }, []);
@@ -147,7 +151,7 @@ export default function CQCRatingsPage() {
   useEffect(() => {
     if (locationIds.length > 0) {
       setDemographicQuery(() => ({
-        metric_ids: CQC_RATING_METRIC_IDS,
+        metric_ids: CQC_PAGE_METRIC_IDS,
         location_ids: locationIds,
       }));
     }
@@ -200,6 +204,26 @@ export default function CQCRatingsPage() {
     ]
   );
 
+  // The same rows with the comparison group's inspection status totals added
+  const inspectionStatusData = useMemo(
+    () =>
+      mergeComparatorTotals(
+        baseDemographicData,
+        CQC_INSPECTION_STATUS_CATEGORIES,
+        NUM_CQC_LOCATIONS,
+        dataByMetric,
+        locationIds[2],
+        comparator.comparatorIsRegion,
+        locationIds[1]
+      ),
+    [
+      baseDemographicData,
+      dataByMetric,
+      locationIds,
+      comparator.comparatorIsRegion,
+    ]
+  );
+
   useEffect(() => {
     const fetchLocationIds = async () => {
       if (CPLocationId) {
@@ -217,11 +241,12 @@ export default function CQCRatingsPage() {
     fetchLocationIds();
   }, [CPLocationId]);
 
+  const dataDate = IndicatorService.getMostRecentDate(filteredDemographicData);
   const comparedLocations = (
     <>
       {locationNames.LALabel} <abbr title="local authority">LA</abbr>,{' '}
       {comparator.comparatorTotalLabel} and {COUNTRY_LABEL}, all service types,{' '}
-      {IndicatorService.getMostRecentDate(filteredDemographicData)}
+      {dataDate}
     </>
   );
 
@@ -300,6 +325,47 @@ export default function CQCRatingsPage() {
         regionLabel={locationNames.RegionLabel}
         comparator={comparator}
       />
+      <CategoryBreakdownSection
+        id="3"
+        title="Inspection status of adult social care locations"
+        intro={
+          <p className="govuk-body-m">
+            Find out{' '}
+            <a
+              href={withBasePath(METRICS[NUM_CQC_LOCATIONS].helpUrl)}
+              className="govuk-link"
+            >
+              how the inspection status of adult social care locations is
+              calculated
+            </a>
+            .
+          </p>
+        }
+        sharingMetricIds={CQC_INSPECTION_STATUS_METRIC_IDS}
+        categoryColumnName="Inspection status"
+        categories={CQC_INSPECTION_STATUS_CATEGORIES}
+        total={{
+          label: METRICS[NUM_CQC_LOCATIONS].label,
+          metric: NUM_CQC_LOCATIONS,
+        }}
+        data={inspectionStatusData}
+        columnHeaders={tableColumnHeaders}
+        tableCaption={
+          <>
+            Table 3: number and percentage of adult social care locations not
+            yet inspected &ndash; {comparedLocations}
+          </>
+        }
+        download={{
+          filename: 'inspection_status_of_adult_social_care_locations.csv',
+          description: 'inspection status of adult social care locations',
+          notes: [
+            ...(dataDate ? [`Data date: ${dataDate}`] : []),
+            `Source: ${METRICS[NUM_CQC_LOCATIONS].source}`,
+          ],
+        }}
+        comparator={comparator}
+      />
       <DataIndicatorDetailsList>
         <DataLinkCard
           label="Number and percentage of inspected adult social care locations by CQC rating"
@@ -307,6 +373,13 @@ export default function CQCRatingsPage() {
           updateFrequency="Monthly updates"
           limitations={true}
           url={METRICS[NUM_CQC_INSPECTED_LOCATIONS].helpUrl}
+        />
+        <DataLinkCard
+          label="Inspection status of adult social care locations"
+          sources="Care Quality Commission"
+          updateFrequency="Monthly updates"
+          limitations={true}
+          url={METRICS[NUM_CQC_LOCATIONS].helpUrl}
         />
       </DataIndicatorDetailsList>
 

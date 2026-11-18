@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  BreakdownCategory,
+  ChartBreakdownCategory,
   breakdownBars,
   breakdownValue,
   mergeComparatorTotals,
@@ -16,7 +16,7 @@ const INADEQUATE = 'cqcr_num_inadequate_adult_social_care';
 const PERC_INADEQUATE = 'cqcr_pct_inspected_inadequate_adult_social_care';
 const TOTAL = 'cqci_num_inspected_adult_social_care';
 
-const categories: BreakdownCategory[] = [
+const categories: ChartBreakdownCategory[] = [
   {
     label: 'Good',
     colour: '#1d70b8',
