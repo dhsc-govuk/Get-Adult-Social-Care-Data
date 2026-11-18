@@ -16,7 +16,7 @@
 "Percentage of inspected adult social care locations rated Good"
 "Service types: all service types"
 "Data date: 2025"
-"Source: Care Quality Commission (CQC)"
+"Source: Care Directory from the Care Quality Commission (CQC)"
 
 "Area","Percentage rated good"
 "England (national)","60.2%"
@@ -38,3 +38,14 @@
 "Peer LA 6","81.7%"
 "Peer LA 15","81.7%"
 "Peer LA 13","81.5%"
+
+# inspection_status_of_adult_social_care_locations.csv
+"Sharing label: Published data"
+"This data can be shared outside your organisation."
+"Data date: 2025"
+"Source: Care Directory from the Care Quality Commission (CQC)"
+
+"Inspection status","Sunderland","NHS peer group","England (national)"
+"Inspected","234 (84.2%)","6,910 (79.8%)","211 (69%)"
+"Not yet inspected","44 (15.8%)","1,754 (20.2%)","95 (31%)"
+"All locations","278","8,664","306"
