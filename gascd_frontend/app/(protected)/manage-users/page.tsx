@@ -18,6 +18,12 @@ import UsersTable from './UsersTable';
 import Pagination from '@/components/common/pagination/Pagination';
 import DelegatedApproversTable from './delegated-approvers/DelegatedApproversTable';
 import { SIGN_IN_URL } from '@/lib/signInUrl';
+import { getReview, getUserReview } from '@/lib/accessReviewServer';
+import {
+  REVIEW_TYPE_APPROVERS,
+  REVIEW_TYPE_USERS,
+  reviewStatus,
+} from '@/lib/accessReview';
 
 const formatDate = (date: Date) =>
   date.toLocaleDateString('en-GB', {
@@ -164,6 +170,41 @@ export default async function ManageUsersPage({ searchParams }: Props) {
       ? BANNERS[done](changedUser, emailStatus)
       : null;
 
+  const usersReview = reviewStatus(
+    REVIEW_TYPE_USERS,
+    await getUserReview(context)
+  );
+  const approversReview =
+    canAppoint && approvers.length > 0
+      ? reviewStatus(
+          REVIEW_TYPE_APPROVERS,
+          await getReview(context.providerCode, REVIEW_TYPE_APPROVERS)
+        )
+      : null;
+  const reviewsDue = [
+    approversReview?.due &&
+      approversReview.deadline && {
+        id: 'approvers',
+        heading: `Review your delegated approvers by ${formatDate(approversReview.deadline)}`,
+        body: 'If nobody who is a Nominated Individual for your organisation reviews them by then, they will no longer be able to give or remove access.',
+        href: '/manage-users/delegated-approvers/review',
+        link: 'Review your delegated approvers',
+      },
+    usersReview?.due && {
+      id: 'users',
+      heading: 'It’s time for your yearly check of who has access',
+      body: 'Make sure everyone on your list still needs access, then confirm it is up to date.',
+      href: '/manage-users/review',
+      link: 'Review who has access',
+    },
+  ].filter(Boolean) as {
+    id: string;
+    heading: string;
+    body: string;
+    href: string;
+    link: string;
+  }[];
+
   return (
     <Layout
       title="Manage users"
@@ -199,6 +240,42 @@ export default async function ManageUsersPage({ searchParams }: Props) {
         </div>
       )}
 
+      {!banner &&
+        reviewsDue.map((review) => (
+          <div className="govuk-grid-row" key={review.id}>
+            <div className="govuk-grid-column-two-thirds">
+              <div
+                className="govuk-notification-banner"
+                role="region"
+                aria-labelledby={`review-${review.id}-title`}
+                data-module="govuk-notification-banner"
+                data-testid={`review-due-${review.id}`}
+              >
+                <div className="govuk-notification-banner__header">
+                  <h2
+                    className="govuk-notification-banner__title"
+                    id={`review-${review.id}-title`}
+                  >
+                    Important
+                  </h2>
+                </div>
+                <div className="govuk-notification-banner__content">
+                  <p className="govuk-notification-banner__heading">
+                    {review.heading}
+                  </p>
+                  <p className="govuk-body">{review.body}</p>
+                  <Link
+                    className="govuk-notification-banner__link"
+                    href={review.href}
+                  >
+                    {review.link}
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+
       <span className="govuk-caption-l">{context.providerName}</span>
       <h1 className="govuk-heading-l">Manage users</h1>
       <div className="govuk-grid-row">
@@ -206,6 +283,11 @@ export default async function ManageUsersPage({ searchParams }: Props) {
           <p className="govuk-body">
             Choose which users in your organisation can access GASCD. You are
             responsible for keeping this list up to date.
+          </p>
+          <p className="govuk-body">
+            Remove anyone who no longer needs access, for example when they
+            leave your organisation or change roles. Once a year we will also
+            ask you to check who has access and confirm the list is up to date.
           </p>
           <p className="govuk-body govuk-!-font-weight-bold">
             You are signed in as {APPROVER_DESCRIPTIONS[context.basis]}.{' '}

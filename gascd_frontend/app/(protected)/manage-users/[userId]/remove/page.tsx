@@ -5,13 +5,18 @@ import { getCurrentUser } from '@/lib/permissions';
 import { getChangeableUser } from '@/lib/manageUsersServer';
 import ConfirmChange from '../ConfirmChange';
 
-type Props = { params: Promise<{ userId: string }> };
+type Props = {
+  params: Promise<{ userId: string }>;
+  searchParams: Promise<{ from?: string }>;
+};
 
-export default async function RemoveUserPage({ params }: Props) {
+export default async function RemoveUserPage({ params, searchParams }: Props) {
   const actor = await getCurrentUser();
   if (!actor) redirect('/login');
 
   const { userId } = await params;
+  const returnTo =
+    (await searchParams).from === 'review' ? 'review' : undefined;
   const changeable = await getChangeableUser(actor, userId);
   if (
     !changeable ||
@@ -29,7 +34,10 @@ export default async function RemoveUserPage({ params }: Props) {
       showLoginInformation={true}
       currentPage="remove-user"
     >
-      <Link href="/manage-users" className="govuk-back-link">
+      <Link
+        href={returnTo ? '/manage-users/review' : '/manage-users'}
+        className="govuk-back-link"
+      >
         Back
       </Link>
       <div className="govuk-grid-row">
@@ -76,7 +84,11 @@ export default async function RemoveUserPage({ params }: Props) {
             </p>
           )}
           <p className="govuk-body">You can restore their access later.</p>
-          <ConfirmChange userId={user.userId} kind="remove" />
+          <ConfirmChange
+            userId={user.userId}
+            kind="remove"
+            returnTo={returnTo}
+          />
         </div>
       </div>
     </Layout>

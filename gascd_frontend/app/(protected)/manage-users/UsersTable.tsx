@@ -16,7 +16,13 @@ const formatDate = (date: Date) =>
     timeZone: 'Europe/London',
   });
 
-export default function UsersTable({ users }: { users: ManagedUser[] }) {
+type Props = {
+  users: ManagedUser[];
+  // On the yearly review only removing is offered, and it comes back to the review
+  reviewing?: boolean;
+};
+
+export default function UsersTable({ users, reviewing = false }: Props) {
   return (
     <table className="govuk-table">
       <caption className="govuk-table__caption govuk-visually-hidden">
@@ -86,7 +92,11 @@ export default function UsersTable({ users }: { users: ManagedUser[] }) {
             </td>
             <td className="govuk-table__cell govuk-table__cell--numeric">
               {user.canChange ? (
-                <UserActions user={user} />
+                reviewing ? (
+                  <ReviewActions user={user} />
+                ) : (
+                  <UserActions user={user} />
+                )
               ) : (
                 <span className="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-0">
                   {user.lockedReason}
@@ -106,6 +116,18 @@ const actionLink = (href: string, label: string, name: string) => (
     <span className="govuk-visually-hidden"> {name}</span>
   </Link>
 );
+
+function ReviewActions({ user }: { user: ManagedUser }) {
+  if (!user.canRemove || user.status === 'Removed') return null;
+  const base = `/manage-users/${encodeURIComponent(user.userId)}`;
+  return user.status === 'Active'
+    ? actionLink(`${base}/remove?from=review`, 'Remove access', user.name)
+    : actionLink(
+        `${base}/cancel?from=review`,
+        'Cancel invite',
+        `to ${user.name}`
+      );
+}
 
 function UserActions({ user }: { user: ManagedUser }) {
   const base = `/manage-users/${encodeURIComponent(user.userId)}`;

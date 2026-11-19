@@ -87,11 +87,19 @@ export async function updateUser(
   redirect(`/manage-users?done=updated&user=${userId}`);
 }
 
+// Where a remove or cancel started, so the user goes back there
+export type ReturnTo = 'review';
+
+const RETURN_PATHS: Record<ReturnTo, string> = {
+  review: '/manage-users/review',
+};
+
 const changeStatus = async (
   userId: string,
   allowed: (user: ManagedUser) => boolean,
   change: typeof removeManagedUser,
-  done: string
+  done: string,
+  returnTo?: ReturnTo
 ): Promise<{ error?: string }> => {
   const loaded = await load(userId);
   if (!loaded || !allowed(loaded.user)) return { error: NO_PERMISSION };
@@ -125,15 +133,17 @@ const changeStatus = async (
     });
     emailParam = `&email=${sent ? 'sent' : 'failed'}`;
   }
-  redirect(`/manage-users?done=${done}&user=${userId}${emailParam}`);
+  const path = (returnTo && RETURN_PATHS[returnTo]) ?? '/manage-users';
+  redirect(`${path}?done=${done}&user=${userId}${emailParam}`);
 };
 
-export async function removeUser(userId: string) {
+export async function removeUser(userId: string, returnTo?: ReturnTo) {
   return changeStatus(
     userId,
     (user) => user.canRemove && user.status !== 'Removed',
     removeManagedUser,
-    'removed'
+    'removed',
+    returnTo
   );
 }
 
@@ -145,12 +155,13 @@ export async function resendInvite(userId: string) {
   return changeStatus(userId, isPendingInvite, resendManagedInvite, 'resent');
 }
 
-export async function cancelInvite(userId: string) {
+export async function cancelInvite(userId: string, returnTo?: ReturnTo) {
   return changeStatus(
     userId,
     isPendingInvite,
     cancelManagedInvite,
-    'cancelled'
+    'cancelled',
+    returnTo
   );
 }
 
