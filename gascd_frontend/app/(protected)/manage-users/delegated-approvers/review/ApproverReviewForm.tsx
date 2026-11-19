@@ -14,13 +14,25 @@ export type ReviewApprover = {
 
 type Decision = 'keep' | 'remove';
 
+export const MISSING_DECISION_ERROR =
+  'Select whether to keep or remove each delegated approver';
+
 const DECISION_LABELS: Record<Decision, string> = {
   keep: 'Keep as a delegated approver',
   remove: 'Remove as a delegated approver',
 };
 
-const ApproverReviewForm: React.FC<{ approvers: ReviewApprover[] }> = ({
+type Props = {
+  approvers: ReviewApprover[];
+  caption: string;
+  // Shown under the heading while choosing, e.g. the deadline
+  warning?: React.ReactNode;
+};
+
+const ApproverReviewForm: React.FC<Props> = ({
   approvers,
+  caption,
+  warning,
 }) => {
   const [decisions, setDecisions] = useState<Record<string, Decision>>({});
   const [step, setStep] = useState<'choose' | 'check'>('choose');
@@ -30,12 +42,7 @@ const ApproverReviewForm: React.FC<{ approvers: ReviewApprover[] }> = ({
   const summaryRef = useRef<HTMLDivElement>(null);
 
   const missing = approvers.filter((a) => !decisions[a.userId]);
-  const errors: [string, string][] = showErrors
-    ? missing.map((a) => [
-        `decision-${a.userId}`,
-        `Select whether to keep ${a.name} as a delegated approver`,
-      ])
-    : [];
+  const showError = showErrors && missing.length > 0;
 
   const next = (event: React.FormEvent) => {
     event.preventDefault();
@@ -61,10 +68,26 @@ const ApproverReviewForm: React.FC<{ approvers: ReviewApprover[] }> = ({
       setError(result?.error);
     });
 
+  const backToChoose = () => {
+    setStep('choose');
+    window.scrollTo(0, 0);
+  };
+
   if (step === 'check') {
     const removing = approvers.filter((a) => decisions[a.userId] === 'remove');
     return (
       <>
+        <a
+          href="#"
+          className="govuk-back-link"
+          onClick={(event) => {
+            event.preventDefault();
+            backToChoose();
+          }}
+        >
+          Back
+        </a>
+        <span className="govuk-caption-l">{caption}</span>
         <h1 className="govuk-heading-l">Check your answers</h1>
         <dl className="govuk-summary-list">
           {approvers.map((approver) => (
@@ -87,7 +110,7 @@ const ApproverReviewForm: React.FC<{ approvers: ReviewApprover[] }> = ({
                     padding: 0,
                     cursor: 'pointer',
                   }}
-                  onClick={() => setStep('choose')}
+                  onClick={backToChoose}
                 >
                   Change
                   <span className="govuk-visually-hidden">
@@ -129,16 +152,24 @@ const ApproverReviewForm: React.FC<{ approvers: ReviewApprover[] }> = ({
 
   return (
     <form onSubmit={next} noValidate>
-      {errors.length > 0 && <ErrorSummary errors={errors} ref={summaryRef} />}
-      <h1 className="govuk-heading-l">Review your delegated approvers</h1>
+      <Link href="/manage-users" className="govuk-back-link">
+        Back
+      </Link>
+      {showError && (
+        <ErrorSummary
+          errors={[[`decision-${missing[0].userId}`, MISSING_DECISION_ERROR]]}
+          ref={summaryRef}
+        />
+      )}
+      <span className="govuk-caption-l">{caption}</span>
+      <h1 className="govuk-heading-l">Review delegated approvers</h1>
+      {warning}
       <p className="govuk-body">
         Delegated approvers can give and remove access to any location in your
         organisation. Check that each of them still needs to.
       </p>
       {approvers.map((approver) => {
-        const fieldError = errors.find(
-          ([id]) => id === `decision-${approver.userId}`
-        );
+        const fieldError = showError && !decisions[approver.userId];
         return (
           <div
             key={approver.userId}
@@ -156,7 +187,7 @@ const ApproverReviewForm: React.FC<{ approvers: ReviewApprover[] }> = ({
               {fieldError && (
                 <p className="govuk-error-message">
                   <span className="govuk-visually-hidden">Error:</span>{' '}
-                  {fieldError[1]}
+                  {MISSING_DECISION_ERROR}
                 </p>
               )}
               <div className="govuk-radios" data-module="govuk-radios">

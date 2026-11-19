@@ -1,5 +1,4 @@
 import { notFound, redirect } from 'next/navigation';
-import Link from 'next/link';
 import Layout from '@/components/common/layout/Layout';
 import { getCurrentUser } from '@/lib/permissions';
 import {
@@ -36,30 +35,30 @@ export default async function ReviewApproversPage() {
 
   return (
     <Layout
-      title="Review your delegated approvers"
+      title="Review delegated approvers"
       showLoginInformation={true}
       currentPage="review-approvers"
     >
-      <Link href="/manage-users" className="govuk-back-link">
-        Back
-      </Link>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
-          <span className="govuk-caption-l">{context.providerName}</span>
-          {status?.due && status.deadline && (
-            <div className="govuk-warning-text">
-              <span className="govuk-warning-text__icon" aria-hidden="true">
-                !
-              </span>
-              <strong className="govuk-warning-text__text">
-                <span className="govuk-visually-hidden">Warning</span>
-                Complete this review by {formatDate(status.deadline)}. If nobody
-                does, these delegated approvers will no longer be able to give
-                or remove access.
-              </strong>
-            </div>
-          )}
           <ApproverReviewForm
+            caption={context.providerName}
+            warning={
+              status?.due &&
+              status.deadline && (
+                <div className="govuk-warning-text">
+                  <span className="govuk-warning-text__icon" aria-hidden="true">
+                    !
+                  </span>
+                  <strong className="govuk-warning-text__text">
+                    <span className="govuk-visually-hidden">Warning</span>
+                    Complete this review by {formatDate(status.deadline)}. If
+                    nobody does, these delegated approvers will no longer be
+                    able to give or remove access.
+                  </strong>
+                </div>
+              )
+            }
             approvers={approvers.map(({ userId, name, email, status }) => ({
               userId,
               name,

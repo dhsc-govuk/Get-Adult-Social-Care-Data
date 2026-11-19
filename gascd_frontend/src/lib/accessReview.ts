@@ -33,6 +33,13 @@ const startOfDayUtc = (date: Date) =>
     Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
   );
 
+export const formatReviewMonth = (date: Date) =>
+  date.toLocaleDateString('en-GB', {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'Europe/London',
+  });
+
 export const nextDueAt = (now: Date) => {
   const due = startOfDayUtc(now);
   due.setUTCMonth(due.getUTCMonth() + REVIEW_EVERY_MONTHS);

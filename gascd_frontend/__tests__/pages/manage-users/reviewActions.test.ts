@@ -56,7 +56,7 @@ beforeEach(() => {
 });
 
 describe('confirmUserReview', () => {
-  it('records the review for the organisation and shows the success banner', async () => {
+  it('records the review for the organisation and shows the confirmation page', async () => {
     await confirmUserReview();
 
     expect(completeReview).toHaveBeenCalledWith(
@@ -64,7 +64,7 @@ describe('confirmUserReview', () => {
       context('nominated_individual'),
       'users'
     );
-    expect(redirect).toHaveBeenCalledWith('/manage-users?done=users-reviewed');
+    expect(redirect).toHaveBeenCalledWith('/manage-users/review/confirmed');
   });
 
   it('lets delegated approvers confirm too', async () => {
@@ -77,15 +77,18 @@ describe('confirmUserReview', () => {
     expect(completeReview).toHaveBeenCalled();
   });
 
-  it('refuses RMs, whose access is only to their locations', async () => {
+  it('lets RMs confirm the list for their locations', async () => {
     vi.mocked(getApproverContext).mockResolvedValue(
       context('registered_manager') as any
     );
 
-    const result = await confirmUserReview();
+    await confirmUserReview();
 
-    expect(result).toEqual({ error: expect.stringMatching(/permission/) });
-    expect(completeReview).not.toHaveBeenCalled();
+    expect(completeReview).toHaveBeenCalledWith(
+      ni,
+      context('registered_manager'),
+      'users'
+    );
   });
 
   it('shows a service error when saving fails', async () => {
@@ -132,7 +135,7 @@ describe('submitApproverReview', () => {
       { kept: ['da-2'], removed: ['da-1', 'da-3'] }
     );
     expect(redirect).toHaveBeenCalledWith(
-      '/manage-users?done=approvers-reviewed&removed=2'
+      '/manage-users/delegated-approvers/review/confirmed?removed=2'
     );
   });
 

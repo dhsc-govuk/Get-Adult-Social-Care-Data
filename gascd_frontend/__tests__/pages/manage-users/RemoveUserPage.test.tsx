@@ -22,7 +22,7 @@ const ni = {
 };
 const rm = { ...ni, basis: 'registered_manager', providerWide: false };
 
-const renderFor = async (context: object, user: object) => {
+const renderFor = async (context: object, user: object, from?: string) => {
   vi.mocked(getChangeableUser).mockResolvedValue({
     context,
     grants: [],
@@ -37,7 +37,12 @@ const renderFor = async (context: object, user: object) => {
       ...user,
     },
   } as any);
-  render(await RemoveUserPage({ params: Promise.resolve({ userId: 'u1' }) }));
+  render(
+    await RemoveUserPage({
+      params: Promise.resolve({ userId: 'u1' }),
+      searchParams: Promise.resolve(from ? { from } : {}),
+    })
+  );
 };
 
 const editLink = () =>
@@ -78,5 +83,13 @@ describe('RemoveUserPage', () => {
       )
     ).toBeInTheDocument();
     expect(editLink()).toBeInTheDocument();
+  });
+
+  it('goes back to the yearly review when the removal started there', async () => {
+    await renderFor(ni, {}, 'review');
+    expect(screen.getByRole('link', { name: 'Back' })).toHaveAttribute(
+      'href',
+      '/manage-users/review'
+    );
   });
 });

@@ -10,7 +10,7 @@ import {
 } from '@/lib/manageUsersServer';
 import { completeReview } from '@/lib/accessReviewServer';
 import { REVIEW_TYPE_APPROVERS, REVIEW_TYPE_USERS } from '@/lib/accessReview';
-import { GRANT_BASIS_NI, GRANT_BASIS_RM } from '@/lib/manageUsers';
+import { GRANT_BASIS_NI } from '@/lib/manageUsers';
 import { sendApproverRemovedEmail } from '@/lib/notify';
 import logger from '@/utils/logger';
 
@@ -18,11 +18,10 @@ const NO_PERMISSION = 'You do not have permission to complete this check';
 const SERVICE_ERROR =
   'Sorry, there is a problem with the service. Please try again later.';
 
-// Organisation-wide, so NIs and delegated approvers; RMs only manage their locations
 export async function confirmUserReview() {
   const actor = await getCurrentUser();
   const context = actor ? await getApproverContext(actor) : null;
-  if (!actor || !context || context.basis === GRANT_BASIS_RM) {
+  if (!actor || !context) {
     return { error: NO_PERMISSION };
   }
   try {
@@ -34,7 +33,7 @@ export async function confirmUserReview() {
     });
     return { error: SERVICE_ERROR };
   }
-  redirect('/manage-users?done=users-reviewed');
+  redirect('/manage-users/review/confirmed');
 }
 
 export async function submitApproverReview(removeUserIds: string[]) {
@@ -78,5 +77,7 @@ export async function submitApproverReview(removeUserIds: string[]) {
     });
     return { error: SERVICE_ERROR };
   }
-  redirect(`/manage-users?done=approvers-reviewed&removed=${toRemove.length}`);
+  redirect(
+    `/manage-users/delegated-approvers/review/confirmed?removed=${toRemove.length}`
+  );
 }

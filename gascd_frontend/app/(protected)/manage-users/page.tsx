@@ -9,7 +9,6 @@ import {
 import {
   APPROVER_DESCRIPTIONS,
   GRANT_BASIS_NI,
-  GRANT_BASIS_RM,
   groupDelegatedApprovers,
   groupManagedUsers,
   MANAGE_USERS_PAGE_SIZE,
@@ -19,7 +18,7 @@ import UsersTable from './UsersTable';
 import Pagination from '@/components/common/pagination/Pagination';
 import DelegatedApproversTable from './delegated-approvers/DelegatedApproversTable';
 import { SIGN_IN_URL } from '@/lib/signInUrl';
-import { getReview } from '@/lib/accessReviewServer';
+import { getReview, getUserReview } from '@/lib/accessReviewServer';
 import {
   REVIEW_TYPE_APPROVERS,
   REVIEW_TYPE_USERS,
@@ -112,33 +111,6 @@ const BANNERS: Record<
   }),
 };
 
-// Banners for a completed review, which isn't about one user
-const REVIEW_BANNERS: Record<
-  string,
-  (removed: number) => { heading: string; body?: React.ReactNode }
-> = {
-  'users-reviewed': () => ({
-    heading: 'You have confirmed this list is up to date',
-    body: (
-      <p className="govuk-body">
-        Thank you. We will ask again in a year. Nobody else who manages access
-        for your organisation needs to check it before then.
-      </p>
-    ),
-  }),
-  'approvers-reviewed': (removed) => ({
-    heading: 'You have reviewed your delegated approvers',
-    body: (
-      <p className="govuk-body">
-        {removed > 0
-          ? `${removed === 1 ? '1 person is' : `${removed} people are`} no longer a delegated approver. `
-          : ''}
-        We will ask you to review them again in a year.
-      </p>
-    ),
-  }),
-};
-
 const breadcrumbs = [
   { text: 'Home', url: '/home' },
   { text: 'Manage users', url: '/manage-users' },
@@ -150,7 +122,6 @@ type Props = {
     done?: string;
     user?: string;
     email?: string;
-    removed?: string;
   }>;
 };
 
@@ -166,7 +137,6 @@ export default async function ManageUsersPage({ searchParams }: Props) {
     done,
     user: changedUserId,
     email: emailStatus,
-    removed,
   } = await searchParams;
   const grants = await listProviderGrants(context.providerCode);
   const users = groupManagedUsers(grants, context, user.id);
@@ -198,18 +168,12 @@ export default async function ManageUsersPage({ searchParams }: Props) {
   const banner =
     changedUser && done && Object.hasOwn(BANNERS, done)
       ? BANNERS[done](changedUser, emailStatus)
-      : done && Object.hasOwn(REVIEW_BANNERS, done)
-        ? REVIEW_BANNERS[done](Number.parseInt(removed ?? '0', 10) || 0)
-        : null;
+      : null;
 
-  // The user review is for the whole organisation, so RMs don't get it
-  const usersReview =
-    context.basis === GRANT_BASIS_RM
-      ? null
-      : reviewStatus(
-          REVIEW_TYPE_USERS,
-          await getReview(context.providerCode, REVIEW_TYPE_USERS)
-        );
+  const usersReview = reviewStatus(
+    REVIEW_TYPE_USERS,
+    await getUserReview(context)
+  );
   const approversReview =
     canAppoint && approvers.length > 0
       ? reviewStatus(
@@ -319,6 +283,11 @@ export default async function ManageUsersPage({ searchParams }: Props) {
           <p className="govuk-body">
             Choose which users in your organisation can access GASCD. You are
             responsible for keeping this list up to date.
+          </p>
+          <p className="govuk-body">
+            Remove anyone who no longer needs access, for example when they
+            leave your organisation or change roles. Once a year we will also
+            ask you to check who has access and confirm the list is up to date.
           </p>
           <p className="govuk-body govuk-!-font-weight-bold">
             You are signed in as {APPROVER_DESCRIPTIONS[context.basis]}.{' '}

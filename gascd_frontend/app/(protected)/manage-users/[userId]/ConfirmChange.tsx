@@ -2,7 +2,13 @@
 
 import React, { useState, useTransition } from 'react';
 import Link from 'next/link';
-import { cancelInvite, removeUser, resendInvite, restoreUser } from './actions';
+import {
+  cancelInvite,
+  removeUser,
+  resendInvite,
+  restoreUser,
+  ReturnTo,
+} from './actions';
 
 const KINDS = {
   remove: { action: removeUser, label: 'Remove access', warning: true },
@@ -14,16 +20,17 @@ const KINDS = {
 type Props = {
   userId: string;
   kind: keyof typeof KINDS;
+  returnTo?: ReturnTo;
 };
 
-const ConfirmChange: React.FC<Props> = ({ userId, kind }) => {
+const ConfirmChange: React.FC<Props> = ({ userId, kind, returnTo }) => {
   const [error, setError] = useState<string>();
   const [isPending, startTransition] = useTransition();
 
   const confirm = () =>
     startTransition(async () => {
       // Success redirects, so only errors come back
-      const result = await KINDS[kind].action(userId);
+      const result = await KINDS[kind].action(userId, returnTo);
       setError(result.error);
     });
 
@@ -44,7 +51,10 @@ const ConfirmChange: React.FC<Props> = ({ userId, kind }) => {
         >
           {KINDS[kind].label}
         </button>
-        <Link href="/manage-users" className="govuk-link">
+        <Link
+          href={returnTo ? `/manage-users/${returnTo}` : '/manage-users'}
+          className="govuk-link"
+        >
           {kind === 'cancel' ? 'Keep invite' : 'Cancel'}
         </Link>
       </div>
