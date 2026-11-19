@@ -42,7 +42,7 @@ Both reviews live in `access_review` (one row per scope per review type) and are
 - **When:** once a year per organisation, covering all its delegated approvers. First due 12 months after the first delegated approver was appointed, then 12 months after each completed review.
 - **What happens:** emails to every NI with 60, 30 and 7 days left; a banner with the deadline; "Review delegated approvers" (keep or remove each person), check your answers, then a confirmation page.
 - **Completing it:** any NI completing it clears it for the organisation. Removing someone takes their approver role away and sends them the "delegated approver removed" email.
-- **If nobody does it in time:** the day after the deadline, every delegated approver who was appointed before the review opened loses the approver role. Their grant goes from `approver` to `reader` (it isn't suspended or deleted), so they keep viewing data, and everyone they gave access to keeps theirs. An NI can appoint them again with "Appoint a delegated approver", which upgrades their existing grant. The audit action is `approver_review_lapsed`.
+- **If nobody does it in time:** the day after the deadline, every delegated approver who was appointed before the review opened loses the approver role. Their grant goes from `approver` to `reader` (it isn't suspended or deleted), so they keep viewing data, and everyone they gave access to keeps theirs. An NI can appoint them again with "Appoint a delegated approver", which upgrades their existing grant. The audit action is `approver_review_lapsed`. Each delegated approver who lost the role gets the "delegated approver removed" email, and each NI gets one email for the organisation saying their delegated approvers have lost the role.
 - **Safety:** the role is never removed until the 7-days-left email has gone. If it was missed (Notify off, no NI to email, every send failed), the job sends it late and gives a new deadline at least 7 days away (`access_review.deadline_at`). No emails and no lapses happen at all until Notify and `AccessReview:ServiceUrl` are set.
 
 ## Emails
@@ -57,7 +57,7 @@ All emails go through GOV.UK Notify. Template ids aren't secret and are hardcode
 | Delegated approver removed (by an NI, or lapsed) | Frontend, and the admin job on lapse | `9b2057e3-4b6d-4804-aaf9-34569a0ded74` | invitee_name, organisation_name, contact_name, contact_email |
 | Check of who has access is due | Admin job `AccessReviewService.cs` | `8a677d0d-051f-48e9-9619-619af31eb1ff` | approver_name, organisation_name (location name for RMs), service_url |
 | Delegated approver review, 60 / 30 / 7 days left | Admin job | `e7320308-6d72-4b71-9044-922a5257343c` / `14b819ce-8abf-4198-80e2-829c0c4014e0` / `f0282518-ca4e-48f9-940f-d8c08e402551` | ni_name, organisation_name, deadline_date, service_url |
-| Delegated approvers lapsed (to each NI, one per organisation) | Admin job | Not created yet: `ApproversLapsedTemplate` is empty, so it isn't sent | ni_name, organisation_name, approver_names (list), service_url |
+| Delegated approvers lost the role (to each NI, one per organisation) | Admin job | `b90897e1-ea91-4cae-8234-ab132c057ff1` | ni_name, organisation_name, service_url |
 
 `service_url` is the frontend's sign-in page (`BETTER_AUTH_URL` + `NEXT_PUBLIC_BASE_PATH` + `/login`). The admin app has no base path of its own, so it's configured as `AccessReview:ServiceUrl`.
 
