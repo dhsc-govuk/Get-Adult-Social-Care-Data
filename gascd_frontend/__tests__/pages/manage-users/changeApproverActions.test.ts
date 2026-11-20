@@ -82,6 +82,7 @@ describe('removeApprover', () => {
       providerName: 'Test Provider',
       contactName: 'Nia Ito',
       contactEmail: 'ni@example.org',
+      signInUrl: 'https://gascd.example/login',
       reference: 'da-1',
     });
     expect(redirect).toHaveBeenCalledWith(

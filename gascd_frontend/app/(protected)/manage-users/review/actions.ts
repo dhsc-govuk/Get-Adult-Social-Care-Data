@@ -12,6 +12,7 @@ import { completeReview } from '@/lib/accessReviewServer';
 import { REVIEW_TYPE_APPROVERS, REVIEW_TYPE_USERS } from '@/lib/accessReview';
 import { GRANT_BASIS_NI } from '@/lib/manageUsers';
 import { sendApproverRemovedEmail } from '@/lib/notify';
+import { SIGN_IN_URL } from '@/lib/signInUrl';
 import logger from '@/utils/logger';
 
 const NO_PERMISSION = 'You do not have permission to complete this check';
@@ -63,6 +64,7 @@ export async function submitApproverReview(removeUserIds: string[]) {
         providerName: context.providerName,
         contactName: actor.registeredName ?? actor.name,
         contactEmail: actor.email,
+        signInUrl: SIGN_IN_URL,
         reference: approver.userId,
       });
     }

@@ -141,6 +141,7 @@ describe('delegated approver emails', () => {
         providerName: 'Test Provider',
         contactName: 'Nia Ito',
         contactEmail: 'ni@example.org',
+        signInUrl: 'https://gascd.example/login',
         reference: 'da-1',
       })
     ).toBe(true);
@@ -153,6 +154,7 @@ describe('delegated approver emails', () => {
           organisation_name: 'Test Provider',
           contact_name: 'Nia Ito',
           contact_email: 'ni@example.org',
+          service_url: 'https://gascd.example/login',
         },
         reference: 'da-1',
       }

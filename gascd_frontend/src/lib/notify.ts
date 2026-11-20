@@ -128,6 +128,7 @@ export type ApproverRemovedEmail = {
   // The NI who removed them, for the "if you think this is a mistake" line
   contactName: string;
   contactEmail: string;
+  signInUrl: string;
   reference: string;
 };
 
@@ -141,6 +142,7 @@ export const sendApproverRemovedEmail = (removed: ApproverRemovedEmail) =>
       organisation_name: removed.providerName,
       contact_name: removed.contactName,
       contact_email: removed.contactEmail,
+      service_url: removed.signInUrl,
     },
     removed.reference
   );

@@ -123,6 +123,7 @@ describe('submitApproverReview', () => {
       expect.objectContaining({
         email: 'da-1@example.org',
         contactName: 'Nia Ito',
+        signInUrl: expect.stringMatching(/\/login$/),
       })
     );
     expect(cancelApproverInvite).toHaveBeenCalledWith(
