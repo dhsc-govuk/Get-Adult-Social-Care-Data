@@ -67,6 +67,7 @@ export async function removeApprover(userId: string) {
     providerName: context.providerName,
     contactName: actor.registeredName ?? actor.name,
     contactEmail: actor.email,
+    signInUrl: SIGN_IN_URL,
     reference: userId,
   });
   redirect(
