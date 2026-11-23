@@ -1,7 +1,5 @@
 /help/number-people-receiving-care-from-community-social-care-provider
-https://github.com/NHSDigital/ASC_LA_Peer_Groups
 /help/number-people-receiving-care-from-community-social-care-provider-per-100000-adults
-https://github.com/NHSDigital/ASC_LA_Peer_Groups
 /help/number-people-receiving-care-from-community-social-care-provider
 /help/number-people-receiving-care-from-community-social-care-provider-per-100000-adults
 /topics/residential-care/provision-and-occupancy/data

@@ -1,9 +1,6 @@
 /help/household-deprivation
-https://github.com/NHSDigital/ASC_LA_Peer_Groups
 /help/households-where-property-is-owned-outright
-https://github.com/NHSDigital/ASC_LA_Peer_Groups
 /help/one-person-households-where-person-aged-65-or-over
-https://github.com/NHSDigital/ASC_LA_Peer_Groups
 /help/household-deprivation
 /help/households-where-property-is-owned-outright
 /help/one-person-households-where-person-aged-65-or-over

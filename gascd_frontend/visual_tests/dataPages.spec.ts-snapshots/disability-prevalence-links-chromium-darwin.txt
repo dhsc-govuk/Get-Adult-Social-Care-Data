@@ -1,12 +1,8 @@
 /help/people-who-reported-bad-or-very-bad-health
-https://github.com/NHSDigital/ASC_LA_Peer_Groups
 /help/disability-prevalence
-https://github.com/NHSDigital/ASC_LA_Peer_Groups
 /help/learning-disability-prevalence
-https://github.com/NHSDigital/ASC_LA_Peer_Groups
 /help/primary-reason-for-accessing-long-term-adult-social-care
 /help/primary-reason-for-accessing-long-term-adult-social-care-per-100000-adults
-https://github.com/NHSDigital/ASC_LA_Peer_Groups
 /help/disability-prevalence
 /help/learning-disability-prevalence
 /help/people-who-reported-bad-or-very-bad-health
