@@ -141,7 +141,7 @@ const BarChart: React.FC<BarChartProps> = ({
       },
     },
     shapes: [...shapes, ...additionalShapes],
-    margin: { l: 200, t: 20, r: 20, b: 50 }, // minimum margin buffer
+    margin: { l: 200, t: 20, r: xAxisRange ? 35 : 20, b: 50 }, // minimum margin buffer
     showlegend: false,
     autosize: true,
   };

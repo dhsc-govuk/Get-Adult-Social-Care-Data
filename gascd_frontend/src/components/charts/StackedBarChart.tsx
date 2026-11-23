@@ -115,7 +115,7 @@ const StackedBarChart: React.FC<StackedBarChartProps> = ({
         color: '#ffffff',
       },
     },
-    margin: { l: 150, t: 20, r: 20, b: 50 },
+    margin: { l: 150, t: 20, r: 30, b: 50 },
     showlegend: false,
     autosize: true,
   };

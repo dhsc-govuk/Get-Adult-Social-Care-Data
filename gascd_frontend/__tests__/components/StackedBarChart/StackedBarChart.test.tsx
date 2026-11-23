@@ -56,6 +56,7 @@ describe('StackedBarChart', () => {
     expect(layout.barmode).toBe('stack');
     expect(layout.xaxis.range).toEqual([0, 100]);
     expect(layout.xaxis.ticksuffix).toBe('%');
+    expect(layout.margin.r).toBe(30);
     expect(layout.showlegend).toBe(false);
   });
 
