@@ -3,6 +3,7 @@ import { Shape } from 'plotly.js';
 import BarChart from '../BarChart';
 import PeerGroupChartLegend from './PeerGroupChartLegend';
 import {
+  AVG_LINE_WIDTH,
   NATIONAL_AVG_COLOUR,
   PEER_AVG_COLOUR,
   NHS_PEER_GROUP_AVERAGE_LABEL,
@@ -94,7 +95,7 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
         x1: resolvedPeerGroupAverage,
         y0: 0,
         y1: 1,
-        line: { color: PEER_AVG_COLOUR, width: 2, dash: 'dot' },
+        line: { color: PEER_AVG_COLOUR, width: AVG_LINE_WIDTH, dash: 'dot' },
       });
     }
 
@@ -107,7 +108,11 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
         x1: resolvedNationalAverage,
         y0: 0,
         y1: 1,
-        line: { color: NATIONAL_AVG_COLOUR, width: 2, dash: 'dash' },
+        line: {
+          color: NATIONAL_AVG_COLOUR,
+          width: AVG_LINE_WIDTH,
+          dash: 'dash',
+        },
       });
     }
 
@@ -120,7 +125,11 @@ const PeerGroupChartContent: React.FC<PeerGroupChartContentProps> = ({
         x1: resolvedRegionalAverage,
         y0: 0,
         y1: 1,
-        line: { color: REGIONAL_AVG_COLOUR, width: 2, dash: 'dot' },
+        line: {
+          color: REGIONAL_AVG_COLOUR,
+          width: AVG_LINE_WIDTH,
+          dash: 'dot',
+        },
       });
     }
 
