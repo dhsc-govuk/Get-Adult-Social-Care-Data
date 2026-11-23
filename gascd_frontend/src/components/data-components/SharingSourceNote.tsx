@@ -13,7 +13,12 @@ const SharingSourceNote: React.FC<Props> = ({ category }) => {
   if (!category?.additionalSourceNote) return null;
 
   return (
-    <p className="govuk-body" data-testid="sharing-source-note">
+    // The top margin gives the same gap below every source line, whether or
+    // not that line has a bottom margin of its own (the two collapse)
+    <p
+      className="govuk-body govuk-!-margin-top-4"
+      data-testid="sharing-source-note"
+    >
       {category.additionalSourceNote}
     </p>
   );

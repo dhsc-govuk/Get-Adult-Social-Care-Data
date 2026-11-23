@@ -1,5 +1,7 @@
 'use client';
 
+import SectionControls from '@/components/data-components/SectionControls';
+import { TOPICS, topicBreadcrumbs } from '@/config/topics';
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -90,16 +92,7 @@ export default function ProvisionAndOccupancyPage() {
   const metricPage = 'population-size-and-age-group';
   const laCode = locationIds[1];
 
-  const breadcrumbs = [
-    {
-      text: 'Home',
-      url: '/home',
-    },
-    {
-      text: 'Population needs',
-      url: '/topics/population-needs/subtopics',
-    },
-  ];
+  const breadcrumbs = topicBreadcrumbs(TOPICS.populationNeeds);
 
   const {
     groups,
@@ -526,7 +519,9 @@ export default function ProvisionAndOccupancyPage() {
           sharingMetricIds={['total_population']}
           table={
             <>
-              {renderComparatorControl('comparator-table-1')}
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-1')}
+              />
               <DataTable
                 metrics={['total_population']}
                 tableref={tableref1}
@@ -598,7 +593,9 @@ export default function ProvisionAndOccupancyPage() {
           sharingMetricIds={ageGroupMetricIds}
           table={
             <>
-              {renderComparatorControl('comparator-table-2')}
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-2')}
+              />
               <DataTable
                 metrics={AGE_GROUP_METRICS}
                 tableref={tableref2}

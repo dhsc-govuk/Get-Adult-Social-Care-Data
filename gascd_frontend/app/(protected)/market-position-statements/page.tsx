@@ -7,12 +7,10 @@ import MpsSearchForm from '@/components/data-components/MpsSearchForm';
 import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLocalAuthorities';
 import { LocalAuthoritySummary } from '@/components/charts/peer-group/types';
 import { useMpsLinks } from '@/helpers/msp/useMpsLinks';
+import { TOPICS, topicBreadcrumbs } from '@/config/topics';
 import AnalyticsService from '@/services/analytics/analyticsService';
 
-const breadcrumbs = [
-  { text: 'Home', url: '/home' },
-  { text: 'Market position statements', url: '/market-position-statements' },
-];
+const breadcrumbs = topicBreadcrumbs(TOPICS.funding);
 
 export default function MarketPositionStatementsPage() {
   const { authorities, error } = useAllLocalAuthorities(true);

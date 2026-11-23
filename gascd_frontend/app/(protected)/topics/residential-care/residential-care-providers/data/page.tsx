@@ -1,5 +1,7 @@
 'use client';
 
+import SectionControls from '@/components/data-components/SectionControls';
+import { TOPICS, topicBreadcrumbs } from '@/config/topics';
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -66,16 +68,7 @@ export default function ResidentialCareProvidersPage() {
     location_ids: [],
   });
 
-  const breadcrumbs = [
-    {
-      text: 'Home',
-      url: '/home',
-    },
-    {
-      text: 'Care provision',
-      url: '/topics/residential-care/subtopics',
-    },
-  ];
+  const breadcrumbs = topicBreadcrumbs(TOPICS.careProvision);
 
   const demographicMetricIds = [
     'npl_adult_social_care',
@@ -233,7 +226,11 @@ export default function ResidentialCareProvidersPage() {
           sharingMetricIds={demographicMetricIds}
           table={
             <>
-              {comparator.renderComparatorControl('comparator-table-2')}
+              <SectionControls
+                comparator={comparator.renderComparatorControl(
+                  'comparator-table-2'
+                )}
+              />
               <SubCatergoryTable
                 metrics={PROVIDER_METRICS}
                 tableref={tableref2}

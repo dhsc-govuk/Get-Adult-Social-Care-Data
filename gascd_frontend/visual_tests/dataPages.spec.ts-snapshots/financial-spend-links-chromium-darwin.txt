@@ -1,9 +1,7 @@
 /help/percentages-financial-spend-long-term-and-short-term-care
 /help/financial-spend-long-term-and-short-term-care-per-100000-adults
-https://github.com/NHSDigital/ASC_LA_Peer_Groups
 /help/total-financial-spend-long-term-community-adult-social-care
 /help/financial-spend-long-term-care-per-100000-adults
-https://github.com/NHSDigital/ASC_LA_Peer_Groups
 /help/total-financial-spend-long-term-care-trends-over-time
 /help/total-financial-spend-long-term-community-adult-social-care
 /help/percentages-financial-spend-long-term-and-short-term-care

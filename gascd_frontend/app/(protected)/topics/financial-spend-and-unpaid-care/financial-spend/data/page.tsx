@@ -1,5 +1,6 @@
 'use client';
 
+import { TOPICS, topicBreadcrumbs } from '@/config/topics';
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -265,16 +266,7 @@ export default function LAFundingPage() {
       location_ids: [],
     });
 
-  const breadcrumbs = [
-    {
-      text: 'Home',
-      url: '/home',
-    },
-    {
-      text: 'Funding',
-      url: '/topics/financial-spend-and-unpaid-care/subtopics',
-    },
-  ];
+  const breadcrumbs = topicBreadcrumbs(TOPICS.funding);
 
   const metricColumnNames = [
     'Duration of care',
@@ -781,7 +773,9 @@ export default function LAFundingPage() {
           )}
           table={
             <>
-              {renderComparatorControl('comparator-table-1')}
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-1')}
+              />
               <SubCatergoryTable
                 metrics={DURATION_OF_CARE_ROWS}
                 tableref={tableref1}
@@ -987,7 +981,9 @@ export default function LAFundingPage() {
           )}
           table={
             <>
-              {renderComparatorControl('comparator-table-2')}
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-2')}
+              />
               <SubCatergoryTable
                 metrics={SUPPORT_SETTING_ROWS}
                 tableref={tableref2}

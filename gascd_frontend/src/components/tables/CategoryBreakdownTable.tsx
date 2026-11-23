@@ -102,10 +102,7 @@ const CategoryBreakdownTable: React.FC<CategoryBreakdownTableProps> = ({
 
   return (
     <div>
-      <div
-        className="moj-scrollable-pane dhsc-scrollable-pane--auto"
-        role="region"
-      >
+      <div className="moj-scrollable-pane" role="region">
         <table className="govuk-table" ref={tableref}>
           {caption && (
             <caption className="govuk-table__caption govuk-table__caption--s">

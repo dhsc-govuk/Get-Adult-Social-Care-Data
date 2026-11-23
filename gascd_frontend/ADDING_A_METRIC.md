@@ -8,7 +8,8 @@ How to add a new metric to the service and show it on a data page, using the sha
 2. [Metric config](#2-the-metric-config): label, format, source and help page
 3. [Sharing and access](#3-sharing-and-access): sharing category, help page and any access restriction
 4. [Show it on a page](#4-show-it-on-a-page): `MetricSection`, or the shared chart and table
-5. [Test it](#5-test-it): unit tests and the screenshot tests
+5. [Link to a new page](#5-link-to-a-new-page): the home page, topic page and breadcrumb, if the metric has a page of its own
+6. [Test it](#6-test-it): unit tests and the screenshot tests
 
 ## 1. The API
 
@@ -162,7 +163,31 @@ A filter shown in more than one tab needs `useFilterSync` (`src/components/filte
 
 `locationValues(data, metricId)` gives a metric's LA, region and England values for anything else that needs them.
 
-## 5. Test it
+## 5. Link to a new page
+
+Skip this if the metric joins an existing page.
+
+A new page is added once, to its topic in `TOPICS` in `src/config/topics.ts`:
+
+```ts
+{
+  title: 'Children in need',
+  description: 'Data on children assessed as needing help and protection.',
+  url: '/topics/future-planning/children-in-need/data',
+},
+```
+
+- **Home page and topic page**: both list the pages in `TOPICS`, in that order, so the card appears on each. Add `laOnly: true` for a page only local authority users may see.
+- **Breadcrumb**: the page takes its "Home, topic" breadcrumb from the same list:
+
+  ```tsx
+  const breadcrumbs = topicBreadcrumbs(TOPICS.futurePlanning);
+  ```
+
+- **Indicator details page**: the card for the metric's help page is added in [step 3](#3-sharing-and-access).
+- **A new topic** also needs its own `subtopics` page and an entry in the menu (`src/components/common/service-name/ServiceName.tsx`).
+
+## 6. Test it
 
 - **Unit tests**: `npm test` (use Node 24, e.g. `mise exec node@24.4.1 -- npm test`). The help page sharing test catches a help page without a sharing entry, and the type check catches an unknown metric id in a table.
 - **Screenshot tests**: see [visual_tests/README.md](./visual_tests/README.md). They check each page's look, links and CSV downloads against fake data.

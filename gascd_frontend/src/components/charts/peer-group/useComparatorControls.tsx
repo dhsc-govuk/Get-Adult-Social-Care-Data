@@ -146,6 +146,7 @@ export function useComparatorControls({
       <>
         {row ? (
           <div
+            className="dhsc-control-row"
             style={{
               display: 'flex',
               flexWrap: 'wrap',

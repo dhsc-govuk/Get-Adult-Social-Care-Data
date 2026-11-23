@@ -1,3 +1,4 @@
+import { TOPICS, subtopicsFor } from '@/config/topics';
 import Layout from '@/components/common/layout/Layout';
 import React from 'react';
 import DataLinkCard from '@/components/data-components/DataLinkCard';
@@ -10,20 +11,7 @@ export default function FundingPage() {
     },
   ];
 
-  type Subtopic = {
-    title: string;
-    description: string;
-    url: string;
-  };
-
-  const subtopics = [
-    {
-      title: 'LA funding for adult social care',
-      description:
-        'Data on funding for both short-term and long-term care, also funding by individual care type.',
-      url: '/topics/financial-spend-and-unpaid-care/financial-spend/data',
-    },
-  ];
+  const subtopics = subtopicsFor(TOPICS.funding);
 
   return (
     <Layout
@@ -40,7 +28,7 @@ export default function FundingPage() {
             Find data on <abbr title="local authority">LA</abbr> funding.
           </p>
           <ul className="gem-c-cards__list gem-c-cards__list--one-column">
-            {subtopics.map((topic: Subtopic, index) => (
+            {subtopics.map((topic, index) => (
               <DataLinkCard
                 key={index}
                 label={topic.title}

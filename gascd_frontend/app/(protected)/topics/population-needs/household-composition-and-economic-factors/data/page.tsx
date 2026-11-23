@@ -1,5 +1,7 @@
 'use client';
 
+import SectionControls from '@/components/data-components/SectionControls';
+import { TOPICS, topicBreadcrumbs } from '@/config/topics';
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -54,16 +56,7 @@ export default function ProvisionAndOccupancyPage() {
     'loading' | 'ready' | 'error'
   >('loading');
 
-  const breadcrumbs = [
-    {
-      text: 'Home',
-      url: '/home',
-    },
-    {
-      text: 'Population needs',
-      url: '/topics/population-needs/subtopics',
-    },
-  ];
+  const breadcrumbs = topicBreadcrumbs(TOPICS.populationNeeds);
 
   const demographicMetricIds = [
     'perc_households_deprivation_deprived',
@@ -285,7 +278,11 @@ export default function ProvisionAndOccupancyPage() {
           sharingMetricIds={['perc_households_deprivation_deprived']}
           table={
             <>
-              {comparator.renderComparatorControl('comparator-table-1')}
+              <SectionControls
+                comparator={comparator.renderComparatorControl(
+                  'comparator-table-1'
+                )}
+              />
               <DataTable
                 metrics={['perc_households_deprivation_deprived']}
                 tableref={tableref1}

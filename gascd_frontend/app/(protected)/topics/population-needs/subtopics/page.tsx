@@ -1,3 +1,4 @@
+import { TOPICS, subtopicsFor } from '@/config/topics';
 import Layout from '@/components/common/layout/Layout';
 import React from 'react';
 import DataLinkCard from '@/components/data-components/DataLinkCard';
@@ -10,37 +11,7 @@ export default function PopulationNeedsPage() {
     },
   ];
 
-  type Subtopic = {
-    title: string;
-    description: string;
-    url: string;
-  };
-
-  const subtopics = [
-    {
-      title: 'Dementia prevalence',
-      description: 'Data on dementia prevalence.',
-      url: '/topics/population-needs/dementia-prevalence/data',
-    },
-    {
-      title: 'Economic factors and household composition',
-      description:
-        'Data on household deprivation, property ownership and older people living alone.',
-      url: '/topics/population-needs/household-composition-and-economic-factors/data',
-    },
-    {
-      title: 'General health and disability',
-      description:
-        'Data on disability prevalence, learning disability diagnoses and reasons for accessing care.',
-      url: '/topics/population-needs/disability-prevalence/data',
-    },
-    {
-      title: 'Population size and age group percentages',
-      description:
-        'Population data at LA, regional and national levels for England.',
-      url: '/topics/population-needs/population-age-and-size/data',
-    },
-  ];
+  const subtopics = subtopicsFor(TOPICS.populationNeeds);
 
   return (
     <Layout
@@ -58,7 +29,7 @@ export default function PopulationNeedsPage() {
             economic factors and disability prevalence.
           </p>
           <ul className="gem-c-cards__list gem-c-cards__list--one-column">
-            {subtopics.map((topic: Subtopic, index) => (
+            {subtopics.map((topic, index) => (
               <DataLinkCard
                 key={index}
                 label={topic.title}

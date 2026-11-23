@@ -1,4 +1,5 @@
 'use client';
+import SectionControls from '@/components/data-components/SectionControls';
 import React, { useRef } from 'react';
 import DataBox from '@/components/data-components/DataBox';
 import DataTabs from '@/components/data-components/DataTabs';
@@ -137,7 +138,11 @@ const CategoryBreakdownSection: React.FC<Props> = ({
         sharingMetricIds={metricIds}
         table={
           <>
-            {comparator.renderComparatorControl(`comparator-table-${id}`)}
+            <SectionControls
+              comparator={comparator.renderComparatorControl(
+                `comparator-table-${id}`
+              )}
+            />
             <CategoryBreakdownTable
               tableref={tableref}
               caption={tableCaption}
