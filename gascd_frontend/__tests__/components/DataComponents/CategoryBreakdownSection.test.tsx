@@ -189,6 +189,7 @@ describe('CategoryBreakdownSection', () => {
           CountryLabel: 'England (national)',
         }}
         tableCaption="Table 3: inspection status"
+        laNote="Why a figure is 0"
         download={{
           filename: 'inspection_status.csv',
           description: 'inspection status',
@@ -203,6 +204,10 @@ describe('CategoryBreakdownSection', () => {
     expect(tabs).toEqual(['Table', 'Download']);
     expect(
       screen.getByRole('table', { name: 'Table 3: inspection status' })
+    ).toBeInTheDocument();
+    expect(screen.getByText('*Why a figure is 0')).toBeInTheDocument();
+    expect(
+      screen.getByRole('columnheader', { name: 'Mid Suffolk*' })
     ).toBeInTheDocument();
     expect(
       screen.queryByText('comparator comparator-chart-3')

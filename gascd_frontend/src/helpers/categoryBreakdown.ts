@@ -15,6 +15,9 @@ import { StackedBarSegment } from '@/components/charts/StackedBarChart';
  * same figures in a different shape, so the reshaping lives here.
  */
 
+/** Links an LA's name to the note below a table or chart that explains its figures */
+export const FOOTNOTE_MARKER = '*';
+
 /** A row of the table */
 export type BreakdownCategory = {
   label: string;
