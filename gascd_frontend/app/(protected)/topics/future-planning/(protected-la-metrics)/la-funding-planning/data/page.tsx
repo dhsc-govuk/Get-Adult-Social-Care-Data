@@ -1,5 +1,6 @@
 'use client';
 
+import { TOPICS, topicBreadcrumbs } from '@/config/topics';
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useRef, useState } from 'react';
@@ -56,16 +57,7 @@ export default function LAFundingPlanningPage() {
 
   const [columnDates, setColumnDates] = useState<string[]>(['Loading...']);
 
-  const breadcrumbs = [
-    {
-      text: 'Home',
-      url: '/home',
-    },
-    {
-      text: 'Future planning',
-      url: '/topics/future-planning/subtopics',
-    },
-  ];
+  const breadcrumbs = topicBreadcrumbs(TOPICS.futurePlanning);
 
   const demographicMetricIds = [
     'pansi_pred_pop_asd_aged_18_64',

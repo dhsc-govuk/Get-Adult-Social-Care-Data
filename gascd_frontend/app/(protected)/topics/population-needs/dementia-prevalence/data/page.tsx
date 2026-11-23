@@ -1,5 +1,6 @@
 'use client';
 
+import { TOPICS, topicBreadcrumbs } from '@/config/topics';
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -47,16 +48,7 @@ export default function DementaPrevalencePage() {
     'loading' | 'ready' | 'error'
   >('loading');
 
-  const breadcrumbs = [
-    {
-      text: 'Home',
-      url: '/home',
-    },
-    {
-      text: 'Population needs',
-      url: '/topics/population-needs/subtopics',
-    },
-  ];
+  const breadcrumbs = topicBreadcrumbs(TOPICS.populationNeeds);
 
   const demographicMetricIds = [
     PREVALENCE,

@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@/components/common/layout/Layout';
-import { LA_USER_TYPE } from '@/constants';
+import { TOPICS, Topic, Subtopic, subtopicsFor } from '@/config/topics';
 import { auth } from '@/lib/auth';
 import { withBasePath } from '@/lib/basePath';
 import { headers } from 'next/headers';
@@ -10,142 +10,10 @@ const HomePage: React.FC = async () => {
     headers: await headers(),
   });
 
-  type Subtopic = {
-    title: string;
-    description: string;
-    url: string;
-  };
-
-  type Topic = {
-    title: string;
-    url: string;
-    subtopics: Subtopic[];
-  };
-
-  let topics: Topic[] = [
-    {
-      title: 'Care provision',
-      url: '/topics/residential-care/subtopics',
-      subtopics: [
-        {
-          title: 'Care provider services',
-          description:
-            'Data on care provision by service type and number of providers.',
-          url: '/topics/residential-care/residential-care-providers/data',
-        },
-        {
-          title: 'Care home beds and occupancy levels',
-          description:
-            'Provision and capacity data for care homes, including local, regional and national statistics.',
-          url: '/topics/residential-care/provision-and-occupancy/data',
-        },
-        {
-          title: 'Number of adults receiving community social care',
-          description:
-            'Data on the number of people supported through community social care, including trends over time.',
-          url: '/topics/residential-care/number-of-people-receiving-care/data',
-        },
-        {
-          title: 'Unpaid care',
-          description:
-            'Statistics on the people who provide unpaid care to family members, friends and neighbours.',
-          url: '/topics/residential-care/unpaid-care/data',
-        },
-      ],
-    },
-    {
-      title: 'Funding',
-      url: '/topics/financial-spend-and-unpaid-care/subtopics',
-      subtopics: [
-        {
-          title: 'Local authority (LA) funding for adult social care',
-          description:
-            'Data on funding for both short-term and long-term care, also funding by individual care type.',
-          url: '/topics/financial-spend-and-unpaid-care/financial-spend/data',
-        },
-        {
-          title: 'Market position statements',
-          description:
-            'Links to the market position statements published by each local authority in England.',
-          url: '/market-position-statements',
-        },
-      ],
-    },
-    {
-      title: 'Population needs',
-      url: '/topics/population-needs/subtopics',
-      subtopics: [
-        {
-          title: 'Population size and age group percentages',
-          description:
-            'Population data at LA, regional and national levels for England.',
-          url: '/topics/population-needs/population-age-and-size/data',
-        },
-        {
-          title: 'Economic factors and household composition',
-          description:
-            'Data on household deprivation, property ownership and older people living alone.',
-          url: '/topics/population-needs/household-composition-and-economic-factors/data',
-        },
-        {
-          title: 'General health and disability',
-          description:
-            'Data on disability prevalence, learning disability diagnoses and reasons for accessing care.',
-          url: '/topics/population-needs/disability-prevalence/data',
-        },
-        {
-          title: 'Dementia prevalence',
-          description: 'Data on dementia prevalence.',
-          url: '/topics/population-needs/dementia-prevalence/data',
-        },
-      ],
-    },
-  ];
-
-  const futurePlanning: Topic = {
-    title: 'Future planning',
-    url: '/topics/future-planning/subtopics',
-    subtopics: [
-      {
-        title:
-          'Special Educational Needs (SEN) and Education, Health and Care Plans (EHCP)',
-        description:
-          'Data on the number and percentage of pupils with SEN support, and on children and young people with an EHCP.',
-        url: '/topics/future-planning/sen-and-ehcp/data',
-      },
-      {
-        title: 'Children in need',
-        description:
-          'Data on children assessed as needing help and protection, including episodes ending due to transfer to adult social care.',
-        url: '/topics/future-planning/children-in-need/data',
-      },
-    ],
-  };
-
-  // Population projections come from PANSI, which is only licensed for LA users
-  if (session?.user.locationType == LA_USER_TYPE) {
-    futurePlanning.subtopics.push({
-      title: 'Population projections within local authorities',
-      description:
-        'Data estimates on the future prevalence of long-term conditions and disability for adults.',
-      url: '/topics/future-planning/la-funding-planning/data',
-    });
-  }
-
-  topics.push(futurePlanning);
-
-  topics.push({
-    title: 'Quality of care',
-    url: '/topics/quality-of-care/subtopics',
-    subtopics: [
-      {
-        title: 'CQC ratings of adult social care locations',
-        description:
-          'Data on CQC ratings of adult social care locations, including number and percentage of locations by CQC rating, number and percentage not yet inspected, and date of latest inspection.',
-        url: '/topics/quality-of-care/cqc-ratings/data',
-      },
-    ],
-  });
+  const topics: Topic[] = Object.values(TOPICS).map((topic) => ({
+    ...topic,
+    subtopics: subtopicsFor(topic, session?.user.locationType),
+  }));
 
   return (
     <>

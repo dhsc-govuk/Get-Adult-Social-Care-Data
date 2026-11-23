@@ -22,10 +22,7 @@ type Props = {
  */
 const CqcLocationsTable: React.FC<Props> = ({ titleId, locations }) => (
   <div>
-    <div
-      className="moj-scrollable-pane dhsc-scrollable-pane--auto"
-      role="region"
-    >
+    <div className="moj-scrollable-pane" role="region">
       <table className="govuk-table" aria-labelledby={titleId}>
         <thead className="govuk-table__head">
           <tr className="govuk-table__row">

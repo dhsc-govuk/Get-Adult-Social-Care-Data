@@ -1,5 +1,7 @@
 'use client';
 
+import SectionControls from '@/components/data-components/SectionControls';
+import { TOPICS, topicBreadcrumbs } from '@/config/topics';
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -259,16 +261,7 @@ export default function NumberPeopleReceivingCarePage() {
     );
   };
 
-  const breadcrumbs = [
-    {
-      text: 'Home',
-      url: '/home',
-    },
-    {
-      text: 'Population needs',
-      url: '/topics/residential-care/subtopics',
-    },
-  ];
+  const breadcrumbs = topicBreadcrumbs(TOPICS.careProvision);
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {
@@ -398,7 +391,9 @@ export default function NumberPeopleReceivingCarePage() {
           sharingMetricIds={[COUNT_METRIC_ID]}
           table={
             <>
-              {renderComparatorControl('comparator-table-1')}
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-1')}
+              />
               <DataTable
                 tableref={tableref1}
                 caption={`Table 1: number of people receiving community social care in the last month – ${locationNames.LALabel} LA, ${comparatorAverageLabel} and ${locationNames.CountryLabel}, ${IndicatorService.getMostRecentMonthYear(benchmarkedDemographicData)}`}
@@ -479,7 +474,9 @@ export default function NumberPeopleReceivingCarePage() {
           }
           table={
             <>
-              {renderComparatorControl('comparator-table-2')}
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-2')}
+              />
               <PeerGroupTable
                 tableref={tableref2}
                 metric={STANDARDISED_METRIC_ID}

@@ -1,12 +1,7 @@
+import { TOPICS, subtopicsFor } from '@/config/topics';
 import Layout from '@/components/common/layout/Layout';
 import React from 'react';
 import DataLinkCard from '@/components/data-components/DataLinkCard';
-
-type Subtopic = {
-  title: string;
-  description: string;
-  url: string;
-};
 
 export default function QualityOfCarePage() {
   const breadcrumbs = [
@@ -16,14 +11,7 @@ export default function QualityOfCarePage() {
     },
   ];
 
-  const subtopics: Subtopic[] = [
-    {
-      title: 'CQC ratings of adult social care locations',
-      description:
-        'Data on CQC ratings of adult social care locations, including number and percentage of locations by CQC rating, number and percentage not yet inspected, and date of latest inspection.',
-      url: '/topics/quality-of-care/cqc-ratings/data',
-    },
-  ];
+  const subtopics = subtopicsFor(TOPICS.qualityOfCare);
 
   return (
     <Layout
@@ -41,7 +29,7 @@ export default function QualityOfCarePage() {
             of locations.
           </p>
           <ul className="gem-c-cards__list gem-c-cards__list--one-column">
-            {subtopics.map((topic: Subtopic, index) => (
+            {subtopics.map((topic, index) => (
               <DataLinkCard
                 key={index}
                 label={topic.title}

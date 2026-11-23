@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import FundingPage from '../../../app/(protected)/topics/financial-spend-and-unpaid-care/subtopics/page';
+import { TOPICS } from '@/config/topics';
 
 describe('FundingPage', () => {
   it('should render the heading, body text, and topic links', () => {
@@ -14,13 +15,11 @@ describe('FundingPage', () => {
     const bodyTextElement = screen.getByText(/funding for adult social care/i);
     expect(bodyTextElement).toBeInTheDocument();
 
-    const laFundingLinkElement = screen.getByRole('link', {
-      name: /LA funding for adult social care/i,
+    // Every page listed under Funding, including market position statements
+    TOPICS.funding.subtopics.forEach((subtopic) => {
+      expect(
+        screen.getByRole('link', { name: subtopic.title })
+      ).toHaveAttribute('href', subtopic.url);
     });
-    expect(laFundingLinkElement).toBeInTheDocument();
-    expect(laFundingLinkElement).toHaveAttribute(
-      'href',
-      '/topics/financial-spend-and-unpaid-care/financial-spend/data'
-    );
   });
 });

@@ -1,5 +1,6 @@
 'use client';
 
+import { TOPICS, topicBreadcrumbs } from '@/config/topics';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { User, useSession } from '@/lib/auth-client';
 import { withBasePath } from '@/lib/basePath';
@@ -430,6 +431,7 @@ export default function ProvisionAndOccupancyPage() {
     return (
       <>
         <div
+          className="dhsc-control-row"
           style={{
             display: 'flex',
             flexWrap: 'wrap',
@@ -658,16 +660,7 @@ export default function ProvisionAndOccupancyPage() {
 
   const bedNumberMetricIds = ['bedcount_per_hundred_thousand_adults_total'];
 
-  const breadcrumbs = [
-    {
-      text: 'Home',
-      url: '/home',
-    },
-    {
-      text: 'Care provision',
-      url: '/topics/residential-care/subtopics',
-    },
-  ];
+  const breadcrumbs = topicBreadcrumbs(TOPICS.careProvision);
 
   const trackDefaultMetrics = () => {
     // Track all of the key metrics shown on this page
@@ -1090,7 +1083,9 @@ export default function ProvisionAndOccupancyPage() {
           ]}
           table={
             <>
-              {renderComparatorControl('comparator-table-3')}
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-3')}
+              />
               <DataTable
                 metrics={['median_bed_count_total']}
                 tableref={tableref3}
@@ -1267,14 +1262,16 @@ export default function ProvisionAndOccupancyPage() {
           sharingMetricIds={bedTypeMetricIds}
           table={
             <>
-              {renderComparatorControl(
-                'comparator-table-2',
-                renderPopulationSelect(
+              <SectionControls
+                comparator={renderComparatorControl(
                   'comparator-table-2',
-                  typesPopulation,
-                  setTypesPopulation
-                )
-              )}
+                  renderPopulationSelect(
+                    'comparator-table-2',
+                    typesPopulation,
+                    setTypesPopulation
+                  )
+                )}
+              />
               <DataTable
                 tableref={tableref2}
                 caption={
@@ -1482,14 +1479,16 @@ export default function ProvisionAndOccupancyPage() {
           sharingMetricIds={bedTypeMetricIds}
           table={
             <>
-              {renderComparatorControl(
-                'comparator-table-6',
-                renderPopulationSelect(
+              <SectionControls
+                comparator={renderComparatorControl(
                   'comparator-table-6',
-                  groupedTablePopulation,
-                  setGroupedTablePopulation
-                )
-              )}
+                  renderPopulationSelect(
+                    'comparator-table-6',
+                    groupedTablePopulation,
+                    setGroupedTablePopulation
+                  )
+                )}
+              />
               <DataTable
                 tableref={tableref6}
                 caption={
@@ -1613,7 +1612,9 @@ export default function ProvisionAndOccupancyPage() {
           sharingMetricIds={['occupancy_rate_total', OCCUPANCY_METRIC]}
           table={
             <>
-              {renderComparatorControl('comparator-table-8')}
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-8')}
+              />
               <DataTable
                 metrics={['median_occupancy_total']}
                 tableref={tableref7}
@@ -1696,7 +1697,9 @@ export default function ProvisionAndOccupancyPage() {
           }
           table={
             <>
-              {renderComparatorControl('comparator-table-5')}
+              <SectionControls
+                comparator={renderComparatorControl('comparator-table-5')}
+              />
               <PeerGroupTable
                 tableref={tableref5}
                 metric={OCCUPANCY_METRIC}

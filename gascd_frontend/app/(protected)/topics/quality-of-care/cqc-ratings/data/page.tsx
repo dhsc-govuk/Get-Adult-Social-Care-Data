@@ -1,5 +1,6 @@
 'use client';
 
+import { TOPICS, topicBreadcrumbs } from '@/config/topics';
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -65,16 +66,7 @@ export default function CQCRatingsPage() {
     'loading' | 'ready' | 'error'
   >('loading');
 
-  const breadcrumbs = [
-    {
-      text: 'Home',
-      url: '/home',
-    },
-    {
-      text: 'Quality of care',
-      url: '/topics/quality-of-care/subtopics',
-    },
-  ];
+  const breadcrumbs = topicBreadcrumbs(TOPICS.qualityOfCare);
 
   const metricPage = 'cqc-ratings';
   const laCode = locationIds[1];

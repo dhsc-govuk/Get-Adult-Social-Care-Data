@@ -1,5 +1,6 @@
 'use client';
 
+import { TOPICS, topicBreadcrumbs } from '@/config/topics';
 import Layout from '@/components/common/layout/Layout';
 import { withBasePath } from '@/lib/basePath';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -98,16 +99,7 @@ export default function SenAndEhcpPage() {
     metric_ids: [],
     location_ids: [],
   });
-  const breadcrumbs = [
-    {
-      text: 'Home',
-      url: '/home',
-    },
-    {
-      text: 'Future planning',
-      url: '/topics/future-planning/subtopics',
-    },
-  ];
+  const breadcrumbs = topicBreadcrumbs(TOPICS.futurePlanning);
 
   useEffect(() => {
     const fetchSelectedLocation = async () => {

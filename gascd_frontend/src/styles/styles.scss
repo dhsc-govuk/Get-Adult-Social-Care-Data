@@ -324,6 +324,27 @@
   .govuk-tabs__panel {
     background-color: #ffffff;
   }
+  /* The selected tab covers the line below it, so its white runs into the
+     panel. GOV.UK overlaps the line by exactly 1px, which leaves it showing
+     when the browser is zoomed out. A white strip between the tab's side
+     borders covers it at any zoom, without moving the borders themselves */
+  .govuk-frontend-supported
+    .govuk-tabs
+    .govuk-tabs__list-item--selected::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 2px;
+    background-color: #ffffff;
+    pointer-events: none;
+  }
+}
+
+/* Keeps a table's caption clear of its column headers */
+.govuk-table__caption {
+  margin-bottom: govuk-spacing(2);
 }
 
 /* 'Back to top' link component used on GOV.UK (e.g. https://www.gov.uk/government/collections/monthly-statistics-for-adult-social-care-england) */
@@ -791,7 +812,7 @@
 }
 
 /* A scrollbar only when the table is wider than its container, rather than always */
-.moj-scrollable-pane.dhsc-scrollable-pane--auto {
+.moj-scrollable-pane {
   overflow-x: auto;
 }
 
@@ -1147,9 +1168,25 @@
   margin-top: 20px;
 }
 
+/* Controls side by side in a row: GOV.UK keeps the bottom margin of every form
+   group but the last, which would add to the space above the divider */
+.dhsc-section-controls__item .dhsc-control-row {
+  row-gap: 20px;
+}
+.dhsc-section-controls__item .dhsc-control-row > .govuk-form-group {
+  margin-bottom: 0;
+}
+
+/* The filters bring their own padding as GOV.UK override classes, which only
+   another !important can remove */
 .dhsc-section-controls__filters > div {
-  padding-top: 0;
-  padding-bottom: 0;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* The divider below already spaces the "Clear all filters" button */
+.dhsc-section-controls__filters .app-c-filter-summary .govuk-button {
+  margin-bottom: 0;
 }
 
 .app-mps-search {
