@@ -6,7 +6,7 @@ import BackToTop from '@/components/data-components/BackToTop';
 import MpsSearchForm from '@/components/data-components/MpsSearchForm';
 import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLocalAuthorities';
 import { LocalAuthoritySummary } from '@/components/charts/peer-group/types';
-import { MSPLookup } from '@/helpers/msp/msp-lookup';
+import { useMpsLinks } from '@/helpers/msp/useMpsLinks';
 import AnalyticsService from '@/services/analytics/analyticsService';
 
 const breadcrumbs = [
@@ -16,6 +16,7 @@ const breadcrumbs = [
 
 export default function MarketPositionStatementsPage() {
   const { authorities, error } = useAllLocalAuthorities(true);
+  const links = useMpsLinks();
 
   const sorted = useMemo(
     () =>
@@ -69,15 +70,16 @@ export default function MarketPositionStatementsPage() {
           <h2 className="govuk-heading-l">A to Z list of MPS documents</h2>
           <MpsSearchForm
             authorities={sorted}
+            links={links}
             loadError={error}
             label="Search by local authority"
           />
           <hr className="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
-          {authorities === null && !error && (
+          {(authorities === null || !links) && !error && (
             <p className="govuk-body">Loading local authorities…</p>
           )}
-          {byLetter.length > 0 && (
+          {byLetter.length > 0 && links && (
             <>
               <nav aria-labelledby="mps-contents-title">
                 <h2 id="mps-contents-title" className="govuk-body-s">
@@ -107,7 +109,7 @@ export default function MarketPositionStatementsPage() {
                   </h3>
                   <ul className="govuk-list app-mps-list">
                     {las.map((la) => {
-                      const url = MSPLookup[la.laCode]?.url;
+                      const url = links[la.laCode]?.url;
                       return (
                         <li key={la.laCode} className="app-mps-list__item">
                           {url ? (

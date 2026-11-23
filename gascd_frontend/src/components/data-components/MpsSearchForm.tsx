@@ -1,11 +1,13 @@
 'use client';
 import React, { useMemo, useState } from 'react';
-import { MSPLookup } from '@/helpers/msp/msp-lookup';
+import { MSPItems } from '@/helpers/msp/msp-lookup';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import { LocalAuthoritySummary } from '@/components/charts/peer-group/types';
 
 type Props = {
   authorities: LocalAuthoritySummary[];
+  // MPS links by LA code, null while loading
+  links: MSPItems | null;
   loadError: boolean;
   label: string;
   // Shown beside the View statement button
@@ -34,6 +36,7 @@ const matches = (authorities: LocalAuthoritySummary[], term: string) => {
 
 const MpsSearchForm: React.FC<Props> = ({
   authorities,
+  links,
   loadError,
   label,
   extraAction,
@@ -89,7 +92,8 @@ const MpsSearchForm: React.FC<Props> = ({
       return;
     }
     setError(null);
-    const url = MSPLookup[la.laCode]?.url;
+    if (!links) return;
+    const url = links[la.laCode]?.url;
     if (!url) {
       setNotFound(la.laName);
       return;
