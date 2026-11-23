@@ -1,10 +1,15 @@
 'use client';
 import React, { useMemo, useState } from 'react';
 import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLocalAuthorities';
+import { MSPItems } from '@/helpers/msp/msp-lookup';
 import { withBasePath } from '@/lib/basePath';
 import MpsSearchForm from './MpsSearchForm';
 
-const MpsSearch: React.FC = () => {
+type Props = {
+  links: MSPItems | null;
+};
+
+const MpsSearch: React.FC<Props> = ({ links }) => {
   const [open, setOpen] = useState(false);
   const { authorities, error } = useAllLocalAuthorities(open);
   const sortedAuthorities = useMemo(
@@ -26,6 +31,7 @@ const MpsSearch: React.FC = () => {
       <div className="govuk-details__text">
         <MpsSearchForm
           authorities={sortedAuthorities}
+          links={links}
           loadError={error}
           label="Local authority"
           extraAction={

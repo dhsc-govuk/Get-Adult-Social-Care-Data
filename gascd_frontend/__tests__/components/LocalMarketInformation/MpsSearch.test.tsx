@@ -3,12 +3,10 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import MpsSearch from '@/components/data-components/MpsSearch';
 import AnalyticsService from '@/services/analytics/analyticsService';
 
-vi.mock('@/helpers/msp/msp-lookup', () => ({
-  MSPLookup: {
-    E10000030: { url: 'https://www.surreycc.gov.uk/mps' },
-    E06000030: { url: 'https://www.swindon.gov.uk/mps' },
-  },
-}));
+const links = {
+  E10000030: { url: 'https://www.surreycc.gov.uk/mps' },
+  E06000030: { url: 'https://www.swindon.gov.uk/mps' },
+};
 
 const authorities = [
   { code: 'E06000030', display_name: 'Swindon' },
@@ -45,13 +43,13 @@ describe('MpsSearch', () => {
   });
 
   it('only loads the list of LAs once it is opened', async () => {
-    render(<MpsSearch />);
+    render(<MpsSearch links={links} />);
     expect(global.fetch).not.toHaveBeenCalled();
     await openDetails();
   });
 
   it('suggests LAs starting with what is typed, in order', async () => {
-    render(<MpsSearch />);
+    render(<MpsSearch links={links} />);
     await openDetails();
 
     await waitFor(() => {
@@ -67,7 +65,7 @@ describe('MpsSearch', () => {
   });
 
   it('also suggests LAs with a later word starting with what is typed', async () => {
-    render(<MpsSearch />);
+    render(<MpsSearch links={links} />);
     await openDetails();
 
     await waitFor(() => {
@@ -79,7 +77,7 @@ describe('MpsSearch', () => {
   });
 
   it('opens the chosen LA’s statement in a new tab', async () => {
-    render(<MpsSearch />);
+    render(<MpsSearch links={links} />);
     await openDetails();
 
     await waitFor(() => {
@@ -99,7 +97,7 @@ describe('MpsSearch', () => {
   });
 
   it('can be used with the keyboard', async () => {
-    render(<MpsSearch />);
+    render(<MpsSearch links={links} />);
     await openDetails();
 
     await waitFor(() => {
@@ -117,7 +115,7 @@ describe('MpsSearch', () => {
   });
 
   it('asks for an LA when nothing is entered', async () => {
-    render(<MpsSearch />);
+    render(<MpsSearch links={links} />);
     await openDetails();
 
     fireEvent.click(screen.getByRole('button', { name: /View statement/ }));
@@ -126,7 +124,7 @@ describe('MpsSearch', () => {
   });
 
   it('asks for an LA from the list when the text matches none', async () => {
-    render(<MpsSearch />);
+    render(<MpsSearch links={links} />);
     await openDetails();
 
     fireEvent.change(input(), { target: { value: 'Atlantis' } });
@@ -138,7 +136,7 @@ describe('MpsSearch', () => {
   });
 
   it('says so when the LA has no statement', async () => {
-    render(<MpsSearch />);
+    render(<MpsSearch links={links} />);
     await openDetails();
 
     await waitFor(() => {
@@ -155,7 +153,7 @@ describe('MpsSearch', () => {
   });
 
   it('links to the list of all statements', async () => {
-    render(<MpsSearch />);
+    render(<MpsSearch links={links} />);
     await openDetails();
 
     expect(

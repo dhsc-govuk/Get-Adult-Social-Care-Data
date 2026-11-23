@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { MSPLookup } from '@/helpers/msp/msp-lookup';
+import { useMpsLinks } from '@/helpers/msp/useMpsLinks';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import MpsSearch from './MpsSearch';
 
@@ -13,8 +13,8 @@ const LocalMarketInformation: React.FC<Props> = ({
   localAuthority,
   localAuthorityId,
 }) => {
-  const msp = MSPLookup[localAuthorityId];
-  const url = msp && msp.url;
+  const links = useMpsLinks();
+  const url = links?.[localAuthorityId]?.url;
 
   const trackMSPClick = () => {
     AnalyticsService.trackMPSClicked(localAuthorityId);
@@ -26,25 +26,27 @@ const LocalMarketInformation: React.FC<Props> = ({
         <h2 className="govuk-heading-l govuk-!-margin-top-9">
           Information on the local care market
         </h2>
-        {url ? (
-          <p className="govuk-body">
-            <a
-              href={url}
-              className="govuk-link"
-              target="_blank"
-              rel="noreferrer"
-              onClick={trackMSPClick}
-            >
-              Market Position Statement for {localAuthority} (opens in new tab)
-            </a>
-          </p>
-        ) : (
-          <p className="govuk-body">
-            We were unable to find a market position statement for the selected{' '}
-            <abbr title="Local Authority">LA</abbr>. Get in touch with the{' '}
-            <abbr title="Local Authority">LA</abbr> to request it.
-          </p>
-        )}
+        {links &&
+          (url ? (
+            <p className="govuk-body">
+              <a
+                href={url}
+                className="govuk-link"
+                target="_blank"
+                rel="noreferrer"
+                onClick={trackMSPClick}
+              >
+                Market Position Statement for {localAuthority} (opens in new
+                tab)
+              </a>
+            </p>
+          ) : (
+            <p className="govuk-body">
+              We were unable to find a market position statement for the
+              selected <abbr title="Local Authority">LA</abbr>. Get in touch
+              with the <abbr title="Local Authority">LA</abbr> to request it.
+            </p>
+          ))}
         <p className="govuk-body">
           Most <abbr title="Local Authority">LA</abbr>s in England publish
           Market Position Statements (MPS) to help care providers understand the
@@ -74,7 +76,7 @@ const LocalMarketInformation: React.FC<Props> = ({
             pressures
           </li>
         </ul>
-        <MpsSearch />
+        <MpsSearch links={links} />
       </div>
     </div>
   );

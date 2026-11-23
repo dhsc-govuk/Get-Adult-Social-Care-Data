@@ -2,25 +2,25 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import MarketPositionStatementsPage from '../../app/(protected)/market-position-statements/page';
 
-vi.mock('@/helpers/msp/msp-lookup', () => ({
-  MSPLookup: {
-    E09000003: { url: 'https://www.barnet.gov.uk/mps' },
-    E10000030: { url: 'https://www.surreycc.gov.uk/mps' },
-  },
-}));
+const links = {
+  E09000003: { url: 'https://www.barnet.gov.uk/mps' },
+  E10000030: { url: 'https://www.surreycc.gov.uk/mps' },
+};
+const localAuthorities = {
+  local_authorities: [
+    { code: 'E10000030', display_name: 'Surrey' },
+    { code: 'E08000016', display_name: 'Barnsley' },
+    { code: 'E09000003', display_name: 'Barnet' },
+  ],
+};
 
 describe('MarketPositionStatementsPage', () => {
   beforeEach(() => {
-    global.fetch = vi.fn().mockResolvedValue({
+    global.fetch = vi.fn().mockImplementation(async (url: string) => ({
       ok: true,
-      json: async () => ({
-        local_authorities: [
-          { code: 'E10000030', display_name: 'Surrey' },
-          { code: 'E08000016', display_name: 'Barnsley' },
-          { code: 'E09000003', display_name: 'Barnet' },
-        ],
-      }),
-    } as Response);
+      json: async () =>
+        url === '/api/get_mps_links' ? links : localAuthorities,
+    }));
   });
 
   it('lists every LA under its letter, linking those with a statement', async () => {
@@ -35,14 +35,16 @@ describe('MarketPositionStatementsPage', () => {
       'Barnet (opens in new tab)',
       'BarnsleyNo market position statement found',
     ]);
-    expect(
-      within(b).getByRole('link', { name: /^Barnet/ })
-    ).toHaveAttribute('href', 'https://www.barnet.gov.uk/mps');
+    expect(within(b).getByRole('link', { name: /^Barnet/ })).toHaveAttribute(
+      'href',
+      'https://www.barnet.gov.uk/mps'
+    );
 
     const s = screen.getByRole('region', { name: 'S' });
-    expect(
-      within(s).getByRole('link', { name: /^Surrey/ })
-    ).toHaveAttribute('href', 'https://www.surreycc.gov.uk/mps');
+    expect(within(s).getByRole('link', { name: /^Surrey/ })).toHaveAttribute(
+      'href',
+      'https://www.surreycc.gov.uk/mps'
+    );
   });
 
   it('links only to the letters that have LAs', async () => {
