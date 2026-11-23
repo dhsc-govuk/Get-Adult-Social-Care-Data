@@ -13,6 +13,7 @@ import {
   BreakdownBar,
   BreakdownCategory,
   ChartBreakdownCategory,
+  FOOTNOTE_MARKER,
   breakdownBars,
   breakdownValue,
 } from '@/helpers/categoryBreakdown';
@@ -32,6 +33,9 @@ type CommonProps = {
   data: Indicator[];
   columnHeaders: Object;
   tableCaption: React.ReactNode;
+  // Explains the user's LA's figures. Shown below the table and the chart,
+  // and marked against the LA's name in both
+  laNote?: React.ReactNode;
   // `notes` are lines placed above the data, e.g. its date and source
   download: { filename: string; description: string; notes?: string[] };
   comparator: ComparatorControls;
@@ -83,6 +87,7 @@ const CategoryBreakdownSection: React.FC<Props> = ({
   figureTitle,
   comparisonSummary,
   tableCaption,
+  laNote,
   download,
   comparator,
   loading,
@@ -97,7 +102,24 @@ const CategoryBreakdownSection: React.FC<Props> = ({
   // The chart benchmarks the user's own LA, so it is only complete once the
   // LA's own total has resolved
   const hasLaData = breakdownValue(data, total.metric, 'LA') !== null;
-  const chart = bars && breakdownBars(data, categories, bars);
+  const marker = laNote ? FOOTNOTE_MARKER : '';
+  const chart =
+    bars &&
+    breakdownBars(
+      data,
+      categories,
+      bars.map((bar) =>
+        bar.locationType === 'LA'
+          ? { ...bar, label: `${bar.label}${marker}` }
+          : bar
+      )
+    );
+  const note = laNote && (
+    <p className="govuk-body">
+      {FOOTNOTE_MARKER}
+      {laNote}
+    </p>
+  );
 
   return (
     <DataBox
@@ -119,12 +141,21 @@ const CategoryBreakdownSection: React.FC<Props> = ({
             <CategoryBreakdownTable
               tableref={tableref}
               caption={tableCaption}
-              columnHeaders={columnHeaders}
+              columnHeaders={
+                laNote
+                  ? {
+                      ...columnHeaders,
+                      LALabel: `${(columnHeaders as { LALabel?: string }).LALabel}${marker}`,
+                    }
+                  : columnHeaders
+              }
               categoryColumnName={categoryColumnName}
               categories={categories}
               total={total}
               data={data}
-            />
+            >
+              {note}
+            </CategoryBreakdownTable>
           </>
         }
         chart={
@@ -146,10 +177,11 @@ const CategoryBreakdownSection: React.FC<Props> = ({
                 <StackedBarChart
                   categories={chart.categories}
                   segments={chart.segments}
-                  highlightCategory={laName}
+                  highlightCategory={`${laName}${marker}`}
                   height={Math.max(250, chart.categories.length * 70 + 80)}
                 />
               )}
+              {note}
               <p className="govuk-body">
                 Source: {METRICS[total.metric].source}
               </p>

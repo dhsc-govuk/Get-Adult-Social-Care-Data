@@ -25,7 +25,7 @@ import {
   CqcBenchmark,
   CqcServiceTypeId,
 } from '@/data/cqcMetrics';
-import { shareOfTotal } from '@/helpers/categoryBreakdown';
+import { FOOTNOTE_MARKER, shareOfTotal } from '@/helpers/categoryBreakdown';
 import {
   benchmarkFailed,
   shareBenchmark,
@@ -144,6 +144,8 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
     );
   const laValue = share('LA');
   const laCount = sumForLocationType(baseData, countMetricIds, 'LA');
+  const laTotal = sumForLocationType(baseData, totalMetricIds, 'LA');
+  const laChartValue = laTotal === 0 ? 0 : laValue;
   const regionalValue = share('Regional');
   const nationalValue = share('National');
 
@@ -152,13 +154,6 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
       shareBenchmark(peer.dataByMetric, countMetricIds, totalMetricIds, laCode),
     [peer.dataByMetric, countMetricIds, totalMetricIds, laCode]
   );
-  const barDetails = Object.fromEntries(
-    Object.entries({
-      ...shares.countsByName,
-      ...(laCount !== null ? { [laName]: laCount } : {}),
-    }).map(([name, count]) => [name, TableService.formatDataPoint(count)])
-  );
-
   const loading = peer.loading || baseStatus === 'loading';
   // usePeerGroupData only reports an error when every metric fails, but the
   // percentages need every count, so one failed request is an error here
@@ -166,6 +161,32 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
     peer.error ||
     baseStatus === 'error' ||
     benchmarkFailed(peer.dataByMetric, metricIds);
+
+  // Why the user's LA has no percentage, or one of 0 that cannot be seen as a
+  // bar, where the benchmark or the option says why
+  const laNoteText = (() => {
+    if (loading || error) return undefined;
+    const filtered = serviceTypes.length > 0;
+    if (laTotal === 0) {
+      return benchmark.noTotalNote?.(laName, filtered);
+    }
+    return laValue === 0 ? option.zeroNote?.(laName, filtered) : undefined;
+  })();
+  const laNote = laNoteText && (
+    <p className="govuk-body">
+      {FOOTNOTE_MARKER}
+      {laNoteText}
+    </p>
+  );
+  // The LA's name carries the marker wherever its figure is shown
+  const markedLaName = laNoteText ? `${laName}${FOOTNOTE_MARKER}` : laName;
+
+  const barDetails = Object.fromEntries(
+    Object.entries({
+      ...shares.countsByName,
+      ...(laCount !== null ? { [markedLaName]: laCount } : {}),
+    }).map(([name, count]) => [name, TableService.formatDataPoint(count)])
+  );
 
   const serviceTypesText = serviceTypes.length
     ? listed(
@@ -284,7 +305,7 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
               metric={metric}
               valueHeader={option.valueHeader}
               laCode={laCode ?? ''}
-              laName={laName}
+              laName={markedLaName}
               currentLaValue={laValue}
               peerData={shares.peerData}
               loading={loading}
@@ -297,6 +318,7 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
               referenceRowsFirst
             >
               {unavailableNote}
+              {laNote}
             </PeerGroupTable>
           </>
         }
@@ -304,9 +326,9 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
           <>
             <PeerGroupBarChart
               laCode={laCode ?? ''}
-              laName={laName}
+              laName={markedLaName}
               metric={metric}
-              currentLaValue={laValue}
+              currentLaValue={laChartValue}
               nationalAverageValue={nationalValue}
               regionalAverageValue={regionalValue}
               peerData={shares.peerData}
@@ -327,6 +349,7 @@ const CqcRatingsByLaSection: React.FC<Props> = ({
               barDetails={barDetails}
               xAxisRange={[0, 100]}
             />
+            {laNote}
             {shares.unavailableNames.length > 0 && (
               <p className="govuk-body">
                 Not shown: {listed(shares.unavailableNames)}. A local authority

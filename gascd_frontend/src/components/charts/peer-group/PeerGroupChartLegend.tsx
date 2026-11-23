@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  AVG_LINE_WIDTH,
   CURRENT_LA_COLOUR,
   NATIONAL_AVG_COLOUR,
   PEER_AVG_COLOUR,
@@ -86,7 +87,7 @@ const PeerGroupChartLegend: React.FC<PeerGroupChartLegendProps> = ({
           style={{
             display: 'inline-block',
             width: 32,
-            borderTop: `2px dotted ${PEER_AVG_COLOUR}`,
+            borderTop: `${AVG_LINE_WIDTH}px dotted ${PEER_AVG_COLOUR}`,
             flexShrink: 0,
           }}
           aria-hidden="true"
@@ -100,7 +101,7 @@ const PeerGroupChartLegend: React.FC<PeerGroupChartLegendProps> = ({
           style={{
             display: 'inline-block',
             width: 32,
-            borderTop: `2px dotted ${REGIONAL_AVG_COLOUR}`,
+            borderTop: `${AVG_LINE_WIDTH}px dotted ${REGIONAL_AVG_COLOUR}`,
             flexShrink: 0,
           }}
           aria-hidden="true"
@@ -114,7 +115,7 @@ const PeerGroupChartLegend: React.FC<PeerGroupChartLegendProps> = ({
           style={{
             display: 'inline-block',
             width: 32,
-            borderTop: `2px dashed ${NATIONAL_AVG_COLOUR}`,
+            borderTop: `${AVG_LINE_WIDTH}px dashed ${NATIONAL_AVG_COLOUR}`,
             flexShrink: 0,
           }}
           aria-hidden="true"

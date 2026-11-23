@@ -134,6 +134,27 @@ export const CQC_BENCHMARK_RATINGS: CqcRatingId[] = [
 
 export const DEFAULT_CQC_BENCHMARK_RATING: CqcRatingId = 'good';
 
+const forServiceTypes = (selectedServiceTypesOnly: boolean) =>
+  selectedServiceTypesOnly ? ' for the selected service types' : '';
+
+/**
+ * Why an LA shows 0 not yet inspected, so that it is not read as missing data
+ */
+export const allLocationsInspectedNote = (
+  laName: string,
+  selectedServiceTypesOnly = false
+): string =>
+  `${laName} shows 0 not yet inspected because all of its adult social care locations${forServiceTypes(selectedServiceTypesOnly)} have been inspected.`;
+
+/**
+ * Why an LA has no CQC ratings, and where its locations are counted instead
+ */
+export const noInspectedLocationsNote = (
+  laName: string,
+  selectedServiceTypesOnly = false
+): string =>
+  `${laName} has no inspected adult social care locations${forServiceTypes(selectedServiceTypesOnly)}. See Table 3 for the number and percentage inspected and not yet inspected.`;
+
 /**
  * What local authorities are benchmarked on in a "by local authority" section
  * of the CQC ratings page: the percentage of a total (the inspected locations,
@@ -156,12 +177,16 @@ export type CqcBenchmark = {
     title: string;
     // The heading of the table's value column
     valueHeader: string;
+    // Shown below the table and the chart where the user's LA has 0
+    zeroNote?: (laName: string, selectedServiceTypesOnly: boolean) => string;
   }[];
   defaultValue: string;
   totalMetricId: (serviceType: CqcServiceTypeId) => string;
   // What the percentages are of, e.g. "inspected locations". An LA with none
   // has no percentage
   totalDescription: string;
+  // Shown below the table and the chart where the user's LA has none
+  noTotalNote?: (laName: string, selectedServiceTypesOnly: boolean) => string;
   // The name the service type filter is tracked under
   analyticsId: string;
 };
@@ -184,12 +209,14 @@ export const CQC_RATING_BENCHMARK: CqcBenchmark = {
   defaultValue: DEFAULT_CQC_BENCHMARK_RATING,
   totalMetricId: cqcInspectedCountMetricId,
   totalDescription: 'inspected locations',
+  noTotalNote: noInspectedLocationsNote,
   analyticsId: 'cqc-ratings-service-type',
 };
 
 const inspectionStatusOption = (
   percentageMetric: MetricId,
-  countMetricId: (serviceType: CqcServiceTypeId) => string
+  countMetricId: (serviceType: CqcServiceTypeId) => string,
+  zeroNote?: CqcBenchmark['options'][number]['zeroNote']
 ): CqcBenchmark['options'][number] => {
   const { label } = METRICS[percentageMetric];
   return {
@@ -199,6 +226,7 @@ const inspectionStatusOption = (
     percentageMetric,
     title: `percentage of adult social care locations ${label.toLowerCase()}`,
     valueHeader: `Percentage ${label.toLowerCase()}`,
+    zeroNote,
   };
 };
 
@@ -216,7 +244,8 @@ export const CQC_INSPECTION_STATUS_BENCHMARK: CqcBenchmark = {
     ),
     inspectionStatusOption(
       PERC_CQC_UNINSPECTED_LOCATIONS,
-      cqcUninspectedCountMetricId
+      cqcUninspectedCountMetricId,
+      allLocationsInspectedNote
     ),
   ],
   defaultValue: PERC_CQC_UNINSPECTED_LOCATIONS,

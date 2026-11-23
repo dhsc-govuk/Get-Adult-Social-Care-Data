@@ -22,6 +22,7 @@ export const PEER_LA_COLOUR = '#959495';
 export const PEER_AVG_COLOUR = '#d4351c';
 export const NATIONAL_AVG_COLOUR = '#871a5b';
 export const REGIONAL_AVG_COLOUR = '#00703c';
+export const AVG_LINE_WIDTH = 3;
 
 // Location type used for the comparator group's average row added to the
 // metric-data (ComparatorAverage), alongside the user's own LA, the true

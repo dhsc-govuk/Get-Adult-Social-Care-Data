@@ -24,6 +24,8 @@ import {
   ALL_CQC_SERVICE_TYPES,
   CQC_INSPECTION_STATUS_BENCHMARK,
   NUM_CQC_LOCATIONS,
+  allLocationsInspectedNote,
+  noInspectedLocationsNote,
 } from '@/data/cqcMetrics';
 
 vi.mock('@/services/analytics/analyticsService');
@@ -216,6 +218,12 @@ describe('CqcRatingsByLaSection', () => {
   it('explains an LA shown as not available', async () => {
     renderSection();
     await loaded();
+
+    // The user's own LA has inspected locations, so nothing is said of it
+    expect(bodyRows()[3]).toEqual(['Mid Suffolk', '75.0%']);
+    expect(
+      screen.queryByText(/has no inspected adult social care locations/)
+    ).not.toBeInTheDocument();
 
     expect(
       screen.getByText(
@@ -488,6 +496,47 @@ describe('CqcRatingsByLaSection', () => {
   });
 });
 
+describe("CqcRatingsByLaSection when the user's LA has no inspected locations", () => {
+  // The LA has no inspected locations, so no ratings to be a percentage of
+  beforeEach(() => {
+    mockGetData.mockImplementation(async ({ metric_ids }) =>
+      metric_ids.flatMap((metricId) =>
+        Object.entries(COUNTS).map(([locationType, [count, inspected]]) =>
+          indicator(
+            metricId,
+            locationType,
+            locationType === 'LA'
+              ? 0
+              : isTotalMetric(metricId)
+                ? inspected
+                : count
+          )
+        )
+      )
+    );
+  });
+
+  it('says why it has no percentage and points to the inspection status', async () => {
+    renderSection();
+    await loaded();
+
+    expect(bodyRows()[3]).toEqual(['Mid Suffolk*', 'N/A']);
+    const notes = screen.getAllByText(
+      `*${noInspectedLocationsNote('Mid Suffolk')}`
+    );
+    expect(notes).toHaveLength(2);
+
+    // The chart is still drawn, with an empty bar for the LA
+    const [trace] = JSON.parse(
+      screen.getByTestId('chart-data').textContent || '[]'
+    );
+    expect(trace.x[trace.y.indexOf('<b>Mid Suffolk*</b>')]).toBe(0);
+    expect(notes[0]).toHaveTextContent(
+      /has no inspected adult social care locations\. See Table 3 for/
+    );
+  });
+});
+
 describe('CqcRatingsByLaSection for the inspection status', () => {
   const renderInspectionStatus = () =>
     renderSection({
@@ -616,5 +665,85 @@ describe('CqcRatingsByLaSection for the inspection status', () => {
       ])
     );
     expect(requestedPeerMetrics()).toEqual(requestedBaseMetrics());
+  });
+
+  describe("when all of the user's LA's locations are inspected", () => {
+    // The LA has 40 locations, none of them not yet inspected
+    beforeEach(() => {
+      mockGetData.mockImplementation(async ({ metric_ids }) =>
+        metric_ids.flatMap((metricId) =>
+          Object.entries(COUNTS).map(([locationType, [count, total]]) =>
+            indicator(
+              metricId,
+              locationType,
+              isTotalMetric(metricId)
+                ? total
+                : locationType === 'LA'
+                  ? 0
+                  : count
+            )
+          )
+        )
+      );
+    });
+
+    it('explains the 0 below the table and the chart', async () => {
+      renderInspectionStatus();
+      await loaded();
+
+      // The LA is marked, and the note below the table and the chart with it
+      expect(bodyRows()[3]).toEqual(['Mid Suffolk*', '0.0%']);
+      expect(
+        screen.getAllByText(`*${allLocationsInspectedNote('Mid Suffolk')}`)
+      ).toHaveLength(2);
+      const data = JSON.parse(
+        screen.getByTestId('chart-data').textContent || '[]'
+      );
+      expect(data[0].y).toContain('<b>Mid Suffolk*</b>');
+    });
+
+    it('says so when it is for the selected service types', async () => {
+      renderInspectionStatus();
+      await loaded();
+
+      fireEvent.click(
+        screen.getAllByRole('button', { name: /Show filters/ })[0]
+      );
+      fireEvent.click(
+        screen.getByRole('checkbox', { name: 'Supported living service' })
+      );
+      fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
+
+      await waitFor(() =>
+        expect(
+          screen.getAllByText(
+            `*${allLocationsInspectedNote('Mid Suffolk', true)}`
+          )
+        ).toHaveLength(2)
+      );
+    });
+
+    it('does not explain a 0 for the inspected status', async () => {
+      renderInspectionStatus();
+      await loaded();
+
+      fireEvent.change(statusSelects()[0], {
+        target: { value: PERC_CQC_INSPECTED_LOCATIONS },
+      });
+
+      await waitFor(() =>
+        expect(table()).toHaveAccessibleName(
+          /percentage of adult social care locations inspected –/
+        )
+      );
+      expect(screen.queryByText(/shows 0/)).not.toBeInTheDocument();
+    });
+  });
+
+  it("gives no explanation when the user's LA has locations not yet inspected", async () => {
+    renderInspectionStatus();
+    await loaded();
+
+    expect(screen.queryByText(/shows 0/)).not.toBeInTheDocument();
   });
 });

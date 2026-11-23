@@ -21,7 +21,10 @@ import { IndicatorQuery } from '@/data/interfaces/IndicatorQuery';
 import { usePeerGroupData } from '@/components/charts/peer-group/usePeerGroupData';
 import { useComparatorControls } from '@/components/charts/peer-group/useComparatorControls';
 import { COMPARATOR_AVERAGE_LOCATION_TYPE } from '@/components/charts/peer-group/constants';
-import { mergeComparatorTotals } from '@/helpers/categoryBreakdown';
+import {
+  breakdownValue,
+  mergeComparatorTotals,
+} from '@/helpers/categoryBreakdown';
 import {
   CQC_INSPECTION_STATUS_BENCHMARK,
   CQC_INSPECTION_STATUS_CATEGORIES,
@@ -32,8 +35,10 @@ import {
   CQC_RATING_METRIC_IDS,
   NUM_CQC_INSPECTED_LOCATIONS,
   NUM_CQC_LOCATIONS,
+  allLocationsInspectedNote,
+  noInspectedLocationsNote,
 } from '@/data/cqcMetrics';
-import { METRICS } from '@/config/metrics';
+import { METRICS, NUM_CQC_UNINSPECTED_LOCATIONS } from '@/config/metrics';
 
 const COUNTRY_LABEL = 'England (national)';
 
@@ -301,6 +306,13 @@ export default function CQCRatingsPage() {
         columnHeaders={tableColumnHeaders}
         bars={bars}
         laName={locationNames.LALabel}
+        laNote={
+          breakdownValue(
+            filteredDemographicData,
+            NUM_CQC_INSPECTED_LOCATIONS,
+            'LA'
+          ) === 0 && noInspectedLocationsNote(locationNames.LALabel)
+        }
         figureNumber={1}
         figureTitle="number and percentage of adult social care locations by CQC rating"
         comparisonSummary={comparedLocations}
@@ -356,6 +368,13 @@ export default function CQCRatingsPage() {
             Table 3: number and percentage of adult social care locations not
             yet inspected &ndash; {comparedLocations}
           </>
+        }
+        laNote={
+          breakdownValue(
+            inspectionStatusData,
+            NUM_CQC_UNINSPECTED_LOCATIONS,
+            'LA'
+          ) === 0 && allLocationsInspectedNote(locationNames.LALabel)
         }
         download={{
           filename: 'inspection_status_of_adult_social_care_locations.csv',
