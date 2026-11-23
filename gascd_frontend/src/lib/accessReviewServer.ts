@@ -4,12 +4,14 @@ import { Kysely } from 'kysely';
 import { authDB, User } from '@/lib/auth';
 import {
   ApproverContext,
+  AUDIT_ACTION_APPROVER_APPOINTED,
   AUDIT_ACTOR_USER,
   GRANT_BASIS_RM,
   GRANT_SCOPE_LOCATION,
   GRANT_SCOPE_PROVIDER,
 } from '@/lib/manageUsers';
 import {
+  AUDIT_ACTION_APPROVER_REVIEW_LAPSED,
   AUDIT_ACTION_REVIEW_COMPLETED,
   nextDueAt,
   REVIEW_TYPE_USERS,
@@ -40,6 +42,21 @@ export const getReview = async (
     .executeTakeFirst();
   return row ? toRow(row) : null;
 };
+
+const lastAudit = async (providerCode: string, action: string) => {
+  const row = await authDB
+    .selectFrom('access_audit')
+    .select((eb) => eb.fn.max('occurred_at').as('at'))
+    .where('provider_code', '=', providerCode)
+    .where('action', '=', action)
+    .executeTakeFirst();
+  return row?.at ? new Date(row.at) : null;
+};
+
+export const getApproverLapse = async (providerCode: string) => ({
+  lapsedAt: await lastAudit(providerCode, AUDIT_ACTION_APPROVER_REVIEW_LAPSED),
+  appointedAt: await lastAudit(providerCode, AUDIT_ACTION_APPROVER_APPOINTED),
+});
 
 const getLocationUserReviews = async (
   locationCodes: string[]

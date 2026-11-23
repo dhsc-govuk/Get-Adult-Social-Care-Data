@@ -9,6 +9,9 @@ export const AUDIT_ACTION_REVIEW_COMPLETED = {
   users: 'user_review_completed',
   approvers: 'approver_review_completed',
 } as const;
+export const AUDIT_ACTION_APPROVER_REVIEW_LAPSED = 'approver_review_lapsed';
+
+export const LAPSE_NOTICE_DAYS = 30;
 
 export type ReviewType =
   | typeof REVIEW_TYPE_USERS
@@ -26,6 +29,8 @@ export type ReviewStatus = {
   dueAt: Date;
   // Approver reviews only: when delegated approvers lose the role
   deadline: Date | null;
+  // Approver reviews only: the deadline has gone but the daily job hasn't removed the role yet
+  overdue: boolean;
 };
 
 const startOfDayUtc = (date: Date) =>
@@ -64,4 +69,19 @@ export const reviewStatus = (
     due: startOfDayUtc(now) >= startOfDayUtc(row.dueAt),
     dueAt: row.dueAt,
     deadline: type === REVIEW_TYPE_APPROVERS ? approverDeadline(row) : null,
+    overdue:
+      type === REVIEW_TYPE_APPROVERS &&
+      startOfDayUtc(now) > approverDeadline(row),
   };
+
+// The job deletes the review when approvers lapse, so the NI is told from the audit until they appoint again
+export const showLapseNotice = (
+  lapsedAt: Date | null,
+  appointedAt: Date | null,
+  now: Date = new Date()
+) => {
+  if (!lapsedAt || (appointedAt && appointedAt > lapsedAt)) return false;
+  const cutoff = startOfDayUtc(now);
+  cutoff.setUTCDate(cutoff.getUTCDate() - LAPSE_NOTICE_DAYS);
+  return lapsedAt >= cutoff;
+};

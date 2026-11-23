@@ -18,11 +18,16 @@ import UsersTable from './UsersTable';
 import Pagination from '@/components/common/pagination/Pagination';
 import DelegatedApproversTable from './delegated-approvers/DelegatedApproversTable';
 import { SIGN_IN_URL } from '@/lib/signInUrl';
-import { getReview, getUserReview } from '@/lib/accessReviewServer';
+import {
+  getApproverLapse,
+  getReview,
+  getUserReview,
+} from '@/lib/accessReviewServer';
 import {
   REVIEW_TYPE_APPROVERS,
   REVIEW_TYPE_USERS,
   reviewStatus,
+  showLapseNotice,
 } from '@/lib/accessReview';
 
 const formatDate = (date: Date) =>
@@ -181,15 +186,36 @@ export default async function ManageUsersPage({ searchParams }: Props) {
           await getReview(context.providerCode, REVIEW_TYPE_APPROVERS)
         )
       : null;
+  const lapse = canAppoint
+    ? await getApproverLapse(context.providerCode)
+    : null;
   const reviewsDue = [
-    approversReview?.due &&
-      approversReview.deadline && {
-        id: 'approvers',
-        heading: `Review your delegated approvers by ${formatDate(approversReview.deadline)}`,
-        body: 'If nobody who is a Nominated Individual for your organisation reviews them by then, they will no longer be able to give or remove access.',
-        href: '/manage-users/delegated-approvers/review',
-        link: 'Review your delegated approvers',
+    lapse &&
+      showLapseNotice(lapse.lapsedAt, lapse.appointedAt) && {
+        id: 'approvers-lapsed',
+        heading: 'Your delegated approvers no longer have the approver role',
+        body: 'The deadline for confirming your delegated approvers has passed, so they can no longer give or remove access. They can still see the data for your organisation, and you can appoint them again in the Delegated approvers section below.',
+        href: '/manage-users/delegated-approvers/appoint',
+        link: 'Appoint a delegated approver',
       },
+    approversReview?.due &&
+      approversReview.deadline &&
+      (approversReview.overdue
+        ? {
+            id: 'approvers',
+            heading:
+              'The deadline to review your delegated approvers has passed',
+            body: 'Review them today to keep their role. Otherwise they will no longer be able to give or remove access.',
+            href: '/manage-users/delegated-approvers/review',
+            link: 'Review your delegated approvers',
+          }
+        : {
+            id: 'approvers',
+            heading: `Review your delegated approvers by ${formatDate(approversReview.deadline)}`,
+            body: 'If nobody who is a Nominated Individual for your organisation reviews them by then, they will no longer be able to give or remove access.',
+            href: '/manage-users/delegated-approvers/review',
+            link: 'Review your delegated approvers',
+          }),
     usersReview?.due && {
       id: 'users',
       heading: 'It’s time for your yearly check of who has access',

@@ -52,9 +52,9 @@ export default async function ReviewApproversPage() {
                   </span>
                   <strong className="govuk-warning-text__text">
                     <span className="govuk-visually-hidden">Warning</span>
-                    Complete this review by {formatDate(status.deadline)}. If
-                    nobody does, these delegated approvers will no longer be
-                    able to give or remove access.
+                    {status.overdue
+                      ? 'The deadline for this review has passed. Complete it today, or these delegated approvers will no longer be able to give or remove access.'
+                      : `Complete this review by ${formatDate(status.deadline)}. If nobody does, these delegated approvers will no longer be able to give or remove access.`}
                   </strong>
                 </div>
               )
