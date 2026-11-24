@@ -1,7 +1,7 @@
 'use client';
 import React, { useMemo, useState } from 'react';
 import { useAllLocalAuthorities } from '@/components/charts/peer-group/useAllLocalAuthorities';
-import { MSPItems } from '@/helpers/msp/msp-lookup';
+import { MSPItems } from '@/helpers/msp/types';
 import { withBasePath } from '@/lib/basePath';
 import MpsSearchForm from './MpsSearchForm';
 

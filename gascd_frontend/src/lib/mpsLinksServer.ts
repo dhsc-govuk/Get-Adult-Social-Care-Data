@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { authDB } from '@/lib/auth';
-import { MSPItems, MSPLookup } from '@/helpers/msp/msp-lookup';
+import { MSPItems } from '@/helpers/msp/types';
 import logger from '@/utils/logger';
 
 export interface ResourceLinkRow {
@@ -10,16 +10,13 @@ export interface ResourceLinkRow {
   no_link_published: boolean;
 }
 
-// The register (resource_link, edited in the admin app) wins over the
-// hard-coded list. An LA in the register without a link has none, so its old
-// hard-coded link is dropped. LAs not in the register keep the hard-coded one.
-export const mergeMpsLinks = (rows: ResourceLinkRow[]): MSPItems => {
-  const links = { ...MSPLookup };
+// The register (resource_link, edited in the admin app) is the only source of
+// links. An LA without a published link in the register has none.
+export const toMpsLinks = (rows: ResourceLinkRow[]): MSPItems => {
+  const links: MSPItems = {};
   rows.forEach((row) => {
     if (row.url && !row.no_link_published) {
       links[row.la_code] = { url: row.url };
-    } else {
-      delete links[row.la_code];
     }
   });
   return links;
@@ -39,13 +36,13 @@ export const getMpsLinks = async (): Promise<MSPItems> => {
       .select(['la_code', 'url', 'no_link_published'])
       .where('resource_type', '=', 'mps')
       .execute()) as ResourceLinkRow[];
-    cache = { links: mergeMpsLinks(rows), fetchedAt: Date.now() };
+    cache = { links: toMpsLinks(rows), fetchedAt: Date.now() };
     return cache.links;
   } catch (error) {
     logger.error('Could not read MPS links from the register', {
       error: (error as Error).message,
     });
-    // The last good read is closer to the register than the hard-coded list
-    return cache?.links ?? MSPLookup;
+    // The last good read if there is one, otherwise no links
+    return cache?.links ?? {};
   }
 };

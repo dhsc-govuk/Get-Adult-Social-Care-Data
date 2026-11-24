@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockSession, mockSessionUnregistered } from '@/test-utils/test-utils';
 import { auth } from '@/lib/auth';
-import { MSPLookup } from '@/helpers/msp/msp-lookup';
 import type { ResourceLinkRow } from '@/lib/mpsLinksServer';
 
 vi.mock('next/headers', () => ({
@@ -9,13 +8,6 @@ vi.mock('next/headers', () => ({
 }));
 vi.mock('server-only', () => ({
   default: vi.fn(),
-}));
-vi.mock('@/helpers/msp/msp-lookup', () => ({
-  MSPLookup: {
-    testla1: { url: 'https://www.gov.uk/hard-coded-test' },
-    E09000003: { url: 'https://www.barnet.gov.uk/hard-coded' },
-    E09000006: { url: 'https://www.bromley.gov.uk/hard-coded' },
-  },
 }));
 
 const execute = vi.fn();
@@ -44,7 +36,6 @@ const rows: ResourceLinkRow[] = [
   { la_code: 'E09000006', url: null, no_link_published: true },
 ];
 const merged = {
-  testla1: MSPLookup.testla1,
   E09000003: { url: 'https://www.barnet.gov.uk/register' },
 };
 
@@ -66,22 +57,22 @@ describe('getMpsLinks', () => {
     expect((await getMpsLinks()).E09000003).toEqual(merged.E09000003);
   });
 
-  it('has no link, not the hard-coded one, when no link is published', async () => {
+  it('has no link when no link is published', async () => {
     execute.mockResolvedValue(rows);
     const { getMpsLinks } = await load();
     expect((await getMpsLinks()).E09000006).toBeUndefined();
   });
 
-  it('uses the hard-coded list for LAs with no row', async () => {
+  it('has no link for LAs with no row', async () => {
     execute.mockResolvedValue(rows);
     const { getMpsLinks } = await load();
-    expect((await getMpsLinks()).testla1).toEqual(MSPLookup.testla1);
+    expect((await getMpsLinks()).testla1).toBeUndefined();
   });
 
-  it('uses the hard-coded list when the read fails', async () => {
+  it('has no links when the read fails', async () => {
     execute.mockRejectedValue(new Error('Invalid object name'));
     const { getMpsLinks } = await load();
-    expect(await getMpsLinks()).toEqual(MSPLookup);
+    expect(await getMpsLinks()).toEqual({});
   });
 
   it('reads the register again only after five minutes', async () => {

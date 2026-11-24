@@ -1,6 +1,6 @@
 'use client';
 import React, { useMemo, useState } from 'react';
-import { MSPItems } from '@/helpers/msp/msp-lookup';
+import { MSPItems } from '@/helpers/msp/types';
 import AnalyticsService from '@/services/analytics/analyticsService';
 import { LocalAuthoritySummary } from '@/components/charts/peer-group/types';
 

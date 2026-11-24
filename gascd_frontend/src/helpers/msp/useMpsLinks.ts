@@ -1,10 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { withBasePath } from '@/lib/basePath';
-import { MSPItems, MSPLookup } from './msp-lookup';
+import { MSPItems } from './types';
 
-// MPS links by LA code, from the register. Null while loading. Uses the
-// hard-coded list if the request fails.
+// MPS links by LA code, from the register. Null while loading. Has no links
+// if the request fails.
 export function useMpsLinks(): MSPItems | null {
   const [links, setLinks] = useState<MSPItems | null>(null);
 
@@ -19,7 +19,7 @@ export function useMpsLinks(): MSPItems | null {
         if (!cancelled) setLinks(data);
       })
       .catch(() => {
-        if (!cancelled) setLinks(MSPLookup);
+        if (!cancelled) setLinks({});
       });
 
     return () => {
