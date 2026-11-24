@@ -66,7 +66,7 @@ describe('Service Component', () => {
     expect(screen.queryByText(fallbackText)).not.toBeInTheDocument();
   });
 
-  it('Renders the hard-coded URL if the register cannot be loaded', async () => {
+  it('Renders fallback text and no URL if the register cannot be loaded', async () => {
     global.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 });
     render(
       <LocalMarketInformation
@@ -74,9 +74,9 @@ describe('Service Component', () => {
         localAuthorityId="testla1"
       />
     );
-    const link = await screen.findByRole('link', { name: linkName });
-    expect(link.getAttribute('href')).toBe(
-      'https://www.gov.uk/government/organisations/department-of-health-and-social-care'
-    );
+    expect(await screen.findByText(fallbackText)).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: linkName })
+    ).not.toBeInTheDocument();
   });
 });
