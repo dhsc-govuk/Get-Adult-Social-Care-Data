@@ -14,6 +14,12 @@ import { test, expect } from '@playwright/test';
 
 const BASE_URL = process.env.SMOKE_BASE_URL ?? '';
 const SKIP_AUTH = !process.env.SMOKE_STORAGE_STATE;
+// Prod signs in with production One Login; every other environment uses integration.
+const ONE_LOGIN_URL =
+  process.env.SMOKE_ONELOGIN_URL ??
+  (BASE_URL.startsWith('https://analytics.dhsc.gov.uk/')
+    ? 'https://oidc.account.gov.uk'
+    : 'https://oidc.integration.account.gov.uk');
 
 test.beforeAll(() => {
   if (!BASE_URL) {
@@ -47,14 +53,14 @@ test('2. One Login sign-in initiates with correct OIDC params', async ({ page, c
 
   // One Login redirects /authorize straight on to signin.*, so capture the request we send rather than the final URL
   const [authorizeRequest] = await Promise.all([
-    page.waitForRequest((req) => req.url().startsWith('https://oidc.integration.account.gov.uk/authorize'), {
+    page.waitForRequest((req) => req.url().startsWith(`${ONE_LOGIN_URL}/authorize`), {
       timeout: 15_000,
     }),
     oneLoginBtn.click(),
   ]);
 
   const target = authorizeRequest.url();
-  expect(target, 'never saw redirect to One Login').toContain('oidc.integration.account.gov.uk');
+  expect(target, 'never saw redirect to One Login').toContain(ONE_LOGIN_URL);
 
   const parsed = new URL(target);
   expect(parsed.searchParams.get('client_id'), 'client_id missing').toBeTruthy();
